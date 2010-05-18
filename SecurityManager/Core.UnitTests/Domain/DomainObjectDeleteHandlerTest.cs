@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       deleteHandler.Delete ();
 
       Assert.That (deleteHandler.IsDeleted);
-      Assert.That (list[0].State, Is.EqualTo (StateType.Discarded));
+      Assert.That (list[0].State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]

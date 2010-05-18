@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       role.Delete();
 
-      Assert.That (substitution.IsDiscarded, Is.True);
+      Assert.That (substitution.IsInvalid, Is.True);
     }
   }
 }

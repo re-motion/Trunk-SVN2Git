@@ -80,26 +80,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeObject_Discarded ()
+    public void GetOppositeObject_Invalid ()
     {
       var oppositeObject = Order.NewObject ();
       _endPoint.OppositeObjectID = oppositeObject.ID;
 
       oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
 
       Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
     }
 
     [Test]
     [ExpectedException (typeof (ObjectNotFoundException))]
-    public void GetOppositeObject_Discarded_NoDeleted ()
+    public void GetOppositeObject_Invalid_NoDeleted ()
     {
       var oppositeObject = Order.NewObject ();
       _endPoint.OppositeObjectID = oppositeObject.ID;
 
       oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
 
       _endPoint.GetOppositeObject (false);
     }

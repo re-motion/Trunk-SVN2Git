@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataContainer _existingDataContainer;
     private DataContainer _deletedDataContainer;
     private DataContainer _discardedDataContainer;
-    private ObjectID _discardedObjectID;
+    private ObjectID _invalidObjectID;
 
     public override void SetUp ()
     {
@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           propertyDefinition => propertyDefinition.DefaultValue);
       _deletedDataContainer.Delete();
 
-      _discardedObjectID = new ObjectID ("Order", idValue);
-      _discardedDataContainer = DataContainer.CreateNew (_discardedObjectID);
+      _invalidObjectID = new ObjectID ("Order", idValue);
+      _discardedDataContainer = DataContainer.CreateNew (_invalidObjectID);
       _discardedDataContainer.Discard();
 
       _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
@@ -433,7 +433,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void CommitState_DiscardedDataContainer_Throws ()
     {
       _discardedDataContainer.CommitState ();
@@ -497,7 +497,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void RollbackState_DiscardedDataContainer_Throws ()
     {
       _discardedDataContainer.RollbackState ();
@@ -520,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void Delete_DiscardedDataContainer_Throws ()
     {
       _discardedDataContainer.Delete ();
@@ -634,7 +634,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetIDEvenPossibleWhenDiscarded ()
     {
       Assert.That (_discardedDataContainer.IsDiscarded, Is.True);
-      Assert.That (_discardedDataContainer.ID, Is.EqualTo (_discardedObjectID));
+      Assert.That (_discardedDataContainer.ID, Is.EqualTo (_invalidObjectID));
     }
 
     [Test]

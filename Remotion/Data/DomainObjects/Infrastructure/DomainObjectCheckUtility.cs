@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -26,17 +25,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class DomainObjectCheckUtility
   {
     /// <summary>
-    /// Checks if an object is discarded, and, if yes, throws an <see cref="ObjectDiscardedException"/>.
+    /// Checks if an object is invalid in the given <paramref name="transaction"/>, and, if yes, throws an <see cref="ObjectInvalidException"/>.
     /// </summary>
     /// <param name="domainObject">The domain object to check.</param>
     /// <param name="transaction">The transaction to check the object against.</param>
-    /// <returns>Returns <see langword="true"/> if the method succeeds without throwing an exception. This return value is available so that the 
-    /// method can be used from within an expression.</returns>
-    /// <exception cref="ObjectDiscardedException">The object was discarded in the given <see cref="ClientTransaction"/>.</exception>
-    public static void CheckIfObjectIsDiscarded (DomainObject domainObject, ClientTransaction transaction)
+    /// <exception cref="ObjectInvalidException">The object is invalid in the given <see cref="ClientTransaction"/>.</exception>
+    public static void CheckIfObjectIsInvalid (DomainObject domainObject, ClientTransaction transaction)
     {
-      if (domainObject.TransactionContext[transaction].IsDiscarded)
-        throw new ObjectDiscardedException (domainObject.ID);
+      if (domainObject.TransactionContext[transaction].IsInvalid)
+        throw new ObjectInvalidException (domainObject.ID);
     }
 
     /// <summary>

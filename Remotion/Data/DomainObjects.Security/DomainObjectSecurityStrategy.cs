@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     public override bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
-      if (SecurityContextFactory.IsDiscarded)
+      if (SecurityContextFactory.IsInvalid)
         return true;
 
       bool isSecurityRequiredForNew = RequiredSecurityForStates.New == (RequiredSecurityForStates.New & _requiredSecurityForStates);

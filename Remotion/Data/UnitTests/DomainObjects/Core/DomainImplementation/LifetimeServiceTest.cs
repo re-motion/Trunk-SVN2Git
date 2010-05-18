@@ -111,12 +111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void GetObjectReference_Discarded ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetObjectReference_Invalid ()
     {
       var instance = Order.NewObject ();
       instance.Delete();
-      Assert.That (instance.IsDiscarded, Is.True);
+      Assert.That (instance.IsInvalid, Is.True);
       
       LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID);
     }

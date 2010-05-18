@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Deletes the <see cref="SimpleDomainObject{TDomainObject}"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid. See <see cref="ObjectInvalidException"/> for further information.</exception>
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="DomainObject.OnDeleting"/> and <see cref="DomainObject.OnDeleted"/> should be overridden.</remarks>
     public new void Delete ()
     {

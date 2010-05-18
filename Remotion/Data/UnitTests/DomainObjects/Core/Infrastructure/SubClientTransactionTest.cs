@@ -91,11 +91,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
 
       var instance = subTx.Execute (() => ClassWithAllDataTypes.NewObject ());
-      Assert.That (ClientTransactionMock.DataManager.IsDiscarded (instance.ID), Is.True);
+      Assert.That (ClientTransactionMock.DataManager.IsInvalid (instance.ID), Is.True);
 
       ((IDataSource) subTx).PersistData (new[] { subTx.Execute (() => instance.InternalDataContainer) });
 
-      Assert.That (ClientTransactionMock.DataManager.IsDiscarded (instance.ID), Is.False);
+      Assert.That (ClientTransactionMock.DataManager.IsInvalid (instance.ID), Is.False);
 
     }
   }

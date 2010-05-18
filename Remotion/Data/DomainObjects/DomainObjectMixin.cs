@@ -87,13 +87,13 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating whether this mixin's target object is discarded.
+    /// Gets a value indicating whether this mixin's target object is invalid in its default transaction.
     /// </summary>
-    /// <value>true if this mixin's target object is discarded; otherwise, false.</value>
+    /// <value><see langword="true" /> if this mixin's target object is invalid; otherwise, <see langword="false" />.</value>
     [StorageClassNone]
-    protected bool IsDiscarded
+    protected bool IsInvalid
     {
-      get { return This.IsDiscarded; }
+      get { return This.IsInvalid; }
     }
 
     /// <summary>

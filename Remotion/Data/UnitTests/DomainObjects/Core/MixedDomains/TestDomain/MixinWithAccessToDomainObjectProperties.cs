@@ -51,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     }
 
     [StorageClassNone]
-    public new bool IsDiscarded
+    public new bool IsInvalid
     {
-      get { return base.IsDiscarded; }
+      get { return base.IsInvalid; }
     }
 
     [StorageClassNone]

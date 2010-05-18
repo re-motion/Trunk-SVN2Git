@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void RollbackForNewObject ()
     {
       Order newOrder = Order.NewObject ();

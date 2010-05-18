@@ -289,8 +289,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException), ExpectedMessage =
-        "Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException : Object 'ClassWithAllDataTypes|.*|System.Guid' is already discarded.",
+    [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
+        "Remotion.Data.DomainObjects.DataManagement.ObjectInvalidException : Object 'ClassWithAllDataTypes|.*|System.Guid' is invalid in this "
+        + "transaction.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateChildWithInvalidInParameter ()
     {
@@ -315,8 +316,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
 
     [Test]
     [ExpectedException (
-        typeof (ObjectDiscardedException), 
-        ExpectedMessage = "Object 'ClassWithAllDataTypes|.*|System.Guid' is already discarded.",
+        typeof (ObjectInvalidException), 
+        ExpectedMessage = "Object 'ClassWithAllDataTypes|.*|System.Guid' is invalid in this transaction.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateChildWithInvalidOutParameter ()
     {

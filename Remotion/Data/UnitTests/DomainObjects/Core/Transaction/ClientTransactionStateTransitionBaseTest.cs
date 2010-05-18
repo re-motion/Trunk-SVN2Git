@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -23,11 +24,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
   public abstract class ClientTransactionStateTransitionBaseTest : ClientTransactionBaseTest
   {
-    public Order GetDiscarded ()
+    public Order GetInvalid ()
     {
-      Order discarded = Order.NewObject ();
-      discarded.Delete ();
-      return discarded;
+      Order invalid = Order.NewObject ();
+      invalid.Delete ();
+      Assert.That (invalid.State, Is.EqualTo (StateType.Invalid));
+      return invalid;
     }
 
     public Location GetUnidirectionalWithDeletedNew ()
@@ -110,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order deleted = GetDeleted();
       Location unidirectionalWithDeleted = GetUnidirectionalWithDeleted ();
       Location unidirectionalWithDeletedNew = GetUnidirectionalWithDeletedNew ();
-      Order discarded = GetDiscarded();
+      Order invalid = GetInvalid();
 
       Assert.AreEqual (StateType.Unchanged, unchanged.State);
 
@@ -138,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Unchanged, unidirectionalWithDeleted.State);
       Assert.AreEqual (StateType.Changed, unidirectionalWithDeletedNew.State);
 
-      Assert.IsTrue (discarded.IsDiscarded);
+      Assert.IsTrue (invalid.IsInvalid);
     }
 
     protected void FullyDeleteOrder (Order order)

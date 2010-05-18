@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         position.Delete();
 
-        Assert.IsTrue (ace.IsDiscarded);
+        Assert.IsTrue (ace.IsInvalid);
       }
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         position.Delete();
 
-        Assert.IsTrue (role.IsDiscarded);
+        Assert.IsTrue (role.IsInvalid);
       }
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         position.Delete();
 
-        Assert.IsTrue (concretePosition.IsDiscarded);
+        Assert.IsTrue (concretePosition.IsInvalid);
       }
     }
 
@@ -155,13 +155,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Position position = testHelper.CreatePosition ("PositionName");
         IDomainObjectSecurityContextFactory factory = position;
 
-        Assert.IsFalse (factory.IsDiscarded);
+        Assert.IsFalse (factory.IsInvalid);
         Assert.IsTrue (factory.IsNew);
         Assert.IsFalse (factory.IsDeleted);
 
         position.Delete();
 
-        Assert.IsTrue (factory.IsDiscarded);
+        Assert.IsTrue (factory.IsInvalid);
       }
     }
 

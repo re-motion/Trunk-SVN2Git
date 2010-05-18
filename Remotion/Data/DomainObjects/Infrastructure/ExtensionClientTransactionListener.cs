@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ObjectID id)
     {
       // not handled by this listener
     }

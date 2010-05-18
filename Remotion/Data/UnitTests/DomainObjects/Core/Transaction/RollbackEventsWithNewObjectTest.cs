@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.Rollback ();
 
-      // expectation: no ObjectDiscardedException
+      // expectation: no ObjectInvalidException
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.Rollback ();
 
-      // expectation: no ObjectDiscardedException
+      // expectation: no ObjectInvalidException
     }
 
     [Test]
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     private void NewCustomer_RollingBack_MustNotBeCalled (object sender, EventArgs e)
     {
-      throw new AssertionException ("New customer must not throw a RollingBack event, because it is already discarded.");
+      throw new AssertionException ("New customer must not throw a RollingBack event, because it has been made invalid.");
     }
 
     private void Order1_RollingBack (object sender, EventArgs e)

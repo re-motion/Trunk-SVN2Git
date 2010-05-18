@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.None, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsNew).Return (false);
         Expect.Call (_stubContextFactory.IsDeleted).Return (false);
         Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (true);
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.None, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsNew).Return (true);
       }
       _mocks.ReplayAll();
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.None, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsNew).Return (false);
         Expect.Call (_stubContextFactory.IsDeleted).Return (true);
       }
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.New, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsDeleted).Return (false);
         Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (true);
       }
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.Deleted, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsNew).Return (false);
         Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (true);
       }
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.NewAndDeleted, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (true);
       }
       _mocks.ReplayAll();
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.None, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (true);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (true);
       }
       _mocks.ReplayAll();
 
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           RequiredSecurityForStates.None, _stubContextFactory, _mockSecurityStrategy);
       using (_mocks.Ordered())
       {
-        Expect.Call (_stubContextFactory.IsDiscarded).Return (false);
+        Expect.Call (_stubContextFactory.IsInvalid).Return (false);
         Expect.Call (_stubContextFactory.IsNew).Return (false);
         Expect.Call (_stubContextFactory.IsDeleted).Return (false);
         Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (false);
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     [Serializable]
     private class SerializableFactory : IDomainObjectSecurityContextFactory
     {
-      public bool IsDiscarded
+      public bool IsInvalid
       {
         get { return false; }
       }

@@ -97,18 +97,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetObject_DiscardedObject_ThrowsWithoutGoingToDatabase ()
+    public void GetObject_InvalidObject_ThrowsWithoutGoingToDatabase ()
     {
-      var discardedObject = _transaction.Execute (() => Official.NewObject ());
-      LifetimeService.DeleteObject (_transaction, discardedObject);
+      var invalidObject = _transaction.Execute (() => Official.NewObject ());
+      LifetimeService.DeleteObject (_transaction, invalidObject);
 
-      Assert.That (discardedObject.TransactionContext[_transaction].IsDiscarded, Is.True);
+      Assert.That (invalidObject.TransactionContext[_transaction].IsInvalid, Is.True);
 
       var storageProviderMock = UnitTestStorageProviderStub.CreateStorageProviderMockForOfficial ();
       try
       {
         UnitTestStorageProviderStub.ExecuteWithMock (storageProviderMock, () => 
-            ClientTransactionTestHelper.CallGetObject (_transaction, discardedObject.ID, false));
+            ClientTransactionTestHelper.CallGetObject (_transaction, invalidObject.ID, false));
         Assert.Fail ("Expected ObjectNotFoundException.");
       }
       catch (ObjectNotFoundException)
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         // ok
       }
 
-      storageProviderMock.AssertWasNotCalled (mock => mock.LoadDataContainer (discardedObject.ID));
+      storageProviderMock.AssertWasNotCalled (mock => mock.LoadDataContainer (invalidObject.ID));
     }
 
     [Test]
@@ -160,12 +160,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void GetObjectReference_KnownObject_Discarded_Throws ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetObjectReference_KnownObject_Invalid_Throws ()
     {
       var instance = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
       LifetimeService.DeleteObject (_transaction, instance);
-      Assert.That (instance.TransactionContext[_transaction].IsDiscarded, Is.True);
+      Assert.That (instance.TransactionContext[_transaction].IsInvalid, Is.True);
 
       ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
     }
@@ -230,8 +230,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void EnsureDataAvailable_Discarded ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void EnsureDataAvailable_Invalid ()
     {
       Order domainObject = _transaction.Execute (() =>Order.NewObject ());
       _transaction.Execute (domainObject.Delete);
@@ -328,8 +328,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void EnsureDataAvailable_Many_Discarded ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void EnsureDataAvailable_Many_Invalid ()
     {
       var domainObject = _transaction.Execute (() => Order.NewObject ());
       _transaction.Execute (domainObject.Delete);
@@ -462,16 +462,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnlistDomainObject_DiscardedObjects ()
+    public void EnlistDomainObject_InvalidObjects ()
     {
-      var discardedObject = _transaction.Execute (() => Order.NewObject ());
-      _transaction.Execute (discardedObject.Delete);
-      Assert.That (discardedObject.TransactionContext[_transaction].IsDiscarded, Is.True);
+      var invalidObject = _transaction.Execute (() => Order.NewObject ());
+      _transaction.Execute (invalidObject.Delete);
+      Assert.That (invalidObject.TransactionContext[_transaction].IsInvalid, Is.True);
 
       var newTransaction = ClientTransaction.CreateRootTransaction();
-      newTransaction.EnlistDomainObject (discardedObject);
+      newTransaction.EnlistDomainObject (invalidObject);
 
-      Assert.That (newTransaction.IsEnlisted (discardedObject), Is.True);
+      Assert.That (newTransaction.IsEnlisted (invalidObject), Is.True);
     }
 
     [Test]

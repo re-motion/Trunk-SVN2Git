@@ -54,13 +54,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _listener.DataContainerMapRegistering (dataContainer);
 
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsDiscarded (DomainObjectIDs.Order1), Is.True);
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).GetDiscardedObject (DomainObjectIDs.Order1), Is.SameAs (domainObject));
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).GetInvalidObjectReference (DomainObjectIDs.Order1), Is.SameAs (domainObject));
       
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsDiscarded (DomainObjectIDs.Order1), Is.True);
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).GetDiscardedObject (DomainObjectIDs.Order1), Is.SameAs (domainObject));
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).GetInvalidObjectReference (DomainObjectIDs.Order1), Is.SameAs (domainObject));
 
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_subTransaction).IsDiscarded (DomainObjectIDs.Order1), Is.False);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_subTransaction).IsInvalid (DomainObjectIDs.Order1), Is.False);
     }
 
     [Test]
@@ -72,9 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _listener.DataContainerMapRegistering (dataContainer);
 
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsDiscarded (DomainObjectIDs.Order1), Is.False);
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsDiscarded (DomainObjectIDs.Order1), Is.False);
-      Assert.That (ClientTransactionTestHelper.GetDataManager (_subTransaction).IsDiscarded (DomainObjectIDs.Order1), Is.False);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (_subTransaction).IsInvalid (DomainObjectIDs.Order1), Is.False);
     }
 
     [Test]

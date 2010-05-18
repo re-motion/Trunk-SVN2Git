@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.Domain
       if (IsDeleted)
         throw new InvalidOperationException ("The Delete operation my only be performed once.");
 
-      foreach (BaseSecurityManagerObject domainObject in _objectsToBeDeleted.Where (o => !o.IsDiscarded))
+      foreach (BaseSecurityManagerObject domainObject in _objectsToBeDeleted.Where (o => !o.IsInvalid))
         domainObject.Delete();
 
       _objectsToBeDeleted = null;

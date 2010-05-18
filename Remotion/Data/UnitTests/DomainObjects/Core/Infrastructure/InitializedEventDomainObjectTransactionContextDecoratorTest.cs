@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void AllowedMembers ()
     {
       CheckAllowed (ctx => ctx.ClientTransaction, ClientTransaction.CreateRootTransaction());
-      CheckAllowed (ctx => ctx.IsDiscarded, true);
+      CheckAllowed (ctx => ctx.IsInvalid, true);
       CheckAllowed (ctx => ctx.Execute ((obj, tx) => 10), 20);
       CheckAllowed (ctx => ctx.Execute ((obj, tx) => { }));
     }

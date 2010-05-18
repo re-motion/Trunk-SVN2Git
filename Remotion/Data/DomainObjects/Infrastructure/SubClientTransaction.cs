@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _parentTransaction = parentTransaction;
       AddListener (new SubClientTransactionListener (this));
 
-      TransferDeletedAndDiscardedObjects();
+      TransferDeletedAndInvalidObjects();
 
       parentTransaction.NotifyOfSubTransactionCreated (this);
     }
@@ -188,13 +188,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ParentTransaction.QueryManager.GetScalar (query);
     }
 
-    private void TransferDeletedAndDiscardedObjects ()
+    private void TransferDeletedAndInvalidObjects ()
     {
-      var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
-          .Select (id => _parentTransaction.DataManager.GetDiscardedObject (id));
+      var invalidObjects = _parentTransaction.DataManager.InvalidObjectIDs
+          .Select (id => _parentTransaction.DataManager.GetInvalidObjectReference (id));
       var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
-      foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
-        DataManager.MarkObjectDiscarded (objectToBeDiscarded);
+      
+      foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
+        DataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
     }
 
 
@@ -207,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
-      Assertion.IsFalse (DataManager.IsDiscarded (parentDataContainer.ID));
+      Assertion.IsFalse (DataManager.IsInvalid (parentDataContainer.ID));
       Assertion.IsFalse (parentDataContainer.State == StateType.Deleted, "Implied by previous assertion");
 
       var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
@@ -236,7 +237,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         Assertion.IsFalse (
             dataContainer.IsDiscarded,
             "changedDataContainers cannot contain discarded DataContainers, because its items come"
-            + "from DataManager.DataContainerMap, which does not contain discarded objects");
+            + "from DataManager.DataContainerMap, which does not contain discarded containers");
         Assertion.IsTrue (dataContainer.State != StateType.Unchanged, "changedDataContainers cannot contain an unchanged container");
         Assertion.IsTrue (
             dataContainer.State == StateType.New || dataContainer.State == StateType.Changed
@@ -260,8 +261,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void PersistNewDataContainer (DataContainer dataContainer)
     {
-      Assertion.IsTrue (_parentTransaction.DataManager.IsDiscarded (dataContainer.ID));
-      _parentTransaction.DataManager.ClearDiscardedFlag (dataContainer.ID);
+      Assertion.IsTrue (_parentTransaction.DataManager.IsInvalid (dataContainer.ID));
+      _parentTransaction.DataManager.ClearInvalidFlag (dataContainer.ID);
 
       Assertion.IsNull (GetParentDataContainerWithoutLoading (dataContainer.ID), "a new data container cannot be known to the parent");
       Assertion.IsFalse (dataContainer.IsDiscarded);
@@ -305,7 +306,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           "a deleted DataContainer must have been loaded through ParentTransaction, so the ParentTransaction must know it");
 
       Assertion.IsTrue (
-          parentDataContainer.State != StateType.Discarded && parentDataContainer.State != StateType.Deleted,
+          parentDataContainer.State != StateType.Invalid && parentDataContainer.State != StateType.Deleted,
           "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
@@ -315,7 +316,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
     {
-      Assertion.IsFalse (ParentTransaction.DataManager.IsDiscarded (id), "this method is not called in situations where the ID could be discarded");
+      Assertion.IsFalse (ParentTransaction.DataManager.IsInvalid (id), "this method is not called in situations where the ID could be invalid");
       return ParentTransaction.DataManager.DataContainerMap[id];
     }
 
@@ -330,7 +331,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         {
           Assertion.IsTrue (
               DataManager.DataContainerMap[endPoint.ObjectID].State == StateType.Deleted
-              && ParentTransaction.DataManager.IsDiscarded (endPoint.ObjectID),
+              && ParentTransaction.DataManager.IsInvalid (endPoint.ObjectID),
               "Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of ParentTransaction and this now "
               + "contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known "
               + "to the child transaction is when the object was of state New in the ParentTransaction and its DataContainer was just discarded.");

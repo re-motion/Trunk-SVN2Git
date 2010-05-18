@@ -66,9 +66,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       }
     }
 
-    bool IDomainObjectSecurityContextFactory.IsDiscarded
+    bool IDomainObjectSecurityContextFactory.IsInvalid
     {
-      get { return IsDiscarded; }
+      get { return IsInvalid; }
     }
 
     bool IDomainObjectSecurityContextFactory.IsNew

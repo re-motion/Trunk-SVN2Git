@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
         user.Delete();
 
-        Assert.That (ace.IsDiscarded, Is.True);
+        Assert.That (ace.IsInvalid, Is.True);
       }
     }
 
@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
       user.Delete();
 
-      Assert.That (role.IsDiscarded, Is.True);
+      Assert.That (role.IsInvalid, Is.True);
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
       substitutingUser.Delete();
 
-      Assert.That (substitution.IsDiscarded, Is.True);
+      Assert.That (substitution.IsInvalid, Is.True);
     }
 
     [Test]
@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
 
       substitutedUser.Delete();
 
-      Assert.That (substitution.IsDiscarded, Is.True);
+      Assert.That (substitution.IsInvalid, Is.True);
     }
   }
 }

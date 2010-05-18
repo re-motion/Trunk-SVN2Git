@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         FullyDeleteOrder (obj);
         Assert.AreEqual (StateType.Deleted, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
       }
       Assert.AreEqual (StateType.Deleted, obj.State);
     }
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Assert.AreEqual (StateType.Deleted, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsTrue (obj.IsDiscarded);
+      Assert.IsTrue (obj.IsInvalid);
     }
 
     [Test]
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Deleted, obj.State);
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
       Assert.AreEqual (StateType.Deleted, obj.State);
@@ -207,13 +207,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CommitRootDiscardedSubDiscarded ()
     {
-      Order obj = GetDiscarded();
+      Order obj = GetInvalid();
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsTrue (obj.IsDiscarded);
+      Assert.IsTrue (obj.IsInvalid);
     }
 
     [Test]
@@ -275,8 +275,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order obj;
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        obj = GetDiscarded();
-        Assert.IsTrue (obj.IsDiscarded);
+        obj = GetInvalid();
+        Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
       Assert.IsNull (ClientTransactionMock.DataManager.DataContainerMap[obj.ID]);

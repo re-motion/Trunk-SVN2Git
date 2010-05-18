@@ -190,10 +190,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = NewBound<Order> ();
       Assert.AreEqual (StateType.New, order.State);
-      Assert.IsFalse (order.IsDiscarded);
+      Assert.IsFalse (order.IsInvalid);
       order.Delete ();
-      Assert.AreEqual (StateType.Discarded, order.State);
-      Assert.IsTrue (order.IsDiscarded);
+      Assert.AreEqual (StateType.Invalid, order.State);
+      Assert.IsTrue (order.IsInvalid);
     }
 
     [Test]

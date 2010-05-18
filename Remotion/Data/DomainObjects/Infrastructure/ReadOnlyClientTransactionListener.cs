@@ -183,7 +183,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("RelationEndPointUnloading");
     }
 
-    public virtual void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public virtual void DataManagerMarkingObjectInvalid (ObjectID id)
     {
       // also allowed for read-only transactions
     }

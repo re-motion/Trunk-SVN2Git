@@ -695,7 +695,7 @@ public abstract class ClientTransaction : IDataSource
   /// </summary>
   /// <param name="objectID">The domain object whose data must be loaded.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
-  /// <exception cref="ObjectDiscardedException">The given <paramref name="objectID"/> has already been discarded in this transaction.</exception>
+  /// <exception cref="ObjectInvalidException">The given <paramref name="objectID"/> is invalid in this transaction.</exception>
   /// <exception cref="ObjectNotFoundException">No data could be loaded for the given <paramref name="objectID"/> because the object was not
   /// found in the underlying data source.</exception>
   public void EnsureDataAvailable (ObjectID objectID)
@@ -716,7 +716,7 @@ public abstract class ClientTransaction : IDataSource
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null" />.</exception>
   /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="objectIDs"/> cannot be used in this 
   /// <see cref="ClientTransaction"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">One of the given <paramref name="objectIDs"/> has already been discarded in this transaction.</exception>
+  /// <exception cref="ObjectInvalidException">One of the given <paramref name="objectIDs"/> is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
   /// was not found in the underlying data source.</exception>
   public void EnsureDataAvailable (IEnumerable<ObjectID> objectIDs)
@@ -766,7 +766,7 @@ public abstract class ClientTransaction : IDataSource
   /// </remarks>
   /// <exception cref="ObjectNotFoundException">The <paramref name="domainObject"/> could not be found in either the current transaction or the
   /// <paramref name="sourceTransaction"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">The <paramref name="domainObject"/> was discarded in either the current transaction or the
+  /// <exception cref="ObjectInvalidException">The <paramref name="domainObject"/> is invalid in either the current transaction or the
   /// <paramref name="sourceTransaction"/>.</exception>
   public void CopyCollectionEventHandlers (DomainObject domainObject, ClientTransaction sourceTransaction)
   {
@@ -876,7 +876,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
   /// <exception cref="DataManagement.ObjectDeletedException"><paramref name="includeDeleted"/> is false and the DomainObject with <paramref name="id"/> has been deleted.</exception>
-  /// <exception cref="ObjectNotFoundException">The object could not be found in the database (or it has been discarded in this transaction).</exception>
+  /// <exception cref="ObjectNotFoundException">The object could not be found in the database (or it is invalid in this transaction).</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
@@ -886,7 +886,7 @@ public abstract class ClientTransaction : IDataSource
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    if (DataManager.IsDiscarded (id))
+    if (DataManager.IsInvalid (id))
       throw new ObjectNotFoundException (id);
 
     var objectReference = GetObjectReference (id);
@@ -918,13 +918,13 @@ public abstract class ClientTransaction : IDataSource
   /// </para>
   /// </remarks>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
-  /// <exception cref="ObjectDiscardedException">The object with the given <paramref name="objectID"/> has already been discarded.</exception>
+  /// <exception cref="ObjectInvalidException">The object with the given <paramref name="objectID"/> is invalid in this transaction.</exception>
   protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-    if (DataManager.IsDiscarded (objectID))
-      throw new ObjectDiscardedException (objectID);
+    if (DataManager.IsInvalid (objectID))
+      throw new ObjectInvalidException (objectID);
 
     var enlistedObject = GetEnlistedDomainObject (objectID);
     if (enlistedObject != null)
@@ -966,7 +966,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
+  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] GetObjects<T> (params ObjectID[] objectIDs) 
@@ -985,7 +985,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
+  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
@@ -1006,7 +1006,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in <paramref name="objectIDs"/>.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
+  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   protected internal virtual T[] GetObjects<T> (ICollection<ObjectID> objectIDs, bool throwOnNotFound) 
@@ -1250,7 +1250,7 @@ public abstract class ClientTransaction : IDataSource
   /// <param name="domainObject">A <see cref="DomainObject"/> reference indicating the <see cref="DomainObject"/> whose <see cref="DataContainer"/>
   /// to retrieve. Must not be <see langword="null"/>.</param>
   /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">The object has been discarded in the context of this transaction.</exception>
+  /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
   /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the context of this transaction.</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="domainObject"/>.<br /> -or- <br />
@@ -1430,11 +1430,11 @@ public abstract class ClientTransaction : IDataSource
       {
         foreach (DomainObject domainObject in domainObjectCommittingEventNotRaised)
         {
-          if (!domainObject.IsDiscarded)
+          if (!domainObject.IsInvalid)
           {
             domainObject.OnCommitting (EventArgs.Empty);
 
-            if (!domainObject.IsDiscarded)
+            if (!domainObject.IsInvalid)
               domainObjectComittingEventRaised.Add (domainObject);
           }
         }
@@ -1448,7 +1448,7 @@ public abstract class ClientTransaction : IDataSource
       OnCommitting (new ClientTransactionEventArgs (clientTransactionCommittingEventNotRaised.AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
-        if (!domainObject.IsDiscarded)
+        if (!domainObject.IsInvalid)
           clientTransactionCommittingEventRaised.Add (domainObject);
       }
 
@@ -1492,11 +1492,11 @@ public abstract class ClientTransaction : IDataSource
       {
         foreach (DomainObject domainObject in domainObjectRollingBackEventNotRaised)
         {
-          if (!domainObject.IsDiscarded)
+          if (!domainObject.IsInvalid)
           {
             domainObject.OnRollingBack (EventArgs.Empty);
 
-            if (!domainObject.IsDiscarded)
+            if (!domainObject.IsInvalid)
               domainObjectRollingBackEventRaised.Add (domainObject);
           }
         }
@@ -1510,7 +1510,7 @@ public abstract class ClientTransaction : IDataSource
       OnRollingBack (new ClientTransactionEventArgs (clientTransactionRollingBackEventNotRaised.AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
-        if (!domainObject.IsDiscarded)
+        if (!domainObject.IsInvalid)
           clientTransactionRollingBackEventRaised.Add (domainObject);
       }
 
@@ -1529,8 +1529,8 @@ public abstract class ClientTransaction : IDataSource
 
   private DataContainer GetDataContainerWithoutLoading (ObjectID id)
   {
-    if (DataManager.IsDiscarded (id))
-      throw new ObjectDiscardedException (id);
+    if (DataManager.IsInvalid (id))
+      throw new ObjectInvalidException (id);
 
     return DataManager.DataContainerMap[id];
   }

@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
         group.Delete();
 
-        Assert.IsTrue (ace.IsDiscarded);
+        Assert.IsTrue (ace.IsInvalid);
       }
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
         roleGroup.Delete();
 
-        Assert.IsTrue (role.IsDiscarded);
+        Assert.IsTrue (role.IsInvalid);
       }
     }
   }

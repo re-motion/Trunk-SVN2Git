@@ -40,14 +40,16 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     Deleted = 3,
     /// <summary>
-    /// The <see cref="DomainObject"/> does not exist any longer.
+    /// The <see cref="DomainObject"/> reference is no longer or not yet valid for use in this transaction.
     /// </summary>
-    Discarded = 4,
+    Invalid = 4,
     /// <summary>
     /// The <see cref="DomainObject"/>'s data has not been loaded yet into the <see cref="ClientTransaction"/>. It will be loaded when needed,
     /// e.g. when a property value or relation is accessed, or when 
     /// <see cref="DomainObject.EnsureDataAvailable"/> is called for the <see cref="DomainObject"/>.
     /// </summary>
-    NotLoadedYet = 5
+    NotLoadedYet = 5,
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
+    Discarded = 4
   }
 }

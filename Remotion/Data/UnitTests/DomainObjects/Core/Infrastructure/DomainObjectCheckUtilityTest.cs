@@ -31,16 +31,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var order = Order.NewObject ();
 
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.CheckIfObjectIsInvalid (order, ClientTransaction.Current);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void CheckIfObjectIsDiscarded_Discarded ()
     {
       var order = Order.NewObject ();
       order.Delete ();
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.CheckIfObjectIsInvalid (order, ClientTransaction.Current);
     }
 
     [Test]

@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             .Repeat.Times (4); // four related objects/object collections in Order
 
         _strictListenerMock.Expect (mock => mock.DataContainerMapUnregistering (order.InternalDataContainer));
-        _strictListenerMock.Expect (mock => mock.DataManagerMarkingObjectDiscarded (order.ID));
+        _strictListenerMock.Expect (mock => mock.DataManagerMarkingObjectInvalid (order.ID));
         _strictListenerMock.Expect (mock => mock.ObjectDeleted (order));
       }
 

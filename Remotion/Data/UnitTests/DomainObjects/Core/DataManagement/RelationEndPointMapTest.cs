@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetRelatedObjectWithDiscarded ()
+    public void GetRelatedObjectWithInvalid ()
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
       Client newClient = Client.NewObject();
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.That (client, Is.Not.Null);
       Assert.That (client, Is.SameAs (newClient));
-      Assert.That (client.IsDiscarded, Is.True);
+      Assert.That (client.IsInvalid, Is.True);
     }
 
     [Test]

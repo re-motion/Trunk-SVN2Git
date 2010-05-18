@@ -467,7 +467,7 @@
     <Compile Include="DataManagement\ObjectDeletedException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\ObjectDiscardedException.cs">
+    <Compile Include="DataManagement\ObjectInvalidException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\ObjectEndPoint.cs">

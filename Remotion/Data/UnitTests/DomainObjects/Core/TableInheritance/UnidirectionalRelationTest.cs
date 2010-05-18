@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       try
       {
         Dev.Null = classWithUnidirectionalRelation.DomainBase;
-        Assert.Fail ("Expected ObjectDiscardedException");
+        Assert.Fail ("Expected ObjectInvalidException");
       }
-      catch (ObjectDiscardedException)
+      catch (ObjectInvalidException)
       {
         // succeed
       }

@@ -61,13 +61,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       User user = CreateUser();
       IDomainObjectSecurityContextFactory factory = user;
 
-      Assert.IsFalse (factory.IsDiscarded);
+      Assert.IsFalse (factory.IsInvalid);
       Assert.IsTrue (factory.IsNew);
       Assert.IsFalse (factory.IsDeleted);
 
       user.Delete();
 
-      Assert.IsTrue (factory.IsDiscarded);
+      Assert.IsTrue (factory.IsInvalid);
     }
 
     [Test]

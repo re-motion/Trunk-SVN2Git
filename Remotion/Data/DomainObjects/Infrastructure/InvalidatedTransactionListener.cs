@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ObjectID id)
     {
       throw CreateException();
     }

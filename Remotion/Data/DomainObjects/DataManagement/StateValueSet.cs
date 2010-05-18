@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -24,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public struct StateValueSet
   {
-    private readonly bool _matchDiscarded;
+    private readonly bool _matchInvalid;
     private readonly bool _matchDeleted;
     private readonly bool _matchChanged;
     private readonly bool _matchUnchanged;
@@ -37,8 +36,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         switch (stateValue)
         {
-          case StateType.Discarded:
-            _matchDiscarded = true;
+          case StateType.Invalid:
+            _matchInvalid = true;
             break;
           case StateType.Deleted:
             _matchDeleted = true;
@@ -65,8 +64,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       switch (stateValue)
       {
-        case StateType.Discarded:
-          return _matchDiscarded;
+        case StateType.Invalid:
+          return _matchInvalid;
         case StateType.Deleted:
           return _matchDeleted;
         case StateType.Changed:

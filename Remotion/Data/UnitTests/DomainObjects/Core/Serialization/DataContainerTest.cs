@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
       Assert.IsTrue (deserializedDataContainer.IsDiscarded);
-      Assert.AreEqual (StateType.Discarded, deserializedDataContainer.State);
+      Assert.AreEqual (StateType.Invalid, deserializedDataContainer.State);
     }
 
     [Test]

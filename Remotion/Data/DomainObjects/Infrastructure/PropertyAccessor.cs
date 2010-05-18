@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <value>True if the property's value has changed; false otherwise.</value>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public bool HasChanged
     {
       get
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <remarks>This can be used to efficiently check whether a related object property has a value without actually loading the related
     /// object.</remarks>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public bool IsNull
     {
       get
@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public T GetValue<T> ()
     {
       CheckType(typeof (T));
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is the property value. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public object GetValueWithoutTypeCheck ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public ObjectID GetRelatedObjectID ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public T GetOriginalValue<T> ()
     {
       CheckType (typeof (T));
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns>The original value of the encapsulated property in the current transaction.</returns>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public object GetOriginalValueWithoutTypeCheck ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -234,7 +234,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public ObjectID GetOriginalRelatedObjectID ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -265,7 +265,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public void SetValue<T> (T value)
     {
       CheckType (typeof (T));
@@ -284,7 +284,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     public void SetValueWithoutTypeCheck (object value)
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -304,7 +304,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void CheckTransactionalStatus (ClientTransaction transaction)
     {
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (_domainObject, transaction);
+      DomainObjectCheckUtility.CheckIfObjectIsInvalid (_domainObject, transaction);
       DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
     }
 

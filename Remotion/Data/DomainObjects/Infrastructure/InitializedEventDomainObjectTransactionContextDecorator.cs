@@ -48,9 +48,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public bool IsInvalid
+    {
+      get { return _actualContext.IsInvalid; }
+    }
+
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
     public bool IsDiscarded
     {
-      get { return _actualContext.IsDiscarded; }
+      get { return _actualContext.IsInvalid; }
     }
 
     public object Timestamp

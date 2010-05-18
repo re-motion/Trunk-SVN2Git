@@ -105,7 +105,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="PropertyDefinition"/> of the <see cref="PropertyValue"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public PropertyDefinition Definition
     {
       get 
@@ -117,7 +118,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the name of the <see cref="PropertyValue"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public string Name
     {
       get 
@@ -129,7 +131,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets or sets the value of the <see cref="PropertyValue"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <see cref="Definition"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <see cref="Definition"/>.</exception>
     public object Value
@@ -183,7 +186,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the original <see cref="Value"/> of the <see cref="PropertyValue"/> at the point of instantiation, loading, commit or rollback.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public object OriginalValue
     {
       get 
@@ -202,7 +206,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Indicates if the <see cref="Value"/> of the <see cref="PropertyValue"/> has changed since instantiation, loading, commit or rollback.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public bool HasChanged
     {
       get 
@@ -216,7 +221,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Indicates if the <see cref="Value"/> of the <see cref="PropertyValue"/> has been assigned since instantiation, loading, commit or rollback,
     /// regardless of whether the current value differs from the <see cref="OriginalValue"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public bool HasBeenTouched
     {
       get
@@ -231,7 +237,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// </summary>
     /// <param name="obj">The <see cref="PropertyValue"/> to compare with the current <b>PropertyValue</b>. </param>
     /// <returns><see langword="true"/> if the specified <see cref="PropertyValue"/> is equal to the current <b>PropertyValue</b>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override bool Equals (object obj)
     {
       CheckNotDiscarded ();
@@ -265,7 +272,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Gets a value indicating the discarded status of the <see cref="PropertyValue"/>.
     /// </summary>
     /// <remarks>
-    /// For more information why and when a <see cref="PropertyValue"/> is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    /// For more information why and when a <see cref="PropertyValue"/> is discarded see <see cref="ObjectInvalidException"/>.
     /// </remarks>
     public bool IsDiscarded
     {
@@ -433,7 +440,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void CheckNotDiscarded ()
     {
       if (_isDiscarded)
-        throw new ObjectDiscardedException ();
+        throw new ObjectInvalidException ();
     }
 
     public void SetValueFrom (PropertyValue source)

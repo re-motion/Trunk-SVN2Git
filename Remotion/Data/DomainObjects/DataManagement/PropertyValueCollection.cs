@@ -87,7 +87,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <param name="propertyValue">The object to locate in the <see cref="PropertyValueCollection"/>. Must not be <see langword="null"/>.</param>
     /// <returns><see langword="true"/> if the <see cref="PropertyValueCollection"/> contains the <paramref name="propertyValue"/>; otherwise <see langword="false"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyValue"/> is <see langword="null"/>.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     /// <remarks>This method only returns true, if the same reference is found in the collection.</remarks>
     public bool Contains (PropertyValue propertyValue)
     {
@@ -103,7 +104,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <param name="propertyName">The name of the <see cref="PropertyValue"/> to locate in the <see cref="PropertyValueCollection"/>. Must not be <see langword="null"/>.</param>
     /// <returns><see langword="true"/> if the <see cref="PropertyValueCollection"/> contains the key; otherwise <see langword="false"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public bool Contains (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -115,7 +117,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="PropertyValue"/> with a given <paramref name="index"/> in the <see cref="PropertyValueCollection"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public PropertyValue this [int index]  
     {
       get 
@@ -132,7 +135,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
     /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the collection.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public PropertyValue this [string propertyName]  
     {
       get 
@@ -157,7 +161,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <returns>The position into which the <see cref="PropertyValue"/> was inserted.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="value"/> is already part of the collection.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public int Add (PropertyValue value)  
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -194,7 +199,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     ///   <paramref name="index"/> is greater than the current length of the array.<br /> -or- <br />
     ///   The number of items is greater than the available space from <paramref name="index"/> to the end of <paramref name="array"/>.
     /// </exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override void CopyTo (Array array, int index)
     {
       CheckDiscarded ();
@@ -204,7 +210,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the number of items contained in the <see cref="PropertyValueCollection"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override int Count
     {
       get
@@ -218,7 +225,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Returns an enumerator that can iterate through the <see cref="PropertyValueCollection"/>.
     /// </summary>
     /// <returns>An <see cref="System.Collections.IEnumerator"/> for the entire <see cref="PropertyValueCollection"/>.</returns>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override IEnumerator GetEnumerator ()
     {
       CheckDiscarded ();
@@ -228,7 +236,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets a value indicating whether the <see cref="CommonCollection"/> is read-only.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override bool IsReadOnly
     {
       get
@@ -241,7 +250,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets a value indicating whether access to the <see cref="PropertyValueCollection"/> is synchronized (thread-safe).
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override bool IsSynchronized
     {
       get
@@ -254,7 +264,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets an object that can be used to synchronize access to the <see cref="PropertyValueCollection"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValueCollection"/> has been 
+    /// discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public override object SyncRoot
     {
       get
@@ -268,7 +279,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Gets a value indicating the discarded status of the <see cref="PropertyValueCollection"/>.
     /// </summary>
     /// <remarks>
-    /// For more information why and when a <see cref="PropertyValueCollection"/> is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    /// For more information why and when a <see cref="PropertyValueCollection"/> is discarded see <see cref="ObjectInvalidException"/>.
     /// </remarks>
     public bool IsDiscarded
     {
@@ -354,7 +365,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void CheckDiscarded ()
     {
       if (_isDiscarded)
-        throw new ObjectDiscardedException ();
+        throw new ObjectInvalidException ();
     }
   }
 }

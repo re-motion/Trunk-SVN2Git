@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var deletedInstance = DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
       DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
-      DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
+      DomainObjectMother.GetInvalidObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
       var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var deletedInstance = (TestDomainBase) DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
       DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
-      DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
+      DomainObjectMother.GetInvalidObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
       var result = _dataManager.GetChangedDataContainersForCommit ();
@@ -254,33 +254,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.False);
-      Assert.That (_dataManager.DiscardedObjectCount, Is.EqualTo (0));
+      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
+      Assert.That (_dataManager.InvalidObjectCount, Is.EqualTo (0));
 
       _dataManager.Rollback ();
 
-      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.True);
-      Assert.That (_dataManager.DiscardedObjectCount, Is.EqualTo (1));
+      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
+      Assert.That (_dataManager.InvalidObjectCount, Is.EqualTo (1));
     }
 
     [Test]
-    public void GetDiscardedObject ()
+    public void GetInvalidObjectReference ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
-
       _dataManager.Discard (dataContainer);
 
-      Assert.That (_dataManager.GetDiscardedObject (dataContainer.ID), Is.SameAs (dataContainer.DomainObject));
+      var invalidObjectReference = _dataManager.GetInvalidObjectReference (dataContainer.ID);
+
+      Assert.That (invalidObjectReference, Is.SameAs (dataContainer.DomainObject));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has "
-        + "not been discarded.\r\nParameter name: id")]
-    public void GetDiscardedDataContainerThrowsWhenNotDiscarded ()
+        + "not been marked invalid.\r\nParameter name: id")]
+    public void GetInvalidObjectReference_ThrowsWhenNotInvalid ()
     {
-      _dataManager.GetDiscardedObject (DomainObjectIDs.Order1);
+      _dataManager.GetInvalidObjectReference (DomainObjectIDs.Order1);
     }
 
     [Test]
@@ -325,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_MarksObjectDiscarded ()
+    public void Discard_MarksObjectInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       SetDomainObject (dataContainer);
@@ -336,12 +337,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Discard (dataContainer);
 
-      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectDiscarded (dataContainer.ID));
+      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
+      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (dataContainer.ID));
     }
 
     [Test]
-    public void Discard_WithoutDomainObject_DataContainerNotMarkedDiscarded ()
+    public void Discard_WithoutDomainObject_DataContainerNotMarkedInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       _dataManager.RegisterDataContainer (dataContainer);
@@ -353,8 +354,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Discard (dataContainer);
       
       Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
-      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.False);
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectDiscarded (dataContainer.ID));
+      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (dataContainer.ID));
     }
 
     [Test]
@@ -375,66 +376,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkObjectDiscarded ()
+    public void MarkObjectInvalid ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
 
-      _dataManager.MarkObjectDiscarded (domainObject);
+      _dataManager.MarkObjectInvalid (domainObject);
 
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.True);
-      Assert.That (_dataManager.GetDiscardedObject (domainObject.ID), Is.SameAs (domainObject));
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
+      Assert.That (_dataManager.GetInvalidObjectReference (domainObject.ID), Is.SameAs (domainObject));
     }
 
     [Test]
-    public void MarkObjectDiscarded_RaisesNotification ()
+    public void MarkObjectInvalid_RaisesNotification ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
       var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
 
-      _dataManager.MarkObjectDiscarded (domainObject);
+      _dataManager.MarkObjectInvalid (domainObject);
 
-      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectDiscarded (domainObject.ID));
+      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (domainObject.ID));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot discard object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; there is a DataContainer registered for that object. "
-        + "Discard the DataContainer instead of the object.")]
-    public void MarkObjectDiscarded_DataContainerExists ()
+        "Cannot mark object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' as invalid; there is a DataContainer registered for that object. "
+        + "Discard the DataContainer instead.")]
+    public void MarkObjecInvalidDiscarded_DataContainerExists ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
       dataContainer.SetDomainObject (domainObject);
       _dataManager.RegisterDataContainer (dataContainer);
 
-      _dataManager.MarkObjectDiscarded (domainObject);
+      _dataManager.MarkObjectInvalid (domainObject);
     }
 
     [Test]
     public void ClearDiscardedFlag ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
 
-      _dataManager.MarkObjectDiscarded (domainObject);
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.True);
+      _dataManager.MarkObjectInvalid (domainObject);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
 
-      _dataManager.ClearDiscardedFlag (domainObject.ID);
+      _dataManager.ClearInvalidFlag (domainObject.ID);
 
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
     }
 
     [Test]
-    public void ClearDiscardedFlag_Ignores_NonDiscardedObject ()
+    public void ClearDiscardedFlag_Ignores_NonInvalidObject ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
 
-      _dataManager.ClearDiscardedFlag (domainObject.ID);
+      _dataManager.ClearInvalidFlag (domainObject.ID);
 
-      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
     }
 
     [Test]
@@ -521,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_MarksDeletedDataContainersAsDiscarded ()
+    public void Commit_MarksDeletedObjectsAsInvalid ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       SetDomainObject (dataContainer);
@@ -529,11 +530,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       dataContainer.Delete ();
 
-      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
+      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.False);
 
       _dataManager.Commit ();
 
-      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.True);
+      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.True);
     }
 
     [Test]
@@ -613,17 +614,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_MarksNewDataContainersAsDiscarded ()
+    public void Rollback_MarksNewObjectsAsInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
+      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.False);
 
       _dataManager.Rollback ();
 
-      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.True);
+      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.True);
     }
 
     [Test]
@@ -660,14 +661,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void CreateDeleteCommand_DiscardedObject ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void CreateDeleteCommand_InvalidObject ()
     {
-      var discardedObject = Order.NewObject ();
-      discardedObject.Delete ();
-      Assert.That (discardedObject.IsDiscarded, Is.True);
+      var invalidObject = Order.NewObject ();
+      invalidObject.Delete ();
+      Assert.That (invalidObject.IsInvalid, Is.True);
 
-      _dataManager.CreateDeleteCommand (discardedObject);
+      _dataManager.CreateDeleteCommand (invalidObject);
     }
 
     [Test]

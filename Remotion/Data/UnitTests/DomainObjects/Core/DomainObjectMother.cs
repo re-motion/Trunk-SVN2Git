@@ -74,12 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return unchangedInstance;
     }
 
-    public static DomainObject GetDiscardedObject (ClientTransaction transaction)
+    public static DomainObject GetInvalidObject (ClientTransaction transaction)
     {
-      var discardedInstance = LifetimeService.NewObject (transaction, typeof (Order), ParamList.Empty);
-      LifetimeService.DeleteObject (transaction, discardedInstance);
-      Assert.That (discardedInstance.State, Is.EqualTo (StateType.Discarded));
-      return discardedInstance;
+      var invalidInstance = LifetimeService.NewObject (transaction, typeof (Order), ParamList.Empty);
+      LifetimeService.DeleteObject (transaction, invalidInstance);
+      Assert.That (invalidInstance.State, Is.EqualTo (StateType.Invalid));
+      return invalidInstance;
     }
 
     public static DomainObject GetNotLoadedObject (ClientTransaction transaction, ObjectID objectID)

@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         Order order = Order.NewObject ();
         Assert.AreEqual (StateType.New, order.TransactionContext[subTransaction].State);
-        Assert.AreEqual (StateType.Discarded, order.TransactionContext[ClientTransactionMock].State);
+        Assert.AreEqual (StateType.Invalid, order.TransactionContext[ClientTransactionMock].State);
       }
     }
 
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         var instance = ClassWithAllDataTypes.NewObject ();
         Assert.AreEqual (StateType.New, instance.TransactionContext[subTransaction].State);
-        Assert.AreEqual (StateType.Discarded, instance.TransactionContext[ClientTransactionMock].State);
+        Assert.AreEqual (StateType.Invalid, instance.TransactionContext[ClientTransactionMock].State);
         subTransaction.Commit ();
         Assert.AreEqual (StateType.New, instance.TransactionContext[ClientTransactionMock].State);
       }
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void Parent_CannotAccessObject_CreatedInSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -616,7 +616,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
         orderItem1.Delete();
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsTrue (orderItem1.IsDiscarded);
+        Assert.IsTrue (orderItem1.IsInvalid);
 
         ObjectList<OrderItem> orderItems = loadedOrder.OrderItems;
         Assert.AreEqual (1, orderItems.Count);
@@ -939,8 +939,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException),
-        ExpectedMessage = "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is already discarded.")]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is invalid in this transaction.")]
     public void GetObjects_Discarded ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -953,10 +953,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClientTransactionMock cannot be made writeable twice. A common "
-                                                                              +
-                                                                              ("reason for this error is that a subtransaction is accessed while its parent transaction is engaged in a load operation. During such an "
-                                                                               + "operation, the subtransaction cannot be used."))]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The ClientTransactionMock cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed while its "
+        + "parent transaction is engaged in a load operation. During such an operation, the subtransaction cannot be used.")]
     public void Throws_WhenUsedWhileParentIsWriteable ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();

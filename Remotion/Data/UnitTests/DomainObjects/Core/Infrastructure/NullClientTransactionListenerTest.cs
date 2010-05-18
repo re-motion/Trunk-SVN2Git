@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataManagerMarkingObjectDiscarded ()
     {
-      _listener.DataManagerMarkingObjectDiscarded (_domainObject.ID);
+      _listener.DataManagerMarkingObjectInvalid (_domainObject.ID);
     }
 
     [Test]

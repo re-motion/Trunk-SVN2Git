@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public virtual void DataManagerMarkingObjectInvalid (ObjectID id)
     {
     }
 

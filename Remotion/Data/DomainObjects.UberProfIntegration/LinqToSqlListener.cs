@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ObjectID id)
     {
     }
 

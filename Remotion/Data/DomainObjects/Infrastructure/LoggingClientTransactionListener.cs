@@ -218,10 +218,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("RelationEndPointUnloading: {0}", endPoint.ID);
     }
 
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ObjectID id)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataManagerMarkingObjectDiscarded: {0}", id);
+        s_log.DebugFormat ("DataManagerMarkingObjectInvalid: {0}", id);
     }
 
     public void DataContainerMapRegistering (DataContainer container)

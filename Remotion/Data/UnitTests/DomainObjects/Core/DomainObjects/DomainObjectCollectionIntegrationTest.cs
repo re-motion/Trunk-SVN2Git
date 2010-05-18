@@ -26,29 +26,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
   public class DomainObjectCollectionIntegrationTest : ClientTransactionBaseTest
   {
     [Test]
-    public void Remove_WithDiscardedObject ()
+    public void Remove_WithInvalidObject ()
     {
       var collection = new DomainObjectCollection ();
       Customer customer = Customer.NewObject ();
       collection.Add (customer);
       customer.Delete ();
-      Assert.That (customer.IsDiscarded, Is.True);
+      Assert.That (customer.IsInvalid, Is.True);
 
-      //The next line does not throw an ObjectDiscardedException:
+      //The next line does not throw an ObjectInvalidException:
       collection.Remove (customer);
 
       Assert.That (collection, Is.Empty);
     }
 
     [Test]
-    public void Clear_WithDiscardedObject ()
+    public void Clear_WithInvalidObject ()
     {
       var collection = new DomainObjectCollection ();
       Customer customer = Customer.NewObject ();
       collection.Add (customer);
 
       customer.Delete ();
-      Assert.That (customer.IsDiscarded, Is.True);
+      Assert.That (customer.IsInvalid, Is.True);
 
       //The next line does not throw an exception:
       collection.Clear ();

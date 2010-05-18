@@ -96,12 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void IsDiscarded()
     {
-      Assert.AreEqual (_loadedClassWithAllDataTypes.IsDiscarded, _loadedClassWithAllDataTypesMixin.IsDiscarded);
-      Assert.AreEqual (_newClassWithAllDataTypes.IsDiscarded, _newClassWithAllDataTypesMixin.IsDiscarded);
+      Assert.AreEqual (_loadedClassWithAllDataTypes.IsInvalid, _loadedClassWithAllDataTypesMixin.IsInvalid);
+      Assert.AreEqual (_newClassWithAllDataTypes.IsInvalid, _newClassWithAllDataTypesMixin.IsInvalid);
 
       _newClassWithAllDataTypes.Delete ();
 
-      Assert.AreEqual (_newClassWithAllDataTypes.IsDiscarded, _newClassWithAllDataTypesMixin.IsDiscarded);
+      Assert.AreEqual (_newClassWithAllDataTypes.IsInvalid, _newClassWithAllDataTypesMixin.IsInvalid);
     }
 
     [Test]

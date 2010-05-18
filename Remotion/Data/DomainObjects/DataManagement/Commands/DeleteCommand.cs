@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
       _dataContainer = _clientTransaction.GetDataContainer (_deletedObject);
       Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
-      Assertion.IsFalse (_dataContainer.State == StateType.Discarded);
+      Assertion.IsFalse (_dataContainer.State == StateType.Invalid);
       
       _endPointDeleteCommands = new CompositeCommand (
           from endPointID in _dataContainer.AssociatedRelationEndPointIDs

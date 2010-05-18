@@ -107,7 +107,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <see cref="ObjectNotFoundException"/> may be triggered when the object's data cannot be found.
     /// </remarks>
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ObjectDiscardedException">The object with the given <paramref name="objectID"/> has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object with the given <paramref name="objectID"/> is invalid in the given 
+    /// <paramref name="clientTransaction"/>.</exception>
     public static DomainObject GetObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -122,7 +123,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>.</param>
     /// <param name="objectToBeDeleted">The object to be deleted.</param>
     /// <exception cref="ArgumentNullException">One of the parameters is <see langword="null" />.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the given <paramref name="clientTransaction"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     /// <remarks>See also <see cref="DomainObject.Delete"/>.</remarks>
     public static void DeleteObject (ClientTransaction clientTransaction, DomainObject objectToBeDeleted)

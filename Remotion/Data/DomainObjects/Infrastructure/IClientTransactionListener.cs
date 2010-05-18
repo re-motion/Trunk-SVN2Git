@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationEndPointMapUnregistering (RelationEndPointID endPointID);
     void RelationEndPointUnloading (RelationEndPoint endPoint);
 
-    void DataManagerMarkingObjectDiscarded (ObjectID id);
+    void DataManagerMarkingObjectInvalid (ObjectID id);
 
     void DataContainerMapRegistering (DataContainer container);
     void DataContainerMapUnregistering (DataContainer container);

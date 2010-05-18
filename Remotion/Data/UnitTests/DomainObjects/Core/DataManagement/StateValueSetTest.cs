@@ -58,14 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Matches_Deleted ()
     {
       CheckMatch (StateType.Deleted, true, StateType.Unchanged, StateType.Deleted);
-      CheckMatch (StateType.Deleted, false, StateType.Unchanged, StateType.Discarded);
+      CheckMatch (StateType.Deleted, false, StateType.Unchanged, StateType.Invalid);
     }
 
     [Test]
-    public void Matches_Discarded ()
+    public void Matches_Invalid ()
     {
-      CheckMatch (StateType.Discarded, true, StateType.Unchanged, StateType.Discarded);
-      CheckMatch (StateType.Discarded, false, StateType.Unchanged, StateType.Deleted);
+      CheckMatch (StateType.Invalid, true, StateType.Unchanged, StateType.Invalid);
+      CheckMatch (StateType.Invalid, false, StateType.Unchanged, StateType.Deleted);
     }
 
     [Test]

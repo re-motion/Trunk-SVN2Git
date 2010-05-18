@@ -38,19 +38,22 @@ namespace Remotion.Data.DomainObjects
     StateType State { get; }
 
     /// <summary>
-    /// Gets a value indicating the discarded status of the object in the associated <see cref="ClientTransaction"/>.
+    /// Gets a value indicating the invalid status of the object in the associated <see cref="ClientTransaction"/>.
     /// </summary>
     /// <remarks>
-    /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    /// For more information why and when an object becomes invalid see <see cref="ObjectInvalidException"/>.
     /// </remarks>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
+    bool IsInvalid { get; }
+
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
     bool IsDiscarded { get; }
 
     /// <summary>
     /// Gets the timestamp used for optimistic locking when the object is committed to the database.
     /// </summary>
     /// <value>The timestamp of the object.</value>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     object Timestamp { get; }
 
@@ -60,14 +63,14 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
     /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     void MarkAsChanged ();
 
     /// <summary>
     /// Ensures that the <see cref="DomainObject"/>'s data has been loaded. If it hasn't, this method causes the object's data to be loaded.
     /// </summary>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     /// <exception cref="ObjectNotFoundException">No data could be loaded for the <see cref="DomainObject"/> because the object was not
     /// found in the data source.</exception>

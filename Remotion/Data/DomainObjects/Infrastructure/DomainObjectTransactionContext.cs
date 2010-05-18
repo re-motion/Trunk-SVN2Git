@@ -54,8 +54,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
 
-        if (IsDiscarded)
-          return StateType.Discarded;
+        if (IsInvalid)
+          return StateType.Invalid;
 
         var dataContainer = ClientTransaction.DataManager.DataContainerMap[DomainObject.ID];
         if (dataContainer == null)
@@ -68,13 +68,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public bool IsDiscarded
+    public bool IsInvalid
     {
       get
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.IsDiscarded (DomainObject.ID); 
+        return ClientTransaction.DataManager.IsInvalid (DomainObject.ID); 
       }
+    }
+
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
+    public bool IsDiscarded
+    {
+      get { return IsInvalid; }
     }
 
     public object Timestamp

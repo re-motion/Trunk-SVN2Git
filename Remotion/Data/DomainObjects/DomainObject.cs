@@ -309,7 +309,6 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the <see cref="ObjectID"/> of the <see cref="DomainObject"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
     public ObjectID ID
     {
       get { return _id; }
@@ -409,25 +408,31 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating the discarded status of the object in the default transaction, ie. in its binding transaction or - if
+    /// Gets a value indicating whther the object is invalid in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <remarks>
-    /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    /// For more information why and when an object becomes invalid see <see cref="ObjectInvalidException"/>.
     /// </remarks>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
-    public bool IsDiscarded
+    public bool IsInvalid
     {
-      get { return DefaultTransactionContext.IsDiscarded; }
+      get { return DefaultTransactionContext.IsInvalid; }
     }
 
-    /// <summary>
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
+    public bool IsDiscarded
+    {
+      get { return IsInvalid; }
+    }
+
+      /// <summary>
     /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in 
     /// its binding transaction or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <value>The timestamp of the object.</value>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     public object Timestamp
     {
       get { return DefaultTransactionContext.Timestamp; }
@@ -549,7 +554,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
     /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     public void MarkAsChanged ()
     {
@@ -560,7 +565,7 @@ namespace Remotion.Data.DomainObjects
     /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
     /// </summary>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     /// <exception cref="ObjectNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
     /// found in the data source.</exception>
@@ -573,7 +578,7 @@ namespace Remotion.Data.DomainObjects
     /// Deletes the <see cref="DomainObject"/> in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="OnDeleting"/> and <see cref="OnDeleted"/> should be overridden.</remarks>
     protected void Delete ()
     {

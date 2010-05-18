@@ -619,7 +619,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetValueFrom_SetsDiscarded ()
+    public void SetValueFrom_SetsDiscardedFlag ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       PrivateInvoke.InvokeNonPublicMethod (source, "Discard");

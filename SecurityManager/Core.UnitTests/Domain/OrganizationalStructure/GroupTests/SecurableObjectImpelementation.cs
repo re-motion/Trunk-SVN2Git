@@ -61,13 +61,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Group group = CreateGroup();
       IDomainObjectSecurityContextFactory factory = group;
 
-      Assert.IsFalse (factory.IsDiscarded);
+      Assert.IsFalse (factory.IsInvalid);
       Assert.IsTrue (factory.IsNew);
       Assert.IsFalse (factory.IsDeleted);
 
       group.Delete();
 
-      Assert.IsTrue (factory.IsDiscarded);
+      Assert.IsTrue (factory.IsInvalid);
     }
 
     [Test]

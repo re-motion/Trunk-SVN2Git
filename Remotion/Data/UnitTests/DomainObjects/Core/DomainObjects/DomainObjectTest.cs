@@ -371,18 +371,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       newObject.Delete ();
 
-      Assert.That (newObject.IsDiscarded, Is.True);
-      Assert.That (newObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (newObject.IsInvalid, Is.True);
+      Assert.That (newObject.State, Is.EqualTo (StateType.Invalid));
       Assert.That (newObjectDataContainer.IsDiscarded, Is.True);
-      Assert.That (newObjectDataContainer.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (newObjectDataContainer.State, Is.EqualTo (StateType.Invalid));
 
       loadedObject.Delete ();
       ClientTransactionMock.Commit ();
 
-      Assert.That (loadedObject.IsDiscarded, Is.True);
-      Assert.That (loadedObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (loadedObject.IsInvalid, Is.True);
+      Assert.That (loadedObject.State, Is.EqualTo (StateType.Invalid));
       Assert.That (loadedObjectDataContainer.IsDiscarded, Is.True);
-      Assert.That (loadedObjectDataContainer.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (loadedObjectDataContainer.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -395,12 +395,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         otherTransaction.EnlistDomainObject (loadedObject);
         loadedObject.Delete ();
         otherTransaction.Commit ();
-        Assert.That (loadedObject.IsDiscarded, Is.True);
+        Assert.That (loadedObject.IsInvalid, Is.True);
       }
-      Assert.That (loadedObject.IsDiscarded, Is.False);
+      Assert.That (loadedObject.IsInvalid, Is.False);
 
-      Assert.That (loadedObject.TransactionContext[otherTransaction].IsDiscarded, Is.True);
-      Assert.That (loadedObject.TransactionContext[ClientTransaction.Current].IsDiscarded, Is.False);
+      Assert.That (loadedObject.TransactionContext[otherTransaction].IsInvalid, Is.True);
+      Assert.That (loadedObject.TransactionContext[ClientTransaction.Current].IsInvalid, Is.False);
     }
 
     [Test]

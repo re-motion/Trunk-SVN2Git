@@ -135,8 +135,8 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">
-    ///   The <see cref="DomainObject"/> that was deleted. This object might already be discarded.<br/>
-    ///   For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    ///   The <see cref="DomainObject"/> that was deleted. This object might already be invalid in the <paramref name="clientTransaction"/>.<br/>
+    ///   For more information why and when an object becomes invalid see <see cref="ObjectInvalidException"/>.
     /// </param>
     /// <remarks>
     ///   <para>

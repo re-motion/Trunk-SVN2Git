@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void IsDiscarded_False()
     {
-      Assert.That (_newOrderContext.IsDiscarded, Is.False);
+      Assert.That (_newOrderContext.IsInvalid, Is.False);
     }
 
     [Test]
@@ -80,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         DeleteOrder(_loadedOrder1);
         ClientTransaction.Current.Commit ();
 
-        Assert.That (_loadedOrder1.IsDiscarded, Is.True);
-        Assert.That (_loadedOrder1Context.IsDiscarded, Is.False);
+        Assert.That (_loadedOrder1.IsInvalid, Is.True);
+        Assert.That (_loadedOrder1Context.IsInvalid, Is.False);
       }
     }
 
@@ -89,21 +89,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void IsDiscarded_True ()
     {
       _newOrder.Delete ();
-      Assert.That (_newOrderContext.IsDiscarded, Is.True);
+      Assert.That (_newOrderContext.IsInvalid, Is.True);
     }
 
     [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void IsDiscarded_InvalidTransaction ()
     {
-      Dev.Null = _invalidContext.IsDiscarded;
+      Dev.Null = _invalidContext.IsInvalid;
     }
 
     [Test]
     public void State_IsDiscarded ()
     {
       _newOrder.Delete ();
-      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void MarkAsChanged_Discarded ()
     {
       _newOrder.Delete ();
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void Timestamp_Discarded ()
     {
       _newOrder.Delete ();
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void EnsureDataAvailable_Discarded ()
     {
       _newOrder.Delete ();

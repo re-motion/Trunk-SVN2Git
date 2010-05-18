@@ -294,8 +294,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void CollectionQuery_ThrowsOnDiscardedObjects ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void CollectionQuery_ThrowsOnInvalidObjects ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();

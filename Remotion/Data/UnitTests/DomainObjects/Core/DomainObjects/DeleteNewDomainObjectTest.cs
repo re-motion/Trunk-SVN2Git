@@ -77,11 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newOrder.Delete ();
       StateType state = _newOrder.State;
-      Assert.AreEqual (StateType.Discarded, state);
+      Assert.AreEqual (StateType.Invalid, state);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectDataContainer ()
     {
       _newOrder.Delete ();
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectDelete ()
     {
       _newOrder.Delete ();
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectGetRelatedObject ()
     {
       _newOrder.Delete ();
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectGetRelatedObjects ()
     {
       _newOrder.Delete ();
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectGetOriginalRelatedObject ()
     {
       _newOrder.Delete ();
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectGetOriginalRelatedObjects ()
     {
       _newOrder.Delete ();
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DomainObjectSetRelatedObject ()
     {
       _newOrder.Delete ();
@@ -139,15 +139,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DomainObjectIsDiscarded ()
     {
-      Assert.IsFalse (_newOrder.IsDiscarded);
+      Assert.IsFalse (_newOrder.IsInvalid);
 
       _newOrder.Delete ();
 
-      Assert.IsTrue (_newOrder.IsDiscarded);
+      Assert.IsTrue (_newOrder.IsInvalid);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerGetIndexer ()
     {
       _newOrder.Delete ();
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerSetIndexer ()
     {
       _newOrder.Delete ();
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerGetValue ()
     {
       _newOrder.Delete ();
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerSetValue ()
     {
       _newOrder.Delete ();
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerClassDefinition ()
     {
       _newOrder.Delete ();
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerDomainObjectType ()
     {
       _newOrder.Delete ();
@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerPropertyValues ()
     {
       _newOrder.Delete ();
@@ -221,11 +221,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newOrder.Delete ();
       StateType state = _newOrderContainer.State;
-      Assert.AreEqual (StateType.Discarded, state);
+      Assert.AreEqual (StateType.Invalid, state);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerTimestamp ()
     {
       _newOrder.Delete ();
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void DataContainerClientTransaction ()
     {
       _newOrder.Delete ();
@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionContainsPropertyName ()
     {
       _newOrder.Delete ();
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionContainsPropertyValue ()
     {
       PropertyValue propertyValue = _newOrderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionInt32Indexer ()
     {
       _newOrder.Delete ();
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionStringIndexer ()
     {
       _newOrder.Delete ();
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionAdd ()
     {
       PropertyValue propertyValue = _newOrderPropertyValues[0];
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionCopyTo ()
     {
       _newOrder.Delete ();
@@ -307,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionCount ()
     {
       _newOrder.Delete ();
@@ -316,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionGetEnumerator ()
     {
       _newOrder.Delete ();
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionIsReadOnly ()
     {
       _newOrder.Delete ();
@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionIsSynchronized ()
     {
       _newOrder.Delete ();
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueCollectionSyncRoot ()
     {
       _newOrder.Delete ();
@@ -379,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueGetValue ()
     {
       _newOrder.Delete ();
@@ -388,7 +388,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueSetValue ()
     {
       _newOrder.Delete ();
@@ -397,7 +397,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueOriginalValue ()
     {
       _newOrder.Delete ();
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueHasChanged ()
     {
       _newOrder.Delete ();
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueHasBeenTouched ()
     {
       _newOrder.Delete ();
@@ -423,7 +423,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       bool hasBeenTouched = _orderNumberValue.HasBeenTouched;
     }
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueEquals ()
     {
       _newOrder.Delete ();
@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueGetHashCode ()
     {
       _newOrder.Delete ();

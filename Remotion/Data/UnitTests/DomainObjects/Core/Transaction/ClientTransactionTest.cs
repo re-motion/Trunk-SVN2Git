@@ -472,8 +472,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException),
-        ExpectedMessage = "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is already discarded.")]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is invalid in this transaction.")]
     public void GetObjects_Discarded ()
     {
       SetDatabaseModifyable();
@@ -615,7 +615,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void AccessDeletedObjectAfterCommit ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);

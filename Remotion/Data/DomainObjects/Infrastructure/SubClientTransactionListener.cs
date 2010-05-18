@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         for (var ancestor = _clientTransaction.ParentTransaction; ancestor != null; ancestor = ancestor.ParentTransaction)
         {
           Assertion.IsNull (ancestor.DataManager.DataContainerMap[container.DomainObject.ID]);
-          ancestor.DataManager.MarkObjectDiscarded (container.DomainObject);
+          ancestor.DataManager.MarkObjectInvalid (container.DomainObject);
         }
       }
     }

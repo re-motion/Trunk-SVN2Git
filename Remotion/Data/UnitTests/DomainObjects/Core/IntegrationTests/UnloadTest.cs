@@ -570,7 +570,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       EnsureTransactionThrowsOnLoad ();
 
       Dev.Null = order1.ID;
-      Dev.Null = order1.IsDiscarded;
+      Dev.Null = order1.IsInvalid;
       Dev.Null = order1.State;
       try
       {

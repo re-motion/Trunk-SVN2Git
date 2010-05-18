@@ -21,22 +21,27 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
 /// <summary>
-/// The exception that is thrown when properties or methods of a discarded object are accessed.
+/// The exception that is thrown when properties or methods of an object are accessed in a transaction where that object is invalid.
 /// </summary>
 /// <remarks>
-/// A <see cref="DomainObject"/> is discarded in one of the following situations:
+/// A <see cref="DomainObject"/> is invalid in the following situations:
 /// <list type="buttons">
 ///   <description>
-///     A new <see cref="DomainObject"/> is created and the <see cref="ClientTransaction"/> has been rolled back.
+///     A new <see cref="DomainObject"/> has been created and the <see cref="ClientTransaction"/> has been rolled back.
 ///   </description>
 ///   <description>
-///     A new <see cref="DomainObject"/> is created and deleted.
+///     A new <see cref="DomainObject"/> has been created and deleted.
 ///   </description>
 ///   <description>
-///     An existing <see cref="DomainObject"/> is deleted and the <see cref="ClientTransaction"/> has been committed.
+///     An existing <see cref="DomainObject"/> has been deleted and the <see cref="ClientTransaction"/> has been committed.
+///   </description>
+///   <description>
+///     A new <see cref="DomainObject"/> has been created in a sub-transaction of the <see cref="ClientTransaction"/> and the sub-transaction
+///     has not yet been committed. When the sub-transaction is committed, the object becomes valid in the parent, but not in the parent's parent and
+///     above.
 ///   </description>
 /// </list>
-/// All objects that are associated with the discarded <see cref="DomainObject"/> are discarded too. These objects are:
+/// All objects that were associated with the invalid <see cref="DomainObject"/> are discarded. These objects are:
 /// <list type="buttons">
 ///   <description>
 ///     The <see cref="DataContainer"/> associated with the <see cref="DomainObject"/>.
@@ -50,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 /// </list>
 /// </remarks>
 [Serializable]
-public class ObjectDiscardedException : DomainObjectException
+public class ObjectInvalidException : DomainObjectException
 {
   // types
 
@@ -58,32 +63,32 @@ public class ObjectDiscardedException : DomainObjectException
 
   // member fields
 
-  private ObjectID _id;
+  private readonly ObjectID _id;
 
   // construction and disposing
 
-  public ObjectDiscardedException () : this ("Object is already discarded.") 
+  public ObjectInvalidException () : this ("Object is invalid in this transaction.") 
   {
   }
 
-  public ObjectDiscardedException (string message) : base (message) 
+  public ObjectInvalidException (string message) : base (message) 
   {
   }
   
-  public ObjectDiscardedException (string message, Exception inner) : base (message, inner) 
+  public ObjectInvalidException (string message, Exception inner) : base (message, inner) 
   {
   }
 
-  protected ObjectDiscardedException (SerializationInfo info, StreamingContext context) : base (info, context) 
+  protected ObjectInvalidException (SerializationInfo info, StreamingContext context) : base (info, context) 
   {
     _id = (ObjectID) info.GetValue ("ID", typeof (ObjectID));
   }
 
-  public ObjectDiscardedException (ObjectID id) : this (string.Format ("Object '{0}' is already discarded.", id), id)
+  public ObjectInvalidException (ObjectID id) : this (string.Format ("Object '{0}' is invalid in this transaction.", id), id)
   {
   }
 
-  public ObjectDiscardedException (string message, ObjectID id) : base (message) 
+  public ObjectInvalidException (string message, ObjectID id) : base (message) 
   {
     ArgumentUtility.CheckNotNull ("id", id);
 

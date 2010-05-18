@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
     /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The object is already discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
     public object this [string propertyName]
     {
       get
@@ -182,7 +182,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
     /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public object GetValue (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -199,7 +200,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
     /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public void SetValue (string propertyName, object value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -212,7 +214,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="Remotion.Data.DomainObjects.ClientTransaction"/> which the <see cref="DataContainer"/> is part of.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public ClientTransaction ClientTransaction
     {
       get
@@ -270,7 +273,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Gets the <see cref="ObjectID"/> of the <see cref="DataContainer"/>.
     /// </summary>
     /// <remarks>
-    /// This property can also be used when the object is already discarded.
+    /// This property can also be used when the <see cref="DataContainer"/> has been discarded.
     /// </remarks>
     public ObjectID ID
     {
@@ -280,7 +283,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="Mapping.ClassDefinition"/> of the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public ClassDefinition ClassDefinition
     {
       get
@@ -293,7 +297,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="Type"/> of the <see cref="Remotion.Data.DomainObjects.DomainObject"/> of the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public Type DomainObjectType
     {
       get
@@ -307,7 +312,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="PropertyValueCollection"/> of all <see cref="PropertyValue"/>s that are part of the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public PropertyValueCollection PropertyValues
     {
       get
@@ -326,7 +332,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get
       {
         if (_isDiscarded)
-          return StateType.Discarded;
+          return StateType.Invalid;
         
         switch (_state)
         {
@@ -351,7 +357,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// </summary>
     /// <exception cref="InvalidOperationException">This <see cref="DataContainer"/> is not in state <see cref="DataContainerStateType.Existing"/>.
     /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public void MarkAsChanged ()
     {
       CheckNotDiscarded();
@@ -363,7 +370,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the timestamp of the last committed change of the data in the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
+    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public object Timestamp
     {
       get
@@ -377,7 +385,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Gets a value indicating the discarded status of the <see cref="DataContainer"/>.
     /// </summary>
     /// <remarks>
-    /// For more information why and when a <see cref="DataContainer"/> is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
+    /// For more information why and when a <see cref="DataContainer"/> is discarded see <see cref="ObjectInvalidException"/>.
     /// </remarks>
     public bool IsDiscarded
     {
@@ -579,7 +587,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void CheckNotDiscarded ()
     {
       if (_isDiscarded)
-        throw new ObjectDiscardedException (_id);
+        throw new ObjectInvalidException (_id);
     }
 
     /// <summary>

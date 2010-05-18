@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         groupType.Delete ();
 
-        Assert.IsTrue (ace.IsDiscarded);
+        Assert.IsTrue (ace.IsInvalid);
       }
     }
 
@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         groupType.Delete ();
 
-        Assert.IsTrue (concretePosition.IsDiscarded);
+        Assert.IsTrue (concretePosition.IsInvalid);
       }
     }
 

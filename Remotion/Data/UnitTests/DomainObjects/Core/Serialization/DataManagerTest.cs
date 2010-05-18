@@ -46,24 +46,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
-      Order discardedOrder = Order.NewObject();
-      DataContainer discardedContainer = discardedOrder.InternalDataContainer;
-      discardedOrder.Delete();
+      Order invalidOrder = Order.NewObject();
+      DataContainer discardedContainer = invalidOrder.InternalDataContainer;
+      invalidOrder.Delete();
 
       Assert.AreNotEqual (0, dataManager.DataContainerMap.Count);
       Assert.AreNotEqual (0, dataManager.RelationEndPointMap.Count);
-      Assert.AreEqual (1, dataManager.DiscardedObjectCount);
-      Assert.IsTrue (dataManager.IsDiscarded (discardedContainer.ID));
-      Assert.AreSame (discardedOrder, dataManager.GetDiscardedObject (discardedContainer.ID));
+      Assert.AreEqual (1, dataManager.InvalidObjectCount);
+      Assert.IsTrue (dataManager.IsInvalid (discardedContainer.ID));
+      Assert.AreSame (invalidOrder, dataManager.GetInvalidObjectReference (discardedContainer.ID));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
       Assert.AreNotEqual (0, deserializedData.Item2.DataContainerMap.Count);
       Assert.AreNotEqual (0, deserializedData.Item2.RelationEndPointMap.Count);
-      Assert.AreEqual (1, deserializedData.Item2.DiscardedObjectCount);
-      Assert.IsTrue (deserializedData.Item2.IsDiscarded (discardedContainer.ID));
-      Assert.IsNotNull (deserializedData.Item2.GetDiscardedObject (discardedContainer.ID));
+      Assert.AreEqual (1, deserializedData.Item2.InvalidObjectCount);
+      Assert.IsTrue (deserializedData.Item2.IsInvalid (discardedContainer.ID));
+      Assert.IsNotNull (deserializedData.Item2.GetInvalidObjectReference (discardedContainer.ID));
 
       Assert.AreSame (deserializedData.Item1, PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"));
       Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"));
@@ -75,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
-      Order discardedOrder = Order.NewObject();
-      discardedOrder.Delete();
+      Order invalidOrder = Order.NewObject();
+      invalidOrder.Delete();
 
       for (int i = 0; i < 500; ++i)
       {

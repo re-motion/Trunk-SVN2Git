@@ -462,9 +462,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       try
       {
         action ();
-        Assert.Fail ("Expected ObjectDiscardedException.");
+        Assert.Fail ("Expected ObjectInvalidException.");
       }
-      catch (ObjectDiscardedException)
+      catch (ObjectInvalidException)
       {
         // ok
       }

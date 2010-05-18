@@ -86,7 +86,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException), ExpectedMessage = "Object 'Order.*' is already discarded.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (
+        typeof (ObjectInvalidException), 
+        ExpectedMessage = "Object 'Order.*' is invalid in this transaction.", 
+        MatchType = MessageMatch.Regex)]
     public void RollbackResetsNewedObjects ()
     {
       using (_subTransaction.EnterDiscardingScope ())

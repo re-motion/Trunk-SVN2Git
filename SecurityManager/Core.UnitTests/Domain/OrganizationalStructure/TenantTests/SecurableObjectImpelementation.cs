@@ -61,13 +61,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       IDomainObjectSecurityContextFactory factory = tenant;
 
-      Assert.IsFalse (factory.IsDiscarded);
+      Assert.IsFalse (factory.IsInvalid);
       Assert.IsTrue (factory.IsNew);
       Assert.IsFalse (factory.IsDeleted);
 
       tenant.Delete();
 
-      Assert.IsTrue (factory.IsDiscarded);
+      Assert.IsTrue (factory.IsInvalid);
     }
 
     [Test]

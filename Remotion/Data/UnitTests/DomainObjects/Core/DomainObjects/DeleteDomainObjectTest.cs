@@ -143,9 +143,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       //Expectation: no exception
 
-      Assert.IsTrue (newOrder.IsDiscarded);
-      Assert.IsTrue (newOrderTicket.IsDiscarded);
-      Assert.IsTrue (newOrderItem.IsDiscarded);
+      Assert.IsTrue (newOrder.IsInvalid);
+      Assert.IsTrue (newOrderTicket.IsInvalid);
+      Assert.IsTrue (newOrderItem.IsInvalid);
     }
   }
 }

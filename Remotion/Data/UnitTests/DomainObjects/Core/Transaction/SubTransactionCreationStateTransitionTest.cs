@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order obj = GetDeleted ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
       }
       Assert.AreEqual (StateType.Deleted, obj.State);
     }
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ObjectID id = obj.ID;
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
         Order.GetObject (id);
       }
     }
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.IsTrue (deleted.IsDiscarded);
+        Assert.IsTrue (deleted.IsInvalid);
       }
       Assert.AreEqual (StateType.Unchanged, obj.State);
       Assert.AreEqual (StateType.Deleted, deleted.State);
@@ -198,12 +198,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RootToSubDiscarded ()
     {
-      DomainObject obj = GetDiscarded ();
+      DomainObject obj = GetInvalid ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsTrue (obj.IsDiscarded);
+        Assert.IsTrue (obj.IsInvalid);
       }
-      Assert.IsTrue (obj.IsDiscarded);
+      Assert.IsTrue (obj.IsInvalid);
     }
   }
 }
