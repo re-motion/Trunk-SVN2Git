@@ -57,48 +57,6 @@ namespace Remotion.Mixins.Utilities
         return base.GetConstructor (parameterTypes);
     }
 
-    //// This method reimplements parts of ConstructorWrapper because we need a delegate that interpretes the first argument passed to it
-    //// as the preallocated mixin instances.
-    //protected override Delegate CreateDelegate (Type delegateType)
-    //{
-    //  Type[] realArgumentTypes = GetRealArgumentTypes(delegateType);
-
-    //  ConstructorInfo ctor = _concreteType.GetConstructor (BindingFlags, null, CallingConventions.Any, realArgumentTypes, null);
-    //  ConstructorInfo targetTypeCtor = _targetType.GetConstructor (BindingFlags, null, CallingConventions.Any, realArgumentTypes, null);
-      
-    //  if (targetTypeCtor == null || (!targetTypeCtor.IsPublic && !_allowNonPublic))
-    //  {
-    //    string message = string.Format (
-    //        "Type {0} does not contain a constructor with signature ({1}) (allowNonPublic: {2}).", 
-    //        _targetType.FullName, SeparatedStringBuilder.Build (",", realArgumentTypes, delegate (Type t) { return t.FullName; }), _allowNonPublic);
-    //    throw new MissingMethodException (message);
-    //  }
-    //  else if (ctor == null)
-    //  {
-    //    string message = string.Format (
-    //        "Concrete type {0} does not contain a constructor with signature ({1}) (although target type '{2}' does).", _targetType.FullName,
-    //        SeparatedStringBuilder.Build (",", realArgumentTypes, delegate (Type t) { return t.FullName; }), _targetType.Name);
-    //    throw new MissingMethodException (message);
-    //  }
-
-    //  return CreateConstructionDelegateWithPreparedMixins (ctor, delegateType);
-    //}
-
-    //private Type[] GetRealArgumentTypes (Type delegateType)
-    //{
-    //  Type[] argumentTypes = GetParameterTypes (delegateType);
-    //  if (argumentTypes.Length == 0 || argumentTypes[0] != typeof (object[]))
-    //  {
-    //    string message = "The delegate type must have at least one argument, which must be of type object[]. This argument will be used to pass " 
-    //        + "pre-instantiated mixins to the instance creator.";
-    //    throw new ArgumentException (message, "delegateType");
-    //  }
-
-    //  Type[] realArgumentTypes = new Type[argumentTypes.Length - 1];
-    //  Array.Copy (argumentTypes, 1, realArgumentTypes, 0, realArgumentTypes.Length); // remove first argument, those are the mixin instances
-    //  return realArgumentTypes;
-    //}
-
     protected override object GetCacheKey (Type delegateType)
     {
       return Tuple.Create (_allowNonPublic, _targetType, base.GetCacheKey (delegateType));
