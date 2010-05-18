@@ -112,7 +112,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var tableAlias = originatingEntity.SqlTable.GetResolvedTableInfo().TableAlias;
       var property = memberInfo as PropertyInfo;
       if (property == null)
       {
@@ -124,11 +123,8 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-      {
-        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true);
-            // becomes originatingEntity.GetColumn (property.PropertyType, "ID", true)
-      }
-
+        return originatingEntity.GetColumn (property.PropertyType, "ID", true);
+      
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
       if (relationData != null)
         return new SqlEntityRefMemberExpression (originatingEntity, property);
@@ -150,8 +146,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      // becomes originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageSpecificName, false)
-      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, false);
+      return originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageSpecificName, false);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
