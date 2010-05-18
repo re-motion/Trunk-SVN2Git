@@ -82,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("TransactionInitializing"), new object[] { ClientTransactionMock });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("TransactionDiscarding"), new object[] { ClientTransactionMock });
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreating"), new object[0]);
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreated"), new object[] { ClientTransactionMock });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreating"), new object[] { ClientTransactionMock });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreated"), new object[] { ClientTransactionMock, ClientTransactionMock });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("NewObjectCreating"), new object[] {typeof (string), null});
 
