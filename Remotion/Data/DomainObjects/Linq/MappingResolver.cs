@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var starColumn = new SqlColumnExpression (tableReferenceExpression.Type, tableAlias, "*", false);
 
       // becomes SqlEntityDefinitionExpression
-      return new SqlEntityExpression (tableReferenceExpression.SqlTable, primaryKeyColumn, starColumn);
+      return new SqlEntityExpression (tableReferenceExpression.SqlTable.ItemType, tableAlias, primaryKeyColumn, starColumn);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (
             string.Format (
                 "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.",
-                originatingEntity.SqlTable.ItemType.Name,
+                originatingEntity.Type.Name,
                 memberInfo.Name));
       }
 
@@ -129,11 +129,11 @@ namespace Remotion.Data.DomainObjects.Linq
       if (relationData != null)
         return new SqlEntityRefMemberExpression (originatingEntity, property);
 
-      var classDefinition = GetClassDefinition (originatingEntity.SqlTable.ItemType);
+      var classDefinition = GetClassDefinition (originatingEntity.Type);
       if (classDefinition == null)
       {
         string message = string.Format (
-            "The type '{0}' does not identify a queryable table.", originatingEntity.SqlTable.ItemType);
+            "The type '{0}' does not identify a queryable table.", originatingEntity.Type);
         throw new UnmappedItemException (message);
       }
 

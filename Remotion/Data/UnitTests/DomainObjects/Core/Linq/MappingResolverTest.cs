@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -42,6 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlTable _customerTable;
     private SqlTable _companyTable;
     private SqlTable _orderItemTable;
+    private MappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
@@ -52,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderItemTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (OrderItem), "OrderItemTable", "o"));
       _customerTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Customer), "Customer", "c"));
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"));
+      _mappingResolutionContext = new MappingResolutionContext();
     }
 
     [Test]
@@ -64,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID", true);
       var starColumn = new SqlColumnExpression (typeof (Order), "o", "*", false);
 
-      var expectedExpression = new SqlEntityExpression (_orderTable, primaryKeyColumn, starColumn);
+      var expectedExpression = new SqlEntityExpression (typeof(Order), "o", primaryKeyColumn, starColumn);
 
       ExpressionTreeComparer.CheckAreEqualTrees (sqlEntityExpression, expectedExpression);
     }
@@ -93,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoinInfo ()
     {
-      var entityExpression = new SqlEntityExpression (_customerTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Customer), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Customer).GetProperty ("Orders"), JoinCardinality.Many);
 
       var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -119,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Order.OrderNumber' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_CardinalityOne_ThrowsException ()
     {
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "o", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Order).GetProperty ("OrderNumber"), JoinCardinality.One);
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -130,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Student.Scores' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_CardinalityMany_ThrowsExcpetion ()
     {
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "o", new SqlColumnExpression (typeof (string), "c", "Name", false));
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Student).GetProperty ("Scores"), JoinCardinality.Many);
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -167,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlColumnExpression ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "o", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
@@ -182,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_IDMember ()
     {
       var property = typeof (Order).GetProperty ("ID");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
@@ -195,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_RedirectedProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
@@ -210,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolvememberExpression_NotAMappedMember ()
     {
       var property = typeof (Order).GetProperty ("OriginalCustomer");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       _resolver.ResolveMemberExpression (entityExpression, property, _generator);
     }
@@ -219,34 +222,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlEntityRefMemberExpression ()
     {
       var property = typeof (Order).GetProperty ("Customer");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.EntityExpression.SqlTable, Is.SameAs (_orderTable));
+      Assert.That (sqlEntityRefMemberExpression.EntityExpression.Type, Is.EqualTo(typeof(Order)));
     }
 
     [Test]
     public void ResolveMemberExpression_CardinalityOne_MemberIsTheNonForeignKeySide ()
     {
       var property = typeof (Employee).GetProperty ("Computer");
-      var entityExpression = new SqlEntityExpression (_customerTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Customer), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.EntityExpression.SqlTable, Is.SameAs (_customerTable));
+      Assert.That (sqlEntityRefMemberExpression.EntityExpression.Type, Is.EqualTo(typeof(Customer)));
     }
 
     [Test]
     public void ResolveMemberExpression_PropertyAboveInheritanceRoot ()
     {
       var property = typeof (StorageGroupClass).GetProperty ("AboveInheritanceIdentifier");
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (StorageGroupClass), "StorageGroupClass", "s"));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(StorageGroupClass), "s", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
@@ -263,8 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (DomainObject), "DomainObject", "d"));
-      var entityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(DomainObject), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       _resolver.ResolveMemberExpression (entityExpression, property, _generator);
     }
@@ -275,7 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_InvalidMember_ThrowsUnmappedItemException ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      var entityExpression = new SqlEntityExpression (_orderTable, new SqlColumnExpression (typeof (string), "c", "Name", false));
+      var entityExpression = new SqlEntityExpression (typeof(Order), "c", new SqlColumnExpression (typeof (string), "c", "Name", false));
 
       _resolver.ResolveMemberExpression (entityExpression, property, _generator);
     }
@@ -320,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Table", "t"));
 
-      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name", false));
+      var sqlEntityExpression = new SqlEntityExpression (typeof(Student), "t", new SqlColumnExpression (typeof (string), "t", "Name", false));
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
@@ -332,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (object), "Table", "t"));
 
-      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name", false));
+      var sqlEntityExpression = new SqlEntityExpression (typeof(object), "t", new SqlColumnExpression (typeof (string), "t", "Name", false));
       _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
     }
 

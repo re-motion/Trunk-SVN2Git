@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var preparationStageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
       var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
-
+      
       var queryable = from o in QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock)
                       select o;
 
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
           .Return (sqlStatement);
       resolutionStageMock
-          .Expect (mock => mock.ResolveSqlStatement (sqlStatement))
+          .Expect (mock => mock.ResolveSqlStatement (Arg<SqlStatement>.Matches(s=>s==sqlStatement), Arg<IMappingResolutionContext>.Is.Anything))
           .Return (sqlStatement);
       generationStageMock
           .Expect (
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class TestMappingResolutionStageMixin
   {
     [OverrideTarget]
-    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement)
+    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
     {
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));

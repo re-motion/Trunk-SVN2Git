@@ -49,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
+    private IMappingResolutionContext _mappingResolutionContext;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -65,11 +66,13 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
 
+
       _startingClassDefinition = startingClassDefinition;
 
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
+      _mappingResolutionContext = new MappingResolutionContext();
     }
 
     /// <summary>
@@ -409,7 +412,7 @@ namespace Remotion.Data.DomainObjects.Linq
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
       var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, null);
-      return _resolutionStage.ResolveSqlStatement (sqlStatement);
+      return _resolutionStage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
     }
 
     /// <summary>

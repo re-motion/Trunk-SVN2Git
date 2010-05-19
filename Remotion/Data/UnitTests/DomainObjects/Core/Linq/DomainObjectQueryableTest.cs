@@ -107,7 +107,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       var generator = new UniqueIdentifierGenerator();
-      var context = new SqlPreparationContext();
       var sqlPreparationStage = new DefaultSqlPreparationStage (
           MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
       var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
