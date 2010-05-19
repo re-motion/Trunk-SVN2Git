@@ -130,27 +130,27 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
     }
 
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
     }
 
-    public void DataManagerMarkingObjectInvalid (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
     }
 
-    public void DataContainerMapRegistering (DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
     }
 
-    public void DataContainerMapUnregistering (DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
     }
 

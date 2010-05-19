@@ -254,7 +254,7 @@ public class DataManager : ISerializable, IDeserializationCallback
       throw new InvalidOperationException (message);
     }
 
-    _transactionEventSink.DataManagerMarkingObjectInvalid (domainObject.ID);
+    _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
     _invalidObjects.Add (domainObject.ID, domainObject);
   }
 

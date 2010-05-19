@@ -168,32 +168,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       EnsureWriteable ("RelationEndPointMapRegistering");
     }
 
-    public virtual void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public virtual void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       EnsureWriteable ("RelationEndPointMapUnregistering");
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       EnsureWriteable ("RelationEndPointUnloading");
     }
 
-    public virtual void DataManagerMarkingObjectInvalid (ObjectID id)
+    public virtual void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       // also allowed for read-only transactions
     }
 
-    public virtual void DataContainerMapRegistering (DataContainer container)
+    public virtual void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void DataContainerMapUnregistering (DataContainer container)
+    public virtual void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       EnsureWriteable ("DataContainerMapUnregistering");
     }

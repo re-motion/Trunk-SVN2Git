@@ -200,37 +200,37 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("TransactionRolledBack: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("RelationEndPointMapRegistering: {0}", endPoint.ID);
     }
 
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("RelationEndPointMapUnregistering: {0}", endPointID);
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("RelationEndPointUnloading: {0}", endPoint.ID);
     }
 
-    public void DataManagerMarkingObjectInvalid (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("DataManagerMarkingObjectInvalid: {0}", id);
     }
 
-    public void DataContainerMapRegistering (DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("DataContainerMapRegistering: {0}", container.ID);
     }
 
-    public void DataContainerMapUnregistering (DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("DataContainerMapUnregistering: {0}", container.ID);

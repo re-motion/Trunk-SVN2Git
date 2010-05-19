@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.RelationEndPointUnloading (_customerEndPoint))
+          .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, _customerEndPoint))
           .WhenCalled (mi => Assert.That (_customerEndPoint.IsDataAvailable, Is.True));
       listenerMock.Replay ();
 

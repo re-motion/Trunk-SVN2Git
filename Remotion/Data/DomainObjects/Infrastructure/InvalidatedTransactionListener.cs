@@ -154,32 +154,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       throw CreateException();
     }
 
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       throw CreateException();
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       throw CreateException();
     }
 
-    public void DataManagerMarkingObjectInvalid (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       throw CreateException();
     }
 
-    public void DataContainerMapRegistering (DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       throw CreateException();
     }
 
-    public void DataContainerMapUnregistering (DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       throw CreateException();
     }

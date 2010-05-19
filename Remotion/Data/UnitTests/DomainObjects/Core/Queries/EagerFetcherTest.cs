@@ -80,7 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EquivalentTo (new[] { _orderItem1, _orderItem2 }));
 
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (
+          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
     }
 
     [Test]
@@ -92,7 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EqualTo (new[] { _orderItem1 })); // Order1 actually has two items, but we only return one of them
 
-      listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
+      listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (
+          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
     }
 
     [Test]
@@ -190,8 +194,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EquivalentTo (new[] { _orderItem1, _orderItem2 })); // this was loaded from the database
       Assert.That (GetOrderItemsInFetchTransaction (_order2), Is.EqualTo (new[] { _orderItem3 })); // this was prefetched
 
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
-      listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order2.ID)));
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (
+          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
+      listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (
+          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order2.ID)));
     }
 
     [Test]

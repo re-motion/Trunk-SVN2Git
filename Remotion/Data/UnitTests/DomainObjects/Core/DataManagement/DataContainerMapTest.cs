@@ -82,7 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[dataContainer.ID], Is.Not.Null);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock.Expect (mock => mock.DataContainerMapUnregistering (dataContainer))
+      listenerMock
+          .Expect (mock => mock.DataContainerMapUnregistering (ClientTransactionMock, dataContainer))
           .WhenCalled (mi => Assert.That (_map[dataContainer.ID], Is.Not.Null));
       ClientTransactionMock.AddListener (listenerMock);
 

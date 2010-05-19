@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _clientTransaction; }
     }
 
-    public override void DataContainerMapRegistering (DataContainer container)
+    public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       ArgumentUtility.CheckNotNull ("container", container);
 

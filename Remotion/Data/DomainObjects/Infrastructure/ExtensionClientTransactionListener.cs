@@ -172,32 +172,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RolledBack (_clientTransaction, domainObjects);
     }
 
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       // not handled by this listener
     }
 
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       // not handled by this listener
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       // not handled by this listener
     }
 
-    public void DataManagerMarkingObjectInvalid (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       // not handled by this listener
     }
 
-    public void DataContainerMapRegistering (DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       // not handled by this listener
     }
 
-    public void DataContainerMapUnregistering (DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       // not handled by this listener
     }

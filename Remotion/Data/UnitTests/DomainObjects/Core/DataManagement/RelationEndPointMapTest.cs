@@ -476,7 +476,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.Not.Null);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      listenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (endPointID))
+      listenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (ClientTransactionMock, endPointID))
           .WhenCalled (mi => Assert.That (_map[endPointID], Is.Not.Null));
       ClientTransactionMock.AddListener (listenerMock);
 

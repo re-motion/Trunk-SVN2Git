@@ -229,7 +229,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      _transactionEventSink.RelationEndPointMapRegistering (endPoint);
+      _transactionEventSink.RelationEndPointMapRegistering (_clientTransaction, endPoint);
       _relationEndPoints.Add (endPoint);
     }
 
@@ -243,7 +243,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "endPointID");
       }
 
-      _transactionEventSink.RelationEndPointMapUnregistering (endPointID);
+      _transactionEventSink.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
       _relationEndPoints.Remove (endPointID);
     }
 

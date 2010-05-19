@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var domainObject = LifetimeService.GetObjectReference (_subTransaction, dataContainer.ID);
       dataContainer.SetDomainObject (domainObject);
 
-      _listener.DataContainerMapRegistering (dataContainer);
+      _listener.DataContainerMapRegistering (_subTransaction, dataContainer);
 
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsInvalid (DomainObjectIDs.Order1), Is.True);
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).GetInvalidObjectReference (DomainObjectIDs.Order1), Is.SameAs (domainObject));
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var domainObject = LifetimeService.GetObjectReference (_subTransaction, dataContainer.ID);
       dataContainer.SetDomainObject (domainObject);
 
-      _listener.DataContainerMapRegistering (dataContainer);
+      _listener.DataContainerMapRegistering (_subTransaction, dataContainer);
 
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsInvalid (DomainObjectIDs.Order1), Is.False);
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsInvalid (DomainObjectIDs.Order1), Is.False);

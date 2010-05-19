@@ -194,40 +194,40 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.TransactionRolledBack (clientTransaction, domainObjects);
     }
 
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       foreach (var listener in _listeners)
-        listener.RelationEndPointMapRegistering (endPoint);
+        listener.RelationEndPointMapRegistering (clientTransaction, endPoint);
     }
 
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       foreach (var listener in _listeners)
-        listener.RelationEndPointMapUnregistering (endPointID);
+        listener.RelationEndPointMapUnregistering (clientTransaction, endPointID);
     }
 
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       foreach (var listener in _listeners)
-        listener.RelationEndPointUnloading (endPoint);
+        listener.RelationEndPointUnloading (clientTransaction, endPoint);
     }
 
-    public void DataManagerMarkingObjectInvalid (ObjectID id)
+    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       foreach (var listener in _listeners)
-        listener.DataManagerMarkingObjectInvalid (id);
+        listener.DataManagerMarkingObjectInvalid (clientTransaction, id);
     }
 
-    public void DataContainerMapRegistering (DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       foreach (var listener in _listeners)
-        listener.DataContainerMapRegistering (container);
+        listener.DataContainerMapRegistering (clientTransaction, container);
     }
 
-    public void DataContainerMapUnregistering (DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       foreach (var listener in _listeners)
-        listener.DataContainerMapUnregistering (container);
+        listener.DataContainerMapUnregistering (clientTransaction, container);
     }
 
     bool INullObject.IsNull

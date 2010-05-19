@@ -216,37 +216,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationEndPointMapRegistering ()
     {
-      _listener.RelationEndPointMapRegistering (_relationEndPoint);
+      _listener.RelationEndPointMapRegistering (ClientTransactionMock, _relationEndPoint);
     }
 
     [Test]
     public void RelationEndPointMapUnregistering ()
     {
-      _listener.RelationEndPointMapUnregistering (_relationEndPoint.ID);
+      _listener.RelationEndPointMapUnregistering (ClientTransactionMock, _relationEndPoint.ID);
     }
 
     [Test]
     public void RelationEndPointUnloading ()
     {
-      _listener.RelationEndPointUnloading (_relationEndPoint);
+      _listener.RelationEndPointUnloading (ClientTransactionMock, _relationEndPoint);
     }
 
     [Test]
     public void DataManagerMarkingObjectDiscarded ()
     {
-      _listener.DataManagerMarkingObjectInvalid (_domainObject.ID);
+      _listener.DataManagerMarkingObjectInvalid (ClientTransactionMock, _domainObject.ID);
     }
 
     [Test]
     public void DataContainerMapRegistering ()
     {
-      _listener.DataContainerMapRegistering (_dataContainer);
+      _listener.DataContainerMapRegistering (ClientTransactionMock, _dataContainer);
     }
 
     [Test]
     public void DataContainerMapUnregistering ()
     {
-      _listener.DataContainerMapUnregistering (_dataContainer);
+      _listener.DataContainerMapUnregistering (ClientTransactionMock, _dataContainer);
     }
   }
 }

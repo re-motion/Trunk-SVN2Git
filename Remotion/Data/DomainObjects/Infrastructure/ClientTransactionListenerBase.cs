@@ -125,27 +125,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
     }
 
-    public virtual void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    public virtual void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
     }
 
-    public virtual void RelationEndPointUnloading (RelationEndPoint endPoint)
+    public virtual void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
     }
 
-    public virtual void DataManagerMarkingObjectInvalid (ObjectID id)
+    public virtual void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
     }
 
-    public virtual void DataContainerMapRegistering (DataContainer container)
+    public virtual void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
     }
 
-    public virtual void DataContainerMapUnregistering (DataContainer container)
+    public virtual void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
     }
 

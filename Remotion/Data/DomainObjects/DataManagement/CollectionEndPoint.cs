@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (this);
+        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
         _data.Unload();
       }
     }

@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Discard (dataContainer);
 
       Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (dataContainer.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, dataContainer.ID));
     }
 
     [Test]
@@ -355,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       
       Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
       Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (dataContainer.ID));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (Arg<ClientTransaction>.Is.Anything, Arg.Is (dataContainer.ID)));
     }
 
     [Test]
@@ -396,7 +396,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.MarkObjectInvalid (domainObject);
 
-      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (domainObject.ID));
+      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, domainObject.ID));
     }
 
     [Test]
