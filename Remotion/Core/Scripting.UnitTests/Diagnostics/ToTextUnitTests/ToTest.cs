@@ -168,32 +168,6 @@ line3";
 
     [Test]
     [Explicit]
-    public void ToTempLogXmlTest ()
-    {
-      var magicNumber = 123.456;
-      var age = 98765;
-      var street = "Dampfschiffstraße 14";
-      To.TempLogXml.Open ();
-      To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street).Flush ();
-      To.TempLogXml.Close ();
-      Log (To.LogFileDirectory);
-    }
-
-    [Test]
-    [Explicit]
-    public void ToTempLogXmlCloseTest ()
-    {
-      // Note: AppDomain.ProcessExit does not get called when executing a test =>
-      // functionality has been tested in console app.
-      var magicNumber = 123.456;
-      var age = 98765;
-      var street = "Dampfschiffstraße 14";
-      To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street);
-      Log (To.LogFileDirectory);
-    }
-
-    [Test]
-    [Explicit]
     public void ThankYouTest ()
     {
       var Thank = "You";

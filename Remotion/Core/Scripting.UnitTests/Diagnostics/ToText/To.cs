@@ -18,8 +18,6 @@ using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
-using System.Threading;
-using System.Xml;
 using Remotion.Diagnostics.ToText.Infrastructure;
 
 namespace Remotion.Diagnostics.ToText
@@ -99,8 +97,6 @@ namespace Remotion.Diagnostics.ToText
     private static readonly ToTextBuilder _toTextBuilderConsole = new ToTextBuilder (_toTextProvider, System.Console.Out);
     private static readonly ToTextBuilder _toTextBuilderError = new ToTextBuilder (_toTextProvider, System.Console.Error);
     private static ToTextBuilder _toTextBuilderLog; 
-    private static ToTextBuilderXml _toTextBuilderLogXml;
-    private static XmlWriterSettings _xmlWriterSettings;
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
     private static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceHandlerMap;
@@ -114,14 +110,6 @@ namespace Remotion.Diagnostics.ToText
 
       ToTextBuilderSequenceBegin (_toTextBuilderConsole);
       ToTextBuilderSequenceBegin (_toTextBuilderError);
-    }
-
-    private static void DisposeAtShutdown (object sender, EventArgs e)
-    {
-      if (_toTextBuilderLogXml != null)
-      {
-        _toTextBuilderLogXml.Close();
-      }
     }
 
 
@@ -191,31 +179,6 @@ namespace Remotion.Diagnostics.ToText
         return _toTextBuilderLog;
       }
     }
-
-    /// <summary>
-    /// <para>Returns a <see cref="ToTextBuilder"/> preconfigured to write to an XML-logfile
-    /// in the users temp directory (<see cref="System.IO.Path.GetTempPath()"/>) through an <see cref="ToTextBuilderXml"/>.</para>
-    /// </summary>    
-    public static ToTextBuilderXml TempLogXml
-    {
-      get
-      {
-        if (_toTextBuilderLogXml == null)
-        {
-          _xmlWriterSettings = new XmlWriterSettings ();
-          _xmlWriterSettings.OmitXmlDeclaration = false;
-          _xmlWriterSettings.Indent = true;
-          _xmlWriterSettings.NewLineOnAttributes = false;
-
-          var xmlWriter = XmlWriter.Create (new StreamWriter (XmlLogFilePath), _xmlWriterSettings);
-          _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
-          _toTextBuilderLogXml.Open();
-          Thread.GetDomain ().ProcessExit += DisposeAtShutdown;
-        }
-        return _toTextBuilderLogXml;
-      }
-    }
-
 
 
     /// <summary>
