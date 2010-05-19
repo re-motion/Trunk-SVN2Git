@@ -17,8 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Security;
-using Remotion.Diagnostics.ToText;
 using Remotion.Text.CommandLine;
 using Remotion.Text.StringExtensions;
 
