@@ -32,7 +32,7 @@ namespace Remotion.Implementation
       {
         try
         {
-          return ImplementationClass.Implementation;
+          return ImplementationClass.ActualImplementation;
         }
         catch (TypeInitializationException ex)
         {
@@ -43,7 +43,7 @@ namespace Remotion.Implementation
 
     private static class ImplementationClass
     {
-      public static readonly T Implementation = GetImplementation ();
+      public static readonly T ActualImplementation = GetImplementation ();
 
       private static T GetImplementation ()
       {

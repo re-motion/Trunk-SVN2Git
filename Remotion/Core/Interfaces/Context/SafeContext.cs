@@ -30,7 +30,7 @@ namespace Remotion.Context
   public class SafeContext
   {
     private static readonly object s_lock = new object ();
-    private static ISafeContextStorageProvider _instance;
+    private static ISafeContextStorageProvider s_instance;
 
     public static ISafeContextStorageProvider Instance
     {
@@ -38,16 +38,16 @@ namespace Remotion.Context
       {
         lock (s_lock)
         {
-          if (_instance == null)
+          if (s_instance == null)
           {
             // set temporary context so that mixins can be used
             IBootstrapStorageProvider bootstrapStorageProvider = VersionDependentImplementationBridge<IBootstrapStorageProvider>.Implementation;
-            _instance = bootstrapStorageProvider;
+            s_instance = bootstrapStorageProvider;
             
             // then determine the actual context to be used
-            _instance = ObjectFactory.Create<SafeContext> (ParamList.Empty).GetDefaultInstance();
+            s_instance = ObjectFactory.Create<SafeContext> (ParamList.Empty).GetDefaultInstance();
           }
-          return _instance;
+          return s_instance;
         }
       }
     }
@@ -56,7 +56,7 @@ namespace Remotion.Context
     {
       lock (s_lock)
       {
-        _instance = newInstance;
+        s_instance = newInstance;
       }
     }
 
@@ -80,7 +80,9 @@ namespace Remotion.Context
     public virtual ISafeContextStorageProvider GetDefaultInstance ()
     {
       // assert that access to bootstrapper Instance is possible while actual Instance is initialized:
+#pragma warning disable 168
       object bootstrapperInstance = Instance;
+#pragma warning restore 168
       return VersionDependentImplementationBridge<ICallContextStorageProvider>.Implementation;
     }
   }
