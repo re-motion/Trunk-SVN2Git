@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 using Remotion.Text.StringExtensions;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Handles <see cref="Enum"/>s in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText(IToTextBuilder)"/> fallback cascade.

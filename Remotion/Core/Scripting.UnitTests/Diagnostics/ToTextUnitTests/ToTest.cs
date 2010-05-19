@@ -17,11 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 
-
-namespace Remotion.UnitTests.Diagnostics
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests
 {
   [TestFixture]
   public class ToTest

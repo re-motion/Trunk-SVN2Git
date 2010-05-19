@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   /// <summary>
   /// A map mapping from types to  <see cref="IToTextSpecificHandler"/>s.

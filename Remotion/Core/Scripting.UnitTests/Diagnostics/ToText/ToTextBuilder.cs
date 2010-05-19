@@ -18,10 +18,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Diagnostics;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   public class ToTextBuilder : ToTextBuilderBase
   {

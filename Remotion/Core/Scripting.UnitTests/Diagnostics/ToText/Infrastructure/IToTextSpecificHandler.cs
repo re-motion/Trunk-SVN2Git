@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   public interface IToTextSpecificHandler
   {

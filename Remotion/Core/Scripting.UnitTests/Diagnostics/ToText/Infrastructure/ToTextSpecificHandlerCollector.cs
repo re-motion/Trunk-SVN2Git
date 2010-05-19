@@ -16,12 +16,10 @@
 // 
 using System;
 using System.Collections;
-using System.ComponentModel.Design;
-using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   /// <summary>
   /// Finds <see cref="ToTextProvider"/> type handlers that supply <see cref="ToTextProvider.ToText"/> functionality for

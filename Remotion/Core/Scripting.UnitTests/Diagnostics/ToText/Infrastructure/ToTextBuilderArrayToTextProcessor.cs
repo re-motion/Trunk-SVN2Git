@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Diagnostics;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   internal class ToTextBuilderArrayToTextProcessor : OuterProductProcessorBase
   {

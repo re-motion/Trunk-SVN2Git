@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Diagnostics.TestDomain
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests.TestDomain
 {
   public class TestSimple
   {

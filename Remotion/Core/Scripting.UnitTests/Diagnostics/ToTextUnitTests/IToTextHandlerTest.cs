@@ -16,10 +16,10 @@
 // 
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
-using Remotion.UnitTests.Diagnostics.TestDomain;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests.TestDomain;
 
-namespace Remotion.UnitTests.Diagnostics
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests
 {
   [TestFixture]
   public class IToTextHandlerTest

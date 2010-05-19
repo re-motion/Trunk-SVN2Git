@@ -14,12 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 using Remotion.Utilities;
 
-
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Base class for all handlers which can be used by <see cref="ToTextProvider"/> in its ToText-fallback-cascade.

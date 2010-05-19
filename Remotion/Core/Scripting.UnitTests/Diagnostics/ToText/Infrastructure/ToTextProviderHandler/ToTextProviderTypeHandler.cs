@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Handles <see cref="Type"/> instances in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade.

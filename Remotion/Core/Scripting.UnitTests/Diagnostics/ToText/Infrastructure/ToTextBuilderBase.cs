@@ -19,11 +19,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Collections;
-using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Utilities;
 using System.Reflection;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   public abstract class ToTextBuilderBase : IToTextBuilder
   {

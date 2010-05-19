@@ -18,9 +18,8 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Collections;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Handles automatic conversion of arbitrary instances to human readable text form through reflection in

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Infrastructure;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure
 {
   public class ToTextSpecificInterfaceHandlerWrapper<T> : IToTextSpecificInterfaceHandler
   {

@@ -17,9 +17,9 @@
 using System;
 using System.Collections;
 using System.Linq.Expressions;
-using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   public interface IToTextBuilder : IDisposable
   {

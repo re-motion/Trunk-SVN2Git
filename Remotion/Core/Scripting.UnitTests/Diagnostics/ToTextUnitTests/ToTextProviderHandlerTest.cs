@@ -17,9 +17,9 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 
-namespace Remotion.UnitTests.Diagnostics
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests
 {
   [TestFixture]
   public class ToTextProviderHandlerTest

@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   /// <summary>
   /// Attribute that qualifies a class as an externally registered ToText type handler. For details see <see cref="To"/>-class description.

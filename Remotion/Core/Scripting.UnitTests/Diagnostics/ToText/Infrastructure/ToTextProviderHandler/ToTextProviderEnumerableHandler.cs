@@ -16,9 +16,8 @@
 // 
 using System;
 using System.Collections;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Handles instances implementing the <see cref="IEnumerable"/> interface in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade.

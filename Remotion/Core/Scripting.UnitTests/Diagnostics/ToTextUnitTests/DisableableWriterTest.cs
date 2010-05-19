@@ -14,16 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.IO;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Reflection;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Diagnostics
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests
 {
   [TestFixture]
   public class DisableableWriterTest

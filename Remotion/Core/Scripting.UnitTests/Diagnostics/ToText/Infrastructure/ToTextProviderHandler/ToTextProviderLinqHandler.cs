@@ -19,7 +19,7 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Handles types typically encountered when using Linq (e.g. <see cref="IGrouping{TKey,TElement}"/>.

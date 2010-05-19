@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   /// <summary>
   /// Convenience base class for defining externally registered ToText interface type handlers. For details see <see cref="To"/>-class description.

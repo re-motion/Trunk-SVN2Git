@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
   /// Parameter class used to pass the instance to convert, type of the instance and <see cref="ToTextBuilder"/> to <see cref="ToTextProviderHandler.ToTextIfTypeMatches"/>.

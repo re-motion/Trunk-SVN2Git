@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Diagnostics.TestDomain
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests.TestDomain
 {
   public class TestSimpleToTextBuilderXmlTestOwned
   {

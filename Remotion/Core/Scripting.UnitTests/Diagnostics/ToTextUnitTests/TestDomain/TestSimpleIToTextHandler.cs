@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 
-namespace Remotion.UnitTests.Diagnostics.TestDomain
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests.TestDomain
 {
   public class TestSimpleIToTextHandler : IToTextConvertible
   {

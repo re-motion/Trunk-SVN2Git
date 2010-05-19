@@ -16,11 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   /// <summary>
   /// <para>Provides conversion of arbitray objects into human readable text form 

@@ -18,10 +18,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Scripting.StableBindingImplementation;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 
 namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {

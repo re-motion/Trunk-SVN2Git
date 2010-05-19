@@ -21,13 +21,12 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
-using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.UnitTests.Diagnostics.TestDomain;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests.TestDomain;
 using Remotion.Utilities.PropertyRestorer;
 
-
-namespace Remotion.UnitTests.Diagnostics
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToTextUnitTests
 {
   [TestFixture]
   public class ToTextBuilderTest

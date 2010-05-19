@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Microsoft.Scripting;
-using Remotion.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 
 namespace Remotion.Scripting.UnitTests
 {

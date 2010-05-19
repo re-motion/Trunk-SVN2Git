@@ -16,16 +16,15 @@
 // 
 using System;
 using System.IO;
-using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
-using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Scripting.UnitTests.Diagnostics.ToText.Infrastructure;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Scripting.UnitTests.Diagnostics.ToText
 {
   /// <summary>
   /// <para>
   /// Gives convenient access to the transformation of arbitrary objects into human readable text form using 
-  /// <see cref="Remotion.Diagnostics.ToText.ToTextBuilder"/> and <see cref="Remotion.Diagnostics.ToText.ToTextProvider"/>.
+  /// <see cref="ToTextBuilder"/> and <see cref="ToText.ToTextProvider"/>.
   /// </para>
   /// </summary>
   /// 
@@ -33,9 +32,9 @@ namespace Remotion.Diagnostics.ToText
   /// <para>
   /// The <see cref="To"/> class supplies the following functionality:
   /// <list type="number">
-  /// <item>Provides convenient access to a <see cref="Remotion.Diagnostics.ToText.ToTextProvider"/> instance through <see cref="Text"/>.</item> 
+  /// <item>Provides convenient access to a <see cref="ToText.ToTextProvider"/> instance through <see cref="Text"/>.</item> 
   /// <item>Automatically registers type and interface handlers for use by <see cref="ToText.ToTextProvider"/> (see examples below)</item>
-  /// <item>Supplies several <see cref="Remotion.Diagnostics.ToText.ToTextBuilder"/> instances preconfigured for specific usage scenarios.</item>
+  /// <item>Supplies several <see cref="ToTextBuilder"/> instances preconfigured for specific usage scenarios.</item>
   /// </list>
   /// </para>
   /// 
