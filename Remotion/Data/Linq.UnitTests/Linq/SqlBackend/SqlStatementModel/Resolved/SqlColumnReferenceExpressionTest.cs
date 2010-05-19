@@ -16,34 +16,23 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Clauses.Expressions;
+using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class SqlColumnExpressionTest
+  public class SqlColumnReferenceExpressionTest
   {
-    private SqlColumnExpression _columnExpression;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _columnExpression = new SqlColumnExpression (typeof (int), "t", "name", false);
-    }
-
     [Test]
-    public void Accept_VisitorSupportingExpressionType ()
+    public void Initialize_SetReferenceEntity ()
     {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorSupportingType<SqlColumnExpression, IResolvedSqlExpressionVisitor> (
-          _columnExpression,
-          mock => mock.VisitSqlColumnExpression (_columnExpression));
-    }
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Cook), "c", new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
+      var columnExpression = new SqlColumnReferenceExpression (typeof (string), "c", "columnName", false, entityExpression);
 
-    [Test]
-    public void Accept_VisitorNotSupportingExpressionType ()
-    {
-      ExtensionExpressionTestHelper.CheckAcceptForVisitorNotSupportingType (_columnExpression);
+      Assert.That (columnExpression.ReferencedEntity, Is.SameAs (entityExpression));
     }
   }
 }

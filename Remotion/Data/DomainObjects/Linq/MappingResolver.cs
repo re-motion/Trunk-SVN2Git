@@ -77,8 +77,7 @@ namespace Remotion.Data.DomainObjects.Linq
           alias);
 
       var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
-      var rightKey = new SqlColumnExpression (
-          // becomes new SqlColumnDefinitionExpression
+      var rightKey = new SqlColumnDefinitionExpression (
           keyType,
           alias,
           GetJoinColumnName (rightEndPoint),
@@ -97,10 +96,10 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       // becomes SqlColumnDefinitionExpression
-      var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
       // becomes SqlColumnDefinitionExpression
-      var starColumn = new SqlColumnExpression (tableReferenceExpression.Type, tableAlias, "*", false);
+      var starColumn = new SqlColumnDefinitionExpression (tableReferenceExpression.Type, tableAlias, "*", false);
 
       return new SqlEntityDefinitionExpression (tableReferenceExpression.SqlTable.ItemType, tableAlias, primaryKeyColumn, starColumn);
     }
@@ -155,7 +154,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
           // becomes sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false)
-        return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
+        return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));
