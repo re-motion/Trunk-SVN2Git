@@ -310,10 +310,8 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
       var proxiedTypeInstance = Activator.CreateInstance (proxiedType, "Peter");
-      var knownBaseTypeInstance = Activator.CreateInstance (knownBaseType, "Peter");
       var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
       const string argument = "Fox";
-      const string expected = "Peter Fox";
 
       // Test that call to proxy method is not ambigous
       PrivateInvoke.InvokePublicMethod (proxy, methodName, argument);
