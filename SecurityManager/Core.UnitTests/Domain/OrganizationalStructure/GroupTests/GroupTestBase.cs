@@ -24,7 +24,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 {
   public class GroupTestBase : DomainTest
   {
-    protected OrganizationalStructureTestHelper _testHelper;
+    private OrganizationalStructureTestHelper _testHelper;
 
     public override void SetUp ()
     {
@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
-    public OrganizationalStructureTestHelper TestHelper
+    protected OrganizationalStructureTestHelper TestHelper
     {
       get { return _testHelper; }
     }

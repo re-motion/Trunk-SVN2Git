@@ -30,10 +30,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [ExpectedException (typeof (RdbmsProviderException))]
     public void UniqueIdentifier_SameIdentifierTwice ()
     {
-      Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "NewTenant2", Guid.NewGuid().ToString());
+      Tenant tenant = TestHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "NewTenant2", Guid.NewGuid().ToString());
       string groupUniqueIdentifier = Guid.NewGuid().ToString();
-      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup2", groupUniqueIdentifier, null, tenant);
-      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup3", groupUniqueIdentifier, null, tenant);
+      TestHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup2", groupUniqueIdentifier, null, tenant);
+      TestHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup3", groupUniqueIdentifier, null, tenant);
 
       ClientTransactionScope.CurrentTransaction.Commit();
     }

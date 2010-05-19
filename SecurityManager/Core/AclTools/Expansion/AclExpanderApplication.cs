@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Remotion.Data.DomainObjects;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.Utilities;
@@ -32,9 +31,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public const string CssFileName = "AclExpansion";
 
-
     private AclExpanderApplicationSettings _settings;
-    private ToTextBuilder _errorToTextBuilder; 
 
     private readonly ITextWriterFactory _textWriterFactory;
 
@@ -54,11 +51,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AclExpanderApplicationSettings Settings
     {
       get { return _settings; }
-    }
-
-    public ToTextBuilder ErrorToTextBuilder
-    {
-      get { return _errorToTextBuilder; }
     }
 
     public virtual void Run (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)

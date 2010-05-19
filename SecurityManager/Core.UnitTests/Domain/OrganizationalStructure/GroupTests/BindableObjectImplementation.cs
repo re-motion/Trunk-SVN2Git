@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetAndGet_UniqueIdentifier ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
 
       group.UniqueIdentifier = "My Unique Identifier";
 
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetAndGet_UniqueIdentifierFromBusinessObjectWithIdentity ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
       IBusinessObjectWithIdentity businessObject = group;
 
       group.UniqueIdentifier = "My Unique Identifier";
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetProperty_UniqueIdentifier ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
       IBusinessObjectWithIdentity businessObject = group;
 
       group.UniqueIdentifier = "My Unique Identifier";
@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void SetProperty_UniqueIdentifier ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
       IBusinessObjectWithIdentity businessObject = group;
 
       businessObject.SetProperty ("UniqueIdentifier", "My Unique Identifier");
@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetPropertyDefinition_UniqueIdentifier ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
       IBusinessObjectWithIdentity businessObject = group;
       group.UniqueIdentifier = "My Unique Identifier";
 
@@ -116,7 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void GetPropertyDefinitions_CheckForUniqueIdentifier ()
     {
-      Group group = _testHelper.CreateGroup (string.Empty, string.Empty, null, _testHelper.CreateTenant (string.Empty, string.Empty));
+      Group group = TestHelper.CreateGroup (string.Empty, string.Empty, null, TestHelper.CreateTenant (string.Empty, string.Empty));
       IBusinessObjectWithIdentity businessObject = group;
 
       IBusinessObjectProperty[] properties = businessObject.BusinessObjectClass.GetPropertyDefinitions();
