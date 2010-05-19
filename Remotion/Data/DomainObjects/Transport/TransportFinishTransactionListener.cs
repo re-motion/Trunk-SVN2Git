@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Transport
       _filter = filter;
     }
 
-    public override void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       using (_transaction.EnterNonDiscardingScope ())
       {

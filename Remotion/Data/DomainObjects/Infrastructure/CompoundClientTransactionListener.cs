@@ -170,28 +170,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)
-        listener.TransactionCommitting (domainObjects);
+        listener.TransactionCommitting (clientTransaction, domainObjects);
     }
 
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)
-        listener.TransactionCommitted (domainObjects);
+        listener.TransactionCommitted (clientTransaction, domainObjects);
     }
 
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)
-        listener.TransactionRollingBack (domainObjects);
+        listener.TransactionRollingBack (clientTransaction, domainObjects);
     }
 
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)
-        listener.TransactionRolledBack (domainObjects);
+        listener.TransactionRolledBack (clientTransaction, domainObjects);
     }
 
     public void RelationEndPointMapRegistering (RelationEndPoint endPoint)

@@ -134,22 +134,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }

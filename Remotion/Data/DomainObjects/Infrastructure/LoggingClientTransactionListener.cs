@@ -176,25 +176,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionCommitting: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionCommitted: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionRollingBack: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionRolledBack: {0}", GetDomainObjectsString (domainObjects));

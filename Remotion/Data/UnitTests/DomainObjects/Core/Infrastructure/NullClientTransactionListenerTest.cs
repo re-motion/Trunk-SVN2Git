@@ -192,25 +192,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void TransactionCommitting ()
     {
-      _listener.TransactionCommitting (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionCommitting (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionCommitted ()
     {
-      _listener.TransactionCommitted (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionCommitted (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionRollingBack ()
     {
-      _listener.TransactionRollingBack (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionRollingBack (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionRolledBack ()
     {
-      _listener.TransactionRolledBack (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionRolledBack (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]

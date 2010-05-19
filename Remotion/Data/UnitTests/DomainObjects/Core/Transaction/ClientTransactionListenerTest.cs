@@ -345,8 +345,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.TransactionCommitting (Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
-        _strictListenerMock.Expect (mock => mock.TransactionCommitted (Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.TransactionCommitting (
+            Arg.Is (ClientTransactionMock), 
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.TransactionCommitted (
+            Arg.Is (ClientTransactionMock), 
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
       }
 
       _mockRepository.ReplayAll ();
@@ -366,8 +370,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.TransactionRollingBack (Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
-        _strictListenerMock.Expect (mock => mock.TransactionRolledBack (Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.TransactionRollingBack (
+            Arg.Is (ClientTransactionMock), 
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.TransactionRolledBack (
+            Arg.Is (ClientTransactionMock), 
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
       }
 
       _mockRepository.ReplayAll ();

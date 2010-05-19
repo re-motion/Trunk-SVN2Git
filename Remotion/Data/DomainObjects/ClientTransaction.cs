@@ -1324,7 +1324,7 @@ public abstract class ClientTransaction : IDataSource
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.TransactionCommitting (args.DomainObjects);
+      TransactionEventSink.TransactionCommitting (this, args.DomainObjects);
 
       if (Committing != null)
         Committing (this, args);
@@ -1343,7 +1343,7 @@ public abstract class ClientTransaction : IDataSource
       if (Committed != null)
         Committed (this, args);
 
-      TransactionEventSink.TransactionCommitted (args.DomainObjects);
+      TransactionEventSink.TransactionCommitted (this, args.DomainObjects);
     }
   }
 
@@ -1355,7 +1355,7 @@ public abstract class ClientTransaction : IDataSource
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.TransactionRollingBack (args.DomainObjects);
+      TransactionEventSink.TransactionRollingBack (this, args.DomainObjects);
 
       if (RollingBack != null)
         RollingBack (this, args);
@@ -1373,7 +1373,7 @@ public abstract class ClientTransaction : IDataSource
       if (RolledBack != null)
         RolledBack (this, args);
 
-      TransactionEventSink.TransactionRolledBack (args.DomainObjects);
+      TransactionEventSink.TransactionRolledBack (this, args.DomainObjects);
     }
   }
 

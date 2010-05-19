@@ -114,19 +114,19 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       return queryResult;
     }
 
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 

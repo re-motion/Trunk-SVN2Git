@@ -110,10 +110,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
 
-    void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects);
-    void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects);
-    void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects);
-    void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
 
     void RelationEndPointMapRegistering (RelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (RelationEndPointID endPointID);

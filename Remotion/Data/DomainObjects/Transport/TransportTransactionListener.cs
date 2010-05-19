@@ -47,12 +47,12 @@ namespace Remotion.Data.DomainObjects.Transport
       }
     }
 
-    public override void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw new InvalidOperationException ("The transport transaction cannot be committed.");
     }
 
-    public override void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw new InvalidOperationException ("The transport transaction cannot be rolled back.");
     }

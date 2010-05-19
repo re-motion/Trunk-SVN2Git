@@ -148,22 +148,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public virtual void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable ("TransactionCommitting");
     }
 
-    public virtual void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable ("TransactionRollingBack");
     }
 
-    public virtual void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
