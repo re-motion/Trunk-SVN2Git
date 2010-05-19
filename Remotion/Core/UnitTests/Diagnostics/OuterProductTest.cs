@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics;
 
 
@@ -29,9 +28,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class OuterProductTest
   {
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
-    
     /// <summary>
     /// OuterProductIndexGenerator.IOuterProductProcessor implementations
     /// </summary>
@@ -573,15 +569,9 @@ namespace Remotion.UnitTests.Diagnostics
     /// Logging helper functions
     /// </summary>
     /// <param name="s"></param>
-    public void Log (string s)
+    private void Log (string s)
     {
-      //Console.WriteLine (s);
-      log.It (s);
-    }
-
-    public void LogVariables (string format, params object[] parameterArray)
-    {
-      Log (String.Format (format, parameterArray));
+      Console.WriteLine (s);
     }
   }
 }

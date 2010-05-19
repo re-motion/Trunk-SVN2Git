@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -29,9 +28,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class DisableableWriterTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
-
     [Test]
     public void DisableableWriterCtorTest ()
     {

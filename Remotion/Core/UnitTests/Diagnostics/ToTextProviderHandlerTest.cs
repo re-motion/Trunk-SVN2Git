@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 
 namespace Remotion.UnitTests.Diagnostics
@@ -25,8 +24,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextProviderHandlerTest
   {
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
     [Test]
     [Ignore]
     public void ToTextProviderTypeHandlerNoPrimitivesAndTypesTest ()
@@ -54,23 +51,6 @@ namespace Remotion.UnitTests.Diagnostics
       handler.ToTextIfTypeMatches (parameters, feedback);
       Assert.That (feedback.Handled, Is.EqualTo (handled));
     }
-
-
-    public void Log (string s)
-    {
-      log.It (s);
-    }
-
-    public void LogVariables (params object[] parameterArray)
-    {
-      foreach (var obj in parameterArray)
-      {
-        log.Item (" " + obj);
-      }
-    }
-
-
-
 
   }
 

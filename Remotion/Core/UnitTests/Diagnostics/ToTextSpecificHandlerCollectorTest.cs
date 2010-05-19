@@ -16,10 +16,8 @@
 // 
 using System;
 using System.Collections;
-using System.ComponentModel.Design;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
@@ -30,8 +28,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextSpecificHandlerCollectorTest
   {
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
     private class TestSimpleSimple
     {
       public TestSimpleSimple ()
@@ -152,16 +148,11 @@ namespace Remotion.UnitTests.Diagnostics
 
       foreach (Type type in types)
       {
-        log.It ("type=" + type);
-
         if (type == typeof (TestSimpleToTextSpecificTypeHandler)) {
           Assert.That (RetrieveTextHandlerAttribute (type), Is.Not.Null);
-          log.It ("attribute found");
           Type baseType = type.BaseType;
           Assert.That (baseType.IsGenericType, Is.True);
-          log.It ("baseType.Name=" + baseType.Name);
           Type[] genericArguments = baseType.GetGenericArguments();
-          log.Item ("List type arguments ({0}):", genericArguments.Length);
           Assert.That (genericArguments.Length, Is.EqualTo (1));
           Type handledType = genericArguments[0];
           Assert.That (handledType, Is.EqualTo(typeof(TestSimple)));
@@ -212,21 +203,6 @@ namespace Remotion.UnitTests.Diagnostics
       handlerMap.TryGetValue (typeof (ITestSimpleName), out iTestSimpleNameHandler);
       Assert.That (iTestSimpleNameHandler, Is.Not.Null);
       Assert.That (iTestSimpleNameHandler is ITestSimpleNameToTextSpecificInterfaceHandler, Is.True);
-    }
-
-
-
-
-
-    // Logging
-    private void LogVariables (string format, params object[] parameters)
-    {
-      log.Item (format, parameters);
-    }
-    
-    private void Log (string s)
-    {
-      log.It (s);
     }
   }
 }

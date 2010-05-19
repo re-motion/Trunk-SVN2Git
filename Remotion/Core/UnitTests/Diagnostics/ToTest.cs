@@ -17,10 +17,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Logging;
 
 
 namespace Remotion.UnitTests.Diagnostics
@@ -29,9 +27,6 @@ namespace Remotion.UnitTests.Diagnostics
   public class ToTest
   {
     // TODO: Store & replace the ToTextProvider To.Text uses and restore it after the tests.
-
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
 
     public class ToTextTest {}
 
@@ -173,17 +168,6 @@ line3";
 
     [Test]
     [Explicit]
-    public void ToILogTest2 ()
-    {
-      // TODO: Implement test
-      var log = LogManager.GetLogger (typeof (ToTest));
-      //log.Log (LogLevel.Debug, log.IsDebugEnabled ? "" : To.String.s ("ToILogTest").ToString());
-      log.Log (LogLevel.Debug, ttb => ttb.sb ().e ("ToILogTest2").se ());
-    }
-   
-
-    [Test]
-    [Explicit]
     public void ToTempLogXmlTest ()
     {
       var magicNumber = 123.456;
@@ -217,19 +201,9 @@ line3";
     }
 
 
-
-
-
-
-
-    public void Log (string s)
+    private void Log (string s)
     {
-      log.It (s);
-    }
-
-    public void LogVariables (string format, params object[] parameterArray)
-    {
-      Log (String.Format (format, parameterArray));
+      Console.WriteLine (s);
     }
   }
 }

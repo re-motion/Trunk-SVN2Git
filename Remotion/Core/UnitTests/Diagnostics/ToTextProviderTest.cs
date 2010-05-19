@@ -15,13 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
@@ -34,11 +32,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextProviderTest
   {
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
-
-
-
     private static string ToText (ToTextProvider toText, object o)
     {
       var toTextBuilder = new ToTextBuilder (toText);
@@ -68,7 +61,6 @@ namespace Remotion.UnitTests.Diagnostics
       FallbackToStringTestSingleType (new Test ("xxx", 123));
 
       var test2 = new Test2 ("aBc", 789);
-      log.It (test2);
       FallbackToStringTestSingleType (test2);
     }
 
@@ -76,7 +68,6 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       toText.Settings.UseAutomaticObjectToText = false;
-      log.It (t.ToString());
       Assert.That (ToText (toText, t), Is.EqualTo (t.ToString()));
     }
 
@@ -460,7 +451,6 @@ namespace Remotion.UnitTests.Diagnostics
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
       test.LinkedListString = new LinkedList<string>();
       string toTextTest = ToText (toText, test);
-      log.It (toTextTest);
       const string toTextTestExpected = "[Test Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
@@ -820,17 +810,9 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    public void Log (string s)
+    private void Log (string s)
     {
-      log.It (s);
-    }
-
-    public void LogVariables (params object[] parameterArray)
-    {
-      foreach (var obj in parameterArray)
-      {
-        log.Item (" " + obj);
-      }
+      Console.WriteLine (s);
     }
   }
 

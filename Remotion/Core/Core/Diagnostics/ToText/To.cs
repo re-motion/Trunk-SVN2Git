@@ -21,7 +21,6 @@ using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Xml;
 using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Logging;
 
 namespace Remotion.Diagnostics.ToText
 {
@@ -333,68 +332,5 @@ namespace Remotion.Diagnostics.ToText
       settings.UseAutomaticCharEnclosing = enable;
       settings.UseInterfaceHandlers = enable;
     }
-
-
-
-  }
-
-  public static class ToTextILogExtensionMethods
-  {
-    //public static void Log (this ILog log, LogLevel logLevel, ToTextBuilder toTextBuilder)
-    //{
-    //  if (log.IsLogLevelEnabled (logLevel))
-    //  {
-    //    log.Log (logLevel, toTextBuilder.ToString ());
-    //  }
-    //}
-
-
-    /// <summary>
-    /// Returns true if the passed <see cref="LogLevel"/>  is enabled in the <see cref="ILog"/>.
-    /// </summary>
-    public static bool IsLogLevelEnabled (this ILog log, LogLevel logLevel)
-    {
-      switch (logLevel)
-      {
-        case LogLevel.Debug:
-          return log.IsDebugEnabled;
-        case LogLevel.Info:
-          return log.IsInfoEnabled;
-        case LogLevel.Warn:
-          return log.IsWarnEnabled;
-        case LogLevel.Error:
-          return log.IsErrorEnabled;
-        case LogLevel.Fatal:
-          return log.IsFatalEnabled;
-        default:
-          return false;
-      }
-    }
-
-
-    /// <summary>
-    /// Delayed execution Logging through a passed <see cref="IToTextBuilder"/>  <c> =&gt; </c>  <see cref="IToTextBuilder"/> lambda expression.
-    /// </summary>
-    /// <remarks>
-    /// Delayed execution Logging through lambda expression mapping a <see cref="IToTextBuilder"/> to 
-    /// a  <see cref="IToTextBuilder"/> on which the required  <see cref="IToTextBuilder"/> 
-    /// write calls are executed.
-    /// <example><code><![CDATA[
-    /// var log = LogManager.GetLogger (typeof (ToTest));
-    /// log.Log (LogLevel.Debug, ttb => ttb.sb ().e(myVariable).e ("Some text").se ());
-    /// ]]></code></example>
-    /// </remarks>
-    public static void Log (this ILog log, LogLevel logLevel, Func<ToTextBuilder, IToTextBuilder> toTextBuilderFunc)
-    {
-      if (log.IsLogLevelEnabled (logLevel))
-      {
-        var toTextBuilderString = To.String;
-        toTextBuilderFunc (toTextBuilderString);
-        var logMessage = toTextBuilderString.ToString();
-        log.Log (logLevel, logMessage);
-      }
-    }
-
-
   }
 }

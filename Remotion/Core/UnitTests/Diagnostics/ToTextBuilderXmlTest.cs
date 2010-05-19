@@ -19,7 +19,6 @@ using System.IO;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.UnitTests.Diagnostics.TestDomain;
@@ -33,8 +32,6 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextBuilderXmlTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
-
     [Test]
     [Ignore]
     public void XmlTest ()
@@ -48,7 +45,6 @@ namespace Remotion.UnitTests.Diagnostics
       xmlWriter.WriteValue (", and some entities: <>&");
       xmlWriter.WriteEndElement ();
       xmlWriter.Flush();
-      log.It ("xml=" + stringWriter);
     }
 
     private const string toXmlInputString = "test string <>& after entities";
@@ -63,7 +59,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.s (toXmlInputString);
       toTextBuilderXml.Close ();
       var result = stringWriter.ToString();
-      log.It ("xml=" + result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (toXmlresultString));
     }
 
@@ -76,7 +71,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.e (toXmlInputString);
       toTextBuilderXml.Close ();
       var result = stringWriter.ToString ();
-      log.It ("xml=" + result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (toXmlresultString));
     }
 
@@ -89,7 +83,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.sb ().e (toXmlInputString).se ();
       toTextBuilderXml.Close ();
       var result = stringWriter.ToString ();
-      log.It ("xml=" + result);
       Assert.That (result, Is.EqualTo ("<remotion><seq><e>" + toXmlresultString  + "</e></seq></remotion>"));
     }
 
@@ -105,7 +98,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.sb ().e(() => x).se ();
       toTextBuilderXml.Close ();
       var result = stringWriter.ToString ();
-      log.It ("xml=" + result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<var name=\"x\">123.456</var>"));
     }
 
@@ -128,7 +120,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.sb ().e (() => aNumber).e("ABC").e(simpleTest).se ();
       toTextBuilderXml.Close ();
       var result = stringWriter.ToString ();
-      log.It ("xml=" + result);
       //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
     }
 
@@ -142,7 +133,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Open ();
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion />"));
     }
 
@@ -167,7 +157,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
     }
 
@@ -197,7 +186,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Close ();
 
       string result = stringWriter.ToString ();
-      log.It (result);
       //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
     }
 
@@ -231,7 +219,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Close ();
 
       string result = stringWriter.ToString ();
-      log.It (result);
       //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
     }
 
@@ -246,7 +233,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.e('x');
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion>x</remotion>"));
     }
 
@@ -262,7 +248,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.nl (3);
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<br /><br /><br />"));
     }
 
@@ -279,7 +264,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.e ("hij").nl ().e ("klm").nl ().e ("op");
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("abcdefghij<br />klm<br />op"));
     }
 
@@ -307,7 +291,6 @@ namespace Remotion.UnitTests.Diagnostics
         toTextBuilderXml.SetOutputComplexityToMedium ();
         SequenceAllFilterLevelsFilteredOutput (toTextBuilderXml);
         string result = stringWriter.ToString ();
-        log.It (result);
 
         Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion><seq><e>before</e><seq><e>start</e><e>m</e><e>s</e><e>b</e></seq></seq></remotion>"));
       }
@@ -332,7 +315,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Flush();
       //toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<seq><e>before</e><seq><e>start</e><e>m</e><e>s</e><e>b</e></seq></seq>"));
     }
 
@@ -346,7 +328,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.WriteDictionary (dictionary);
       toTextBuilderXml.Flush ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<dictionary name=\"Dictionary`2\" type=\"dictionary\"><de><key>a</key><val>11</val></de><de><key>b</key><val>22</val></de><de><key>C</key><val>33</val></de></dictionary>"));
     }
 
@@ -368,7 +349,6 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Open ();
       toTextBuilderXml.Close ();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion />"));
     }
 
@@ -382,7 +362,6 @@ namespace Remotion.UnitTests.Diagnostics
         toTextBuilderXml.s ("DisposeTest");
       }
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion>DisposeTest</remotion>"));
     }
 
@@ -395,7 +374,6 @@ namespace Remotion.UnitTests.Diagnostics
       string[,] array = { { "The", "Shadow" }, { "of", "the" } };
       toTextBuilderXml.WriteArray (array).Flush();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, Is.EqualTo ("<array><array><e>The</e><e>Shadow</e></array><array><e>of</e><e>the</e></array></array>"));
     }
 
@@ -408,7 +386,6 @@ namespace Remotion.UnitTests.Diagnostics
       int[, ,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
       toTextBuilderXml.WriteArray (array).Flush();
       string result = stringWriter.ToString ();
-      log.It (result);
       Assert.That (result, Is.EqualTo ("<array><array><array><e>1</e><e>3</e></array><array><e>5</e><e>7</e></array></array><array><array><e>11</e><e>13</e></array><array><e>17</e><e>19</e></array></array><array><array><e>23</e><e>29</e></array><array><e>31</e><e>37</e></array></array></array>"));
     }
 

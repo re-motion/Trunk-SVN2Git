@@ -147,8 +147,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\UnitTesting\CodeCreatorTest.cs" />
-    <Compile Include="Core\UnitTesting\Logging\SimpleLoggerTest.cs" />
     <Compile Include="Core\UnitTesting\ThreadRunnerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
