@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
+    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
     {
       return queryResult;
     }

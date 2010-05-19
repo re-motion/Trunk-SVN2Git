@@ -130,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query);
       var queryResult = new QueryResult<T> (query, resultArray);
-      return _transactionEventSink.FilterQueryResult (queryResult);
+      return _transactionEventSink.FilterQueryResult (_objectLoader.ClientTransaction, queryResult);
     }
   }
 }

@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void FilterQueryResult ()
     {
       var querResult = new QueryResult<DomainObject> (MockRepository.GenerateStub<IQuery>(), new DomainObject[0]);
-      Assert.That (_listener.FilterQueryResult (querResult), Is.SameAs (querResult));
+      Assert.That (_listener.FilterQueryResult (ClientTransactionMock, querResult), Is.SameAs (querResult));
     }
 
     [Test]

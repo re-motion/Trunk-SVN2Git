@@ -31,5 +31,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID);
     DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID);
     T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject;
+    ClientTransaction ClientTransaction { get; }
   }
 }

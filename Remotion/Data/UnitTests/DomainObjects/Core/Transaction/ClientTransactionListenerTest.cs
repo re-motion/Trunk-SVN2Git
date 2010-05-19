@@ -323,7 +323,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject>();
       _strictListenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == orders.Count)))
+          .Expect (mock => mock.FilterQueryResult (
+              Arg.Is (ClientTransactionMock), 
+              Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == orders.Count)))
           .Return (newQueryResult);
 
       _mockRepository.ReplayAll ();

@@ -265,9 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       foreach (Order order in orders)
         Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
 
-      int orderNumberSum = 0;
-      foreach (Order order in orders)
-        orderNumberSum += order.OrderNumber;
+      int orderNumberSum = orders.Sum (order => order.OrderNumber);
 
       Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber, orderNumberSum);
     }
@@ -315,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
           .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
       ClientTransactionMock.AddListener (listenerMock);
@@ -333,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
       ClientTransactionMock.AddListener (listenerMock);
 
@@ -352,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
       ClientTransactionMock.AddListener (listenerMock);
 

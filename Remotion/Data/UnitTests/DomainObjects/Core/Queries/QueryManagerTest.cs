@@ -93,12 +93,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var originalResult = new[] { _fakeOrder1 };
       var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
-      
+
+      _objectLoaderMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
       _objectLoaderMock.Stub (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery)).Return (originalResult);
       _objectLoaderMock.Replay ();
 
       _transactionEventSinkMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (originalResult))))
+          .Expect (mock => mock.FilterQueryResult (
+              Arg.Is (ClientTransactionMock), 
+              Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (originalResult))))
           .Return (filteredResult);
       _transactionEventSinkMock.Replay ();
 
@@ -119,12 +122,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void GetCollection_NonGeneric ()
     {
       var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
-      
+
+      _objectLoaderMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
       _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_collectionQuery)).Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
       _transactionEventSinkMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (
+              Arg.Is (ClientTransactionMock), 
+              Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (filteredResult);
       _transactionEventSinkMock.Replay ();
 

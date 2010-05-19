@@ -57,6 +57,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _fetcher = fetcher;
     }
 
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
     public DomainObject LoadObject (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);

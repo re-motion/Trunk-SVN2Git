@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="propertyName">The name of the property that changes.</param>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
 
-    QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
+    QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;
 
     void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
     void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);

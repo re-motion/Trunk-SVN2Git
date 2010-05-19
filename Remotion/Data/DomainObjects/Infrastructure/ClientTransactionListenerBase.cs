@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
+    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
       return queryResult;
     }

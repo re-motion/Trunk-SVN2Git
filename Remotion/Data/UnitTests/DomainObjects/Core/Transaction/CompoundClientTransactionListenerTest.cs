@@ -200,10 +200,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
       var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
 
-      listenerMock1.Expect (mock => mock.FilterQueryResult (originalResult)).Return (newResult1);
-      listenerMock2.Expect (mock => mock.FilterQueryResult (newResult1)).Return (newResult2);
+      listenerMock1.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, originalResult)).Return (newResult1);
+      listenerMock2.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, newResult1)).Return (newResult2);
 
-      var finalResult = compoundListener.FilterQueryResult (originalResult);
+      var finalResult = compoundListener.FilterQueryResult (ClientTransactionMock, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
   }

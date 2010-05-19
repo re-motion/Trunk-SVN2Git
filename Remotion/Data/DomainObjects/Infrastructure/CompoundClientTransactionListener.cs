@@ -163,10 +163,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationChanged (clientTransaction, domainObject, propertyName);
     }
 
-    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
+    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
       foreach (var listener in _listeners)
-        queryResult = listener.FilterQueryResult (queryResult);
+        queryResult = listener.FilterQueryResult (clientTransaction, queryResult);
       return queryResult;
     }
 
