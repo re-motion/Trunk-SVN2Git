@@ -26,11 +26,11 @@
           debug="${build.debug}"
           define="${build.csc.define}"
           keyfile="${solution.key-file}"
-          noconfig="true">
+          noconfig="true"
+          warnaserror="true">
       <nowarn>
         <warning number="1591" /> <!-- missing XML comment -->
       </nowarn>
-      <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs" />
         <include name="ExecutionEngine/**/*.cs" />

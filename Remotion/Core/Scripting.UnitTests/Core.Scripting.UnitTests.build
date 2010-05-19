@@ -25,6 +25,7 @@
           debug="${build.debug}"
           define="${build.csc.define}"
           noconfig="false"
+          warnaserror="true"
           ><!--keyfile="${solution.key-file}"-->
       <nowarn>
         <!--  unused member warning  -->

@@ -62,7 +62,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -85,7 +86,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>1591</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -148,7 +150,9 @@
     <Compile Include="UnitTesting\Serializer.cs" />
     <Compile Include="UnitTesting\ThreadRunner.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Development.Core.build" />
+    <None Include="Development.Core.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

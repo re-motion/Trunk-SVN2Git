@@ -179,23 +179,6 @@
     <property name="project.doc" value="${build.outputdir}/${project.output}.xml" if="${build.step.create-doc}" />
     <property name="project.doc" value="${build.temp.outputdir}/${project.output}.complete.xml" unless="${build.step.create-doc}" />
 
-    <warnaserror id="doc-warn-as-error">
-      <!-- Typical errors during writing xml-doc-comments -->
-      <include number="1570" />
-      <include number="1571" />
-      <include number="1572" />
-      <include number="1573" />
-      <include number="1574" />
-      <include number="1580" />
-      <include number="1581" />
-      <include number="1584" />
-      <include number="1587" />
-      <include number="1589" />
-      <include number="1590" />
-      <include number="1592" />
-      <include number="3008" />
-    </warnaserror>
-
     <mkdir dir="${build.outputdir}"/>
     <mkdir dir="${build.temp.outputdir}"/>
     <call target="prepareassemblyinfo" />

@@ -1091,7 +1091,9 @@
     <Compile Include="Xml\XmlSerializationUtilityTests\DeserializeUsingSchema.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Core.UnitTests.build" />
+    <None Include="Core.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\PublicKey.snk" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

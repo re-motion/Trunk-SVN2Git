@@ -97,7 +97,9 @@
     <Compile Include="PhotoStuff\Variant3\Document.cs" />
     <Compile Include="PhotoStuff\Variant3\Photo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Core.Mixins.Samples.build" />
+    <None Include="Core.Mixins.Samples.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

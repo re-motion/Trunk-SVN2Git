@@ -447,7 +447,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Web.UnitTests.build" />
+    <None Include="Web.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Res\UrlMapping.xml" />
     <Content Include="Res\UrlMappingWithEmptyFunctionType.xml" />
     <Content Include="Res\UrlMappingWithEmptyPath.xml" />

@@ -87,7 +87,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Web.Security.build" />
+    <None Include="Web.Security.build">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">

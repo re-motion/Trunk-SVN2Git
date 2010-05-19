@@ -82,7 +82,9 @@
     <Compile Include="IListInfo.cs" />
     <Compile Include="ISearchAvailableObjectsArguments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="ObjectBinding.Interfaces.build" />
+    <None Include="ObjectBinding.Interfaces.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

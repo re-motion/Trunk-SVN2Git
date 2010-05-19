@@ -404,7 +404,9 @@
     <Compile Include="Web\UI\Controls\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\RendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\XmlNodeExtensions.cs" />
-    <None Include="ObjectBinding.UnitTests.build" />
+    <None Include="ObjectBinding.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

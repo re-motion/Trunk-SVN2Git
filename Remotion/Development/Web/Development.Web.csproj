@@ -95,7 +95,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Development.Web.build" />
+    <None Include="Development.Web.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>

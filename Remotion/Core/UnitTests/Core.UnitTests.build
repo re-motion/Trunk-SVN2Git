@@ -24,6 +24,7 @@
           output="${build.test.outputdir}/${project.output}.${project.extension}" 
           debug="${build.debug}"
           define="${build.csc.define}"
+          warnaserror="true"
           ><!--keyfile="${solution.key-file}"-->
       <nowarn>
         <!--  unused member warning  -->

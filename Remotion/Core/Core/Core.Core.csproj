@@ -87,7 +87,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -733,7 +734,9 @@
     <None Include="Mixins\Definitions\Definitions.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <Content Include="Core.Core.build" />
+    <Content Include="Core.Core.build">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Diagnostics\ToText\Infrastructure\Design Decisions.txt" />
     <Content Include="doc\include\GettingStartedTemplate.html" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />

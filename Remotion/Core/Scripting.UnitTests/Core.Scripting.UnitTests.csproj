@@ -175,7 +175,9 @@
     </None>
     <None Include="App.config">
     </None>
-    <None Include="Core.Scripting.UnitTests.build" />
+    <None Include="Core.Scripting.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

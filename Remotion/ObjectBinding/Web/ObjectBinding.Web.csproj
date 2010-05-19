@@ -424,7 +424,9 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="ObjectBinding.Web.build" />
+    <None Include="ObjectBinding.Web.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

@@ -83,7 +83,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Data.DomainObjects.UberProfIntegration.build" />
+    <None Include="Data.DomainObjects.UberProfIntegration.build">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">

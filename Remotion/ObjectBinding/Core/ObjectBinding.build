@@ -26,7 +26,8 @@
           debug="${build.debug}"
           define="${build.csc.define}"
           keyfile="${solution.key-file}"
-          noconfig="true">
+          noconfig="true"
+          warnaserror="true">
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" />

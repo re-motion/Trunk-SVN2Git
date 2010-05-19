@@ -80,7 +80,9 @@
     <Compile Include="SchemaGeneration\SqlServer\ViewBuilder.cs" />
     <Compile Include="SchemaGeneration\ViewBuilderBase.cs" />
     <Compile Include="SchemaGeneration\TableBuilderBase.cs" />
-    <None Include="Data.DomainObjects.RdbmsTools.build" />
+    <None Include="Data.DomainObjects.RdbmsTools.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

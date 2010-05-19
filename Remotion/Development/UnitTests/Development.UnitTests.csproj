@@ -183,7 +183,9 @@
     <Compile Include="Web\UnitTesting\UI\Controls\Rendering\HtmlHelperBaseTest.cs" />
     <Compile Include="Web\UnitTesting\UI\Controls\Rendering\IAsserter.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Development.UnitTests.build" />
+    <None Include="Development.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

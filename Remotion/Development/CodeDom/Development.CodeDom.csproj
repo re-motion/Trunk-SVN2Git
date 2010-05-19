@@ -62,7 +62,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>0618;1591;0419</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -85,7 +86,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>1591;0618</NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -125,7 +127,9 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Development.CodeDom.build" />
+    <None Include="Development.CodeDom.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

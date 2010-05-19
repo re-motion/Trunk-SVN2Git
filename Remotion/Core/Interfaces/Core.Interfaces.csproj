@@ -151,7 +151,9 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Core.Interfaces.build" />
+    <Content Include="Core.Interfaces.build">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="doc\include\Logging\ILog.xml" />
   </ItemGroup>
   <ItemGroup>

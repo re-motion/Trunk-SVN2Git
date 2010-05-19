@@ -78,7 +78,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Security.build" />
+    <None Include="Security.build">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="BaseDemandPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />

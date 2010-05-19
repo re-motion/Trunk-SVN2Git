@@ -707,7 +707,9 @@
     </None>
     <None Include="Res\UI\WxeHandler.ashx" />
     <None Include="Res\UI\WxeLauncher.ashx" />
-    <None Include="Web.build" />
+    <None Include="Web.build">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Configuration\WebConfiguration.xsd">
       <SubType>
       </SubType>

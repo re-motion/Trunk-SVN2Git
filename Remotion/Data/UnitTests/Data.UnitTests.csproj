@@ -88,7 +88,8 @@
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -1314,7 +1315,9 @@
     <None Include="Properties\AssemblyInfoTemplate.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="Data.UnitTests.build" />
+    <None Include="Data.UnitTests.build">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
