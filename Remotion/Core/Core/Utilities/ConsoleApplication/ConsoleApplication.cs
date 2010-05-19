@@ -59,8 +59,6 @@ namespace Remotion.Utilities.ConsoleApplication
   {
     private readonly TextWriter _errorWriter;
     private readonly TextWriter _logWriter;
-    private readonly ToTextBuilder _logToTextBuilder;
-    private readonly ToTextBuilder _errorToTextBuilder;
     private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
     private readonly int _bufferWidth;
     private readonly IWaiter _waitAtEnd;
@@ -70,8 +68,6 @@ namespace Remotion.Utilities.ConsoleApplication
     {
       _errorWriter = errorWriter;
       _logWriter = logWriter;
-      _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
-      _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
       _bufferWidth = bufferWidth;
       _waitAtEnd = waitAtEnd;
     }
@@ -121,15 +117,21 @@ namespace Remotion.Utilities.ConsoleApplication
 
     private void OutputApplicationUsage ()
     {
-      _logToTextBuilder.nl (2).s ("Application Usage: ");
-      _logToTextBuilder.nl (2).s (Synopsis).nl(2);
+      _logWriter.WriteLine();
+      _logWriter.WriteLine ();
+      _logWriter.WriteLine ("Application Usage: ");
+      _logWriter.WriteLine ();
+      _logWriter.WriteLine (Synopsis);
+      _logWriter.WriteLine ();
     }
 
     private void WaitForKeypress ()
     {
       if (Settings.WaitForKeypress)
       {
-        _logToTextBuilder.nl (2).s ("Press any-key...");
+        _logWriter.WriteLine ();
+        _logWriter.WriteLine ();
+        _logWriter.WriteLine ("Press any-key...");
         _waitAtEnd.Wait();
       }
     }
@@ -146,10 +148,14 @@ namespace Remotion.Utilities.ConsoleApplication
         //_result = 1;
         using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
         {
-          _errorToTextBuilder.s ("Execution aborted. Exception stack:");
+          _errorWriter.WriteLine ("Execution aborted. Exception stack:");
           for (; e != null; e = e.InnerException)
           {
-            _errorToTextBuilder.s (e.GetType ().FullName).s (": ").s (e.Message).s (e.StackTrace);
+            _errorWriter.Write (e.GetType ().FullName);
+            _errorWriter.Write (": ");
+            _errorWriter.WriteLine (e.Message);
+            _errorWriter.WriteLine (e.StackTrace);
+            _errorWriter.WriteLine();
           }
         }
         return 1;
@@ -172,7 +178,9 @@ namespace Remotion.Utilities.ConsoleApplication
       }
       catch (CommandLineArgumentException e)
       {
-        _errorToTextBuilder.nl ().s ("An error occured: ").s (e.Message);
+        _errorWriter.WriteLine ();
+        _errorWriter.Write ("An error occured: ");
+        _errorWriter.WriteLine (e.Message);
         OutputApplicationUsage ();
         Settings = new TApplicationSettings(); // Use default settings
         return 1;

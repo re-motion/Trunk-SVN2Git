@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
       consoleApplicationMock.VerifyAllExpectations();
 
       var result = stringWriterError.ToString();
-      Assert.That (result, NUnitText.StartsWith ("Execution aborted. Exception stack:System.Exception: The valve just came loose..."));
+      Assert.That (result, NUnitText.StartsWith ("Execution aborted. Exception stack:\r\nSystem.Exception: The valve just came loose..."));
     }
   }
 }
