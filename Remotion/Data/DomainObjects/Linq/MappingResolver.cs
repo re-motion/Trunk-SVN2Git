@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Linq
       // becomes SqlColumnDefinitionExpression
       var starColumn = new SqlColumnDefinitionExpression (tableReferenceExpression.Type, tableAlias, "*", false);
 
-      return new SqlEntityDefinitionExpression (tableReferenceExpression.SqlTable.ItemType, tableAlias, primaryKeyColumn, starColumn);
+      return new SqlEntityDefinitionExpression (tableReferenceExpression.SqlTable.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
