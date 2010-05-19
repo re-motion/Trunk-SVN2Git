@@ -16,10 +16,8 @@
 // 
 using System;
 using System.IO;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;

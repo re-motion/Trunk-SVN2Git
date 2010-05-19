@@ -176,7 +176,6 @@
     <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Diagnostics\ByteValueTest.cs" />
     <Compile Include="Diagnostics\BugReportTest.cs" />
-    <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumConverterTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumUtilityTest.cs" />
@@ -361,14 +360,6 @@
     <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Reflection\TestDomain\ClassWithManyConstructorArguments.cs" />
     <Compile Include="Utilities\PropertyRestorerTest.cs" />
-    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
-    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
-    <Compile Include="Diagnostics\TestDomain\TestSimpleIToTextHandler.cs" />
-    <Compile Include="Diagnostics\TestDomain\ToTextProviderHandlerTestTestClasses.cs" />
-    <Compile Include="Diagnostics\TestDomain\ToTextProvider\ToTextProviderTestTestClasses.cs" />
-    <Compile Include="Diagnostics\ToTextBuilderXmlTest.cs" />
-    <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
-    <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
@@ -935,11 +926,7 @@
     <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostics\IToTextHandlerTest.cs" />
     <Compile Include="Diagnostics\OuterProductTest.cs" />
-    <Compile Include="Diagnostics\ToTest.cs" />
-    <Compile Include="Diagnostics\ToTextBuilderTest.cs" />
-    <Compile Include="Diagnostics\ToTextProviderTest.cs" />
     <Compile Include="Text\IdentifierGeneratorTest.cs">
       <SubType>Code</SubType>
     </Compile>

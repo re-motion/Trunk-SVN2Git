@@ -90,6 +90,58 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diagnostics\ToTextUnitTests\DisableableWriterTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\IToTextHandlerTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\TestDomain\TestSimpleIToTextHandler.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\TestDomain\ToTextProviderHandlerTestTestClasses.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\TestDomain\ToTextProvider\ToTextProviderTestTestClasses.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\ToTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\ToTextBuilderTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\ToTextProviderHandlerTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\ToTextProviderTest.cs" />
+    <Compile Include="Diagnostics\ToTextUnitTests\ToTextSpecificHandlerCollectorTest.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\DisableableWriter.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\IToTextSpecificHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\IToTextSpecificInterfaceHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\IToTextSpecificTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\SequenceStateHolder.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextBuilderArrayToTextProcessor.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextBuilderBase.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextBuilderSettings.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\IToTextProviderHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextParameters.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderArrayHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderAutomaticObjectToTextHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderCharHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderDictionaryHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderEnumerableHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderEnumHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderFormattableHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderHandlerFeedback.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderIToTextHandlerHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderLinqHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderNullHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderRegisteredTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderStringHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderToStringHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderSettings.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificHandlerCollector.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificHandlerMap.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextBuilder.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextConvertible.cs" />
+    <Compile Include="Diagnostics\ToText\To.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextBuilder.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextProvider.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerAttribute.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificInterfaceHandler.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="TestDomain\Cascade.cs" />
     <Compile Include="TestDomain\CascadeGetCustomMemberReturnsAttributeProxyFromMap.cs" />
     <Compile Include="TestDomain\CascadeGetCustomMemberReturnsFixedAttributeProxy.cs" />
@@ -167,6 +219,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagnostics\ToText\Infrastructure\Design Decisions.txt" />
     <Content Include="doc\KeepInMind.txt" />
   </ItemGroup>
   <ItemGroup>

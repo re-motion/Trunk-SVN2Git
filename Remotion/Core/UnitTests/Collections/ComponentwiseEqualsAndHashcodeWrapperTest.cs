@@ -21,7 +21,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting.ObjectMother;
-using Remotion.Diagnostics.ToText;
 
 namespace Remotion.UnitTests.Collections
 {
