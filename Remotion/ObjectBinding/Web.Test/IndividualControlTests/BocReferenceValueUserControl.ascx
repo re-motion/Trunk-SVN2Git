@@ -44,9 +44,7 @@
 </PersistedCommand>
 </remotion:BocMenuItem>
 </OptionsMenuItems>
-
-<labelstyle cssclass="class">
-</LabelStyle></remotion:bocreferencevalue></td>
+</remotion:bocreferencevalue></td>
     <td>bound</td>
     <td style="WIDTH: 20%"><asp:label id=PartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>

@@ -76,11 +76,15 @@ span.bocAutoCompleteReferenceValue a.command *
   cursor: pointer;
 }
 
-span.bocAutoCompleteReferenceValue a.command span,
-span.bocAutoCompleteReferenceValue span.command span
+
+span.bocAutoCompleteReferenceValue .command span
 {
- margin: 0 5px;
- vertical-align: top;  
+  vertical-align: top;  
+}
+
+span.bocAutoCompleteReferenceValue.readOnly .command img
+{
+  margin-right: 4px;
 }
 
 span.bocAutoCompleteReferenceValue span.command
@@ -147,15 +151,21 @@ span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMenuSelect
 
 
 span.bocAutoCompleteReferenceValue span.content,
-span.bocAutoCompleteReferenceValue span.disabled span.content
+span.bocAutoCompleteReferenceValue.disabled span.content
 {
   position: absolute;
   display: inline-block;
   top: 0;
-  left: 22px; /* width of a.command icon + desired space between */
+  left: 0;
   height: 21px;
   width: auto;
   white-space: nowrap;
+}
+
+span.bocAutoCompleteReferenceValue span.content.hasIcon,
+span.bocAutoCompleteReferenceValue.disabled span.content.hasIcon
+{
+  left: 22px; /* width of a.command icon + desired space between */
 }
 
 span.bocAutoCompleteReferenceValue span.optionsMenu

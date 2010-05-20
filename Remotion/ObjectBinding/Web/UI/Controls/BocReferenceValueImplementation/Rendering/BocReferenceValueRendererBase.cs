@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         if (icon.Visible)
           RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
 
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent ());
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (icon.Visible));
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValueWithSeparateOptionsMenu (writer);
@@ -117,7 +117,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       {
         if (icon.Visible)
           RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent ());
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (icon.Visible));
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValueWithIntegratedOptionsMenu (writer);
@@ -181,7 +181,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           icon.Height = iconInfo.Height;
 
           icon.Visible = true;
-          icon.CssClass = CssClassContent;
 
           if (Control.IsCommandEnabled (Control.IsReadOnly))
           {
@@ -213,13 +212,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
     }
 
-    private string GetCssClassInnerContent ()
+    private string GetCssClassInnerContent (bool hasIcon)
     {
+      string cssClass = CssClassInnerContent;
+      
       if (!Control.HasOptionsMenu)
-        return CssClassInnerContent + " " + CssClassWithoutOptionsMenu;
-      if (EmbedInOptionsMenu)
-        return CssClassInnerContent + " " + CssClassEmbeddedOptionsMenu;
-      return CssClassInnerContent + " " + CssClassSeparateOptionsMenu;
+        cssClass += " " + CssClassWithoutOptionsMenu;
+      else if (EmbedInOptionsMenu)
+        cssClass += " " + CssClassEmbeddedOptionsMenu;
+      else
+        cssClass += " " + CssClassSeparateOptionsMenu;
+
+      if (hasIcon)
+        cssClass += " " + CssClassHasIcon;
+
+      return cssClass;
     }
 
     private string CssClassContent
@@ -255,6 +262,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private string CssClassCommand
     {
       get { return "command"; }
+    }
+
+    private string CssClassHasIcon
+    {
+      get { return "hasIcon"; }
     }
   }
 }

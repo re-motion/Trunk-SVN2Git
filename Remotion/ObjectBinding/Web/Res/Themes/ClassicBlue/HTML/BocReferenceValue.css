@@ -51,11 +51,15 @@ span.bocReferenceValue a.command *
   cursor: pointer;
 }
 
-span.bocReferenceValue a.command span,
-span.bocReferenceValue span.command span
+
+span.bocReferenceValue .command span
 {
-   margin: 0 5px;
    vertical-align: top;  
+}
+
+span.bocReferenceValue.readOnly .command img
+{
+  margin-right: 7px;
 }
 
 span.bocReferenceValue span.command
@@ -129,12 +133,18 @@ span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
 }
 
 span.bocReferenceValue span.content,
-span.bocReferenceValue span.disabled span.content
+span.bocReferenceValue.disabled span.content
 {
   position: absolute;
   width: auto;
   display: inline-block;
   top: 0;
+  left: 0;
+}
+
+span.bocReferenceValue span.content.hasIcon,
+span.bocReferenceValue.disabled span.content.hasIcon
+{
   left: 22px; /* width of a.command icon + desired space between */
 }
 

@@ -80,8 +80,10 @@ span.bocAutoCompleteReferenceValue a.command
 span.bocAutoCompleteReferenceValue a.command:hover
 {
   display: inline-block;
-  border: solid 1px #005588;
-  background-color: #fee197;
+  border-color: #083779;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #e6f0ff;	
   padding: 0;
 }
 
@@ -90,11 +92,14 @@ span.bocAutoCompleteReferenceValue a.command *
   cursor: pointer;
 }
 
-span.bocAutoCompleteReferenceValue a.command span,
-span.bocAutoCompleteReferenceValue span.command span
+span.bocAutoCompleteReferenceValue .command span
 {
-   margin: 0 5px;
-   vertical-align: top;  
+  vertical-align: top;  
+}
+
+span.bocAutoCompleteReferenceValue.readOnly .command img
+{
+  margin-right: 4px;
 }
 
 span.bocAutoCompleteReferenceValue span.command
@@ -164,15 +169,21 @@ body.mozilla span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMe
 
 
 span.bocAutoCompleteReferenceValue span.content,
-span.bocAutoCompleteReferenceValue span.disabled span.content
+span.bocAutoCompleteReferenceValue.disabled span.content
 {
   position: absolute;
   display: inline-block;
   top: 0;
-  left: 22px; /* width of a.command icon + desired space between */
+  left: 0;
 	height: 21px;
 	width: auto;
 	white-space: nowrap;
+}
+
+span.bocAutoCompleteReferenceValue span.content.hasIcon,
+span.bocAutoCompleteReferenceValue.disabled span.content.hasIcon
+{
+  left: 22px; /* width of a.command icon + desired space between */
 }
 
 span.bocAutoCompleteReferenceValue span.optionsMenu
