@@ -122,9 +122,7 @@ def PropertyPathAccess(cascade) :
       );
 
       var nrLoopsArray = new[] { 1, 1, 10000 };
-      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-
-      To.ConsoleLine.e (() => timingStableBinding);
+      ScriptingHelper.ExecuteAndTime ("SimplePropertyAccess_GetCustomMember1 (StableBinding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
     }
 
 
@@ -153,11 +151,9 @@ def PropertyPathAccess(cascade) :
       );
 
       var nrLoopsArray = new[] { 1, 1, 100000 };
-      var timing = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascade))[2];
-      var timingStableBindingFromMixin = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBindingFromMixin))[2];
-      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
-
-      To.ConsoleLine.e (() => timing).e (() => timingStableBinding).e (() => timingStableBindingFromMixin);
+      ScriptingHelper.ExecuteAndTime ("SimplePropertyAccess_GetCustomMember2 (No StableBinding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("SimplePropertyAccess_GetCustomMember2 (StableBinding from Mixin)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBindingFromMixin));
+      ScriptingHelper.ExecuteAndTime ("SimplePropertyAccess_GetCustomMember2 (StableBinding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
     }
 
 
