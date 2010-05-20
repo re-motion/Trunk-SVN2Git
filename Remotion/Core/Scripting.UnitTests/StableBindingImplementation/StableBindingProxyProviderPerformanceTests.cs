@@ -49,7 +49,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (TestDomain.Cascade).Assembly.GetName().Name, typeof (TestDomain.Cascade).Namespace, typeof (TestDomain.Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
@@ -77,15 +77,6 @@ def PropertyPathAccess(cascade) :
     public void CompiledVsUncompiled ()
     {
       var nrLoopsArray = new[] { 1, 1, 1000 };
-      CompiledVsUncompiledHelper (nrLoopsArray, false); // Warm up DLR
-      var timingsCompiled = CompiledVsUncompiledHelper (nrLoopsArray, true);
-      var timingsUncompiled = CompiledVsUncompiledHelper (nrLoopsArray, false);
-
-      To.ConsoleLine.e (() => timingsUncompiled).e (() => timingsCompiled);
-    }
-
-    private long[] CompiledVsUncompiledHelper (int[] nrLoopsArray, bool executeCompiled)
-    {
       const string scriptExpressionSourceCode = "GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name";
 
       const int numberChildren = 10;
@@ -93,7 +84,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (TestDomain.Cascade).Assembly.GetName().Name, typeof (TestDomain.Cascade).Namespace, typeof (TestDomain.Cascade).Name);
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       ExpressionScript<string> expressionScript = new ExpressionScript<string> (
@@ -101,16 +92,10 @@ def PropertyPathAccess(cascade) :
           scriptExpressionSourceCode, privateScriptEnvironment
           );
 
-      long[] timings;
-      if (executeCompiled)
-      {
-        timings = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => expressionScript.Execute ());
-      }
-      else
-      {
-        timings = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => expressionScript.ExecuteUncompiled ());
-      }
-      return timings;
+      // Warm up the DLR
+      expressionScript.ExecuteUncompiled ();
+      ScriptingHelper.ExecuteAndTime ("CompiledVsUncompiled (compiled)", nrLoopsArray, () => expressionScript.Execute ());
+      ScriptingHelper.ExecuteAndTime ("CompiledVsUncompiled (uncompiled)", nrLoopsArray, () => expressionScript.ExecuteUncompiled ());
     }
 
 
@@ -129,7 +114,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (TestDomain.Cascade).Assembly.GetName().Name, typeof (TestDomain.Cascade).Namespace, typeof (TestDomain.Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
@@ -160,7 +145,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (TestDomain.Cascade).Assembly.GetName().Name, typeof (TestDomain.Cascade).Namespace, typeof (TestDomain.Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
