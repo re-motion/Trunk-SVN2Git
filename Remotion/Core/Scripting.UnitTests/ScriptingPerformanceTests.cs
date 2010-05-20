@@ -15,11 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
-using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -55,7 +52,7 @@ def PropertyPathAccess(cascade) :
       privateScriptEnvironment.ImportIifHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -71,18 +68,14 @@ def PropertyPathAccess(cascade) :
 
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-      ExecuteAndLogTimings (
-          "C# method",
-          nrLoopsArray,
-          delegate
-          {
-            if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
-              return cascade.Child.Child.Child.Child.Child.Child.Child.Name;
-            return "FAILED";
-          }
-          );
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
+      ScriptingHelper.ExecuteAndTime ("C# method", nrLoopsArray, delegate
+      {
+        if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
+          return cascade.Child.Child.Child.Child.Child.Child.Child.Name;
+        return "FAILED";
+      });
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
     }
 
 
@@ -114,42 +107,9 @@ def Empty() :
 
       //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      ExecuteAndLogTimings ("empty script function", nrLoopsArray, emptyScript.Execute);
-      ExecuteAndLogTimings ("empty expression script", nrLoopsArray, emptyExpression.Execute);
-      ExecuteAndLogTimings ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
-    }
-
-
-    public void ExecuteAndLogTimings (string testName, int nrLoops, Func<Object> func)
-    {
-      ExecuteAndLogTimings (testName, new[] { nrLoops }, func);
-    }
-
-    public void ExecuteAndLogTimings (string testName, int[] nrLoopsArray, Func<Object> func)
-    {
-      object result = null;
-
-      var timings = new System.Collections.Generic.List<long>();
-
-      foreach (var nrLoops in nrLoopsArray)
-      {
-        System.GC.Collect (2);
-        System.GC.WaitForPendingFinalizers();
-
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-
-        for (int i = 0; i < nrLoops; i++)
-          result = func();
-
-        stopwatch.Stop();
-        timings.Add (stopwatch.ElapsedMilliseconds);
-      }
-
-      To.ConsoleLine.s ("Timings ").e (testName).s (",").e (() => nrLoopsArray).s (": ").nl().sb();
-      foreach (var timing in timings)
-        To.Console.e (timing);
-      To.Console.se();
+      ScriptingHelper.ExecuteAndTime ("empty script function", nrLoopsArray, emptyScript.Execute);
+      ScriptingHelper.ExecuteAndTime ("empty expression script", nrLoopsArray, emptyExpression.Execute);
+      ScriptingHelper.ExecuteAndTime ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
     }
 
 
@@ -176,7 +136,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -199,12 +159,10 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ExecuteAndLogTimings (
-          "script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
-      ExecuteAndLogTimings (
-          "script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ScriptingHelper.ExecuteAndTime ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
+      ScriptingHelper.ExecuteAndTime ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
     }
 
 
@@ -228,7 +186,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -240,8 +198,8 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
     }
 
 
@@ -267,7 +225,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -279,11 +237,10 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ExecuteAndLogTimings ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
-      ExecuteAndLogTimings (
-          "script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ScriptingHelper.ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
+      ScriptingHelper.ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
 
 
@@ -305,7 +262,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -317,11 +274,8 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings (
-          "script function (FixedAttributeProxy)",
-          nrLoopsArray,
-          () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("script function (FixedAttributeProxy)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
 
     [Test]
@@ -346,7 +300,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -359,11 +313,8 @@ def PropertyPathAccess(cascade) :
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
       var nrLoopsArray = new[] { 10 };
-      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings (
-          "script function (AttributeProxyFromMap)",
-          nrLoopsArray,
-          () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ScriptingHelper.ExecuteAndTime ("script function (AttributeProxyFromMap)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
     }
 
 
@@ -387,27 +338,6 @@ def PropertyPathAccess(cascade) :
 
         return 0;
       });
-    }
-
-
-    public void ExecuteAndTimeLongPropertyPathAccess (string testName, int nrLoops, Func<Cascade, string> func)
-    {
-      var cascade = new Cascade (10);
-      object result = "xyz";
-
-      System.GC.Collect (2);
-      System.GC.WaitForPendingFinalizers();
-
-      Stopwatch stopwatch = new Stopwatch();
-      stopwatch.Start();
-
-      for (int i = 0; i < 1000000; i++)
-        result = func (cascade);
-
-      stopwatch.Stop();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      Assert.That (result, Is.EqualTo ("C2"));
-      To.ConsoleLine.e (() => result).e (() => milliSeconds);
     }
   }
 }
