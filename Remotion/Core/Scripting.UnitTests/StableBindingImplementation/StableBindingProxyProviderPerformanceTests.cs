@@ -49,7 +49,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
@@ -93,7 +93,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       ExpressionScript<string> expressionScript = new ExpressionScript<string> (
@@ -129,7 +129,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
@@ -160,7 +160,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
