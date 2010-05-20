@@ -9,7 +9,7 @@ span.bocReferenceValue
   top: 0;
 }
 
-span.bocReferenceValue span.bocReferenceValueContent
+span.bocReferenceValue span.body
 {
 	display: block;
 }
@@ -29,7 +29,7 @@ span.bocReferenceValue.disabled img
   -moz-opacity: 0.4;
 }
 
-span.bocReferenceValue a.bocReferenceValueCommand
+span.bocReferenceValue a.command
 {
   cursor: default;
   display: inline-block;
@@ -39,7 +39,7 @@ span.bocReferenceValue a.bocReferenceValueCommand
   height: 1.3em; 
 }
 
-span.bocReferenceValue a.bocReferenceValueCommand:hover
+span.bocReferenceValue a.command:hover
 {
   display: inline-block;
   border: solid 1px #005588;
@@ -47,25 +47,25 @@ span.bocReferenceValue a.bocReferenceValueCommand:hover
   padding: 0;
 }
 
-span.bocReferenceValue a.bocReferenceValueCommand *
+span.bocReferenceValue a.command *
 {
   cursor: pointer;
 }
 
-span.bocReferenceValue a.bocReferenceValueCommand span,
-span.bocReferenceValue span.bocReferenceValueCommand span
+span.bocReferenceValue a.command span,
+span.bocReferenceValue span.command span
 {
    margin: 0 5px;
    vertical-align: top;  
 }
 
-span.bocReferenceValue span.bocReferenceValueCommand
+span.bocReferenceValue span.command
 {
   display: inline-block;
   margin-top: 3px;
   margin-left: 2px;
 }
-span.bocReferenceValue.readOnly span.bocReferenceValueCommand
+span.bocReferenceValue.readOnly span.command
 {
   margin-top: 2px;
 }
@@ -98,7 +98,7 @@ body.webkit span.bocReferenceValue.disabled span.DropDownMenuContainer span.Drop
   height: 1.5em;
 }
 
-body.webkit span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+body.webkit span.bocReferenceValue.readOnly > span.body span.optionsMenu span.DropDownMenuSelect
 {
   height: 1.4em;
 }
@@ -109,17 +109,17 @@ span.bocReferenceValue span.content.embeddedOptionsMenu
 }
 
 /* separateOptionsMenu */
-span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
+span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
+span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
 {
   height: 1.5em;
   top: 0;
 }
 
-body.mozilla span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-body.mozilla span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-body.mozilla span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+body.mozilla span.bocReferenceValue span.optionsMenu span.DropDownMenuSelect,
+body.mozilla span.bocReferenceValue.disabled span.optionsMenu span.DropDownMenuSelect,
+body.mozilla span.bocReferenceValue.readOnly span.optionsMenu span.DropDownMenuSelect
 {
   height: 1.45em;
 }
@@ -131,24 +131,24 @@ span.bocReferenceValue span.disabled span.content
   width: auto;
   display: inline-block;
   top: 0;
-  left: 22px; /* width of a.bocReferenceValueCommand icon + desired space between */
+  left: 22px; /* width of a.command icon + desired space between */
 }
 
-span.bocReferenceValue span.bocReferenceValueOptionsMenu
+span.bocReferenceValue span.optionsMenu
 {
   position: absolute;
   display: inline-block;
   right: 0;
   top: 0;
-  width: 6em; /* Define width of span.bocReferenceValueOptionsMenu */
+  width: 6em; /* Define width of span.optionsMenu */
 }
 
-body.msie7 span.bocReferenceValue span.bocReferenceValueOptionsMenu
+body.msie7 span.bocReferenceValue span.optionsMenu
 {
   top: 0;
 }
 
 span.bocReferenceValue span.content.separateOptionsMenu
 {
-  right: 6.25em; /* width of span.bocReferenceValueOptionsMenu + desired space between */
+  right: 6.25em; /* width of span.optionsMenu + desired space between */
 }

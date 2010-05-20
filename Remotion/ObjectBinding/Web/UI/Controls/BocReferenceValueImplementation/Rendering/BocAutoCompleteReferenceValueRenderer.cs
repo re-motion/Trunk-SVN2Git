@@ -437,7 +437,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     public string CssClassContent
     {
-      get { return "bocAutoCompleteReferenceValueContent"; }
+      get { return "body"; }
     }
 
     public string CssClassInnerContent
@@ -462,7 +462,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     public string CssClassCommand
     {
-      get { return "bocAutoCompleteReferenceValueCommand"; }
+      get { return "command"; }
     }
 
     public string CssClassDropDownList
@@ -472,7 +472,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     public string CssClassOptionsMenu
     {
-      get { return "bocAutoCompleteReferenceValueOptionsMenu"; }
+      get { return "optionsMenu"; }
     }
   }
 }

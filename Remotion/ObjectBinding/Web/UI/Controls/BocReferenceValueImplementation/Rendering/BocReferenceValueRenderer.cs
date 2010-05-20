@@ -337,11 +337,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       get { return "bocReferenceValue"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocReferenceValue"/>'s value. </summary>
-    /// <remarks> Class: <c>bocReferenceValueContent</c> </remarks>
-    public virtual string CssClassContent
+    public string CssClassContent
     {
-      get { return "bocReferenceValueContent"; }
+      get { return "body"; }
     }
 
     private string CssClassInnerContent
@@ -366,12 +364,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private string CssClassOptionsMenu
     {
-      get { return "bocReferenceValueOptionsMenu"; }
+      get { return "optionsMenu"; }
     }
 
     private string CssClassCommand
     {
-      get { return "bocReferenceValueCommand"; }
+      get { return "command"; }
     }
   }
 }

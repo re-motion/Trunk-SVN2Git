@@ -397,7 +397,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       var renderer = new BocAutoCompleteReferenceValueRenderer (
           HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
 
-      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
+      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
@@ -414,7 +414,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       var renderer = new BocAutoCompleteReferenceValueRenderer (
           HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
-      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
+      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       if (Control.IsCommandEnabled (Control.IsReadOnly))
       {
         var link = parent.GetAssertedChildElement ("a", 0);
-        link.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
+        link.AssertAttributeValueEquals ("class", "command");
         link.AssertAttributeValueEquals ("href", "#");
         link.AssertAttributeValueEquals ("onclick", "");
         link.AssertChildElementCount (1);
@@ -462,7 +462,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         if (wrapNonCommandIcon)
         {
           var span = parent.GetAssertedChildElement ("span", 0);
-          span.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueCommand");
+          span.AssertAttributeValueEquals ("class", "command");
 
           iconParent = span;
         }
@@ -476,11 +476,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private void AssertReadOnlyContent (XmlNode parent)
     {
       var span = parent.GetAssertedChildElement ("span", 0);
-      span.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueContent");
+      span.AssertAttributeValueEquals ("class", "body");
       span.AssertChildElementCount (Control.HasOptionsMenu ? 2 : 1);
 
       var commandSpan = span.GetAssertedChildElement ("span", 0);
-      commandSpan.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueCommand");
+      commandSpan.AssertAttributeValueEquals ("class", "command");
       commandSpan.AssertChildElementCount (1);
 
       var innerSpan = commandSpan.GetAssertedChildElement ("span", 0);
@@ -491,7 +491,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       if (Control.HasOptionsMenu)
       {
         var wrapperSpan = span.GetAssertedChildElement ("span", 1);
-        wrapperSpan.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueOptionsMenu");
+        wrapperSpan.AssertAttributeValueEquals ("class", "optionsMenu");
         wrapperSpan.AssertChildElementCount (0);
         wrapperSpan.AssertTextNode ("DropDownMenu", 0);
       }
@@ -529,7 +529,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private void AssertControl (XmlNode containerDiv, bool withIcon, OptionMenuConfiguration optionMenuConfiguration)
     {
       var contentDiv = containerDiv.GetAssertedChildElement ("span", 0);
-      contentDiv.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueContent");
+      contentDiv.AssertAttributeValueEquals ("class", "body");
 
       if (withIcon)
         AssertIcon (contentDiv, true);
@@ -553,7 +553,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       if (optionMenuConfiguration == OptionMenuConfiguration.SeparateOptionsMenu)
       {
         var optionsMenuDiv = contentDiv.GetAssertedChildElement ("span", 1);
-        optionsMenuDiv.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueOptionsMenu");
+        optionsMenuDiv.AssertAttributeValueEquals ("class", "optionsMenu");
         optionsMenuDiv.AssertTextNode ("DropDownMenu", 0);
       }
     }
