@@ -108,12 +108,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private void RenderEditModeValue (HtmlTextWriter writer, DropDownList dropDownList)
     {
       dropDownList.RenderControl (writer);
-
-      RenderEditModeValueExtension (writer);
-    }
-
-    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
-    {
     }
 
     private DropDownList GetDropDownList ()

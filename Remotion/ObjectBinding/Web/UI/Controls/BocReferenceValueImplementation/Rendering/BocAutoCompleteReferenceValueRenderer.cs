@@ -178,12 +178,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       var hiddenField = GetHiddenField();
       hiddenField.RenderControl (writer);
-
-      RenderEditModeValueExtension (writer);
-    }
-
-    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
-    {
     }
 
     private void RenderDropdownButton (HtmlTextWriter writer)

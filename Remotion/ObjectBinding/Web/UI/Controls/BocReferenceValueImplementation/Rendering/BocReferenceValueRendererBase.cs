@@ -29,12 +29,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
+      RenderContents(writer);
+
+      writer.RenderEndTag ();
+    }
+
+    protected virtual void RenderContents (HtmlTextWriter writer)
+    {
       if (EmbedInOptionsMenu)
         RenderContentsWithIntegratedOptionsMenu (writer);
       else
         RenderContentsWithSeparateOptionsMenu (writer);
-
-      writer.RenderEndTag ();
     }
 
     private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
