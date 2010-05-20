@@ -56,14 +56,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
-
-      string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
-      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
-      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
-
-      string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
-      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      RegisterJavaScriptFiles(htmlHeadAppender);
+      RegisterStylesheets(htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -72,15 +66,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       RegisterAdjustLayoutScript ();
 
-      AddAttributesToRender (writer, false);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      base.Render (writer);
+    }
 
-      if (EmbedInOptionsMenu)
-        RenderContentsWithIntegratedOptionsMenu (writer);
-      else
-        RenderContentsWithSeparateOptionsMenu (writer);
+    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    {
+      string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
+    }
 
-      writer.RenderEndTag();
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
+    {
+      string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     private void RegisterAdjustLayoutScript ()
@@ -92,30 +92,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           string.Format ("BocBrowserCompatibility.AdjustReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
-    private DropDownList GetDropDownList ()
-    {
-      var dropDownList = _dropDownListFactoryMethod();
-      dropDownList.ID = Control.DropDownListUniqueID;
-      dropDownList.EnableViewState = false;
-      dropDownList.Page = Control.Page.WrappedInstance;
-      Control.PopulateDropDownList (dropDownList);
-
-      dropDownList.Enabled = Control.Enabled;
-      dropDownList.Height = Unit.Empty;
-      dropDownList.Width = Unit.Empty;
-      dropDownList.ApplyStyle (Control.CommonStyle);
-      Control.DropDownListStyle.ApplyStyle (dropDownList);
-
-      return dropDownList;
-    }
-
-    protected override void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       DropDownList dropDownList = GetDropDownList();
       RenderEditModeValue (writer, dropDownList);
     }
 
-    protected override void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
       DropDownList dropDownList = GetDropDownList ();
       dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
@@ -131,6 +114,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
+    }
+
+    private DropDownList GetDropDownList ()
+    {
+      var dropDownList = _dropDownListFactoryMethod ();
+      dropDownList.ID = Control.DropDownListUniqueID;
+      dropDownList.EnableViewState = false;
+      dropDownList.Page = Control.Page.WrappedInstance;
+      Control.PopulateDropDownList (dropDownList);
+
+      dropDownList.Enabled = Control.Enabled;
+      dropDownList.Height = Unit.Empty;
+      dropDownList.Width = Unit.Empty;
+      dropDownList.ApplyStyle (Control.CommonStyle);
+      Control.DropDownListStyle.ApplyStyle (dropDownList);
+
+      return dropDownList;
     }
 
     public override string CssClassBase

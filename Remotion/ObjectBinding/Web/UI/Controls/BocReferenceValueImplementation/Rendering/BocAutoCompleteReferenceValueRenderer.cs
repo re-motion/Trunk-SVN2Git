@@ -36,6 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </remarks>
   public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>
   {
+    private readonly Func<TextBox> _textBoxFactory;
+
     public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory)
       : this (context, control, resourceUrlFactory, () => new TextBox ())
     {
@@ -45,10 +47,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       : base (context, control, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
-      TextBoxFactory = textBoxFactory;
+      _textBoxFactory = textBoxFactory;
     }
-
-    private Func<TextBox> TextBoxFactory { get; set; }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
@@ -57,6 +57,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
       RegisterJavaScriptFiles (htmlHeadAppender);
       RegisterStylesheets (htmlHeadAppender);
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterBindScript();
+      RegisterAdjustLayoutScript ();
+
+      base.Render (writer);
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
@@ -96,24 +106,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.jquery.css"),
           HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      RegisterBindScript();
-      RegisterAdjustLayoutScript ();
-
-      AddAttributesToRender (writer, false);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
-      if (EmbedInOptionsMenu)
-        RenderContentsWithIntegratedOptionsMenu (writer);
-      else
-        RenderContentsWithSeparateOptionsMenu (writer);
-
-      writer.RenderEndTag();
     }
 
     private void RegisterBindScript ()
@@ -161,13 +153,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           string.Format ("BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
-    protected override void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       TextBox textBox = GetTextBox ();
       RenderEditModeValue (writer, textBox);
     }
 
-    protected override void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
       TextBox textBox = GetTextBox ();
       textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
@@ -184,25 +176,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (Control.Enabled)
         RenderDropdownButton (writer);
 
-      RenderHiddenField (writer);
+      var hiddenField = GetHiddenField();
+      hiddenField.RenderControl (writer);
 
       RenderEditModeValueExtension (writer);
     }
 
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
-    }
-
-    private void RenderHiddenField (HtmlTextWriter writer)
-    {
-      var hiddenField = new HiddenField
-                        {
-                            ID = Control.HiddenFieldUniqueID,
-                            Page = Control.Page.WrappedInstance,
-                            EnableViewState = true,
-                            Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString
-                        };
-      hiddenField.RenderControl (writer);
     }
 
     private void RenderDropdownButton (HtmlTextWriter writer)
@@ -216,9 +197,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       writer.RenderEndTag();
     }
 
+    private HiddenField GetHiddenField ()
+    {
+      return new HiddenField
+      {
+        ID = Control.HiddenFieldUniqueID,
+        Page = Control.Page.WrappedInstance,
+        EnableViewState = true,
+        Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString
+      };
+    }
+
     private TextBox GetTextBox ()
     {
-      var textBox = TextBoxFactory();
+      var textBox = _textBoxFactory();
       textBox.ID = Control.TextBoxUniqueID;
       textBox.Text = Control.GetLabelText();
       textBox.Enabled = Control.Enabled;

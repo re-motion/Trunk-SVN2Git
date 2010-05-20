@@ -22,7 +22,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected abstract void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer);
     protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer);
 
-    protected void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      if (EmbedInOptionsMenu)
+        RenderContentsWithIntegratedOptionsMenu (writer);
+      else
+        RenderContentsWithSeparateOptionsMenu (writer);
+
+      writer.RenderEndTag ();
+    }
+
+    private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
@@ -31,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
-    protected void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
+    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
@@ -189,7 +204,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return label;
     }
 
-    protected bool EmbedInOptionsMenu
+    private bool EmbedInOptionsMenu
     {
       get
       {
