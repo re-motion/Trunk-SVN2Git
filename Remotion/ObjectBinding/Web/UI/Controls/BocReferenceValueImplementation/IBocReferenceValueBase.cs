@@ -21,5 +21,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     IconInfo GetIcon ();
     string GetLabelText ();
     string IconClientID { get; }
+    string BusinessObjectUniqueIdentifier { get; }
   }
 }

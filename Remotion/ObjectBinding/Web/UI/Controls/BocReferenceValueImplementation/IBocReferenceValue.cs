@@ -21,8 +21,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public interface IBocReferenceValue : IBocReferenceValueBase
   {
-    string BusinessObjectUniqueIdentifier { get; }
-
     Style CommonStyle { get; }
     void PopulateDropDownList (DropDownList dropDownList);
     DropDownListStyle DropDownListStyle { get; }

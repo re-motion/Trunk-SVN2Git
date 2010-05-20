@@ -1,6 +1,8 @@
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
@@ -17,7 +19,137 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
     }
 
-    protected Image GetIcon ()
+    protected abstract void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer);
+    protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer);
+    protected abstract Label GetLabel ();
+
+    protected void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    {
+      Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
+      Control.OptionsMenu.RenderControl (writer);
+      Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
+    }
+
+    protected void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
+    {
+      Image icon = GetIcon ();
+      bool isReadOnly = Control.IsReadOnly;
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
+
+      string argument = string.Empty;
+      string postBackEvent = "";
+      if (!Control.IsDesignMode)
+        postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
+
+      if (isReadOnly)
+      {
+        RenderReadOnlyValue (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
+      }
+      else
+      {
+        if (icon.Visible)
+          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
+
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent ());
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+        RenderEditModeValueWithSeparateOptionsMenu (writer);
+
+        writer.RenderEndTag ();
+      }
+
+      bool hasOptionsMenu = Control.HasOptionsMenu;
+      if (hasOptionsMenu)
+      {
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassOptionsMenu);
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+        Control.OptionsMenu.Width = Control.OptionsMenuWidth;
+        Control.OptionsMenu.RenderControl (writer);
+
+        writer.RenderEndTag ();
+      }
+
+      writer.RenderEndTag ();
+    }
+
+    public void RenderOptionsMenuTitle (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      Image icon = GetIcon ();
+      bool isReadOnly = Control.IsReadOnly;
+
+      bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
+
+      string argument = string.Empty;
+      string postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
+
+      if (isReadOnly)
+      {
+        RenderReadOnlyValue (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+      }
+      else
+      {
+        if (icon.Visible)
+          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent ());
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+        RenderEditModeValueWithIntegratedOptionsMenu (writer);
+
+        writer.RenderEndTag ();
+      }
+    }
+
+    private void RenderSeparateIcon (HtmlTextWriter writer, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    {
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
+      if (isCommandEnabled)
+      {
+        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
+        if (!string.IsNullOrEmpty (Control.Command.ToolTip))
+          icon.ToolTip = Control.Command.ToolTip;
+      }
+      else
+      {
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      }
+      icon.RenderControl (writer);
+
+      if (isCommandEnabled)
+        Control.Command.RenderEnd (writer);
+      else
+        writer.RenderEndTag ();
+    }
+
+    private void RenderReadOnlyValue (HtmlTextWriter writer, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    {
+      Label label = GetLabel ();
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
+      if (isCommandEnabled)
+        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
+      else
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      if (icon.Visible)
+        icon.RenderControl (writer);
+      label.RenderControl (writer);
+
+      if (isCommandEnabled)
+        Control.Command.RenderEnd (writer);
+      else
+        writer.RenderEndTag ();
+    }
+
+    private Image GetIcon ()
     {
       var icon = new Image { EnableViewState = false, ID = Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
       if (Control.EnableIcon && Control.Property != null)
@@ -45,9 +177,57 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return icon;
     }
 
-    protected string CssClassContent
+    protected bool EmbedInOptionsMenu
+    {
+      get
+      {
+        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
+               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
+      }
+    }
+
+    private string GetCssClassInnerContent ()
+    {
+      if (!Control.HasOptionsMenu)
+        return CssClassInnerContent + " " + CssClassWithoutOptionsMenu;
+      if (EmbedInOptionsMenu)
+        return CssClassInnerContent + " " + CssClassEmbeddedOptionsMenu;
+      return CssClassInnerContent + " " + CssClassSeparateOptionsMenu;
+    }
+
+    private string CssClassContent
     {
       get { return "body"; }
+    }
+
+    private string CssClassInnerContent
+    {
+      get { return "content"; }
+    }
+
+    private string CssClassSeparateOptionsMenu
+    {
+      get { return "separateOptionsMenu"; }
+    }
+
+    private string CssClassEmbeddedOptionsMenu
+    {
+      get { return "embeddedOptionsMenu"; }
+    }
+
+    private string CssClassWithoutOptionsMenu
+    {
+      get { return "withoutOptionsMenu"; }
+    }
+
+    private string CssClassOptionsMenu
+    {
+      get { return "optionsMenu"; }
+    }
+
+    private string CssClassCommand
+    {
+      get { return "command"; }
     }
   }
 }
