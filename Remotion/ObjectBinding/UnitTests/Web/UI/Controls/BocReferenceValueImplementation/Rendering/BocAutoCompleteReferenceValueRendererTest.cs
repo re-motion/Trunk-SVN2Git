@@ -533,16 +533,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         AssertIcon (contentDiv, true);
 
       var contentSpan = contentDiv.GetAssertedChildElement ("span", withIcon ? 1 : 0);
+      var iconQualifierCssClass = withIcon ? " hasIcon" : "";
       switch (optionMenuConfiguration)
       {
         case OptionMenuConfiguration.NoOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu" + iconQualifierCssClass);
           break;
         case OptionMenuConfiguration.SeparateOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content separateOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content separateOptionsMenu" + iconQualifierCssClass);
           break;
         case OptionMenuConfiguration.EmbeddedOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content embeddedOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content embeddedOptionsMenu" + iconQualifierCssClass);
           break;
       }
 
