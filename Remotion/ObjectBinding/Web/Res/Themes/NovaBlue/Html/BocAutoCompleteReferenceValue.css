@@ -30,15 +30,6 @@ body.mozilla span.bocAutoCompleteReferenceValue input
   height: 1.2em;
 }
 
-span.bocAutoCompleteReferenceValueDropDownList
-{
-	position: absolute;
-	height: 21px;
-	width: 100%;
-	white-space: nowrap;
-}
-
-
 span.bocAutoCompleteReferenceValueButton 
 {
   display: inline-block;
@@ -176,10 +167,12 @@ span.bocAutoCompleteReferenceValue span.content,
 span.bocAutoCompleteReferenceValue span.disabled span.content
 {
   position: absolute;
-  top: 0;
-  width: auto;
   display: inline-block;
+  top: 0;
   left: 22px; /* width of a.command icon + desired space between */
+	height: 21px;
+	width: auto;
+	white-space: nowrap;
 }
 
 span.bocAutoCompleteReferenceValue span.optionsMenu

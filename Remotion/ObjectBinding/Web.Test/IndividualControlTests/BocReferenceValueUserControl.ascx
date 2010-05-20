@@ -82,7 +82,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledPartnerField runat="server" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="False" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledPartnerField runat="server" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="true" EnableSelectStatement="False">
 
 <PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
@@ -100,7 +100,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="False" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="false" width="250px" EnableSelectStatement="False">
 <PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>

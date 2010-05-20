@@ -499,17 +499,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private void AssertDropDownListSpan (XmlNode contentSpan)
     {
-      var dropDownListSpan = contentSpan.GetAssertedChildElement ("span", 0);
-      dropDownListSpan.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueDropDownList");
-
-      var inputSpan = dropDownListSpan.GetAssertedChildElement ("span", 0);
+      var inputSpan = contentSpan.GetAssertedChildElement ("span", 0);
       inputSpan.AssertChildElementCount (0);
       inputSpan.AssertTextNode ("TextBox", 0);
 
       int hiddenFieldIndex = 1;
       if (Control.Enabled)
       {
-        var dropDownButton = dropDownListSpan.GetAssertedChildElement ("span", 1);
+        var dropDownButton = contentSpan.GetAssertedChildElement ("span", 1);
         dropDownButton.AssertAttributeValueEquals ("class", "bocAutoCompleteReferenceValueButton");
         dropDownButton.AssertChildElementCount (1);
 
@@ -520,7 +517,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         hiddenFieldIndex++;
       }
 
-      var hiddenField = dropDownListSpan.GetAssertedChildElement ("input", hiddenFieldIndex);
+      var hiddenField = contentSpan.GetAssertedChildElement ("input", hiddenFieldIndex);
       hiddenField.AssertAttributeValueEquals ("id", Control.HiddenFieldClientID);
       hiddenField.AssertAttributeValueEquals ("type", "hidden");
       hiddenField.AssertChildElementCount (0);

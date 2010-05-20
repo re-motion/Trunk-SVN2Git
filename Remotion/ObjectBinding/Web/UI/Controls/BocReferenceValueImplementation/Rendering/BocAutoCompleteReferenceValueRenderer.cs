@@ -170,12 +170,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RenderEditModeValue (HtmlTextWriter writer, TextBox textBox)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownList);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
       RenderEditableControl (writer, textBox);
-
-      writer.RenderEndTag();
 
       RenderEditModeValueExtension (writer);
     }
@@ -264,11 +259,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private string CssClassInput
     {
       get { return "bocAutoCompleteReferenceValueInput"; }
-    }
-
-    private string CssClassDropDownList
-    {
-      get { return "bocAutoCompleteReferenceValueDropDownList"; }
     }
   }
 }
