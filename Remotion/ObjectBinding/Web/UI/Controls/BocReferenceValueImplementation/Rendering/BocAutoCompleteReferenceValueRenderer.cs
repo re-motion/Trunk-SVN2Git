@@ -164,7 +164,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected override void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       TextBox textBox = GetTextBox ();
-      textBox.Page = Control.Page.WrappedInstance;
+      RenderEditModeValue (writer, textBox);
+    }
+
+    protected override void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    {
+      TextBox textBox = GetTextBox ();
+      textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
       RenderEditModeValue (writer, textBox);
     }
 
@@ -177,14 +183,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
-    }
-
-    protected override void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
-    {
-      TextBox textBox = GetTextBox ();
-      textBox.Page = Control.Page.WrappedInstance;
-      textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-      RenderEditModeValue (writer, textBox);
     }
 
     protected override Label GetLabel ()
@@ -236,13 +234,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       var textBox = TextBoxFactory();
       textBox.ID = Control.TextBoxUniqueID;
-      textBox.CssClass = CssClassInput;
       textBox.Text = Control.GetLabelText();
       textBox.Enabled = Control.Enabled;
-      textBox.Page = Control.Page.WrappedInstance;
       textBox.EnableViewState = false;
+      textBox.Page = Control.Page.WrappedInstance;
       textBox.ApplyStyle (Control.CommonStyle);
-      Control.TextBoxStyle.ApplyStyle (textBox);
+      Control.TextBoxStyle.ApplyStyle (textBox);   
       return textBox;
     }
 

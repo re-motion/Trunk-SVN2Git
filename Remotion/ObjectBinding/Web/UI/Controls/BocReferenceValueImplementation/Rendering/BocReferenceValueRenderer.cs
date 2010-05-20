@@ -97,6 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       var dropDownList = _dropDownListFactoryMethod();
       dropDownList.ID = Control.DropDownListUniqueID;
       dropDownList.EnableViewState = false;
+      dropDownList.Page = Control.Page.WrappedInstance;
       Control.PopulateDropDownList (dropDownList);
 
       dropDownList.Enabled = Control.Enabled;
@@ -120,14 +121,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected override void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       DropDownList dropDownList = GetDropDownList();
-      dropDownList.Page = Control.Page.WrappedInstance;
       RenderEditModeValue (writer, dropDownList);
     }
 
     protected override void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
       DropDownList dropDownList = GetDropDownList ();
-      dropDownList.Page = Control.Page.WrappedInstance;
       dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
       RenderEditModeValue (writer, dropDownList);
     }
