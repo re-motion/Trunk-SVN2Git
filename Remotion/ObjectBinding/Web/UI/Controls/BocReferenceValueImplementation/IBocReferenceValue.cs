@@ -30,7 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     string DropDownListClientID { get; }
     string DropDownListUniqueID { get; }
     string LabelClientID { get; }
-    string IconClientID { get; }
     string NullIdentifier { get; }
   }
 }

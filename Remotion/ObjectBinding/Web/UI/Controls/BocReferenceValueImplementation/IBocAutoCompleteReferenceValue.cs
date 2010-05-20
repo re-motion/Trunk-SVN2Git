@@ -25,7 +25,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     string TextBoxClientID { get; }
     string HiddenFieldUniqueID { get; }
     string HiddenFieldClientID { get; }
-    string IconUniqueID { get; }
     string BusinessObjectUniqueIdentifier { get; }
     string DropDownButtonClientID { get; }
     string ServicePath { get; }

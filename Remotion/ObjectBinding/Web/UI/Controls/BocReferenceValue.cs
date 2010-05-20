@@ -757,12 +757,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocReferenceValue.LabelClientID
     {
-      get { return ClientID + "_Boc_Label"; }
+      get { return ClientID +  ClientIDSeparator + "Boc_Label"; }
     }
 
-    string IBocReferenceValue.IconClientID
+    string IBocReferenceValueBase.IconClientID
     {
-      get { return ClientID + "_Boc_Icon"; }
+      get { return ClientID +  ClientIDSeparator + "Boc_Icon"; }
     }
 
     string IBocReferenceValue.NullIdentifier

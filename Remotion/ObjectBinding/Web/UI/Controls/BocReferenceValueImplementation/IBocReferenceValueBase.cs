@@ -4,6 +4,9 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
+  /// <summary>
+  /// Exposes properties relevant to rendering controls that implement <see cref="IBocReferenceValue"/> or <see cref="IBocAutoCompleteReferenceValue"/>.
+  /// </summary>
   public interface IBocReferenceValueBase : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {
     bool? HasValueEmbeddedInsideOptionsMenu { get; }
@@ -17,5 +20,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     bool IsCommandEnabled (bool readOnly);
     IconInfo GetIcon ();
     string GetLabelText ();
+    string IconClientID { get; }
   }
 }

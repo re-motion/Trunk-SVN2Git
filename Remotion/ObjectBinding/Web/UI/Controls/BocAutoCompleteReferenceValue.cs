@@ -497,9 +497,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
     }
 
-    string IBocAutoCompleteReferenceValue.IconUniqueID
+    string IBocReferenceValueBase.IconClientID
     {
-      get { return UniqueID + IdSeparator + c_iconIDPostfix; }
+      get { return ClientID + ClientIDSeparator + c_iconIDPostfix; }
     }
 
     bool IBocRenderableControl.IsDesignMode

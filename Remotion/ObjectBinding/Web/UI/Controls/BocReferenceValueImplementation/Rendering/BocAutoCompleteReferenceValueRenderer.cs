@@ -27,7 +27,14 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
-  public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
+  /// <summary>
+  /// Responsible for rendering <see cref="BocAutoCompleteReferenceValue"/> controls in Standards Mode.
+  /// </summary>
+  /// <remarks>
+  /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.TextBox"/> and a pop-up element.</para>
+  /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
+  /// </remarks>
+  public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>
   {
     public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory)
       : this (context, control, resourceUrlFactory, () => new TextBox ())
@@ -319,34 +326,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return label;
     }
 
-    private Image GetIcon ()
-    {
-      var icon = new Image { EnableViewState = false, ID = Control.IconUniqueID, GenerateEmptyAlternateText = true, Visible = false };
-      if (Control.EnableIcon && Control.Property != null)
-      {
-        IconInfo iconInfo = Control.GetIcon();
-
-        if (iconInfo != null)
-        {
-          icon.ImageUrl = iconInfo.Url;
-          icon.Width = iconInfo.Width;
-          icon.Height = iconInfo.Height;
-
-          icon.Visible = true;
-          icon.CssClass = CssClassContent;
-
-          if (Control.IsCommandEnabled (Control.IsReadOnly))
-          {
-            if (string.IsNullOrEmpty (iconInfo.AlternateText))
-              icon.AlternateText = HttpUtility.HtmlEncode (Control.GetLabelText());
-            else
-              icon.AlternateText = iconInfo.AlternateText;
-          }
-        }
-      }
-      return icon;
-    }
-
     private void RenderEditableControl (HtmlTextWriter writer, TextBox textBox)
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
@@ -428,11 +407,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public string CssClassInput
     {
       get { return "bocAutoCompleteReferenceValueInput"; }
-    }
-
-    public string CssClassContent
-    {
-      get { return "body"; }
     }
 
     public string CssClassInnerContent

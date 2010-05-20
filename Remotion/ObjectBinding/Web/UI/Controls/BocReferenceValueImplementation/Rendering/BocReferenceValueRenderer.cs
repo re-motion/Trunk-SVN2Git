@@ -22,18 +22,17 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.
+  /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Standards Mode.
   /// </summary>
   /// <remarks>
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>
+  public class BocReferenceValueRenderer : BocReferenceValueRendererBase<IBocReferenceValue>
   {
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
@@ -130,34 +129,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       label.ApplyStyle (Control.LabelStyle);
       label.Text = HttpUtility.HtmlEncode (Control.GetLabelText());
       return label;
-    }
-
-    private Image GetIcon ()
-    {
-      var icon = new Image { EnableViewState = false, ID = Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
-      if (Control.EnableIcon && Control.Property != null)
-      {
-        IconInfo iconInfo = Control.GetIcon();
-
-        if (iconInfo != null)
-        {
-          icon.ImageUrl = iconInfo.Url;
-          icon.Width = iconInfo.Width;
-          icon.Height = iconInfo.Height;
-
-          icon.Visible = true;
-          icon.CssClass = CssClassContent;
-
-          if (Control.IsCommandEnabled (Control.IsReadOnly))
-          {
-            if (string.IsNullOrEmpty (iconInfo.AlternateText))
-              icon.AlternateText = HttpUtility.HtmlEncode (Control.GetLabelText());
-            else
-              icon.AlternateText = iconInfo.AlternateText;
-          }
-        }
-      }
-      return icon;
     }
 
     private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
@@ -331,11 +302,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public override string CssClassBase
     {
       get { return "bocReferenceValue"; }
-    }
-
-    public string CssClassContent
-    {
-      get { return "body"; }
     }
 
     private string CssClassInnerContent
