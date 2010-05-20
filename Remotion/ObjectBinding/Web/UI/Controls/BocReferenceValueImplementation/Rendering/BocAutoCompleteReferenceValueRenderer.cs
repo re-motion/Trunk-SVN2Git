@@ -176,26 +176,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RenderEditModeValue (HtmlTextWriter writer, TextBox textBox)
     {
-      RenderEditableControl (writer, textBox);
-
-      RenderEditModeValueExtension (writer);
-    }
-
-    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
-    {
-    }
-
-    protected override Label GetLabel ()
-    {
-      var label = new Label { ID = Control.TextBoxUniqueID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
-      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText ());
-      return label;
-    }
-
-    private void RenderEditableControl (HtmlTextWriter writer, TextBox textBox)
-    {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
       textBox.RenderControl (writer);
@@ -205,6 +185,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         RenderDropdownButton (writer);
 
       RenderHiddenField (writer);
+
+      RenderEditModeValueExtension (writer);
+    }
+
+    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
+    {
     }
 
     private void RenderHiddenField (HtmlTextWriter writer)

@@ -21,13 +21,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public interface IBocReferenceValue : IBocReferenceValueBase
   {
-    Style CommonStyle { get; }
     void PopulateDropDownList (DropDownList dropDownList);
     DropDownListStyle DropDownListStyle { get; }
-    Style LabelStyle { get; }
     string DropDownListClientID { get; }
     string DropDownListUniqueID { get; }
-    string LabelClientID { get; }
-    string NullIdentifier { get; }
   }
 }

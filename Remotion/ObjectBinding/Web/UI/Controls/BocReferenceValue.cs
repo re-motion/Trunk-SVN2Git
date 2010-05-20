@@ -755,7 +755,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return ClientID + ClientIDSeparator + c_dropDownListIDPostfix; }
     }
 
-    string IBocReferenceValue.LabelClientID
+    string IBocReferenceValueBase.LabelClientID
     {
       get { return ClientID +  ClientIDSeparator + "Boc_Label"; }
     }
@@ -763,11 +763,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocReferenceValueBase.IconClientID
     {
       get { return ClientID +  ClientIDSeparator + "Boc_Icon"; }
-    }
-
-    string IBocReferenceValue.NullIdentifier
-    {
-      get { return c_nullIdentifier; }
     }
   }
 }

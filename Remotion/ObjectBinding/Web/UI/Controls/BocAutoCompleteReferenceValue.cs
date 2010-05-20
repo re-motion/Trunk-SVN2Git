@@ -502,6 +502,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return ClientID + ClientIDSeparator + c_iconIDPostfix; }
     }
 
+    string IBocReferenceValueBase.LabelClientID
+    {
+      get { return ClientID + ClientIDSeparator + "Boc_Label"; }
+    }
+
     bool IBocRenderableControl.IsDesignMode
     {
       get { return base.IsDesignMode; }

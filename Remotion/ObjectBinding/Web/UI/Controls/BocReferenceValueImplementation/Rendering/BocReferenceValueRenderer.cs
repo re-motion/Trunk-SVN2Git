@@ -109,15 +109,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return dropDownList;
     }
 
-    protected override Label GetLabel ()
-    {
-      var label = new Label { ID = Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
-      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText());
-      return label;
-    }
-
     protected override void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
       DropDownList dropDownList = GetDropDownList();

@@ -21,10 +21,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected abstract void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer);
     protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer);
-    protected abstract Label GetLabel ();
 
     protected void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
       Control.OptionsMenu.RenderControl (writer);
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
@@ -32,6 +33,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Image icon = GetIcon ();
       bool isReadOnly = Control.IsReadOnly;
 
@@ -175,6 +178,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         }
       }
       return icon;
+    }
+
+    private Label GetLabel ()
+    {
+      var label = new Label { ID = Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
+      label.ApplyStyle (Control.CommonStyle);
+      label.ApplyStyle (Control.LabelStyle);
+      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText ());
+      return label;
     }
 
     protected bool EmbedInOptionsMenu
