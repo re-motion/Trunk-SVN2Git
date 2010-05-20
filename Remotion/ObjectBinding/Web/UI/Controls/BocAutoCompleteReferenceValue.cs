@@ -257,24 +257,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    string IBocAutoCompleteReferenceValue.GetLabelText ()
+    string IBocReferenceValueBase.GetLabelText ()
     {
       string text;
       if (InternalValue != null)
-        text = HttpUtility.HtmlEncode (_displayName);
+        text = _displayName;
       else
         text = String.Empty;
-      if (StringUtility.IsNullOrEmpty (text))
+      if (StringUtility.IsNullOrEmpty (text) && IsDesignMode)
       {
-        if (IsDesignMode)
-        {
-          text = c_designModeEmptyLabelContents;
-          //  Too long, can't resize in designer to less than the content's width
-          //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-        }
-        else
-          text = "&nbsp;";
+        text = c_designModeEmptyLabelContents;
+        //  Too long, can't resize in designer to less than the content's width
+        //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
+
       return text;
     }
 
@@ -318,17 +314,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _displayName = null;
         }
       }
-    }
-
-    /// <summary>
-    ///   Gets the <see cref="IBusinessObject.DisplayName"/> of the selected 
-    ///   <see cref="IBusinessObjectWithIdentity"/>.
-    /// </summary>
-    /// <value> A string or <see langword="null"/> if no  <see cref="IBusinessObjectWithIdentity"/> is selected. </value>
-    [Browsable (false)]
-    public string BusinessObjectDisplayName
-    {
-      get { return _displayName; }
     }
 
     /// <summary> 
@@ -482,7 +467,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _args = value; }
     }
 
-    bool IBocAutoCompleteReferenceValue.IsCommandEnabled (bool readOnly)
+    bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
     {
       return IsCommandEnabled (readOnly);
     }
@@ -522,17 +507,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return base.IsDesignMode; }
     }
 
-    IconInfo IBocAutoCompleteReferenceValue.GetIcon ()
+    IconInfo IBocReferenceValueBase.GetIcon ()
     {
       return GetIcon (Value, Property == null ? null : Property.ReferenceClass.BusinessObjectProvider);
     }
 
-    DropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
+    DropDownMenu IBocReferenceValueBase.OptionsMenu
     {
       get { return OptionsMenu; }
     }
 
-    bool IBocAutoCompleteReferenceValue.HasOptionsMenu
+    bool IBocReferenceValueBase.HasOptionsMenu
     {
       get { return HasOptionsMenu; }
     }

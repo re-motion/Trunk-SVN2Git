@@ -315,7 +315,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       var label = new Label { ID = Control.TextBoxUniqueID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
       label.ApplyStyle (Control.CommonStyle);
       label.ApplyStyle (Control.LabelStyle);
-      label.Text = Control.GetLabelText();
+      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText ());
       return label;
     }
 
@@ -338,12 +338,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           if (Control.IsCommandEnabled (Control.IsReadOnly))
           {
             if (string.IsNullOrEmpty (iconInfo.AlternateText))
-            {
-              if (Control.Value == null)
-                icon.AlternateText = String.Empty;
-              else
-                icon.AlternateText = HttpUtility.HtmlEncode (Control.BusinessObjectDisplayName);
-            }
+              icon.AlternateText = HttpUtility.HtmlEncode (Control.GetLabelText());
             else
               icon.AlternateText = iconInfo.AlternateText;
           }
@@ -393,7 +388,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       var textBox = TextBoxFactory();
       textBox.ID = Control.TextBoxUniqueID;
       textBox.CssClass = CssClassInput;
-      textBox.Text = Control.BusinessObjectDisplayName;
+      textBox.Text = Control.GetLabelText();
       textBox.Enabled = Control.Enabled;
       textBox.Page = Control.Page.WrappedInstance;
       textBox.EnableViewState = false;

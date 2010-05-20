@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       var label = new Label { ID = Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
       label.ApplyStyle (Control.CommonStyle);
       label.ApplyStyle (Control.LabelStyle);
-      label.Text = Control.GetLabelText();
+      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText());
       return label;
     }
 
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       var icon = new Image { EnableViewState = false, ID = Control.IconClientID, Visible = false };
       if (Control.EnableIcon && Control.Property != null)
       {
-        IconInfo iconInfo = Control.GetIcon (Control.Value, Control.Property.ReferenceClass.BusinessObjectProvider);
+        IconInfo iconInfo = Control.GetIcon ();
 
         if (iconInfo != null)
         {
@@ -144,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
               if (Control.Value == null)
                 icon.AlternateText = String.Empty;
               else
-                icon.AlternateText = HttpUtility.HtmlEncode (Control.Value.DisplayNameSafe);
+                icon.AlternateText = HttpUtility.HtmlEncode (Control.GetLabelText());
             }
             else
               icon.AlternateText = iconInfo.AlternateText;

@@ -16,20 +16,16 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
-  public interface IBocAutoCompleteReferenceValue : IBocRenderableControl, IBusinessObjectBoundEditableWebControl
+  public interface IBocAutoCompleteReferenceValue : IBocReferenceValueBase
   {
-    BocCommand Command { get; }
-    DropDownMenu OptionsMenu { get; }
     string TextBoxUniqueID { get; }
     string TextBoxClientID { get; }
     string HiddenFieldUniqueID { get; }
     string HiddenFieldClientID { get; }
     string IconUniqueID { get; }
-    string BusinessObjectDisplayName { get; }
     string BusinessObjectUniqueIdentifier { get; }
     string DropDownButtonClientID { get; }
     string ServicePath { get; }
@@ -55,20 +51,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// </remarks>
     Style CommonStyle { get; }
 
-    bool? HasValueEmbeddedInsideOptionsMenu { get; }
-    bool HasOptionsMenu { get; }
-    Unit OptionsMenuWidth { get; }
-    bool EnableIcon { get; }
-    bool IsCommandEnabled (bool readOnly);
-    IconInfo GetIcon();
-
-    new IBusinessObjectReferenceProperty Property { get; }
-    new IBusinessObjectWithIdentity Value { get; }
     string NullValueString { get; }
     int? CompletionSetCount { get; }
     int CompletionInterval { get; }
     int SuggestionInterval { get; }
     string Args { get; }
-    string GetLabelText ();
   }
 }

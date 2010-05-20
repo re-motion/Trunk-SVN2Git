@@ -519,23 +519,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    string IBocReferenceValue.GetLabelText ()
+    string IBocReferenceValueBase.GetLabelText ()
     {
       string text;
       if (InternalValue != null)
-        text = HttpUtility.HtmlEncode (_displayName);
+        text = _displayName;
       else
         text = String.Empty;
-      if (StringUtility.IsNullOrEmpty (text))
+      if (StringUtility.IsNullOrEmpty (text) && IsDesignMode)
       {
-        if (IsDesignMode)
-        {
-          text = c_designModeEmptyLabelContents;
-          //  Too long, can't resize in designer to less than the content's width
-          //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-        }
-        else
-          text = "&nbsp;";
+        text = c_designModeEmptyLabelContents;
+        //  Too long, can't resize in designer to less than the content's width
+        //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
       return text;
     }
@@ -735,24 +730,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsDesignMode; }
     }
 
-    bool IBocReferenceValue.HasOptionsMenu
+    bool IBocReferenceValueBase.HasOptionsMenu
     {
       get { return HasOptionsMenu; }
     }
 
-    bool IBocReferenceValue.IsCommandEnabled (bool readOnly)
+    bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
     {
       return IsCommandEnabled (readOnly);
     }
 
-    DropDownMenu IBocReferenceValue.OptionsMenu
+    DropDownMenu IBocReferenceValueBase.OptionsMenu
     {
       get { return OptionsMenu; }
     }
 
-    IconInfo IBocReferenceValue.GetIcon (IBusinessObject value, IBusinessObjectProvider provider)
+    IconInfo IBocReferenceValueBase.GetIcon ()
     {
-      return GetIcon (value, provider);
+      return GetIcon (Value, Property == null ? null : Property.ReferenceClass.BusinessObjectProvider);
     }
 
     public string DropDownListClientID

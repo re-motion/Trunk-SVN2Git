@@ -26,6 +26,7 @@ using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -292,7 +293,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       state[2] = "DisplayName";
 
       _control.LoadControlState (state);
-      Assert.That (_control.BusinessObjectDisplayName, Is.EqualTo ("DisplayName"));
+      Assert.That (((IBocReferenceValueBase)_control).GetLabelText(), Is.EqualTo ("DisplayName"));
       Assert.That (_control.BusinessObjectUniqueIdentifier, Is.EqualTo (uniqueIdentifier.ToString()));
     }
 
@@ -363,7 +364,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
       Assert.That (_control.IsDirty);
       Assert.IsTrue (result);
-      Assert.That (_control.BusinessObjectDisplayName, Is.EqualTo ("NewValue"));
+      Assert.That (((IBocReferenceValueBase) _control).GetLabelText(), Is.EqualTo ("NewValue"));
       Assert.That (_control.BusinessObjectUniqueIdentifier, Is.EqualTo (value.ToString()));
     }
 

@@ -597,7 +597,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     protected void SetUpGetIconExpectations ()
     {
-      Control.Expect (mock => mock.GetIcon (null, null)).IgnoreArguments().Return (new IconInfo ("~/Images/NullIcon.gif"));
+      Control.Expect (mock => mock.GetIcon ()).Return (new IconInfo ("~/Images/NullIcon.gif"));
     }
 
     protected void SetUpClientScriptExpectations ()
