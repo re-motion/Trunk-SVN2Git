@@ -412,7 +412,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       //var dirScript = new ScriptFunction<object, object> (
       //  _scriptContext, ScriptLanguageType.Python,

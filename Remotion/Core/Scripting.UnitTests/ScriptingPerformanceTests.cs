@@ -52,7 +52,7 @@ def PropertyPathAccess(cascade) :
       privateScriptEnvironment.ImportIifHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -136,7 +136,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -186,7 +186,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -225,7 +225,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -262,7 +262,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
@@ -300,7 +300,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
 
-      privateScriptEnvironment.Import (typeof (Cascade).Assembly.FullName, typeof (Cascade).Namespace, typeof (Cascade).Name);
+      privateScriptEnvironment.Import (typeof (Cascade).Assembly.GetName().Name, typeof (Cascade).Namespace, typeof (Cascade).Name);
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
           _scriptContext,
