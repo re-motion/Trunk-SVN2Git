@@ -3,15 +3,31 @@
 span.bocTextValue
 {
   width: 15em;
+  min-height: 1.7em;
   position: relative;
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
 }
 
+span.bocTextValue .content
+{
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0.5em;
+  width: auto;
+}
+
+.bocTextValue.readOnly .content
+{
+  position: static;
+}
+
 span.bocTextValue input
 {
-    width: 100%;
+   width: 100%;
+   display: inline-block;
 }
 
 .bocTextValue.readOnly

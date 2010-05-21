@@ -9,6 +9,20 @@ span.bocMultilineTextValue
   overflow: hidden;
 }
 
+span.bocMultilineTextValue .content
+{
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0.5em;
+  width: auto;
+}
+
+.bocMultilineTextValue.readOnly .content
+{
+  position: static;
+}
+
 span.bocMultilineTextValue textarea
 {
   width: 100%;
