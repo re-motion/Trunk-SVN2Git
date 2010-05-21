@@ -23,7 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {
-  //TODO: doc
+  /// <summary>
+  /// Default implementation of the <see cref="IBusinessObjectStringFormatterService"/>. This implementation uses the .NET infrastructure 
+  /// and the API's provided by the business-object interfaces to convert an <see cref="IBusinessObjectProperty"/>'s value to a <see cref="string"/>.
+  /// </summary>
   public class BusinessObjectStringFormatterService : IBusinessObjectStringFormatterService
   {
     /// <summary> 
@@ -68,7 +71,7 @@ namespace Remotion.ObjectBinding
     ///   </item>
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectReferenceProperty"/> interface.</term>
-    ///     <description> The value's <see cref="IBusinessObject.DisplayName"/> is returned.  </description>
+    ///     <description> The value's <see cref="IBusinessObject.DisplayNameSafe"/> is returned.  </description>
     ///   </item>
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectStringProperty"/> interface.</term>
@@ -214,7 +217,7 @@ namespace Remotion.ObjectBinding
     {
       if (value == null)
         return string.Empty;
-      return ((IBusinessObject) value).DisplayName;
+      return ((IBusinessObject) value).DisplayNameSafe;
     }
 
     private string GetStringValueForStringProperty (object value)

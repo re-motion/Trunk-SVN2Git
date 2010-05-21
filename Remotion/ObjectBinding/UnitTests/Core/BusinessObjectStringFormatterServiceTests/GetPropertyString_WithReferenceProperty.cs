@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
       IBusinessObject mockValue = _mockRepository.StrictMock<IBusinessObject>();
       Expect.Call (_mockProperty.IsList).Return (false);
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (mockValue);
-      Expect.Call (mockValue.DisplayName).Return ("ExpectedStringValue");
+      Expect.Call (mockValue.DisplayNameSafe).Return ("ExpectedStringValue");
       _mockRepository.ReplayAll ();
 
       string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
       IBusinessObjectWithIdentity mockValue = _mockRepository.StrictMock<IBusinessObjectWithIdentity> ();
       Expect.Call (_mockProperty.IsList).Return (false);
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (mockValue);
-      Expect.Call (mockValue.DisplayName).Return ("ExpectedStringValue");
+      Expect.Call (mockValue.DisplayNameSafe).Return ("ExpectedStringValue");
       _mockRepository.ReplayAll ();
 
       string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
