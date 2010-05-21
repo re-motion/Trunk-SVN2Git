@@ -742,9 +742,6 @@
         var repositionTimer = null;
 
         function applyPositionToDropDown() {
-            
-            console.log($(input).attr('id'));
-
             var offset = $(input).offset();
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
