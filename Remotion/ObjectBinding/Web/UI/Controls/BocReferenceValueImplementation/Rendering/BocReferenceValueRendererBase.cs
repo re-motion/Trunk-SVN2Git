@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       RenderContents(writer);

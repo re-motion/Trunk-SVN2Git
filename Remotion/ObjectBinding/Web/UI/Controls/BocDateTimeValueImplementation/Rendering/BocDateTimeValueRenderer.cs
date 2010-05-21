@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
       RegisterAdjustLayoutScript();
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (Control.IsReadOnly)

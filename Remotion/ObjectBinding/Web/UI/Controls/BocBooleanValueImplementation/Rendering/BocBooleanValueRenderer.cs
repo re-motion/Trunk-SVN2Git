@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = Control.GetLabelClientID() };

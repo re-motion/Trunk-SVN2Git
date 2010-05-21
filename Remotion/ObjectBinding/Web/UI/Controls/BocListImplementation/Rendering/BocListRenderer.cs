@@ -141,7 +141,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       RegisterInitializeGlobalsScript();
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // Control Tag
 
       //  Menu Block

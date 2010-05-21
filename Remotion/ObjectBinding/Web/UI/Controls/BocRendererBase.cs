@@ -53,17 +53,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// to the <paramref name="writer"/> so that they are rendered in the next begin tag.
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
-    /// without changing the contents of the actual style.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
     /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
-    protected void AddAttributesToRender (HtmlTextWriter writer, bool overrideWidth)
+    protected void AddAttributesToRender (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Unit backUpWidth;
-      string backUpStyleWidth;
-      OverrideWidth (overrideWidth, "auto", out backUpWidth, out backUpStyleWidth);
 
       string backUpCssClass;
       string backUpAttributeCssClass;
@@ -72,7 +66,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       AddStandardAttributesToRender (writer);
 
       RestoreClass (backUpCssClass, backUpAttributeCssClass);
-      RestoreWidth (backUpStyleWidth, backUpWidth);
 
       AddAdditionalAttributes (writer);
     }
@@ -112,17 +105,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "disabled"; }
     }
 
-    private void OverrideWidth (bool overrideWidth, string newWidth, out Unit backUpWidth, out string backUpStyleWidth)
-    {
-      backUpStyleWidth = Control.Style["width"];
-      backUpWidth = Control.Width;
-      if( !overrideWidth )
-        return;
-
-      Control.Style["width"] = newWidth;
-      Control.Width = Unit.Empty;
-    }
-
     private void OverrideCssClass (out string backUpCssClass, out string backUpAttributeCssClass)
     {
       backUpCssClass = Control.CssClass;
@@ -137,12 +119,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!hasCssClass && !hasClassAttribute)
         Control.CssClass = CssClassBase + GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
-    }
-
-    private void RestoreWidth (string backUpStyleWidth, Unit backUpWidth)
-    {
-      Control.Style["width"] = backUpStyleWidth;
-      Control.Width = backUpWidth;
     }
 
     private void RestoreClass (string backUpCssClass, string backUpAttributeCssClass)
