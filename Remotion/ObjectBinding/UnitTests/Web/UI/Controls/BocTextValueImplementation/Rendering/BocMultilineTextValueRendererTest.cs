@@ -156,7 +156,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       if (isDisabled)
         Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       var textarea = Html.GetAssertedChildElement (span, "textarea", 0);
@@ -182,7 +181,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertAttribute (span, "id", "MyTextValue");
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       if (withStyle)

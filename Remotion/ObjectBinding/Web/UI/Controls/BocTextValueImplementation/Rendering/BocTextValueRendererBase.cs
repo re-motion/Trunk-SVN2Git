@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, true);
+      AddAttributesToRender (writer, false);
       writer.RenderBeginTag ("span");
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);

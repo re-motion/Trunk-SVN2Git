@@ -190,7 +190,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       var span = Html.GetAssertedChildElement (document, "span", 0);
       Html.AssertAttribute (span, "id", "MyTextValue");
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       var input = Html.GetAssertedChildElement (span, "input", 0);
@@ -218,7 +217,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertAttribute (span, "id", "MyTextValue");
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       var input = Html.GetAssertedChildElement (span, "input", 0);
@@ -245,7 +243,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertAttribute (span, "id", "MyTextValue");
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       var labelSpan = Html.GetAssertedChildElement (span, "span", 0);
@@ -274,7 +271,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       Html.AssertAttribute (span, "id", "MyTextValue");
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       var labelSpan = Html.GetAssertedChildElement (span, "span", 0);
