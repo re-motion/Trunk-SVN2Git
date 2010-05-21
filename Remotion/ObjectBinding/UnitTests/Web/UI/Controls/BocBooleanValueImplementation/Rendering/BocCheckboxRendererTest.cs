@@ -36,7 +36,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     private const string c_postbackEventReference = "postbackEventReference";
     private const string c_trueDescription = "Wahr";
     private const string c_falseDescription = "Falsch";
-    private const string c_defaultControlWidth = "100pt";
     private const string c_cssClass = "someCssClass";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
@@ -234,10 +233,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       CheckCssClass (outerSpan);
 
-      Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
-      if (!_checkbox.IsReadOnly)
-        Html.AssertStyleAttribute (outerSpan, "width", c_defaultControlWidth);
-
       if (_checkbox.IsReadOnly)
         CheckImage (value, outerSpan, spanText);
       else
@@ -272,8 +267,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       Html.AssertAttribute (image, "id", "_Boc_Image");
       Html.AssertAttribute (image, "src", string.Format ("/CheckBox{0}.gif", value), HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (image, "alt", altText);
-      Html.AssertStyleAttribute (image, "border-width", "0px");
-      Html.AssertStyleAttribute (image, "vertical-align", "middle");
     }
 
     private void CheckCssClass (XmlNode outerSpan)

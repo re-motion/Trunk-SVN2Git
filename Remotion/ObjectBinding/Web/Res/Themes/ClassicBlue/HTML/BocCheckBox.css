@@ -2,7 +2,10 @@
 
 .bocCheckBox
 {
-
+  margin-right: 0.5em;
+  vertical-align: middle;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .bocCheckBox.readOnly
@@ -16,6 +19,7 @@
 .bocCheckBox input
 {
   margin-left: 4px;
+  margin-right: 3px;
   padding: 0px;
   vertical-align: middle;
 }
@@ -28,13 +32,15 @@
 .bocCheckBox img
 {
   margin-left: 4px;
+  margin-right: 0;
   padding: 0px;
+  vertical-align: middle;
 }
 
-body.mozilla  .bocCheckBox img,
-body.webkit   .bocCheckBox img,
-body.opera    .bocCheckBox img,
-body.msie       .bocCheckBox img
+body.mozilla .bocCheckBox img, 
+body.webkit .bocCheckBox img, 
+body.opera .bocCheckBox img, 
+body.msie .bocCheckBox img
 {
-	margin-left: 0px;
-} 
+  margin-left: 0px;
+}

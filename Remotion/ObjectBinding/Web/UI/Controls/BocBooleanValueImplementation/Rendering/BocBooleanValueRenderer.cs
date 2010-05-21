@@ -115,9 +115,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
         return;
 
       linkControl.Attributes.Add ("onkeydown", "BocBooleanValue_OnKeyDown (this);");
-      linkControl.Style["padding"] = "0px";
-      linkControl.Style["border"] = "none";
-      linkControl.Style["background-color"] = "transparent";
       linkControl.Attributes.Add ("href", "#");
       linkControl.Enabled = Control.Enabled;
     }
@@ -198,7 +195,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       }
 
       imageControl.AlternateText = description;
-      imageControl.Style["vertical-align"] = "middle";
 
       imageControl.ImageUrl = imageUrl;
       if (Control.ShowDescription)

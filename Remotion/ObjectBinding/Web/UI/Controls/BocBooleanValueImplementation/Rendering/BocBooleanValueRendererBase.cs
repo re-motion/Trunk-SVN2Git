@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -30,25 +29,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>
       where T: IBocBooleanValueBase
   {
-    private const string c_defaultControlWidth = "100pt";
-
     protected BocBooleanValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
         : base (context, control, resourceUrlFactory)
-    {
-    }
-
-    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
-    {
-      base.AddAdditionalAttributes (writer);
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-      writer.AddStyleAttribute ("white-space", "nowrap");
-      if (!Control.IsReadOnly)
-      {
-        bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-        bool isLabelWidthEmpty = Control.LabelStyle.Width.IsEmpty;
-        if (isLabelWidthEmpty && isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-      }
+    { 
     }
   }
 }

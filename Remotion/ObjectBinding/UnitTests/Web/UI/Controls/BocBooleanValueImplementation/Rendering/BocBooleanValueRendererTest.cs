@@ -33,7 +33,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
   [TestFixture]
   public class BocBooleanValueRendererTest : RendererTestBase
   {
-    private const string c_defaultControlWidth = "100pt";
     private const string c_trueDescription = "Wahr";
     private const string c_falseDescription = "Falsch";
     private const string c_nullDescription = "Unbestimmt";
@@ -312,10 +311,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
         Html.AssertAttribute (outerSpan, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_booleanValue.IsReadOnly)
         Html.AssertAttribute (outerSpan, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
-      else
-        Html.AssertStyleAttribute (outerSpan, "width", c_defaultControlWidth);
-
-      Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
     }
 
     private void checkImageAttributes (XmlNode image, string iconUrl, string description)
@@ -323,8 +318,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       Html.AssertAttribute (image, "id", "_Boc_Image");
       Html.AssertAttribute (image, "src", iconUrl);
       Html.AssertAttribute (image, "alt", description);
-      Html.AssertStyleAttribute (image, "border-width", "0px");
-      Html.AssertStyleAttribute (image, "vertical-align", "middle");
     }
 
     private void CheckLinkAttributes (XmlNode link)
@@ -332,9 +325,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       Html.AssertAttribute (link, "onclick", _booleanValue.Enabled ? _clickScript : _dummyScript);
       Html.AssertAttribute (link, "onkeydown", _keyDownScript);
       Html.AssertAttribute (link, "href", "#");
-      Html.AssertStyleAttribute (link, "padding", "0px");
-      Html.AssertStyleAttribute (link, "border", "none");
-      Html.AssertStyleAttribute (link, "background-color", "transparent");
     }
 
     private void CheckHiddenField (XmlNode outerSpan, string value)

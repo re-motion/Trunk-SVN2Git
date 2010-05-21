@@ -162,7 +162,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       imageControl.ImageUrl = imageUrl.GetUrl();
       imageControl.AlternateText = StringUtility.NullToEmpty(description);
       imageControl.GenerateEmptyAlternateText = true;
-      imageControl.Style["vertical-align"] = "middle";
     }
 
     private void PrepareLabel (string description, Label labelControl)
