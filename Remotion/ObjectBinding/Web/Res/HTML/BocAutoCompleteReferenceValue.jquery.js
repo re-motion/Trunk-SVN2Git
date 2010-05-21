@@ -167,23 +167,20 @@
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
-                        // stop default to prevent a form submit, Opera needs special handling
-                        event.preventDefault();
-                        blockSubmit = true;
-                        return false;
+                        //SelectCurrent already does everything that's needed.
                     }
                     // re-motion: allow deletion of current value by entering the empty string
                     else if ($input.val() == '') {
                         hideResults();
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
-                        event.preventDefault();
-                        blockSubmit = true;
-                        return false;
                     }
-                    else {
+                    else /* invalid input */ {
                         hideResults();
-                        break;
                     }
+                    // stop default to prevent a form submit, Opera needs special handling
+                    event.preventDefault();
+                    blockSubmit = true;
+                    return false;
                 // re-motion: do not block event bubbling for tab                  
                 case KEY.TAB:
                     if (selectCurrent()) {
