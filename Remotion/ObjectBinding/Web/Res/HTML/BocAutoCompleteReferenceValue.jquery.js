@@ -180,7 +180,10 @@
                         blockSubmit = true;
                         return false;
                     }
-                    break;
+                    else {
+                        hideResults();
+                        break;
+                    }
                 // re-motion: do not block event bubbling for tab                  
                 case KEY.TAB:
                     if (selectCurrent()) {
@@ -192,7 +195,7 @@
                     }
                     break;
                 case KEY.ESC:
-                    select.hide();
+                    hideResults();
                     break;
 
                 default:
@@ -742,6 +745,8 @@
         var repositionTimer = null;
 
         function applyPositionToDropDown() {
+            
+            console.log($(input).attr('id'));
 
             var offset = $(input).offset();
             // re-motion: calculate best position where to open dropdown list
