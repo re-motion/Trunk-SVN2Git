@@ -157,8 +157,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
         Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Html.AssertChildElementCount (span, 1);
+      var content = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (content, "class", "content");
+      Html.AssertChildElementCount (content, 1);
 
-      var textarea = Html.GetAssertedChildElement (span, "textarea", 0);
+      var textarea = Html.GetAssertedChildElement (content, "textarea", 0);
       if (TextValue.TextBoxStyle.AutoPostBack == true)
         Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
       CheckTextAreaStyle (textarea, false, withStyle);
@@ -182,13 +185,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertChildElementCount (span, 1);
+      var content = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (content, "class", "content");
+      Html.AssertChildElementCount (content, 1);
 
       if (withStyle)
       {
         Html.AssertStyleAttribute (span, "height", Height.ToString());
       }
 
-      var label = Html.GetAssertedChildElement (span, "span", 0);
+      var label = Html.GetAssertedChildElement (content, "span", 0);
       Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
       Html.GetAssertedChildElement (label, "br", 1);
       Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText, 2);

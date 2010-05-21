@@ -52,7 +52,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       AddAttributesToRender (writer);
-      writer.RenderBeginTag ("span");
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
 
@@ -76,7 +79,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       }
       innerControl.RenderControl (writer);
 
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
     /// <summary>
@@ -105,5 +109,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// </summary>
     /// <returns>A <see cref="Label"/> control with all relevant properties set and all appropriate styles applied to it.</returns>
     protected abstract Label GetLabel ();
+
+    private string CssClassContent
+    {
+      get { return "content"; }
+    }
   }
 }
