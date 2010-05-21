@@ -60,6 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DefaultMappingResolutionStage _resolutionStage;
     private DefaultSqlGenerationStage _generationStage;
     private ISqlPreparationContext _context;
+    private MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     public override void SetUp ()
     {
@@ -81,6 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+
+      _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
     }
 
     [Test]
@@ -645,7 +648,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage);
+        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage, _nodeTypeRegistry);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
       }
     }
@@ -655,7 +658,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Computer> (_preparationStage, _resolutionStage, _generationStage);
+        var queryable = new DomainObjectQueryable<Computer> (_preparationStage, _resolutionStage, _generationStage, _nodeTypeRegistry);
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
@@ -669,7 +672,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage);
+        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage, _nodeTypeRegistry);
         var executor = queryable.GetExecutor();
 
         ClassDefinition classDefinition = executor.StartingClassDefinition;

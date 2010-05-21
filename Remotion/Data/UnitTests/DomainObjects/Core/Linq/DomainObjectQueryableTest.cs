@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching.Parsing;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -39,12 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DefaultMappingResolutionStage _mappingResolutionStage;
     private DefaultSqlGenerationStage _sqlGenerationStage;
     private DomainObjectQueryable<Order> _queryableWithOrder;
+    private MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     [SetUp]
     public void SetUp ()
     {
       var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
+      _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator ();
       var resolver = new MappingResolver ();
 
@@ -53,14 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _sqlGenerationStage = new DefaultSqlGenerationStage();
       _context = new SqlPreparationContext ();
 
-      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
+      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _nodeTypeRegistry);
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void Initialization_WrongType ()
     {
-      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
+      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _nodeTypeRegistry);
     }
 
     [Test]
@@ -69,37 +72,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (_queryableWithOrder.Provider, Is.Not.Null);
       Assert.That (_queryableWithOrder.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
       Assert.That (((DefaultQueryProvider) _queryableWithOrder.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
-    }
-
-    [Test]
-    public void Provider_AutoInitialized_ContainsObjectIsRegistered ()
-    {
-      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
-      Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
-          Is.SameAs (typeof (ContainsObjectExpressionNode)));
-    }
-
-    [Test]
-    public void Provider_AutoInitialized_ContainsFetchMethods ()
-    {
-      var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
-      var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
-      var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
-      var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
-
-      Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchOneMethod),
-          Is.SameAs (typeof (FetchOneExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchManyMethod),
-          Is.SameAs (typeof (FetchManyExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod),
-          Is.SameAs (typeof (ThenFetchOneExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod),
-          Is.SameAs (typeof (ThenFetchManyExpressionNode)));
     }
     
     [Test]

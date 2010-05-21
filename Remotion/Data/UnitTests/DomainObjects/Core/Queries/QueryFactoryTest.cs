@@ -19,12 +19,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Data.Linq.EagerFetching.Parsing;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -164,13 +167,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void Provider_AutoInitialized_ContainsObjectIsRegistered ()
+    {
+      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order>();
+      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
+      Assert.That (
+          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
+          Is.SameAs (typeof (ContainsObjectExpressionNode)));
+    }
+
+    [Test]
+    public void Provider_AutoInitialized_ContainsFetchMethods ()
+    {
+      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order> ();
+      var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
+      var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
+      var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
+      var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
+
+      Assert.That (
+          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchOneMethod),
+          Is.SameAs (typeof (FetchOneExpressionNode)));
+      Assert.That (
+          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchManyMethod),
+          Is.SameAs (typeof (FetchManyExpressionNode)));
+      Assert.That (
+          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod),
+          Is.SameAs (typeof (ThenFetchOneExpressionNode)));
+      Assert.That (
+          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod),
+          Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+    }
+
+    [Test]
     public void CreateLinqQuery_WithStages ()
     {
       var preparationStageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
       var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+
       
-      var queryable = from o in QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock)
+      var queryable = from o in QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry)
                       select o;
 
       var sqlStatementBuilder = new SqlStatementBuilder();

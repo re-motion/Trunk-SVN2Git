@@ -21,6 +21,8 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
+using Remotion.Data.Linq.EagerFetching.Parsing;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -36,9 +38,9 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public static class QueryFactory
   {
-    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
-    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
-    
+    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
+    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
+
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
     /// generation.
@@ -65,9 +67,11 @@ namespace Remotion.Data.DomainObjects.Queries
       var resolver = new MappingResolver();
 
       return new DomainObjectQueryable<T> (
-        ObjectFactory.Create<DefaultSqlPreparationStage> (ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, generator)),
-        ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
-        ObjectFactory.Create<DefaultSqlGenerationStage>(ParamList.Empty));
+          ObjectFactory.Create<DefaultSqlPreparationStage> (
+              ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, generator)),
+          ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
+          ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
+          CreateNodeTypeRegistry());
     }
 
     /// <summary>
@@ -78,14 +82,20 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="preparationStage">An implementation of <see cref="ISqlPreparationStage"/> to be used when generating SQL for the query.</param>
     /// <param name="resolutionStage">An implementation of <see cref="IMappingResolutionStage"/> to be used when generating SQL for the query.</param>
     /// <param name="generationStage">An implementation of <see cref="ISqlGenerationStage"/> to be used when generating SQL for the query.</param>
+    /// <param name="nodeTypeRegistry">An <see cref="MethodCallExpressionNodeTypeRegistry"/> instance to be used when generating SQL for the query.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage) where T : DomainObject
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (
+        ISqlPreparationStage preparationStage,
+        IMappingResolutionStage resolutionStage,
+        ISqlGenerationStage generationStage,
+        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
-      
-      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage);
+      ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);
+
+      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage, nodeTypeRegistry);
     }
 
     /// <summary>
@@ -232,6 +242,19 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var definition = new QueryDefinition (id, storageProviderID, statement, QueryType.Collection, collectionType);
       return new Query (definition, queryParameterCollection);
+    }
+
+    private static MethodCallExpressionNodeTypeRegistry CreateNodeTypeRegistry ()
+    {
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+
+      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+      return nodeTypeRegistry;
     }
   }
 }

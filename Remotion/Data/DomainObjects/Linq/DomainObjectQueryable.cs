@@ -17,11 +17,13 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -33,32 +35,22 @@ namespace Remotion.Data.DomainObjects.Linq
 {
   public class DomainObjectQueryable<T> : QueryableBase<T>
   {
-
-    private static IQueryProvider CreateProvider (ISqlPreparationStage sqlPreparationStage, IMappingResolutionStage mappingResolutionStage, ISqlGenerationStage sqlGenerationStage)
+    private static IQueryProvider CreateProvider (
+        ISqlPreparationStage sqlPreparationStage,
+        IMappingResolutionStage mappingResolutionStage,
+        ISqlGenerationStage sqlGenerationStage,
+        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
     {
       ArgumentUtility.CheckNotNull ("sqlPreparationStage", sqlPreparationStage);
       ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
       ArgumentUtility.CheckNotNull ("sqlGenerationStage", sqlGenerationStage);
-      
+      ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);
+
       var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
       var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
       var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (constructorParameters);
 
-      var nodeTypeRegistry = CreateNodeTypeRegistry();
       return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
-    }
-
-    private static MethodCallExpressionNodeTypeRegistry CreateNodeTypeRegistry ()
-    {
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
-
-      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
-
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
-      return nodeTypeRegistry;
     }
 
     /// <summary>
@@ -79,9 +71,15 @@ namespace Remotion.Data.DomainObjects.Linq
     /// transformations that occur during the mapping resolution phase</param>
     /// <param name="sqlGenerationStage">An implementation of <see cref="ISqlGenerationStage"/> which provides entry points for all sql text 
     /// generation that occur during the SQL generation process.</param>
+    /// <param name="nodeTypeRegistry">Registry, which maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
+    /// to the respective <see cref="IExpressionNode"/> types.</param>
     /// </remarks>
-    public DomainObjectQueryable (ISqlPreparationStage sqlPreparationStage, IMappingResolutionStage mappingResolutionStage, ISqlGenerationStage sqlGenerationStage)
-          : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage))
+    public DomainObjectQueryable (
+        ISqlPreparationStage sqlPreparationStage,
+        IMappingResolutionStage mappingResolutionStage,
+        ISqlGenerationStage sqlGenerationStage,
+        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
+        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, nodeTypeRegistry))
     {
     }
 
