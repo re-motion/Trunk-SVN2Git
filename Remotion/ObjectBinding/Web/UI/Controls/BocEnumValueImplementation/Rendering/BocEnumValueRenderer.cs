@@ -34,8 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
-    private const string c_defaultListControlWidth = "150pt";
-
     public BocEnumValueRenderer (HttpContextBase context, IBocEnumValue control, IResourceUrlFactory resourceUrlFactory)
       : base (context, control, resourceUrlFactory)
     {
@@ -82,12 +80,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
       if (isInnerControlWidthEmpty)
       {
-        if (isControlWidthEmpty)
-        {
-          if (!Control.IsReadOnly)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultListControlWidth);
-        }
-        else
+        if (!isControlWidthEmpty)
         {
           if (Control.IsReadOnly)
           {
@@ -96,8 +89,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
             else
               writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
           }
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         }
       }
 
@@ -150,20 +141,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     private Label GetLabel ()
     {
       Label label = new Label { ID = Control.LabelID };
-      string text = null;
-      if (Control.IsDesignMode && string.IsNullOrEmpty (label.Text))
+      string text;
+      if (Control.IsDesignMode && Control.EnumerationValueInfo == null)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
         //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
-      else if (!Control.IsDesignMode && Control.EnumerationValueInfo != null)
+      else if (Control.EnumerationValueInfo != null)
         text = Control.EnumerationValueInfo.DisplayName;
-
-      if (string.IsNullOrEmpty (text))
-        label.Text = "&nbsp;";
       else
-        label.Text = text;
+        text = null;
+
+      label.Text = text;
 
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;

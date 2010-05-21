@@ -339,7 +339,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
         Html.AssertStyleAttribute (span, "height", "100%");
       }
 
-      Html.AssertTextNode (span, value.HasValue ? value.Value.ToString() : HtmlHelper.WhiteSpace, 0);
+      if (value.HasValue)
+        Html.AssertTextNode (span, value.Value.ToString(), 0);
+      else
+        Html.AssertChildElementCount (span, 0);
     }
 
     private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, BocEnumValueRenderer renderer)
@@ -380,12 +383,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
       Html.AssertAttribute (select, "id", _enumValue.GetListControlClientID());
 
       if (withStyle)
-      {
-        Html.AssertStyleAttribute (select, "width", "100%");
         Html.AssertStyleAttribute (select, "height", "100%");
-      }
-      else
-        Html.AssertStyleAttribute (select, "width", "150pt");
 
       if (isDisabled)
         Html.AssertAttribute (select, "disabled", "disabled");
