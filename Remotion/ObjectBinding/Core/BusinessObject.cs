@@ -23,27 +23,6 @@ namespace Remotion.ObjectBinding
   [Serializable]
   public abstract class BusinessObject : IBusinessObject
   {
-    /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this
-    ///   business object.
-    /// </param>
-    /// <returns> Returns the <see cref="IBusinessObjectProperty"/> or <see langword="null"/>. </returns>
-    /// <remarks> 
-    ///   <para>
-    ///     It is not specified wheter an exception is thrown or <see langword="null"/> is returned if the 
-    ///     <see cref="IBusinessObjectProperty"/> could not be found.
-    ///   </para><para>
-    ///     The default implementation uses the <see cref="BusinessObjectClass"/>'s 
-    ///     <see cref="IBusinessObjectClass.GetPropertyDefinition"/> method for finding the 
-    ///     <see cref="IBusinessObjectProperty"/>.
-    ///   </para>
-    /// </remarks>
-    public virtual IBusinessObjectProperty GetBusinessObjectProperty (string propertyIdentifier)
-    {
-      return BusinessObjectClass.GetPropertyDefinition (propertyIdentifier);
-    }
-
     /// <overloads> Gets the value accessed through the specified property. </overloads>
     /// <summary> Gets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     public abstract object GetProperty (IBusinessObjectProperty property);
@@ -52,19 +31,8 @@ namespace Remotion.ObjectBinding
     /// <summary> Sets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     public abstract void SetProperty (IBusinessObjectProperty property, object value);
 
-    /// <overloads> Gets the string representation of the value accessed through the specified property.  </overloads>
     /// <summary> 
-    ///   Gets the string representation of the value accessed through the specified 
-    ///   <see cref="IBusinessObjectProperty"/>.
-    /// </summary>
-    public string GetPropertyString (IBusinessObjectProperty property)
-    {
-      return GetPropertyString (property, null);
-    }
-
-    /// <summary> 
-    ///   Gets the formatted string representation of the value accessed through the specified 
-    ///   <see cref="IBusinessObjectProperty"/>.
+    ///   Gets the formatted string representation of the value accessed through the specified <see cref="IBusinessObjectProperty"/>.
     /// </summary>
     public virtual string GetPropertyString (IBusinessObjectProperty property, string format)
     {
