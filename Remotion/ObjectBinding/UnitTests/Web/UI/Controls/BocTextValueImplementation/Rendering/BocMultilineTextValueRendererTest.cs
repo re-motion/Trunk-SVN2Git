@@ -199,12 +199,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
     private void CheckTextAreaStyle (XmlNode textarea, bool isDisabled, bool withStyle)
     {
-      string width = withStyle ? Width.ToString() : "150pt";
-
       int rowCount = TextValue.Text.Split (new[] { Environment.NewLine }, StringSplitOptions.None).Length;
       Html.AssertAttribute (textarea, "rows", rowCount.ToString());
       Html.AssertAttribute (textarea, "cols", "60");
-      Html.AssertStyleAttribute (textarea, "width", width);
+      if (withStyle)
+        Html.AssertStyleAttribute (textarea, "width", Width.ToString());
 
       if (isDisabled)
       {

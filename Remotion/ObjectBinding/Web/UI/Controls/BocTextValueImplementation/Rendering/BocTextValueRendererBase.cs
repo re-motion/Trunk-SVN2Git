@@ -36,7 +36,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     protected const string c_designModeEmptyLabelContents = "##";
 
-    protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
     protected BocTextValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
@@ -72,13 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
       if (isInnerControlWidthEmpty)
       {
-        if (isControlWidthEmpty)
-        {
-          bool needsColumnCount = Control.TextBoxStyle.TextMode != TextBoxMode.MultiLine || Control.TextBoxStyle.Columns == null;
-          if (!Control.IsReadOnly && needsColumnCount)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
-        }
-        else
+        if (!isControlWidthEmpty)
           writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
       }
       innerControl.RenderControl (writer);

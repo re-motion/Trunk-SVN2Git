@@ -59,16 +59,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
-      if (StringUtility.IsNullOrEmpty (text))
+      if (StringUtility.IsNullOrEmpty (text) && Control.IsDesignMode)
       {
-        if (Control.IsDesignMode)
-        {
-          text = c_designModeEmptyLabelContents;
-          //  Too long, can't resize in designer to less than the content's width
-          //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-        }
-        else
-          text = "&nbsp;";
+        text = c_designModeEmptyLabelContents;
+        //  Too long, can't resize in designer to less than the content's width
+        //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
       label.Text = text;
 

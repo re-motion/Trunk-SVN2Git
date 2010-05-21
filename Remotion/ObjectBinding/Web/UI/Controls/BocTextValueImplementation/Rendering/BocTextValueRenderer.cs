@@ -52,8 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       label.EnableViewState = false;
 
       string text;
-      if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine
-          && !StringUtility.IsNullOrEmpty (Control.Text))
+      if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (Control.Text))
       {
         //  Allows for an optional \r
         string temp = Control.Text.Replace ("\r", "");
@@ -65,16 +64,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       else
         text = HttpUtility.HtmlEncode (Control.Text);
 
-      if (StringUtility.IsNullOrEmpty (text))
+      if (StringUtility.IsNullOrEmpty (text) && Control.IsDesignMode)
       {
-        if (Control.IsDesignMode)
-        {
-          text = c_designModeEmptyLabelContents;
-          //  Too long, can't resize in designer to less than the content's width
-          //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-        }
-        else
-          text = "&nbsp;";
+        text = c_designModeEmptyLabelContents;
+        //  Too long, can't resize in designer to less than the content's width
+        //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
       label.Text = text;
       label.Width = Unit.Empty;
