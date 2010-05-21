@@ -241,7 +241,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
       Label label = new Label();
 
-      if (Control.IsDesignMode && string.IsNullOrEmpty (label.Text))
+      if (Control.IsDesignMode && !Control.Value.HasValue)
       {
         label.Text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
@@ -260,8 +260,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
           else
             label.Text = dateTime.ToString();
         }
-        else
-          label.Text = "&nbsp;";
       }
 
       label.Height = Unit.Empty;
