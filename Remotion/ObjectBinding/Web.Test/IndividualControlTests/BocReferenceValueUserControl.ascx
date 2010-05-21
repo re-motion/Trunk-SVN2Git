@@ -27,7 +27,7 @@
 </remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" readonly="True" datasourcecontrol="CurrentObject" PropertyIdentifier="LastName"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=PartnerField runat="server" DropDownListStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" EnableSelectStatement="True">
+    <td><remotion:bocreferencevalue id=PartnerField runat="server" DropDownListStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" EnableSelectStatement="True">
 <PersistedCommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand>
@@ -49,7 +49,7 @@
     <td style="WIDTH: 20%"><asp:label id=PartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=ReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" >
+    <td><remotion:bocreferencevalue id=ReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" >
 <PersistedCommand>
 <remotion:BocCommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="Event"></remotion:BocCommand>
 </PersistedCommand>
@@ -60,7 +60,7 @@
     <td style="WIDTH: 20%"><asp:label id=ReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=UnboundPartnerField runat="server" required="True" hasvalueembeddedinsideoptionsmenu="False" width="250px" showoptionsmenu="False" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=UnboundPartnerField runat="server" required="True" hasvalueembeddedinsideoptionsmenu="False" showoptionsmenu="False" EnableSelectStatement="False">
 <PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
@@ -69,7 +69,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=UnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=UnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" hasvalueembeddedinsideoptionsmenu="False" EnableSelectStatement="False">
 <PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand>
@@ -98,7 +98,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="false" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="false" EnableSelectStatement="False">
 <PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
@@ -107,7 +107,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" enabled="False" width="250px" EnableSelectStatement="False" >
+    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" enabled="False" EnableSelectStatement="False" >
 <PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand>

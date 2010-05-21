@@ -35,9 +35,9 @@
     <td style="WIDTH: 20%"><asp:label id=GenderFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocenumvalue id=ReadOnlyGenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" ReadOnly="True" Required="True" width="150px">
+    <td><remotion:bocenumvalue id=ReadOnlyGenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" ReadOnly="True" Required="True" >
 <listcontrolstyle controltype="RadioButtonList" radiobuttonlistrepeatdirection="Horizontal" >
-</ListControlStyle>
+</listcontrolstyle>
 </remotion:bocenumvalue></td>
     <td>
       bound, read-only</td>

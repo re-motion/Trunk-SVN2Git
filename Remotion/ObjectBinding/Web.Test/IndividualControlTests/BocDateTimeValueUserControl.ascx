@@ -24,25 +24,25 @@
           <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" ReadOnly="True" PropertyIdentifier="FirstName" datasourcecontrol="CurrentObject"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" ReadOnly="True" PropertyIdentifier="LastName" datasourcecontrol="CurrentObject"></remotion:boctextvalue></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=BirthdayField runat="server" DateTextBoxStyle-AutoPostBack="true" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" width="300px" showseconds="False"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=BirthdayField runat="server" DateTextBoxStyle-AutoPostBack="true" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" showseconds="False"></remotion:bocdatetimevalue></td>
           <td>
             bound</td>
           <td style="WIDTH: 20%"><asp:label id=BirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=ReadOnlyBirthdayField runat="server" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" readonly="True" showseconds="False" width="300px"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=ReadOnlyBirthdayField runat="server" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" readonly="True" showseconds="False"></remotion:bocdatetimevalue></td>
           <td>
             bound, read-only</td>
           <td style="WIDTH: 20%"><asp:label id=ReadOnlyBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=UnboundBirthdayField runat="server" width="300px" readonly="False" required="False" ShowSeconds="true"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=UnboundBirthdayField runat="server" readonly="False" required="False" ShowSeconds="true"></remotion:bocdatetimevalue></td>
           <td>
             unbound, value not set, not required, with seconds</td>
           <td style="WIDTH: 20%"><asp:label id=UnboundBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id="UnboundRequiredBirthdayField" runat="server" width="300px" required="True"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id="UnboundRequiredBirthdayField" runat="server" required="True"></remotion:bocdatetimevalue></td>
           <td>
             unbound, value not set</td>
           <td style="WIDTH: 20%"><asp:label id="UnboundRequiredBirthdayFieldLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
@@ -54,7 +54,7 @@
           <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=DateOfDeathField runat="server" PropertyIdentifier="DateOfDeath" datasourcecontrol="CurrentObject" width="300px" readonly="False"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=DateOfDeathField runat="server" PropertyIdentifier="DateOfDeath" datasourcecontrol="CurrentObject" readonly="False"></remotion:bocdatetimevalue></td>
           <td>
             bound</td>
           <td style="WIDTH: 20%"><asp:label id=DateOfDeathFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
@@ -90,7 +90,7 @@
           <td style="WIDTH: 20%"><asp:label id=ReadOnlyDirectlySetBocDateTimeValueFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=DisabledBirthdayField runat="server" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" width="300px" showseconds="False" enabled=false></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=DisabledBirthdayField runat="server" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject" showseconds="False" enabled=false></remotion:bocdatetimevalue></td>
           <td>
             disabled, bound</td>
           <td style="WIDTH: 20%"><asp:label id=DisabledBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
@@ -102,7 +102,7 @@
           <td style="WIDTH: 20%"><asp:label id=DisabledReadOnlyBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=DisabledUnboundBirthdayField runat="server" width="300px" readonly="False" required="False" enabled=false></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=DisabledUnboundBirthdayField runat="server" readonly="False" required="False" enabled=false></remotion:bocdatetimevalue></td>
           <td>
              disabled, unbound, value set, not required</td>
           <td style="WIDTH: 20%"><asp:label id=DisabledUnboundBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>

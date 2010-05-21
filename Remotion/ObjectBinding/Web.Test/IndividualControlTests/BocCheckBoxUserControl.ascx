@@ -26,12 +26,12 @@
     <td colSpan="4"><remotion:boctextvalue id="FirstNameField" runat="server" datasourcecontrol="CurrentObject" ReadOnly="True" PropertyIdentifier="FirstName"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id="LastNameField" runat="server" datasourcecontrol="CurrentObject" ReadOnly="True" PropertyIdentifier="LastName"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="DeceasedField" runat="server" datasourcecontrol="CurrentObject" truedescription="ja" falsedescription="nein" width="300px" propertyidentifier="Deceased" ShowDescription="True" AutoPostBack="True" ></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="DeceasedField" runat="server" datasourcecontrol="CurrentObject" truedescription="ja" falsedescription="nein" propertyidentifier="Deceased" ShowDescription="True" AutoPostBack="True" ></remotion:boccheckbox></td>
     <td>bound, description=true</td>
     <td style="WIDTH: 20%"><asp:label id="DeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="ReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" width="300px" propertyidentifier="Deceased" readonly="True" showdescription="True"></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="ReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" readonly="True" showdescription="True"></remotion:boccheckbox></td>
     <td>bound, read only, description= true</td>
     <td style="WIDTH: 20%"><asp:label id="ReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
@@ -46,12 +46,12 @@
     <td style="WIDTH: 20%"><asp:label id="UnboundReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="DisabledDeceasedField" runat="server" datasourcecontrol="CurrentObject" truedescription="ja" falsedescription="nein" width="300px" propertyidentifier="Deceased" showdescription="True" enabled="false"></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="DisabledDeceasedField" runat="server" datasourcecontrol="CurrentObject" truedescription="ja" falsedescription="nein" propertyidentifier="Deceased" showdescription="True" enabled="false"></remotion:boccheckbox></td>
     <td>disabled, bound</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="DisabledReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" width="300px" propertyidentifier="Deceased" readonly="True" showdescription="True" enabled="false"></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="DisabledReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" readonly="True" showdescription="True" enabled="false"></remotion:boccheckbox></td>
     <td>disabled, bound, read only</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
