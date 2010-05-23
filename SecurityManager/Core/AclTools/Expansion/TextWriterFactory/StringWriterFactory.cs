@@ -17,12 +17,11 @@
 // 
 using System.IO;
 using System.Collections.Generic;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
-  public class StringWriterFactory : TextWriterFactoryBase, IToTextConvertible
+  public class StringWriterFactory : TextWriterFactoryBase
   {
     public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
@@ -38,24 +37,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     {
       ArgumentUtility.CheckNotNull ("name", name);
       return CreateTextWriter (Directory, name, Extension);
-    }
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.s ("StringWriterFactory");
-      toTextBuilder.sb();
-      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
-      {
-        toTextBuilder.e (pair.Key);
-      }
-      toTextBuilder.se ();
-
-      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
-      {
-        toTextBuilder.nl().e (pair.Key).nl().e(pair.Value.TextWriter.ToString()).nl();
-      }
-    
     }
   }
 }
