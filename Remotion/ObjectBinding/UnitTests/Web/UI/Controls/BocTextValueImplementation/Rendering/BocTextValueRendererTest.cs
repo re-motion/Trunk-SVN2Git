@@ -298,14 +298,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     private void CheckStyle (bool withStyle, XmlNode span, XmlNode valueElement)
     {
       string height = withStyle ? Height.ToString() : null;
-      string width = withStyle ? Width.ToString() : /* default constant in BocTextValueRendererBase */ "150pt";
+      string width = withStyle ? Width.ToString() : null;
       if (withStyle)
       {
         Html.AssertStyleAttribute (span, "height", height);
+        Html.AssertStyleAttribute (span, "width", width);
 
         if (height != null)
           Html.AssertStyleAttribute (valueElement, "height", "100%");
-        Html.AssertStyleAttribute (valueElement, "width", width);
       }
     }
   }

@@ -38,8 +38,7 @@
     <td></td>
     <td><remotion:boctextvalue id=UnboundFirstNameField runat="server"></remotion:boctextvalue></td>
     <td>
-      <p>unbound, value not set, list-box, 
-      required=false</p></td>
+      unbound, value not set, list-box, required=false</td>
     <td style="WIDTH: 20%"><asp:label id=UnboundFirstNameFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>

@@ -36,8 +36,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     protected const string c_designModeEmptyLabelContents = "##";
 
-    protected const int c_defaultColumns = 60;
-
     protected BocTextValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
         : base(context, control, resourceUrlFactory)
     {
@@ -59,24 +57,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
 
-      string controlWidth = Control.Width.IsEmpty ? Control.Style["width"] : Control.Width.ToString();
-      bool isControlWidthEmpty = string.IsNullOrEmpty (controlWidth);
-
       WebControl innerControl = Control.IsReadOnly ? (WebControl) GetLabel() : GetTextBox();
       innerControl.Page = Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
-      bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
         writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
-
-      if (isInnerControlWidthEmpty)
-      {
-        if (!isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
-      }
       innerControl.RenderControl (writer);
 
       writer.RenderEndTag ();
@@ -98,8 +86,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       textBox.Height = Unit.Empty;
       textBox.ApplyStyle (Control.CommonStyle);
       Control.TextBoxStyle.ApplyStyle (textBox);
-      if (textBox.TextMode == TextBoxMode.MultiLine && textBox.Columns < 1)
-        textBox.Columns = c_defaultColumns;
 
       return textBox;
     }
