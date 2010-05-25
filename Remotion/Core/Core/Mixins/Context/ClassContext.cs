@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Text;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Context.Suppression;
@@ -179,22 +178,15 @@ namespace Remotion.Mixins.Context
       if (other == null)
         return false;
       
-      if (!other.Type.Equals (Type) || other._mixins.Count != _mixins.Count || other._completeInterfaces.Count != _completeInterfaces.Count)
+      if (other._cachedHashCode != _cachedHashCode 
+          || !other.Type.Equals (Type) 
+          || other._mixins.Count != _mixins.Count 
+          || other._completeInterfaces.Count != _completeInterfaces.Count)
         return false;
 
-      foreach (MixinContext mixinContext in _mixins)
-      {
-        if (!other._mixins.ContainsKey (mixinContext.MixinType) || !other._mixins[mixinContext.MixinType].Equals (mixinContext))
-          return false;
-      }
-
-      foreach (Type completeInterface in _completeInterfaces)
-      {
-        if (!other._completeInterfaces.ContainsKey (completeInterface))
-          return false;
-      }
-
-      return true;
+      return _mixins.All (
+              mixinContext => other._mixins.ContainsKey (mixinContext.MixinType) && other._mixins[mixinContext.MixinType].Equals (mixinContext)) 
+          && _completeInterfaces.All (completeInterface => other._completeInterfaces.ContainsKey (completeInterface));
     }
 
     /// <summary>
