@@ -442,7 +442,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2779")]
     public void DefaultIsEmpty_WithJoin ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
