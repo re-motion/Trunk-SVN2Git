@@ -73,23 +73,26 @@ namespace Remotion.SecurityManager
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      AccessControlList acl;
-      SecurityToken token;
-      try
+      using (new SecurityFreeSection())
       {
-        acl = _accessControlListFinder.Find (transaction, context);
-        token = _securityTokenBuilder.CreateToken (transaction, principal, context);
-      }
-      catch (AccessControlException e)
-      {
-        s_log.Error ("Error during evaluation of security query.", e);
-        return new AccessType[0];
-      }
+        AccessControlList acl;
+        SecurityToken token;
+        try
+        {
+          acl = _accessControlListFinder.Find (transaction, context);
+          token = _securityTokenBuilder.CreateToken (transaction, principal, context);
+        }
+        catch (AccessControlException e)
+        {
+          s_log.Error ("Error during evaluation of security query.", e);
+          return new AccessType[0];
+        }
 
-      using (transaction.EnterNonDiscardingScope())
-      {
-        AccessInformation accessInformation = acl.GetAccessTypes (token);
-        return Array.ConvertAll<AccessTypeDefinition, AccessType> (accessInformation.AllowedAccessTypes, ConvertToAccessType);
+        using (transaction.EnterNonDiscardingScope())
+        {
+          AccessInformation accessInformation = acl.GetAccessTypes (token);
+          return Array.ConvertAll<AccessTypeDefinition, AccessType> (accessInformation.AllowedAccessTypes, ConvertToAccessType);
+        }
       }
     }
 

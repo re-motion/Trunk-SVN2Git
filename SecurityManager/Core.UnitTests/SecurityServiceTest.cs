@@ -23,6 +23,9 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Security;
+using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
@@ -95,6 +98,7 @@ namespace Remotion.SecurityManager.UnitTests
     {
       base.TearDown();
       LogManager.ResetConfiguration();
+      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -213,6 +217,45 @@ namespace Remotion.SecurityManager.UnitTests
       Assert.AreEqual (1, events.Length);
       Assert.AreSame (expectedException, events[0].ExceptionObject);
       Assert.AreEqual (Level.Error, events[0].Level);
+    }
+
+    [Test]
+    public void GetAccess_UsesSecurityFreeSection ()
+    {
+      ClientTransaction subTransaction;
+      using (_clientTransaction.EnterNonDiscardingScope ())
+      {
+        var abstractRoles = new List<AbstractRoleDefinition>();
+        abstractRoles.Add (_ace.SpecificAbstractRole);
+
+        _ace.GroupCondition = GroupCondition.AnyGroupWithSpecificGroupType;
+        _ace.SpecificGroupType = GroupType.NewObject();
+        OrganizationalStructureFactory organizationalStructureFactory = new OrganizationalStructureFactory();
+        var role = Role.NewObject();
+        role.Group = organizationalStructureFactory.CreateGroup();
+        role.Group.Tenant = _tenant;
+
+        var token = new SecurityToken (new Principal (_tenant, null, new[] { role }), null, null, null, abstractRoles);
+
+        subTransaction = _clientTransaction.CreateSubTransaction ();
+        using (subTransaction.EnterNonDiscardingScope())
+        {
+          Expect.Call (_mockAclFinder.Find (subTransaction, _context))
+              .WhenCalled (invocation => Assert.That (SecurityFreeSection.IsActive, Is.True))
+              .Return (CreateAcl (_ace));
+          Expect.Call (_mockTokenBuilder.CreateToken (subTransaction, _principalStub, _context))
+              .WhenCalled (invocation => Assert.That (SecurityFreeSection.IsActive, Is.True))
+              .Return (token);
+        }
+      }
+      SecurityConfiguration.Current.SecurityProvider = MockRepository.GenerateStub<ISecurityProvider> ();
+      _clientTransaction.Extensions.Add ("SecurityExtension", new SecurityClientTransactionExtension ());
+
+      _mocks.ReplayAll ();
+
+      _service.GetAccess (subTransaction, _context, _principalStub);
+
+      _mocks.VerifyAll();
     }
 
     [Test]
