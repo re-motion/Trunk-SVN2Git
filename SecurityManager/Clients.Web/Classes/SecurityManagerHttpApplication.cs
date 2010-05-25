@@ -19,6 +19,7 @@ using System;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
@@ -71,20 +72,25 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       {
         var principal = LoadPrincipalFromSession();
         if (principal.IsNull && Context.User.Identity.IsAuthenticated)
-        {
-          using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-          {
-            SecurityManagerUser user = SecurityManagerUser.FindByUserName (Context.User.Identity.Name);
-            if (user != null)
-              SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
-            else
-              SetCurrentPrincipal (SecurityManagerPrincipal.Null);
-          }
-        }
+          principal = GetSecurityManagerPrincipalByUserName (Context.User.Identity.Name);
         else
-        {
           principal.Refresh();
-          SetCurrentPrincipal (principal);
+
+        SetCurrentPrincipal (principal);
+      }
+    }
+
+    private ISecurityManagerPrincipal GetSecurityManagerPrincipalByUserName (string userName)
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      {
+        using (new SecurityFreeSection())
+        {
+          var user = SecurityManagerUser.FindByUserName (userName);
+          if (user == null)
+            return SecurityManagerPrincipal.Null;
+          else
+            return new SecurityManagerPrincipal (user.Tenant, user, null);
         }
       }
     }
