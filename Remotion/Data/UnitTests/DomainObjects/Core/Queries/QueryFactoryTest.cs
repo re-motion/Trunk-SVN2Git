@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void Provider_AutoInitialized_ContainsObjectIsRegistered ()
+    public void CreateLinqQuery_DefaultMethodCallExpressionNodeTypeRegistry_KnowsContainsObject ()
     {
       var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order>();
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void Provider_AutoInitialized_ContainsFetchMethods ()
+    public void CreateLinqQuery_DefaultMethodCallExpressionNodeTypeRegistry_KnowsFetchObject ()
     {
       var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order> ();
       var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
@@ -208,8 +208,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
 
       
-      var queryable = from o in QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry)
-                      select o;
+      var queryable = QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry);
+
+      // TODO Review 2768: Assert that the queryable just created holds the nodeTypeRegistry passed in: ((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry
 
       var sqlStatementBuilder = new SqlStatementBuilder();
       sqlStatementBuilder.DataInfo = new StreamedScalarValueInfo (typeof (string));

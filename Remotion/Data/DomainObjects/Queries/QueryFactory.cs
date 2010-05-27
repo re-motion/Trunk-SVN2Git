@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Queries
               ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, generator)),
           ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
           ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
-          CreateNodeTypeRegistry());
+          CreateNodeTypeRegistry ()); // TODO Review 2768: Add a static readonly field for this registry, just like for s_methodCallTransformerRegistry
     }
 
     /// <summary>
