@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
-    // TODO: Rename to ResolveSimpleTableInfo, pass SimpleTableInfo instead of tableReferenceExpression
+    // TODO Review 2716: Rename to ResolveSimpleTableInfo, pass SimpleTableInfo instead of tableReferenceExpression; don't forget to update the docs on IMappingResolver
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
