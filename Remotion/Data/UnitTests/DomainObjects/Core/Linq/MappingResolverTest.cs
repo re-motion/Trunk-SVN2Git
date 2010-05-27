@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -38,10 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private MappingResolver _resolver;
     private UniqueIdentifierGenerator _generator;
     private SqlTable _orderTable;
-    private SqlTable _customerTable;
     private SqlTable _companyTable;
-    private SqlTable _orderItemTable;
-    private MappingResolutionContext _mappingResolutionContext;
 
     [SetUp]
     public void SetUp ()
@@ -49,10 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _resolver = new MappingResolver();
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      _orderItemTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (OrderItem), "OrderItemTable", "o"));
-      _customerTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Customer), "Customer", "c"));
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"));
-      _mappingResolutionContext = new MappingResolutionContext();
     }
 
     [Test]
@@ -326,8 +319,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (UnmappedItemException))]
     public void ResolveTypeCheck_NoDomainTypeWithDifferentDesiredType ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (object), "Table", "t"));
-
       var sqlEntityExpression = new SqlEntityDefinitionExpression (typeof (object), "t", null, new SqlColumnDefinitionExpression (typeof (string), "t", "Name", false));
       _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
     }
