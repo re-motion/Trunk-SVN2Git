@@ -143,5 +143,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
+
+    [Test]
+    [Ignore("TODO 2776")]
+    public void OrderingsInSubQuery ()
+    {
+      CheckQueryResult (from o in (from so in QueryFactory.CreateLinqQuery<Order>() orderby so.OrderNumber select so).Distinct () select o);
+    }
   }
 }
