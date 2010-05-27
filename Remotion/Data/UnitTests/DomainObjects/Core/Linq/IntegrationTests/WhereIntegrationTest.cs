@@ -16,12 +16,9 @@
 // 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -353,12 +350,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithConditionInWherePart ()
     {
       var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
+#pragma warning disable 162
                    where o.OrderNumber == (true ? 1 : o.OrderNumber)
                    select o;
 
       var query2 = from o1 in QueryFactory.CreateLinqQuery<Order> ()
                    where o1.OrderNumber == (false ? 1 : o1.OrderNumber)
                    select o1;
+#pragma warning restore 162
 
       var query3 = from o1 in QueryFactory.CreateLinqQuery<Order>()
                    where o1.OrderNumber == (o1.OrderNumber == 1 ? 2 : 3)
@@ -381,6 +380,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void Query_Is ()
     {
       var query = QueryFactory.CreateLinqQuery<Company> ().Where (c => c is Customer);
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    public void Query_ClassID ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Company> ().Where (c => c.ID.ClassID == "Customer");
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    public void Query_ClassID_OnColumnOfReferencedEntity ()
+    {
+      var query = from x in
+                    (from c in QueryFactory.CreateLinqQuery<Company> () select new { A = c, B = c.ID }).Distinct()
+                  where x.A.ID.ClassID == "Customer"
+                  select x.A;
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    [Ignore ("TODO 2819")]
+    public void Query_ClassID_OnReferencedValue ()
+    {
+      var query = from x in
+                    (from c in QueryFactory.CreateLinqQuery<Company> () select new { A = c, B = c.ID }).Distinct ()
+                  where x.B.ClassID == "Customer"
+                  select x.A;
 
       CheckQueryResult (
           query,
