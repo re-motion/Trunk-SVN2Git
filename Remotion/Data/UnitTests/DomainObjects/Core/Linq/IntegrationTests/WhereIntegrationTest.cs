@@ -405,6 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore("TODO 2776")]
     public void Query_ClassID_OnColumnOfReferencedEntity ()
     {
       var query = from x in
