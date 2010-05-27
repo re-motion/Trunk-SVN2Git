@@ -20,6 +20,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -155,6 +156,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
           // becomes sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false)
         return new SqlColumnDefinitionExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
+      // TODO Review 2778: Should be Update, not new SqlColumnDefinitionExpression, see comment above; write a (failing) test that shows that when sqlColumnExpression was a column reference, the new column will also be a column reference; then use Update instead of new - test should now work (this is required to be able to do something like this: from x in (from o in Orders select new { A = o, B = o.ID }).Distinct() select x.B.ClassID
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));
@@ -170,21 +172,21 @@ namespace Remotion.Data.DomainObjects.Linq
         return constantExpression;
     }
 
-    public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
+    public Expression ResolveTypeCheck (Expression checkedExpression, Type desiredType)
     {
-      ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
+      ArgumentUtility.CheckNotNull ("checkedExpression", checkedExpression);
       ArgumentUtility.CheckNotNull ("desiredType", desiredType);
 
-      if (desiredType.IsAssignableFrom (innerExpression.Type))
+      if (desiredType.IsAssignableFrom (checkedExpression.Type))
         return Expression.Constant (true);
-      else if (innerExpression.Type.IsAssignableFrom (desiredType))
+      else if (checkedExpression.Type.IsAssignableFrom (desiredType))
       {
-        if (!typeof (DomainObject).IsAssignableFrom (innerExpression.Type))
+        if (!typeof (DomainObject).IsAssignableFrom (checkedExpression.Type))
         {
           var message = string.Format (
               "No database-level type check can be added for the expression '{0}'." +
-              "Only the types of DomainObjects can be checked in the database query.",
-              innerExpression);
+              "Only the types of DomainObjects can be checked in database queries.",
+              FormattingExpressionTreeVisitor.Format (checkedExpression));
           throw new UnmappedItemException (message);
         }
 
@@ -196,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Linq
           throw new UnmappedItemException (message);
         }
 
-        var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty ("ID"));
+        var idExpression = Expression.MakeMemberAccess (checkedExpression, typeof (DomainObject).GetProperty ("ID"));
         var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
         return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
       }
