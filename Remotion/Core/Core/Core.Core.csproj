@@ -391,7 +391,6 @@
     <Compile Include="Mixins\Context\MixinContext.cs" />
     <Compile Include="Mixins\Context\MixinContextCollection.cs" />
     <Compile Include="Mixins\Context\ReadOnlyContextCollection.cs" />
-    <Compile Include="Mixins\Context\SynchronizedReadOnlyContextCollection.cs" />
     <Compile Include="Mixins\Definitions\AttributeDefinition.cs" />
     <Compile Include="Mixins\Definitions\AttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\BaseDependencyDefinition.cs" />
