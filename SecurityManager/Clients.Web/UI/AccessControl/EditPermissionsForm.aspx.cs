@@ -263,14 +263,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EditAccessControlListControl_Delete (object sender, EventArgs e)
     {
-      var editStatefulAccessControlListControl = (EditAccessControlListControlBase) sender;
+      var accessControlListControl = (EditAccessControlListControlBase) sender;
       PrepareValidation();
-      bool isValid = ValidateAccessControlLists (editStatefulAccessControlListControl);
+      bool isValid = ValidateAccessControlLists (accessControlListControl);
       if (!isValid)
         return;
 
-      _editAccessControlListControls.Remove (editStatefulAccessControlListControl);
-      var accessControlList = (AccessControlList) editStatefulAccessControlListControl.DataSource.BusinessObject;
+      _editAccessControlListControls.Remove (accessControlListControl);
+      var accessControlList = (AccessControlList) accessControlListControl.DataSource.BusinessObject;
       accessControlList.Delete();
 
       SaveAccessControlLists (false);
