@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Transport
       if (DataTransaction == null)
         throw new InvalidOperationException ("FinishTransport can only be called once.");
 
-      DataTransaction.AddListener (new TransportFinishTransactionListener (DataTransaction, filter));
+      DataTransaction.AddListener (new TransportFinishTransactionListener (filter));
       DataTransaction.Commit ();
       DataTransaction.Discard ();
 

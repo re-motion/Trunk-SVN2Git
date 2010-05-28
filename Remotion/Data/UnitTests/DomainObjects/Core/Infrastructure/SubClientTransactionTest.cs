@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var listener = eventSink.Listeners.OfType<SubClientTransactionListener>().SingleOrDefault ();
 
       Assert.That (listener, Is.Not.Null);
-      Assert.That (listener.ClientTransaction, Is.SameAs (subTx));
     }
 
     [Test]

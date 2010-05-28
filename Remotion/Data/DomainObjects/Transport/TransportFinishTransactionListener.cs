@@ -23,42 +23,44 @@ namespace Remotion.Data.DomainObjects.Transport
 {
   internal class TransportFinishTransactionListener : ClientTransactionListenerBase
   {
-    private readonly ClientTransaction _transaction;
     private readonly Func<DomainObject, bool> _filter;
 
-    public TransportFinishTransactionListener (ClientTransaction transaction, Func<DomainObject, bool> filter)
+    public TransportFinishTransactionListener (Func<DomainObject, bool> filter)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("filter", filter);
 
-      _transaction = transaction;
       _filter = filter;
     }
 
     public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      using (_transaction.EnterNonDiscardingScope ())
+      // Rollback the state of all objects not matched by the filter - we don't want those objects to be committed to the transaction
+
+      using (clientTransaction.EnterNonDiscardingScope ()) // filter must be executed in scope of clientTransaction
       {
         foreach (var domainObject in domainObjects)
         {
           if (!_filter (domainObject))
-          {
-            // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
-            // is discarded after transport anyway.
-
-            var dataContainer = _transaction.GetDataContainer (domainObject);
-            if (dataContainer.State == StateType.New)
-            {
-              var deleteCommand = _transaction.DataManager.CreateDeleteCommand (domainObject);
-              deleteCommand.Perform(); // no events, no bidirectional changes
-              Assertion.IsTrue (dataContainer.IsDiscarded);
-            }
-            else
-            {
-              dataContainer.RollbackState();
-            }
-          }
+            RollbackObject (clientTransaction, domainObject);
         }
+      }
+    }
+
+    private void RollbackObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
+      // is discarded after transport anyway.
+
+      var dataContainer = clientTransaction.GetDataContainer (domainObject);
+      if (dataContainer.State == StateType.New)
+      {
+        var deleteCommand = clientTransaction.DataManager.CreateDeleteCommand (domainObject);
+        deleteCommand.Perform(); // no events, no bidirectional changes
+        Assertion.IsTrue (dataContainer.IsDiscarded);
+      }
+      else
+      {
+        dataContainer.RollbackState();
       }
     }
   }

@@ -26,25 +26,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubClientTransactionListener : ClientTransactionListenerBase
   {
-    private readonly SubClientTransaction _clientTransaction;
-
-    public SubClientTransactionListener (SubClientTransaction clientTransaction)
-    {
-      _clientTransaction = clientTransaction;
-    }
-
-    public SubClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
-    }
-
     public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       ArgumentUtility.CheckNotNull ("container", container);
 
       if (container.State == StateType.New)
       {
-        for (var ancestor = _clientTransaction.ParentTransaction; ancestor != null; ancestor = ancestor.ParentTransaction)
+        for (var ancestor = clientTransaction.ParentTransaction; ancestor != null; ancestor = ancestor.ParentTransaction)
         {
           Assertion.IsNull (ancestor.DataManager.DataContainerMap[container.DomainObject.ID]);
           ancestor.DataManager.MarkObjectInvalid (container.DomainObject);

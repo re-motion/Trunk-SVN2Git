@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _ancestor2 = _ancestor1.CreateSubTransaction();
       _subTransaction = (SubClientTransaction) _ancestor2.CreateSubTransaction ();
 
-      _listener = new SubClientTransactionListener (_subTransaction);
+      _listener = new SubClientTransactionListener ();
     }
 
     [Test]

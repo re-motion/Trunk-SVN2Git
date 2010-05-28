@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentTransaction.IsReadOnly);
 
       _parentTransaction = parentTransaction;
-      AddListener (new SubClientTransactionListener (this));
+      AddListener (new SubClientTransactionListener ());
 
       TransferDeletedAndInvalidObjects();
 

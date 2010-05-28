@@ -36,120 +36,207 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void TransactionInitializing (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
-        s_log.Debug ("TransactionInitializing");
+        s_log.DebugFormat ("{0} TransactionInitializing", clientTransaction.ID);
     }
 
     public void TransactionDiscarding (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
-        s_log.Debug ("TransactionDiscarding");
+        s_log.DebugFormat ("{0} TransactionDiscarding", clientTransaction.ID);
     }
 
     public void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
-        s_log.Debug ("SubTransactionCreating");
+        s_log.DebugFormat ("{0} SubTransactionCreating", clientTransaction.ID);
     }
 
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       if (s_log.IsDebugEnabled)
-        s_log.Debug ("SubTransactionCreated");
+        s_log.DebugFormat ("{0} SubTransactionCreated: {1}", clientTransaction.ID, subTransaction.ID);
     }
 
     public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("NewObjectCreating: {0}", type.FullName);
+        s_log.DebugFormat ("{0} NewObjectCreating: {1}", clientTransaction.ID, GetDomainObjectString (instance));
     }
 
     public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectsLoading: {0}", GetObjectIDString (objectIDs));
+        s_log.DebugFormat ("{0} ObjectsLoading: {1}", clientTransaction.ID, GetObjectIDString (objectIDs));
     }
 
     public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectsUnloaded: {0}", GetDomainObjectsString (unloadedDomainObjects));
+        s_log.DebugFormat ("{0} ObjectsUnloaded: {1}", clientTransaction.ID, GetDomainObjectsString (unloadedDomainObjects));
     }
 
     public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectsLoaded: {0}", GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} ObjectsLoaded: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectsUnloading: {0}", GetDomainObjectsString (unloadedDomainObjects));
+        s_log.DebugFormat ("{0} ObjectsUnloading: {1}", clientTransaction.ID, GetDomainObjectsString (unloadedDomainObjects));
     }
 
     public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectDeleting: {0}", GetDomainObjectString (domainObject));
+        s_log.DebugFormat ("{0} ObjectDeleting: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
     }
 
     public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectDeleted: {0}", GetDomainObjectString (domainObject));
+        s_log.DebugFormat ("{0} ObjectDeleted: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
     }
 
-    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public void PropertyValueReading (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("PropertyValueReading: {0} ({1}, {2})", propertyValue.Name, valueAccess, dataContainer.ID);
+      {
+        s_log.DebugFormat (
+            "{0} PropertyValueReading: {1} ({2}, {3})",
+            clientTransaction.ID,
+            propertyValue.Name,
+            valueAccess,
+            dataContainer.ID);
+      }
     }
 
-    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    public void PropertyValueRead (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object value,
+        ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("PropertyValueRead: {0}=={1} ({2}, {3})", propertyValue.Name, value ?? "<null>", valueAccess, dataContainer.ID);
+      {
+        s_log.DebugFormat (
+            "{0} PropertyValueRead: {1}=={2} ({3}, {4})",
+            clientTransaction.ID,
+            propertyValue.Name,
+            value ?? "<null>",
+            valueAccess,
+            dataContainer.ID);
+      }
     }
 
-    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public void PropertyValueChanging (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object oldValue,
+        object newValue)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("PropertyValueChanging: {0} {1}->{2} ({3})", propertyValue.Name, oldValue ?? "<null>", newValue ?? "<null>", dataContainer.ID);
+      {
+        s_log.DebugFormat (
+            "{0} PropertyValueChanging: {1} {2}->{3} ({4})",
+            clientTransaction.ID,
+            propertyValue.Name,
+            oldValue ?? "<null>",
+            newValue ?? "<null>",
+            dataContainer.ID);
+      }
     }
 
-    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public void PropertyValueChanged (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object oldValue,
+        object newValue)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("PropertyValueChanged: {0} {1}->{2} ({3})", propertyValue.Name, oldValue ?? "<null>", newValue ?? "<null>", dataContainer.ID);
+      {
+        s_log.DebugFormat (
+            "{0} PropertyValueChanged: {1} {2}->{3} ({4})",
+            clientTransaction.ID,
+            propertyValue.Name,
+            oldValue ?? "<null>",
+            newValue ?? "<null>",
+            dataContainer.ID);
+      }
     }
 
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationReading: {0} ({1}, {2})", propertyName, valueAccess, GetDomainObjectString (domainObject));
-    }
-
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationRead: {0}=={1} ({2}, {3})", propertyName, GetDomainObjectString (relatedObject), valueAccess, GetDomainObjectString (domainObject));
-    }
-
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
-    {
-      if (s_log.IsDebugEnabled)
       {
-        var domainObjectsString = relatedObjects.IsDataAvailable ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
-        s_log.DebugFormat ("RelationRead: {0} ({1}, {2}): {3}", propertyName, valueAccess, domainObject.ID, domainObjectsString);
+        s_log.DebugFormat (
+            "{0} RelationReading: {1} ({2}, {3})",
+            clientTransaction.ID,
+            propertyName,
+            valueAccess,
+            GetDomainObjectString (domainObject));
       }
     }
 
-    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        DomainObject relatedObject,
+        ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
-            "RelationChanging: {0}: {1}->{2} /{3}",
+            "{0} RelationRead: {1}=={2} ({3}, {4})",
+            clientTransaction.ID,
+            propertyName,
+            GetDomainObjectString (relatedObject),
+            valueAccess,
+            GetDomainObjectString (domainObject));
+      }
+    }
+
+    public void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        var domainObjectsString = relatedObjects.IsDataAvailable ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
+        s_log.DebugFormat (
+            "{0} RelationRead: {1} ({2}, {3}): {4}",
+            clientTransaction.ID,
+            propertyName,
+            valueAccess,
+            domainObject.ID,
+            domainObjectsString);
+      }
+    }
+
+    public void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat (
+            "{0} RelationChanging: {1}: {2}->{3} /{4}",
+            clientTransaction.ID,
             propertyName,
             GetDomainObjectString (oldRelatedObject),
             GetDomainObjectString (newRelatedObject),
@@ -160,7 +247,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationChanged: {0} ({1})", propertyName, GetDomainObjectString (domainObject));
+        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, propertyName, GetDomainObjectString (domainObject));
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
@@ -168,7 +255,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
-            "FilterQueryResult: {0}: {1} ({2})",
+            "{0} FilterQueryResult: {1}: {2} ({3})",
+            clientTransaction.ID,
             queryResult.Query.ID,
             GetDomainObjectsString (queryResult.AsEnumerable().Cast<DomainObject>()),
             queryResult.Query.Statement);
@@ -179,61 +267,61 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("TransactionCommitting: {0}", GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} TransactionCommitting: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
     public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("TransactionCommitted: {0}", GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} TransactionCommitted: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
     public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("TransactionRollingBack: {0}", GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} TransactionRollingBack: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
     public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("TransactionRolledBack: {0}", GetDomainObjectsString (domainObjects));
+        s_log.DebugFormat ("{0} TransactionRolledBack: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
     public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointMapRegistering: {0}", endPoint.ID);
+        s_log.DebugFormat ("{0} RelationEndPointMapRegistering: {1}", clientTransaction.ID, endPoint.ID);
     }
 
     public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointMapUnregistering: {0}", endPointID);
+        s_log.DebugFormat ("{0} RelationEndPointMapUnregistering: {1}", clientTransaction.ID, endPointID);
     }
 
     public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointUnloading: {0}", endPoint.ID);
+        s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPoint.ID);
     }
 
     public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataManagerMarkingObjectInvalid: {0}", id);
+        s_log.DebugFormat ("{0} DataManagerMarkingObjectInvalid: {1}", clientTransaction.ID, id);
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataContainerMapRegistering: {0}", container.ID);
+        s_log.DebugFormat ("{0} DataContainerMapRegistering: {1}", clientTransaction.ID, container.ID);
     }
 
     public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataContainerMapUnregistering: {0}", container.ID);
+        s_log.DebugFormat ("{0} DataContainerMapUnregistering: {1}", clientTransaction.ID, container.ID);
     }
 
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)

@@ -165,8 +165,8 @@ public abstract class ClientTransaction : IDataSource
     _listeners = new CompoundClientTransactionListener ();
 
     _listeners.AddListener (new LoggingClientTransactionListener ());
-    _listeners.AddListener (new ReadOnlyClientTransactionListener (this));
-    _listeners.AddListener (new ExtensionClientTransactionListener (this, _extensions));
+    _listeners.AddListener (new ReadOnlyClientTransactionListener ());
+    _listeners.AddListener (new ExtensionClientTransactionListener (_extensions));
 
     foreach (var factory in SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ())
       _listeners.AddListener (factory.CreateClientTransactionListener (this));

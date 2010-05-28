@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -165,9 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
-      foreach (var listener in _listeners)
-        queryResult = listener.FilterQueryResult (clientTransaction, queryResult);
-      return queryResult;
+      return _listeners.Aggregate (queryResult, (current, listener) => listener.FilterQueryResult (clientTransaction, current));
     }
 
     public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)

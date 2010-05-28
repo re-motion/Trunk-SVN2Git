@@ -29,25 +29,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ReadOnlyClientTransactionListener : IClientTransactionListener
   {
-    private readonly ClientTransaction _clientTransaction;
-
-    public ReadOnlyClientTransactionListener (ClientTransaction clientTransaction)
-    {
-      _clientTransaction = clientTransaction;
-    }
-
-    private void EnsureWriteable (string operation)
-    {
-      if (_clientTransaction.IsReadOnly)
-      {
-        string message = string.Format (
-            "The operation cannot be executed because the ClientTransaction is read-only. "
-            + "Offending transaction modification: {0}.",
-            operation);
-        throw new ClientTransactionReadOnlyException (message);
-      }
-    }
-
     public void TransactionInitializing (ClientTransaction clientTransaction)
     {
       // not handled by this listener
@@ -60,87 +41,121 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void SubTransactionCreating (ClientTransaction clientTransaction)
     {
-      EnsureWriteable ("SubTransactionCreating");
+      EnsureWriteable (clientTransaction, "SubTransactionCreating");
     }
 
     public virtual void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
-      Assertion.IsTrue (_clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
+      Assertion.IsTrue (clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
     }
 
     public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
-      EnsureWriteable ("NewObjectCreating");
+      EnsureWriteable (clientTransaction, "NewObjectCreating");
     }
 
     public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
-      EnsureWriteable ("ObjectsLoading");
+      EnsureWriteable (clientTransaction, "ObjectsLoading");
     }
 
     public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      EnsureWriteable ("ObjectsUnloading");
+      EnsureWriteable (clientTransaction, "ObjectsUnloading");
     }
 
     public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
-      EnsureWriteable ("ObjectDeleting");
+      EnsureWriteable (clientTransaction, "ObjectDeleting");
     }
 
     public virtual void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
-      Assertion.IsFalse(_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
-    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public virtual void PropertyValueReading (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        ValueAccess valueAccess)
     {
     }
 
-    public virtual void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    public virtual void PropertyValueRead (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object value,
+        ValueAccess valueAccess)
     {
     }
 
-    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public virtual void PropertyValueChanging (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object oldValue,
+        object newValue)
     {
-      EnsureWriteable ("PropertyValueChanging");
+      EnsureWriteable (clientTransaction, "PropertyValueChanging");
     }
 
-    public virtual void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public virtual void PropertyValueChanged (
+        ClientTransaction clientTransaction,
+        DataContainer dataContainer,
+        PropertyValue propertyValue,
+        object oldValue,
+        object newValue)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
     {
     }
 
-    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
+    public virtual void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        DomainObject relatedObject,
+        ValueAccess valueAccess)
     {
     }
 
-    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public virtual void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
     {
     }
 
-    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public virtual void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        string propertyName,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
-      EnsureWriteable ("RelationChanging");
+      EnsureWriteable (clientTransaction, "RelationChanging");
     }
 
     public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
@@ -150,37 +165,37 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      EnsureWriteable ("TransactionCommitting");
+      EnsureWriteable (clientTransaction, "TransactionCommitting");
     }
 
     public virtual void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public virtual void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      EnsureWriteable ("TransactionRollingBack");
+      EnsureWriteable (clientTransaction, "TransactionRollingBack");
     }
 
     public virtual void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
-      EnsureWriteable ("RelationEndPointMapRegistering");
+      EnsureWriteable (clientTransaction, "RelationEndPointMapRegistering");
     }
 
     public virtual void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      EnsureWriteable ("RelationEndPointMapUnregistering");
+      EnsureWriteable (clientTransaction, "RelationEndPointMapUnregistering");
     }
 
     public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
     {
-      EnsureWriteable ("RelationEndPointUnloading");
+      EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
     }
 
     public virtual void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
@@ -190,17 +205,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
     public virtual void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
-      EnsureWriteable ("DataContainerMapUnregistering");
+      EnsureWriteable (clientTransaction, "DataContainerMapUnregistering");
     }
 
     bool INullObject.IsNull
     {
       get { return false; }
+    }
+
+    private void EnsureWriteable (ClientTransaction clientTransaction, string operation)
+    {
+      if (clientTransaction.IsReadOnly)
+      {
+        string message = string.Format (
+            "The operation cannot be executed because the ClientTransaction is read-only. "
+            + "Offending transaction modification: {0}.",
+            operation);
+        throw new ClientTransactionReadOnlyException (message);
+      }
     }
   }
 }
