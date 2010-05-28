@@ -154,6 +154,15 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
+    void IClientTransactionListener.DataContainerStateDefined (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
+    {
+    }
+
+    void IClientTransactionListener.RelationEndPointStateDefined (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
+    {
+    }
+
+
     #endregion
 
     #region Implementation of IPersistenceListener
