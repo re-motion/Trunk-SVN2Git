@@ -758,7 +758,6 @@
                 if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
                     maxHeight = position.top;
                 }
-
             } else {
 
                 bottomPosition = 'auto';
@@ -766,10 +765,14 @@
                 if (options.scrollHeight > position.bottom) {
                     maxHeight = position.bottom;
                 }
-
             }
             // evaluate if list is smaller than available space
-            if (maxHeight && maxHeight > listHeight && listHeight > 0) {
+            if (maxHeight > listHeight && listHeight > 0) {
+                maxHeight = listHeight;
+            }
+
+            // evaluate if maxHeight has never been set
+            if (maxHeight == 0 && listHeight > 0) {
                 maxHeight = listHeight;
             }
 
