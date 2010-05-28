@@ -43,7 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2772")]
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
     {
       CheckQueryResult (
@@ -78,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2772")]
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
       CheckQueryResult (
