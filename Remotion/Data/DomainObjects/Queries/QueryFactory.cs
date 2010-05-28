@@ -40,7 +40,8 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
     private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-
+    private static readonly MethodCallExpressionNodeTypeRegistry s_methodCallExpressionNodeTypeRegistry = CreateNodeTypeRegistry();
+ 
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
     /// generation.
@@ -71,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Queries
               ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, generator)),
           ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
           ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
-          CreateNodeTypeRegistry ()); // TODO Review 2768: Add a static readonly field for this registry, just like for s_methodCallTransformerRegistry
+          s_methodCallExpressionNodeTypeRegistry);
     }
 
     /// <summary>

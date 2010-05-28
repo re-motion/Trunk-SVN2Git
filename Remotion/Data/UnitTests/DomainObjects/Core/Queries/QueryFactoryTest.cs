@@ -206,11 +206,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
       var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
-
       
       var queryable = QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry);
-
-      // TODO Review 2768: Assert that the queryable just created holds the nodeTypeRegistry passed in: ((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
 
       var sqlStatementBuilder = new SqlStatementBuilder();
       sqlStatementBuilder.DataInfo = new StreamedScalarValueInfo (typeof (string));
