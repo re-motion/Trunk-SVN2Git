@@ -95,22 +95,6 @@ public class StringUtilityTest
   }
 
   [Test]
-  public void GetParseMethodFromCache()
-  {
-    MethodInfo parseMethod = StubStringUtility.GetParseMethodFromType (_int32);
-    StubStringUtility.AddParseMethodToCache (_int32, parseMethod);
-    Assert.AreSame (parseMethod, StubStringUtility.GetParseMethodFromCache (_int32));
-  }
-
-  [Test]
-  public void HasTypeInCache()
-  {
-    MethodInfo parseMethod = StubStringUtility.GetParseMethodFromType (_int32);
-    StubStringUtility.AddParseMethodToCache (_int32, parseMethod);
-    Assert.IsTrue (StubStringUtility.HasTypeInCache (_int32));
-  }
-
-  [Test]
   public void CanParseInt32()
   {
     Assert.IsTrue (StringUtility.CanParse (_int32));

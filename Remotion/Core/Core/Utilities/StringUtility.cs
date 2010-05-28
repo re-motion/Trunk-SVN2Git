@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using Remotion.Collections;
 
 namespace Remotion.Utilities
 {
@@ -47,7 +48,7 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static readonly Hashtable s_parseMethods = new Hashtable();
+    private static readonly InterlockedCache<Type, MethodInfo> s_parseMethods = new InterlockedCache<Type, MethodInfo> ();
 
 
     public static string GetFileNameTimestamp (DateTime dt)
@@ -466,14 +467,8 @@ namespace Remotion.Utilities
 
     private static MethodInfo GetParseMethod  (Type type, bool throwIfNotFound)
     {
-      MethodInfo parseMethod = GetParseMethodFromCache (type);
-      if (parseMethod == null && ! HasTypeInCache (type))
-      {
-        parseMethod = GetParseMethodWithFormatProviderFromType (type);
-        if (parseMethod == null)
-          parseMethod = GetParseMethodFromType (type);
-        AddParseMethodToCache (type, parseMethod);
-      }
+      var parseMethod = 
+          s_parseMethods.GetOrCreateValue (type, key => GetParseMethodWithFormatProviderFromType (type) ?? GetParseMethodFromType (type));
       if (throwIfNotFound && parseMethod == null)
         throw new ParseException (string.Format ("Type does not have method 'public static {0} Parse (string s)'.", type.Name));
 
@@ -510,28 +505,6 @@ namespace Remotion.Utilities
         return parseMethod;
       else
         return null;
-    }
-
-    private static void AddParseMethodToCache (Type type, MethodInfo parseMethod)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      lock (s_parseMethods.SyncRoot)
-      {
-        s_parseMethods[type] = parseMethod;
-      }
-    }
-
-    private static MethodInfo GetParseMethodFromCache (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      return (MethodInfo) s_parseMethods[type];
-    }
-
-    private static bool HasTypeInCache (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      return s_parseMethods.ContainsKey (type);
     }
   }
 
