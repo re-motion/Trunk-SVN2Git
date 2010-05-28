@@ -23,8 +23,8 @@ namespace Remotion.Mixins
 {
   public partial class MixinConfiguration
   {
-    private static MixinConfiguration s_masterConfiguration = null;
-    private static readonly object s_masterConfigurationLock = new object ();
+    private static readonly DoubleCheckedLockingContainer<MixinConfiguration> s_masterConfiguration = 
+        new DoubleCheckedLockingContainer<MixinConfiguration> (BuildMasterConfiguration);
 
     /// <summary>
     /// Gets the master <see cref="MixinConfiguration"/>. The master configuration is the default <see cref="MixinConfiguration"/> used whenever a 
@@ -35,18 +35,7 @@ namespace Remotion.Mixins
     /// <seealso cref="SetMasterConfiguration"/>
     public static MixinConfiguration GetMasterConfiguration ()
     {
-      lock (s_masterConfigurationLock)
-      {
-        if (s_masterConfiguration == null)
-        {
-          s_log.Info ("Building mixin master configuration...");
-          using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin master configuration: {elapsed}."))
-          {
-            s_masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration();
-          }
-        }
-        return s_masterConfiguration;
-      }
+      return s_masterConfiguration.Value;
     }
 
     /// <summary>
@@ -63,10 +52,7 @@ namespace Remotion.Mixins
     /// <seealso cref="GetMasterConfiguration"/>
     public static void SetMasterConfiguration (MixinConfiguration newMasterConfiguration)
     {
-      lock (s_masterConfigurationLock)
-      {
-        s_masterConfiguration = newMasterConfiguration;
-      }
+      s_masterConfiguration.Value = newMasterConfiguration;
     }
 
     /// <summary>
@@ -79,9 +65,15 @@ namespace Remotion.Mixins
     /// </remarks>
     public static void ResetMasterConfiguration ()
     {
-      lock (s_masterConfigurationLock)
+      s_masterConfiguration.Value = null;
+    }
+
+    private static MixinConfiguration BuildMasterConfiguration ()
+    {
+      s_log.Info ("Building mixin master configuration...");
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin master configuration: {elapsed}."))
       {
-        s_masterConfiguration = null;
+        return DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
       }
     }
   }
