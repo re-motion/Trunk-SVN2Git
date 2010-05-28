@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -87,22 +88,21 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
-    // TODO Review 2716: Rename to ResolveSimpleTableInfo, pass SimpleTableInfo instead of tableReferenceExpression; return SqlEntityDefinitionExpression, not Expression; don't forget to update the docs on IMappingResolver
-    public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
+    public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
-
+      var tableAlias = tableInfo.TableAlias;
+      
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       // becomes SqlColumnDefinitionExpression
       var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
       // becomes SqlColumnDefinitionExpression
-      var starColumn = new SqlColumnDefinitionExpression (tableReferenceExpression.Type, tableAlias, "*", false);
+      var starColumn = new SqlColumnDefinitionExpression (tableInfo.ItemType, tableAlias, "*", false);
 
-      return new SqlEntityDefinitionExpression (tableReferenceExpression.SqlTable.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
+      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
