@@ -213,12 +213,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "DataContainerMapUnregistering");
     }
 
-    public void DataContainerStateChanging (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
+    public void DataContainerStateDefined (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
     {
       // low-level event also allowed for read-only transactions
     }
 
-    public void RelationEndPointStateChanging (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
+    public void RelationEndPointStateDefined (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
     {
       // low-level event also allowed for read-only transactions
     }

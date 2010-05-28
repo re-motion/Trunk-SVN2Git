@@ -364,7 +364,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotDiscarded();
       if (_state != DataContainerStateType.Existing)
         throw new InvalidOperationException ("Only existing DataContainers can be marked as changed.");
+
       _hasBeenMarkedChanged = true;
+
+      RaiseStateDefinitionEvent (StateType.Changed);
     }
 
     /// <summary>
@@ -443,6 +446,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.CommitState ();
 
       _state = DataContainerStateType.Existing;
+      RaiseStateDefinitionEvent (StateType.Unchanged);
     }
 
     public void RollbackState ()
@@ -459,6 +463,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.RollbackState ();
 
       _state = DataContainerStateType.Existing;
+      RaiseStateDefinitionEvent (StateType.Unchanged);
     }
 
     public void Delete ()
@@ -469,6 +474,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("New data containers cannot be deleted, they have to be discarded.");
 
       _state = DataContainerStateType.Deleted;
+      RaiseStateDefinitionEvent (StateType.Deleted);
     }
 
     public void Discard ()
@@ -476,9 +482,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotDiscarded ();
 
       _propertyValues.Discard ();
-      _clientTransaction = null;
 
       _isDiscarded = true;
+      RaiseStateDefinitionEvent (StateType.Invalid);
+
+      _clientTransaction = null;
     }
 
     public void SetPropertyValuesFrom (DataContainer source)
@@ -499,7 +507,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       for (int i = 0; i < _propertyValues.Count; ++i)
         _propertyValues[i].SetValueFrom (source._propertyValues[i]);
 
-      _hasBeenChanged = HasPropertyValueChanged ();
+      _hasBeenChanged = CalculatePropertyValueChangeState ();
+      RaiseStateDefinitionEvent (State);
     }
 
     public void SetDomainObject (DomainObject domainObject)
@@ -551,7 +560,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
     {
-      UpdateStateAfterPropertyValueChanged(args);
+      // set _hasBeenChanged to true if:
+      // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
+      // - the property indicates that it doesn't have the original value ("HasChanged")
+      // - recalculation of all property change states indicates another property doesn't have its original value
+      _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
+      RaiseStateDefinitionEvent (State);
 
       if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
@@ -567,14 +581,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_clientTransaction != null)
         _clientTransaction.TransactionEventSink.PropertyValueChanged (_clientTransaction, this, args.PropertyValue, args.OldValue, args.NewValue);
-    }
-
-    private void UpdateStateAfterPropertyValueChanged (PropertyChangeEventArgs args)
-    {
-      if (_hasBeenChanged && !args.PropertyValue.HasChanged) // maybe we need to reset this DataContainer's state to unchanged?
-        _hasBeenChanged = HasPropertyValueChanged();
-      else
-        _hasBeenChanged = true;
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
@@ -619,9 +625,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return clone;
     }
 
-    private bool HasPropertyValueChanged ()
+    private bool CalculatePropertyValueChangeState ()
     {
       return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
+    }
+
+    private void RaiseStateDefinitionEvent (StateType state)
+    {
+      Assertion.DebugAssert (State == state);
+
+      if (_clientTransaction != null)
+        _clientTransaction.TransactionEventSink.DataContainerStateDefined (_clientTransaction, this, state);
     }
 
     #region Serialization

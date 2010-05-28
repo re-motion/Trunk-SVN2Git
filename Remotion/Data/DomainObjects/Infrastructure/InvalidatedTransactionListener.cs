@@ -184,12 +184,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void DataContainerStateChanging (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
+    public void DataContainerStateDefined (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
     {
       throw CreateException ();
     }
 
-    public void RelationEndPointStateChanging (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
+    public void RelationEndPointStateDefined (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
     {
       throw CreateException ();
     }

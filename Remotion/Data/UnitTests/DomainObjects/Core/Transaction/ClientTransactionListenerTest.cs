@@ -144,6 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
           _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, cwadt));
+          _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, cwadt.InternalDataContainer, StateType.Deleted));
           _strictListenerMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, cwadt));
       }
 
@@ -197,6 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
                         orderNumber,
                         43));
+        _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, order.InternalDataContainer, StateType.Changed));
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanged (ClientTransactionMock, order.InternalDataContainer,
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
@@ -285,6 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                 order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
                 oldCustomer.ID,
                 newCustomer.ID));
+        _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, order.InternalDataContainer, StateType.Changed));
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanged (
                 ClientTransactionMock, 
@@ -350,6 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (mock => mock.TransactionCommitting (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionCommitted (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
@@ -375,6 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (mock => mock.TransactionRollingBack (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionRolledBack (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
@@ -434,6 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             .Repeat.Times (4); // four related objects/object collections in Order
 
         _strictListenerMock.Expect (mock => mock.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));
+        _strictListenerMock.Expect (mock => mock.DataContainerStateDefined (ClientTransactionMock, order.InternalDataContainer, StateType.Invalid));
         _strictListenerMock.Expect (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, order.ID));
         _strictListenerMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, order));
       }

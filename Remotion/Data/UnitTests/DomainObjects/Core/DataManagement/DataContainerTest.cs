@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -392,6 +393,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CommitState_RaisesNotification ()
+    {
+      _newDataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (_newDataContainer, dc => dc.CommitState (), StateType.Unchanged);
+    }
+
+    [Test]
     public void CommitState_CommitsPropertyValues ()
     {
       var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
@@ -453,6 +462,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _deletedDataContainer.RollbackState ();
 
       Assert.That (_deletedDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void RollbackState_RaisesNotification ()
+    {
+      _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (_existingDataContainer, dc => dc.RollbackState (), StateType.Unchanged);
     }
 
     [Test]
@@ -519,6 +536,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Deleted));
     }
 
+     [Test]
+    public void Delete_RaisesNotification ()
+    {
+      _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (_existingDataContainer, dc => dc.Delete(), StateType.Deleted);
+    }
+
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
     public void Delete_DiscardedDataContainer_Throws ()
@@ -542,6 +567,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _newDataContainer.Discard ();
 
       Assert.That (_newDataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Discard_RaisesNotification ()
+    {
+      _newDataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (_newDataContainer, dc => dc.Discard (), StateType.Invalid);
     }
 
     [Test]
@@ -602,6 +635,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
 
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_RaisesNotification_Changed ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
+
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Changed);
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_RaisesNotification_Unchanged ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
+      targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
+      Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      targetDataContainer.RegisterWithTransaction (ClientTransactionMock);
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Unchanged);
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_RaisesNotification_OtherState ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
+      targetDataContainer.Delete ();
+      Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
+
+      targetDataContainer.RegisterWithTransaction (ClientTransactionMock);
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Deleted);
     }
 
     [Test]
@@ -676,6 +743,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       clone = dataContainer.Clone (DomainObjectIDs.Order1);
       Assert.That (clone.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void MarkAsChanged_WithoutClientTransaction ()
+    {
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+      _existingDataContainer.MarkAsChanged ();
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void MarkAsChanged_RaisesNotification ()
+    {
+      _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (_existingDataContainer, dc => dc.MarkAsChanged(), StateType.Changed);
     }
 
     [Test]
@@ -955,7 +1038,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void State_Changed_InOnPropertyChanged ()
+    public void PropertyValueChanged_UpdatesState ()
     {
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
       Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
@@ -982,7 +1065,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void State_Changed_InPropertyValueOnChanged ()
+    public void PropertyValueChanged_RaisesNotification ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
+      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
+    }
+
+    [Test]
+    public void PropertyValueChanged_UpdatesState_After_PropertyValueEvent ()
     {
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
       Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
@@ -1013,6 +1106,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
+    }
+
+    private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)
+    {
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      action (dataContainer);
+
+      listener.AssertWasCalled (mock => mock.DataContainerStateDefined (ClientTransactionMock, dataContainer, expectedState));
     }
   }
 }
