@@ -29,28 +29,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     // static members and constants
 
-    private static TestMappingConfiguration s_current;
+    private static readonly DoubleCheckedLockingContainer<TestMappingConfiguration> s_current
+        = new DoubleCheckedLockingContainer<TestMappingConfiguration> (() => new TestMappingConfiguration());
 
     public static TestMappingConfiguration Current
     {
-      get
-      {
-        lock (typeof (TestMappingConfiguration))
-        {
-          if (s_current == null)
-            s_current = new TestMappingConfiguration();
-
-          return s_current;
-        }
-      }
+      get { return s_current.Value; }
     }
 
     public static void Reset ()
     {
-      lock (typeof (TestMappingConfiguration))
-      {
-        s_current = null;
-      }
+      s_current.Value = null;
     }
 
     // member fields

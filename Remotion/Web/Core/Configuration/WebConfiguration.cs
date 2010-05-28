@@ -19,6 +19,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Remotion.Utilities;
 using Remotion.Xml;
 
 namespace Remotion.Web.Configuration
@@ -43,38 +44,32 @@ public class WebConfiguration: IConfigurationSectionHandler
     return new XmlTextReader (Assembly.GetExecutingAssembly().GetManifestResourceStream (typeof(WebConfiguration), "WebConfiguration.xsd"));
   }
 
-  private static WebConfiguration s_current = null;
+  private static readonly DoubleCheckedLockingContainer<WebConfiguration> s_current = 
+      new DoubleCheckedLockingContainer<WebConfiguration> (CreateConfig);
 
   /// <summary> Gets the <see cref="WebConfiguration"/>. </summary>
   public static WebConfiguration Current
   {
-    get
-    {
-      if (s_current == null)
-      {
-        lock (typeof (WebConfiguration))
-        {
-          if (s_current == null)
-          {
-            XmlNode section = (XmlNode) ConfigurationManager.GetSection (ElementName);
-            if (section != null)
-            {
-              s_current = (WebConfiguration) XmlSerializationUtility.DeserializeUsingSchema (
-                  new XmlNodeReader (section),
-                  // "web.config/configuration/" + ElementName,  // TODO: context is no longer supported, verify that node has correct BaseURI
-                  typeof (WebConfiguration),
-                  SchemaUri, 
-                  GetSchemaReader());
-            }
-            else
-            {
-              s_current = new WebConfiguration();
-            }
-          }
-        }
-      }
-      return s_current;
-    }
+    get { return s_current.Value; }
+  }
+
+  protected static void SetCurrent (WebConfiguration configuration)
+  {
+    s_current.Value = configuration;
+  }
+
+  private static WebConfiguration CreateConfig ()
+  {
+    XmlNode section = (XmlNode) ConfigurationManager.GetSection (ElementName);
+    if (section == null)
+      return new WebConfiguration();
+    
+    return (WebConfiguration) XmlSerializationUtility.DeserializeUsingSchema (
+        new XmlNodeReader (section),
+        // "web.config/configuration/" + ElementName,  // TODO: context is no longer supported, verify that node has correct BaseURI
+        typeof (WebConfiguration),
+        SchemaUri,
+        GetSchemaReader());
   }
 
   private ExecutionEngineConfiguration _executionEngine = new ExecutionEngineConfiguration();

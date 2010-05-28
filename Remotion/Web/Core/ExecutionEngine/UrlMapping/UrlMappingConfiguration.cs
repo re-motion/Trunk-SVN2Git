@@ -37,7 +37,8 @@ public class UrlMappingConfiguration: ConfigurationBase
   /// <remarks> <c>http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0</c> </remarks>
   public const string SchemaUri = "http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0";
 
-  private static UrlMappingConfiguration s_current = null;
+  private static readonly DoubleCheckedLockingContainer<UrlMappingConfiguration> s_current = 
+      new DoubleCheckedLockingContainer<UrlMappingConfiguration> (CreateConfig);
 
   public static UrlMappingConfiguration CreateUrlMappingConfiguration (string configurationFile)
   {
@@ -48,38 +49,22 @@ public class UrlMappingConfiguration: ConfigurationBase
   /// <summary> Gets the current <see cref="UrlMappingConfiguration"/>. </summary>
   public static UrlMappingConfiguration Current
   {
-    get
-    {
-      if (s_current == null)
-      {
-        lock (typeof (UrlMappingConfiguration))
-        {
-          if (s_current == null)
-          {
-            string mappingFile = WebConfiguration.Current.ExecutionEngine.UrlMappingFile;
-            if (StringUtility.IsNullOrEmpty (mappingFile))
-            {
-              s_current = new UrlMappingConfiguration();
-            }
-            else
-            {
-              s_current = UrlMappingConfiguration.CreateUrlMappingConfiguration (
-                  WebConfiguration.Current.ExecutionEngine.UrlMappingFile);
-            }
-          }
-        }
-      }
-      return s_current;
-    }
+    get { return s_current.Value; }
+  }
+
+  private static UrlMappingConfiguration CreateConfig ()
+  {
+    string mappingFile = WebConfiguration.Current.ExecutionEngine.UrlMappingFile;
+    if (StringUtility.IsNullOrEmpty (mappingFile))
+      return new UrlMappingConfiguration();
+    else
+      return UrlMappingConfiguration.CreateUrlMappingConfiguration (WebConfiguration.Current.ExecutionEngine.UrlMappingFile);
   }
 
   /// <summary> Sets the current <see cref="UrlMappingConfiguration"/>. </summary>
   public static void SetCurrent (UrlMappingConfiguration mappingConfiguration)
   {
-    lock (typeof (UrlMappingConfiguration))
-    {
-      s_current = mappingConfiguration;
-    }
+    s_current.Value = mappingConfiguration;
   }
 
   private UrlMappingCollection _mappings = new UrlMappingCollection();

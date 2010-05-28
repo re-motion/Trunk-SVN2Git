@@ -16,10 +16,12 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using Remotion.Collections;
 
 namespace Remotion.Utilities
 {
@@ -79,23 +81,13 @@ namespace Remotion.Utilities
   /// </summary>
   public static class EnumDescription
   {
-    /// <summary> IDictionary&lt;Type, IDictionary&lt;System.Enum, string&gt;&gt; </summary>
+    /// <summary>This is for enums with the EnumDescriptionAttribute on values. </summary>
     /// <remarks> This is for enums with the EnumDescriptionAttribute on values. </remarks>
-    private static IDictionary s_typeDescriptions;
+    private static readonly InterlockedCache<Type, IDictionary<Enum, string>> s_typeDescriptions = new InterlockedCache<Type, IDictionary<Enum, string>> ();
 
-    /// <summary> IDictionary&lt;string resourceKey, ResourceManager&gt; </summary>
-    /// <remarks> This is for enums with the EnumDescriptionResourceAttribute. </remarks>
-    private static IDictionary s_enumResourceManagers;
-
-    static EnumDescription ()
-    {
-      lock (typeof (EnumDescription))
-      {
-        s_typeDescriptions = new HybridDictionary ();
-        s_enumResourceManagers = new HybridDictionary ();
-      }
-    }
-
+    /// <summary> This is for enums with the EnumDescriptionResourceAttribute.  </summary>
+    private static readonly InterlockedCache<Tuple<string, Assembly>, ResourceManager> s_enumResourceManagers = 
+        new InterlockedCache<Tuple<string, Assembly>, ResourceManager> ();
 
     public static EnumValue[] GetAllValues (Type enumType)
     {
@@ -122,12 +114,12 @@ namespace Remotion.Utilities
       }
       else
       {
-        IDictionary descriptions = GetOrCreateDescriptions (enumType);
+        IDictionary<Enum, string> descriptions = GetOrCreateDescriptions (enumType);
         EnumValue[] values = new EnumValue[descriptions.Count];
         int i = 0;
         foreach (Enum value in descriptions.Keys)
         {
-          values[i] = new EnumValue (value, (string) descriptions[value]);
+          values[i] = new EnumValue (value, descriptions[value]);
           ++i;
         }
         return values;
@@ -136,22 +128,7 @@ namespace Remotion.Utilities
 
     private static ResourceManager GetResourceManager (string baseName, Assembly assembly)
     {
-      string resourceKey = baseName + " in " + assembly.FullName;
-
-      ResourceManager rm = (ResourceManager) s_enumResourceManagers[resourceKey];
-      if (rm == null)
-      {
-        lock (typeof (EnumDescription))
-        {
-          rm = (ResourceManager) s_enumResourceManagers[resourceKey];
-          if (rm == null)
-          {
-            rm = new ResourceManager (baseName, assembly, null);
-            s_enumResourceManagers[resourceKey] = rm;
-          }
-        }
-      }
-      return rm;
+      return s_enumResourceManagers.GetOrCreateValue (Tuple.Create (baseName, assembly), key => new ResourceManager (key.Item1, key.Item2, null));
     }
 
     public static string GetDescription (Enum value)
@@ -170,38 +147,25 @@ namespace Remotion.Utilities
       }
       else
       {
-        IDictionary descriptions = GetOrCreateDescriptions (enumType);
-        string description = (string) descriptions[value];
-        if (description != null)
+        IDictionary<Enum, string> descriptions = GetOrCreateDescriptions (enumType);
+        string description;
+        if (descriptions.TryGetValue(value, out description))
           return description;
 
         return value.ToString();
       }
     }
 
-    private static IDictionary GetOrCreateDescriptions (Type enumType)
+    private static IDictionary<Enum, string> GetOrCreateDescriptions (Type enumType)
     {
-      IDictionary descriptions = (IDictionary) s_typeDescriptions[enumType];
-      if (descriptions == null)
-      {
-        lock (s_typeDescriptions)
-        {
-          descriptions = (IDictionary) s_typeDescriptions[enumType];
-          if (descriptions == null)
-          {
-            descriptions = CreateDesciptionsDictionary (enumType);
-            s_typeDescriptions.Add (enumType, descriptions);
-          }
-        }
-      }
-      return descriptions;
+      return s_typeDescriptions.GetOrCreateValue (enumType, CreateDesciptionsDictionary);
     }
 
     /// <returns>IDictionary&lt;System.Enum, string&gt;</returns>
-    private static IDictionary CreateDesciptionsDictionary (Type enumType)
+    private static IDictionary<Enum, string> CreateDesciptionsDictionary (Type enumType)
     {
       FieldInfo[] fields = enumType.GetFields (BindingFlags.Static | BindingFlags.Public);
-      IDictionary dictionary = new HybridDictionary (fields.Length);
+      IDictionary<Enum, string> dictionary = new Dictionary<Enum, string> (fields.Length);
       foreach (FieldInfo field in fields)
       {
         EnumDescriptionAttribute descriptionAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionAttribute> (field, false);

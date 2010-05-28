@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Web.UI;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
 
@@ -29,10 +30,8 @@ namespace Remotion.Web.UI.Globalization
 public static class ResourceManagerUtility
 {
   private const string c_globalResourceKeyPrefix = "$res:";
-  /// <summary> Hashtable&lt;type,IResourceManagers&gt; </summary>
-  private static Hashtable s_chachedResourceManagers = new Hashtable();
-  /// <summary> Dummy value used mark cached types without a resource manager. </summary>
-  private static readonly object s_dummyResourceManager = new object();
+
+  private static readonly InterlockedCache<Type, IResourceManager> s_chachedResourceManagers = new InterlockedCache<Type, IResourceManager>();
 
   public static bool IsGlobalResourceKey (string elementValue)
   {
@@ -94,9 +93,9 @@ public static class ResourceManagerUtility
     if (resourceManagers.Count == 0)
       return null;
     else if (resourceManagers.Count == 1)
-      return (IResourceManager) resourceManagers[0];
+      return resourceManagers[0].IsNull ? null : resourceManagers[0];
     else
-      return new ResourceManagerSet ((IResourceManager[]) resourceManagers.ToArray());
+      return new ResourceManagerSet (resourceManagers.ToArray());
   }
 
   private static void GetResourceManagersRecursive (Control control, List<IResourceManager> resourceManagers, bool alwaysIncludeParents)
@@ -104,14 +103,10 @@ public static class ResourceManagerUtility
     if (control == null)
       return;
 
-    IObjectWithResources objectWithResources  = control as IObjectWithResources;
+    var objectWithResources  = control as IObjectWithResources;
 
     if (objectWithResources != null)
-    {
-      IResourceManager resourceManager = GetResourceManagerFromCache (objectWithResources);
-      if (resourceManager != null)
-        resourceManagers.Add (resourceManager);
-    }
+      resourceManagers.Add (GetResourceManagerFromCache (objectWithResources));
 
     if (objectWithResources == null || alwaysIncludeParents)
       GetResourceManagersRecursive (control.Parent, resourceManagers, alwaysIncludeParents);
@@ -122,35 +117,15 @@ public static class ResourceManagerUtility
   ///   The <see cref="IObjectWithResources"/> to get the <see cref="IResourceManager"/> from.
   /// </param>
   /// <returns> 
-  ///   An <see cref="IResourceManager"/> object or <see langword="null"/> if no resource manager has been returned
-  ///   by <see cref="IObjectWithResources.GetResourceManager">IObjectWithResources.GetResourceManager</see>.
+  ///   An <see cref="IResourceManager"/> object returned by <see cref="IObjectWithResources.GetResourceManager">IObjectWithResources.GetResourceManager</see>.
   /// </returns>
   private static IResourceManager GetResourceManagerFromCache (IObjectWithResources objectWithResources)
   {
     ArgumentUtility.CheckNotNull ("objectWithResources", objectWithResources);
-    Type type = objectWithResources.GetType();
 
-    if (s_chachedResourceManagers[type] == null)
-    {
-      lock (typeof (ResourceManagerUtility))
-      {
-        if (s_chachedResourceManagers[type] == null)
-        {     
-          IResourceManager resourceManager = objectWithResources.GetResourceManager ();
-          if (resourceManager == null)
-          {
-            //  Chache a dummy value if no resources are defined for the page.
-            s_chachedResourceManagers[type] = s_dummyResourceManager;
-          }
-          else
-          {
-            s_chachedResourceManagers[type] = resourceManager;
-          }
-        }
-      }  
-    }
-    
-    return s_chachedResourceManagers[type] as IResourceManager;
+    return s_chachedResourceManagers.GetOrCreateValue (
+        objectWithResources.GetType(),
+        key => objectWithResources.GetResourceManager() ?? NullResourceManager.Instance);
   }
 }
 }

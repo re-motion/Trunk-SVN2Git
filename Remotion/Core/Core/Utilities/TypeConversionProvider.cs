@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using Remotion.Collections;
 using Remotion.ExtensibleEnums;
 using Remotion.Reflection.TypeDiscovery;
 
@@ -52,8 +53,10 @@ namespace Remotion.Utilities
   /// </remarks>
   public class TypeConversionProvider
   {
-    private static readonly Dictionary<Type, TypeConverter> s_typeConverters = new Dictionary<Type, TypeConverter>();
-    private static TypeConversionProvider s_current;
+    private static readonly InterlockedDataStore<Type, TypeConverter> s_typeConverters = new InterlockedDataStore<Type, TypeConverter> ();
+
+    private static readonly DoubleCheckedLockingContainer<TypeConversionProvider> s_current =
+        new DoubleCheckedLockingContainer<TypeConversionProvider> (Create);
 
     /// <summary> Creates a new instace of the <see cref="TypeConversionProvider"/> type. </summary>
     /// <returns> An instance of the <see cref="TypeConversionProvider"/> type. </returns>
@@ -66,18 +69,7 @@ namespace Remotion.Utilities
     /// <value> An instance of the <see cref="TypeConversionProvider"/> type. </value>
     public static TypeConversionProvider Current
     {
-      get
-      {
-        if (s_current == null)
-        {
-          lock (typeof (TypeConversionProvider))
-          {
-            if (s_current == null)
-              s_current = Create();
-          }
-        }
-        return s_current;
-      }
+      get { return s_current.Value; }
     }
 
     /// <summary> Sets the current <see cref="TypeConversionProvider"/>. </summary>
@@ -85,10 +77,7 @@ namespace Remotion.Utilities
     public static void SetCurrent (TypeConversionProvider provider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
-      lock (typeof (TypeConversionProvider))
-      {
-        s_current = provider;
-      }
+      s_current.Value = provider;
     }
 
     private readonly Dictionary<Type, TypeConverter> _additionalTypeConverters = new Dictionary<Type, TypeConverter>();
@@ -378,10 +367,7 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      lock (s_typeConverters)
-      {
-        s_typeConverters[type] = converter;
-      }
+      s_typeConverters[type] = converter;
     }
 
     protected TypeConverter GetTypeConverterFromCache (Type type)

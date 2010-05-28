@@ -34,26 +34,11 @@ namespace Remotion.Web.UI.Controls
   [TypeConverter (typeof (IconInfoConverter))]
   public sealed class IconInfo
   {
-    private static IconInfo s_spacer;
+    private static readonly DoubleCheckedLockingContainer<IconInfo> s_spacer = new DoubleCheckedLockingContainer<IconInfo> (CreateSpacerIcon);
 
     public static IconInfo Spacer
     {
-      get
-      {
-        if (s_spacer == null)
-        {
-          lock (typeof (IconInfo))
-          {
-            if (s_spacer == null)
-            {
-              var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-              string url = themedResourceUrlResolver.GetResourceUrl (null, ResourceType.Image, "Spacer.gif");
-              s_spacer = new IconInfo (url);
-            }
-          }
-        }
-        return s_spacer;
-      }
+      get { return s_spacer.Value; }
     }
 
     public static bool ShouldSerialize (IconInfo icon)
@@ -82,6 +67,13 @@ namespace Remotion.Web.UI.Controls
       writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
       writer.RenderEndTag();
+    }
+
+    private static IconInfo CreateSpacerIcon ()
+    {
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+      string url = themedResourceUrlResolver.GetResourceUrl (null, ResourceType.Image, "Spacer.gif");
+      return new IconInfo (url);
     }
 
     private string _url;

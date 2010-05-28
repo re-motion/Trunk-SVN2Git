@@ -31,23 +31,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingConfiguration));
 
-    private static MappingConfiguration s_mappingConfiguration;
+    private static readonly DoubleCheckedLockingContainer<MappingConfiguration> s_mappingConfiguration =
+        new DoubleCheckedLockingContainer<MappingConfiguration> (
+            () => new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader ()));
 
     public static MappingConfiguration Current
     {
-      get
-      {
-        if (s_mappingConfiguration == null)
-        {
-          lock (typeof (MappingConfiguration))
-          {
-            if (s_mappingConfiguration == null)
-              s_mappingConfiguration = new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader());
-          }
-        }
-
-        return s_mappingConfiguration;
-      }
+      get { return s_mappingConfiguration.Value; }
     }
 
     public static void SetCurrent (MappingConfiguration mappingConfiguration)
@@ -68,10 +58,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
 
-      lock (typeof (MappingConfiguration))
-      {
-        s_mappingConfiguration = mappingConfiguration;
-      }
+      s_mappingConfiguration.Value = mappingConfiguration;
     }
 
     private static ArgumentException CreateArgumentException (Exception innerException, string argumentName, string message, params object[] args)

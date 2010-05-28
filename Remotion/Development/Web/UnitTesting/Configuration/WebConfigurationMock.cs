@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Development.UnitTesting;
 using Remotion.Web.Configuration;
 
 namespace Remotion.Development.Web.UnitTesting.Configuration
@@ -33,7 +32,7 @@ namespace Remotion.Development.Web.UnitTesting.Configuration
     public static new WebConfiguration Current
     {
       get { return WebConfiguration.Current; }
-      set {PrivateInvoke.SetNonPublicStaticField (typeof (WebConfiguration), "s_current", value); }
+      set { WebConfiguration.SetCurrent (value); }
     }
   }
 }

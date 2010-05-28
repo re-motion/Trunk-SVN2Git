@@ -123,6 +123,7 @@ public class WorkContext: IDisposable
   private static ContextStack s_stack; // defaults to null for each new thread
   private static bool s_enableTracingFlagInitialized = false;
   private static bool s_enableTracing = false;
+  private static object s_syncRoot = new object();
 
   /// <summary>
   /// Use this flag to specify (or learn) whether trace output should be generated when contexts are entered, left or done.
@@ -134,7 +135,7 @@ public class WorkContext: IDisposable
     {
       if (! s_enableTracingFlagInitialized)
       {
-        lock (typeof (WorkContext))
+        lock (s_syncRoot)
         {
           if (! s_enableTracingFlagInitialized)
           {
@@ -149,7 +150,7 @@ public class WorkContext: IDisposable
 
     set
     {
-      lock (typeof (WorkContext))
+      lock (s_syncRoot)
       {
         s_enableTracing = value;
         s_enableTracingFlagInitialized = true;

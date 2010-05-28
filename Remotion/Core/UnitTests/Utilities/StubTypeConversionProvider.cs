@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
@@ -53,7 +54,8 @@ public class StubTypeConversionProvider: TypeConversionProvider
 
   public static void ClearCache()
   {
-    IDictionary cache = (IDictionary) PrivateInvoke.GetNonPublicStaticField (typeof (TypeConversionProvider), "s_typeConverters");
+    var cache =
+        (InterlockedDataStore<Type, TypeConverter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeConversionProvider), "s_typeConverters");
     cache.Clear();
   }
 }
