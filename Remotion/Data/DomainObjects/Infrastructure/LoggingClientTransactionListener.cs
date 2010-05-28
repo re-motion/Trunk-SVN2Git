@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} NewObjectCreating: {1}", clientTransaction.ID, GetDomainObjectString (instance));
+        s_log.DebugFormat ("{0} NewObjectCreating: {1}", clientTransaction.ID, type.FullName);
     }
 
     public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
