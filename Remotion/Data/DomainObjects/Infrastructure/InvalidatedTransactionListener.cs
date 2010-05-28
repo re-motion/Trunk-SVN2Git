@@ -184,6 +184,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void DataContainerStateChanging (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
+    {
+      throw CreateException ();
+    }
+
+    public void RelationEndPointStateChanging (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool newChangeState)
+    {
+      throw CreateException ();
+    }
+
     bool INullObject.IsNull
     {
       get { return false; }

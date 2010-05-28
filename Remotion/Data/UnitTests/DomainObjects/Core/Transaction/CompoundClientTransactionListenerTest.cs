@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,7 +25,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -54,21 +52,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _compoundListener.AddListener (_listener2);
     }
 
-    private void CheckNotification (MethodInfo method, object[] arguments)
+    private void CheckNotification (Action<IClientTransactionListener> notificationCall)
     {
-      ArgumentUtility.CheckNotNull ("method", method);
-      ArgumentUtility.CheckNotNull ("arguments", arguments);
-
       _mockRepository.BackToRecordAll ();
       using (_mockRepository.Ordered ())
       {
-        method.Invoke (_listener1, arguments);
-        method.Invoke (_listener2, arguments);
+        _listener1.Expect (notificationCall);
+        _listener2.Expect (notificationCall);
       }
 
       _mockRepository.ReplayAll ();
 
-      method.Invoke (_compoundListener, arguments);
+      notificationCall (_compoundListener);
 
       _mockRepository.VerifyAll ();
     }
@@ -76,114 +71,80 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void AggregatedClientsAreNotified ()
     {
-      Order order = Order.NewObject();
-      Order order2 = Order.NewObject();
+      var order = Order.NewObject();
+      var order2 = Order.NewObject();
+      var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
+      var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection ());
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("TransactionInitializing"), new object[] { ClientTransactionMock });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("TransactionDiscarding"), new object[] { ClientTransactionMock });
+      CheckNotification (listener => listener.TransactionInitializing (ClientTransactionMock));
+      CheckNotification (listener => listener.TransactionDiscarding (ClientTransactionMock));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreating"), new object[] { ClientTransactionMock });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreated"), new object[] { ClientTransactionMock, ClientTransactionMock });
+      CheckNotification (listener => listener.SubTransactionCreating (ClientTransactionMock));
+      CheckNotification (listener => listener.SubTransactionCreated (ClientTransactionMock, ClientTransactionMock));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("NewObjectCreating"), new object[] { ClientTransactionMock, typeof (string), null});
+      CheckNotification (listener => listener.NewObjectCreating (ClientTransactionMock, typeof (string), null));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoading"), new object[] { ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0]) });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
+      CheckNotification (listener => listener.ObjectsLoading (ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0])));
+      CheckNotification (listener => listener.ObjectsLoaded (ClientTransactionMock, domainObjects));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloading"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloaded"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
+      CheckNotification (listener => listener.ObjectsUnloading (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.ObjectsUnloaded (ClientTransactionMock, domainObjects));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleting"), new object[] { ClientTransactionMock, order });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleted"), new object[] { ClientTransactionMock, order });
+      CheckNotification (listener => listener.ObjectDeleting (ClientTransactionMock, order));
+      CheckNotification (listener => listener.ObjectDeleted (ClientTransactionMock, order));
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("PropertyValueReading"),
-          new object[]
-              {
-                  ClientTransactionMock, 
-                  order.InternalDataContainer,
-                  order.InternalDataContainer.PropertyValues[0], ValueAccess.Original
-              });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("PropertyValueRead"),
-          new object[]
-              {
-                  ClientTransactionMock, 
-                  order.InternalDataContainer,
-                  order.InternalDataContainer.PropertyValues[0], "Foo", ValueAccess.Original
-              });
+      CheckNotification (listener => listener.PropertyValueReading (
+          ClientTransactionMock, 
+          order.InternalDataContainer, 
+          order.InternalDataContainer.PropertyValues[0], 
+          ValueAccess.Original));
+      CheckNotification (listener => listener.PropertyValueRead (
+        ClientTransactionMock, 
+        order.InternalDataContainer,
+        order.InternalDataContainer.PropertyValues[0],
+        "Foo", 
+        ValueAccess.Original));
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("PropertyValueChanging"),
-          new object[]
-              {
-                  ClientTransactionMock, 
-                  order.InternalDataContainer,
-                  order.InternalDataContainer.PropertyValues[0], "Foo", "Bar"
-              });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("PropertyValueChanged"),
-          new object[]
-              {
-                  ClientTransactionMock, 
-                  order.InternalDataContainer,
-                  order.InternalDataContainer.PropertyValues[0], "Foo", "Bar"
-              });
+      CheckNotification (listener => listener.PropertyValueChanging (
+          ClientTransactionMock, 
+          order.InternalDataContainer,
+          order.InternalDataContainer.PropertyValues[0], 
+          "Foo", 
+          "Bar"));
+      CheckNotification (listener => listener.PropertyValueChanged (
+          ClientTransactionMock, 
+          order.InternalDataContainer,
+          order.InternalDataContainer.PropertyValues[0], 
+          "Foo", 
+          "Bar"));
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod (
-              "RelationRead",
-              new[]
-                  {
-                      typeof (ClientTransaction),
-                      typeof (DomainObject), typeof (string),
-                      typeof (DomainObject), typeof (ValueAccess)
-                  }),
-          new object[] { ClientTransactionMock, order, "Foo", order, ValueAccess.Original });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod (
-              "RelationRead",
-              new[]
-                  {
-                      typeof (ClientTransaction),
-                      typeof (DomainObject), typeof (string),
-                      typeof (ReadOnlyDomainObjectCollectionAdapter<DomainObject>), typeof (ValueAccess)
-                  }),
-          new object[]
-              {
-                  ClientTransactionMock, order, "FooBar",
-                  new ReadOnlyDomainObjectCollectionAdapter<DomainObject>(new DomainObjectCollection()), ValueAccess.Original
-              });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationReading"), new object[] { ClientTransactionMock, order, "Whatever", ValueAccess.Current });
+      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, "Foo", order, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, "FooBar", relatedObjects, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, "Whatever", ValueAccess.Current));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanging"), new object[] { ClientTransactionMock, order, "Fred?", order, order2 });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanged"), new object[] { ClientTransactionMock, order, "Baz" });
+      CheckNotification (listener => listener.RelationChanging (ClientTransactionMock, order, "Fred?", order, order2));
+      CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, "Baz"));
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("TransactionCommitting"),
-          new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("TransactionCommitted"),
-          new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("TransactionRollingBack"),
-          new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("TransactionRolledBack"),
-          new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
+      CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionCommitted (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionRollingBack (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionRolledBack (ClientTransactionMock, domainObjects));
 
       var id = new RelationEndPointID (order.ID, typeof (Order).FullName + ".Customer");
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"), new object[] { ClientTransactionMock, endPoint });
+      CheckNotification (listener => listener.RelationEndPointMapRegistering (ClientTransactionMock, endPoint));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapUnregistering"), new object[] { ClientTransactionMock, endPoint.ID });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointUnloading"), new object[] { ClientTransactionMock, endPoint });
+      CheckNotification (listener => listener.RelationEndPointMapUnregistering (ClientTransactionMock, endPoint.ID));
+      CheckNotification (listener => listener.RelationEndPointUnloading (ClientTransactionMock, endPoint));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataManagerMarkingObjectInvalid"), new object[] { ClientTransactionMock, order.ID });
+      CheckNotification (listener => listener.DataManagerMarkingObjectInvalid (ClientTransactionMock, order.ID));
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataContainerMapRegistering"), new object[] { ClientTransactionMock, order.InternalDataContainer });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataContainerMapUnregistering"), new object[] { ClientTransactionMock, order.InternalDataContainer });
+      CheckNotification (listener => listener.DataContainerMapRegistering (ClientTransactionMock, order.InternalDataContainer));
+      CheckNotification (listener => listener.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));
+
+      CheckNotification (listener => listener.DataContainerStateChanging (ClientTransactionMock, order.InternalDataContainer, StateType.Deleted));
+      CheckNotification (listener => listener.RelationEndPointStateChanging (ClientTransactionMock, endPoint, true));
     }
 
     [Test]
@@ -197,8 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       compoundListener.AddListener (listenerMock2);
 
       var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery(TestQueryFactory.CreateOrderQueryWithCustomCollectionType()), new Order[0]);
-      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
-      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
+      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1)});
+      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2)});
 
       listenerMock1.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, originalResult)).Return (newResult1);
       listenerMock2.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, newResult1)).Return (newResult2);
