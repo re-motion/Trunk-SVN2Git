@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.EntityExpression.Type, Is.EqualTo (typeof (Order)));
+      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity.Type, Is.EqualTo (typeof (Order)));
     }
 
     [Test]
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.EntityExpression.Type, Is.EqualTo (typeof (Customer)));
+      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity.Type, Is.EqualTo (typeof (Customer)));
     }
 
     [Test]
