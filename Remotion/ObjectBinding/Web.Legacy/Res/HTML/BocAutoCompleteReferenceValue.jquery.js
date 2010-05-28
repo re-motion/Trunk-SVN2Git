@@ -436,6 +436,14 @@
         function request(term, success, failure) {
             if (!options.matchCase)
                 term = term.toLowerCase();
+
+            // re-motion: if an async postback is in progress, updating the DOM results in an exception
+            var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
+            if (pageRequestManager.get_isInAsyncPostBack()) {
+                failure(term);
+                return;
+            }
+
             var data = cache.load(term);
             // recieve the cached data
             if (data && data.length) {
