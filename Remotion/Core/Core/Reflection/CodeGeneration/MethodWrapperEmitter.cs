@@ -56,12 +56,21 @@ namespace Remotion.Reflection.CodeGeneration
       }
 
       ilGenerator.Emit (OpCodes.Callvirt, wrappedGetMethod);
-      
-      if (wrapperReturnType == typeof (void))
-        return;
 
-      if (wrappedGetMethod.ReturnType.IsValueType)
+      EmitReturnStatement (ilGenerator, wrappedGetMethod, wrapperReturnType);
+
+    }
+
+    private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType)
+    {
+      if (wrapperReturnType == typeof (void))
+      {
+        //NOP
+      }
+      else if (wrappedGetMethod.ReturnType.IsValueType)
+      {
         ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
+      }
 
       ilGenerator.Emit (OpCodes.Ret);
     }
