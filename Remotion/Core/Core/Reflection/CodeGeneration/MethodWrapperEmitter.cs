@@ -66,11 +66,10 @@ namespace Remotion.Reflection.CodeGeneration
 
     private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod)
     {
-      if (wrappedMethod.GetParameters().Length > 0)
+      foreach (var parameterInfo in wrappedMethod.GetParameters())
       {
-        ilGenerator.Emit (OpCodes.Ldarg_1);
+        ilGenerator.Emit (OpCodes.Ldarg_S, (byte)(parameterInfo.Position + 1));
 
-        var parameterInfo = wrappedMethod.GetParameters()[0];
         if (parameterInfo.ParameterType.IsValueType)
           ilGenerator.Emit (OpCodes.Unbox_Any, parameterInfo.ParameterType);
         else

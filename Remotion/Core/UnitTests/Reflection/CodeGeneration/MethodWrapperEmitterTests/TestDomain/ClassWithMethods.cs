@@ -14,10 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain
 {
   public class ClassWithMethods
   {
+    // ReSharper disable UnusedMember.Global
     public static SimpleReferenceType StaticReferenceTypeValue { get; set; }
 
     public static SimpleReferenceType StaticMethodWithReferenceTypeReturnValue ()
@@ -63,5 +66,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     {
       InstanceNullableValueTypeValue = value;
     }
+
+    public void InstanceMethodWithMultipleParameters (
+        SimpleReferenceType referenceTypeValue, int valueTypeValue, int? nullableValueTypeValue, SimpleReferenceType staticReferenceTypeValue)
+    {
+      InstanceReferenceTypeValue = referenceTypeValue;
+      InstanceValueTypeValue = valueTypeValue;
+      InstanceNullableValueTypeValue = nullableValueTypeValue;
+      StaticReferenceTypeValue = staticReferenceTypeValue;
+    }
+
+    // ReSharper restore UnusedMember.Global  
   }
 }

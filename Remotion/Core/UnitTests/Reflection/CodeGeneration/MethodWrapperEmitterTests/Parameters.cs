@@ -23,7 +23,7 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  public class SimpleParameters : TestBase
+  public class Parameters : TestBase
   {
     [Test]
     public void EmitMethodBody_ForInstanceMethodWithReferenceTypeParameter ()
@@ -50,10 +50,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
-      var obj = new ClassWithMethods ();
-      obj.InstanceReferenceTypeValue = new SimpleReferenceType ();
+      var obj = new ClassWithMethods();
+      obj.InstanceReferenceTypeValue = new SimpleReferenceType();
       BuildTypeAndInvokeMethod (method, obj, null);
 
       Assert.That (obj.InstanceReferenceTypeValue, Is.Null);
@@ -67,10 +67,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
       var value = 100;
-      var obj = new ClassWithMethods ();
+      var obj = new ClassWithMethods();
       BuildTypeAndInvokeMethod (method, obj, value);
 
       Assert.That (obj.InstanceValueTypeValue, Is.EqualTo (value));
@@ -84,10 +84,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
       int? value = 100;
-      var obj = new ClassWithMethods ();
+      var obj = new ClassWithMethods();
       BuildTypeAndInvokeMethod (method, obj, value);
 
       Assert.That (obj.InstanceNullableValueTypeValue, Is.EqualTo (value));
@@ -101,13 +101,37 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
       int? value = null;
-      var obj = new ClassWithMethods ();
+      var obj = new ClassWithMethods();
       BuildTypeAndInvokeMethod (method, obj, value);
 
       Assert.That (obj.InstanceNullableValueTypeValue, Is.Null);
+    }
+
+    [Test]
+    public void EmitMethodBody_ForInstanceMethodWithMultipleParameters ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithMultipleParameters", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object), typeof (object), typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+
+      var instanceReferenceTypeValue = new SimpleReferenceType();
+      int instanceValueTypeValue = 100;
+      int? instanceNullableValueTypeValue = 200;
+      var staticReferenceTypeValue = new SimpleReferenceType();
+      var obj = new ClassWithMethods();
+      BuildTypeAndInvokeMethod (
+          method, obj, instanceReferenceTypeValue, instanceValueTypeValue, instanceNullableValueTypeValue, staticReferenceTypeValue);
+
+      Assert.That (obj.InstanceReferenceTypeValue, Is.SameAs (instanceReferenceTypeValue));
+      Assert.That (obj.InstanceValueTypeValue, Is.EqualTo (instanceValueTypeValue));
+      Assert.That (obj.InstanceNullableValueTypeValue, Is.EqualTo (instanceNullableValueTypeValue));
+      Assert.That (ClassWithMethods.StaticReferenceTypeValue, Is.SameAs (staticReferenceTypeValue));
     }
 
     [Test]
