@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       var ilGenerator = dynamicMethod.GetILGenerator();
 
       var emitter = new MethodWrapperEmitter();
-      emitter.EmitStaticMethodBody (ilGenerator, methodInfo, returnType, parameterTypes);
+      emitter.EmitStaticMethodBody (ilGenerator, methodInfo, parameterTypes, returnType);
 
       var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
 

@@ -54,10 +54,24 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+        "The wrapperParameterType #0 ('String') cannot be assigned to the declaring type ('ClassWithMethods') of the wrappedMethod.\r\n"
+        + "Parameter name: wrapperParameterTypes")]
+    public void EmitMethodBody_InstanceTypesDoNotMatch ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeParameter", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (string), typeof (object) };
+      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The number of elements in the wrapperParameterTypes array (3) does not match the number of parameters required for invoking the wrappedMethod (5).\r\n"
         + "Parameter name: wrapperParameterTypes")]
-    public void EmitMethodBody_ParameterCountDoNotMatch ()
+    public void EmitMethodBody_ParameterCountsDoNotMatch ()
     {
       Type declaringType = typeof (ClassWithMethods);
       var methodInfo = declaringType.GetMethod ("InstanceMethodWithMultipleParameters", BindingFlags.Public | BindingFlags.Instance);
