@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "The wrapperParameterType #1 ('String') cannot be assigned to parameter type #0 ('SimpleReferenceType') of the wrappedMethod.\r\n"
+        "The wrapperParameterType #1 ('String') cannot be assigned to the type ('SimpleReferenceType') of parameter 'value' of the wrappedMethod.\r\n"
         + "Parameter name: wrapperParameterTypes")]
     public void EmitMethodBody_ParameterTypesDoNotMatch ()
     {

@@ -36,6 +36,8 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
       ArgumentUtility.CheckNotNullOrItemsNull ("wrapperParameterTypes", wrapperParameterTypes);
       ArgumentUtility.CheckNotNull ("wrapperReturnType", wrapperReturnType);
+      if (wrappedMethod.ContainsGenericParameters)
+        throw new ArgumentException ("Open generic method definitions are not supported by the MethodWrapperGenerator.", "wrappedMethod");
       CheckParameterCount (wrappedMethod, wrapperParameterTypes);
       CheckInstanceParameterType (wrappedMethod, wrapperParameterTypes);
       CheckParameterTypes (wrappedMethod, wrapperParameterTypes);
@@ -55,8 +57,7 @@ namespace Remotion.Reflection.CodeGeneration
             string.Format (
                 "The number of elements in the wrapperParameterTypes array ({0}) does not match the number of parameters required for invoking the wrappedMethod ({1}).",
                 wrapperParameterTypes.Length,
-                wrappedMethod.GetParameters().Length + 1
-                ),
+                wrappedMethod.GetParameters().Length + 1),
             "wrapperParameterTypes");
       }
     }
@@ -69,8 +70,7 @@ namespace Remotion.Reflection.CodeGeneration
             string.Format (
                 "The wrapperParameterType #0 ('{0}') cannot be assigned to the declaring type ('{1}') of the wrappedMethod.",
                 wrapperParameterTypes[0].Name,
-                wrappedMethod.DeclaringType.Name
-                ),
+                wrappedMethod.DeclaringType.Name),
             "wrapperParameterTypes",
             wrappedMethod.DeclaringType,
             wrapperParameterTypes[0]);
@@ -86,15 +86,41 @@ namespace Remotion.Reflection.CodeGeneration
         {
           throw new ArgumentTypeException (
               string.Format (
-                  "The wrapperParameterType #{1} ('{0}') cannot be assigned to parameter type #{3} ('{2}') of the wrappedMethod.",
+                  "The wrapperParameterType #{1} ('{0}') cannot be assigned to the type ('{2}') of parameter '{3}' of the wrappedMethod.",
                   wrapperParameterType.Name,
                   wrappedParameter.Position + 1,
                   wrappedParameter.ParameterType.Name,
-                  wrappedParameter.Position
-                  ),
+                  wrappedParameter.Name),
               "wrapperParameterTypes",
               wrappedParameter.ParameterType,
               wrapperParameterType);
+        }
+
+        if (wrappedParameter.IsOut)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Parameter '{0}' of the wrappedMethod is an out parameter, but out parameters are not supported by the MethodWrapperGenerator.",
+                  wrappedParameter.Name),
+              "wrappedMethod");
+        }
+        
+        if (wrappedParameter.ParameterType.IsByRef)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Parameter '{0}' of the wrappedMethod is a by-ref parameter, but by-ref parameters are not supported by the MethodWrapperGenerator.",
+                  wrappedParameter.Name),
+              "wrappedMethod");
+        }
+
+        if (wrappedParameter.IsOptional)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Parameter '{0}' of the wrappedMethod is an optional parameter, but optional parameters are not supported by the MethodWrapperGenerator.",
+                  wrappedParameter.Name),
+              "wrappedMethod");
         }
       }
     }
@@ -107,8 +133,7 @@ namespace Remotion.Reflection.CodeGeneration
             string.Format (
                 "The wrapperReturnType ('{0}') cannot be assigned from the return type ('{1}') of the wrappedMethod.",
                 wrapperReturnType.Name,
-                wrappedMethod.ReturnType.Name
-                ),
+                wrappedMethod.ReturnType.Name),
             "wrapperReturnType",
             wrappedMethod.ReturnType,
             wrapperReturnType);

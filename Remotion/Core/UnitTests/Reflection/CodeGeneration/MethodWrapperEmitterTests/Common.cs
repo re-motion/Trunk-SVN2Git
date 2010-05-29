@@ -21,7 +21,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
@@ -74,17 +73,28 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
-      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
 
-    public static object Test1 (object A_0)
+    [Test]
+    public void EmitMethodBody_ForClosedGeneric ()
     {
-      return ((StructWithMethods) A_0).InstanceReferenceTypeValue;
-    }
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("GenericInstanceMethod", BindingFlags.Public | BindingFlags.Instance)
+          .MakeGenericMethod (typeof (SimpleReferenceType));
 
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods();
+      var value = new SimpleReferenceType();
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj, value), Is.SameAs (value));
+    }
   }
 }

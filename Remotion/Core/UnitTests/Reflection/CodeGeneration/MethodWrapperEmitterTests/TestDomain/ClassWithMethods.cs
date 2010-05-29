@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain
 {
@@ -74,6 +75,25 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       InstanceValueTypeValue = valueTypeValue;
       InstanceNullableValueTypeValue = nullableValueTypeValue;
       StaticReferenceTypeValue = staticReferenceTypeValue;
+    }
+
+    public void InstanceMethodWithOutParameter (out SimpleReferenceType value)
+    {
+      value = InstanceReferenceTypeValue;
+    }
+
+    public void InstanceMethodWithByRefParameter (ref SimpleReferenceType value)
+    {
+      value = InstanceReferenceTypeValue;
+    }
+
+    public void InstanceMethodWithOptionalParameter ([Optional] SimpleReferenceType value)
+    {
+    }
+
+    public T GenericInstanceMethod<T> (T value)
+    {
+      return value;
     }
 
     // ReSharper restore UnusedMember.Global  

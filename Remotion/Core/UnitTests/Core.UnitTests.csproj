@@ -266,6 +266,7 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ArgumentChecks.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\NotSupportedScenarios.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Parameters.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ReturnValues.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Common.cs" />
