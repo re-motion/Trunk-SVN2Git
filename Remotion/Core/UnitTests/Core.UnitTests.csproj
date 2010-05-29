@@ -272,6 +272,7 @@
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithReferenceTypeProperties.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\StructWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\DerivedClassWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />

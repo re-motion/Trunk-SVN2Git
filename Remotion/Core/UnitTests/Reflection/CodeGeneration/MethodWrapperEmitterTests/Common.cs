@@ -65,5 +65,26 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.DerivedInstanceReferenceTypeValue));
     }
+
+    [Test]
+    public void EmitMethodBody_ForValueTypeInstance ()
+    {
+      Type declaringType = typeof (StructWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
+    }
+
+    public static object Test1 (object A_0)
+    {
+      return ((StructWithMethods) A_0).InstanceReferenceTypeValue;
+    }
+
   }
 }

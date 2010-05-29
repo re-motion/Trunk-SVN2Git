@@ -121,7 +121,16 @@ namespace Remotion.Reflection.CodeGeneration
         return;
 
       ilGenerator.Emit (OpCodes.Ldarg_0);
-      ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
+
+      if (wrappedMethod.DeclaringType.IsValueType)
+      {
+        ilGenerator.DeclareLocal (wrappedMethod.DeclaringType);
+        ilGenerator.Emit (OpCodes.Unbox_Any, wrappedMethod.DeclaringType);
+        ilGenerator.Emit (OpCodes.Stloc_0);
+        ilGenerator.Emit (OpCodes.Ldloca_S, 0);
+      }
+      else
+        ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
     }
 
     private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod)
@@ -139,10 +148,10 @@ namespace Remotion.Reflection.CodeGeneration
 
     private void EmitMethodCall (ILGenerator ilGenerator, MethodInfo wrappedMethod)
     {
-      if (wrappedMethod.IsStatic)
-        ilGenerator.Emit (OpCodes.Call, wrappedMethod);
-      else
+      if (wrappedMethod.IsVirtual)
         ilGenerator.Emit (OpCodes.Callvirt, wrappedMethod);
+      else
+        ilGenerator.Emit (OpCodes.Call, wrappedMethod);
     }
 
     private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType)
