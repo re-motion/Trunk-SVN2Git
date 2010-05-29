@@ -28,7 +28,6 @@ namespace Remotion.Reflection.CodeGeneration
   {
     public MethodWrapperEmitter ()
     {
-
     }
 
     public void EmitStaticMethodBody (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
@@ -37,22 +36,54 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
       ArgumentUtility.CheckNotNull ("wrapperReturnType", wrapperReturnType);
       ArgumentUtility.CheckNotNullOrItemsNull ("wrapperParameterTypes", wrapperParameterTypes);
+
       if (!wrapperReturnType.IsAssignableFrom (wrappedMethod.ReturnType))
       {
         throw new ArgumentTypeException (
-            "The ReturnType of the wrappedMethod cannot be assigned to the wrapperReturnType.",
-            "wrappedMethod",
-            wrapperReturnType,
-            wrappedMethod.ReturnType);
+            string.Format (
+                "The wrapperReturnType ('{0}') cannot be assigned from the return type ('{1}') of the wrappedMethod.",
+                wrapperReturnType.Name,
+                wrappedMethod.ReturnType.Name
+                ),
+            "wrapperReturnType",
+            wrappedMethod.ReturnType,
+            wrapperReturnType);
       }
 
-      EmitInstanceArgument(ilGenerator, wrappedMethod);
+      if (wrapperParameterTypes.Length != wrappedMethod.GetParameters().Length + 1)
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The number of elements in the wrapperParameterTypes array ({0}) does not match the number of parameters required for invoking the wrappedMethod ({1}).",
+                wrapperParameterTypes.Length,
+                wrappedMethod.GetParameters().Length + 1
+                ),
+            "wrapperParameterTypes");
+      }
+
+      foreach (var wrappedParameter in wrappedMethod.GetParameters())
+      {
+        var wrapperParameterType = wrapperParameterTypes[wrappedParameter.Position + 1];
+        if (!wrapperParameterType.IsAssignableFrom (wrappedParameter.ParameterType))
+        {
+          throw new ArgumentTypeException (
+              string.Format (
+                  "The wrapperParameterType #{1} ('{0}') cannot be assigned to parameter type #{3} ('{2}') of the wrappedMethod.",
+                  wrapperParameterType.Name,
+                  wrappedParameter.Position + 1,
+                  wrappedParameter.ParameterType.Name,
+                  wrappedParameter.Position
+                  ),
+              "wrapperParameterTypes",
+              wrappedParameter.ParameterType,
+              wrapperParameterType);
+        }
+      }
+
+      EmitInstanceArgument (ilGenerator, wrappedMethod);
       EmitMethodArguments (ilGenerator, wrappedMethod);
-
       EmitMethodCall (ilGenerator, wrappedMethod);
-
       EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
-
     }
 
     private void EmitInstanceArgument (ILGenerator ilGenerator, MethodInfo wrappedMethod)
@@ -68,7 +99,7 @@ namespace Remotion.Reflection.CodeGeneration
     {
       foreach (var parameterInfo in wrappedMethod.GetParameters())
       {
-        ilGenerator.Emit (OpCodes.Ldarg_S, (byte)(parameterInfo.Position + 1));
+        ilGenerator.Emit (OpCodes.Ldarg_S, (byte) (parameterInfo.Position + 1));
 
         if (parameterInfo.ParameterType.IsValueType)
           ilGenerator.Emit (OpCodes.Unbox_Any, parameterInfo.ParameterType);
@@ -92,9 +123,7 @@ namespace Remotion.Reflection.CodeGeneration
         //NOP
       }
       else if (wrappedGetMethod.ReturnType.IsValueType)
-      {
         ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
-      }
 
       ilGenerator.Emit (OpCodes.Ret);
     }

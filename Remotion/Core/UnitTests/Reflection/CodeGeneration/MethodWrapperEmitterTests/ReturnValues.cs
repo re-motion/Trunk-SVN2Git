@@ -86,23 +86,5 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Assert.That (BuildTypeAndInvokeMethod (method, new object[] { null }), Is.SameAs (ClassWithMethods.StaticReferenceTypeValue));
     }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "The ReturnType of the wrappedMethod cannot be assigned to the wrapperReturnType.\r\nParameter name: wrappedMethod")]
-    public void EmitMethodBody_ReturnTypesDoNotMatch ()
-    {
-      Type declaringType = typeof (ClassWithMethods);
-      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
-
-      Type returnType = typeof (object);
-      Type[] parameterTypes = new[] { typeof (object) };
-      var method = ClassEmitter.CreateMethod (MethodInfo.GetCurrentMethod ().Name, MethodAttributes.Public | MethodAttributes.Static)
-          .SetParameterTypes (parameterTypes)
-          .SetReturnType (returnType);
-
-      var emitter = new MethodWrapperEmitter ();
-      emitter.EmitStaticMethodBody (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
-    }
   }
 }
