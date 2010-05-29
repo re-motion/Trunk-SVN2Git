@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -18,14 +18,13 @@ using System;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods.TestDomain
 {
-  public class ClassWithValueTypeProperties
+  public class DerivedClassWithMethods : ClassWithMethods
   {
-    public virtual int PropertyWithPublicGetterAndSetter { get; set; }
-    private int PropertyWithPrivateGetterAndSetter { get; set; }
+    public SimpleReferenceType DerivedInstanceReferenceTypeValue { get; set; }
 
-    public void SetPropertyWithPrivateGetterAndSetter (int value)
+    public override SimpleReferenceType InstanceMethodWithReferenceTypeReturnValue ()
     {
-      PropertyWithPrivateGetterAndSetter = value;
+      return DerivedInstanceReferenceTypeValue;
     }
   }
 }

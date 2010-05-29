@@ -52,11 +52,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void EmitMethodBody_ForPublicPropertyGetter_ForReferenceType ()
+    public void EmitMethodBody_ForInstanceMethodWithReferenceTypeReturnValue ()
     {
-      Type declaringType = typeof (ClassWithReferenceTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod();
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
@@ -67,17 +66,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
       var emitter = new MethodWrapperEmitter();
       emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
-      var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
 
     [Test]
-    public void EmitMethodBody_ForPublicPropertySetter_ForReferenceType ()
+    public void EmitMethodBody_ForInstanceMethodWithReferenceTypeParameter ()
     {
-      Type declaringType = typeof (ClassWithReferenceTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetSetMethod ();
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeParameter", BindingFlags.Public | BindingFlags.Instance);
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
@@ -89,18 +87,17 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
       emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
       var value = new SimpleReferenceType ();
-      var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = value };
+      var obj = new ClassWithMethods();
       BuildInstanceAndInvokeMethod (method, obj, value);
 
-      Assert.That (obj.PropertyWithPublicGetterAndSetter, Is.SameAs( value));
+      Assert.That (obj.InstanceReferenceTypeValue, Is.SameAs (value));
     }
 
     [Test]
-    public void EmitMethodBody_ForPublicPropertyGetter_ForValueType ()
+    public void EmitMethodBody_ForInstanceMethodWithValueTypeReturnValue ()
     {
-      Type declaringType = typeof (ClassWithValueTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod();
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithValueTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
@@ -111,17 +108,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
       var emitter = new MethodWrapperEmitter();
       emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
-      var obj = new ClassWithValueTypeProperties { PropertyWithPublicGetterAndSetter = 100 };
+      var obj = new ClassWithMethods { InstanceValueTypeValue = 100 };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.EqualTo (obj.PropertyWithPublicGetterAndSetter));
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.EqualTo (obj.InstanceValueTypeValue));
     }
 
     [Test]
-    public void EmitMethodBody_ForOverriddenPropertyGetter ()
+    public void EmitMethodBody_ForOverriddenMethod ()
     {
-      Type declaringType = typeof (ClassWithReferenceTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod();
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
@@ -132,9 +128,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
       var emitter = new MethodWrapperEmitter();
       emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
-      var obj = new DerivedClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
+      var obj = new DerivedClassWithMethods { DerivedInstanceReferenceTypeValue = new SimpleReferenceType () };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.DerivedInstanceReferenceTypeValue));
     }
 
     [Test]
@@ -142,13 +138,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
         "The ReturnType of the wrappedGetMethod cannot be assigned to the wrapperReturnType.\r\nParameter name: wrappedGetMethod")]
     public void EmitMethodBody_ReturnTypesDoNotMatch ()
     {
-      Type declaringType = typeof (ClassWithReferenceTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod();
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var method = ClassEmitter.CreateMethod ("Build_ReturnTypesDoNotMatch", MethodAttributes.Public | MethodAttributes.Static)
+      var method = ClassEmitter.CreateMethod (MethodInfo.GetCurrentMethod ().Name, MethodAttributes.Public | MethodAttributes.Static)
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
