@@ -19,7 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods.TestDomain;
+using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;

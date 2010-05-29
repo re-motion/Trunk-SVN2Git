@@ -265,11 +265,11 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithMethods.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithReferenceTypeProperties.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\DerivedClassWithMethods.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\SimpleReferenceType.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\MethodWrapperEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithMethods.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithReferenceTypeProperties.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\DerivedClassWithMethods.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />

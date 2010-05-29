@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection.CodeGeneration.DynamicMethods
+namespace Remotion.Reflection.CodeGeneration
 {
   /// <summary>
   /// Builds the IL code needed to wrap a method call.
