@@ -32,6 +32,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
     public SimpleReferenceType InstanceReferenceTypeValue { get; set; }
     public int InstanceValueTypeValue { get; set; }
+    public int? InstanceNullableValueTypeValue { get; set; }
 
     public virtual SimpleReferenceType InstanceMethodWithReferenceTypeReturnValue ()
     {
@@ -51,6 +52,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     public void InstanceMethodWithValueTypeParameter (int value)
     {
       InstanceValueTypeValue = value;
+    }
+
+    public int? InstanceMethodWithNullableValueTypeReturnValue ()
+    {
+      return InstanceNullableValueTypeValue;
+    }
+
+    public void InstanceMethodWithNullableValueTypeParameter (int? value)
+    {
+      InstanceNullableValueTypeValue = value;
     }
   }
 }

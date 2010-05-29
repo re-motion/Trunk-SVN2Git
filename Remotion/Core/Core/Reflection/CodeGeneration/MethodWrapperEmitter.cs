@@ -69,7 +69,12 @@ namespace Remotion.Reflection.CodeGeneration
       if (wrappedMethod.GetParameters().Length > 0)
       {
         ilGenerator.Emit (OpCodes.Ldarg_1);
-        ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.GetParameters()[0].ParameterType);
+
+        var parameterInfo = wrappedMethod.GetParameters()[0];
+        if (parameterInfo.ParameterType.IsValueType)
+          ilGenerator.Emit (OpCodes.Unbox_Any, parameterInfo.ParameterType);
+        else
+          ilGenerator.Emit (OpCodes.Castclass, parameterInfo.ParameterType);
       }
     }
 

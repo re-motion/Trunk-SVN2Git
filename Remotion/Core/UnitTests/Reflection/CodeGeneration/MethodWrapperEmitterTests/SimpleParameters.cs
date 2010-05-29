@@ -43,6 +43,74 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
+    public void EmitMethodBody_ForInstanceMethodWithReferenceTypeParameter_WithNull ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeParameter", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods ();
+      obj.InstanceReferenceTypeValue = new SimpleReferenceType ();
+      BuildTypeAndInvokeMethod (method, obj, null);
+
+      Assert.That (obj.InstanceReferenceTypeValue, Is.Null);
+    }
+
+    [Test]
+    public void EmitMethodBody_ForInstanceMethodWithValueTypeParameter ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithValueTypeParameter", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var value = 100;
+      var obj = new ClassWithMethods ();
+      BuildTypeAndInvokeMethod (method, obj, value);
+
+      Assert.That (obj.InstanceValueTypeValue, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForInstanceMethodWithNullableValueTypeParameter ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithNullableValueTypeParameter", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      int? value = 100;
+      var obj = new ClassWithMethods ();
+      BuildTypeAndInvokeMethod (method, obj, value);
+
+      Assert.That (obj.InstanceNullableValueTypeValue, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForInstanceMethodWithNullableValueTypeParameter_WithNull ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithNullableValueTypeParameter", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      int? value = null;
+      var obj = new ClassWithMethods ();
+      BuildTypeAndInvokeMethod (method, obj, value);
+
+      Assert.That (obj.InstanceNullableValueTypeValue, Is.Null);
+    }
+
+    [Test]
     public void EmitMethodBody_ForStaticMethodWithReferenceTypeParameter ()
     {
       Type declaringType = typeof (ClassWithMethods);

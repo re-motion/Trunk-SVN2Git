@@ -41,6 +41,21 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
+    public void EmitMethodBody_ForInstanceMethodWithReferenceTypeReturnValue_WithNull ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = null };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.Null);
+    }
+
+    [Test]
     public void EmitMethodBody_ForInstanceMethodWithValueTypeReturnValue ()
     {
       Type declaringType = typeof (ClassWithMethods);
