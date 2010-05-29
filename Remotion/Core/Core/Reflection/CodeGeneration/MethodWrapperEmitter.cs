@@ -31,33 +31,33 @@ namespace Remotion.Reflection.CodeGeneration
 
     }
 
-    public void EmitMethodBody (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
+    public void EmitMethodBody (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
     {
       ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
-      ArgumentUtility.CheckNotNull ("wrappedGetMethod", wrappedGetMethod);
+      ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
       ArgumentUtility.CheckNotNull ("wrapperReturnType", wrapperReturnType);
       ArgumentUtility.CheckNotNullOrItemsNull ("wrapperParameterTypes", wrapperParameterTypes);
-      if (!wrapperReturnType.IsAssignableFrom (wrappedGetMethod.ReturnType))
+      if (!wrapperReturnType.IsAssignableFrom (wrappedMethod.ReturnType))
       {
         throw new ArgumentTypeException (
-            "The ReturnType of the wrappedGetMethod cannot be assigned to the wrapperReturnType.",
-            "wrappedGetMethod",
+            "The ReturnType of the wrappedMethod cannot be assigned to the wrapperReturnType.",
+            "wrappedMethod",
             wrapperReturnType,
-            wrappedGetMethod.ReturnType);
+            wrappedMethod.ReturnType);
       }
 
       ilGenerator.Emit (OpCodes.Ldarg_0);
-      ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.DeclaringType);
+      ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
 
-      if (wrappedGetMethod.GetParameters().Length > 0)
+      if (wrappedMethod.GetParameters().Length > 0)
       {
         ilGenerator.Emit (OpCodes.Ldarg_1);
-        ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.GetParameters()[0].ParameterType);
+        ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.GetParameters()[0].ParameterType);
       }
 
-      ilGenerator.Emit (OpCodes.Callvirt, wrappedGetMethod);
+      ilGenerator.Emit (OpCodes.Callvirt, wrappedMethod);
 
-      EmitReturnStatement (ilGenerator, wrappedGetMethod, wrapperReturnType);
+      EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
 
     }
 

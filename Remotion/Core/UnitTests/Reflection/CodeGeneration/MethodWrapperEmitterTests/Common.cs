@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "The ReturnType of the wrappedGetMethod cannot be assigned to the wrapperReturnType.\r\nParameter name: wrappedGetMethod")]
+        "The ReturnType of the wrappedMethod cannot be assigned to the wrapperReturnType.\r\nParameter name: wrappedMethod")]
     public void EmitMethodBody_ReturnTypesDoNotMatch ()
     {
       Type declaringType = typeof (ClassWithMethods);
