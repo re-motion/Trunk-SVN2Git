@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       var ilGenerator = dynamicMethod.GetILGenerator();
 
       var emitter = new MethodWrapperEmitter();
-      emitter.EmitMethodBody (ilGenerator, methodInfo, returnType, parameterTypes);
+      emitter.EmitStaticMethodBody (ilGenerator, methodInfo, returnType, parameterTypes);
 
       var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
 
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       var obj = new DerivedClassWithMethods { DerivedInstanceReferenceTypeValue = new SimpleReferenceType() };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.DerivedInstanceReferenceTypeValue));
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.DerivedInstanceReferenceTypeValue));
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
           .SetReturnType (returnType);
 
       var emitter = new MethodWrapperEmitter();
-      emitter.EmitMethodBody (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
+      emitter.EmitStaticMethodBody (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
     }
   }
 }

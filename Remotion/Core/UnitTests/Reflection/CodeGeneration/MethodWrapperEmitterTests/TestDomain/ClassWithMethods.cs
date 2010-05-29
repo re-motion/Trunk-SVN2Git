@@ -18,6 +18,18 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   public class ClassWithMethods
   {
+    public static SimpleReferenceType StaticReferenceTypeValue { get; set; }
+
+    public static SimpleReferenceType StaticMethodWithReferenceTypeReturnValue ()
+    {
+      return StaticReferenceTypeValue;
+    }
+
+    public static void StaticMethodWithReferenceTypeParameter (SimpleReferenceType value)
+    {
+      StaticReferenceTypeValue = value;
+    }
+
     public SimpleReferenceType InstanceReferenceTypeValue { get; set; }
     public int InstanceValueTypeValue { get; set; }
 

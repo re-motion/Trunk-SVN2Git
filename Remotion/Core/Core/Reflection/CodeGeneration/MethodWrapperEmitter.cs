@@ -31,7 +31,7 @@ namespace Remotion.Reflection.CodeGeneration
 
     }
 
-    public void EmitMethodBody (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
+    public void EmitStaticMethodBody (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
     {
       ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
       ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
@@ -46,19 +46,39 @@ namespace Remotion.Reflection.CodeGeneration
             wrappedMethod.ReturnType);
       }
 
+      EmitInstanceArgument(ilGenerator, wrappedMethod);
+      EmitMethodArguments (ilGenerator, wrappedMethod);
+
+      EmitMethodCall (ilGenerator, wrappedMethod);
+
+      EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
+
+    }
+
+    private void EmitInstanceArgument (ILGenerator ilGenerator, MethodInfo wrappedMethod)
+    {
+      if (wrappedMethod.IsStatic)
+        return;
+
       ilGenerator.Emit (OpCodes.Ldarg_0);
       ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
+    }
 
+    private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod)
+    {
       if (wrappedMethod.GetParameters().Length > 0)
       {
         ilGenerator.Emit (OpCodes.Ldarg_1);
         ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.GetParameters()[0].ParameterType);
       }
+    }
 
-      ilGenerator.Emit (OpCodes.Callvirt, wrappedMethod);
-
-      EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
-
+    private void EmitMethodCall (ILGenerator ilGenerator, MethodInfo wrappedMethod)
+    {
+      if (wrappedMethod.IsStatic)
+        ilGenerator.Emit (OpCodes.Call, wrappedMethod);
+      else
+        ilGenerator.Emit (OpCodes.Callvirt, wrappedMethod);
     }
 
     private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType)

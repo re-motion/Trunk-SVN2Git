@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
 
     [Test]
@@ -52,7 +52,22 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       var obj = new ClassWithMethods { InstanceValueTypeValue = 100 };
 
-      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.EqualTo (obj.InstanceValueTypeValue));
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.EqualTo (obj.InstanceValueTypeValue));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForStaticMethodWithReferenceTypeReturnValue ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("StaticMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Static);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+
+      ClassWithMethods.StaticReferenceTypeValue = new SimpleReferenceType();
+
+      Assert.That (BuildTypeAndInvokeMethod (method, new object[] { null }), Is.SameAs (ClassWithMethods.StaticReferenceTypeValue));
     }
   }
 }

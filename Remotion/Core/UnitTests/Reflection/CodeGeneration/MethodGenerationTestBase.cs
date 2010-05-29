@@ -62,12 +62,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     protected object InvokeMethod (object instance, IMethodEmitter method, params object[] arguments)
     {
-      return GetMethod (instance, method).Invoke (instance, arguments);
+      var methodInfo = GetMethod (instance, method);
+      return methodInfo.Invoke (instance, arguments);
     }
 
     private object InvokeMethod (Type type, IMethodEmitter method, params object[] arguments)
     {
-      return GetMethod (type, method).Invoke (null, arguments);
+      var methodInfo = GetMethod (type, method);
+      return methodInfo.Invoke (null, arguments);
     }
 
     private MethodInfo GetMethod (Type builtType, IMethodEmitter method)
