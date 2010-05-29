@@ -265,7 +265,10 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\MethodWrapperEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SimpleParameters.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ReturnValues.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Common.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithMethods.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithReferenceTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\DerivedClassWithMethods.cs" />
