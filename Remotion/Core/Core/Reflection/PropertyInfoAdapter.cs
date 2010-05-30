@@ -28,8 +28,8 @@ namespace Remotion.Reflection
     private readonly PropertyInfo _propertyInfo;
     private readonly PropertyInfo _interfacePropertyInfo;
     private Type _type;
-    private Func<object, object> _getter;
-    private Action<object, object> _setter;
+    private readonly Func<object, object> _getter;
+    private readonly Action<object, object> _setter;
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
