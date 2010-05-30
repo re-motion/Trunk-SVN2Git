@@ -251,6 +251,25 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetValue_WithIndexerProperty ()
+    {
+      SimpleReferenceType scalar = new SimpleReferenceType();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
+      instanceMock.Expect (mock => mock[10]).Return (scalar);
+      instanceMock.Replay();
+
+      var interfaceDeclarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item");
+      var interfaceImplementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "Item",
+          BindingFlags.Public | BindingFlags.Instance);
+      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+
+      object actualScalar = _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10 });
+      Assert.That (actualScalar, Is.SameAs (scalar));
+      instanceMock.VerifyAllExpectations();
+    }
+
+    [Test]
     public void SetValue_UsesValueProperty ()
     {
       SimpleReferenceType scalar = new SimpleReferenceType();
@@ -281,6 +300,24 @@ namespace Remotion.UnitTests.Reflection
       SimpleReferenceType value = new SimpleReferenceType();
       _explicitInterfaceAdapter.SetValue (instance, value, null);
       Assert.That (instance.ExplicitInterfaceScalar, Is.SameAs (value));
+    }
+
+    [Test]
+    public void SetValue_WithIndexerProperty ()
+    {
+      SimpleReferenceType scalar = new SimpleReferenceType ();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>> ();
+      instanceMock.Expect (mock => mock[10] = scalar);
+      instanceMock.Replay ();
+
+      var interfaceDeclarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item");
+      var interfaceImplementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "Item",
+          BindingFlags.Public | BindingFlags.Instance);
+      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+
+      _implicitInterfaceAdapter.SetValue (instanceMock, scalar,  new object[] { 10 });
+      instanceMock.VerifyAllExpectations ();
     }
 
     [Test]

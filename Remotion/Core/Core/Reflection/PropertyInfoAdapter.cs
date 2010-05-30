@@ -28,6 +28,8 @@ namespace Remotion.Reflection
     private readonly PropertyInfo _propertyInfo;
     private readonly PropertyInfo _interfacePropertyInfo;
     private Type _type;
+    private Func<object, object> _getter;
+    private Action<object, object> _setter;
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
@@ -37,10 +39,14 @@ namespace Remotion.Reflection
 
       _propertyInfo = propertyInfo;
       _interfacePropertyInfo = interfacePropertyInfo;
+
+      _getter = CreateGetterDelegate();
+      _setter = CreateSetterDelegate();
     }
 
+
     public PropertyInfoAdapter (PropertyInfo propertyInfo)
-      : this (propertyInfo, null)
+        : this (propertyInfo, null)
     {
     }
 
@@ -103,23 +109,51 @@ namespace Remotion.Reflection
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      return ValuePropertyInfo.GetValue (instance, indexParameters);
+      if (_getter != null)
+        return _getter (instance);
+      else
+        return ValuePropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      ValuePropertyInfo.SetValue (instance, value, indexParameters);
+      if (_setter != null)
+        _setter (instance, value);
+      else
+        ValuePropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public override bool Equals (object obj)
     {
       var other = obj as PropertyInfoAdapter;
-      return other != null && _propertyInfo.Equals (other._propertyInfo) && object.Equals (_interfacePropertyInfo, other._interfacePropertyInfo);
+      return other != null && _propertyInfo.Equals (other._propertyInfo) && Equals (_interfacePropertyInfo, other._interfacePropertyInfo);
     }
 
     public override int GetHashCode ()
     {
       return EqualityUtility.GetRotatedHashCode (_propertyInfo, _interfacePropertyInfo);
+    }
+
+    private Func<object, object> CreateGetterDelegate ()
+    {
+      var getMethod = ValuePropertyInfo.GetGetMethod (false);
+      if (getMethod == null)
+        return null;
+      if (getMethod.GetParameters().Length > 0)
+        return null;
+
+      return (Func<object, object>) DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object>));
+    }
+
+    private Action<object, object> CreateSetterDelegate ()
+    {
+      var setMethod = ValuePropertyInfo.GetSetMethod (false);
+      if (setMethod == null)
+        return null;
+      if (setMethod.GetParameters().Length > 1)
+        return null;
+
+      return (Action<object, object>) DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object>));
     }
   }
 }

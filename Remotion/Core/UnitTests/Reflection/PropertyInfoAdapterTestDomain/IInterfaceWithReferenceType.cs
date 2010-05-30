@@ -23,5 +23,6 @@ namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
     T ExplicitInterfaceReadOnlyScalar { get; }
     T ImplicitInterfaceScalar { get; set; }
     T ImplicitInterfaceReadOnlyScalar { get; }
+    T this[int i] { get; set; }
   }
 }

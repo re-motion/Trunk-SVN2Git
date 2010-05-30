@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
 {
   public class ClassWithReferenceType<T> : IInterfaceWithReferenceType<T>
@@ -42,6 +44,12 @@ namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
     public T ImplicitInterfaceScalar { get; set; }
 
     public T ImplicitInterfaceReadOnlyScalar { get; set; }
+
+    public T this [int i]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
 
     public T ReadOnlyScalar
     {
