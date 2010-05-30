@@ -66,7 +66,17 @@ namespace Remotion.Security
 
       AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
 
-      return requiredAccessTypes.All (requiredAccessType => actualAccessTypes.Contains (requiredAccessType));
+      // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
+      // requiredAccessTypes.All (requiredAccessType => actualAccessTypes.Contains (requiredAccessType));
+      // ReSharper disable LoopCanBeConvertedToQuery
+      foreach (var requiredAccessType in requiredAccessTypes)
+      {
+        if (Array.IndexOf (actualAccessTypes, requiredAccessType) < 0)
+          return false;
+      }
+
+      return true;
+      // ReSharper restore LoopCanBeConvertedToQuery
     }
 
     private AccessType[] GetAccessFromLocalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
