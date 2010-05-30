@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Remotion.Utilities;
@@ -44,7 +45,7 @@ namespace Remotion.Reflection.CodeGeneration
       CheckReturnTypes (wrappedMethod, wrapperReturnType);
 
       EmitInstanceArgument (ilGenerator, wrappedMethod);
-      EmitMethodArguments (ilGenerator, wrappedMethod);
+      EmitMethodArguments (ilGenerator, wrappedMethod, wrapperParameterTypes);
       EmitMethodCall (ilGenerator, wrappedMethod);
       EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
     }
@@ -158,16 +159,18 @@ namespace Remotion.Reflection.CodeGeneration
         ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
     }
 
-    private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod)
+    private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type[] wrapperParameterTypes)
     {
-      foreach (var parameterInfo in wrappedMethod.GetParameters())
+      foreach (var parameter in wrappedMethod.GetParameters())
       {
-        ilGenerator.Emit (OpCodes.Ldarg_S, (byte) (parameterInfo.Position + 1));
+        ilGenerator.Emit (OpCodes.Ldarg_S, (byte) (parameter.Position + 1));
 
-        if (parameterInfo.ParameterType.IsValueType)
-          ilGenerator.Emit (OpCodes.Unbox_Any, parameterInfo.ParameterType);
+        if (wrapperParameterTypes[parameter.Position + 1] == parameter.ParameterType)
+          ilGenerator.Emit (OpCodes.Nop);
+        else if (parameter.ParameterType.IsValueType)
+          ilGenerator.Emit (OpCodes.Unbox_Any, parameter.ParameterType);
         else
-          ilGenerator.Emit (OpCodes.Castclass, parameterInfo.ParameterType);
+          ilGenerator.Emit (OpCodes.Castclass, parameter.ParameterType);
       }
     }
 
@@ -179,14 +182,14 @@ namespace Remotion.Reflection.CodeGeneration
         ilGenerator.Emit (OpCodes.Call, wrappedMethod);
     }
 
-    private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType)
+    private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType)
     {
       if (wrapperReturnType == typeof (void))
-      {
-        //NOP
-      }
-      else if (wrappedGetMethod.ReturnType.IsValueType)
-        ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
+        ilGenerator.Emit (OpCodes.Nop);
+      else if (wrapperReturnType == wrappedMethod.ReturnType)
+        ilGenerator.Emit (OpCodes.Nop);
+      else if (wrappedMethod.ReturnType.IsValueType)
+        ilGenerator.Emit (OpCodes.Box, wrappedMethod.ReturnType);
 
       ilGenerator.Emit (OpCodes.Ret);
     }
