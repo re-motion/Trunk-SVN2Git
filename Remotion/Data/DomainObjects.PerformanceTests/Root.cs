@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.SetUp();
       test.BusinessObject_Property_IsAccessible();
       test.BusinessObject_GetProperty();
-      test.Reflection_GetProperty ();
+      test.DynamicMethod_GetProperty ();
       test.DomainObject_GetProperty ();
       test.TearDown();
     }
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.SetUp();
       test.BusinessObject_Property_IsAccessible();
       test.BusinessObject_GetProperty();
-      test.Reflection_GetProperty ();
+      test.DynamicMethod_GetProperty ();
       test.DomainObject_GetProperty ();
       test.TearDown();
     }

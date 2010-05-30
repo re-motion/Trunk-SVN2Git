@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Console.WriteLine ("BusinessObject_GetProperty (executed {0:N0}x): Average duration: {1:N} µs", TestRepititions, averageMilliSeconds);
     }
 
-    public virtual void Reflection_GetProperty ()
+    public virtual void DynamicMethod_GetProperty ()
     {
       var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
       ((ObjectWithSecurity) obj).TheProperty = "value";
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Trace.WriteLine (value);
 
       double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
-      Console.WriteLine ("Reflection_GetProperty (executed {0:N0}x): Average duration: {1:N} µs", TestRepititions, averageMilliSeconds);
+      Console.WriteLine ("DynamicMethod_GetProperty (executed {0:N0}x): Average duration: {1:N} µs", TestRepititions, averageMilliSeconds);
     }
 
     public virtual void DomainObject_GetProperty ()
