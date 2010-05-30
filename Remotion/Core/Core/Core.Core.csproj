@@ -188,6 +188,7 @@
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IRequiredMethodDefinitionCollector.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
+    <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
     <Compile Include="Reflection\IPropertyInformation.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
