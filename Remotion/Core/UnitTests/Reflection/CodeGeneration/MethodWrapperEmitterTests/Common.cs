@@ -66,7 +66,37 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
-    public void EmitMethodBody_ForValueTypeInstance ()
+    public void EmitMethodBody_ForReferenceTypeInstance_PublicInstanceTypeIsBaseType ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForReferenceTypeInstance_InstanceTypesMatch ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (ClassWithMethods) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForValueTypeInstance_PublicInstanceTypeIsBaseType ()
     {
       Type declaringType = typeof (StructWithMethods);
       var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
@@ -76,6 +106,21 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
       var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForValueTypeInstance_InstanceTypesMatch ()
+    {
+      Type declaringType = typeof (StructWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithReferenceTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (StructWithMethods) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
