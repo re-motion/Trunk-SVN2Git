@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_Property_IsAccessible ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~5 탎 (release build), ~8.5 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~4.6 탎 (release build), ~8.5 탎 (debug build)");
 
       base.BusinessObject_Property_IsAccessible();
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_GetProperty on reference system: ~20 탎 (release build), ~33 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_GetProperty on reference system: ~18.3 탎 (release build), ~30 탎 (debug build)");
 
       base.BusinessObject_GetProperty ();
 
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void DynamicMethod_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for DynamicMethod_GetProperty on reference system: ~16.5 탎 (release build), ~24 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for DynamicMethod_GetProperty on reference system: ~14.2 탎 (release build), ~22.6 탎 (debug build)");
 
       base.DynamicMethod_GetProperty ();
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void DomainObject_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_GetProperty on reference system: ~16.5 탎 (release build), ~24 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_GetProperty on reference system: ~13.9 탎 (release build), ~22.3 탎 (debug build)");
 
       base.DomainObject_GetProperty ();
 
