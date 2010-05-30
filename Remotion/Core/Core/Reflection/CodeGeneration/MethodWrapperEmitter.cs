@@ -27,11 +27,12 @@ namespace Remotion.Reflection.CodeGeneration
   /// </summary>
   public class MethodWrapperEmitter
   {
-    public MethodWrapperEmitter ()
-    {
-    }
+    private readonly ILGenerator _ilGenerator;
+    private readonly MethodInfo _wrappedMethod;
+    private readonly Type[] _wrapperParameterTypes;
+    private readonly Type _wrapperReturnType;
 
-    public void EmitStaticMethodBody (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type[] wrapperParameterTypes, Type wrapperReturnType)
+    public MethodWrapperEmitter (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type[] wrapperParameterTypes, Type wrapperReturnType)
     {
       ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
       ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
@@ -44,10 +45,18 @@ namespace Remotion.Reflection.CodeGeneration
       CheckParameterTypes (wrappedMethod, wrapperParameterTypes);
       CheckReturnTypes (wrappedMethod, wrapperReturnType);
 
-      EmitInstanceArgument (ilGenerator, wrappedMethod, wrapperParameterTypes);
-      EmitMethodArguments (ilGenerator, wrappedMethod, wrapperParameterTypes);
-      EmitMethodCall (ilGenerator, wrappedMethod);
-      EmitReturnStatement (ilGenerator, wrappedMethod, wrapperReturnType);
+      _ilGenerator = ilGenerator;
+      _wrappedMethod = wrappedMethod;
+      _wrapperParameterTypes = wrapperParameterTypes;
+      _wrapperReturnType = wrapperReturnType;
+    }
+
+    public void EmitStaticMethodBody ()
+    {
+      EmitInstanceArgument ();
+      EmitMethodArguments ();
+      EmitMethodCall ();
+      EmitReturnStatement ();
     }
 
     private void CheckParameterCount (MethodInfo wrappedMethod, Type[] wrapperParameterTypes)
@@ -141,58 +150,58 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-    private void EmitInstanceArgument (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type[] wrapperParameterTypes)
+    private void EmitInstanceArgument ()
     {
-      if (wrappedMethod.IsStatic)
+      if (_wrappedMethod.IsStatic)
         return;
 
-      ilGenerator.Emit (OpCodes.Ldarg_0);
+      _ilGenerator.Emit (OpCodes.Ldarg_0);
 
-      if (wrappedMethod.DeclaringType.IsValueType)
+      if (_wrappedMethod.DeclaringType.IsValueType)
       {
-        ilGenerator.DeclareLocal (wrappedMethod.DeclaringType);
-        if (wrapperParameterTypes[0] != wrappedMethod.DeclaringType)
-          ilGenerator.Emit (OpCodes.Unbox_Any, wrappedMethod.DeclaringType);
-        ilGenerator.Emit (OpCodes.Stloc_0);
-        ilGenerator.Emit (OpCodes.Ldloca_S, 0);
+        _ilGenerator.DeclareLocal (_wrappedMethod.DeclaringType);
+        if (_wrapperParameterTypes[0] != _wrappedMethod.DeclaringType)
+          _ilGenerator.Emit (OpCodes.Unbox_Any, _wrappedMethod.DeclaringType);
+        _ilGenerator.Emit (OpCodes.Stloc_0);
+        _ilGenerator.Emit (OpCodes.Ldloca_S, 0);
       }
       else
-        ilGenerator.Emit (OpCodes.Castclass, wrappedMethod.DeclaringType);
+        _ilGenerator.Emit (OpCodes.Castclass, _wrappedMethod.DeclaringType);
     }
 
-    private void EmitMethodArguments (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type[] wrapperParameterTypes)
+    private void EmitMethodArguments ()
     {
-      foreach (var parameter in wrappedMethod.GetParameters())
+      foreach (var parameter in _wrappedMethod.GetParameters())
       {
-        ilGenerator.Emit (OpCodes.Ldarg_S, (byte) (parameter.Position + 1));
+        _ilGenerator.Emit (OpCodes.Ldarg_S, (byte) (parameter.Position + 1));
 
-        if (wrapperParameterTypes[parameter.Position + 1] == parameter.ParameterType)
-          ilGenerator.Emit (OpCodes.Nop);
+        if (_wrapperParameterTypes[parameter.Position + 1] == parameter.ParameterType)
+          _ilGenerator.Emit (OpCodes.Nop);
         else if (parameter.ParameterType.IsValueType)
-          ilGenerator.Emit (OpCodes.Unbox_Any, parameter.ParameterType);
+          _ilGenerator.Emit (OpCodes.Unbox_Any, parameter.ParameterType);
         else
-          ilGenerator.Emit (OpCodes.Castclass, parameter.ParameterType);
+          _ilGenerator.Emit (OpCodes.Castclass, parameter.ParameterType);
       }
     }
 
-    private void EmitMethodCall (ILGenerator ilGenerator, MethodInfo wrappedMethod)
+    private void EmitMethodCall ()
     {
-      if (wrappedMethod.IsVirtual)
-        ilGenerator.Emit (OpCodes.Callvirt, wrappedMethod);
+      if (_wrappedMethod.IsVirtual)
+        _ilGenerator.Emit (OpCodes.Callvirt, _wrappedMethod);
       else
-        ilGenerator.Emit (OpCodes.Call, wrappedMethod);
+        _ilGenerator.Emit (OpCodes.Call, _wrappedMethod);
     }
 
-    private void EmitReturnStatement (ILGenerator ilGenerator, MethodInfo wrappedMethod, Type wrapperReturnType)
+    private void EmitReturnStatement ()
     {
-      if (wrapperReturnType == typeof (void))
-        ilGenerator.Emit (OpCodes.Nop);
-      else if (wrapperReturnType == wrappedMethod.ReturnType)
-        ilGenerator.Emit (OpCodes.Nop);
-      else if (wrappedMethod.ReturnType.IsValueType)
-        ilGenerator.Emit (OpCodes.Box, wrappedMethod.ReturnType);
+      if (_wrapperReturnType == typeof (void))
+        _ilGenerator.Emit (OpCodes.Nop);
+      else if (_wrapperReturnType == _wrappedMethod.ReturnType)
+        _ilGenerator.Emit (OpCodes.Nop);
+      else if (_wrappedMethod.ReturnType.IsValueType)
+        _ilGenerator.Emit (OpCodes.Box, _wrappedMethod.ReturnType);
 
-      ilGenerator.Emit (OpCodes.Ret);
+      _ilGenerator.Emit (OpCodes.Ret);
     }
   }
 }

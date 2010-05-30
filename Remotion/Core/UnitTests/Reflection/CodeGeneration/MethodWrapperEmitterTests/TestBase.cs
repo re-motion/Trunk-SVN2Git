@@ -30,8 +30,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
           .SetParameterTypes (publicParameterTypes)
           .SetReturnType (publicReturnType);
 
-      var emitter = new MethodWrapperEmitter();
-      emitter.EmitStaticMethodBody (method.ILGenerator, innerMethod, publicParameterTypes, publicReturnType);
+      var emitter = new MethodWrapperEmitter (method.ILGenerator, innerMethod, publicParameterTypes, publicReturnType);
+      emitter.EmitStaticMethodBody();
       
       return method;
     }

@@ -39,8 +39,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
       var ilGenerator = dynamicMethod.GetILGenerator();
 
-      var emitter = new MethodWrapperEmitter();
-      emitter.EmitStaticMethodBody (ilGenerator, methodInfo, parameterTypes, returnType);
+      var emitter = new MethodWrapperEmitter (ilGenerator, methodInfo, parameterTypes, returnType);
+      emitter.EmitStaticMethodBody();
 
       var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
 
@@ -73,9 +73,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
-      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
@@ -88,9 +88,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (ClassWithMethods) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
-      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+      var obj = new ClassWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
@@ -118,9 +118,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (StructWithMethods) };
-      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
 
-      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType () };
+      var obj = new StructWithMethods { InstanceReferenceTypeValue = new SimpleReferenceType() };
 
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.SameAs (obj.InstanceReferenceTypeValue));
     }
