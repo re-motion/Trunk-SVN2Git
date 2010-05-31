@@ -25,7 +25,7 @@
 <table class="accessControlList">
   <tr>
     <td class="stateCombinationsButtons">
-      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
+      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" RequiresSynchronousPostBack="true" />
     </td>
     <td class="accessControlEntriesContainer" rowspan="2">
       <asp:PlaceHolder id="AccessControlEntryControls" runat="server" />
