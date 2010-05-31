@@ -25,7 +25,7 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  public class Common : TestBase
+  public class Common_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     [Test]
     public void EmitMethodBody_ForPrivatePropertyGetter_ForReferenceType ()

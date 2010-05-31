@@ -22,7 +22,7 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  public class NotSupportedScenarios : TestBase
+  public class NotSupportedScenarios_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =

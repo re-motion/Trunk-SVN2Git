@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  public class ArgumentChecks : TestBase
+  public class ArgumentChecks_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =

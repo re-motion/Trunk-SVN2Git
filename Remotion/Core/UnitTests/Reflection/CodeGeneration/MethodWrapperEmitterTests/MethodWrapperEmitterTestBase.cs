@@ -21,7 +21,7 @@ using Remotion.Reflection.CodeGeneration.DPExtensions;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
-  public class TestBase : MethodGenerationTestBase
+  public class MethodWrapperEmitterTestBase : MethodGenerationTestBase
   {
     protected IMethodEmitter GetWrapperMethodFromEmitter (
         MethodBase executingTestMethod, Type[] publicParameterTypes, Type publicReturnType, MethodInfo innerMethod)

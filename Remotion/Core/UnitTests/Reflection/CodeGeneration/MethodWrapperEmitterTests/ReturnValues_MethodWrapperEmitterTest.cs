@@ -23,7 +23,7 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  public class ReturnValues : TestBase
+  public class ReturnValues_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     [Test]
     public void EmitMethodBody_ForInstanceMethodWithReferenceTypeReturnValue_PublicReturnTypeIsBaseType ()
