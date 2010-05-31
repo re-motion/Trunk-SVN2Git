@@ -16,10 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Castle.Core;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using CommonServiceLocator.WindsorAdapter;
+using Autofac;
+using AutofacContrib.CommonServiceLocator;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Tracing;
@@ -46,24 +44,21 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
 
-      IWindsorContainer container = new WindsorContainer ();
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ()));
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ()));
-      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme> ().Instance (ResourceTheme.ClassicBlue));
+      var builder = new ContainerBuilder();
 
-      //container.Register (Component.For<IClientTransactionListenerFactory, IPersistenceListenerFactory> ().Instance (new LinqToSqlListenerFactory()));
+      builder.RegisterAssemblyTypes (typeof (RendererBase<>).Assembly, typeof (BocRendererBase<>).Assembly)
+          .Where (t => t.Namespace.EndsWith (".Factories")).AsImplementedInterfaces().SingleInstance();
 
-      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
-      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+      builder.RegisterInstance (ResourceTheme.NovaBlue).SingleInstance();
+
+      builder.Register (c => new ScriptUtility()).As<IScriptUtility>().InstancePerDependency();
+
+      //builder.Register (c => new LinqToSqlListenerFactory ())
+      //    .As<IClientTransactionListenerFactory, IPersistenceListenerFactory> ()
+      //    .InstancePerDependency ();
+
+      var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
+      ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
     }
 
     protected void Application_End (object sender, EventArgs e)
