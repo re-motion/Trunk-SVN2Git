@@ -214,7 +214,6 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
       foreach (IClientTransactionExtension extension in this)
         extension.PropertyValueReading (clientTransaction, dataContainer, propertyValue, valueAccess);
@@ -225,7 +224,6 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
       foreach (IClientTransactionExtension extension in this)
         extension.PropertyValueRead (clientTransaction, dataContainer, propertyValue, value, valueAccess);
@@ -256,7 +254,6 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
       foreach (IClientTransactionExtension extension in this)
         extension.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
@@ -267,7 +264,6 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
       foreach (IClientTransactionExtension extension in this)
         extension.RelationRead (clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
@@ -279,7 +275,6 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
       foreach (IClientTransactionExtension extension in this)
         extension.RelationRead (clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
