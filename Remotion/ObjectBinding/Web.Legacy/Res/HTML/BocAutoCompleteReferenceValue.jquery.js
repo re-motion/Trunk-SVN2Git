@@ -794,13 +794,15 @@
                 elementWidth = $(input).outerWidth() + $('#' + options.dropDownButtonId).outerWidth();
             }
 
+            var overflowY = listHeight > maxHeight ? 'scroll' : 'hidden';
+
             if (maxHeight > 0) {
                 element.css({
                     width: elementWidth,
                     left: offset.left,
                     top: topPosition,
                     bottom: bottomPosition,
-                    'overflow-y': 'auto',
+                    'overflow-y': overflowY,
                     height: maxHeight
                 });
             } else {
