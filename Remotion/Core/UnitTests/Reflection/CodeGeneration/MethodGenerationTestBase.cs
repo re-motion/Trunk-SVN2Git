@@ -43,6 +43,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       base.TearDown();
     }
 
+    protected Type BuildType ()
+    {
+      return _classEmitter.BuildType ();
+    }
+
     protected object BuildInstance ()
     {
       return Activator.CreateInstance (_classEmitter.BuildType());

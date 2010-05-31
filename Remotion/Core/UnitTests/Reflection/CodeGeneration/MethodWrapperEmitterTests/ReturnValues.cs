@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
-    [Ignore ("Strange bug, possible related to Castle?")]
+    // [Ignore ("Strange bug, possible related to Castle?")]
     public void EmitMethodBody_ForInstanceMethodWithNullableValueTypeReturnValue_ReturnTypesMatch ()
     {
       Type declaringType = typeof (ClassWithMethods);

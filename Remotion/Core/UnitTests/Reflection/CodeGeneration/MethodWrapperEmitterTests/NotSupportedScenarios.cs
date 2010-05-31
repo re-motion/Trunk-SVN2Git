@@ -36,6 +36,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object).MakeByRefType() };
       GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+      BuildType ();
     }
 
     [Test]
@@ -50,6 +51,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object).MakeByRefType() };
       GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+      BuildType ();
     }
 
     [Test]
@@ -64,6 +66,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
       GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+      BuildType ();
     }
 
     [Test]
@@ -78,6 +81,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
       GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
+      BuildType ();
     }
   }
 }

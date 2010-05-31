@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
@@ -30,9 +31,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
           .SetParameterTypes (publicParameterTypes)
           .SetReturnType (publicReturnType);
 
-      var emitter = new MethodWrapperEmitter (method.ILGenerator, innerMethod, publicParameterTypes, publicReturnType);
-      emitter.EmitStaticMethodBody();
-      
+      var statement = new ILStatement ((memberEmitter, ilGenerator) =>
+      {
+        var emitter = new MethodWrapperEmitter (ilGenerator, innerMethod, publicParameterTypes, publicReturnType);
+        emitter.EmitStaticMethodBody ();
+      });
+      method.AddStatement (statement);
+
       return method;
     }
   }
