@@ -155,8 +155,6 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
         return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
-      // TODO Review 2778: write a (failing) test that shows that when sqlColumnExpression was a column reference, the new column will also be a column reference; then use Update instead of new - test should now work (this is required to be able to do something like this: from x in (from o in Orders select new { A = o, B = o.ID }).Distinct() select x.B.ClassID )
-      // TODO Review 2778: Note: When fixing this, tests might fail because the * columns don't work correctly in combination with named entities; set the tests to [Ignore ("TODO 2817")]
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));

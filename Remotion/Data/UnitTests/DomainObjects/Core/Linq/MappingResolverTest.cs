@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveMemberExpression_ReturnsSqlColumnExpression ()
+    public void ResolveMemberExpression_ReturnsSqlColumnDefinitionExpression ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
       var entityExpression = new SqlEntityDefinitionExpression (
@@ -170,6 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
+      Assert.That (sqlColumnExpression, Is.TypeOf(typeof(SqlColumnDefinitionExpression)));
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
       Assert.That (sqlColumnExpression.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
@@ -306,6 +307,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo (columnExpression.OwningTableAlias));
       Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("ClassID"));
       Assert.That (((SqlColumnDefinitionExpression) result).IsPrimaryKey, Is.False);
+    }
+
+    [Test]
+    public void ResolveMemberExpression_ReturnsSqlColumnReferenceExpression ()
+    {
+      var property = typeof (ObjectID).GetProperty ("ClassID");
+      var referencedEntity = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (int), "o", "ID", true));
+
+      var sqlColumnReferenceExpression = new SqlColumnReferenceExpression (typeof (string), "c", "Name", false, referencedEntity);
+
+      var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (sqlColumnReferenceExpression, property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnReferenceExpression)));
+      Assert.That (result.ColumnName, Is.EqualTo("ClassID"));
+      Assert.That (result.OwningTableAlias, Is.EqualTo (sqlColumnReferenceExpression.OwningTableAlias));
+      Assert.That (result.IsPrimaryKey, Is.False);
     }
 
     [Test]
