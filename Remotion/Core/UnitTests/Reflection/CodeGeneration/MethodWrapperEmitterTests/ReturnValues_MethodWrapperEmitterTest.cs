@@ -131,7 +131,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
     }
 
     [Test]
-    // [Ignore ("Strange bug, possible related to Castle?")]
     public void EmitMethodBody_ForInstanceMethodWithNullableValueTypeReturnValue_ReturnTypesMatch ()
     {
       Type declaringType = typeof (ClassWithMethods);
@@ -146,6 +145,21 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
       Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.EqualTo (obj.InstanceNullableValueTypeValue));
     }
 
+    [Test]
+    public void EmitMethodBody_ForInstanceMethodWithNullableValueTypeReturnValue_ReturnTypesMatch_WithNull ()
+    {
+      Type declaringType = typeof (ClassWithMethods);
+      var methodInfo = declaringType.GetMethod ("InstanceMethodWithNullableValueTypeReturnValue", BindingFlags.Public | BindingFlags.Instance);
+
+      Type returnType = typeof (int?);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
+
+      var obj = new ClassWithMethods { InstanceNullableValueTypeValue = null };
+
+      Assert.That (BuildTypeAndInvokeMethod (method, obj), Is.Null);
+    }
+    
     [Test]
     public void EmitMethodBody_ForStaticMethodWithReferenceTypeReturnValue ()
     {
