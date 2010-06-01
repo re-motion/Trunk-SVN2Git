@@ -548,6 +548,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order4);
     }
+
+    [Test]
+    public void TakeAfterSkip ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Skip (5).Take (1);
+
+      CheckQueryResult (query, DomainObjectIDs.InvalidOrder);
+    }
     
   }
 }
