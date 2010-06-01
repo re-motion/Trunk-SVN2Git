@@ -49,7 +49,7 @@
                 // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
                 dropDownButtonId: null,
                 // re-motion: select first value in list unless textbox is empty
-                selectFirst: $.Autocompleter.defaults.selectFirst
+                selectFirst: function() { return false; }
             }, options);
 
             // if highlight is set to false, replace it with a do-nothing function
@@ -192,7 +192,7 @@
                     }
                     break;
                 case KEY.ESC:
-                    select.hide();
+                    hideResults();
                     break;
 
                 default:
@@ -517,7 +517,8 @@
         max: 100,
         mustMatch: false,
         extraParams: {},
-        selectFirst: 0,
+        // re-motion: changed selectFirst from boolean field to function
+        selectFirst: function() { return false; },
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
@@ -712,7 +713,7 @@
             var result = $.data(activeItem[0], "ac_data").result;
             $(input).val(result);
             // re-motion: do not select the text in the input element when moving the drop-down selection 
-            $.Autocompleter.Selection(input, 0, input.value.length);
+            //$.Autocompleter.Selection(input, 0, input.value.length);
 
             var resultsElement = $('.' + options.resultsClass);
 
@@ -828,7 +829,7 @@
                 $.data(li, "ac_data", data[i]);
             }
             listItems = list.find("li");
-            if (options.selectFirst) {
+            if (options.selectFirst()) {
                 listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
                 active = 0;
             }
@@ -874,7 +875,7 @@
                 return element && element.is(":visible");
             },
             current: function() {
-                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst && listItems[0]);
+                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst() && listItems[0]);
             },
             show: function() {
 
@@ -900,6 +901,7 @@
                     }
                 });
 
+                // re-motion: reposition element 
                 element.show();
                 applyPositionToDropDown();
                 // re-motion: start interval to reposition element 

@@ -754,6 +754,7 @@
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
 
+            var maxHeight;
             if (position.spaceVertical == 'T' && position.bottom < options.scrollHeight) {
 
                 //element.css('bottom', position.bottom + input.offsetHeight);
@@ -761,9 +762,9 @@
                 bottomPosition = position.bottom + input.offsetHeight;
 
                 if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
-                    var maxHeight = position.top;
+                    maxHeight = position.top;
                 } else {
-                    var maxHeight = options.scrollHeight;
+                    maxHeight = options.scrollHeight;
                 }
 
             } else {
@@ -771,9 +772,9 @@
                 bottomPosition = 'auto';
                 topPosition = offset.top + input.offsetHeight;
                 if (options.scrollHeight > position.bottom) {
-                    var maxHeight = position.bottom;
+                    maxHeight = position.bottom;
                 } else {
-                    var maxHeight = options.scrollHeight;
+                    maxHeight = options.scrollHeight;
                 }
 
             }
@@ -861,13 +862,6 @@
             },
             show: function() {
 
-                // re-motion: reposition element 
-                applyPositionToDropDown();
-                element.show();
-                // re-motion: start interval to reposition element 
-                if (repositionTimer) clearInterval(repositionTimer);
-                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
-
                 //re-motion: block blur bind as long we scroll dropDown list 
                 var revertInputStausTimeout = null;
                 function revertInputStaus() {
@@ -890,6 +884,13 @@
                     }
                 });
 
+
+                // re-motion: reposition element 
+                applyPositionToDropDown();
+                element.show();
+                // re-motion: start interval to reposition element 
+                if (repositionTimer) clearInterval(repositionTimer);
+                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
 
                 if (options.scroll) {
                     list.scrollTop(0);
