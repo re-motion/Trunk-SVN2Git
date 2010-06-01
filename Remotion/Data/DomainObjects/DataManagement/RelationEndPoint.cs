@@ -107,6 +107,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return false; }
     }
 
+    public override string ToString ()
+    {
+      return GetType().Name + ": " + ID;
+    }
+
     protected MandatoryRelationNotSetException CreateMandatoryRelationNotSetException (
         DomainObject domainObject,
         string propertyName,

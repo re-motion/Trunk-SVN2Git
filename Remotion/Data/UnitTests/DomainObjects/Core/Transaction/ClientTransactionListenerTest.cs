@@ -425,12 +425,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationEndPointMapUnregisteringDataManagerMarkingObjectDiscardedDataContainerMapUnregistering ()
     {
       Order order = Order.NewObject ();
+      var orderTicketEndPoint = 
+          ClientTransactionMock.DataManager.RelationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderTicket")];
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, order));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderTicketEndPoint, false));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (
