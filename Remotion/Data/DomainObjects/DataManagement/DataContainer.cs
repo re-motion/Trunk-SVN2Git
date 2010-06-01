@@ -93,8 +93,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
              select new PropertyValue (propertyDefinition);
     }
 
-    public event EventHandler<DataContainerStateUpdateEventArgs> StateUpdated;
-
     private readonly ObjectID _id;
     private readonly PropertyValueCollection _propertyValues;
 
@@ -357,7 +355,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _hasBeenMarkedChanged = true;
 
-      OnStateUpdated (StateType.Changed);
+      RaiseStateUpdatedNotification (StateType.Changed);
     }
 
     /// <summary>
@@ -415,7 +413,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.CommitState ();
 
       _state = DataContainerStateType.Existing;
-      OnStateUpdated (StateType.Unchanged);
+      RaiseStateUpdatedNotification (StateType.Unchanged);
     }
 
     public void RollbackState ()
@@ -432,7 +430,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.RollbackState ();
 
       _state = DataContainerStateType.Existing;
-      OnStateUpdated (StateType.Unchanged);
+      RaiseStateUpdatedNotification (StateType.Unchanged);
     }
 
     public void Delete ()
@@ -443,7 +441,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("New data containers cannot be deleted, they have to be discarded.");
 
       _state = DataContainerStateType.Deleted;
-      OnStateUpdated (StateType.Deleted);
+      RaiseStateUpdatedNotification (StateType.Deleted);
     }
 
     public void Discard ()
@@ -453,7 +451,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues.Discard ();
 
       _isDiscarded = true;
-      OnStateUpdated (StateType.Invalid);
+      RaiseStateUpdatedNotification (StateType.Invalid);
 
       _clientTransaction = null;
     }
@@ -477,7 +475,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _propertyValues[i].SetValueFrom (source._propertyValues[i]);
 
       _hasBeenChanged = CalculatePropertyValueChangeState ();
-      OnStateUpdated (State);
+      RaiseStateUpdatedNotification (State);
     }
 
     public void SetDomainObject (DomainObject domainObject)
@@ -532,7 +530,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // - the property indicates that it doesn't have the original value ("HasChanged")
       // - recalculation of all property change states indicates another property doesn't have its original value
       _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
-      OnStateUpdated (State);
+      RaiseStateUpdatedNotification (State);
 
       if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
@@ -595,12 +593,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
     }
 
-    private void OnStateUpdated (StateType state)
+    private void RaiseStateUpdatedNotification (StateType state)
     {
       Assertion.DebugAssert (State == state);
 
-      if (StateUpdated != null)
-        StateUpdated (this, new DataContainerStateUpdateEventArgs (this, state));
+      if (_clientTransaction != null)
+        _clientTransaction.TransactionEventSink.DataContainerStateUpdated (_clientTransaction, this, state);
     }
 
     #region Serialization
@@ -622,8 +620,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         RestorePropertyValuesFromData (info);
       
       _propertyValues.RegisterForChangeNotification (this);
-
-      StateUpdated += info.GetValue<EventHandler<DataContainerStateUpdateEventArgs>>();
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _state = info.GetValue<DataContainerStateType> ();
@@ -657,7 +653,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
       }
 
-      info.AddValue (StateUpdated);
       info.AddHandle (_clientTransaction);
       info.AddValue (_state);
       info.AddHandle (_domainObject);

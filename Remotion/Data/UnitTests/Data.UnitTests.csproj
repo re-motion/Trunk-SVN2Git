@@ -1246,7 +1246,6 @@
     <Compile Include="DomainObjects\Core\Transaction\CommitEventsTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\EventReceiver\DataContainerMockEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\DomainObjectMockEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\PropertyValueCollectionMockEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionScopeTest.cs" />

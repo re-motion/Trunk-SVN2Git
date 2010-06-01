@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -107,24 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
       Assert.IsTrue (deserializedDataContainer.IsDiscarded);
       Assert.AreEqual (StateType.Invalid, deserializedDataContainer.State);
-    }
-
-    [Test]
-    public void DataContainer_EventHandlers_Contents ()
-    {
-      Computer computer = Computer.NewObject ();
-
-      DataContainer dataContainer = computer.InternalDataContainer;
-      
-      bool eventCalled = false;
-      dataContainer.StateUpdated += delegate { eventCalled = true; };
-
-      DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
-      Assert.That (eventCalled, Is.False);
-
-      deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")].Value = "1234";
-
-      Assert.That (eventCalled, Is.True);
     }
   }
 }

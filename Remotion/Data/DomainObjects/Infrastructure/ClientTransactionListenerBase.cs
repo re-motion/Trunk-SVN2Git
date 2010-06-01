@@ -149,6 +149,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
+    public virtual void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
+    {
+    }
+
+    public virtual void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    {
+    }
+
     public virtual bool IsNull
     {
       get { return false; }

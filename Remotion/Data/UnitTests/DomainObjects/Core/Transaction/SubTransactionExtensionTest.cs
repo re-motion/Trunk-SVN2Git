@@ -849,8 +849,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_subTransaction);
 
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
-      var dataContainerMockEventReceiver =
-          _mockRepository.StrictMock<DataContainerMockEventReceiver> (order1DC);
       var propertyValueCollectionMockEventReceiver =
           _mockRepository.StrictMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
 
@@ -877,9 +875,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         propertyValueCollectionMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();
-
-        dataContainerMockEventReceiver.StateUpdated (null, null);
-        LastCall.IgnoreArguments ();
 
         domainObjectMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();
