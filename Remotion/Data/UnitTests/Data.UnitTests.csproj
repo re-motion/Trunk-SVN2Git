@@ -261,6 +261,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\SerializableFakeCollectionEndPointStateUpdateListener.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExpandedCommandTest.cs" />

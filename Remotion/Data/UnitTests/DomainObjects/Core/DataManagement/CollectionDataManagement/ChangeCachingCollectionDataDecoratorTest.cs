@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -31,7 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   {
     private IDomainObjectCollectionData _wrappedDataStub;
     private DomainObjectCollection _originalData;
+    private ICollectionEndPointStateUpdateListener _stateUpdateListenerMock;
+
     private ChangeCachingCollectionDataDecorator _decorator;
+    
     private ICollectionEndPointChangeDetectionStrategy _strategyMock;
 
     public override void SetUp ()
@@ -40,8 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _originalData = new DomainObjectCollection ();
+      _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionEndPointStateUpdateListener> ();
 
-      _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _originalData);
+      _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _originalData, _stateUpdateListenerMock);
 
       _strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
     }
@@ -56,6 +59,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       
       _strategyMock.VerifyAllExpectations ();
       Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void HasChanged_RaisesStateChangedNotification ()
+    {
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
+      _strategyMock.Replay ();
+
+      _decorator.HasChanged (_strategyMock);
+
+      _strategyMock.VerifyAllExpectations ();
+
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (true));
     }
 
     [Test]
@@ -80,14 +96,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void InvalidateCache ()
     {
-      StubStrategyMock (_decorator, _originalData);
-
       _decorator.HasChanged (_strategyMock);
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
       _decorator.InvalidateCache ();
       
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    public void InvalidateCache_RaisesStateNotification ()
+    {
+      _decorator.InvalidateCache ();
+
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (null));
     }
 
     [Test]
@@ -220,7 +242,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       var wrappedData = new DomainObjectCollectionData (new[] { fake });
       var originalData = new DomainObjectCollection ();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData);
+      var stateUpdateListener = new SerializableFakeCollectionEndPointStateUpdateListener();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData, stateUpdateListener);
 
       WarmUpCache (decorator, originalData);
 

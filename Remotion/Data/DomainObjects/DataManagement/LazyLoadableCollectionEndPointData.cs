@@ -31,20 +31,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
+    private ICollectionEndPointStateUpdateListener _stateUpdateListener;
 
     private ChangeCachingCollectionDataDecorator _collectionData;
     private DomainObjectCollection _originalOppositeDomainObjectsContents;
 
     public LazyLoadableCollectionEndPointData (
-        ClientTransaction clientTransaction, 
-        RelationEndPointID endPointID, 
-        IEnumerable<DomainObject> initialContents)
+        ClientTransaction clientTransaction,
+        RelationEndPointID endPointID,
+        IEnumerable<DomainObject> initialContents,
+        ICollectionEndPointStateUpdateListener stateUpdateListener)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
+      _stateUpdateListener = stateUpdateListener;
 
       if (initialContents != null)
         SetContents (initialContents);
@@ -69,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        EnsureDataAvailable();
+        EnsureDataAvailable ();
 
         Assertion.IsNotNull (_collectionData);
         return _collectionData;
@@ -78,12 +82,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
-      get 
+      get
       {
         EnsureDataAvailable ();
 
         Assertion.IsNotNull (_originalOppositeDomainObjectsContents);
-        return _originalOppositeDomainObjectsContents; 
+        return _originalOppositeDomainObjectsContents;
       }
     }
 
@@ -102,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
         SetContents (contents);
 
-        // TODO 2826: Raise unchanged notification here
+        RaiseChangeStateNotification (false);
       }
     }
 
@@ -110,7 +114,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       _collectionData = null;
       _originalOppositeDomainObjectsContents = null; // allow the DomainObjectCollection to be garbage-collected
-      // TODO 2826: Raise changed notification here
+
+      RaiseChangeStateNotification (false);
     }
 
     public void CommitOriginalContents ()
@@ -118,9 +123,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (IsDataAvailable)
       {
         EnsureDataAvailable ();
-        
+
         _originalOppositeDomainObjectsContents.Commit (_collectionData);
-        _collectionData.InvalidateCache (); // TODO 2826: Set flag to unchanged instead
+        _collectionData.InvalidateCache ();
       }
     }
 
@@ -128,10 +133,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var collectionType = _endPointID.Definition.PropertyType;
       _originalOppositeDomainObjectsContents = DomainObjectCollectionFactory.Instance.CreateReadOnlyCollection (collectionType, initialContents);
-      
+
       _collectionData = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (initialContents), 
-          _originalOppositeDomainObjectsContents);
+          new DomainObjectCollectionData (initialContents),
+          _originalOppositeDomainObjectsContents,
+          _stateUpdateListener);
+    }
+
+    private void RaiseChangeStateNotification (bool? newChangeState)
+    {
+      _stateUpdateListener.StateUpdated (newChangeState);
     }
 
     #region Serialization
@@ -157,6 +168,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddValue (_collectionData);
       info.AddValue (_originalOppositeDomainObjectsContents);
     }
+
+    internal void FixupStateUpdateListener (ICollectionEndPointStateUpdateListener listener)
+    {
+      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
+      _stateUpdateListener = listener;
+
+      if (_collectionData != null)
+        _collectionData.FixupStateUpdateListener (listener);
+    }
+
     #endregion
   }
 }

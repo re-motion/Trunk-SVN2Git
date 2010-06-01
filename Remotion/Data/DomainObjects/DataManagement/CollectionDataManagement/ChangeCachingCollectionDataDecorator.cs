@@ -29,16 +29,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
     private readonly DomainObjectCollection _originalData;
+    
+    [NonSerialized] // Fixed up by LazyLoadableCollectionEndPointData, see CollectionEndPoint.FixupAssociatedEndPoint for explanation
+    private ICollectionEndPointStateUpdateListener _stateUpdateListener;
+
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
 
-    // TODO 2826: IClientTransactionListener event sink parameter
-    public ChangeCachingCollectionDataDecorator (IDomainObjectCollectionData wrappedData, DomainObjectCollection originalData)
-        : base (wrappedData)
+    public ChangeCachingCollectionDataDecorator (
+        IDomainObjectCollectionData wrappedData, 
+        DomainObjectCollection originalData,
+        ICollectionEndPointStateUpdateListener stateUpdateListener)
+      : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
     {
       ArgumentUtility.CheckNotNull ("originalData", originalData);
+      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       _originalData = originalData;
+      _stateUpdateListener = stateUpdateListener;
     }
 
     public bool IsCacheUpToDate
@@ -48,8 +56,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void InvalidateCache ()
     {
-      // TODO 2826: Check count match to get a quick negative if possible; notification must be raised here
-      _isCacheUpToDate = false; // TODO 2826: Raise indeterminate notification here
+      _isCacheUpToDate = false;
+      RaiseStateUpdatedNotification (null);
     }
 
     public bool HasChanged (ICollectionEndPointChangeDetectionStrategy strategy)
@@ -104,9 +112,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     private void SetCachedHasChangedFlag (bool hasChanged)
     {
-      _cachedHasChangedFlag = hasChanged; // TODO 2826: Raise notification here
+      _cachedHasChangedFlag = hasChanged;
       _isCacheUpToDate = true;
+      RaiseStateUpdatedNotification (hasChanged);
     }
- 
+
+    private void RaiseStateUpdatedNotification (bool? newChangedState)
+    {
+      _stateUpdateListener.StateUpdated (newChangedState);
+    }
+
+    internal void FixupStateUpdateListener  (ICollectionEndPointStateUpdateListener listener)
+    {
+      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
+      _stateUpdateListener = listener;
+    }
   }
 }

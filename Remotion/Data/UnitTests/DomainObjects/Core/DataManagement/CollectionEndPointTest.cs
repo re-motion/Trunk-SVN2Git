@@ -768,6 +768,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oppositeEndPoints, Is.EquivalentTo (new[] { expected1, expected2, }));
     }
 
+    [Test]
+    public void ChangesToDataState_CauseTransactionListenerNotifications ()
+    {
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
+
+      _customerEndPoint.OppositeDomainObjects.Add (_order2);
+
+      listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint, null));
+    }
+
+
     private LazyLoadableCollectionEndPointData GetEndPointData (CollectionEndPoint endPoint)
     {
       return (LazyLoadableCollectionEndPointData) PrivateInvoke.GetNonPublicField (endPoint, "_data");

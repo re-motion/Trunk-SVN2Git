@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -809,7 +810,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var endPointDataStub = new LazyLoadableCollectionEndPointData (
           ClientTransactionMock, 
           endPointID, 
-          new DomainObject[0]);
+          new DomainObject[0],
+          new SerializableFakeCollectionEndPointStateUpdateListener());
 
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);
       var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));

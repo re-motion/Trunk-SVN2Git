@@ -23,6 +23,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -40,34 +41,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     
     private LazyLoadableCollectionEndPointData _loadedData;
     private LazyLoadableCollectionEndPointData _unloadedData;
-    
+    private ICollectionEndPointStateUpdateListener _stateUpdateListenerMock;
+
     public override void SetUp ()
     {
       base.SetUp ();
 
       _clientTransactionMock = ClientTransactionObjectMother.CreateStrictMock ();
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _changeDetectionStrategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+      _changeDetectionStrategyMock = MockRepository.GenerateStrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+      _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionEndPointStateUpdateListener> ();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _loadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1 });
-      _unloadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null);
+      _loadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1 }, _stateUpdateListenerMock);
+      _unloadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null, _stateUpdateListenerMock);
     }
     
     [Test]
     public void Initialization_Null ()
     {
-      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null);
+      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null, _stateUpdateListenerMock);
       Assert.That (data.IsDataAvailable, Is.False);
     }
 
     [Test]
     public void Initialization_NotNull ()
     {
-      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1, _domainObject2 });
+      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1, _domainObject2 }, _stateUpdateListenerMock);
       Assert.That (data.IsDataAvailable, Is.True);
     }
 
@@ -171,6 +174,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void EnsureDataAvailable_Unloaded_CausesStateUpdate ()
+    {
+      _clientTransactionMock
+          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
+          .Return (new[] { _domainObject2, _domainObject3 });
+      _clientTransactionMock.Replay ();
+
+      Assert.That (_unloadedData.IsDataAvailable, Is.False);
+
+      _unloadedData.EnsureDataAvailable ();
+
+      Assert.That (_unloadedData.IsDataAvailable, Is.True);
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
+    }
+
+    [Test]
     public void DataStore_Loaded ()
     {
       _clientTransactionMock.Replay ();
@@ -236,6 +255,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Unload_CausesStateUpdate ()
+    {
+      Assert.That (_loadedData.IsDataAvailable, Is.True);
+
+      _loadedData.Unload ();
+
+      Assert.That (_loadedData.IsDataAvailable, Is.False);
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
+    }
+
+    [Test]
     public void Unload_CausesDataStoreToBeReloaded ()
     {
       Assert.That (_loadedData.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
@@ -284,6 +314,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (deserializedInstance.IsDataAvailable, Is.False);
       StubLoadRelatedObjects (_domainObject2, _domainObject3);
 
+      PrivateInvoke.InvokeNonPublicMethod (deserializedInstance, "FixupStateUpdateListener", _stateUpdateListenerMock);
+
       Assert.That (deserializedInstance.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
       Assert.That (deserializedInstance.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
     }
@@ -326,6 +358,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _unloadedData.CommitOriginalContents ();
 
       Assert.That (_unloadedData.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void ChangeCachingDataStore_GetsListener ()
+    {
+      _loadedData.CollectionData.Clear();
+
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (Arg<bool?>.Is.Anything));
     }
 
     private void StubLoadRelatedObjects (params DomainObject[] relatedObjects)
