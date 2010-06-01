@@ -99,7 +99,7 @@ namespace Remotion.Security
 
     private EnumWrapper (string name)
     {
-      _name = name;
+      _name = string.Intern (name);
     }
 
     public string Name
@@ -114,7 +114,7 @@ namespace Remotion.Security
 
     public bool Equals (EnumWrapper other)
     {
-      return _name.Equals (other._name);
+      return string.Equals (this._name, other._name);
     }
 
     public override bool Equals (object obj)
