@@ -101,6 +101,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
         SetContents (contents);
+
+        // TODO 2826: Raise unchanged notification here
       }
     }
 
@@ -108,6 +110,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       _collectionData = null;
       _originalOppositeDomainObjectsContents = null; // allow the DomainObjectCollection to be garbage-collected
+      // TODO 2826: Raise changed notification here
     }
 
     public void CommitOriginalContents ()
@@ -125,7 +128,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var collectionType = _endPointID.Definition.PropertyType;
       _originalOppositeDomainObjectsContents = DomainObjectCollectionFactory.Instance.CreateReadOnlyCollection (collectionType, initialContents);
-      _collectionData = new ChangeCachingCollectionDataDecorator (new DomainObjectCollectionData (initialContents), _originalOppositeDomainObjectsContents);
+      
+      _collectionData = new ChangeCachingCollectionDataDecorator (
+          new DomainObjectCollectionData (initialContents), 
+          _originalOppositeDomainObjectsContents);
     }
 
     #region Serialization

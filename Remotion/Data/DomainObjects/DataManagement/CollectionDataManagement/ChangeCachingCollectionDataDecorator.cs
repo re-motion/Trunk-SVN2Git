@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
 
+    // TODO 2826: IClientTransactionListener event sink parameter
     public ChangeCachingCollectionDataDecorator (IDomainObjectCollectionData wrappedData, DomainObjectCollection originalData)
         : base (wrappedData)
     {
@@ -47,15 +48,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void InvalidateCache ()
     {
-      _isCacheUpToDate = false;
+      // TODO 2826: Check count match to get a quick negative if possible; notification must be raised here
+      _isCacheUpToDate = false; // TODO 2826: Raise indeterminate notification here
     }
 
     public bool HasChanged (ICollectionEndPointChangeDetectionStrategy strategy)
     {
       if (!_isCacheUpToDate)
       {
-        _cachedHasChangedFlag = strategy.HasDataChanged (this, _originalData);
-        _isCacheUpToDate = true;
+        var hasChanged = strategy.HasDataChanged (this, _originalData);
+        SetCachedHasChangedFlag (hasChanged);
       }
 
       return _cachedHasChangedFlag;
@@ -99,6 +101,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       base.Replace (index, value);
       InvalidateCache ();
     }
-  
+
+    private void SetCachedHasChangedFlag (bool hasChanged)
+    {
+      _cachedHasChangedFlag = hasChanged; // TODO 2826: Raise notification here
+      _isCacheUpToDate = true;
+    }
+ 
   }
 }
