@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void SetUp ()
     {
       SecurityConfiguration.Current.SecurityProvider = new StubSecurityProvider();
+      SecurityConfiguration.Current.PrincipalProvider = new ThreadPrincipalProvider();
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
       var clientTransaction = new SecurityClientTransactionFactory().CreateRootTransaction();
       clientTransaction.To<ClientTransaction>().EnterDiscardingScope();
@@ -38,6 +39,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void TearDown ()
     {
       SecurityConfiguration.Current.SecurityProvider = null;
+      SecurityConfiguration.Current.PrincipalProvider = null;
       ClientTransactionScope.ResetActiveScope();
     }
 

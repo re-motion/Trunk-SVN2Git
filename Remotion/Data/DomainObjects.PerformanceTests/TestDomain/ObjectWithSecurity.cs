@@ -28,6 +28,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   public abstract class ObjectWithSecurity : DomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
     private SecurityContext _securityContext;
+    private DomainObjectSecurityStrategy _domainObjectSecurityStrategy;
 
     public static ObjectWithSecurity NewObject ()
     {
@@ -143,7 +144,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
-      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+      if (_domainObjectSecurityStrategy == null)
+        _domainObjectSecurityStrategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+      return _domainObjectSecurityStrategy;
     }
 
     Type ISecurableObject.GetSecurableType ()
