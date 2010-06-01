@@ -51,7 +51,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         _oppositeObjectID = value;
         _hasBeenTouched = true;
-        // TODO 2826: Raise changed/unchanged notification here
+        
+        RaiseStateUpdateNotification (HasChanged);
       }
     }
 
@@ -77,24 +78,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Commit ()
     {
-      if (HasChanged)
-      {
-        _originalOppositeObjectID = _oppositeObjectID;
-        // TODO 2826: Raise unchanged notification here
-      }
+      _originalOppositeObjectID = _oppositeObjectID;
+      RaiseStateUpdateNotification (false);
 
       _hasBeenTouched = false;
     }
 
     public override void Rollback ()
     {
-      if (HasChanged)
-      {
-        _oppositeObjectID = _originalOppositeObjectID;
-        // TODO 2826: Raise unchanged notification here
-      }
+      _oppositeObjectID = _originalOppositeObjectID;
+      RaiseStateUpdateNotification (false);
 
       _hasBeenTouched = false;
+    }
+
+    private void RaiseStateUpdateNotification (bool newChangedState)
+    {
+      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, this, newChangedState);
     }
 
     #region Serialization

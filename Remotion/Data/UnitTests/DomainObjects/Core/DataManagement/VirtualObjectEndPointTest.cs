@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using NUnit.Framework.SyntaxHelpers;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -75,6 +76,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.HasBeenTouched, Is.False);
       _endPoint.OppositeObjectID = _endPoint.OppositeObjectID;
       Assert.That (_endPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void OppositeObjectID_Set_RaisesStateNotification_Changed ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
+
+      _endPoint.OppositeObjectID = DomainObjectIDs.OrderTicket2;
+
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, true));
+    }
+
+    [Test]
+    public void OppositeObjectID_Set_RaisesStateNotification_Unchanged ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
+
+      _endPoint.OppositeObjectID = _endPoint.OppositeObjectID;
+
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
     }
 
     [Test]
@@ -149,6 +170,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Commit_RaisesStateNotification ()
+    {
+      _endPoint.OppositeObjectID = DomainObjectIDs.OrderTicket2;
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
+
+      _endPoint.Commit ();
+
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
+    }
+
+    [Test]
     public void Rollback ()
     {
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
@@ -172,5 +205,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
+    [Test]
+    public void Rollback_RaisesStateNotification ()
+    {
+      _endPoint.OppositeObjectID = DomainObjectIDs.OrderTicket2;
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
+
+      _endPoint.Rollback ();
+
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
+    }
   }
 }
