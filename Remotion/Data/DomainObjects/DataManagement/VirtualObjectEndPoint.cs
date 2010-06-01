@@ -51,6 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         _oppositeObjectID = value;
         _hasBeenTouched = true;
+        // TODO 2826: Raise changed/unchanged notification here
       }
     }
 
@@ -77,7 +78,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void Commit ()
     {
       if (HasChanged)
+      {
         _originalOppositeObjectID = _oppositeObjectID;
+        // TODO 2826: Raise unchanged notification here
+      }
 
       _hasBeenTouched = false;
     }
@@ -85,7 +89,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void Rollback ()
     {
       if (HasChanged)
+      {
         _oppositeObjectID = _originalOppositeObjectID;
+        // TODO 2826: Raise unchanged notification here
+      }
 
       _hasBeenTouched = false;
     }

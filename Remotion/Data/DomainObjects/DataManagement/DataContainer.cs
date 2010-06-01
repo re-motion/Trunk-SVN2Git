@@ -635,7 +635,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.DebugAssert (State == state);
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.DataContainerStateDefined (_clientTransaction, this, state);
+        _clientTransaction.TransactionEventSink.DataContainerStateUpdated (_clientTransaction, this, state);
     }
 
     #region Serialization

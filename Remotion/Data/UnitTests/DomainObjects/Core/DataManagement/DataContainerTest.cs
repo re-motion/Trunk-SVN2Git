@@ -1114,7 +1114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       action (dataContainer);
 
-      listener.AssertWasCalled (mock => mock.DataContainerStateDefined (ClientTransactionMock, dataContainer, expectedState));
+      listener.AssertWasCalled (mock => mock.DataContainerStateUpdated (ClientTransactionMock, dataContainer, expectedState));
     }
   }
 }

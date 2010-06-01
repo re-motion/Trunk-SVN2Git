@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         EnsureDataAvailable ();
         
         _originalOppositeDomainObjectsContents.Commit (_collectionData);
-        _collectionData.InvalidateCache ();
+        _collectionData.InvalidateCache (); // TODO 2826: Set flag to unchanged instead
       }
     }
 
