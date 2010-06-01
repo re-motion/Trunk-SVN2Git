@@ -38,8 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     private PropertyValue _orderDeliveryDateProperty;
 
     private DomainObjectEventReceiver _orderDomainObjectEventReceiver;
-    private PropertyValueContainerEventReceiver _orderDataContainerEventReceiver;
-    private PropertyValueContainerEventReceiver _orderPropertyValuesEventReceiver;
 
     public override void TestFixtureSetUp()
     {
@@ -862,7 +860,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       order2.Customer = null;
 
-      CheckMixedEvents (order2.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "Customer")]);
+      CheckNoEvents ();
     }
 
     [Test]
@@ -898,28 +896,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       _orderDeliveryDateProperty = _orderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"];
 
       _orderDomainObjectEventReceiver = new DomainObjectEventReceiver (order);
-      _orderDataContainerEventReceiver = new PropertyValueContainerEventReceiver (_orderDataContainer, false);
-      _orderPropertyValuesEventReceiver = new PropertyValueContainerEventReceiver (_orderPropertyValues, false);
     }
 
     private void CheckNoEvents ()
     {
-      Assert.IsNull (_orderPropertyValuesEventReceiver.ChangingPropertyValue);
-      Assert.IsNull (_orderPropertyValuesEventReceiver.ChangedPropertyValue);
-      Assert.IsNull (_orderDataContainerEventReceiver.ChangingPropertyValue);
-      Assert.IsNull (_orderDataContainerEventReceiver.ChangedPropertyValue);
-      Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangingEventBeenCalled);
-      Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangedEventBeenCalled);
-      Assert.IsNull (_orderDomainObjectEventReceiver.ChangingPropertyValue);
-      Assert.IsNull (_orderDomainObjectEventReceiver.ChangedPropertyValue);
-    }
-
-    private void CheckMixedEvents (PropertyValue propertyValue)
-    {
-      Assert.AreSame (propertyValue, _orderPropertyValuesEventReceiver.ChangingPropertyValue);
-      Assert.AreSame (propertyValue, _orderPropertyValuesEventReceiver.ChangedPropertyValue);
-      Assert.IsNull (_orderDataContainerEventReceiver.ChangingPropertyValue);
-      Assert.IsNull (_orderDataContainerEventReceiver.ChangedPropertyValue);
       Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangingEventBeenCalled);
       Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangedEventBeenCalled);
       Assert.IsNull (_orderDomainObjectEventReceiver.ChangingPropertyValue);
@@ -928,10 +908,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private void CheckEvents (PropertyValue propertyValue)
     {
-      Assert.AreSame (propertyValue, _orderPropertyValuesEventReceiver.ChangingPropertyValue);
-      Assert.AreSame (propertyValue, _orderPropertyValuesEventReceiver.ChangedPropertyValue);
-      Assert.AreSame (propertyValue, _orderDataContainerEventReceiver.ChangingPropertyValue);
-      Assert.AreSame (propertyValue, _orderDataContainerEventReceiver.ChangedPropertyValue);
       Assert.IsTrue (_orderDomainObjectEventReceiver.HasChangingEventBeenCalled);
       Assert.IsTrue (_orderDomainObjectEventReceiver.HasChangedEventBeenCalled);
       Assert.AreSame (propertyValue, _orderDomainObjectEventReceiver.ChangingPropertyValue);

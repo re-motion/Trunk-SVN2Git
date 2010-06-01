@@ -761,20 +761,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         domainObjectMockEventReceiver.PropertyChanging (null, null);
         LastCall.IgnoreArguments();
 
-        dataContainerMockEventReceiver.PropertyChanging (null, null);
-        LastCall.IgnoreArguments();
-
         propertyValueCollectionMockEventReceiver.PropertyChanging (null, null);
         LastCall.IgnoreArguments();
-
 
         // "Changed" notifications
 
         propertyValueCollectionMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();
 
-        dataContainerMockEventReceiver.PropertyChanged (null, null);
-        LastCall.IgnoreArguments();
+        dataContainerMockEventReceiver.StateUpdated (null, null);
+        LastCall.IgnoreArguments ();
 
         domainObjectMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();

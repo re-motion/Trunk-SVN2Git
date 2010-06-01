@@ -213,16 +213,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "DataContainerMapUnregistering");
     }
 
-    public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-      // low-level event also allowed for read-only transactions
-    }
-
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
-    {
-      // low-level event also allowed for read-only transactions
-    }
-
     bool INullObject.IsNull
     {
       get { return false; }

@@ -200,16 +200,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-      // not handled by this listener
-    }
-
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
-    {
-      // not handled by this listener
-    }
-
     bool INullObject.IsNull
     {
       get { return false; }

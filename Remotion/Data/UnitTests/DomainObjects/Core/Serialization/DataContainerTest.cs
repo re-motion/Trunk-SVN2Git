@@ -17,10 +17,10 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void DataContainerIsNotSerializable ()
     {
-      ObjectID objectID = new ObjectID ("Customer", Guid.NewGuid ());
+      var objectID = new ObjectID ("Customer", Guid.NewGuid ());
       DataContainer dataContainer = DataContainer.CreateNew (objectID);
 
       Serializer.SerializeAndDeserialize (dataContainer);
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainerIsFlattenedSerializable ()
     {
-      ObjectID objectID = new ObjectID ("Customer", Guid.NewGuid ());
+      var objectID = new ObjectID ("Customer", Guid.NewGuid ());
       DataContainer dataContainer = DataContainer.CreateNew (objectID);
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
       Assert.AreNotSame (dataContainer, deserializedDataContainer);
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainer_WithoutProperties_Contents ()
     {
-      ObjectID objectID = new ObjectID (typeof (ClassWithoutProperties), Guid.NewGuid ());
+      var objectID = new ObjectID (typeof (ClassWithoutProperties), Guid.NewGuid ());
       DataContainer dataContainer = DataContainer.CreateNew (objectID);
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
 
@@ -115,15 +115,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Computer computer = Computer.NewObject ();
 
       DataContainer dataContainer = computer.InternalDataContainer;
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (dataContainer, false);
+      
+      bool eventCalled = false;
+      dataContainer.StateUpdated += delegate { eventCalled = true; };
 
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
+      Assert.That (eventCalled, Is.False);
 
-      Assert.IsNull (eventReceiver.ChangingNewValue);
-      Assert.IsNull (eventReceiver.ChangedNewValue);
       deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")].Value = "1234";
-      Assert.IsNotNull (eventReceiver.ChangingNewValue);
-      Assert.IsNotNull (eventReceiver.ChangedNewValue);
+
+      Assert.That (eventCalled, Is.True);
     }
   }
 }

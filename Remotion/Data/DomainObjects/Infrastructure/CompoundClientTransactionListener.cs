@@ -229,18 +229,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.DataContainerMapUnregistering (clientTransaction, container);
     }
 
-    public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-      foreach (var listener in _listeners)
-        listener.DataContainerStateUpdated (clientTransaction, container, newDataContainerState);
-    }
-
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
-    {
-      foreach (var listener in _listeners)
-        listener.VirtualRelationEndPointStateUpdated (clientTransaction, endPoint, newEndPointChangeState);
-    }
-
     bool INullObject.IsNull
     {
       get { return false; }

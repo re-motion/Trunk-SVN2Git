@@ -15,31 +15,34 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
+namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public abstract class DataContainerMockEventReceiver
+  /// <summary>
+  /// Provides arguments for the <see cref="DataManagement.DataContainer.StateUpdated"/> event.
+  /// </summary>
+  public class DataContainerStateUpdateEventArgs : EventArgs
   {
-    // types
+    private readonly DataContainer _dataContainer;
+    private readonly StateType _state;
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    protected DataContainerMockEventReceiver (DataContainer dataContainer)
+    public DataContainerStateUpdateEventArgs (DataContainer dataContainer, StateType state)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      dataContainer.StateUpdated += StateUpdated;
+      _dataContainer = dataContainer;
+      _state = state;
     }
 
-    // abstract methods and properties
+    public DataContainer DataContainer
+    {
+      get { return _dataContainer; }
+    }
 
-    public abstract void StateUpdated (object sender, DataContainerStateUpdateEventArgs args);
-
+    public StateType State
+    {
+      get { return _state; }
+    }
   }
 }

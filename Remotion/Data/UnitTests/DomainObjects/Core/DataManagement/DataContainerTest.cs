@@ -114,75 +114,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void NewDataContainerEvents ()
-    {
-      _newDataContainer.PropertyValues.Add (_nameProperty);
-
-      var eventReceiver = new PropertyValueContainerEventReceiver (_newDataContainer, false);
-
-      _newDataContainer["Name"] = "Zaphod Beeblebrox";
-
-      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
-      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
-      Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
-      Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
-      Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
-
-      Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (_nameProperty));
-      Assert.That (eventReceiver.ChangedOldValue, Is.EqualTo ("Arthur Dent"));
-      Assert.That (eventReceiver.ChangedNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
-    }
-
-    [Test]
-    public void NewDataContainerCancelEvents ()
-    {
-      _newDataContainer.PropertyValues.Add (_nameProperty);
-
-      var eventReceiver = new PropertyValueContainerEventReceiver (_newDataContainer, true);
-
-      try
-      {
-        _newDataContainer["Name"] = "Zaphod Beeblebrox";
-        Assert.Fail ("EventReceiverCancelException should be raised.");
-      }
-      catch (EventReceiverCancelException)
-      {
-        Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
-        Assert.That (_newDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-        Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
-        Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
-        Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
-        Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (null));
-      }
-    }
-
-    [Test]
     public void ExistingDataContainerEvents ()
     {
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      var transaction = ClientTransaction.CreateRootTransaction ();
 
-      var eventReceiver = new PropertyValueContainerEventReceiver (_existingDataContainer, false);
+      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.RegisterWithTransaction (transaction);
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
+      listenerMock
+          .Expect (
+              mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+          .WhenCalled (
+              mi =>
+              {
+                Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+                Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+              });
+      listenerMock
+          .Expect (mock => mock.PropertyValueChanged (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+          .WhenCalled (mi =>
+          {
+            Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+            Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
+          });
+      listenerMock.Replay ();
 
       _existingDataContainer["Name"] = "Zaphod Beeblebrox";
 
+      listenerMock.VerifyAllExpectations ();
+
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
-      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
-
-      Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
-      Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
-      Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
-
-      Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (_nameProperty));
-      Assert.That (eventReceiver.ChangedOldValue, Is.EqualTo ("Arthur Dent"));
-      Assert.That (eventReceiver.ChangedNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
     public void ExistingDataContainerCancelEvents ()
     {
-      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      var transaction = ClientTransaction.CreateRootTransaction ();
 
-      var eventReceiver = new PropertyValueContainerEventReceiver (_existingDataContainer, true);
+      _existingDataContainer.PropertyValues.Add (_nameProperty);
+      _existingDataContainer.RegisterWithTransaction (transaction);
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
+      listenerMock
+          .Expect (mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _nameProperty, "Arthur Dent", "Zaphod Beeblebrox"))
+          .Throw (new EventReceiverCancelException());
+      listenerMock.Replay ();
 
       try
       {
@@ -193,11 +170,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
         Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-        Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
-        Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
-        Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
-        Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (null));
       }
+
+      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -393,11 +368,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CommitState_RaisesNotification ()
+    public void CommitState_RaisesStateUpdated ()
     {
       _newDataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (_newDataContainer, dc => dc.CommitState (), StateType.Unchanged);
+      CheckStateUpdated (_newDataContainer, dc => dc.CommitState (), StateType.Unchanged);
     }
 
     [Test]
@@ -465,11 +440,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RollbackState_RaisesNotification ()
+    public void RollbackState_RaisesStateUpdated ()
     {
       _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (_existingDataContainer, dc => dc.RollbackState (), StateType.Unchanged);
+      CheckStateUpdated (_existingDataContainer, dc => dc.RollbackState (), StateType.Unchanged);
     }
 
     [Test]
@@ -537,11 +512,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
      [Test]
-    public void Delete_RaisesNotification ()
+    public void Delete_RaisesStateUpdated ()
     {
       _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (_existingDataContainer, dc => dc.Delete(), StateType.Deleted);
+      CheckStateUpdated (_existingDataContainer, dc => dc.Delete(), StateType.Deleted);
     }
 
     [Test]
@@ -570,11 +545,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_RaisesNotification ()
+    public void Discard_RaisesStateUpdated ()
     {
       _newDataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (_newDataContainer, dc => dc.Discard (), StateType.Invalid);
+      CheckStateUpdated (_newDataContainer, dc => dc.Discard (), StateType.Invalid);
     }
 
     [Test]
@@ -638,17 +613,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesNotification_Changed ()
+    public void SetPropertyValuesFrom_RaisesStateUpdated_Changed ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Changed);
+      CheckStateUpdated (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Changed);
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesNotification_Unchanged ()
+    public void SetPropertyValuesFrom_RaisesStateUpdated_Unchanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
@@ -656,11 +631,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
       targetDataContainer.RegisterWithTransaction (ClientTransactionMock);
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Unchanged);
+      CheckStateUpdated (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Unchanged);
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesNotification_OtherState ()
+    public void SetPropertyValuesFrom_RaisesStateUpdated_OtherState ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
@@ -668,7 +643,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
 
       targetDataContainer.RegisterWithTransaction (ClientTransactionMock);
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Deleted);
+      CheckStateUpdated (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Deleted);
     }
 
     [Test]
@@ -754,11 +729,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkAsChanged_RaisesNotification ()
+    public void MarkAsChanged_RaisesStateUpdated ()
     {
       _existingDataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (_existingDataContainer, dc => dc.MarkAsChanged(), StateType.Changed);
+      CheckStateUpdated (_existingDataContainer, dc => dc.MarkAsChanged(), StateType.Changed);
     }
 
     [Test]
@@ -1043,35 +1018,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
       Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
 
-      var propertyChangingCalled = false;
-      var propertyChangedCalled = false;
-
-      dc.PropertyChanging += delegate
-      {
-        propertyChangingCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-      };
-      dc.PropertyChanged += delegate
-      {
-        propertyChangedCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Changed));
-      };
-
       dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
 
       Assert.That (dc.State, Is.EqualTo (StateType.Changed));
-      Assert.That (propertyChangingCalled, Is.True);
-      Assert.That (propertyChangedCalled, Is.True);
     }
 
     [Test]
-    public void PropertyValueChanged_RaisesNotification ()
+    public void PropertyValueChanged_RaisesStateUpdated ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
       dataContainer.RegisterWithTransaction (ClientTransactionMock);
 
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
+      CheckStateUpdated (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
+      CheckStateUpdated (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
     }
 
     [Test]
@@ -1108,13 +1067,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
     }
 
-    private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)
+    private void CheckStateUpdated (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)
     {
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      DataContainerStateUpdateEventArgs eventArgs = null;
 
+      dataContainer.StateUpdated += (sender, args) =>
+      {
+        eventArgs = args;
+        Assert.That (sender, Is.SameAs (dataContainer));
+      };
+      
       action (dataContainer);
 
-      listener.AssertWasCalled (mock => mock.DataContainerStateUpdated (ClientTransactionMock, dataContainer, expectedState));
+      Assert.That (eventArgs, Is.Not.Null);
+      Assert.That (eventArgs.DataContainer, Is.SameAs (dataContainer));
+      Assert.That (eventArgs.State, Is.EqualTo (expectedState));
     }
   }
 }

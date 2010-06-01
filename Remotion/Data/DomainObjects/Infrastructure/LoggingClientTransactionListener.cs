@@ -324,18 +324,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} DataContainerMapUnregistering: {1}", clientTransaction.ID, container.ID);
     }
 
-    public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} DataContainerStateChanging: {1} {2}", clientTransaction.ID, container.ID, newDataContainerState);
-    }
-
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationEndPointStateChanging: {1} {2}", clientTransaction.ID, endPoint.ID, newEndPointChangeState);
-    }
-
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)
     {
       return SeparatedStringBuilder.Build (", ", objectIDs);

@@ -93,17 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
              select new PropertyValue (propertyDefinition);
     }
 
-    // member fields
-
-    /// <summary>
-    /// Occurs before a <see cref="PropertyValue"/> is changed.
-    /// </summary>
-    public event PropertyChangeEventHandler PropertyChanging;
-
-    /// <summary>
-    /// Occurs after a <see cref="PropertyValue"/> is changed.
-    /// </summary>
-    public event PropertyChangeEventHandler PropertyChanged;
+    public event EventHandler<DataContainerStateUpdateEventArgs> StateUpdated;
 
     private readonly ObjectID _id;
     private readonly PropertyValueCollection _propertyValues;
@@ -367,7 +357,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _hasBeenMarkedChanged = true;
 
-      RaiseStateDefinitionEvent (StateType.Changed);
+      OnStateUpdated (StateType.Changed);
     }
 
     /// <summary>
@@ -406,27 +396,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-
-    /// <summary>
-    /// Raises the <see cref="PropertyChanging"/> event.
-    /// </summary>
-    /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    private void OnPropertyChanging (PropertyChangeEventArgs args)
-    {
-      if (PropertyChanging != null)
-        PropertyChanging (this, args);
-    }
-
-    /// <summary>
-    /// Raises the <see cref="PropertyChanged"/> event.
-    /// </summary>
-    /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    private void OnPropertyChanged (PropertyChangeEventArgs args)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged (this, args);
-    }
-
     public void SetTimestamp (object timestamp)
     {
       _timestamp = timestamp;
@@ -446,7 +415,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.CommitState ();
 
       _state = DataContainerStateType.Existing;
-      RaiseStateDefinitionEvent (StateType.Unchanged);
+      OnStateUpdated (StateType.Unchanged);
     }
 
     public void RollbackState ()
@@ -463,7 +432,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         propertyValue.RollbackState ();
 
       _state = DataContainerStateType.Existing;
-      RaiseStateDefinitionEvent (StateType.Unchanged);
+      OnStateUpdated (StateType.Unchanged);
     }
 
     public void Delete ()
@@ -474,7 +443,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("New data containers cannot be deleted, they have to be discarded.");
 
       _state = DataContainerStateType.Deleted;
-      RaiseStateDefinitionEvent (StateType.Deleted);
+      OnStateUpdated (StateType.Deleted);
     }
 
     public void Discard ()
@@ -484,7 +453,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues.Discard ();
 
       _isDiscarded = true;
-      RaiseStateDefinitionEvent (StateType.Invalid);
+      OnStateUpdated (StateType.Invalid);
 
       _clientTransaction = null;
     }
@@ -508,7 +477,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _propertyValues[i].SetValueFrom (source._propertyValues[i]);
 
       _hasBeenChanged = CalculatePropertyValueChangeState ();
-      RaiseStateDefinitionEvent (State);
+      OnStateUpdated (State);
     }
 
     public void SetDomainObject (DomainObject domainObject)
@@ -553,8 +522,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         // Therefore notification of DomainObject when changing property values is not organized through events.
         if (_domainObject != null)
           _domainObject.OnPropertyChanging (args);
-
-        OnPropertyChanging (args);
       }
     }
 
@@ -565,12 +532,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // - the property indicates that it doesn't have the original value ("HasChanged")
       // - recalculation of all property change states indicates another property doesn't have its original value
       _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
-      RaiseStateDefinitionEvent (State);
+      OnStateUpdated (State);
 
       if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
-        OnPropertyChanged (args);
-
         if (_domainObject != null)
         {
           // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
@@ -630,12 +595,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
     }
 
-    private void RaiseStateDefinitionEvent (StateType state)
+    private void OnStateUpdated (StateType state)
     {
       Assertion.DebugAssert (State == state);
 
-      if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.DataContainerStateUpdated (_clientTransaction, this, state);
+      if (StateUpdated != null)
+        StateUpdated (this, new DataContainerStateUpdateEventArgs (this, state));
     }
 
     #region Serialization
@@ -658,8 +623,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       _propertyValues.RegisterForChangeNotification (this);
 
-      PropertyChanging += info.GetValue<PropertyChangeEventHandler>();
-      PropertyChanged += info.GetValue<PropertyChangeEventHandler>();
+      StateUpdated += info.GetValue<EventHandler<DataContainerStateUpdateEventArgs>>();
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _state = info.GetValue<DataContainerStateType> ();
@@ -693,8 +657,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
       }
 
-      info.AddValue (PropertyChanging);
-      info.AddValue (PropertyChanged);
+      info.AddValue (StateUpdated);
       info.AddHandle (_clientTransaction);
       info.AddValue (_state);
       info.AddHandle (_domainObject);

@@ -201,7 +201,7 @@ namespace Remotion.Data.DomainObjects
     ///     Use this method to cancel the operation, whereas <see cref="PropertyValueChanged"/> should be used to perform actions on its successful execution.
     ///   </para>
     ///   <para>
-    ///     The events <see cref="DataContainer.PropertyChanging"/> and <see cref="DomainObject.PropertyChanging"/> are fired after this method was invoked.
+    ///     The <see cref="DomainObject.PropertyChanging"/> event is fired after this method was invoked.
     ///   </para>
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
@@ -223,7 +223,7 @@ namespace Remotion.Data.DomainObjects
     ///     Use this method to perform actions on a successful execution, whereas <see cref="PropertyValueReading"/> should be used to cancel the operation.
     ///   </para>
     ///   <para>
-    ///     The events <see cref="DataContainer.PropertyChanged"/> and <see cref="DomainObject.PropertyChanged"/> are fired before this method is invoked.
+    ///     The <see cref="DomainObject.PropertyChanged"/> event is fired before this method is invoked.
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueChanging"/> instead.</note>
     /// </remarks>

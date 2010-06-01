@@ -38,57 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Events ()
-    {
-      PropertyValue propertyValue1 = CreatePropertyValue ("Property 1", typeof (int), 42);
-      PropertyValue propertyValue2 = CreatePropertyValue ("Property 2", typeof (string), "Arthur Dent");
-      PropertyValue propertyValue3 = CreatePropertyValue ("Property 3", typeof (string), true, null);
-
-      _collection.Add (propertyValue1);
-      _collection.Add (propertyValue2);
-      _collection.Add (propertyValue3);
-
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (_collection, false);
-
-      _collection["Property 2"].Value = "Zaphod Beeblebrox";
-
-      Assert.AreSame (propertyValue2, eventReceiver.ChangingPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
-
-      Assert.AreSame (propertyValue2, eventReceiver.ChangedPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangedOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangedNewValue);
-    }
-
-    [Test]
-    public void CancelEvents ()
-    {
-      PropertyValue propertyValue1 = CreatePropertyValue ("Property 1", typeof (int), 42);
-      PropertyValue propertyValue2 = CreatePropertyValue ("Property 2", typeof (string), "Arthur Dent");
-      PropertyValue propertyValue3 = CreatePropertyValue ("Property 3", typeof (string), true, null);
-
-      _collection.Add (propertyValue1);
-      _collection.Add (propertyValue2);
-      _collection.Add (propertyValue3);
-
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (_collection, true);
-
-      try
-      {
-        _collection["Property 2"].Value = "Zaphod Beeblebrox";
-        Assert.Fail ("EventReceiverCancelException should be raised.");
-      }
-      catch (EventReceiverCancelException)
-      {
-        Assert.AreSame (propertyValue2, eventReceiver.ChangingPropertyValue);
-        Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-        Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
-        Assert.AreSame (null, eventReceiver.ChangedPropertyValue);
-      }
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Property 'DoesNotExist' does not exist.\r\nParameter name: propertyName")]
     public void NonExistingPropertyName ()
     {
@@ -104,28 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _collection.Add (CreatePropertyValue ("PropertyName", typeof (int), 42));
       _collection.Add (CreatePropertyValue ("PropertyName", typeof (int), 43));
-    }
-
-    [Test]
-    public void PropertyValueInTwoCollections ()
-    {
-      PropertyValue value = CreatePropertyValue ("PropertyName", typeof (int), 42);
-      PropertyValueCollection collection1 = new PropertyValueCollection ();
-      PropertyValueCollection collection2 = new PropertyValueCollection ();
-
-      collection1.Add (value);
-      collection2.Add (value);
-
-      PropertyValueContainerEventReceiver receiver1 = new PropertyValueContainerEventReceiver (collection1, false);
-      PropertyValueContainerEventReceiver receiver2 = new PropertyValueContainerEventReceiver (collection2, false);
-
-      value.Value = 43;
-
-      Assert.IsNotNull (receiver1.ChangingPropertyValue);
-      Assert.IsNotNull (receiver1.ChangedPropertyValue);
-
-      Assert.IsNotNull (receiver2.ChangingPropertyValue);
-      Assert.IsNotNull (receiver2.ChangedPropertyValue);
     }
 
     [Test]

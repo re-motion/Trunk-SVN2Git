@@ -176,6 +176,7 @@
     <Compile Include="DataManagement\Commands\ExpandedCommand.cs" />
     <Compile Include="DataManagement\Commands\NopCommand.cs" />
     <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
+    <Compile Include="DataManagement\DataContainerStateUpdateEventArgs.cs" />
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
