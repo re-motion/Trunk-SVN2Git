@@ -532,5 +532,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
         DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
     }
+
+    [Test]
+    public void Skip_WithEntity ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o).Skip (5);
+
+      CheckQueryResult (query, DomainObjectIDs.InvalidOrder);
+    }
+
+    [Test]
+    public void Skip_WithEntity_WithoutExplicitOrdering ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Skip (5);
+
+      CheckQueryResult (query, DomainObjectIDs.Order4);
+    }
+    
   }
 }
