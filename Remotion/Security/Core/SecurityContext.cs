@@ -243,10 +243,10 @@ namespace Remotion.Security
       if (other == null)
         return false;
 
-      if (!this._class.Equals (other._class, StringComparison.Ordinal))
+      if (this._isStateless != other._isStateless)
         return false;
 
-      if (this._isStateless != other._isStateless)
+      if (!string.Equals (this._class, other._class, StringComparison.Ordinal))
         return false;
 
       if (!string.Equals (this._owner, other._owner, StringComparison.Ordinal))
