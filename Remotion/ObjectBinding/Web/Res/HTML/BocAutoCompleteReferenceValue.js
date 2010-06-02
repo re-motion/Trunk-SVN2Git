@@ -30,7 +30,6 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           minChars: 0,
           max: completionSetCount, // Set query limit
 
-          // re-motion: distinguish between list delay and aout-fill delay
           displayListDelay: completionInterval,
           autoFillDelay: suggestionInterval,
 
@@ -39,6 +38,8 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           matchContains: true,
           scrollHeight: 220,
           dropDownButtonId: button.attr('id'),
+          // this can be set to true/removed once the problem is fixed that an empty textbox still selects the first element, making it impossible to clear the selection
+          selectFirst: function() { return false; },
           dataType: 'json',
           parse: function(data)
           {

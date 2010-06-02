@@ -43,13 +43,8 @@
                 serviceUrl: serviceUrl,
                 serviceMethod: serviceMethod,
                 data: null,
-                displayListDelay: $.Autocompleter.defaults.displayListDelay,
-                autoFillDelay: $.Autocompleter.defaults.autoFillDelay,
-                max: options && !options.scroll ? 10 : 150,
                 // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
-                dropDownButtonId: null,
-                // re-motion: select first value in list unless textbox is empty
-                selectFirst: function() { return false; }
+                dropDownButtonId: null
             }, options);
 
             // if highlight is set to false, replace it with a do-nothing function
@@ -185,15 +180,27 @@
                 // re-motion: do not block event bubbling for tab                  
                 case KEY.TAB:
                     if (selectCurrent()) {
-                        onChange(0, true);
+                        //SelectCurrent already does everything that's needed.
                     }
                     else if ($input.val() == '') {
                         hideResults();
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
                     }
+                    else /* invalid input */ {
+                        hideResults();
+                    }
                     break;
                 case KEY.ESC:
-                    hideResults();
+                    if (selectCurrent()) {
+                        //SelectCurrent already does everything that's needed.
+                    }
+                    else if ($input.val() == '') {
+                        hideResults();
+                        $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
+                    }
+                    else /* invalid input */ {
+                        hideResults();
+                    }
                     break;
 
                 default:
@@ -211,7 +218,7 @@
             hasFocus++;
         }).blur(function() {
             hasFocus = 0;
-            if (!config.mouseDownOnSelect) {
+            if (select.visible() && !config.mouseDownOnSelect) {
                 clearTimeout(timeout);
                 timeout = setTimeout(hideResults, 200);
             }
@@ -231,7 +238,7 @@
                     }
                 }
                 if (typeof fn == "function") fn(result);
-                else $input.trigger("result", result && [result.data, result.value]);
+                else $input.trigger("result", result.data);
             }
             $.each(trimWords($input.val()), function(i, value) {
                 request(value, findValueCallback, findValueCallback);
@@ -285,7 +292,7 @@
 
             $input.val(v);
             hideResults();
-            $input.trigger("result", [selected.data, selected.value]);
+            $input.trigger("result", selected.data);
 
             // re-motion: set autoFill to false again and reset the timer
             options.autoFill = false;
@@ -496,7 +503,7 @@
         mustMatch: false,
         extraParams: {},
         // re-motion: changed selectFirst from boolean field to function
-        selectFirst: function() { return false; },
+        selectFirst: function() { return true; },
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
@@ -862,7 +869,7 @@
                 var selectedItemIndex = -1;
                 var inputValue = $(input).val().toLowerCase();
                 listItems.each(function(i) {
-                    var textValue = this.textContent ? this.textContent : this.innerText;
+                    var textValue = $.data(this, "ac_data").result;
                     if (textValue.toLowerCase() == inputValue) {
                         selectedItemIndex = i;
                         return false;
