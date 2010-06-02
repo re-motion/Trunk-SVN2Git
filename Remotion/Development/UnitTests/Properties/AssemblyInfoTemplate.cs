@@ -26,7 +26,8 @@ using System.Reflection;
 [assembly: AssemblyProduct("@productname@")]
 [assembly: AssemblyCopyright("@copyright@")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
+[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests
 
 //
 // Version information for an assembly consists of the following four values:

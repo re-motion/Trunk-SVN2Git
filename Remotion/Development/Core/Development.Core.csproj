@@ -98,6 +98,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -144,7 +148,8 @@
     </Compile>
     <Compile Include="UnitTesting\ClassWithSerializationCallbacksBase.cs" />
     <Compile Include="UnitTesting\Sandboxing\PermissionSets.cs" />
-    <Compile Include="UnitTesting\Sandboxing\SandboxUtility.cs" />
+    <Compile Include="UnitTesting\Sandboxing\SandboxTestRunner.cs" />
+    <Compile Include="UnitTesting\Sandboxing\Sandbox.cs" />
     <Compile Include="UnitTesting\SerializationCallbackTester.cs" />
     <Compile Include="UnitTesting\Serializer.cs" />
     <Compile Include="UnitTesting\ThreadRunner.cs" />

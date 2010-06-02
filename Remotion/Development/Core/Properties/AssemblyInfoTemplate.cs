@@ -31,6 +31,7 @@ using System.Reflection;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant (true)]
+[assembly: AllowPartiallyTrustedCallers] // required for sandboxing
 
 //
 // Version information for an assembly consists of the following four values:

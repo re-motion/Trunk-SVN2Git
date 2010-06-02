@@ -17,40 +17,44 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting.Sandboxing;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
   [TestFixture]
-  public class SandboxUtilityTest
+  public class DummyTest
   {
+    private int _value;
 
-    [Test]
-    public void CreateSandbox ()
+    [SetUp]
+    public void SetUp ()
     {
-      var currentAppDomain = AppDomain.CurrentDomain;
-      var sandbox = SandboxUtility.CreateSandbox (
-          PermissionSets.GetMediumTrust (Environment.GetEnvironmentVariable ("TEMP"), Environment.MachineName));
+      _value = 10;
+    }
 
-      Assert.That (sandbox, Is.Not.Null);
-      Assert.That (sandbox, Is.Not.SameAs (currentAppDomain));
-      Assert.That(sandbox.FriendlyName.StartsWith ("Sandbox ("), Is.True);
+    [TearDown]
+    public void TearDown ()
+    {
+      _value = 0;
     }
 
     [Test]
-    public void CreateSandboxInstance ()
+    public void Test1 ()
     {
-      var result = SandboxUtility.CreateSandboxedInstance<SampleTestRunner> (
-          PermissionSets.GetMediumTrust (Environment.GetEnvironmentVariable ("TEMP"), Environment.MachineName));
-
-      Assert.That (result, Is.TypeOf (typeof(SampleTestRunner)));
+      Assert.That (_value, Is.EqualTo (10));
+      _value = 100;
     }
 
-
-    class SampleTestRunner : MarshalByRefObject
+    [Test]
+    public void Test2 ()
     {
-      
+      Assert.That (_value, Is.EqualTo (10));
+      _value = 200;
     }
 
+    //[Test]
+    //public void Test3 ()
+    //{
+    //  Assert.Fail ("Test");
+    //}
   }
 }

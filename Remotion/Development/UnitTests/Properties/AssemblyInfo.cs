@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Reflection;
+using System.Security;
+
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -26,7 +28,8 @@ using System.Reflection;
 [assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
 [assembly: AssemblyCopyright("(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture ("")]
+[assembly: AllowPartiallyTrustedCallers] // required for sandbox tests
 
 //
 // Version information for an assembly consists of the following four values:

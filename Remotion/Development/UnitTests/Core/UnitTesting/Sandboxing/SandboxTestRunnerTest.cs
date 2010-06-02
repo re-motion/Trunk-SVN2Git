@@ -15,28 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security;
+using NUnit.Framework;
+using Remotion.Development.UnitTesting.Sandboxing;
 
-namespace Remotion.Development.UnitTesting.Sandboxing
+namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
-  public static class SandboxUtility
+  [TestFixture]
+  public class SandboxTestRunnerTest
   {
-    public static T CreateSandboxedInstance<T> (params IPermission[] permissions) where T : MarshalByRefObject, new ()
+
+    [Test]
+    public void Run ()
     {
-      var appDomain = CreateSandbox (permissions);
-      var instance = (T) appDomain.CreateInstanceAndUnwrap (typeof (T).Assembly.FullName, typeof (T).FullName);
-      return instance;
-    }
+      var types = new[] { typeof (DummyTest) };
 
-    public static AppDomain CreateSandbox (params IPermission[] permissions)
-    {
-      var appDomainSetup = AppDomain.CurrentDomain.SetupInformation;
-
-      var permissionSet = new PermissionSet (null);
-      foreach (var permission in permissions)
-        permissionSet.AddPermission (permission);
-
-      return AppDomain.CreateDomain ("Sandbox (" + DateTime.Now + ")", null, appDomainSetup, permissionSet);
+      var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
+      SandboxTestRunner.Run (types, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
     }
 
   }
