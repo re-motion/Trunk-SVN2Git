@@ -177,7 +177,10 @@ namespace Remotion.Mixins.Context
       var other = obj as ClassContext;
       if (other == null)
         return false;
-      
+
+      if (object.ReferenceEquals (this, other))
+        return true;
+
       if (other._cachedHashCode != _cachedHashCode 
           || !other.Type.Equals (Type) 
           || other._mixins.Count != _mixins.Count 

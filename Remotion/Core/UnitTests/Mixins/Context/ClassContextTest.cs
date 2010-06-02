@@ -207,6 +207,7 @@ namespace Remotion.UnitTests.Mixins.Context
               new[] {new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private)},
               new[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
 
+      Assert.AreEqual (c1, c1);
       Assert.AreEqual (c1, c2);
       Assert.AreEqual (c1, c3);
       Assert.AreEqual (c1, c4);
