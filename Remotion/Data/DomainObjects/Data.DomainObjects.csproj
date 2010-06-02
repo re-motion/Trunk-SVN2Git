@@ -213,6 +213,7 @@
     <Compile Include="Infrastructure\IObjectLoader.cs" />
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
+    <Compile Include="Infrastructure\StateCachingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\SubClientTransactionListener.cs" />
     <Compile Include="LinqPropertyRedirectionAttribute.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
