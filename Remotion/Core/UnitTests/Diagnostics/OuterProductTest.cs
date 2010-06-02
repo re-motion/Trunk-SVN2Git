@@ -311,7 +311,6 @@ namespace Remotion.UnitTests.Diagnostics
       }
       sb.Append ("}");
       string s = sb.ToString();
-      Log (s);
       Assert.That (s, Is.EqualTo ("{{(0,0),(0,1),(0,2)},{(1,0),(1,1),(1,2)}}"));
     }
 
@@ -324,7 +323,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorOneLineString (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
-      Log (s);
       Assert.That (s, Is.EqualTo ("{(0,0),(0,1),(0,2)},{(1,0),(1,1),(1,2)}"));
     }
 
@@ -337,7 +335,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorOneLineString (null);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
-      Log (s);
       Assert.That (s, Is.EqualTo ("{{(0,0,0),(0,0,1)},{(0,1,0),(0,1,1)},{(0,2,0),(0,2,1)}},{{(1,0,0),(1,0,1)},{(1,1,0),(1,1,1)},{(1,2,0),(1,2,1)}}"));
     }
 
@@ -350,7 +347,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorOneLineString (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
-      Log (s);
       Assert.That (s, Is.EqualTo ("{{(0,0,0),(0,0,1)},{(0,1,0),(0,1,1)},{(0,2,0),(0,2,1)}},{{(1,0,0),(1,0,1)},{(1,1,0),(1,1,1)},{(1,2,0),(1,2,1)}}"));
     }
 
@@ -362,7 +358,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorPrettyPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
-      Log (s);
       const string resultExpected =
           @"
 {
@@ -405,7 +400,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorArrayPrettyPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
-      Log (s);
       const string resultExpected =
           @"
 {
@@ -448,7 +442,6 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductProcessorArrayPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string result = processor.GetResult();
-      Log (result);
       Assert.That (result, Is.EqualTo ("{A1,A2,A3},{B1,B2,B3},{C1,C2,C3}"));
     }
 
@@ -461,7 +454,6 @@ namespace Remotion.UnitTests.Diagnostics
       processor.NumberElementsToOutputInnermost = 2;
       outerProduct.ProcessOuterProduct (processor);
       string result = processor.GetResult();
-      Log (result);
       Assert.That (result, Is.EqualTo ("{A1,A2,...},{B1,B2,...},{C1,C2,...}"));
     }
 
@@ -476,7 +468,6 @@ namespace Remotion.UnitTests.Diagnostics
       processor.NumberElementsToOutputAllButInnermost = 3;
       outerProduct.ProcessOuterProduct (processor);
       string result = processor.GetResult();
-      Log (result);
       Assert.That (result, Is.EqualTo ("{A1,A2,...},{B1,B2,...},{C1,C2,...},..."));
     }
 
@@ -491,7 +482,6 @@ namespace Remotion.UnitTests.Diagnostics
       processor.NumberElementsToOutputOverall = 5;
       outerProduct.ProcessOuterProduct (processor);
       string result = processor.GetResult();
-      Log (result);
       Assert.That (result, Is.EqualTo ("{A1,A2,...},{B1,B2,...},..."));
     }
 
@@ -510,7 +500,6 @@ namespace Remotion.UnitTests.Diagnostics
       }
       Assert.That (i, Is.EqualTo (3));
       string result = processor.GetResult();
-      Log (result);
       Assert.That (result, Is.EqualTo ("{A1,A2,A3},{B1,B2,B3},{C1,C2,C3},{D1,D2,D3}"));
     }
 
@@ -532,7 +521,6 @@ namespace Remotion.UnitTests.Diagnostics
         //System.Console.WriteLine (processor._result.ToString());
 
         string result = processor._result.ToString();
-        //Log (result);
         Assert.That (new List<String> { result }, Is.SubsetOf (resultStrings));
       }
     }
@@ -546,15 +534,7 @@ namespace Remotion.UnitTests.Diagnostics
       var processor = new OuterProductPermutations();
       outerProduct.ProcessOuterProduct (processor);
       var result = processor.outerProductPermutations;
-      Log ("--------------------------");
-      foreach (var ints in result)
-      {
-        Log ("(");
-        foreach (var i in ints)
-          Log (i + " ");
-        Log (") ");
-        //Log (CollectionToSequenceString (ints));
-      }
+
       var resultExpected = new int[][]
                            {
                                new int[] { 0, 0, 0 }, new int[] { 0, 0, 1 }, new int[] { 0, 1, 0 }, new int[] { 0, 1, 1 }, new int[] { 0, 2, 0 },
@@ -562,16 +542,6 @@ namespace Remotion.UnitTests.Diagnostics
                                new int[] { 1, 2, 0 }, new int[] { 1, 2, 1 }
                            };
       Assert.That (result.ToArray(), Is.EqualTo (resultExpected));
-    }
-
-
-    /// <summary>
-    /// Logging helper functions
-    /// </summary>
-    /// <param name="s"></param>
-    private void Log (string s)
-    {
-      Console.WriteLine (s);
     }
   }
 }
