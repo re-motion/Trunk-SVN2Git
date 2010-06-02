@@ -201,7 +201,7 @@
                     else /* invalid input */ {
                         hideResults();
                     }
-                    break;
+                    return false;
 
                 default:
                     clearTimeout(timeout);
