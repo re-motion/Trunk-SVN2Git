@@ -39,7 +39,10 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           scrollHeight: 220,
           dropDownButtonId: button.attr('id'),
           // this can be set to true/removed once the problem is fixed that an empty textbox still selects the first element, making it impossible to clear the selection
-          selectFirst: function() { return false; },
+          selectFirst: function (inputValue, searchTerm)
+          {
+            return inputValue.length > 0; 
+          },
           dataType: 'json',
           parse: function(data)
           {

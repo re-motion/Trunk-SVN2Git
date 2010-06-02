@@ -405,13 +405,8 @@
         function receiveData(q, data) {
             if (data && data.length && hasFocus) {
                 stopLoading();
-                var doAutoFill = select.visible();
                 select.display(data, q);
-                // re-motion: 
-                // 1) only auto-fill if dropdown list is already open
-                // 2) pass display string instead of value
-                if (doAutoFill)
-                    autoFill(q, data[0].result);
+                autoFill(q, data[0].result);
                 select.show();
             } else {
                 hideResults();
@@ -503,7 +498,7 @@
         mustMatch: false,
         extraParams: {},
         // re-motion: changed selectFirst from boolean field to function
-        selectFirst: function() { return true; },
+        selectFirst: function(inputValue, searchTerm) { return true; },
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
@@ -802,7 +797,7 @@
                 $.data(li, "ac_data", data[i]);
             }
             listItems = list.find("li");
-            if (options.selectFirst()) {
+            if (options.selectFirst($(input).val(), term)) {
                 listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
                 active = 0;
             }
@@ -849,7 +844,7 @@
                 return element && element.is(":visible");
             },
             current: function() {
-                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst() && listItems[0]);
+                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst($(input).val(), null) && listItems[0]);
             },
             show: function() {
 
