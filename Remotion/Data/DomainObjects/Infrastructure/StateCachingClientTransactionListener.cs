@@ -54,24 +54,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return state;
     }
 
-    private StateType CalculateState (ObjectID objectID)
-    {
-      if (_clientTransaction.DataManager.IsInvalid (objectID))
-        return StateType.Invalid;
-
-      var dataContainer = _clientTransaction.DataManager.DataContainerMap[objectID];
-      if (dataContainer == null)
-        return StateType.NotLoadedYet;
-
-      if (dataContainer.State == StateType.Unchanged)
-      {
-        // TODO 2806: Inline this, don't use DomainObject but ObjectID
-        return _clientTransaction.HasRelationChanged (dataContainer.DomainObject) ? StateType.Changed : StateType.Unchanged;
-      }
-
-      return dataContainer.State;
-    }
-
     public override void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer dataContainer, StateType newDataContainerState)
     {
       HandleStateUpdate (dataContainer.ID);
@@ -95,6 +77,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private void HandleStateUpdate (ObjectID objectID)
     {
       _stateCache.Remove (objectID);
+    }
+
+    private StateType CalculateState (ObjectID objectID)
+    {
+      if (_clientTransaction.DataManager.IsInvalid (objectID))
+        return StateType.Invalid;
+
+      var dataContainer = _clientTransaction.DataManager.DataContainerMap[objectID];
+      if (dataContainer == null)
+        return StateType.NotLoadedYet;
+
+      if (dataContainer.State == StateType.Unchanged)
+      {
+        // TODO 2806: Inline this, don't use DomainObject but ObjectID
+        return _clientTransaction.HasRelationChanged (dataContainer.DomainObject) ? StateType.Changed : StateType.Unchanged;
+      }
+
+      return dataContainer.State;
     }
   }
 }

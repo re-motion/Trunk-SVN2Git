@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void State_IsDiscarded ()
+    public void State_IsInvalid ()
     {
       _newOrder.Delete ();
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Invalid));

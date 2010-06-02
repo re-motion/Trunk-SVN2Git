@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -31,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private StateCachingClientTransactionListener _cachingListener;
     private Order _existingOrder;
     private Order _newOrder;
+    private Order _notYetLoadedOrder;
 
     public override void SetUp ()
     {
@@ -39,22 +41,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _transaction = ClientTransaction.CreateRootTransaction ();
       _cachingListener = new StateCachingClientTransactionListener (_transaction);
 
-      _existingOrder = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _newOrder = _transaction.Execute (() => Order.NewObject ());
+      _existingOrder = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
+      _newOrder = (Order) LifetimeService.NewObject (_transaction, typeof (Order), ParamList.Empty);
+      _notYetLoadedOrder = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order2);
 
       ClientTransactionTestHelper.AddListener (_transaction, _cachingListener);
     }
-    
-    [Test]
-    public void GetState ()
-    {
-      var existingState = _cachingListener.GetState (_existingOrder.ID);
-      var newState = _cachingListener.GetState (_newOrder.ID);
 
-      Assert.That (existingState, Is.EqualTo (StateType.Unchanged));
-      Assert.That (newState, Is.EqualTo (StateType.New));
+    [Test]
+    public void GetState_IsInvalid ()
+    {
+      LifetimeService.DeleteObject (_transaction, _newOrder);
+      Assert.That (_cachingListener.GetState (_newOrder.ID), Is.EqualTo (StateType.Invalid));
     }
 
+    [Test]
+    public void GetState_NotYetLoaded ()
+    {
+      Assert.That (_cachingListener.GetState (_notYetLoadedOrder.ID), Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void GetState_FromDataContainer_New ()
+    {
+      Assert.That (_cachingListener.GetState (_newOrder.ID), Is.EqualTo (StateType.New));
+    }
+
+    [Test]
+    public void GetState_FromDataContainer_Unchanged ()
+    {
+      Assert.That (_cachingListener.GetState (_existingOrder.ID), Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void GetState_FromDataContainer_Changed ()
+    {
+      _transaction.Execute (() => _existingOrder.OrderNumber++);
+      Assert.That (_cachingListener.GetState (_existingOrder.ID), Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void GetState_FromDataContainer_ChangedRelation ()
+    {
+      _transaction.Execute (() => _existingOrder.OrderItems.Clear ());
+      Assert.That (_cachingListener.GetState (_existingOrder.ID), Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void GetState_IDWithoutDomainObject ()
+    {
+      Assert.That (_transaction.GetEnlistedDomainObject (DomainObjectIDs.Order3), Is.Null);
+      Assert.That (_cachingListener.GetState (DomainObjectIDs.Order3), Is.EqualTo (StateType.NotLoadedYet));
+    }
+    
     [Test]
     public void GetState_Twice ()
     {
