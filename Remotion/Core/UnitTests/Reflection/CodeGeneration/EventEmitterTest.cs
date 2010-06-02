@@ -21,7 +21,7 @@ using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public override void SetUp ()
     {
       base.SetUp ();
-      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object));
+      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true); // force unsigned because we use SimpleAttribute below
     }
 
     public override void TearDown ()

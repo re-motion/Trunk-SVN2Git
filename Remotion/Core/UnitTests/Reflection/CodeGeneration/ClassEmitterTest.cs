@@ -659,7 +659,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void AddCustomAttribute ()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "AddCustomAttribute", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "AddCustomAttribute", typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
       classEmitter.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0],
           typeof (SimpleAttribute).GetFields (), new object[] { "value" }));
 
