@@ -104,7 +104,8 @@
         var hasFocus = 0;
         var lastKeyPressCode;
         var config = {
-            mouseDownOnSelect: false
+            mouseDownOnSelect: false,
+            inputOnChangeBackup: null
         };
         var select = $.Autocompleter.Select(options, input, selectCurrent, config);
 
@@ -211,7 +212,8 @@
         }).blur(function() {
             hasFocus = 0;
             if (!config.mouseDownOnSelect) {
-                hideResults();
+                clearTimeout(timeout);
+                timeout = setTimeout(hideResults, 200);
             }
         }).click(function() {
 
@@ -259,28 +261,9 @@
                 } else {
                     $input.focus();
                     onChange(1, true);
-                    //adjustSelection( $input.val() );
                     clearTimeout(timeout);
                 }
             });
-        }
-
-        // re-motion: when clicking the dropDownButton, highlight the currently selected value in the list
-        function adjustSelection(selectedValue) {
-            if (selectedValue != "") {
-                var currentIndex = 0;
-                var stopIndex = options.max;
-                var finished = false;
-                do {
-                    var current = select.selected().result;
-                    if (selectedValue == current)
-                        finished = true;
-                    else
-                        select.next();
-
-                    currentIndex++;
-                } while (!finished && currentIndex < stopIndex)
-            }
         }
 
         function selectCurrent() {
@@ -301,7 +284,7 @@
             }
 
             $input.val(v);
-            hideResultsNow();
+            hideResults();
             $input.trigger("result", [selected.data, selected.value]);
 
             // re-motion: set autoFill to false again and reset the timer
@@ -338,9 +321,9 @@
 
                 // re-motion: if triggered by dropDownButton, get the full list
                 if (isDropDown == 1) {
-                    request('', receiveData, hideResultsNow);
+                    request('', receiveData, hideResults);
                 } else {
-                    request(currentValue, receiveData, hideResultsNow);
+                    request(currentValue, receiveData, hideResults);
                 }
 
             } else {
@@ -384,11 +367,6 @@
         };
 
         function hideResults() {
-            clearTimeout(timeout);
-            timeout = setTimeout(hideResultsNow, 200);
-        };
-
-        function hideResultsNow() {
             if (config.mouseDownOnSelect)
                 return;
 
@@ -399,18 +377,18 @@
             if (options.mustMatch) {
                 // call search and run callback
                 $input.search(
-				function(result) {
-				    // if no value found, clear the input box
-				    if (!result) {
-				        if (options.multiple) {
-				            var words = trimWords($input.val()).slice(0, -1);
-				            $input.val(words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : ""));
-				        }
-				        else
-				            $input.val("");
-				    }
-				}
-			);
+                    function(result) {
+                        // if no value found, clear the input box
+                        if (!result) {
+                            if (options.multiple) {
+                                var words = trimWords($input.val()).slice(0, -1);
+                                $input.val(words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : ""));
+                            }
+                            else
+                                $input.val("");
+                        }
+                    }
+                  );
             }
             if (wasVisible)
             // position cursor at end of input field
@@ -429,7 +407,7 @@
                     autoFill(q, data[0].result);
                 select.show();
             } else {
-                hideResultsNow();
+                hideResults();
             }
         };
 
@@ -563,7 +541,7 @@
             if (!options.data) return false;
             // track the matches
             var stMatchSets = {},
-			nullData = 0;
+      nullData = 0;
 
             // no url was specified, we need to adjust the cache length to make sure it fits the local data store
             if (!options.serviceUrl) options.cacheLength = 1;
@@ -656,22 +634,22 @@
         };
 
         var listItems,
-		active = -1,
-		data,
-		term = "",
-		needsInit = true,
-		element,
-		list;
+    active = -1,
+    data,
+    term = "",
+    needsInit = true,
+    element,
+    list;
 
         // Create results
         function init() {
             if (!needsInit)
                 return;
             element = $("<div/>")
-		.hide()
-		.addClass(options.resultsClass)
-		.css("position", "absolute")
-		.appendTo(document.body);
+    .hide()
+    .addClass(options.resultsClass)
+    .css("position", "absolute")
+    .appendTo(document.body);
 
             list = $("<ul/>").appendTo(element).mouseover(function(event) {
                 if (target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
@@ -686,8 +664,13 @@
                 return false;
             }).mousedown(function() {
                 config.mouseDownOnSelect = true;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                config.inputOnChangeBackup = input.onchange;
+                input.onchange = null;
             }).mouseup(function() {
                 config.mouseDownOnSelect = false;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                input.onchange = config.inputOnChangeBackup;
             });
 
             if (options.width > 0)
@@ -706,12 +689,13 @@
             return element;
         }
 
-        function moveSelect(step) {
+        function moveSelect(step, updateInput) {
             listItems.slice(active, active + 1).removeClass(CLASSES.ACTIVE);
             movePosition(step);
             var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
             var result = $.data(activeItem[0], "ac_data").result;
-            $(input).val(result);
+            if (updateInput)
+              $(input).val(result);
             // re-motion: do not select the text in the input element when moving the drop-down selection 
             //$.Autocompleter.Selection(input, 0, input.value.length);
 
@@ -743,8 +727,8 @@
 
         function limitNumberOfItems(available) {
             return options.max && options.max < available
-			? options.max
-			: available;
+      ? options.max
+      : available;
         }
 
         var repositionTimer = null;
@@ -811,7 +795,8 @@
                     width: elementWidth,
                     left: offset.left,
                     top: topPosition,
-                    bottom: bottomPosition
+                    bottom: bottomPosition,
+                    height: options.scrollHeight
                 });
             }
         }
@@ -846,30 +831,31 @@
                 fillList();
             },
             next: function() {
-                moveSelect(1);
+                moveSelect(1, true);
             },
             prev: function() {
-                moveSelect(-1);
+                moveSelect(-1, true);
             },
             pageUp: function() {
                 if (active != 0 && active - 8 < 0) {
-                    moveSelect(-active);
+                    moveSelect(-active, true);
                 } else {
-                    moveSelect(-8);
+                    moveSelect(-8, true);
                 }
             },
             pageDown: function() {
                 if (active != listItems.size() - 1 && active + 8 > listItems.size()) {
-                    moveSelect(listItems.size() - 1 - active);
+                    moveSelect(listItems.size() - 1 - active, true);
                 } else {
-                    moveSelect(8);
+                    moveSelect(8, true);
                 }
             },
             hide: function() {
+                if (repositionTimer) 
+                    clearTimeout(repositionTimer);
                 element && element.hide();
                 listItems && listItems.removeClass(CLASSES.ACTIVE);
                 active = -1;
-                if (repositionTimer) clearInterval(repositionTimer);
             },
             visible: function() {
                 return element && element.is(":visible");
@@ -892,22 +878,46 @@
                 });
 
                 //re-motion: scroll dropDown list to value from input
+                var selectedItemIndex = -1;
+                var inputValue = $(input).val().toLowerCase();
                 listItems.each(function(i) {
-                    if (this.outerText == $(input).val()) {
-                        element.scrollTop(this.offsetTop);
-                        $(this).addClass(CLASSES.ACTIVE);
-                        active = i;
-                        return;
+                    if (this.outerText.toLowerCase() == inputValue) {
+                        selectedItemIndex = i;
+                        return false;
                     }
                 });
 
                 // re-motion: reposition element 
-                element.show();
                 applyPositionToDropDown();
-                // re-motion: start interval to reposition element 
-                if (repositionTimer) clearInterval(repositionTimer);
-                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
+                
+                element.show();
+                
+                // re-motion: reposition element 
+                if (repositionTimer) 
+                    clearTimeout(repositionTimer);
+                var repositonHandler = function() {
+                    if (repositionTimer) {
+                        clearTimeout(repositionTimer);
+                    }
+                    if (element.is(':visible')) {
+                        applyPositionToDropDown();
+                        repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
+                    }
+                }
+                repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
 
+                if (selectedItemIndex >= 0)
+                  moveSelect (selectedItemIndex + 1, false);
+
+                if (options.scroll) {
+                    if (selectedItemIndex >= 0) {
+                        var selectedItem = listItems[selectedItemIndex];
+                        list.scrollTop(selectedItem.offsetTop);
+                    }
+                    else {
+                        list.scrollTop(0);
+                    }
+                }
 
             },
             selected: function() {
