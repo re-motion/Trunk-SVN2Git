@@ -16,7 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.Utilities;
 
@@ -25,6 +28,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
   [TestFixture]
   public class ArgumentChecks_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
+    private ILGenerator _fakeILGenerator;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _fakeILGenerator = (ILGenerator) FormatterServices.GetSafeUninitializedObject (typeof (ILGenerator));
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
         "The wrapperReturnType ('String') cannot be assigned from the return type ('SimpleReferenceType') of the wrappedMethod.\r\n"
@@ -36,8 +47,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (string);
       Type[] parameterTypes = new[] { typeof (object) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -51,8 +61,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object), typeof (string) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -66,8 +75,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (string), typeof (object) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -81,8 +89,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object), typeof (object), typeof (object) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
   }
 }

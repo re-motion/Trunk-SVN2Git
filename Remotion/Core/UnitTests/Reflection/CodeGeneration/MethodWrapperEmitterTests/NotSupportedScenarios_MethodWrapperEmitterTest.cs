@@ -16,7 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
@@ -24,6 +27,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
   [TestFixture]
   public class NotSupportedScenarios_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
+    private ILGenerator _fakeILGenerator;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _fakeILGenerator = (ILGenerator) FormatterServices.GetSafeUninitializedObject (typeof (ILGenerator));
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Parameter 'value' of the wrappedMethod is an out parameter, but out parameters are not supported by the MethodWrapperGenerator.\r\n"
@@ -35,8 +46,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object).MakeByRefType() };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -50,8 +60,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object).MakeByRefType() };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -65,8 +74,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (void);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod (), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
 
     [Test]
@@ -80,8 +88,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object), typeof (object) };
-      GetWrapperMethodFromEmitter (MethodInfo.GetCurrentMethod(), parameterTypes, returnType, methodInfo);
-      BuildType ();
+      new MethodWrapperEmitter (_fakeILGenerator, methodInfo, parameterTypes, returnType);
     }
   }
 }
