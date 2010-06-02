@@ -235,10 +235,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.DataContainerStateUpdated (clientTransaction, container, newDataContainerState);
     }
 
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
       foreach (var listener in _listeners)
-        listener.VirtualRelationEndPointStateUpdated (clientTransaction, endPoint, newEndPointChangeState);
+        listener.VirtualRelationEndPointStateUpdated (clientTransaction, endPointID, newEndPointChangeState);
     }
 
     bool INullObject.IsNull

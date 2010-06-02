@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private readonly DomainObjectCollection _originalData;
     
     [NonSerialized] // Fixed up by LazyLoadableCollectionEndPointData, see CollectionEndPoint.FixupAssociatedEndPoint for explanation
-    private ICollectionEndPointStateUpdateListener _stateUpdateListener;
+    private ICollectionDataStateUpdateListener _stateUpdateListener;
 
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public ChangeCachingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
         DomainObjectCollection originalData,
-        ICollectionEndPointStateUpdateListener stateUpdateListener)
+        ICollectionDataStateUpdateListener stateUpdateListener)
       : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
     {
       ArgumentUtility.CheckNotNull ("originalData", originalData);
@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _stateUpdateListener.StateUpdated (newChangedState);
     }
 
-    internal void FixupStateUpdateListener  (ICollectionEndPointStateUpdateListener listener)
+    internal void FixupStateUpdateListener  (ICollectionDataStateUpdateListener listener)
     {
       // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
       _stateUpdateListener = listener;

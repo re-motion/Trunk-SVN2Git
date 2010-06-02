@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (listener => listener.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));
 
       CheckNotification (listener => listener.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Deleted));
-      CheckNotification (listener => listener.VirtualRelationEndPointStateUpdated (ClientTransactionMock, endPoint, true));
+      CheckNotification (listener => listener.VirtualRelationEndPointStateUpdated (ClientTransactionMock, endPoint.ID, true));
     }
 
     [Test]

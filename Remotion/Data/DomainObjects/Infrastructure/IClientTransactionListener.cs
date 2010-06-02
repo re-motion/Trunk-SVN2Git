@@ -125,6 +125,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container);
 
     void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState);
-    void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState);
+    void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState);
   }
 }

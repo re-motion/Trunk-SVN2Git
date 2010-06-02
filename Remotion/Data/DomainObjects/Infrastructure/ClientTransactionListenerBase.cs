@@ -153,7 +153,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    public virtual void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
     }
 

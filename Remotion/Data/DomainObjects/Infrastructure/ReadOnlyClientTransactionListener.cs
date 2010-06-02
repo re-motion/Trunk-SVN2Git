@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // low-level event also allowed for read-only transactions
     }
 
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
       // low-level event also allowed for read-only transactions
     }

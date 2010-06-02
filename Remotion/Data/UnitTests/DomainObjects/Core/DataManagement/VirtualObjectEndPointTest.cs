@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.OppositeObjectID = DomainObjectIDs.OrderTicket2;
 
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, true));
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, true));
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.OppositeObjectID = _endPoint.OppositeObjectID;
 
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.Commit ();
 
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
 
     [Test]
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.Rollback ();
 
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint, false));
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
   }
 }

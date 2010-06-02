@@ -27,7 +27,7 @@ using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint, ICollectionEndPointStateUpdateListener
+  public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       
-      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContents, this);
+      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContents);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();
@@ -262,11 +262,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
              select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
-    void ICollectionEndPointStateUpdateListener.StateUpdated (bool? newChangedState)
-    {
-      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, this, newChangedState);
-    }
-
     #region Serialization
 
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
@@ -318,10 +313,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointData", BindingFlags.NonPublic | BindingFlags.Instance);
       endPointDataField.SetValue (endPointDelegatingData, _data);
-
-      // Fixup also required for _data
-
-      _data.FixupStateUpdateListener (this);
     }
 
     #endregion

@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void RaiseStateUpdateNotification (bool newChangedState)
     {
-      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, this, newChangedState);
+      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, newChangedState);
     }
 
     #region Serialization

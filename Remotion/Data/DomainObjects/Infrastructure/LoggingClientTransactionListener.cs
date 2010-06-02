@@ -327,13 +327,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} DataContainerStateChanging: {1} {2}", clientTransaction.ID, container.ID, newDataContainerState);
+        s_log.DebugFormat ("{0} DataContainerStateUpdated: {1} {2}", clientTransaction.ID, container.ID, newDataContainerState);
     }
 
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationEndPointStateChanging: {1} {2}", clientTransaction.ID, endPoint.ID, newEndPointChangeState);
+        s_log.DebugFormat ("{0} VirtualRelationEndPointStateUpdated: {1} {2}", clientTransaction.ID, endPointID, newEndPointChangeState);
     }
 
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)

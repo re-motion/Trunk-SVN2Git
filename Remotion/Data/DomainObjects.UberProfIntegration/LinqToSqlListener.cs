@@ -158,7 +158,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    void IClientTransactionListener.VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPoint endPoint, bool? newEndPointChangeState)
+    void IClientTransactionListener.VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
     }
 

@@ -258,8 +258,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       foreach (var otherOrder in oldCustomer.Orders)
         Dev.Null = otherOrder;
 
-      var oldCustomerEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap[oldCustomer.Orders.AssociatedEndPointID];
-      var newCustomerEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap[newCustomer.Orders.AssociatedEndPointID];
+      var oldCustomerEndPointID = oldCustomer.Orders.AssociatedEndPointID;
+      var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;
 
       ClientTransactionMock.AddListener (_strictListenerMock);
       
@@ -298,8 +298,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                 order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
                 oldCustomer.ID,
                 newCustomer.ID));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, newCustomerEndPoint, null));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, oldCustomerEndPoint, null));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, newCustomerEndPointID, null));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, oldCustomerEndPointID, null));
         _strictListenerMock.Expect (mock => mock.RelationChanged (
             ClientTransactionMock, 
             oldCustomer, 
@@ -430,18 +430,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationEndPointMapUnregisteringDataManagerMarkingObjectDiscardedDataContainerMapUnregistering ()
     {
       Order order = Order.NewObject ();
-      var orderTicketEndPoint = 
-          ClientTransactionMock.DataManager.RelationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderTicket")];
-      var orderItemsEndPoint =
-          ClientTransactionMock.DataManager.RelationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderItems")];
+      var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderTicket");
+      var orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderItems");
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, order));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPoint, null));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderTicketEndPoint, false));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPointID, null));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderTicketEndPointID, false));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (
@@ -557,13 +555,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = (RelationEndPoint) DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
 
+      Dev.Null = orderItemsEndPoint.HasChanged; // warm up has changed cache
+
       ClientTransactionMock.AddListener (_strictListenerMock);
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPoint, false));
         _strictListenerMock.Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, orderItemsEndPoint));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPoint, false));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPoint.ID, false));
       }
 
       _mockRepository.ReplayAll ();

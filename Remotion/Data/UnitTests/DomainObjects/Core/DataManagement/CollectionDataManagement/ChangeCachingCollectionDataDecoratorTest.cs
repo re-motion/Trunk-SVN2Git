@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   {
     private IDomainObjectCollectionData _wrappedDataStub;
     private DomainObjectCollection _originalData;
-    private ICollectionEndPointStateUpdateListener _stateUpdateListenerMock;
+    private ICollectionDataStateUpdateListener _stateUpdateListenerMock;
 
     private ChangeCachingCollectionDataDecorator _decorator;
     
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _originalData = new DomainObjectCollection ();
-      _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionEndPointStateUpdateListener> ();
+      _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionDataStateUpdateListener> ();
 
       _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _originalData, _stateUpdateListenerMock);
 
@@ -242,8 +242,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       var wrappedData = new DomainObjectCollectionData (new[] { fake });
       var originalData = new DomainObjectCollection ();
-      var stateUpdateListener = new SerializableFakeCollectionEndPointStateUpdateListener();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData, stateUpdateListener);
+      var stateUpdateListenerStub = MockRepository.GenerateStub<ICollectionDataStateUpdateListener>();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData, stateUpdateListenerStub);
 
       WarmUpCache (decorator, originalData);
 

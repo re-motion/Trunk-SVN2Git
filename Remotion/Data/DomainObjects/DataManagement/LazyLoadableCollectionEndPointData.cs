@@ -27,11 +27,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// and allowing that data to be unloaded. When the <see cref="LazyLoadableCollectionEndPointData"/> is accessed and its data is empty, 
   /// it loads the data from a <see cref="ClientTransaction"/>.
   /// </summary>
-  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable, ICollectionEndPointData
+  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable, ICollectionEndPointData, ICollectionDataStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
-    private ICollectionEndPointStateUpdateListener _stateUpdateListener;
 
     private ChangeCachingCollectionDataDecorator _collectionData;
     private DomainObjectCollection _originalOppositeDomainObjectsContents;
@@ -39,16 +38,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public LazyLoadableCollectionEndPointData (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        IEnumerable<DomainObject> initialContents,
-        ICollectionEndPointStateUpdateListener stateUpdateListener)
+        IEnumerable<DomainObject> initialContents)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
-      _stateUpdateListener = stateUpdateListener;
 
       if (initialContents != null)
         SetContents (initialContents);
@@ -137,12 +133,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _collectionData = new ChangeCachingCollectionDataDecorator (
           new DomainObjectCollectionData (initialContents),
           _originalOppositeDomainObjectsContents,
-          _stateUpdateListener);
+          this);
     }
 
-    private void RaiseChangeStateNotification (bool? newChangeState)
+    private void RaiseChangeStateNotification (bool? newChangedState)
     {
-      _stateUpdateListener.StateUpdated (newChangeState);
+      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, EndPointID, newChangedState);
+    }
+
+    void ICollectionDataStateUpdateListener.StateUpdated (bool? newChangedState)
+    {
+      RaiseChangeStateNotification (newChangedState);
     }
 
     #region Serialization
@@ -156,6 +157,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
       _originalOppositeDomainObjectsContents = info.GetValue<DomainObjectCollection> ();
+
+      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
+      if (_collectionData != null)
+        _collectionData.FixupStateUpdateListener (this);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -167,15 +172,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       info.AddValue (_collectionData);
       info.AddValue (_originalOppositeDomainObjectsContents);
-    }
-
-    internal void FixupStateUpdateListener (ICollectionEndPointStateUpdateListener listener)
-    {
-      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
-      _stateUpdateListener = listener;
-
-      if (_collectionData != null)
-        _collectionData.FixupStateUpdateListener (listener);
     }
 
     #endregion

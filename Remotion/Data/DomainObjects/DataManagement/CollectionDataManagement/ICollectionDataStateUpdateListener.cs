@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <summary>
   /// Used by <see cref="ChangeCachingCollectionDataDecorator"/> to signal when the cached state value is updated.
   /// </summary>
-  public interface ICollectionEndPointStateUpdateListener
+  public interface ICollectionDataStateUpdateListener
   {
     void StateUpdated (bool? newChangedState);
   }
