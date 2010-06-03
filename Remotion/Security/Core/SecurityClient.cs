@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Linq;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -26,6 +25,9 @@ namespace Remotion.Security
   public class SecurityClient : INullObject
   {
     public static readonly SecurityClient Null = new NullSecurityClient();
+    private static readonly AccessType s_createAccessType = AccessType.Get (GeneralAccessTypes.Create);
+    private static readonly AccessType s_readAccessType = AccessType.Get (GeneralAccessTypes.Read);
+    private static readonly AccessType s_editAccessType = AccessType.Get (GeneralAccessTypes.Edit);
 
     public static SecurityClient CreateSecurityClientFromConfiguration ()
     {
@@ -263,9 +265,7 @@ namespace Remotion.Security
       if (SecurityFreeSection.IsActive)
         return true;
 
-      AccessType[] requiredAccessTypes = new[] { AccessType.Get (GeneralAccessTypes.Create) };
-
-      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, principal, requiredAccessTypes);
+      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, principal, s_createAccessType);
     }
 
     public void CheckConstructorAccess (Type securableClass)
@@ -357,7 +357,17 @@ namespace Remotion.Security
 
     private AccessType[] ConvertRequiredAccessTypeEnums (Enum[] requiredAccessTypeEnums)
     {
-      return Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, AccessType.Get);
+      return Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, ConvertEnumsToAccessTypes);
+    }
+
+    private AccessType ConvertEnumsToAccessTypes (Enum accessTypeEnum)
+    {
+      if (GeneralAccessTypes.Read.Equals (accessTypeEnum))
+        return s_readAccessType;
+      else if (GeneralAccessTypes.Edit.Equals (accessTypeEnum))
+        return s_editAccessType;
+      else
+        return AccessType.Get (accessTypeEnum);
     }
 
     private PermissionDeniedException CreatePermissionDeniedException (string message, params object[] args)

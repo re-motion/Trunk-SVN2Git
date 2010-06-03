@@ -36,8 +36,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted ()
     {
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("InstanceProperty", TestAccessTypes.First);
-      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("InstanceProperty", TestAccessTypes.Second);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, true);
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, "InstanceProperty");
@@ -49,8 +49,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessDenied ()
     {
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("InstanceProperty", TestAccessTypes.First);
-      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("InstanceProperty", TestAccessTypes.Second);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, false);
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, "InstanceProperty");

@@ -24,45 +24,67 @@ using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
 {
+  /// <summary>
+  /// Implements the <see cref="IPermissionProvider"/> for a reflection-based security declaration.
+  /// </summary>
   public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
-    // constants
-
     private const string c_memberNotFoundMessage = "The member '{0}' could not be found.";
     private const string c_memberHasMultipleAttributesMessage = "The member '{0}' has multiple {1} defined.";
 
     private const string c_memberPermissionsOnlyInBaseClassMessage =
         "The {2} must not be defined on members overriden or redefined in derived classes. A member '{0}' exists in class '{1}' and its base class.";
 
-    // types
-
-    private class CacheKey : Tuple<Type, Type, string, BindingFlags>
+    private class CacheKey : IEquatable<CacheKey>
     {
+      private readonly Type _attributeType;
+      private readonly Type _type;
+      private readonly string _memberName;
+      private readonly BindingFlags _bindingFlags;
+
       public CacheKey (Type attributeType, Type type, string memberName, BindingFlags bindingFlags)
-        : base (attributeType, type, memberName, bindingFlags)
       {
         Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
         Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
+        
+        _attributeType = attributeType;
+        _type = type;
+        _memberName = memberName;
+        _bindingFlags = bindingFlags;
       }
 
-      public Type Type { get { return Item2; } }
-      public string MemberName { get { return Item3; } }
-      public BindingFlags BindingFlags { get { return Item4; } }
+      public Type Type
+      {
+        get { return _type; }
+      }
+
+      public string MemberName
+      {
+        get { return _memberName; }
+      }
+
+      public BindingFlags BindingFlags
+      {
+        get { return _bindingFlags; }
+      }
 
       public override int GetHashCode ()
       {
-        return Type.GetHashCode() ^ MemberName[0];
+        return _type.GetHashCode() ^ _memberName[0];
+      }
+
+      public bool Equals (CacheKey other)
+      {
+        return EqualityUtility.NotNullAndSameType (this, other)
+               && _attributeType.Equals (other._attributeType)
+               && _type.Equals (other._type)
+               && string.Equals (_memberName, other._memberName)
+               && _bindingFlags == other._bindingFlags;
       }
     }
 
-    // static members
-
-    private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]> ();
-
-    // member fields
-
-    // construction and disposing
+    private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]>();
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
@@ -73,8 +95,6 @@ namespace Remotion.Security.Metadata
         : base (name, config)
     {
     }
-
-    // methods and properties
 
     public Enum[] GetRequiredMethodPermissions (Type type, string methodName)
     {
@@ -113,11 +133,11 @@ namespace Remotion.Security.Metadata
 
     public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
     {
-      var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute>(methodInfo, true);
+      var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute> (methodInfo, true);
       if (permissionAttribute == null)
         return new Enum[0];
 
-      var permissions = new List<Enum> ();
+      var permissions = new List<Enum>();
       foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes())
       {
         if (!permissions.Contains (accessTypeEnum))
