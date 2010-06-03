@@ -28,8 +28,8 @@ namespace Remotion.Reflection
     private readonly PropertyInfo _propertyInfo;
     private readonly PropertyInfo _interfacePropertyInfo;
     private Type _type;
-    private readonly Func<object, object> _getter;
-    private readonly Action<object, object> _setter;
+    private readonly Delegate _getter;
+    private readonly Delegate _setter;
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
@@ -109,18 +109,64 @@ namespace Remotion.Reflection
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      if (_getter != null)
-        return _getter (instance);
+      if (_getter is Func<object, object>)
+      {
+        return ((Func<object, object>) _getter) (instance);
+      }
+      else if (_getter is Func<object, object, object>)
+      {
+        if (indexParameters == null || indexParameters.Length != 1)
+          throw new TargetParameterCountException ("Parameter count mismatch.");
+        return ((Func<object, object, object>) _getter) (instance, indexParameters[0]);
+      }
+      else if (_getter is Func<object, object, object, object>)
+      {
+        if (indexParameters == null || indexParameters.Length != 2)
+          throw new TargetParameterCountException ("Parameter count mismatch.");
+        return ((Func<object, object, object, object>) _getter) (instance, indexParameters[0], indexParameters[1]);
+      }
       else
-        return ValuePropertyInfo.GetValue (instance, indexParameters);
+      {
+        try
+        {
+          return ValuePropertyInfo.GetValue (instance, indexParameters);
+        }
+        catch (TargetInvocationException ex)
+        {
+          throw ex.InnerException;
+        }
+      }
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      if (_setter != null)
-        _setter (instance, value);
+      if (_setter is Action<object, object>)
+      {
+        ((Action<object, object>) _setter) (instance, value);
+      }
+      else if (_setter is Action<object, object, object>)
+      {
+        if (indexParameters == null || indexParameters.Length != 1)
+          throw new TargetParameterCountException ("Parameter count mismatch.");
+        ((Action<object, object, object>) _setter) (instance, indexParameters[0], value);
+      }
+      else if (_setter is Action<object, object, object, object>)
+      {
+        if (indexParameters == null || indexParameters.Length != 2)
+          throw new TargetParameterCountException ("Parameter count mismatch.");
+        ((Action<object, object, object, object>) _setter) (instance, indexParameters[0], indexParameters[1], value);
+      }
       else
-        ValuePropertyInfo.SetValue (instance, value, indexParameters);
+      {
+        try
+        {
+          ValuePropertyInfo.SetValue (instance, value, indexParameters);
+        }
+        catch (TargetInvocationException ex)
+        {
+          throw ex.InnerException;
+        }
+      }
     }
 
     public override bool Equals (object obj)
@@ -134,26 +180,42 @@ namespace Remotion.Reflection
       return EqualityUtility.GetRotatedHashCode (_propertyInfo, _interfacePropertyInfo);
     }
 
-    private Func<object, object> CreateGetterDelegate ()
+    private Delegate CreateGetterDelegate ()
     {
-      var getMethod = ValuePropertyInfo.GetGetMethod (false);
+      var getMethod = ValuePropertyInfo.GetGetMethod (true);
       if (getMethod == null)
         return null;
-      if (getMethod.GetParameters().Length > 0)
-        return null;
 
-      return (Func<object, object>) DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object>));
+      switch (getMethod.GetParameters().Length)
+      {
+        case 0:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object>));
+        case 1:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object, object>));
+        case 2:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object, object, object>));
+        default:
+          return null;
+      }
     }
 
-    private Action<object, object> CreateSetterDelegate ()
+    private Delegate CreateSetterDelegate ()
     {
-      var setMethod = ValuePropertyInfo.GetSetMethod (false);
+      var setMethod = ValuePropertyInfo.GetSetMethod (true);
       if (setMethod == null)
         return null;
-      if (setMethod.GetParameters().Length > 1)
-        return null;
 
-      return (Action<object, object>) DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object>));
+      switch (setMethod.GetParameters().Length)
+      {
+        case 1:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object>));
+        case 2:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object, object>));
+        case 3:
+          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object, object, object>));
+        default:
+          return null;
+      }
     }
   }
 }

@@ -52,8 +52,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
-      //TODO: catch and unwrap the TargetException
-      object nativeValue = propertyBase.PropertyInfo.GetValue (This, new object[0]);
+      object nativeValue = propertyBase.PropertyInfo.GetValue (This, null);
 
       if (!propertyBase.IsList && IsDefaultValue (propertyBase, nativeValue))
         return null;
@@ -90,8 +89,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 
-      //TODO: catch and unwrap the TargetException
-      propertyBase.PropertyInfo.SetValue (This, nativeValue, new object[0]);
+      propertyBase.PropertyInfo.SetValue (This, nativeValue, null);
     }
 
     /// <summary> 

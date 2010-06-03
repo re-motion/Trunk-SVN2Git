@@ -51,6 +51,18 @@ namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
       set { Scalar = value; }
     }
 
+    public T this [int i, DateTime j]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
+
+    public T this[int i, DateTime j, string k]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
+
     public T ReadOnlyScalar
     {
       get { return _readOnlyScalar; }
