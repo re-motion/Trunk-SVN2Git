@@ -119,7 +119,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.BusinessObject_GetProperty();
       test.DynamicMethod_GetProperty ();
       test.DomainObject_GetProperty ();
-      test.TearDown();
+      test.BusinessObject_SetProperty ();
+      test.DomainObject_SetProperty ();
+      test.TearDown ();
     }
 
     private static void BindableObjectWithoutSecurityTest ()
@@ -131,7 +133,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.BusinessObject_GetProperty();
       test.DynamicMethod_GetProperty ();
       test.DomainObject_GetProperty ();
-      test.TearDown();
+      test.BusinessObject_SetProperty ();
+      test.DomainObject_SetProperty ();
+      test.TearDown ();
     }
   }
 }

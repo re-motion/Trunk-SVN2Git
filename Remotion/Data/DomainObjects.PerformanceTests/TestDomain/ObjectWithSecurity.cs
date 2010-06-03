@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 
     #endregion
 
-    public abstract string TheProperty { get; set; }
+    public abstract int TheProperty { get; set; }
 
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
