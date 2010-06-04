@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction = clientTransaction;
       _deletedObject = deletedObject;
 
-      _dataContainer = _clientTransaction.GetDataContainer (_deletedObject);
+      _dataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (_deletedObject.ID);
       Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
       Assertion.IsFalse (_dataContainer.State == StateType.Invalid);
       
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var allOppositeRelationEndPoints = _clientTransaction.DataManager.GetOppositeRelationEndPoints (
-          _clientTransaction.GetDataContainer (_deletedObject));
+          _clientTransaction.DataManager.GetDataContainerWithLazyLoad (_deletedObject.ID));
 
       var commands = from oppositeEndPoint in allOppositeRelationEndPoints
                      select oppositeEndPoint.CreateRemoveCommand (_deletedObject);

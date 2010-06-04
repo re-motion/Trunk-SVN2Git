@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainer relatedDataContainer;
       using (var persistenceManager = CreatePersistenceManager())
       {
-        relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer (domainObject), relationEndPointID);
+        relatedDataContainer = persistenceManager.LoadRelatedDataContainer (DataManager.GetDataContainerWithLazyLoad (domainObject.ID), relationEndPointID);
 
         // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
         // (Like in MergeLoadedDomainObjects.)

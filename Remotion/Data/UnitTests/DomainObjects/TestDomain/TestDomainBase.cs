@@ -59,7 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     public DataContainer GetInternalDataContainerForTransaction (ClientTransaction transaction)
     {
-      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (transaction, typeof (ClientTransaction), "GetDataContainer", this);
+      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, "DataManager");
+      return dataManager.GetDataContainerWithLazyLoad (ID);
     }
 
     public DomainObject GetRelatedObject (string propertyName)

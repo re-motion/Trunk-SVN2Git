@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -427,7 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ClearDiscardedFlag ()
+    public void ClearInvalidFlag ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
       Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
@@ -441,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ClearDiscardedFlag_Ignores_NonInvalidObject ()
+    public void ClearInvalidFlag_Ignores_NonInvalidObject ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
       Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
@@ -778,6 +779,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       };
       var expectedEndPoints = expectedIDs.Select (id => _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id)).ToArray();
       Assert.That (endPoints, Is.EquivalentTo (expectedEndPoints));
+    }
+
+    [Test]
+    public void GetDataContainerWithoutLoading_NotLoaded ()
+    {
+      var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetDataContainerWithoutLoading_Loaded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+      
+      var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
+
+      Assert.That (result, Is.SameAs (dataContainer));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetDataContainerWithoutLoading_Invalid ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _dataManager.MarkObjectInvalid (domainObject);
+
+      _dataManager.GetDataContainerWithoutLoading (domainObject.ID);
+    }
+
+    [Test]
+    public void GetDataContainerWithLazyLoad_Loaded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var result = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
+
+      Assert.That (result, Is.SameAs (dataContainer));
+    }
+
+    [Test]
+    public void GetDataContainerWithLazyLoad_NotLoaded ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order>();
+      var dataContainer = DataContainer.CreateNew (domainObject.ID);
+      
+      var transactionMock = ClientTransactionObjectMother.CreateStrictMock ();
+      var dataManager = ClientTransactionTestHelper.GetDataManager (transactionMock);
+
+      transactionMock
+          .Expect (mock => ClientTransactionTestHelper.CallLoadObject (mock, domainObject.ID))
+          .WhenCalled (mi => dataManager.RegisterDataContainer (dataContainer))
+          .Return (domainObject);
+      transactionMock.Replay ();
+
+      var result = dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+
+      transactionMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (dataContainer));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetDataContainerWithLazyLoad_Invalid ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _dataManager.MarkObjectInvalid (domainObject);
+
+      _dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
     }
 
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)

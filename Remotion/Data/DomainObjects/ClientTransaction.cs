@@ -702,7 +702,7 @@ public abstract class ClientTransaction : IDataSource
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-    if (GetDataContainerWithoutLoading (objectID) == null)
+    if (DataManager.GetDataContainerWithoutLoading (objectID) == null)
       LoadObject (objectID);
 
     Assertion.IsTrue (DataManager.DataContainerMap[objectID] != null);
@@ -729,7 +729,7 @@ public abstract class ClientTransaction : IDataSource
   private void EnsureDataAvailable (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
   {
     var idsToBeLoaded = from objectID in objectIDs
-                        where GetDataContainerWithoutLoading (objectID) == null
+                        where DataManager.GetDataContainerWithoutLoading (objectID) == null
                         select objectID;
 
     LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound);
@@ -1225,40 +1225,6 @@ public abstract class ClientTransaction : IDataSource
     return _objectLoader.LoadRelatedObjects (relationEndPointID);
   }
 
-  /// <summary>
-  /// Gets the <see cref="DataContainer"/> for a given <see cref="DomainObject"/> in the context of this transaction, loading
-  /// it from the data source if necessary.
-  /// </summary>
-  /// <remarks>
-  /// This method may raise the <see cref="Loaded"/> event.
-  /// </remarks>
-  /// <param name="domainObject">A <see cref="DomainObject"/> reference indicating the <see cref="DomainObject"/> whose <see cref="DataContainer"/>
-  /// to retrieve. Must not be <see langword="null"/>.</param>
-  /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-  /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
-  /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the context of this transaction.</exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="domainObject"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
-  /// </exception>
-  protected internal DataContainer GetDataContainer (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
-
-    EnsureDataAvailable (domainObject.ID);
-    
-    var dataContainer = GetDataContainerWithoutLoading (domainObject.ID);
-    
-    Assertion.IsNotNull (dataContainer);
-    Assertion.IsTrue (
-        dataContainer.DomainObject == domainObject, 
-        "Because domainObject is enlisted, LoadObject is forced to reuse the domainObject reference.");
-
-    return dataContainer;
-  }
-
   protected internal void NotifyOfSubTransactionCreating ()
   {
     OnSubTransactionCreating ();
@@ -1512,14 +1478,6 @@ public abstract class ClientTransaction : IDataSource
     OnRolledBack (new ClientTransactionEventArgs (Array.AsReadOnly (changedDomainObjects)));
   }
 
-  private DataContainer GetDataContainerWithoutLoading (ObjectID id)
-  {
-    if (DataManager.IsInvalid (id))
-      throw new ObjectInvalidException (id);
-
-    return DataManager.DataContainerMap[id];
-  }
-
   private IEnumerable<DomainObject> GetChangedDomainObjects ()
   {
     return _dataManager.GetChangedDataByObjectState ().Select (tuple => tuple.Item1);
@@ -1547,6 +1505,12 @@ public abstract class ClientTransaction : IDataSource
   protected internal virtual bool HasRelationChanged (DomainObject domainObject)
   {
     throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This method has been moved, use DataManager.GetDataContainerWitLazyLoad instead. (1.13.62)", true)]
+  protected internal DataContainer GetDataContainer (DomainObject domainObject)
+  {
+    throw new NotImplementedException();
   }
   
   DataContainer IDataSource.LoadDataContainer (ObjectID id)

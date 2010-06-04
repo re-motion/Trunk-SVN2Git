@@ -51,7 +51,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap = new DataContainerMap (clientTransaction);
     _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
     _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
-    _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
+    _invalidObjects = new Dictionary<ObjectID, DomainObject>();
   }
 
   // methods and properties
@@ -247,7 +247,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     if (DataContainerMap[domainObject.ID] != null)
     {
-      var message = string.Format (
+      var message = String.Format (
           "Cannot mark object '{0}' as invalid; there is a DataContainer registered for that object. Discard the DataContainer instead.", 
           domainObject.ID);
       throw new InvalidOperationException (message);
@@ -262,6 +262,27 @@ public class DataManager : ISerializable, IDeserializationCallback
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
     _invalidObjects.Remove (objectID);
+  }
+
+  public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+    ClientTransaction.EnsureDataAvailable (objectID);
+
+    var dataContainer = GetDataContainerWithoutLoading (objectID);
+    Assertion.IsNotNull (dataContainer);
+    return dataContainer;
+  }
+
+  public DataContainer GetDataContainerWithoutLoading (ObjectID id)
+  {
+    ArgumentUtility.CheckNotNull ("id", id);
+
+    if (IsInvalid (id))
+      throw new ObjectInvalidException (id);
+
+    return DataContainerMap[id];
   }
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
@@ -335,7 +356,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
     _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap> ();
     _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache> ();
-    _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
+    _invalidObjects = new Dictionary<ObjectID, DomainObject>();
 
     var invalidIDs = doInfo.GetArray<ObjectID> ();
     var invalidObjects = doInfo.GetArray<DomainObject> ();

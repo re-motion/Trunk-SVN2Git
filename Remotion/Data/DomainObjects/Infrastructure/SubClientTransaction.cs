@@ -201,7 +201,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer TransferParentObject (DomainObject parentObject)
     {
-      DataContainer parentDataContainer = ParentTransaction.GetDataContainer (parentObject);
+      DataContainer parentDataContainer = ParentTransaction.DataManager.GetDataContainerWithLazyLoad (parentObject.ID);
       DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
       return thisDataContainer;
     }

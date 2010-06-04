@@ -32,6 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "DataManager");
     }
 
+    public static DomainObject CallLoadObject (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadObject", objectID);
+    }
+
     public static DomainObject[] CallLoadObjects (ClientTransaction clientTransaction, IList<ObjectID> objectIds, bool throwOnNotFound)
     {
       return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadObjects", objectIds, throwOnNotFound);

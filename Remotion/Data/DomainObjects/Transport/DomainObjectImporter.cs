@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Transport
       DomainObject existingObject;
       if (existingObjects.TryGetValue (transportItem.ID, out existingObject))
       {
-        return bindingTargetTransaction.GetDataContainer (existingObject);
+        return bindingTargetTransaction.DataManager.GetDataContainerWithLazyLoad (existingObject.ID);
       }
       else
       {
