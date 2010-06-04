@@ -892,8 +892,7 @@ public abstract class ClientTransaction : IDataSource
     var objectReference = GetObjectReference (id);
     EnsureDataAvailable (id);
 
-    var state = DataManager.DataContainerMap[id].State;
-    if (state == StateType.Deleted && !includeDeleted)
+    if (DataManager.DataContainerMap[id].State == StateType.Deleted && !includeDeleted)
       throw new ObjectDeletedException (id);
 
     return objectReference;
