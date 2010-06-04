@@ -15,43 +15,56 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security;
-using System.Security.Policy;
 using NUnit.Framework;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
+  // TODO Review 2811: Docs missing
   public class SandboxTestRunner : MarshalByRefObject
   {
-    public static void Run (Type[] types, IPermission[] permissions, Assembly[] fullTrustAssemblies)
+    public static void RunTestFixturesInSandbox (IEnumerable<Type> testFixtureTypes, IPermission[] permissions, Assembly[] fullTrustAssemblies)
     {
+      ArgumentUtility.CheckNotNull ("testFixtureTypes", testFixtureTypes);
+      ArgumentUtility.CheckNotNull ("permissions", permissions);
+      ArgumentUtility.CheckNotNull ("fullTrustAssemblies", fullTrustAssemblies);
+
       using (var sandbox = Sandbox.CreateSandbox (permissions, fullTrustAssemblies))
       {
         var runner = sandbox.CreateSandboxedInstance<SandboxTestRunner> (permissions);
         try
         {
-          runner.RunTests (types);
+          runner.RunTestFixtures (testFixtureTypes);
         }
         catch (TargetInvocationException ex)
         {
-          throw ExceptionUtility.PreserveStackTrace (ex.InnerException);
+          throw ex.InnerException.PreserveStackTrace();
         }
       }
     }
 
-    private void RunTests (Type[] types)
+    // TODO Review 2811: Make public and test separately.
+    private void RunTestFixtures (IEnumerable<Type> testFixtureTypes)
     {
-      foreach (var t in types)
-        Run (t);
+      if (testFixtureTypes == null)
+        throw new ArgumentNullException ("testFixtureTypes"); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
+      foreach (var t in testFixtureTypes)
+        RunTestFixture (t);
     }
 
-    private void Run (Type type)
+    // TODO Review 2811: Make public and test separately. Test with setup method, without setup method, with tear down method, without tear down 
+    // method, and test with more than one test in the fixture - SetUp/TearDown must be called for each test, not only once.
+    private void RunTestFixture (Type type)
     {
-      var testInstance = Activator.CreateInstance (type);
+      if (type == null)
+        throw new ArgumentNullException ("type"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+
+      var testFixtureInstance = Activator.CreateInstance (type);
 
       var setupMethod = type.GetMethods ().Where (m => m.IsDefined (typeof (SetUpAttribute), false)).SingleOrDefault ();
       var tearDownMethod = type.GetMethods ().Where (m => m.IsDefined (typeof (TearDownAttribute), false)).SingleOrDefault ();
@@ -60,13 +73,12 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       foreach (var testMethod in testMethods)
       {
         if (setupMethod != null)
-          setupMethod.Invoke (testInstance, null);
+          setupMethod.Invoke (testFixtureInstance, null);
 
-        testMethod.Invoke (testInstance, null);
+        testMethod.Invoke (testFixtureInstance, null);
 
         if (tearDownMethod != null)
-          tearDownMethod.Invoke (testInstance, null);
-
+          tearDownMethod.Invoke (testFixtureInstance, null);
       }
     }
   }

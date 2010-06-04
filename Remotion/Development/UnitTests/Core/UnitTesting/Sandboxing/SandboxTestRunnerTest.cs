@@ -23,14 +23,15 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
   [TestFixture]
   public class SandboxTestRunnerTest
   {
-
     [Test]
-    public void Run ()
+    public void RunTestsInSandbox ()
     {
       var types = new[] { typeof (DummyTest) };
 
       var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      SandboxTestRunner.Run (types, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
+      SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
     }
 
   }

@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
-  [TestFixture]
+  // This test is meant to be run by SandboxTestRunner.
   public class DummyTest
   {
     private int _value;

@@ -36,10 +36,11 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var mediumTrustPermissions = PermissionSets.GetMediumTrust (Environment.GetEnvironmentVariable ("TEMP"), Environment.MachineName);
 
       Assert.That (mediumTrustPermissions.Length, Is.EqualTo (11));
+      
       Assert.That (((AspNetHostingPermission) mediumTrustPermissions[0]).Level, Is.EqualTo (AspNetHostingPermissionLevel.Medium));
       Assert.That (((DnsPermission) mediumTrustPermissions[1]).IsUnrestricted(), Is.True);
-      Assert.That (mediumTrustPermissions[2], Is.TypeOf (typeof (EnvironmentPermission))); //TODO!?
-      Assert.That (mediumTrustPermissions[3], Is.TypeOf (typeof (FileIOPermission))); //TODO!?
+      Assert.That (mediumTrustPermissions[2], Is.TypeOf (typeof (EnvironmentPermission))); //TODO!? // TODO Review 2811: Check contents (via GetPathList)
+      Assert.That (mediumTrustPermissions[3], Is.TypeOf (typeof (FileIOPermission))); //TODO!? // TODO Review 2811: Check contents
       Assert.That (
           ((IsolatedStorageFilePermission) mediumTrustPermissions[4]).UsageAllowed, Is.EqualTo (IsolatedStorageContainment.AssemblyIsolationByUser));
       Assert.That (((IsolatedStorageFilePermission) mediumTrustPermissions[4]).UserQuota, Is.EqualTo (9223372036854775807L));
@@ -47,8 +48,11 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       Assert.That (
           ((SecurityPermission) mediumTrustPermissions[6]).Flags,
           Is.EqualTo (
-              SecurityPermissionFlag.Assertion | SecurityPermissionFlag.Execution | SecurityPermissionFlag.ControlThread
-              | SecurityPermissionFlag.ControlPrincipal | SecurityPermissionFlag.RemotingConfiguration));
+              SecurityPermissionFlag.Assertion 
+              | SecurityPermissionFlag.Execution 
+              | SecurityPermissionFlag.ControlThread
+              | SecurityPermissionFlag.ControlPrincipal 
+              | SecurityPermissionFlag.RemotingConfiguration));
       Assert.That (((SmtpPermission) mediumTrustPermissions[7]).Access, Is.EqualTo (SmtpAccess.Connect));
       Assert.That (((SqlClientPermission) mediumTrustPermissions[8]).IsUnrestricted(), Is.True);
       Assert.That (mediumTrustPermissions[9], Is.TypeOf(typeof(WebPermission)));

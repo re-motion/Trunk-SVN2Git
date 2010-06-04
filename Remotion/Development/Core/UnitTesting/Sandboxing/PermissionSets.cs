@@ -25,6 +25,7 @@ using System.Web;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
+  // TODO Review 2811: Docs missing
   public static class PermissionSets
   {
     public static IPermission[] GetMediumTrust (string appDir, string originHost)

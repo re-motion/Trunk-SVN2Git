@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Reflection;
+using System.Runtime.Remoting;
 using System.Security;
-using System.Security.Policy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
@@ -47,6 +47,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       }
     }
 
+    // TODO Review 2811: Create a test that executes code not allowed in medium trust via DoCallback in the sandbox.AppDomain. Expect a SecurityException.
+
     [Test]
     [ExpectedException (typeof (AppDomainUnloadedException))]
     public void Dispose ()
@@ -70,12 +72,19 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new Assembly[0]))
       {
         var result = sandbox.CreateSandboxedInstance<SampleTestRunner>();
+        
         Assert.That (result, Is.TypeOf (typeof (SampleTestRunner)));
+        Assert.That (RemotingServices.IsTransparentProxy (result), Is.True);
+        Assert.That (result.GetCurrentDomain (), Is.SameAs (sandbox.AppDomain));
       }
     }
 
     class SampleTestRunner : MarshalByRefObject
     {
+      public AppDomain GetCurrentDomain ()
+      {
+        return AppDomain.CurrentDomain;
+      }
     }
   }
 }
