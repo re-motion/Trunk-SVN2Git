@@ -53,18 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-
-        if (IsInvalid)
-          return StateType.Invalid;
-
-        var dataContainer = ClientTransaction.DataManager.DataContainerMap[DomainObject.ID];
-        if (dataContainer == null)
-          return StateType.NotLoadedYet;
-
-        if (dataContainer.State == StateType.Unchanged)
-          return ClientTransaction.HasRelationChanged (DomainObject) ? StateType.Changed : StateType.Unchanged;
-
-        return dataContainer.State;
+        return ClientTransaction.DataManager.DomainObjectStateCache.GetState (DomainObject.ID);
       }
     }
 
