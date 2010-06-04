@@ -17,8 +17,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -97,6 +99,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       var allowedAccessTypesResult = new Set<AccessTypeDefinition> ();
       var deniedAccessTypesResult = new Set<AccessTypeDefinition> ();
+
+      QueryFactory.CreateLinqQuery<AccessTypeReference>().Where (atr => atr.Class == Class).Select (atr => atr.AccessType).ToList();
 
       foreach (var ace in FindMatchingEntries (token))
       {
