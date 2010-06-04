@@ -31,22 +31,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
 [Serializable]
 public class DataManager : ISerializable, IDeserializationCallback
 {
-  // types
-
-  // static members and constants
-
-  // member fields
-
   private ClientTransaction _clientTransaction;
   private IClientTransactionListener _transactionEventSink;
 
   private DataContainerMap _dataContainerMap;
   private RelationEndPointMap _relationEndPointMap;
+  private DomainObjectStateCache _domainObjectStateCache;
   private Dictionary<ObjectID, DomainObject> _invalidObjects;
   
   private object[] _deserializedData; // only used for deserialization
-
-  // construction and disposing
 
   public DataManager (ClientTransaction clientTransaction, ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
   {
@@ -57,6 +50,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = clientTransaction.TransactionEventSink;
     _dataContainerMap = new DataContainerMap (clientTransaction);
     _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
+    _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
     _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
   }
 
@@ -75,6 +69,11 @@ public class DataManager : ISerializable, IDeserializationCallback
   public IEnumerable<ObjectID> InvalidObjectIDs
   {
     get { return _invalidObjects.Keys; }
+  }
+
+  public DomainObjectStateCache DomainObjectStateCache
+  {
+    get { return _domainObjectStateCache; }
   }
 
   public bool IsInvalid (ObjectID id)
@@ -335,7 +334,8 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = _clientTransaction.TransactionEventSink;
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
     _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap> ();
-    _invalidObjects = new Dictionary<ObjectID, DomainObject>();
+    _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache> ();
+    _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
     var invalidIDs = doInfo.GetArray<ObjectID> ();
     var invalidObjects = doInfo.GetArray<DomainObject> ();
@@ -356,6 +356,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     doInfo.AddHandle (_clientTransaction);
     doInfo.AddValue (_dataContainerMap);
     doInfo.AddHandle (_relationEndPointMap);
+    doInfo.AddValue (_domainObjectStateCache);
 
     var invalidIDs = new ObjectID[_invalidObjects.Count];
     _invalidObjects.Keys.CopyTo (invalidIDs, 0);

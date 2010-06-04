@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -35,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
-      Assert.IsNotNull (dataManager2);
-      Assert.AreNotSame (dataManager2, dataManager);
+      Assert.That (dataManager2, Is.Not.Null);
+      Assert.That (dataManager, Is.Not.SameAs (dataManager2));
     }
 
     [Test]
@@ -50,23 +51,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainer discardedContainer = invalidOrder.InternalDataContainer;
       invalidOrder.Delete();
 
-      Assert.AreNotEqual (0, dataManager.DataContainerMap.Count);
-      Assert.AreNotEqual (0, dataManager.RelationEndPointMap.Count);
-      Assert.AreEqual (1, dataManager.InvalidObjectCount);
-      Assert.IsTrue (dataManager.IsInvalid (discardedContainer.ID));
-      Assert.AreSame (invalidOrder, dataManager.GetInvalidObjectReference (discardedContainer.ID));
+      Assert.That (dataManager.DomainObjectStateCache, Is.Not.Null);
+      Assert.That (dataManager.DataContainerMap.Count, Is.Not.EqualTo (0));
+      Assert.That (dataManager.RelationEndPointMap.Count, Is.Not.EqualTo (0));
+      Assert.That (dataManager.InvalidObjectCount, Is.EqualTo (1));
+      Assert.That (dataManager.IsInvalid (discardedContainer.ID), Is.True);
+      Assert.That (dataManager.GetInvalidObjectReference (discardedContainer.ID), Is.SameAs (invalidOrder));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
-      Assert.AreNotEqual (0, deserializedData.Item2.DataContainerMap.Count);
-      Assert.AreNotEqual (0, deserializedData.Item2.RelationEndPointMap.Count);
-      Assert.AreEqual (1, deserializedData.Item2.InvalidObjectCount);
-      Assert.IsTrue (deserializedData.Item2.IsInvalid (discardedContainer.ID));
-      Assert.IsNotNull (deserializedData.Item2.GetInvalidObjectReference (discardedContainer.ID));
+      Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
+      Assert.That (deserializedData.Item2.DataContainerMap.Count, Is.Not.EqualTo (0));
+      Assert.That (deserializedData.Item2.RelationEndPointMap.Count, Is.Not.EqualTo (0));
+      Assert.That (deserializedData.Item2.InvalidObjectCount, Is.EqualTo (1));
+      Assert.That (deserializedData.Item2.IsInvalid (discardedContainer.ID), Is.True);
+      Assert.That (deserializedData.Item2.GetInvalidObjectReference (discardedContainer.ID), Is.Not.Null);
 
-      Assert.AreSame (deserializedData.Item1, PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"));
-      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);
     }
 
     public void DumpSerializedDataManager ()
@@ -101,7 +104,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var types = new Dictionary<Type, int>();
       foreach (var o in data)
       {
+// ReSharper disable CompareNonConstrainedGenericWithNull
         Type type = o != null ? o.GetType() : typeof (void);
+// ReSharper restore CompareNonConstrainedGenericWithNull
         if (!types.ContainsKey (type))
           types.Add (type, 0);
         ++types[type];

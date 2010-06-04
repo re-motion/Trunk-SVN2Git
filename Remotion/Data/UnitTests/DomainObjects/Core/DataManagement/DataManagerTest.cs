@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -44,6 +45,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp ();
 
       _dataManager = ClientTransactionMock.DataManager;
+    }
+
+    [Test]
+    public void DomainObjectStateCache ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
+
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber");
+      _dataManager.DataContainerMap[order1.ID].PropertyValues[propertyName].Value = 100;
+
+      Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Changed));
     }
 
     [Test]
