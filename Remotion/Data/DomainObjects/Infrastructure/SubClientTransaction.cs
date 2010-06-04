@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
         DomainObject parentObject = ParentTransaction.GetObject (id, false);
-        DataContainer thisDataContainer = TransferParentObject (parentObject);
+        DataContainer thisDataContainer = TransferParentObject (parentObject.ID);
         return thisDataContainer;
       }
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
-          DataContainer thisDataContainer = TransferParentObject (parentObject);
+          DataContainer thisDataContainer = TransferParentObject (parentObject.ID);
           loadedDataContainers.Add (thisDataContainer);
         }
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var transferredContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
-          DataContainer transferredContainer = TransferParentObject (parentObject);
+          DataContainer transferredContainer = TransferParentObject (parentObject.ID);
           transferredContainers.Add (transferredContainer);
           Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
         }
@@ -173,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var transferredContainers = new List<DataContainer>();
         foreach (var parentObject in parentObjects)
         {
-          DataContainer transferredContainer = TransferParentObject (parentObject);
+          DataContainer transferredContainer = TransferParentObject (parentObject.ID);
           transferredContainers.Add (transferredContainer);
           Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
         }
@@ -199,11 +199,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
 
-    private DataContainer TransferParentObject (DomainObject parentObject)
+    private DataContainer TransferParentObject (ObjectID objectID)
     {
-      DataContainer parentDataContainer = ParentTransaction.DataManager.GetDataContainerWithLazyLoad (parentObject.ID);
-      DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
-      return thisDataContainer;
+      var parentDataContainer = ParentTransaction.DataManager.GetDataContainerWithLazyLoad (objectID);
+      return TransferParentContainer (parentDataContainer);
     }
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)

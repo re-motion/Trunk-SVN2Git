@@ -39,8 +39,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      DomainObject domainObject = propertyAccessor.DomainObject;
-      return ((DataContainer) ((ClientTransaction) transaction).DataManager.GetDataContainerWithLazyLoad (domainObject.ID)).PropertyValues[propertyAccessor.PropertyData.PropertyIdentifier];
+      var dataContainer = transaction.DataManager.GetDataContainerWithLazyLoad (propertyAccessor.DomainObject.ID);
+      return dataContainer.PropertyValues[propertyAccessor.PropertyData.PropertyIdentifier];
     }
 
     public bool HasChanged (PropertyAccessor propertyAccessor, ClientTransaction transaction)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
