@@ -33,6 +33,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
   public class SetUpFixture
   {
     private DatabaseFixtures _dbFixtures;
+    private Culture _cultureEn;
+    private Culture _cultureDe;
 
     public static ObjectID OrderClassID { get; private set; }
     public static  List<AccessControlList> aclList { get; private set; }
@@ -51,6 +53,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
         {
           _dbFixtures = new DatabaseFixtures();
           _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
+
+          _cultureDe = Culture.NewObject ("de-DE");
+          _cultureEn = Culture.NewObject ("en-US");
 
           SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
           OrderClassID = orderClass.ID;
@@ -92,10 +97,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
     private void LocalizeMetadataObjectEnDe (MetadataObject metadataObject, string nameEnglish, string nameGerman)
     {
-      Culture cultureDe = Culture.NewObject ("de-DE");
-      Culture cultureEn = Culture.NewObject ("en-US");
-      LocalizedName.NewObject (nameGerman, cultureDe, metadataObject);
-      LocalizedName.NewObject (nameEnglish, cultureEn, metadataObject);
+      LocalizedName.NewObject (nameGerman, _cultureDe, metadataObject);
+      LocalizedName.NewObject (nameEnglish, _cultureEn, metadataObject);
     }
   
     private void LocalizeClassEnDe (SecurableClassDefinition classDefinition, string nameEnglish, string nameGerman)
