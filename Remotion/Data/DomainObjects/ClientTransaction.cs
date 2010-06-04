@@ -1023,20 +1023,6 @@ public abstract class ClientTransaction : IDataSource
   }
 
   /// <summary>
-  /// Evaluates if any relations of the given <see cref="DomainObject"/> have changed since instantiation, loading, commit or rollback.
-  /// </summary>
-  /// <param name="domainObject">The <see cref="DomainObject"/> to evaluate. Must not be <see langword="null"/>.</param>
-  /// <returns><see langword="true"/> if any relations have changed; otherwise, <see langword="false"/>.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-  protected internal virtual bool HasRelationChanged (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-    DataContainer dataContainer = GetDataContainer(domainObject);
-    return _dataManager.HasRelationChanged (dataContainer);
-  }
-
-  /// <summary>
   /// Gets the related object of a given <see cref="DataManagement.RelationEndPointID"/>.
   /// </summary>
   /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> to evaluate. It must refer to a <see cref="DataManagement.ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
@@ -1557,6 +1543,12 @@ public abstract class ClientTransaction : IDataSource
     throw new NotImplementedException ();
   }
 
+  [Obsolete ("This method is now obsolete, use DataManager.HasRelationChanged instead. (1.13.62)", true)]
+  protected internal virtual bool HasRelationChanged (DomainObject domainObject)
+  {
+    throw new NotImplementedException ();
+  }
+  
   DataContainer IDataSource.LoadDataContainer (ObjectID id)
   {
     return LoadDataContainer (id);

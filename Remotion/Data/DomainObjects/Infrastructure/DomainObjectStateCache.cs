@@ -103,10 +103,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         return StateType.NotLoadedYet;
 
       if (dataContainer.State == StateType.Unchanged)
-      {
-        // TODO 2806: Inline this, don't use DomainObject but ObjectID
-        return _clientTransaction.HasRelationChanged (dataContainer.DomainObject) ? StateType.Changed : StateType.Unchanged;
-      }
+        return _clientTransaction.DataManager.HasRelationChanged (dataContainer) ? StateType.Changed : StateType.Unchanged;
 
       return dataContainer.State;
     }
