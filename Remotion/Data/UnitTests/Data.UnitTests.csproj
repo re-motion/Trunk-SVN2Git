@@ -289,7 +289,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\InitializedEventDomainObjectTransactionContextDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\StateCachingClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectStateCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />

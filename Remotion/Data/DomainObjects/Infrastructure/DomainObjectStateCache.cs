@@ -24,14 +24,48 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Implements <see cref="IClientTransactionListener"/> in order to cache the values of <see cref="DomainObject.State"/>.
   /// </summary>
-  public class StateCachingClientTransactionListener : ClientTransactionListenerBase
+  [Serializable]
+  public class DomainObjectStateCache
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly Dictionary<ObjectID, StateType> _stateCache = new Dictionary<ObjectID, StateType> ();
 
-    public StateCachingClientTransactionListener (ClientTransaction clientTransaction)
+    [Serializable]
+    private class StateUpdateListener : ClientTransactionListenerBase
+    {
+      private readonly DomainObjectStateCache _cache;
+
+      public StateUpdateListener (DomainObjectStateCache cache)
+      {
+        ArgumentUtility.CheckNotNull ("cache", cache);
+        _cache = cache;
+      }
+
+      public override void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer dataContainer, StateType newDataContainerState)
+      {
+        _cache.HandleStateUpdate (dataContainer.ID);
+      }
+
+      public override void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
+      {
+        _cache.HandleStateUpdate (endPointID.ObjectID);
+      }
+
+      public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
+      {
+        _cache.HandleStateUpdate (container.ID);
+      }
+
+      public override void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
+      {
+        _cache.HandleStateUpdate (container.ID);
+      }
+    }
+
+    public DomainObjectStateCache (ClientTransaction clientTransaction)
     {
       _clientTransaction = clientTransaction;
+      _clientTransaction.AddListener (new StateUpdateListener (this));
     }
 
     /// <summary>
@@ -52,26 +86,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       state = CalculateState (objectID);
       _stateCache.Add (objectID, state);
       return state;
-    }
-
-    public override void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer dataContainer, StateType newDataContainerState)
-    {
-      HandleStateUpdate (dataContainer.ID);
-    }
-
-    public override void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
-    {
-      HandleStateUpdate (endPointID.ObjectID);
-    }
-
-    public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-      HandleStateUpdate (container.ID);
-    }
-
-    public override void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-      HandleStateUpdate (container.ID);
     }
 
     private void HandleStateUpdate (ObjectID objectID)

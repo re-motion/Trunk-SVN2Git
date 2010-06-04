@@ -132,6 +132,7 @@ public abstract class ClientTransaction : IDataSource
 
   private readonly DataManager _dataManager;
   private readonly IObjectLoader _objectLoader;
+  private readonly DomainObjectStateCache _domainObjectStateCache;
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly CompoundClientTransactionListener _listeners;
@@ -174,6 +175,7 @@ public abstract class ClientTransaction : IDataSource
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
     _objectLoader = new ObjectLoader (this, this, TransactionEventSink, new EagerFetcher (_dataManager));
+    _domainObjectStateCache = new DomainObjectStateCache (this);
     _enlistedObjectManager = enlistedObjectManager;
 
     TransactionEventSink.TransactionInitializing (this);
@@ -414,7 +416,7 @@ public abstract class ClientTransaction : IDataSource
   }
 
   /// <summary>
-  /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.
+  /// Gets the <see cref="IQueryManager"/> of the <see cref="ClientTransaction"/>.
   /// </summary>
   public virtual IQueryManager QueryManager
   {

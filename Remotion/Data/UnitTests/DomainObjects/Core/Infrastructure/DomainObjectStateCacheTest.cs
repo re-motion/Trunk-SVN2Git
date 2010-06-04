@@ -17,19 +17,21 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class StateCachingClientTransactionListenerTest : StandardMappingTest
+  public class DomainObjectStateCacheTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
-    private StateCachingClientTransactionListener _cachingListener;
+    private DomainObjectStateCache _cachingListener;
     private Order _existingOrder;
     private Order _newOrder;
     private Order _notYetLoadedOrder;
@@ -39,13 +41,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _transaction = ClientTransaction.CreateRootTransaction ();
-      _cachingListener = new StateCachingClientTransactionListener (_transaction);
+      _cachingListener = new DomainObjectStateCache (_transaction);
 
       _existingOrder = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
       _newOrder = (Order) LifetimeService.NewObject (_transaction, typeof (Order), ParamList.Empty);
       _notYetLoadedOrder = (Order) LifetimeService.GetObjectReference (_transaction, DomainObjectIDs.Order2);
-
-      ClientTransactionTestHelper.AddListener (_transaction, _cachingListener);
     }
 
     [Test]
@@ -222,8 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       subTransaction.EnsureDataAvailable (_existingOrder.ID);
       subTransaction.Execute (() => _existingOrder.OrderNumber++);
 
-      var cachingListener = new StateCachingClientTransactionListener (subTransaction);
-      ClientTransactionTestHelper.AddListener (subTransaction, cachingListener);
+      var cachingListener = new DomainObjectStateCache (subTransaction);
       var stateBeforeChange = cachingListener.GetState (_existingOrder.ID);
 
       subTransaction.Commit ();
@@ -247,6 +246,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
       Assert.That (stateAfterChange, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (_cachingListener, _transaction, _existingOrder));
+
+      var deserializedCache = deserializedTuple.Item1;
+      var deserializedTx = deserializedTuple.Item2;
+      var deserializedDomainObject = deserializedTuple.Item3;
+
+      Assert.That (deserializedCache.GetState (deserializedDomainObject.ID), Is.EqualTo (StateType.Unchanged));
+      deserializedTx.Execute (() => deserializedDomainObject.OrderNumber++);
+      Assert.That (deserializedCache.GetState (deserializedDomainObject.ID), Is.EqualTo (StateType.Changed));
     }
   }
 }
