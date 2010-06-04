@@ -171,6 +171,7 @@
     <Compile Include="BindableObjectTestBase.cs" />
     <Compile Include="BindableObjectWithoutSecurityTest.cs" />
     <Compile Include="BindableObjectWithSecurityTest.cs" />
+    <Compile Include="CommitTest.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -191,6 +192,7 @@
     <Compile Include="SetupFixture.cs" />
     <Compile Include="StandardConfiguration.cs" />
     <Compile Include="StubSecurityProvider.cs" />
+    <Compile Include="TestDomainObjectMother.cs" />
     <Compile Include="TestDomain\ClassWithValueProperties.cs" />
     <Compile Include="TestDomain\Client.cs">
       <SubType>Code</SubType>

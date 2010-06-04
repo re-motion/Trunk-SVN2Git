@@ -16,11 +16,8 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
-using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -33,16 +30,16 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void AskChanged ()
     {
-      Console.WriteLine ("Expected average duration of HasRelationChangedTest on reference system: ~20 ms");
+      Console.WriteLine ("Expected average duration of HasRelationChangedTest on reference system: ~8 ms");
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClassWithRelationProperties[] objects = PrepareData();
+        var objects = TestDomainObjectMother.PrepareObjectsWithRelationProperties (TestSetSize);
         bool changed = ClientTransaction.Current.HasChanged();
 
         Assert.That (changed, Is.False);
 
-        Stopwatch stopwatch = new Stopwatch();
+        var stopwatch = new Stopwatch();
         stopwatch.Start();
         for (int i = 0; i < TestRepititions; i++)
           changed ^= ClientTransaction.Current.HasChanged();
@@ -52,75 +49,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
         double averageMilliSeconds = stopwatch.Elapsed.TotalMilliseconds / TestRepititions;
         Console.WriteLine (
-            "HasRelationChangedTest (executed {0} x ClientTransaction.Current.HasChanged ({2} objects)): Average duration: {1} ms",
+            "HasRelationChangedTest (executed {0} x ClientTransaction.Current.HasChanged ({2} objects - total {3} objects in CTx)): Average duration: {1} ms",
             TestRepititions,
             averageMilliSeconds.ToString ("n"),
-            objects.Length);
+            objects.Length,
+            ClientTransaction.Current.EnlistedDomainObjectCount);
       }
-    }
-
-    private ClassWithRelationProperties[] PrepareData ()
-    {
-      ClassWithRelationProperties[] objects = QueryFactory.CreateLinqQuery<ClassWithRelationProperties>().Select (o => o).ToArray();
-      if (objects.Length < TestSetSize)
-      {
-        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-        {
-          for (int i = 0; i < TestSetSize - objects.Length; i++)
-            CreateAndFillRelationPropertyObject();
-          ClientTransaction.Current.Commit();
-        }
-        objects = QueryFactory.CreateLinqQuery<ClassWithRelationProperties>().Select (o => o).ToArray();
-      }
-      return objects;
-    }
-
-    private void CreateAndFillRelationPropertyObject ()
-    {
-      ClassWithRelationProperties instance = ClassWithRelationProperties.NewObject();
-      instance.Unary1 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary2 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary3 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary4 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary5 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary6 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary7 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary8 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary9 = OppositeClassWithAnonymousRelationProperties.NewObject();
-      instance.Unary10 = OppositeClassWithAnonymousRelationProperties.NewObject();
-
-      instance.Real1 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real2 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real3 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real4 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real5 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real6 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real7 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real8 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real9 = OppositeClassWithVirtualRelationProperties.NewObject();
-      instance.Real10 = OppositeClassWithVirtualRelationProperties.NewObject();
-
-      instance.Virtual1 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual2 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual3 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual4 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual5 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual6 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual7 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual8 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual9 = OppositeClassWithRealRelationProperties.NewObject();
-      instance.Virtual10 = OppositeClassWithRealRelationProperties.NewObject();
-
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject());
     }
   }
 }

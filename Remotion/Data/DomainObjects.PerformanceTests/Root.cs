@@ -52,14 +52,15 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //RunSerializationTest();
 
-      //RunHasRelationChangedTest();
+      RunHasRelationChangedTest();
+      RunCommitTest ();
 
-      BindableObjectWithSecurityTest();
-      BindableObjectWithoutSecurityTest();
+      //BindableObjectWithSecurityTest();
+      //BindableObjectWithoutSecurityTest();
 
       setUpFixture.TearDown();
 
-      Console.WriteLine ("Test compelte");
+      Console.WriteLine ("Tests complete");
       //Console.ReadLine();
     }
 
@@ -73,6 +74,19 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.TearDown();
 
       test.TestFixtureTearDown();
+    }
+
+    private static void RunCommitTest ()
+    {
+      var test = new CommitTest();
+      test.TestFixtureSetUp ();
+
+      test.SetUp ();
+      test.CommitSubTransaction_Relations();
+      test.CommitSubTransaction_ValueProperties();
+      test.TearDown ();
+
+      test.TestFixtureTearDown ();
     }
 
     private static void RunLoadObjectsTest ()
