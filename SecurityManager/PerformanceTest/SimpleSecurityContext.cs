@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Remotion.Security;
 using Remotion.Utilities;
 
-namespace Remotion.SeucrityManager.PerformanceTest
+namespace Remotion.SeucrityManager.PerformanceTests
 {
   public sealed class SimpleSecurityContext : ISecurityContext
   {

@@ -193,7 +193,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.SqlBackend", "Remotion\Data\Linq.SqlBackend\Data.Linq.SqlBackend.csproj", "{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTest", "SecurityManager\PerformanceTest\PerformanceTest.csproj", "{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTests", "SecurityManager\PerformanceTest\PerformanceTests.csproj", "{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
