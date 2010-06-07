@@ -8,8 +8,8 @@
     <ProjectGuid>{2657E4C0-90AB-4B2E-A1B9-90DD4EEE7825}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.SeucrityManager.PerformanceTests</RootNamespace>
-    <AssemblyName>Remotion.SeucrityManager.PerformanceTests</AssemblyName>
+    <RootNamespace>Remotion.SecurityManager.PerformanceTests</RootNamespace>
+    <AssemblyName>Remotion.SecurityManager.PerformanceTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

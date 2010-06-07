@@ -5,7 +5,7 @@ using System.Threading;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 
-namespace Remotion.SeucrityManager.PerformanceTests
+namespace Remotion.SecurityManager.PerformanceTests
 {
   class Program
   {
