@@ -24,7 +24,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
-  // TODO Review 2811: Docs missing
+  /// <summary>
+  /// <see cref="SandboxTestRunner"/> executes unit tests for the given types.
+  /// </summary>
   public class SandboxTestRunner : MarshalByRefObject
   {
     public static void RunTestFixturesInSandbox (IEnumerable<Type> testFixtureTypes, IPermission[] permissions, Assembly[] fullTrustAssemblies)
@@ -47,8 +49,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       }
     }
 
-    // TODO Review 2811: Make public and test separately.
-    private void RunTestFixtures (IEnumerable<Type> testFixtureTypes)
+    public void RunTestFixtures (IEnumerable<Type> testFixtureTypes)
     {
       if (testFixtureTypes == null)
         throw new ArgumentNullException ("testFixtureTypes"); // avoid ArgumentUtility, it doesn't support partial trust ATM
@@ -57,9 +58,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
         RunTestFixture (t);
     }
 
-    // TODO Review 2811: Make public and test separately. Test with setup method, without setup method, with tear down method, without tear down 
-    // method, and test with more than one test in the fixture - SetUp/TearDown must be called for each test, not only once.
-    private void RunTestFixture (Type type)
+    public void RunTestFixture (Type type)
     {
       if (type == null)
         throw new ArgumentNullException ("type"); // avoid ArgumentUtility, it doesn't support partial trust ATM

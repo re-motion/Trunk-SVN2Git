@@ -23,15 +23,77 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
   [TestFixture]
   public class SandboxTestRunnerTest
   {
+    private SandboxTestRunner _sandboxTestRunner;
+    private Type[] _testFixtureTypes;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sandboxTestRunner = new SandboxTestRunner();
+      _testFixtureTypes = new[] { typeof (DummyTest1) };
+    }
+
     [Test]
     public void RunTestsInSandbox ()
     {
-      var types = new[] { typeof (DummyTest) };
-
       var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      SandboxTestRunner.RunTestFixturesInSandbox (types, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
+      SandboxTestRunner.RunTestFixturesInSandbox (_testFixtureTypes, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
 
       // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    public void RunTestFixtures ()
+    {
+      _sandboxTestRunner.RunTestFixtures (_testFixtureTypes);
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void RunTestFixtures_ArgumentIsNull_ThrowsException ()
+    {
+      _sandboxTestRunner.RunTestFixtures (null);
+    }
+
+    [Test]
+    public void RunTestFixture_WithSetupAndTearDownMethod ()
+    {
+      _sandboxTestRunner.RunTestFixture (typeof(DummyTest1));
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    public void RunTestFixture_WithoutSetupAndTearDownMethod ()
+    {
+      _sandboxTestRunner.RunTestFixture (typeof (DummyTest2));
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    public void RunTestFixture_WithoutTearDownMethod ()
+    {
+      _sandboxTestRunner.RunTestFixture (typeof (DummyTest3));
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    public void RunTestFixture_WithoutSetupMethod ()
+    {
+      _sandboxTestRunner.RunTestFixture (typeof (DummyTest4));
+
+      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentNullException))]
+    public void RunTestFixture_ArgumentIsNull_ThrowsException ()
+    {
+      _sandboxTestRunner.RunTestFixture (null);
     }
 
   }

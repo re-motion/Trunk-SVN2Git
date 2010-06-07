@@ -21,7 +21,8 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
   // This test is meant to be run by SandboxTestRunner.
-  public class DummyTest
+  [TestFixture]
+  public class DummyTest1
   {
     private int _value;
 

@@ -25,7 +25,9 @@ using System.Web;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
-  // TODO Review 2811: Docs missing
+  /// <summary>
+  /// <see cref="PermissionSets"/> contains static methods to get the permissions for different security levels.
+  /// </summary>
   public static class PermissionSets
   {
     public static IPermission[] GetMediumTrust (string appDir, string originHost)

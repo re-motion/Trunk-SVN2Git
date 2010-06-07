@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Security;
+using System.Security.Permissions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
@@ -47,7 +48,15 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       }
     }
 
-    // TODO Review 2811: Create a test that executes code not allowed in medium trust via DoCallback in the sandbox.AppDomain. Expect a SecurityException.
+    [Test]
+    [ExpectedException(typeof(SecurityException))]
+    public void ExecuteCodeWhichIsNotAllowedInMediumTrust ()
+    {
+      using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new Assembly[0]))
+      {
+        sandbox.AppDomain.DoCallBack (() => Environment.GetEnvironmentVariable ("USERDOMAIN"));
+      }
+    }
 
     [Test]
     [ExpectedException (typeof (AppDomainUnloadedException))]

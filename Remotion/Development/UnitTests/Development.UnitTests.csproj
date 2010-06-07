@@ -148,7 +148,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest1.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest2.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest3.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest4.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\PermissionSetsTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTestRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTest.cs" />
