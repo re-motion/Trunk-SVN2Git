@@ -25,6 +25,7 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
+  [Explicit ("Bug search")]
   public class NotSupportedScenarios_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     private ILGenerator _fakeILGenerator;

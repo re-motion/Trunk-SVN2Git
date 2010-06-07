@@ -26,6 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
+  [Explicit ("Bug search")]
   public class ArgumentChecks_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     private ILGenerator _fakeILGenerator;
