@@ -190,7 +190,6 @@
         <include name="Castle.DynamicProxy2.*"/>
         <include name="Castle.MicroKernel.*"/>
         <include name="Castle.Windsor.*"/>
-        <include name="NUnit.Framework.dll"/>
         <include name="CommonServiceLocator.WindsorAdapter.*"/>
         <include name="ICSharpCode.SharpZipLib.dll" />
         <include name="Microsoft.Practices.ServiceLocation.dll" />

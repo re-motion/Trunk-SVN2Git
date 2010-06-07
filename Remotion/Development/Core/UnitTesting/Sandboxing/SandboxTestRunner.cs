@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security;
-using NUnit.Framework;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
@@ -65,9 +64,9 @@ namespace Remotion.Development.UnitTesting.Sandboxing
 
       var testFixtureInstance = Activator.CreateInstance (type);
 
-      var setupMethod = type.GetMethods ().Where (m => m.IsDefined (typeof (SetUpAttribute), false)).SingleOrDefault ();
-      var tearDownMethod = type.GetMethods ().Where (m => m.IsDefined (typeof (TearDownAttribute), false)).SingleOrDefault ();
-      var testMethods = type.GetMethods ().Where (m => m.IsDefined (typeof (TestAttribute), false));
+      var setupMethod = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.SetUpAttribute")).SingleOrDefault ();
+      var tearDownMethod = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TearDownAttribute")).SingleOrDefault ();
+      var testMethods = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TestAttribute"));
 
       foreach (var testMethod in testMethods)
       {
@@ -79,6 +78,12 @@ namespace Remotion.Development.UnitTesting.Sandboxing
         if (tearDownMethod != null)
           tearDownMethod.Invoke (testFixtureInstance, null);
       }
+    }
+
+    private bool IsDefined (MemberInfo memberInfo, string attributeFullName)
+    {
+      var data = CustomAttributeData.GetCustomAttributes (memberInfo);
+      return data.Any (attributeData => attributeData.Constructor.DeclaringType.FullName == attributeFullName);
     }
   }
 }
