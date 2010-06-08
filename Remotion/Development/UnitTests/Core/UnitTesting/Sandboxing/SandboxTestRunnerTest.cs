@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
@@ -37,21 +39,28 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     public void RunTestsInSandbox ()
     {
       var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      SandboxTestRunner.RunTestFixturesInSandbox (_testFixtureTypes, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly });
+      var testResults =
+          SandboxTestRunner.RunTestFixturesInSandbox (_testFixtureTypes, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly }).SelectMany (
+              r => r.TestResults).Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count (), Is.EqualTo (3));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed ();
     }
 
     [Test]
     public void RunTestFixtures ()
     {
-      _sandboxTestRunner.RunTestFixtures (_testFixtureTypes);
+      var testResults =
+          _sandboxTestRunner.RunTestFixtures (_testFixtureTypes).SelectMany (r => r.TestResults).Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count(), Is.EqualTo (3));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed();
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentNullException))]
+    [ExpectedException (typeof (ArgumentNullException))]
     public void RunTestFixtures_ArgumentIsNull_ThrowsException ()
     {
       _sandboxTestRunner.RunTestFixtures (null);
@@ -60,33 +69,41 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     [Test]
     public void RunTestFixture_WithSetupAndTearDownMethod ()
     {
-      _sandboxTestRunner.RunTestFixture (typeof(DummyTest1));
+      var testResults = _sandboxTestRunner.RunTestFixture (typeof (DummyTest1)).TestResults.Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count(), Is.EqualTo (3));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed();
     }
 
     [Test]
     public void RunTestFixture_WithoutSetupAndTearDownMethod ()
     {
-      _sandboxTestRunner.RunTestFixture (typeof (DummyTest2));
+      var testResults = _sandboxTestRunner.RunTestFixture (typeof (DummyTest2)).TestResults.Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count (), Is.EqualTo (1));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed ();
     }
 
     [Test]
     public void RunTestFixture_WithoutTearDownMethod ()
     {
-      _sandboxTestRunner.RunTestFixture (typeof (DummyTest3));
+      var testResults = _sandboxTestRunner.RunTestFixture (typeof (DummyTest3)).TestResults.Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count (), Is.EqualTo (2));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed ();
     }
 
     [Test]
     public void RunTestFixture_WithoutSetupMethod ()
     {
-      _sandboxTestRunner.RunTestFixture (typeof (DummyTest4));
+      var testResults = _sandboxTestRunner.RunTestFixture (typeof (DummyTest4)).TestResults.Where (r => r.Status != TestStatus.Ignored);
 
-      // TODO 2857: Assert that the tests have been run by analyzing the test results.
+      Assert.That (testResults.Count (), Is.EqualTo (2));
+      foreach (var testResult in testResults)
+        testResult.EnsureNotFailed ();
     }
 
     [Test]
@@ -95,6 +112,5 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     {
       _sandboxTestRunner.RunTestFixture (null);
     }
-
   }
 }

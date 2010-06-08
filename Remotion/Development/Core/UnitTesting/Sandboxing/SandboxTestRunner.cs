@@ -28,7 +28,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
   /// </summary>
   public class SandboxTestRunner : MarshalByRefObject
   {
-    public static void RunTestFixturesInSandbox (IEnumerable<Type> testFixtureTypes, IPermission[] permissions, Assembly[] fullTrustAssemblies)
+    public static TestFixtureResult[] RunTestFixturesInSandbox (IEnumerable<Type> testFixtureTypes, IPermission[] permissions, Assembly[] fullTrustAssemblies)
     {
       ArgumentUtility.CheckNotNull ("testFixtureTypes", testFixtureTypes);
       ArgumentUtility.CheckNotNull ("permissions", permissions);
@@ -39,7 +39,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
         var runner = sandbox.CreateSandboxedInstance<SandboxTestRunner> (permissions);
         try
         {
-          runner.RunTestFixtures (testFixtureTypes);
+          return runner.RunTestFixtures (testFixtureTypes);
         }
         catch (TargetInvocationException ex)
         {
@@ -48,16 +48,15 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       }
     }
 
-    public void RunTestFixtures (IEnumerable<Type> testFixtureTypes)
+    public TestFixtureResult[] RunTestFixtures (IEnumerable<Type> testFixtureTypes)
     {
       if (testFixtureTypes == null)
         throw new ArgumentNullException ("testFixtureTypes"); // avoid ArgumentUtility, it doesn't support partial trust ATM
 
-      foreach (var t in testFixtureTypes)
-        RunTestFixture (t);
+      return testFixtureTypes.Select (t => RunTestFixture (t)).ToArray();
     }
 
-    public void RunTestFixture (Type type)
+    public TestFixtureResult RunTestFixture (Type type)
     {
       if (type == null)
         throw new ArgumentNullException ("type"); // avoid ArgumentUtility, it doesn't support partial trust ATM
@@ -68,22 +67,67 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       var tearDownMethod = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TearDownAttribute")).SingleOrDefault ();
       var testMethods = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TestAttribute"));
 
+      Exception exception;
+      var testResults = new List<TestResult>();
       foreach (var testMethod in testMethods)
       {
-        if (setupMethod != null)
-          setupMethod.Invoke (testFixtureInstance, null);
+        if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute"))
+        {
+          testResults.Add (new TestResult (testMethod, TestStatus.Ignored, null));
+          continue;
+        }
 
-        testMethod.Invoke (testFixtureInstance, null);
+        if (setupMethod!=null && !(TryInvokeMethod (setupMethod, testFixtureInstance, out exception)))
+        {
+          testResults.Add(new TestResult(setupMethod,TestStatus.FailedInSetUp, exception));
+          continue;
+        }
+        
+        if (IsDefined (testMethod, "NUnit.Framework.ExpectedExceptionAttribute"))
+        {
+          var exceptionType = (Type)GetAttribute (testMethod, "NUnit.Framework.ExpectedExceptionAttribute").ConstructorArguments[0].Value;
+          if (!TryInvokeMethod (testMethod, testFixtureInstance, out exception) && exception.InnerException.GetType() == exceptionType)
+            testResults.Add(new TestResult(testMethod,TestStatus.Succeeded, null));
+          else
+            testResults.Add (new TestResult (testMethod, TestStatus.Failed, exception));
+        }
+        else
+        {
+          if (TryInvokeMethod (testMethod, testFixtureInstance, out exception))
+            testResults.Add(new TestResult(testMethod,TestStatus.Succeeded, null));
+          else
+            testResults.Add(new TestResult(testMethod,TestStatus.Failed, exception));
+        }
 
-        if (tearDownMethod != null)
-          tearDownMethod.Invoke (testFixtureInstance, null);
+        if (tearDownMethod!=null && !TryInvokeMethod (tearDownMethod, testFixtureInstance, out exception))
+          testResults.Add (new TestResult (tearDownMethod, TestStatus.FailedInTearDown, exception));
       }
+      return new TestFixtureResult(type, testResults.ToArray());
+    }
+
+    private bool TryInvokeMethod (MethodInfo method, object instance, out Exception exception)
+    {
+      exception = null;
+      try
+      {
+        method.Invoke (instance, null);
+      }
+      catch (Exception ex)
+      {
+        exception = ex;
+      }
+      return exception==null;
     }
 
     private bool IsDefined (MemberInfo memberInfo, string attributeFullName)
     {
       var data = CustomAttributeData.GetCustomAttributes (memberInfo);
       return data.Any (attributeData => attributeData.Constructor.DeclaringType.FullName == attributeFullName);
+    }
+
+    private CustomAttributeData GetAttribute (MemberInfo memberInfo, string attributeName)
+    {
+      return CustomAttributeData.GetCustomAttributes (memberInfo).SingleOrDefault (ad => ad.Constructor.DeclaringType.FullName == attributeName);
     }
   }
 }

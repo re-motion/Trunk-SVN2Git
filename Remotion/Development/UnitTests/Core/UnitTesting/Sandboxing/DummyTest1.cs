@@ -52,6 +52,20 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       _value = 200;
     }
 
+    [Test]
+    [Ignore]
+    public void IgnoreTest ()
+    {
+      Assert.Fail ("IgnoredTest");
+    }
+
+    [Test]
+    [ExpectedException(typeof(NotImplementedException))]
+    public void ExpectedExceptionTest ()
+    {
+      throw new NotImplementedException();
+    }
+
     //[Test]
     //public void Test3 ()
     //{
