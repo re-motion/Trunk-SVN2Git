@@ -105,11 +105,10 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
     }
 
-    public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
+    public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("generator", generator);
 
       var property = memberInfo as PropertyInfo;
       if (property == null)

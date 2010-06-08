@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression, Is.TypeOf(typeof(SqlColumnDefinitionExpression)));
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("ID"));
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      _resolver.ResolveMemberExpression (entityExpression, property);
     }
 
     [Test]
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (StorageGroupClass), "s", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var result = _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      var result = _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo ("s"));
@@ -270,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (DomainObject), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      _resolver.ResolveMemberExpression (entityExpression, property);
     }
 
     [Test]
@@ -282,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      _resolver.ResolveMemberExpression (entityExpression, property, _generator);
+      _resolver.ResolveMemberExpression (entityExpression, property);
     }
 
     [Test]
