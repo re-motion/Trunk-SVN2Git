@@ -627,7 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlTable = new SqlTable (unresolvedTableInfo);
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
-          new SqlColumnDefinitionExpression (typeof (Order), "o", "ID", true),
+          new SqlEntityDefinitionExpression(typeof(int), "c", "CookTable", new SqlColumnDefinitionExpression(typeof(int), "c", "ID", true)),
           new[] { sqlTable },
           new Ordering[] { },
           null,

@@ -32,6 +32,7 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -153,16 +154,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CreateLinqQuery_WithMixedStages ()
     {
       using (MixinConfiguration.BuildNew()
-          .ForClass<DefaultSqlPreparationStage> ().AddMixin<TestSqlPreparationStageMixin> ()
-          .ForClass<DefaultMappingResolutionStage> ().AddMixin<TestMappingResolutionStageMixin> ()
-          .ForClass<DefaultSqlGenerationStage> ().AddMixin<TestSqlGenerationStageMixin> ()
+          .ForClass<DefaultSqlPreparationStage>().AddMixin<TestSqlPreparationStageMixin>()
+          .ForClass<DefaultMappingResolutionStage>().AddMixin<TestMappingResolutionStageMixin>()
+          .ForClass<DefaultSqlGenerationStage>().AddMixin<TestSqlGenerationStageMixin>()
           .EnterScope())
       {
-          var queryable = from o in QueryFactory.CreateLinqQuery<Order> ()
-                          select o;
-          IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
+        var queryable = from o in QueryFactory.CreateLinqQuery<Order>()
+                        select o;
+        IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
 
-          Assert.That (query.Statement, Is.EqualTo ("Value added by generation mixin"));
+        Assert.That (query.Statement, Is.EqualTo ("Value added by generation mixin"));
       }
     }
 
@@ -179,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void CreateLinqQuery_DefaultMethodCallExpressionNodeTypeRegistry_KnowsFetchObject ()
     {
-      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order> ();
+      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order>();
       var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
       var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
       var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
@@ -205,27 +206,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var preparationStageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
       var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
-      
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+
       var queryable = QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry);
       Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
 
       var sqlStatementBuilder = new SqlStatementBuilder();
       sqlStatementBuilder.DataInfo = new StreamedScalarValueInfo (typeof (string));
-      sqlStatementBuilder.SelectProjection = Expression.Constant ("select");
+      sqlStatementBuilder.SelectProjection = new SqlEntityDefinitionExpression (
+          typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
       var sqlStatement = sqlStatementBuilder.GetSqlStatement();
 
       preparationStageMock
           .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
           .Return (sqlStatement);
       resolutionStageMock
-          .Expect (mock => mock.ResolveSqlStatement (Arg<SqlStatement>.Matches(s=>s==sqlStatement), Arg<IMappingResolutionContext>.Is.Anything))
+          .Expect (mock => mock.ResolveSqlStatement (Arg<SqlStatement>.Matches (s => s == sqlStatement), Arg<IMappingResolutionContext>.Is.Anything))
           .Return (sqlStatement);
       generationStageMock
           .Expect (
-          mock => mock.GenerateTextForSqlStatement (
-                      Arg<SqlCommandBuilder>.Is.Anything,
-                      Arg<SqlStatement>.Is.Anything))
+              mock => mock.GenerateTextForSqlStatement (
+                  Arg<SqlCommandBuilder>.Is.Anything,
+                  Arg<SqlStatement>.Is.Anything))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
 
       preparationStageMock.Replay();
@@ -279,7 +281,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [OverrideTarget]
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context)
     {
-      var builder = new SqlStatementBuilder { DataInfo = new StreamedScalarValueInfo (typeof (string)), SelectProjection = Expression.Constant ("Value added by preparation mixin") };
+      var builder = new SqlStatementBuilder
+                    {
+                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
+                        SelectProjection = Expression.Constant ("Value added by preparation mixin")
+                    };
       return builder.GetSqlStatement();
     }
   }
@@ -292,8 +298,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));
 
-      var builder = new SqlStatementBuilder { DataInfo = new StreamedScalarValueInfo (typeof (string)), SelectProjection = Expression.Constant ("Value added by resolution mixin") };
-      return builder.GetSqlStatement ();
+      var builder = new SqlStatementBuilder
+                    {
+                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
+                        SelectProjection =
+                            new SqlEntityDefinitionExpression (
+                                typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false))
+                    };
+      return builder.GetSqlStatement();
     }
   }
 
@@ -303,8 +315,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public virtual void GenerateTextForSqlStatement (
         ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
-      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by resolution mixin"));
+      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
+      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo(typeof(int)));
+      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).TableAlias, Is.EqualTo ("c"));
+      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
 
       commandBuilder.Append ("Value added by generation mixin");
     }

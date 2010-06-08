@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -32,8 +33,10 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Logging;
 using Remotion.Utilities;
+using Expression = Castle.DynamicProxy.Generators.Emitters.SimpleAST.Expression;
 using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -49,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
-    private IMappingResolutionContext _mappingResolutionContext;
+    private readonly IMappingResolutionContext _mappingResolutionContext;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -245,11 +248,12 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
+      var sqlStatement = TransformAndResolveQueryModel (queryModel);
       if (queryType == QueryType.Collection)
-        EnsureQueryReturnsDomainObject (queryModel);
-
-      var command = CreateSqlCommand (queryModel);
-
+        EnsureQueryReturnsDomainObject (sqlStatement);
+      
+      var command = CreateSqlCommand (sqlStatement);
+      
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
@@ -367,21 +371,24 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    private void EnsureQueryReturnsDomainObject (QueryModel queryModel)
+    private void EnsureQueryReturnsDomainObject (SqlStatement sqlStatement)
     {
-      var streamedSingleValueInfo = queryModel.GetOutputDataInfo() as StreamedSingleValueInfo;
-      if (streamedSingleValueInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSingleValueInfo.DataType))
-        return;
-
-      var streamedSequenceInfo = queryModel.GetOutputDataInfo() as StreamedSequenceInfo;
-      if (streamedSequenceInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSequenceInfo.ItemExpression.Type))
+      var expression = GetProjectionWithoutUnaryExpressions(sqlStatement.SelectProjection);
+      if(expression is SqlEntityExpression)
         return;
 
       string message = string.Format (
           "This query provider does not support the given query ('{0}'). "
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
-          queryModel);
+          sqlStatement);
       throw new NotSupportedException (message);
+    }
+
+    private System.Linq.Expressions.Expression GetProjectionWithoutUnaryExpressions (System.Linq.Expressions.Expression expression)
+    {
+      if (expression is UnaryExpression)
+        return GetProjectionWithoutUnaryExpressions (((UnaryExpression) expression).Operand);
+      return expression;
     }
 
     /// <summary>
