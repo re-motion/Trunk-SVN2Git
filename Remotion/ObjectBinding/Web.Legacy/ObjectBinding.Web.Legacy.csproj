@@ -195,6 +195,7 @@
     <Content Include="Res\Image\MoveNextInactive.gif" />
     <Content Include="Res\Image\MovePrevious.gif" />
     <Content Include="Res\Image\MovePreviousInactive.gif" />
+    <Content Include="Res\Image\RequestInProgressIndicator.gif" />
     <Content Include="Res\Image\SortAscending.gif" />
     <Content Include="Res\Image\SortDescending.gif" />
   </ItemGroup>

@@ -38,7 +38,7 @@
 }
 
 .ac_loading {
-	background: white url('../Image/indicator.gif') right center no-repeat;
+	background: white url('../Image/RequestInProgressIndicator.gif') right center no-repeat;
 }
 
 .ac_odd {
