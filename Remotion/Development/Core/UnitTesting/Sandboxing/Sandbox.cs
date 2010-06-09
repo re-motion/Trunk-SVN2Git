@@ -33,10 +33,12 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       foreach (var permission in permissions)
         permissionSet.AddPermission (permission);
 
-      var fullTrustStrongNames = (from asm in fullTrustAssemblies
-                                  let name = asm.GetName()
-                                  let strongNamePublicKeyBlob = new StrongNamePublicKeyBlob (name.GetPublicKey())
-                                  select new StrongName (strongNamePublicKeyBlob, name.Name, name.Version)).ToArray();
+      StrongName[] fullTrustStrongNames = null;
+      if (fullTrustAssemblies != null && fullTrustAssemblies.Length > 0)
+        fullTrustStrongNames = (from asm in fullTrustAssemblies
+                                let name = asm.GetName ()
+                                let strongNamePublicKeyBlob = new StrongNamePublicKeyBlob (name.GetPublicKey ())
+                                select new StrongName (strongNamePublicKeyBlob, name.Name, name.Version)).ToArray ();
       var appDomain = AppDomain.CreateDomain ("Sandbox (" + DateTime.Now + ")", null, appDomainSetup, permissionSet, fullTrustStrongNames);
       return new Sandbox (appDomain);
     }
