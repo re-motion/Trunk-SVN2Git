@@ -94,7 +94,10 @@
 
         var timeout;
         var autoFillTimeout;
+        // holds the last text the user entered into the input element
         var previousValue = "";
+        // re-motion: holds the last valid value of the input element
+        var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
         var hasFocus = 0;
         var lastKeyPressCode;
@@ -162,46 +165,33 @@
                 // matches also semicolon                    
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
-                    if (selectCurrent()) {
-                        //SelectCurrent already does everything that's needed.
-                    }
-                    // re-motion: allow deletion of current value by entering the empty string
-                    else if ($input.val() == '') {
-                        hideResults();
-                        $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
-                    }
-                    else /* invalid input */ {
-                        hideResults();
-                    }
-                    // stop default to prevent a form submit, Opera needs special handling
-                    event.preventDefault();
-                    blockSubmit = true;
-                    return false;
-                // re-motion: do not block event bubbling for tab                  
                 case KEY.TAB:
-                    if (selectCurrent()) {
-                        //SelectCurrent already does everything that's needed.
-                    }
-                    else if ($input.val() == '') {
-                        hideResults();
-                        $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
-                    }
-                    else /* invalid input */ {
-                        hideResults();
-                    }
-                    break;
                 case KEY.ESC:
+                    var wasVisible = select.visible();
+
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
-                    }
-                    else if ($input.val() == '') {
+                    } else if ($input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
                         hideResults();
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
-                    }
-                    else /* invalid input */ {
+                    } else /* invalid input */ {
                         hideResults();
+                        $input.val(previousValidValue);
                     }
-                    return false;
+
+                    if (event.keyCode == KEY.RETURN) {
+                        if (wasVisible) {
+                            // stop default to prevent a form submit, Opera needs special handling
+                            blockSubmit = true;
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    } else if (event.keyCode == KEY.TAB) {
+                        return true;
+                    } else /* ESC */ {
+                        return false;
+                    }
 
                 default:
                     clearTimeout(timeout);
@@ -281,6 +271,7 @@
             var v = selected.result;
 
             previousValue = v;
+            previousValidValue = v;
 
             if (options.multiple) {
                 var words = trimWords($input.val());
