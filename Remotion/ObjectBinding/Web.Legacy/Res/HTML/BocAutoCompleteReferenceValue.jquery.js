@@ -603,7 +603,10 @@
                     return data[q];
                 } else
                     if (options.matchSubset) {
-                    for (var i = q.length - 1; i >= options.minChars; i--) {
+                    // re-motion: added check for min-length of q. If q contained only a single character, options.minChars is 0,
+                    //            and the cache contains an entry for an empty string, this complete search result would be returned.
+                    var minChars = Math.max (options.minChars, 1);
+                    for (var i = q.length - 1; i >= minChars; i--) {
                         var c = data[q.substr(0, i)];
                         if (c) {
                             var csub = [];
