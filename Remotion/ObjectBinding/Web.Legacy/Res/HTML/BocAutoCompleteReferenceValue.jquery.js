@@ -168,6 +168,7 @@
                 case KEY.TAB:
                 case KEY.ESC:
                     var wasVisible = select.visible();
+                    config.mouseDownOnSelect = false;
 
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.

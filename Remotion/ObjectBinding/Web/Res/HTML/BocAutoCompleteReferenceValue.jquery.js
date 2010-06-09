@@ -168,6 +168,7 @@
                 case KEY.TAB:
                 case KEY.ESC:
                     var wasVisible = select.visible();
+                    config.mouseDownOnSelect = false;
 
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
@@ -845,8 +846,10 @@
                 //re-motion: block blur bind as long we scroll dropDown list 
                 var revertInputStausTimeout = null;
                 function revertInputStaus() {
-                    config.mouseDownOnSelect = false;
-                    $(input).focus();
+                    if (config.mouseDownOnSelect) {
+                        config.mouseDownOnSelect = false;
+                        $(input).focus();
+                    }
                 }
                 element.scroll(function() {
                     config.mouseDownOnSelect = true;
