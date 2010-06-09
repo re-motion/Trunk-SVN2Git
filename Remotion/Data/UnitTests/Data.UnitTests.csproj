@@ -426,6 +426,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Tracing\TracingDbConnectionTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTestHelper.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
