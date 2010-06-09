@@ -900,8 +900,9 @@
                 }
                 repositionTimer = setTimeout(repositonHandler, options.repositionInterval);
 
+                // re-motion: moved selection to selectedItemIndex+1, instead of the actual index.
                 if (selectedItemIndex >= 0)
-                  moveSelect (selectedItemIndex + 1, false);
+                  moveSelect (selectedItemIndex, false);
 
                 if (options.scroll) {
                     if (selectedItemIndex >= 0) {
