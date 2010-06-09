@@ -37,14 +37,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       using (var sandbox = Sandbox.CreateSandbox (permissions, fullTrustAssemblies))
       {
         var runner = sandbox.CreateSandboxedInstance<SandboxTestRunner> (permissions);
-        try
-        {
-          return runner.RunTestFixtures (testFixtureTypes);
-        }
-        catch (TargetInvocationException ex)
-        {
-          throw ex.InnerException.PreserveStackTrace();
-        }
+        return runner.RunTestFixtures (testFixtureTypes);
       }
     }
 
@@ -67,42 +60,40 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       var tearDownMethod = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TearDownAttribute")).SingleOrDefault ();
       var testMethods = type.GetMethods ().Where (m => IsDefined (m, "NUnit.Framework.TestAttribute"));
 
+      var testResults = testMethods.Select (testMethod => RunTestMethod (testFixtureInstance, testMethod, setupMethod, tearDownMethod)).ToArray();
+      return new TestFixtureResult(type, testResults);
+    }
+
+    public TestResult RunTestMethod (object testFixtureInstance, MethodInfo testMethod, MethodInfo setupMethod, MethodInfo tearDownMethod)
+    {
       Exception exception;
-      var testResults = new List<TestResult>();
-      foreach (var testMethod in testMethods)
+      if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute"))
+        return TestResult.CreateIgnored (testMethod);
+
+      if (setupMethod!=null && !(TryInvokeMethod (setupMethod, testFixtureInstance, out exception)))
+        return TestResult.CreateFailedInSetUp (setupMethod, exception);
+
+      TestResult result;
+      if (IsDefined (testMethod, "NUnit.Framework.ExpectedExceptionAttribute"))
       {
-        if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute"))
-        {
-          testResults.Add (TestResult.CreateIgnored (testMethod));
-          continue;
-        }
-
-        if (setupMethod!=null && !(TryInvokeMethod (setupMethod, testFixtureInstance, out exception)))
-        {
-          testResults.Add(TestResult.CreateFailedInSetUp (setupMethod, exception));
-          continue;
-        }
-        
-        if (IsDefined (testMethod, "NUnit.Framework.ExpectedExceptionAttribute"))
-        {
-          var exceptionType = (Type)GetAttribute (testMethod, "NUnit.Framework.ExpectedExceptionAttribute").ConstructorArguments[0].Value;
-          if (!TryInvokeMethod (testMethod, testFixtureInstance, out exception) && exception.InnerException.GetType() == exceptionType)
-            testResults.Add(TestResult.CreateSucceeded (testMethod));
-          else
-            testResults.Add (TestResult.CreateFailed (testMethod, exception));
-        }
+        var exceptionType = (Type) GetAttribute (testMethod, "NUnit.Framework.ExpectedExceptionAttribute").ConstructorArguments[0].Value;
+        if (!TryInvokeMethod (testMethod, testFixtureInstance, out exception) && exception.GetType() == exceptionType)
+          result = TestResult.CreateSucceeded (testMethod);
         else
-        {
-          if (TryInvokeMethod (testMethod, testFixtureInstance, out exception))
-            testResults.Add(TestResult.CreateSucceeded (testMethod));
-          else
-            testResults.Add(TestResult.CreateFailed (testMethod, exception));
-        }
-
-        if (tearDownMethod!=null && !TryInvokeMethod (tearDownMethod, testFixtureInstance, out exception))
-          testResults.Add (TestResult.CreateFailedInTearDown (tearDownMethod, exception));
+          result = TestResult.CreateFailed (testMethod, exception);
       }
-      return new TestFixtureResult(type, testResults.ToArray());
+      else
+      {
+        if (TryInvokeMethod (testMethod, testFixtureInstance, out exception))
+          result = TestResult.CreateSucceeded (testMethod);
+        else
+          result = TestResult.CreateFailed (testMethod, exception);
+      }
+
+      if (tearDownMethod!=null && !TryInvokeMethod (tearDownMethod, testFixtureInstance, out exception))
+        return TestResult.CreateFailedInTearDown (tearDownMethod, exception);
+      else
+        return result;
     }
 
     private bool TryInvokeMethod (MethodInfo method, object instance, out Exception exception)
@@ -112,11 +103,11 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       {
         method.Invoke (instance, null);
       }
-      catch (Exception ex)
+      catch (TargetInvocationException ex)
       {
-        exception = ex;
+        exception = ex.InnerException;
       }
-      return exception==null;
+      return exception == null;
     }
 
     private bool IsDefined (MemberInfo memberInfo, string attributeFullName)

@@ -112,5 +112,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     {
       _sandboxTestRunner.RunTestFixture (null);
     }
+
+    // TODO Review 2857: Add tests for all condition paths in RunTestMethod (exception in setup, exception in tear down, exception in test, missing exception in test with ExpectedException, success with/without ExpectedException, Ignored
   }
 }
