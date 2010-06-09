@@ -113,6 +113,77 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       _sandboxTestRunner.RunTestFixture (null);
     }
 
-    // TODO Review 2857: Add tests for all condition paths in RunTestMethod (exception in setup, exception in tear down, exception in test, missing exception in test with ExpectedException, success with/without ExpectedException, Ignored
+    [Test]
+    public void RunTestMethod_IgnoredTest ()
+    {
+      var instance = new DummyTest5();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestIgnored");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      testResult.EnsureNotFailed();
+    }
+
+    [Test]
+    public void RunTestMethod_SetupFailed ()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestSucceeded");
+      var setupMethod = typeof (DummyTest5).GetMethod ("TestThrowsException");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, setupMethod, null);
+      Assert.That (testResult.Status, Is.EqualTo(TestStatus.FailedInSetUp));
+    }
+
+    [Test]
+    public void RunTestMethod_TearDownFailed ()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestSucceeded");
+      var tearDownMethod = typeof (DummyTest5).GetMethod ("TestThrowsException");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, tearDownMethod);
+      Assert.That (testResult.Status, Is.EqualTo(TestStatus.FailedInTearDown));
+    }
+
+    [Test]
+    public void RunTestMethod_ExpectedExceptionSucceded ()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestExpectedExceptionSucceeded");
+      
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      testResult.EnsureNotFailed ();
+    }
+
+    [Test]
+    public void RunTestMethod_ExpectedExceptionFailed ()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestExpectedExceptionFailed");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      Assert.That (testResult.Status, Is.EqualTo (TestStatus.Failed));
+    }
+
+    [Test]
+    public void RunTestMethod_TestSucceded ()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestSucceeded");
+      
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      Assert.That (testResult.Status, Is.EqualTo(TestStatus.Succeeded));
+    }
+
+    [Test]
+    public void RunTestMethod_TestFailed()
+    {
+      var instance = new DummyTest5 ();
+      var testMethod = typeof (DummyTest5).GetMethod ("TestFailed");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      Assert.That (testResult.Status, Is.EqualTo(TestStatus.Failed));
+    }
+  
   }
 }

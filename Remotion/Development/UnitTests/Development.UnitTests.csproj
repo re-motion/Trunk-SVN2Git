@@ -152,6 +152,7 @@
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest2.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest3.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest4.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTest5.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\PermissionSetsTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTestRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\SandboxTest.cs" />
