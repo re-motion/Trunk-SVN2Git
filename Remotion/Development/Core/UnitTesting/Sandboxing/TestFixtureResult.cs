@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
@@ -25,6 +24,9 @@ namespace Remotion.Development.UnitTesting.Sandboxing
   [Serializable]
   public struct TestFixtureResult
   {
+    public readonly Type Type;
+    public readonly TestResult[] TestResults;
+
     public TestFixtureResult (Type type, TestResult[] testResults)
     {
       if (type == null)
@@ -33,8 +35,5 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       Type = type;
       TestResults = testResults;
     }
-
-    public readonly Type Type;
-    public readonly TestResult[] TestResults;
   }
 }

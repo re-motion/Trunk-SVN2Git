@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
   /// <summary>
   /// <see cref="TestFailedException"/> is thrown when <see cref="TestResult.EnsureNotFailed"/> is called and the specific test has been failed.
   /// </summary>
+  [Serializable]
   public class TestFailedException : Exception
   {
     private static string CreateMessage (Type declaringType, string testName, TestStatus status)
@@ -32,6 +32,11 @@ namespace Remotion.Development.UnitTesting.Sandboxing
 
     public TestFailedException (Type declaringType, string testName, TestStatus status, Exception exception)
       : base (CreateMessage (declaringType, testName, status), exception)
+    {
+    }
+
+    protected TestFailedException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
     {
     }
   }

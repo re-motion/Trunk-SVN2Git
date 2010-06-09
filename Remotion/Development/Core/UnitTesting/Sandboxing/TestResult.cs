@@ -71,6 +71,10 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       return new TestResult (methodInfo, TestStatus.FailedInTearDown, exception);
     }
 
+    public readonly MethodInfo MethodInfo;
+    public readonly TestStatus Status;
+    public readonly Exception Exception;
+
     private TestResult (MethodInfo methodInfo, TestStatus status, Exception exception)
     {
       if (methodInfo == null)
@@ -80,10 +84,6 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       Status = status;
       Exception = exception;
     }
-
-    public readonly MethodInfo MethodInfo;
-    public readonly TestStatus Status;
-    public readonly Exception Exception;
 
     public void EnsureNotFailed ()
     {
