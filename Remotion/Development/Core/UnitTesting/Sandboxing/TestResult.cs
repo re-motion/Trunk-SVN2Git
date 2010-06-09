@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
 {
@@ -28,7 +27,51 @@ namespace Remotion.Development.UnitTesting.Sandboxing
   [Serializable]
   public struct TestResult
   {
-    public TestResult (MethodInfo methodInfo, TestStatus status, Exception exception)
+    public static TestResult CreateSucceeded (MethodInfo methodInfo)
+    {
+      if (methodInfo == null)
+        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+      return new TestResult (methodInfo, TestStatus.Succeeded, null);
+    }
+
+    public static TestResult CreateIgnored (MethodInfo methodInfo)
+    {
+      if (methodInfo == null)
+        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+      return new TestResult (methodInfo, TestStatus.Ignored, null);
+    }
+
+    public static TestResult CreateFailed (MethodInfo methodInfo, Exception exception)
+    {
+      if (methodInfo == null)
+        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+      if (exception == null)
+        throw new ArgumentNullException ("exception"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+
+      return new TestResult (methodInfo, TestStatus.Failed, exception);
+    }
+
+    public static TestResult CreateFailedInSetUp (MethodInfo methodInfo, Exception exception)
+    {
+      if (methodInfo == null)
+        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+      if (exception == null)
+        throw new ArgumentNullException ("exception"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+
+      return new TestResult (methodInfo, TestStatus.FailedInSetUp, exception);
+    }
+
+    public static TestResult CreateFailedInTearDown (MethodInfo methodInfo, Exception exception)
+    {
+      if (methodInfo == null)
+        throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+      if (exception == null)
+        throw new ArgumentNullException ("exception"); // avoid ArgumentUtility, it doesn't support partial trust ATM
+
+      return new TestResult (methodInfo, TestStatus.FailedInTearDown, exception);
+    }
+
+    private TestResult (MethodInfo methodInfo, TestStatus status, Exception exception)
     {
       if (methodInfo == null)
         throw new ArgumentNullException ("methodInfo"); // avoid ArgumentUtility, it doesn't support partial trust ATM
@@ -44,8 +87,8 @@ namespace Remotion.Development.UnitTesting.Sandboxing
 
     public void EnsureNotFailed ()
     {
-      if ((int)Status > 1)
-        throw new TestFailedException (Exception);
+      if (Status > TestStatus.Ignored)
+        throw new TestFailedException (MethodInfo.DeclaringType, MethodInfo.Name, Status, Exception);
     }
   }
 }

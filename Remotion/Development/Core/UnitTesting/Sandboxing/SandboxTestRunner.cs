@@ -73,13 +73,13 @@ namespace Remotion.Development.UnitTesting.Sandboxing
       {
         if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute"))
         {
-          testResults.Add (new TestResult (testMethod, TestStatus.Ignored, null));
+          testResults.Add (TestResult.CreateIgnored (testMethod));
           continue;
         }
 
         if (setupMethod!=null && !(TryInvokeMethod (setupMethod, testFixtureInstance, out exception)))
         {
-          testResults.Add(new TestResult(setupMethod,TestStatus.FailedInSetUp, exception));
+          testResults.Add(TestResult.CreateFailedInSetUp (setupMethod, exception));
           continue;
         }
         
@@ -87,20 +87,20 @@ namespace Remotion.Development.UnitTesting.Sandboxing
         {
           var exceptionType = (Type)GetAttribute (testMethod, "NUnit.Framework.ExpectedExceptionAttribute").ConstructorArguments[0].Value;
           if (!TryInvokeMethod (testMethod, testFixtureInstance, out exception) && exception.InnerException.GetType() == exceptionType)
-            testResults.Add(new TestResult(testMethod,TestStatus.Succeeded, null));
+            testResults.Add(TestResult.CreateSucceeded (testMethod));
           else
-            testResults.Add (new TestResult (testMethod, TestStatus.Failed, exception));
+            testResults.Add (TestResult.CreateFailed (testMethod, exception));
         }
         else
         {
           if (TryInvokeMethod (testMethod, testFixtureInstance, out exception))
-            testResults.Add(new TestResult(testMethod,TestStatus.Succeeded, null));
+            testResults.Add(TestResult.CreateSucceeded (testMethod));
           else
-            testResults.Add(new TestResult(testMethod,TestStatus.Failed, exception));
+            testResults.Add(TestResult.CreateFailed (testMethod, exception));
         }
 
         if (tearDownMethod!=null && !TryInvokeMethod (tearDownMethod, testFixtureInstance, out exception))
-          testResults.Add (new TestResult (tearDownMethod, TestStatus.FailedInTearDown, exception));
+          testResults.Add (TestResult.CreateFailedInTearDown (tearDownMethod, exception));
       }
       return new TestFixtureResult(type, testResults.ToArray());
     }

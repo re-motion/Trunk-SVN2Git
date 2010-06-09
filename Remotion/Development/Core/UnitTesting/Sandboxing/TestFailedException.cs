@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Sandboxing
@@ -24,18 +25,14 @@ namespace Remotion.Development.UnitTesting.Sandboxing
   /// </summary>
   public class TestFailedException : Exception
   {
-    private readonly Exception _testException;
-
-    public TestFailedException (Exception testException)
+    private static string CreateMessage (Type declaringType, string testName, TestStatus status)
     {
-      ArgumentUtility.CheckNotNull ("testException", testException);
-
-      _testException = testException;
+      return string.Format ("Test '{0}.{1}' failed. Status: {2}.", declaringType, testName, status);
     }
 
-    public Exception TestException
+    public TestFailedException (Type declaringType, string testName, TestStatus status, Exception exception)
+      : base (CreateMessage (declaringType, testName, status), exception)
     {
-      get { return _testException; }
     }
   }
 }
