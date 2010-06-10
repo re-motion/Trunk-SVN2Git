@@ -673,6 +673,15 @@
             if (options.width > 0)
                 element.css("width", options.width);
 
+            // re-motion: clean-up drop-down div during an async postback.
+            var beginRequestHandler = function() {                
+                Sys.WebForms.PageRequestManager.getInstance().remove_beginRequest(beginRequestHandler);
+                element.remove();
+                element = null;
+                needsInit = true;
+            }
+            Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(beginRequestHandler);
+
             needsInit = false;
         }
 
