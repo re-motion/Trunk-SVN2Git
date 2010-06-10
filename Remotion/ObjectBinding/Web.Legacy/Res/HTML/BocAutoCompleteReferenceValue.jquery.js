@@ -534,8 +534,8 @@
         function populate() {
             if (!options.data) return false;
             // track the matches
-            var stMatchSets = {},
-      nullData = 0;
+            var stMatchSets = {};
+            var nullData = 0;
 
             // no url was specified, we need to adjust the cache length to make sure it fits the local data store
             if (!options.serviceUrl) options.cacheLength = 1;
