@@ -36,7 +36,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Logging;
 using Remotion.Utilities;
-using Expression = Castle.DynamicProxy.Generators.Emitters.SimpleAST.Expression;
 using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -248,12 +247,14 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
+      // TODO Review 2800: Move this into the CreateSqlCommand method; that way, people can still override CreateSqlCommand to intercept the whole QueryModel-to-SQL process. When you do this, reuse the original public virtual CreateSqlCommand method and remove the protected one.
       var sqlStatement = TransformAndResolveQueryModel (queryModel);
       if (queryType == QueryType.Collection)
-        EnsureQueryReturnsDomainObject (sqlStatement);
+        CheckQueryReturnsDomainObject (sqlStatement);
       
       var command = CreateSqlCommand (sqlStatement);
-      
+      // TODO Review 2800: ... up to here.
+
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
@@ -273,7 +274,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <summary>
     /// Creates a sql query from a given <see cref="QueryModel"/>.
     /// </summary>
-    /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated.</param>
+    /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated for.</param>
     /// <returns></returns>
     public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel)
     {
@@ -371,7 +372,8 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    private void EnsureQueryReturnsDomainObject (SqlStatement sqlStatement)
+    // TODO Review 2800: Write an integration test similar to the one in the bug report (i.e., with a Cast to an interface). The test should now work.
+    private void CheckQueryReturnsDomainObject (SqlStatement sqlStatement)
     {
       var expression = GetProjectionWithoutUnaryExpressions(sqlStatement.SelectProjection);
       if(expression is SqlEntityExpression)
@@ -386,6 +388,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private System.Linq.Expressions.Expression GetProjectionWithoutUnaryExpressions (System.Linq.Expressions.Expression expression)
     {
+      // TODO Review 2800: Consider using a while loop instead of recursion so that you can inline this method
+      // TODO Review 2800: There is no unit test showing that CreateQuery supports unary expressions
       if (expression is UnaryExpression)
         return GetProjectionWithoutUnaryExpressions (((UnaryExpression) expression).Operand);
       return expression;
@@ -423,9 +427,9 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Creates sql text based on a given <see cref="SqlStatement"/>.
+    /// Creates a SQL command based on a given <see cref="SqlStatement"/>.
     /// </summary>
-    /// <param name="sqlStatement">The <see cref="SqlStatement"/> a sql query has to be generated.</param>
+    /// <param name="sqlStatement">The <see cref="SqlStatement"/> a SQL query has to be generated for.</param>
     /// <returns><see cref="SqlCommand"/> which represents the sql query.</returns>
     protected virtual SqlCommandData CreateSqlCommand (SqlStatement sqlStatement)
     {

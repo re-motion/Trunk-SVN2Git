@@ -36,7 +36,6 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -59,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DefaultSqlPreparationStage _preparationStage;
     private DefaultMappingResolutionStage _resolutionStage;
     private DefaultSqlGenerationStage _generationStage;
-    private ISqlPreparationContext _context;
     private MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
 
     public override void SetUp ()
@@ -72,7 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var resolver = new MappingResolver();
       var generator = new UniqueIdentifierGenerator();
-      _context = new SqlPreparationContext();
       _preparationStage = new DefaultSqlPreparationStage (
           MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
@@ -617,17 +614,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This query provider does not support the given query ('SELECT [t0].[ID] FROM [Order] [t0]'). re-store only supports queries selecting a "
+        + "scalar value, a single DomainObject, or a collection of DomainObjects.")]
     public void CreateQuery_ColumnInSelectProjection_ThrowsException ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() select computer));
       QueryModel queryModel = ParseQuery (expression);
 
-      var unresolvedTableInfo = new UnresolvedTableInfo (typeof (int));
+      var unresolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "Order", "t0");
       var sqlTable = new SqlTable (unresolvedTableInfo);
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
-          new SqlEntityDefinitionExpression(typeof(int), "c", "CookTable", new SqlColumnDefinitionExpression(typeof(int), "c", "ID", true)),
+          new SqlColumnDefinitionExpression(typeof(Guid), "t0", "ID", true),
           new[] { sqlTable },
           new Ordering[] { },
           null,
