@@ -431,18 +431,6 @@
     <Compile Include="ViewPersonsWxeFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm2.aspx.cs">
-      <DependentUpon>WebForm2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm3.aspx.cs">
-      <DependentUpon>WebForm3.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Content Include="ClientForm.aspx">
       <SubType>Form</SubType>
     </Content>
@@ -555,15 +543,6 @@
     <Content Include="UrlMapping.xml" />
     <Content Include="ViewLayoutTests\Form.aspx" />
     <Content Include="Web.config" />
-    <Content Include="WebForm1.aspx">
-      <SubType>Form</SubType>
-    </Content>
-    <Content Include="WebForm2.aspx">
-      <SubType>Form</SubType>
-    </Content>
-    <Content Include="WebForm3.aspx">
-      <SubType>Form</SubType>
-    </Content>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
