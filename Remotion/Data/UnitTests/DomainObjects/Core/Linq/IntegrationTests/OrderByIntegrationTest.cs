@@ -43,6 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    // TODO Review 2772: Rename this test: it tests the automatic order by handling in the from clause
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
     {
       CheckQueryResult (
@@ -55,6 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    // TODO Review 2772: Rename this test: it tests the automatic order by handling in the from clause
     public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithTopExpression ()
     {
       CheckQueryResult (
@@ -67,6 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Single() != null
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
     {
       CheckQueryResult (
@@ -76,6 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Order1);
     }
 
+    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Count() > 0
     [Test]
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
