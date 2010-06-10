@@ -693,9 +693,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         PreRenderMenuItems();
 
       if (HasOptionsMenu)
-        PreRenderOptionsMenu();
+      {
+        OptionsMenu.Visible = true;
+        PreRenderOptionsMenu ();
+      }
       else
+      {
         OptionsMenu.Visible = false;
+      }
 
       if (Command != null)
         Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocReferenceValue '{0}', Object Command", ID));
