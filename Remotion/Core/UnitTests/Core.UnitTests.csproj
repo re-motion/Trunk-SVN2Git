@@ -278,7 +278,7 @@
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
-    <Compile Include="Reflection\DynamicMethodBasedMethodCallerTest.cs" />
+    <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactoryTest.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
