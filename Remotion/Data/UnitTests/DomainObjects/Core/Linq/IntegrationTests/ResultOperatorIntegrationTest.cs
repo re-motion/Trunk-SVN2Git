@@ -556,6 +556,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
     }
+
+    [Test]
+    public void QueryWithCastToInterface_ThrowsNoException ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Cast<IOrder>();
+
+      Assert.That (query.Count(), Is.EqualTo (6));
+    }
     
   }
 }

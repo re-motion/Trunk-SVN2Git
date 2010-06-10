@@ -247,14 +247,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      // TODO Review 2800: Move this into the CreateSqlCommand method; that way, people can still override CreateSqlCommand to intercept the whole QueryModel-to-SQL process. When you do this, reuse the original public virtual CreateSqlCommand method and remove the protected one.
-      var sqlStatement = TransformAndResolveQueryModel (queryModel);
-      if (queryType == QueryType.Collection)
-        CheckQueryReturnsDomainObject (sqlStatement);
+      var command = CreateSqlCommand (queryModel, queryType);
       
-      var command = CreateSqlCommand (sqlStatement);
-      // TODO Review 2800: ... up to here.
-
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
@@ -275,12 +269,16 @@ namespace Remotion.Data.DomainObjects.Linq
     /// Creates a sql query from a given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated for.</param>
+    /// <param name="queryType">The <see cref="QueryType"/> of the sql query.</param>
     /// <returns></returns>
-    public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel)
+    public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel, QueryType queryType)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       var sqlStatement = TransformAndResolveQueryModel (queryModel);
+      if (queryType == QueryType.Collection)
+        CheckQueryReturnsDomainObject (sqlStatement);
+
       return CreateSqlCommand (sqlStatement);
     }
 
@@ -375,7 +373,9 @@ namespace Remotion.Data.DomainObjects.Linq
     // TODO Review 2800: Write an integration test similar to the one in the bug report (i.e., with a Cast to an interface). The test should now work.
     private void CheckQueryReturnsDomainObject (SqlStatement sqlStatement)
     {
-      var expression = GetProjectionWithoutUnaryExpressions(sqlStatement.SelectProjection);
+      var expression = sqlStatement.SelectProjection;
+      while (expression is UnaryExpression)
+        expression = ((UnaryExpression) expression).Operand;
       if(expression is SqlEntityExpression)
         return;
 
@@ -384,15 +384,6 @@ namespace Remotion.Data.DomainObjects.Linq
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
           sqlStatement);
       throw new NotSupportedException (message);
-    }
-
-    private System.Linq.Expressions.Expression GetProjectionWithoutUnaryExpressions (System.Linq.Expressions.Expression expression)
-    {
-      // TODO Review 2800: Consider using a while loop instead of recursion so that you can inline this method
-      // TODO Review 2800: There is no unit test showing that CreateQuery supports unary expressions
-      if (expression is UnaryExpression)
-        return GetProjectionWithoutUnaryExpressions (((UnaryExpression) expression).Operand);
-      return expression;
     }
 
     /// <summary>

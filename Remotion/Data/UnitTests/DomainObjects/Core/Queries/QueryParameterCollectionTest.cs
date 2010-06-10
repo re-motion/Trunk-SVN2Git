@@ -91,8 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void ContainsParameterFalse ()
     {
       _collection.Add (_parameter);
-      QueryParameter copy = new QueryParameter (_parameter.Name, _parameter.Value, _parameter.ParameterType);
-      Assert.IsFalse (_collection.Contains (copy));
+      QueryParameter param = new QueryParameter ("Test", "Test", QueryParameterType.Text);
+      Assert.IsFalse (_collection.Contains (param));
     }
 
     [Test]

@@ -15,7 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
+using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -31,7 +32,7 @@ public class QueryParameter
 
   // member fields
 
-  private string _name;
+  private readonly string _name;
   private object _value;
   private QueryParameterType _parameterType;
 
@@ -91,6 +92,24 @@ public class QueryParameter
   {
     get { return _parameterType; }
     set { _parameterType = value; }
+  }
+
+  public override bool Equals (object obj)
+  {
+    var parameter = obj as QueryParameter;
+    if (parameter == null)
+      return false;
+
+    return _name == parameter._name &&
+           ((_value==null && _value==parameter._value) || (_value.Equals(parameter._value))) &&
+           _parameterType == parameter._parameterType;
+  }
+
+  public override int GetHashCode ()
+  {
+    return HashCodeUtility.GetHashCodeOrZero (_name) ^
+           HashCodeUtility.GetHashCodeOrZero (_value) ^
+           HashCodeUtility.GetHashCodeOrZero (_parameterType);
   }
 }
 }

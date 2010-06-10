@@ -614,7 +614,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "This query provider does not support the given query ('SELECT [t0].[ID] FROM [Order] [t0]'). re-store only supports queries selecting a "
         + "scalar value, a single DomainObject, or a collection of DomainObjects.")]
     public void CreateQuery_ColumnInSelectProjection_ThrowsException ()
@@ -661,7 +661,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        executor.CreateSqlCommand (ParseQuery (query.Expression));
+        executor.CreateSqlCommand (ParseQuery (query.Expression),QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).GetStatementCalled, Is.True);
       }
     }
@@ -676,7 +676,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
         ClassDefinition classDefinition = executor.StartingClassDefinition;
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        SqlCommandData statement = executor.CreateSqlCommand (ParseQuery (query.Expression));
+        SqlCommandData statement = executor.CreateSqlCommand (ParseQuery (query.Expression), QueryType.Collection);
 
         executor.CreateQuery ("<dynamic query>", classDefinition.StorageProviderID, statement.CommandText, statement.Parameters, QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
@@ -715,6 +715,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
+    }
+
+    [Test]
+    public void CreateQuery_UnaryExpression_ThrowsNoException ()
+    {
+      var query = (from c in QueryFactory.CreateLinqQuery<Customer> () select c).Cast<Company> ();
+      var queryModel = ParseQuery (query.Expression);
+      var executor =
+          ObjectFactory.Create<DomainObjectQueryExecutor> (
+              ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage));
+
+      executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
     private static QueryModel ParseQuery (Expression queryExpression)
