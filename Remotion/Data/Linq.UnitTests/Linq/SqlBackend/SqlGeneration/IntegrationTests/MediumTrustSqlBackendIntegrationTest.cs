@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Security.Permissions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.UnitTests.Sandboxing;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
@@ -34,7 +35,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
       var types = (from t in typeof (MediumTrustSqlBackendIntegrationTest).Assembly.GetTypes ()
                    where t.Namespace == typeof (MediumTrustSqlBackendIntegrationTest).Namespace 
                        && t != typeof (MediumTrustSqlBackendIntegrationTest)
-                       && !t.IsAbstract && !t.IsNested // TODO Review 2813: instead of !IsNested, check that TestFixtureAttribute is defined
+                       && !t.IsAbstract && t.IsDefined(typeof(TestFixtureAttribute), false)
                    select t).ToArray();
 
       var testFixtureResults = SandboxTestRunner.RunTestFixturesInSandbox (
@@ -45,7 +46,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.Integration
 
       foreach (var testResult in testResults)
         testResult.EnsureNotFailed ();
-      // TODO Review 2813: Assert that number of succeeded tests > 0 (to ensure that we actually run anything)
+      Assert.That (testResults.Count (r => r.Status == TestStatus.Succeeded), Is.GreaterThan (0));
     }
   }
 }

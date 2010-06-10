@@ -21,8 +21,6 @@ using System.Reflection;
 using System.Security;
 using Remotion.Utilities;
 
-// TODO Review 2812: Add the following comment to all files in this namespace. Update the same files in re-linq.
-
 // Note: This file is originally defined in Remotion.Development.UnitTesting.Sandboxing. It is duplicated by Remotion.Data.Linq.UnitTests.Sandboxing.
 // Note: Changes made to this file must be synchronized with all copies.
 
