@@ -171,6 +171,267 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     }
 
     [Test]
+    public void GetChars ()
+    {
+      int assumedResult = 2000;
+      int i = 5;
+      long fieldoffset = 5;
+      char[] buffer = new char[] {'a', 'b'};
+      int bufferoffset = 10;
+      int length = 128;
+
+
+      _innerDataReader.Expect (mock => mock.GetChars (i, fieldoffset, buffer, bufferoffset, length)).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetChars (i, fieldoffset, buffer, bufferoffset, length);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetGuid ()
+    {
+      var assumedGuid = Guid.NewGuid();
+      int i = 5;
+
+      _innerDataReader.Expect (mock => mock.GetGuid (i)).Return (assumedGuid);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetGuid (i);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedGuid));
+    }
+
+    [Test]
+    public void GetInt16 ()
+    {
+      int i = 5;
+      short assumedResult = 1;
+
+      _innerDataReader.Expect (mock => mock.GetInt16 (i)).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetInt16 (i);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetInt32 ()
+    {
+      int i = 5;
+      int assumedResult = 1;
+
+      _innerDataReader.Expect (mock => mock.GetInt32 (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetInt32 (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetInt64 ()
+    {
+      int i = 5;
+      long assumedResult = 1;
+
+      _innerDataReader.Expect (mock => mock.GetInt64 (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetInt64 (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetFloat ()
+    {
+      int i = 5;
+      float assumedResult = 1;
+
+      _innerDataReader.Expect (mock => mock.GetFloat (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetFloat (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetDouble ()
+    {
+      int i = 5;
+      double assumedResult = 1.0;
+
+      _innerDataReader.Expect (mock => mock.GetDouble (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetDouble (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetString ()
+    {
+      int i = 5;
+      string assumedResult = "test";
+
+      _innerDataReader.Expect (mock => mock.GetString (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetString (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetDecimal ()
+    {
+      int i = 5;
+      decimal assumedResult = 1;
+
+      _innerDataReader.Expect (mock => mock.GetDecimal (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetDecimal (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetDateTime ()
+    {
+      int i = 5;
+      DateTime assumedResult = new DateTime ();
+
+      _innerDataReader.Expect (mock => mock.GetDateTime (i)).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader.GetDateTime (i);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetData ()
+    {
+      var dataReaderMock = _mockRepository.StrictMock<IDataReader>();
+      int i = 5;
+      _innerDataReader.Expect (mock => mock.GetData (i)).Return (dataReaderMock);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetData (i);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (dataReaderMock));
+    }
+
+    [Test]
+    public void IsDBNull ()
+    {
+      var assumedResult = true;
+      int i = 5;
+      _innerDataReader.Expect (mock => mock.IsDBNull (i)).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.IsDBNull (i);
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void FieldCount ()
+    {
+      int assumedResult = 5;
+      _innerDataReader.Expect (mock => mock.FieldCount).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.FieldCount;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void NextResult ()
+    {
+      var assumedResult = true;
+      _innerDataReader.Expect (mock => mock.NextResult()).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.NextResult();
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo(assumedResult));
+    }
+
+    [Test]
+    public void GetSchemaTable ()
+    {
+      DataTable assumedResult = new DataTable();
+      _innerDataReader.Expect (mock => mock.GetSchemaTable()).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetSchemaTable();
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void Depth ()
+    {
+      int assumedResult = 5;
+      _innerDataReader.Expect (mock => mock.Depth).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.Depth;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void IsClosed ()
+    {
+      var assumedResult = true;
+      _innerDataReader.Expect (mock => mock.IsClosed).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.IsClosed;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void RecordsAffected ()
+    {
+      int assumedResult = 5;
+      _innerDataReader.Expect (mock => mock.RecordsAffected).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.RecordsAffected;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
     public void Dispose ()
     {
       using (_mockRepository.Ordered ())
