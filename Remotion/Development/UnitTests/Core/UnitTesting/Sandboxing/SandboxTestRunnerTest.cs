@@ -39,9 +39,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     public void RunTestsInSandbox ()
     {
       var permissions = PermissionSets.GetMediumTrust (AppDomain.CurrentDomain.BaseDirectory, Environment.MachineName);
-      // TODO Review 2860: Remove full trust assembly
       var testResults =
-          SandboxTestRunner.RunTestFixturesInSandbox (_testFixtureTypes, permissions, new[] { typeof (SandboxTestRunnerTest).Assembly }).SelectMany (
+          SandboxTestRunner.RunTestFixturesInSandbox (_testFixtureTypes, permissions, null).SelectMany (
               r => r.TestResults).Where (r => r.Status != TestStatus.Ignored);
 
       Assert.That (testResults.Count (), Is.EqualTo (3));
