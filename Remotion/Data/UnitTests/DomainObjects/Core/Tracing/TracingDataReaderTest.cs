@@ -157,6 +157,87 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     }
 
     [Test]
+    public void GetBytes ()
+    {
+      int i = 5;
+      long fieldOffset = 10;
+      byte[] buffer = new byte[] {new byte(),new byte() };
+      int bufferoffset = 1;
+      int length = 128;
+      long assumedResult = 10;
+
+      _innerDataReader.Expect (mock => mock.GetBytes (i, fieldOffset, buffer, bufferoffset, length)).Return(assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader.GetBytes (i, fieldOffset, buffer, bufferoffset, length);
+      _mockRepository.VerifyAll();
+
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void TracingDataReaderWithInt()
+    {
+      var i = 5;
+      object o = "5";
+      _innerDataReader.Expect (mock => mock[i]).Return (o);
+      _mockRepository.ReplayAll();
+
+      var result = _dataReader[i];
+
+      _mockRepository.VerifyAll();
+
+      Assert.That (result, Is.EqualTo (o));
+    }
+
+    [Test]
+    public void TracingDataReaderWithString ()
+    {
+      var i = "test";
+      object o = "5";
+      _innerDataReader.Expect (mock => mock[i]).Return (o);
+      _mockRepository.ReplayAll ();
+
+      var result = _dataReader[i];
+
+      _mockRepository.VerifyAll ();
+
+      Assert.That (result, Is.EqualTo (o));
+    }
+
+    [Test]
+    public void GetWrappedInstance ()
+    {
+      var wrappedInstance = _dataReader.WrappedInstance;
+
+      Assert.That (wrappedInstance, Is.EqualTo (_innerDataReader));
+    }
+
+    [Test]
+    public void GetConnectionId ()
+    {
+      var connectionID = _dataReader.ConnectionID;
+
+      Assert.That (connectionID, Is.EqualTo (_connectionID));
+    }
+
+    [Test]
+    public void GetQueryID ()
+    {
+      var queryID = _dataReader.QueryID;
+
+      Assert.That (queryID, Is.EqualTo (_queryID));
+    }
+
+    [Test]
+    public void GetPersistenceListener ()
+    {
+      var persistenceListener = _dataReader.PersistenceListener;
+
+      Assert.That (persistenceListener, Is.EqualTo (_listenerMock));
+    }
+
+    [Test]
     public void GetChar ()
     {
       var i = 5;
