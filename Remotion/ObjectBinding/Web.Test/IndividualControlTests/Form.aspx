@@ -36,11 +36,11 @@
       </TopControls>
       
       <View>
-        <asp:UpdatePanel ID="UserControlUpdatePanel" runat="server">
+        <remotion:WebUpdatePanel ID="UserControlUpdatePanel" runat="server" style="height: 100%">
           <contenttemplate>
             <asp:PlaceHolder ID="UserControlPlaceHolder" runat="server" />
           </contenttemplate>
-        </asp:UpdatePanel>
+        </remotion:WebUpdatePanel>
       </View>
       
       <BottomControls>
