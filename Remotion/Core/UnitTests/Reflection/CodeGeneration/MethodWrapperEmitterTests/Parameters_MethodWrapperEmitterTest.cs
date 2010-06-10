@@ -23,7 +23,6 @@ using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.Tes
 namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
 {
   [TestFixture]
-  [Explicit ("Bug search")]
   public class Parameters_MethodWrapperEmitterTest : MethodWrapperEmitterTestBase
   {
     [Test]

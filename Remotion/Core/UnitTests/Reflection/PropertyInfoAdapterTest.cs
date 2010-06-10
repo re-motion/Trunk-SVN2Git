@@ -27,7 +27,6 @@ using Rhino.Mocks;
 namespace Remotion.UnitTests.Reflection
 {
   [TestFixture]
-  [Explicit ("Bug search")]
   public class PropertyInfoAdapterTest
   {
     private PropertyInfo _property;
