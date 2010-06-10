@@ -113,7 +113,7 @@ function DatePicker_ShowDatePicker (button, container, target, src, width, heigh
   
   _datePicker_currentDatePicker = datePicker;
   _datePicker_isEventAfterDatePickerButtonClick = true;
-  window.parent.document.onclick = DatePicker_OnDocumentClick;
+  target.document.onclick = DatePicker_OnDocumentClick;
   $(datePicker).css('visibility', 'visible');
 }
 

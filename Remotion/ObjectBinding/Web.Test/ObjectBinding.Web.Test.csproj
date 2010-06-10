@@ -442,6 +442,7 @@
     <Content Include="CompleteBocTestUserControl.ascx" />
     <Content Include="CompleteBocTestUserControlForm.aspx" />
     <Content Include="ControlLayoutTests\Form.aspx" />
+    <Content Include="IFrameContainer.html" />
     <Content Include="Design\DesignTestBooleanValueForm.aspx" />
     <Content Include="Design\DesignTestCheckBoxForm.aspx" />
     <Content Include="Design\DesignTestDateTimeValueForm.aspx" />
