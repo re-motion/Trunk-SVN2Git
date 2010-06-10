@@ -36,6 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected virtual void RenderContents (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      
       if (EmbedInOptionsMenu)
         RenderContentsWithIntegratedOptionsMenu (writer);
       else
