@@ -142,7 +142,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RegisterInitializeGlobalsScript();
 
       AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Control Tag
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      RenderContents (writer);
+
+      writer.RenderEndTag ();
+    }
+
+    protected virtual void RenderContents (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
       //  Menu Block
       if (List.HasMenuBlock)
@@ -172,8 +181,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         NavigationBlockRenderer.Render (writer);
 
       writer.RenderEndTag();
-
-      writer.RenderEndTag(); //  Control Tag
     }
 
     private void RegisterInitializeGlobalsScript ()

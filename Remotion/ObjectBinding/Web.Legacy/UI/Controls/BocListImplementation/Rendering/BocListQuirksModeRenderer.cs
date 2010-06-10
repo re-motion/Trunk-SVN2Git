@@ -168,10 +168,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterInitializeGlobalsScript ();
+      RegisterInitializeGlobalsScript();
 
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      RenderContents (writer);
+
+      writer.RenderEndTag ();
+    }
+
+    protected virtual void RenderContents (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
       //  Render list block / menu block
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
@@ -206,7 +215,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       writer.RenderEndTag (); //  TR
       writer.RenderEndTag (); //  Table
-      writer.RenderEndTag (); //  div
     }
 
     private void RenderTopLevelColumnGroupForLegacyBrowser (HtmlTextWriter writer)
