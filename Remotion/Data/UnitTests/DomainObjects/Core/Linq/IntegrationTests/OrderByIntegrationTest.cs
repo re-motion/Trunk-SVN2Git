@@ -43,49 +43,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    // TODO Review 2772: Rename this test: it tests the automatic order by handling in the from clause
-    public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithoutTopExpression ()
+    public void AutomaticOrderByHandlingInSubStatements_InFromClause_WithoutTopExpression ()
     {
       CheckQueryResult (
-          from o in QueryFactory.CreateLinqQuery<Order> ()
+          from o in QueryFactory.CreateLinqQuery<Order>()
           from i in
-            (from si in QueryFactory.CreateLinqQuery<OrderItem> () where si.Order==o orderby si.Product select si)
+              (from si in QueryFactory.CreateLinqQuery<OrderItem>() where si.Order == o orderby si.Product select si)
           select i,
-          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5
-         );
-    }
-
-    [Test]
-    // TODO Review 2772: Rename this test: it tests the automatic order by handling in the from clause
-    public void AutomaticOrderByHandlingInSubStatements_InSelectClause_WithTopExpression ()
-    {
-      CheckQueryResult (
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          from c in
-            (from sc in  QueryFactory.CreateLinqQuery<OrderItem>() where sc.Order==o orderby sc.Product select sc).Take (10)
-          select c,
-          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5
+          DomainObjectIDs.OrderItem1,
+          DomainObjectIDs.OrderItem2,
+          DomainObjectIDs.OrderItem3,
+          DomainObjectIDs.OrderItem4,
+          DomainObjectIDs.OrderItem5
           );
     }
 
     [Test]
-    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Single() != null
+    public void AutomaticOrderByHandlingInSubStatements_InFromClause_WithTopExpression ()
+    {
+      CheckQueryResult (
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          from c in
+              (from sc in QueryFactory.CreateLinqQuery<OrderItem>() where sc.Order == o orderby sc.Product select sc).Take (10)
+          select c,
+          DomainObjectIDs.OrderItem1,
+          DomainObjectIDs.OrderItem2,
+          DomainObjectIDs.OrderItem3,
+          DomainObjectIDs.OrderItem4,
+          DomainObjectIDs.OrderItem5
+          );
+    }
+
+    [Test]
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithTopExpression ()
     {
       CheckQueryResult (
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          where o.OrderNumber == (from so in QueryFactory.CreateLinqQuery<Order> () orderby so.OrderNumber select so.OrderNumber).First ()
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          where
+              (from so in QueryFactory.CreateLinqQuery<Order>() orderby so.OrderNumber where so.ID == DomainObjectIDs.Order1 select so.OrderNumber).
+                  Single() != null
           select o,
-          DomainObjectIDs.Order1);
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.Order2,
+          DomainObjectIDs.Order3,
+          DomainObjectIDs.Order4,
+          DomainObjectIDs.OrderWithoutOrderItem,
+          DomainObjectIDs.InvalidOrder);
     }
 
-    // TODO Review 2772: This test should use the substatement in the where clause, e.g. where (from ...).Count() > 0
     [Test]
     public void AutomaticOrderByHandlingInSubStatements_InWhereClause_WithoutTopExpression ()
     {
       CheckQueryResult (
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          where (from so in QueryFactory.CreateLinqQuery<Order> () orderby so.OrderNumber select so).Contains (o)
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          where (from so in QueryFactory.CreateLinqQuery<Order> () orderby so.OrderNumber where so.ID == DomainObjectIDs.Order1 select so.OrderNumber).
+                  Count() > 0
           select o,
           DomainObjectIDs.Order1,
           DomainObjectIDs.OrderWithoutOrderItem,
