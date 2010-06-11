@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
 
@@ -40,6 +41,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _connectionID = Guid.NewGuid ();
 
       _transaction = new TracingDbTransaction (_innerTransactionMock, _listenerMock, _connectionID);
+    }
+
+    [Test]
+    public void GetWrappedInstance ()
+    {
+      var result = _transaction.WrappedInstance;
+
+      Assert.That (result, Is.EqualTo (_innerTransactionMock));
+    }
+
+    [Test]
+    public void GetConnectionId ()
+    {
+      var result = _transaction.ConnectionID;
+
+      Assert.That (result, Is.EqualTo (_connectionID));
+    }
+
+    [Test]
+    public void GetTransactionID ()
+    {
+      var result = _transaction.TransactionID;
+
+      Assert.That (result, Is.TypeOf (typeof (Guid)));
     }
 
     [Test]
