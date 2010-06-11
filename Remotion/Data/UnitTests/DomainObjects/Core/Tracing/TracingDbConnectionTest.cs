@@ -42,6 +42,105 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     }
 
     [Test]
+    public void ChangeDatabase ()
+    {
+      string databaseName = "databaseName";
+      _innerConnectionMock.Expect (mock => mock.ChangeDatabase (databaseName));
+      _mockRepository.ReplayAll();
+
+      _connection.ChangeDatabase (databaseName);
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void GetConnectionString ()
+    {
+      var connectionString = "connectionString";
+      _innerConnectionMock.Expect (mock => mock.ConnectionString).Return (connectionString);
+      _mockRepository.ReplayAll();
+
+      var result = _connection.ConnectionString;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo(connectionString));
+    }
+
+    [Test]
+    public void SetConnectionString ()
+    {
+      var connectionString = "connectionString";
+      _connection.ConnectionString = connectionString;
+      _innerConnectionMock.Expect (mock => mock.ConnectionString).Return (connectionString);
+      _mockRepository.ReplayAll ();
+
+      var result = _connection.ConnectionString;
+
+      Assert.That (result, Is.EqualTo (connectionString));
+    }
+
+    [Test]
+    public void GetConnectionTimeout ()
+    {
+      var assumedResult = 10;
+      _innerConnectionMock.Expect (mock => mock.ConnectionTimeout).Return (assumedResult);
+      _mockRepository.ReplayAll();
+
+      var result = _connection.ConnectionTimeout;
+
+      _mockRepository.VerifyAll();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetDatabase ()
+    {
+      var assumedResult = "database";
+      _innerConnectionMock.Expect (mock => mock.Database).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _connection.Database;
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetState ()
+    {
+      var assumedResult = new ConnectionState();
+      _innerConnectionMock.Expect (mock => mock.State).Return (assumedResult);
+      _mockRepository.ReplayAll ();
+
+      var result = _connection.State;
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (assumedResult));
+    }
+
+    [Test]
+    public void GetWrappedInstance ()
+    {
+      var wrappedInstance = _connection.WrappedInstance;
+      Assert.That (wrappedInstance, Is.EqualTo (_innerConnectionMock));
+    }
+
+    [Test]
+    public void Open ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _innerConnectionMock.Expect (mock => mock.Open());
+        _listenerMock.Expect (mock => mock.ConnectionOpened (_connection.ConnectionID));
+      }
+      _mockRepository.ReplayAll();
+
+      _connection.Open();
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
     public void Dispose_ConnectionOpen ()
     {
       using (_mockRepository.Ordered ())
