@@ -22,6 +22,9 @@ using System.Web.Services;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace OBWTest.IndividualControlTests
 {
@@ -37,119 +40,119 @@ namespace OBWTest.IndividualControlTests
     #region Values
 
     private static string[] s_values = new string[]
-        {
-            "sdfg",
-            "sdfgh",
-            "sdfghj",
-            "sdfghjk",
-            "sdfghjkl",
-            "sdfg 0qqqqwwww",
-            "sdfg 1qqqqwwww",
-            "sdfg 2qqqqwwww",
-            "sdfg 3qqqqwwww",
-            "sdfg 4qqqqwwww",
-            "sdfg 5qqqqwwww",
-            "sdfg 7qqqqwwww",
-            "sdfg 8qqqqwwww",
-            "sdfg 9qqqqwwww",
-            "sdfg q",
-            "sdfg qq",
-            "sdfg qqq",
-            "sdfg qqqq",
-            "sdfg qqqqq",
-            "sdfg qqqqqq",
-            "sdfg qqqqqqq",
-            "sdfg qqqqqqqq",
-            "sdfg qqqqqqqqq",
-            "sdfg qqqqqqqqqq",
-            "sdfg qqqqqqqqqqq",
-            "access control list (ACL)",
-            "ADO.NET",
-            "aggregate event",
-            "alpha channel",
-            "anchoring",
-            "antialiasing",
-            "application base",
-            "application domain (AppDomain)",
-            "application manifest",
-            "application state",
-            "ASP.NET",
-            "ASP.NET application services database",
-            "ASP.NET mobile controls",
-            "ASP.NET mobile Web Forms",
-            "ASP.NET page",
-            "ASP.NET server control",
-            "ASP.NET Web application",
-            "assembly",
-            "assembly cache",
-            "assembly manifest",
-            "assembly metadata",
-            "assertion (Assert)",
-            "association class",
-            "ASSOCIATORS OF",
-            "asynchronous method",
-            "attribute",
-            "authentication",
-            "authorization",
-            "autopostback",
-            "bounds",
-            "boxing",
-            "C#",
-            "card",
-            "catalog",
-            "CCW",
-            "chevron",
-            "chrome",
-            "cHTML",
-            "CIM",
-            "CIM Object Manager",
-            "CIM schema",
-            "class",
-            "client area",
-            "client coordinates",
-            "clip",
-            "closed generic type",
-            "CLR",
-            "CLS",
-            "CLS-compliant",
-            "code access security",
-            "code-behind class",
-            "code-behind file",
-            "code-behind page",
-            "COM callable wrapper (CCW)",
-            "COM interop",
-            "Common Information Model (CIM)",
-            "common language runtime",
-            "common language runtime host",
-            "Common Language Specification (CLS)",
-            "common object file format (COFF)",
-            "common type system (CTS)",
-            "comparison evaluator",
-            "composite control",
-            "configuration file",
-            "connection",
-            "connection point",
-            "constraint",
-            "constructed generic type",
-            "constructed type",
-            "consumer",
-            "container",
-            "container control",
-            "content page",
-            "context",
-            "context property",
-            "contract",
-            "control state",
-            "cross-page posting",
-            "CTS",
-            "custom attribute (Attribute)",
-            "custom control"
-        };
+                                       {
+                                           "sdfg",
+                                           "sdfgh",
+                                           "sdfghj",
+                                           "sdfghjk",
+                                           "sdfghjkl",
+                                           "sdfg 0qqqqwwww",
+                                           "sdfg 1qqqqwwww",
+                                           "sdfg 2qqqqwwww",
+                                           "sdfg 3qqqqwwww",
+                                           "sdfg 4qqqqwwww",
+                                           "sdfg 5qqqqwwww",
+                                           "sdfg 7qqqqwwww",
+                                           "sdfg 8qqqqwwww",
+                                           "sdfg 9qqqqwwww",
+                                           "sdfg q",
+                                           "sdfg qq",
+                                           "sdfg qqq",
+                                           "sdfg qqqq",
+                                           "sdfg qqqqq",
+                                           "sdfg qqqqqq",
+                                           "sdfg qqqqqqq",
+                                           "sdfg qqqqqqqq",
+                                           "sdfg qqqqqqqqq",
+                                           "sdfg qqqqqqqqqq",
+                                           "sdfg qqqqqqqqqqq",
+                                           "access control list (ACL)",
+                                           "ADO.NET",
+                                           "aggregate event",
+                                           "alpha channel",
+                                           "anchoring",
+                                           "antialiasing",
+                                           "application base",
+                                           "application domain (AppDomain)",
+                                           "application manifest",
+                                           "application state",
+                                           "ASP.NET",
+                                           "ASP.NET application services database",
+                                           "ASP.NET mobile controls",
+                                           "ASP.NET mobile Web Forms",
+                                           "ASP.NET page",
+                                           "ASP.NET server control",
+                                           "ASP.NET Web application",
+                                           "assembly",
+                                           "assembly cache",
+                                           "assembly manifest",
+                                           "assembly metadata",
+                                           "assertion (Assert)",
+                                           "association class",
+                                           "ASSOCIATORS OF",
+                                           "asynchronous method",
+                                           "attribute",
+                                           "authentication",
+                                           "authorization",
+                                           "autopostback",
+                                           "bounds",
+                                           "boxing",
+                                           "C#",
+                                           "card",
+                                           "catalog",
+                                           "CCW",
+                                           "chevron",
+                                           "chrome",
+                                           "cHTML",
+                                           "CIM",
+                                           "CIM Object Manager",
+                                           "CIM schema",
+                                           "class",
+                                           "client area",
+                                           "client coordinates",
+                                           "clip",
+                                           "closed generic type",
+                                           "CLR",
+                                           "CLS",
+                                           "CLS-compliant",
+                                           "code access security",
+                                           "code-behind class",
+                                           "code-behind file",
+                                           "code-behind page",
+                                           "COM callable wrapper (CCW)",
+                                           "COM interop",
+                                           "Common Information Model (CIM)",
+                                           "common language runtime",
+                                           "common language runtime host",
+                                           "Common Language Specification (CLS)",
+                                           "common object file format (COFF)",
+                                           "common type system (CTS)",
+                                           "comparison evaluator",
+                                           "composite control",
+                                           "configuration file",
+                                           "connection",
+                                           "connection point",
+                                           "constraint",
+                                           "constructed generic type",
+                                           "constructed type",
+                                           "consumer",
+                                           "container",
+                                           "container control",
+                                           "content page",
+                                           "context",
+                                           "context property",
+                                           "contract",
+                                           "control state",
+                                           "cross-page posting",
+                                           "CTS",
+                                           "custom attribute (Attribute)",
+                                           "custom control"
+                                       };
 
     #endregion
 
     [WebMethod]
-    [ScriptMethod(UseHttpGet=false, ResponseFormat=ResponseFormat.Json)]
+    [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] GetPersonList (
         string prefixText,
         int? completionSetCount,
@@ -163,17 +166,28 @@ namespace OBWTest.IndividualControlTests
 
       List<BusinessObjectWithIdentityProxy> persons = new List<BusinessObjectWithIdentityProxy>();
       foreach (Person person in XmlReflectionBusinessObjectStorageProvider.Current.GetObjects (typeof (Person)))
-        persons.Add (new BusinessObjectWithIdentityProxy ((IBusinessObjectWithIdentity) person));
+        persons.Add (
+            new BusinessObjectWithIdentityProxy ((IBusinessObjectWithIdentity) person) { IconUrl = GetUrl (GetIcon ((IBusinessObject) person)) });
 
       foreach (string value in s_values)
-        persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value });
+        persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value, IconUrl = GetUrl (IconInfo.Spacer) });
 
       List<BusinessObjectWithIdentityProxy> filteredPersons =
           persons.FindAll (person => person.DisplayName.StartsWith (prefixText, StringComparison.OrdinalIgnoreCase));
 
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
-      
+
       return filteredPersons.ToArray();
+    }
+
+    private string GetUrl (IconInfo iconInfo)
+    {
+      return UrlUtility.ResolveUrl (iconInfo.Url);
+    }
+
+    private IconInfo GetIcon (IBusinessObject businessObject)
+    {
+      return BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
     }
   }
 }

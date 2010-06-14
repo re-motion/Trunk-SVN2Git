@@ -56,9 +56,18 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
               }
             });
           },
-          formatItem: function(item)
+          formatItem: function (item) //What we display on input box
           {
-            return item.DisplayName; //What we display on input box
+            var itemBody = ""
+            if (item.IconUrl && item.IconUrl != "")
+              itemBody += "<img src=\"" + item.IconUrl + "\"/> ";
+            itemBody += item.DisplayName;
+
+            return itemBody;
+          },
+          formatMatch: function (item) //The value used by the cache
+          {
+            return item.DisplayName;
           }
         }
     ).result(function(e, item)

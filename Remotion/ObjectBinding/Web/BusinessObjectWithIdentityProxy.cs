@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding.Web
   {
     private string _uniqueIdentifier;
     private string _displayName;
+    private string _iconUrl = "";
 
     public BusinessObjectWithIdentityProxy ()
     {
@@ -55,6 +56,12 @@ namespace Remotion.ObjectBinding.Web
     {
       get { return _displayName; }
       set { _displayName = ArgumentUtility.CheckNotNullOrEmpty ("DisplayName", value); }
+    }
+
+    public string IconUrl
+    {
+      get { return _iconUrl; }
+      set { _iconUrl = StringUtility.NullToEmpty (value); }
     }
   }
 }

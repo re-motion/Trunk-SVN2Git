@@ -19,7 +19,7 @@ function BocAutoCompleteReferenceValue()
 }
 
 BocAutoCompleteReferenceValue.Bind =
-function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
+function (textbox, hiddenField, button, webServiceUrl, webServiceMethod,
          completionSetCount, completionInterval, suggestionInterval,
          nullValueString, businessObjectClass, businessObjectPropery, businessObjectID, args)
 {
@@ -41,12 +41,12 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           // this can be set to true/removed once the problem is fixed that an empty textbox still selects the first element, making it impossible to clear the selection
           selectFirst: function (inputValue, searchTerm)
           {
-            return inputValue.length > 0; 
+            return inputValue.length > 0;
           },
           dataType: 'json',
-          parse: function(data)
+          parse: function (data)
           {
-            return $.map(data, function(row)
+            return $.map(data, function (row)
             {
               return {
                 data: row,
@@ -55,12 +55,21 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
               }
             });
           },
-          formatItem: function(item)
+          formatItem: function (item) //What we display on input box
           {
-            return item.DisplayName; //What we display on input box
+            var itemBody = ""
+            if (item.IconUrl && item.IconUrl != "")
+              itemBody += "<img src=\"" + item.IconUrl + "\"/> ";
+            itemBody += item.DisplayName;
+
+            return itemBody;
+          },
+          formatMatch: function (item) //The value used by the cache
+          {
+            return item.DisplayName;
           }
         }
-    ).result(function(e, item)
+    ).result(function (e, item)
     {
       hiddenField.val(item.UniqueIdentifier); //What we populate on hidden box
       textbox.trigger('change');

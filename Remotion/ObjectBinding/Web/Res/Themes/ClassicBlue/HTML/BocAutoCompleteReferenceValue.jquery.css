@@ -34,6 +34,10 @@
 	overflow: hidden;
 }
 
+.ac_results li img {
+  vertical-align: bottom;
+}
+
 .ac_loading {
 	background: white url('../Image/RequestInProgressIndicator.gif') right center no-repeat;
 }
