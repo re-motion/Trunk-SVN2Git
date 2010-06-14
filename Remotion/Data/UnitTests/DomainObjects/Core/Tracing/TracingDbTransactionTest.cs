@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     }
 
     [Test]
-    public void GetConnectionId ()
+    public void GetConnectionID ()
     {
       var result = _transaction.ConnectionID;
 
