@@ -70,13 +70,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void SetConnectionString ()
     {
       var connectionString = "connectionString";
-      _connection.ConnectionString = connectionString;
-      _innerConnectionMock.Expect (mock => mock.ConnectionString).Return (connectionString);
+      _innerConnectionMock.ConnectionString = connectionString;
       _mockRepository.ReplayAll ();
 
-      var result = _connection.ConnectionString;
+      _connection.ConnectionString = connectionString;
 
-      Assert.That (result, Is.EqualTo (connectionString));
+      _mockRepository.VerifyAll ();
     }
 
     [Test]

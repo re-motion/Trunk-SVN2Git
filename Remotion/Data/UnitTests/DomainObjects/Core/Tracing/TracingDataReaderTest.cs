@@ -523,7 +523,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
                 Arg<Guid>.Matches (p => p == _connectionID),
                 Arg<Guid>.Matches (p => p == _queryID),
                 Arg<TimeSpan>.Matches (p => p.Milliseconds > 0),
-                Arg<int>.Is.Anything));
+                Arg<int>.Matches (p => p == 0)));
         _innerDataReader.Expect (mock => mock.Dispose());
       }
       _mockRepository.ReplayAll();
@@ -543,7 +543,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
                 Arg<Guid>.Matches (p => p == _connectionID),
                 Arg<Guid>.Matches (p => p == _queryID),
                 Arg<TimeSpan>.Matches (p => p.Milliseconds > 0),
-                Arg<int>.Is.Anything));
+                Arg<int>.Matches (p => p == 0)));
         _innerDataReader.Expect (mock => mock.Close());
       }
       _mockRepository.ReplayAll();
@@ -563,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
                 Arg<Guid>.Matches (p => p == _connectionID),
                 Arg<Guid>.Matches (p => p == _queryID),
                 Arg<TimeSpan>.Matches (p => p.Milliseconds > 0),
-                Arg<int>.Is.Anything));
+                Arg<int>.Matches (p => p == 0)));
         _innerDataReader.Expect (mock => mock.Close());
         _innerDataReader.Expect (mock => mock.Dispose());
       }
@@ -598,5 +598,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _mockRepository.VerifyAll();
       Assert.That (hasRecord, Is.False);
     }
+    [Test]
+    public void ReadAndClose ()
+    {
+      _innerDataReader.Expect (mock => mock.Read ()).Return (true);
+      _listenerMock.Expect (
+            mock =>
+            mock.QueryCompleted (
+                Arg<Guid>.Is.Equal (_connectionID),
+                Arg<Guid>.Matches (p => p == _queryID),
+                Arg<TimeSpan>.Matches (p => p.Milliseconds > 0),
+                Arg<int>.Matches (p => p == 1)));
+      _innerDataReader.Expect (mock => mock.Close ());
+      _mockRepository.ReplayAll ();
+      
+      _dataReader.Read();
+      _dataReader.Close();
+
+      _mockRepository.VerifyAll ();
+    }
+
   }
 }

@@ -425,6 +425,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\FulltextIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
+    <Compile Include="DomainObjects\Core\Tracing\CompoundPersistenceListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDataReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbConnectionTest.cs" />
