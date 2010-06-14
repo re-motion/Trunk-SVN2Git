@@ -192,9 +192,6 @@ function SmartPage_Context(
 
     if (!TypeUtility.IsUndefined(window.WebForm_FireDefaultButton))
       WebForm_FireDefaultButton = _fireDefaultButtonHandler;
-
-    if (isAsynchronous)
-      this.Restore();
   };
 
   // Attached the OnValueChanged event handler to all form data elements listed in _trackedIDs.
@@ -310,24 +307,30 @@ function SmartPage_Context(
   this.OnLoad = function()
   {
     this.CheckIfCached();
-    this.Restore();
-    this.RegisterWithPageRequestManager();
-    ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached);
+    this.RegisterPageLoaded();
   };
 
-  this.RegisterWithPageRequestManager = function()
+  this.RegisterPageLoaded = function ()
   {
     if (!TypeUtility.IsUndefined(window.Sys) && !TypeUtility.IsUndefined(Sys.WebForms) && !TypeUtility.IsUndefined(Sys.WebForms.PageRequestManager))
     {
       Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SmartPage_PageRequestManager_pageLoaded);
     }
+    else
+    {
+      SmartPage_PageRequestManager_pageLoaded(null, null);
+    }
   }
 
   this.PageRequestManager_pageLoaded = function(sender, args)
   {
+    this.Restore();
+
     _isSubmitting = false;
     _isSubmittingBeforeUnload = false;
     this.HideStatusMessage();
+    
+    ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached);
   }
 
   // Determines whether the page was loaded from cache.
