@@ -176,6 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore("TODO: 2773")]
     public void EagerFetching_WithOrderBy_WithoutTake ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
