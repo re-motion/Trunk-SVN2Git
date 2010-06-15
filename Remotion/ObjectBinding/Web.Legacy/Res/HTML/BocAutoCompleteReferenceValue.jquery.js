@@ -898,9 +898,9 @@
                 var revertInputStausTimeout = null;
                 function revertInputStaus() {
                     if (config.mouseDownOnSelect) {
-                    config.mouseDownOnSelect = false;
-                    $(input).focus();
-                }
+                        config.mouseDownOnSelect = false;
+                        $(input).focus();
+                    }
                 }
                 element.scroll(function() {
                     config.mouseDownOnSelect = true;
