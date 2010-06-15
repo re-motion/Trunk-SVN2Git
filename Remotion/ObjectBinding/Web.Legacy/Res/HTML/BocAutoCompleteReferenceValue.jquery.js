@@ -92,6 +92,9 @@
         // Create $ object for input element
         var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
 
+        // re-motion: Holds the currently executing request. 
+        //            If the user types faster than the requests can be answered, the intermediate requests will be discarded.
+        var executingRequest = null;
         var timeout;
         var autoFillTimeout;
         // holds the last text the user entered into the input element
@@ -125,6 +128,10 @@
             event.stopPropagation();
             // track last key pressed
             lastKeyPressCode = event.keyCode;
+
+            // re-motion: cancel an already running request
+            abortRequest();
+
             switch (event.keyCode) {
                 case KEY.UP:
                     event.preventDefault();
@@ -232,7 +239,7 @@
                 else $input.trigger("result", result.data);
             }
             $.each(trimWords($input.val()), function(i, value) {
-                request(value, findValueCallback, findValueCallback);
+                requestData(value, findValueCallback, findValueCallback);
             });
         }).bind("flushCache", function() {
             cache.flush();
@@ -314,9 +321,9 @@
 
                 // re-motion: if triggered by dropDownButton, get the full list
                 if (isDropDown == 1) {
-                    request('', receiveData, hideResults);
+                    requestData('', receiveData, hideResults);
                 } else {
-                    request(currentValue, receiveData, hideResults);
+                    requestData(currentValue, receiveData, hideResults);
                 }
 
             } else {
@@ -405,9 +412,12 @@
             }
         };
 
-        function request(term, success, failure) {
+        function requestData(term, success, failure) {
             if (!options.matchCase)
                 term = term.toLowerCase();
+
+            // re-motion: cancel an already running request
+            abortRequest();
 
             // re-motion: if an async postback is in progress, updating the DOM results in an exception
             var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
@@ -438,19 +448,32 @@
                     businessObjectID: options.extraParams['businessObjectID'],
                     args: options.extraParams['args']
                 };
-                Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethod, false, params,
+                executingRequest = Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethod, false, params,
                                           function(result, context, methodName) {
+                                              executingRequest = null;
                                               var parsed = options.parse && options.parse(result) || parse(result);
                                               cache.add(term, parsed);
                                               success(term, parsed);
                                           },
-                                          function(err, context, methodName) { });
+                                          function(err, context, methodName) {
+                                              executingRequest = null;
+                                          });
             } else {
                 // if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
                 select.emptyList();
                 failure(term);
             }
         };
+
+        // re-motion: cancel an already running request
+        function abortRequest() {
+            if (executingRequest != null) {
+                var executor = executingRequest.get_executor();
+                if (executor.get_started())
+                    executor.abort();
+                executingRequest = null;
+            }
+        }
 
         function parse(data) {
             var parsed = [];
@@ -874,8 +897,10 @@
                 //re-motion: block blur bind as long we scroll dropDown list 
                 var revertInputStausTimeout = null;
                 function revertInputStaus() {
+                    if (config.mouseDownOnSelect) {
                     config.mouseDownOnSelect = false;
                     $(input).focus();
+                }
                 }
                 element.scroll(function() {
                     config.mouseDownOnSelect = true;
