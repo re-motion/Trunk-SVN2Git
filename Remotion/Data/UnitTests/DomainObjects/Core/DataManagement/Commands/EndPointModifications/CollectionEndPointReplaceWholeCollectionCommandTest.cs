@@ -167,13 +167,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       listenerMock.Expect (mock => mock.RelationChanging (
           ClientTransactionMock, 
           DomainObject, 
-          CollectionEndPoint.PropertyName, 
+          CollectionEndPoint.Definition, 
           _orderWithoutOrderItem, 
           null));
       listenerMock.Expect (mock => mock.RelationChanging (
           ClientTransactionMock, 
           DomainObject, 
-          CollectionEndPoint.PropertyName, 
+          CollectionEndPoint.Definition, 
           null, 
           _order2));
       listenerMock.Replay ();

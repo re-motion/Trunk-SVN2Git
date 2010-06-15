@@ -124,11 +124,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
       eventSink.RelationChanging (
-          _modifiedEndPoint.ClientTransaction, 
-          _domainObject, 
-          _modifiedEndPoint.Definition.PropertyName, 
-          oldRelatedObject, 
-          newRelatedObject);
+          _modifiedEndPoint.ClientTransaction, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject);
     }
 
     protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)

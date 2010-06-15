@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -261,26 +262,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var oldCustomerEndPointID = oldCustomer.Orders.AssociatedEndPointID;
       var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;
 
+      RelationEndPointDefinition customerEndPointDefinition = (RelationEndPointDefinition) order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
+      
       ClientTransactionMock.AddListener (_strictListenerMock);
       
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.RelationChanging (
-            ClientTransactionMock, 
+            ClientTransactionMock,
             order, 
-            typeof (Order).FullName + ".Customer", 
+            customerEndPointDefinition,
             oldCustomer, 
             newCustomer));
         _strictListenerMock.Expect (mock => mock.RelationChanging (
             ClientTransactionMock, 
             newCustomer, 
-            typeof (Customer).FullName + ".Orders", 
+            newCustomerEndPointID.Definition,
             null, 
             order));
         _strictListenerMock.Expect (mock => mock.RelationChanging (
             ClientTransactionMock, 
-            oldCustomer, 
-            typeof (Customer).FullName + ".Orders", 
+            oldCustomer,
+            oldCustomerEndPointID.Definition,
             order, 
             null));
         _strictListenerMock.Expect (
