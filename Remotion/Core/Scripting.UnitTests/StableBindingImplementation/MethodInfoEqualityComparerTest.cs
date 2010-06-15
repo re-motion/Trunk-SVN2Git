@@ -20,8 +20,8 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
@@ -256,17 +256,29 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var methods = ScriptingHelper.GetAnyGenericInstanceMethodArray (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
       Assert.That (methods.Length, Is.EqualTo (2));
 
-      //To.ToTextProvider.Settings.UseAutomaticObjectToText = true;
-      To.ConsoleLine.e (methods[0].Name).nl ().e (methods[1].Name).nl ().e (methodFromBaseType.Name);
-      To.ConsoleLine.e (methods[0].ReturnType).nl ().e (methods[1].ReturnType).nl ().e (methodFromBaseType.ReturnType);
-      To.ConsoleLine.e (methods[0].Attributes).nl ().e (methods[1].Attributes).nl ().e (methodFromBaseType.Attributes);
-      To.ConsoleLine.e (methods[0].GetParameters ().Select (pi => pi.Attributes)).nl ().e (methods[1].GetParameters ().Select (pi => pi.Attributes)).nl ().e (methodFromBaseType.GetParameters ().Select (pi => pi.Attributes));
-      To.ConsoleLine.e (methods[0].GetParameters ().Select (pi => pi.ParameterType)).nl ().e (methods[1].GetParameters ().Select (pi => pi.ParameterType)).nl ().e (methodFromBaseType.GetParameters ().Select (pi => pi.ParameterType));
-      //To.ToTextProvider.Settings.UseAutomaticObjectToText = false;
+      Console.WriteLine (methods[0].Name);
+      Console.WriteLine (methods[1].Name);
+      Console.WriteLine (methodFromBaseType.Name);
+
+      Console.WriteLine (methods[0].ReturnType);
+      Console.WriteLine (methods[1].ReturnType);
+      Console.WriteLine (methodFromBaseType.ReturnType);
+
+      Console.WriteLine (methods[0].Attributes);
+      Console.WriteLine (methods[1].Attributes);
+      Console.WriteLine (methodFromBaseType.Attributes);
+
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[0].GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[1].GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methodFromBaseType.GetParameters().Select (pi => pi.Attributes).ToArray(), ",") + "}");
+
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[0].GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methods[1].GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
+      Console.WriteLine ("{" + StringUtility.ConcatWithSeparator (methodFromBaseType.GetParameters().Select (pi => pi.ParameterType).ToArray(), ",") + "}");
 
       var a0 = methods[0].GetParameters()[2];
-      var a1 = methods[1].GetParameters ()[2];
-      var ax = methodFromBaseType.GetParameters ()[2];
+      var a1 = methods[1].GetParameters()[2];
+      var ax = methodFromBaseType.GetParameters()[2];
 
       var x = methods[0].GetParameters()[2];
 
@@ -275,7 +287,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, methods[1]), Is.True);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, methods[0]), Is.True);
     }
- 
+
   }
 
  
