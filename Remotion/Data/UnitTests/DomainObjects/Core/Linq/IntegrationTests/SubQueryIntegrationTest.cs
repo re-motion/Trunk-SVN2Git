@@ -143,10 +143,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2776")]
-    public void OrderingsInSubQuery ()
+    public void OrderingsInSubQuery_WithDistinct ()
     {
-      CheckQueryResult (from o in (from so in QueryFactory.CreateLinqQuery<Order>() orderby so.OrderNumber select so).Distinct () select o);
+      var query = from o in (
+                    from oi in QueryFactory.CreateLinqQuery<OrderItem>() orderby oi.Order.OrderNumber select oi.Order).Distinct () 
+                  select o;
+      CheckQueryResult (
+          query, 
+          DomainObjectIDs.Order1, 
+          DomainObjectIDs.Order2, 
+          DomainObjectIDs.Order3, 
+          DomainObjectIDs.Order4);
+    }
+
+    [Test]
+    public void OrderingsInSubQuery_WithTake ()
+    {
+      var query = from o in (from o in QueryFactory.CreateLinqQuery<Order> () orderby o.OrderNumber select o).Take (2)
+                  select o;
+      CheckOrderedQueryResult (
+          query,
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.OrderWithoutOrderItem);
+    }
+
+    [Test]
+    public void OrderingsInSubQuery_WithoutTakeOrDistinct ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<Customer>()
+                  where c.ID == DomainObjectIDs.Customer1
+                  from o in (from o in c.Orders orderby o.OrderNumber ascending select o)
+                  select o;
+      CheckOrderedQueryResult (
+          query,
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.OrderWithoutOrderItem);
+    }
+
+    [Test]
+    public void OrderingsInSubQuery_WithoutTakeOrDistinct_WithAccessToMemberOfSubQuery ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
+                  where c.ID == DomainObjectIDs.Customer1
+                  from o in (from o in c.Orders orderby o.OrderNumber ascending select o)
+                  where o.OrderNumber < 2
+                  select o;
+      CheckOrderedQueryResult (
+          query,
+          DomainObjectIDs.Order1);
     }
   }
 }

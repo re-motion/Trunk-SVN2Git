@@ -213,6 +213,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // OrderNumber: 1
     public readonly ObjectID Order1 = new ObjectID ("Order", new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}"));
 
+    // OrderTicket: OrderTicket2
+    // OrderItems: -
+    // Customer: Customer1
+    // Official: Official1
+    // OrderNumber: 2
+    public readonly ObjectID OrderWithoutOrderItem = new ObjectID ("Order", new Guid ("{F4016F41-F4E4-429e-B8D1-659C8C480A67}"));
+
     // OrderTicket: OrderTicket3
     // OrderItems: OrderItem3
     // Customer: Customer3
@@ -220,28 +227,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // OrderNumber: 3
     public readonly ObjectID Order2 = new ObjectID ("Order", new Guid ("{83445473-844A-4d3f-A8C3-C27F8D98E8BA}"));
 
-    // OrderTicket: OrderTicket2
-    // OrderItems: -
-    // Customer: Customer1
-    // Official: Official1
-    public readonly ObjectID OrderWithoutOrderItem = new ObjectID ("Order", new Guid ("{F4016F41-F4E4-429e-B8D1-659C8C480A67}"));
-
     // OrderTicket: OrderTicket4
     // OrderItems: OrderItem4
     // Customer: Customer4
     // Official: Official1
+    // OrderNumber: 4
     public readonly ObjectID Order3 = new ObjectID ("Order", new Guid ("{3C0FB6ED-DE1C-4e70-8D80-218E0BF58DF3}"));
 
     // OrderTicket: OrderTicket5
     // OrderItems: OrderItem5
     // Customer: Customer4
     // Official: Official1
+    // OrderNumber: 5
     public readonly ObjectID Order4 = new ObjectID ("Order", new Guid ("{90E26C86-611F-4735-8D1B-E1D0918515C2}"));
 
     // OrderTicket: -
     // OrderItems: -
     // Customer: invalid
     // Official: does not exist
+    // OrderNumber: 6
     public readonly ObjectID InvalidOrder = new ObjectID ("Order", new Guid ("{DA658F26-8107-44ce-9DD0-1804503ECCAF}"));
 
     #endregion

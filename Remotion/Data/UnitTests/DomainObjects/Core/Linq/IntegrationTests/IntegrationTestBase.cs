@@ -44,6 +44,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (results, Is.EquivalentTo (expected));
     }
 
+    protected void CheckOrderedQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
+        where T : DomainObject
+    {
+      T[] results = query.ToArray ();
+      T[] expected = GetExpectedObjects<T> (expectedObjectIDs);
+      if (expectedObjectIDs != null)
+      {
+        Assert.That (
+            results.Length,
+            Is.EqualTo (expected.Length),
+            "Number of returned objects doesn't match; returned: " + SeparatedStringBuilder.Build (", ", results, obj => obj.ID.ToString ()));
+      }
+      Assert.That (results, Is.EqualTo (expected));
+    }
+
     protected T[] GetExpectedObjects<T> (params ObjectID[] expectedObjectIDs)
         where T: DomainObject
     {
