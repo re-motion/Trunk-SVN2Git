@@ -28,13 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
   public class NullPersistenceListenerTest
   {
     private IPersistenceListener _listener;
-    private Guid _connectionId;
+    private Guid _connectionID;
 
     [SetUp]
     public void SetUp ()
     {
       _listener = NullPersistenceListener.Instance;
-      _connectionId = Guid.NewGuid();
+      _connectionID = Guid.NewGuid();
     }
 
     [Test]
@@ -47,71 +47,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void ConnectionOpened ()
     {
-      _listener.ConnectionOpened (_connectionId);
+      _listener.ConnectionOpened (_connectionID);
     }
 
     [Test]
     public void ConnectionClosed ()
     {
-      _listener.ConnectionClosed (_connectionId);
+      _listener.ConnectionClosed (_connectionID);
     }
 
     [Test]
     public void TransactionBegan ()
     {
-      _listener.TransactionBegan (_connectionId, IsolationLevel.Chaos);      
+      _listener.TransactionBegan (_connectionID, IsolationLevel.Chaos);      
     }
 
     [Test]
     public void TransactionCommitted ()
     {
-      _listener.TransactionCommitted (_connectionId);      
+      _listener.TransactionCommitted (_connectionID);      
     }
 
     [Test]
     public void TransactionRolledBack ()
     {
-      _listener.TransactionRolledBack (_connectionId);
+      _listener.TransactionRolledBack (_connectionID);
     }
 
     [Test]
     public void TransactionDisposed ()
     {
-      _listener.TransactionDisposed (_connectionId);
+      _listener.TransactionDisposed (_connectionID);
     }
 
     [Test]
     public void QueryExecuting ()
     {
-      var queryId = Guid.NewGuid();
+      var queryID = Guid.NewGuid();
       var commandText = "commandText";
       var parameters = MockRepository.GenerateMock<IDictionary<string, object>>();
-      _listener.QueryExecuting (_connectionId, queryId, commandText, parameters);
+      _listener.QueryExecuting (_connectionID, queryID, commandText, parameters);
     }
 
     [Test]
     public void QueryExecuted ()
     {
-      var queryId = Guid.NewGuid();
+      var queryID = Guid.NewGuid();
       var durationOfQueryExecution = new TimeSpan();
-      _listener.QueryExecuted (_connectionId, queryId, durationOfQueryExecution);
+      _listener.QueryExecuted (_connectionID, queryID, durationOfQueryExecution);
     }
 
     [Test]
     public void QueryCompleted ()
     {
-      var queryId = Guid.NewGuid();
+      var queryID = Guid.NewGuid();
       var durationOfDataRead = new TimeSpan();
       var rowCount = 6;
-      _listener.QueryCompleted (_connectionId, queryId, durationOfDataRead, rowCount);
+      _listener.QueryCompleted (_connectionID, queryID, durationOfDataRead, rowCount);
     }
 
     [Test]
     public void QueryError ()
     {
-      var queryId = Guid.NewGuid();
+      var queryID = Guid.NewGuid();
       var ex = new Exception();
-      _listener.QueryError (_connectionId, queryId, ex);
+      _listener.QueryError (_connectionID, queryID, ex);
     }
   }
 }

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     private IDbTransaction _innerTransactionMock;
     private IPersistenceListener _listenerMock;
     private Guid _connectionID;
-    private TracingDbTransaction _transaction;
+    private IDbTransaction _transaction;
 
     [SetUp]
     public void SetUp ()
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void GetWrappedInstance ()
     {
-      var result = _transaction.WrappedInstance;
+      var result = ((TracingDbTransaction)_transaction).WrappedInstance;
 
       Assert.That (result, Is.EqualTo (_innerTransactionMock));
     }
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void GetConnectionID ()
     {
-      var result = _transaction.ConnectionID;
+      var result = ((TracingDbTransaction) _transaction).ConnectionID;
 
       Assert.That (result, Is.EqualTo (_connectionID));
     }
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     [Test]
     public void GetTransactionID ()
     {
-      var result = _transaction.TransactionID;
+      var result = ((TracingDbTransaction) _transaction).TransactionID;
 
       Assert.That (result, Is.TypeOf (typeof (Guid)));
     }
@@ -156,6 +156,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       _transaction.Dispose ();
       _transaction.Rollback ();
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetConnection ()
+    {
+      var dbConnection = _mockRepository.StrictMock<IDbConnection>();
+      _innerTransactionMock.Expect (mock => mock.Connection).Return (dbConnection);
+      _mockRepository.ReplayAll();
+
+      var result = _transaction.Connection;
+
+      Assert.That (result, Is.EqualTo (dbConnection));
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void GetIsolationLevel ()
+    {
+      var isolationLevel = IsolationLevel.Chaos;
+      _innerTransactionMock.Expect (mock => mock.IsolationLevel).Return (isolationLevel);
+      _mockRepository.ReplayAll ();
+
+      var result = _transaction.IsolationLevel;
+
+      Assert.That (result, Is.EqualTo (isolationLevel));
       _mockRepository.VerifyAll ();
     }
   }

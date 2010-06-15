@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     private MockRepository _mockRepository;
     private IPersistenceListener _innerPersistenceListener1;
     private IPersistenceListener _innerPersistenceListener2;
-    private CompoundPersistenceListener _listener;
+    private IPersistenceListener _listener;
     private List<IPersistenceListener> _listeners;
 
     [SetUp]
@@ -126,15 +127,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void QueryExecuting ()
     {
       var connectionID = Guid.NewGuid ();
-      var queryId = Guid.NewGuid();
+      var queryID = Guid.NewGuid();
       var commandText = "commandText";
       var parameters = _mockRepository.StrictMock<IDictionary<string, object>>();
       
-      _innerPersistenceListener1.Expect (mock => mock.QueryExecuting (connectionID, queryId, commandText, parameters));
-      _innerPersistenceListener2.Expect (mock => mock.QueryExecuting (connectionID, queryId, commandText, parameters));
+      _innerPersistenceListener1.Expect (mock => mock.QueryExecuting (connectionID, queryID, commandText, parameters));
+      _innerPersistenceListener2.Expect (mock => mock.QueryExecuting (connectionID, queryID, commandText, parameters));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryExecuting (connectionID, queryId, commandText, parameters);
+      _listener.QueryExecuting (connectionID, queryID, commandText, parameters);
 
       _mockRepository.VerifyAll ();
     }
@@ -143,14 +144,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void QueryExecuted ()
     {
       var connectionID = Guid.NewGuid ();
-      var queryId = Guid.NewGuid ();
+      var queryID = Guid.NewGuid ();
       var durationOfQueryExecution = new TimeSpan();
 
-      _innerPersistenceListener1.Expect (mock => mock.QueryExecuted (connectionID, queryId, durationOfQueryExecution));
-      _innerPersistenceListener2.Expect (mock => mock.QueryExecuted (connectionID, queryId, durationOfQueryExecution));
+      _innerPersistenceListener1.Expect (mock => mock.QueryExecuted (connectionID, queryID, durationOfQueryExecution));
+      _innerPersistenceListener2.Expect (mock => mock.QueryExecuted (connectionID, queryID, durationOfQueryExecution));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryExecuted (connectionID, queryId, durationOfQueryExecution);
+      _listener.QueryExecuted (connectionID, queryID, durationOfQueryExecution);
 
       _mockRepository.VerifyAll ();
     }
@@ -159,15 +160,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void QueryCompleted ()
     {
       var connectionID = Guid.NewGuid ();
-      var queryId = Guid.NewGuid ();
+      var queryID = Guid.NewGuid ();
       var durationOfDataRead = new TimeSpan ();
       var rowCount = 6;
 
-      _innerPersistenceListener1.Expect (mock => mock.QueryCompleted (connectionID, queryId, durationOfDataRead, rowCount));
-      _innerPersistenceListener2.Expect (mock => mock.QueryCompleted (connectionID, queryId, durationOfDataRead, rowCount));
+      _innerPersistenceListener1.Expect (mock => mock.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount));
+      _innerPersistenceListener2.Expect (mock => mock.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryCompleted (connectionID, queryId, durationOfDataRead, rowCount);
+      _listener.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount);
 
       _mockRepository.VerifyAll ();
     }
@@ -176,16 +177,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void QueryError ()
     {
       var connectionID = Guid.NewGuid ();
-      var queryId = Guid.NewGuid ();
+      var queryID = Guid.NewGuid ();
       Exception ex = new Exception();
 
-      _innerPersistenceListener1.Expect (mock => mock.QueryError (connectionID, queryId, ex));
-      _innerPersistenceListener2.Expect (mock => mock.QueryError (connectionID, queryId, ex));
+      _innerPersistenceListener1.Expect (mock => mock.QueryError (connectionID, queryID, ex));
+      _innerPersistenceListener2.Expect (mock => mock.QueryError (connectionID, queryID, ex));
       _mockRepository.ReplayAll ();
 
-      _listener.QueryError (connectionID, queryId, ex);
+      _listener.QueryError (connectionID, queryID, ex);
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void IsNull ()
+    {
+      var result = _listener.IsNull;
+      Assert.That (result, Is.False);
     }
   }
 }
