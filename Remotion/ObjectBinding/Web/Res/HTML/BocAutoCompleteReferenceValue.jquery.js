@@ -293,12 +293,6 @@
             return true;
         }
 
-        // re-motion: auto-fill is always enabled, but only after autoFillDelay has passed while typing
-        function enableAutoFill() {
-            if (!autoFillTimeout)
-                autoFillTimeout = setTimeout(function() { options.autoFill = true; }, options.autoFillDelay);
-        }
-
         // re-motion: use obsolete first parameter to indicate whether the onChange event is triggered by input (0) or the dropdownButton (1)
         function onChange(isDropDown, skipPrevCheck) {
             if (lastKeyPressCode == KEY.DEL) {
@@ -349,6 +343,12 @@
                 return value;
             var words = trimWords(value);
             return words[words.length - 1];
+        }
+
+        // re-motion: auto-fill is always enabled, but only after autoFillDelay has passed while typing
+        function enableAutoFill() {
+            if (!autoFillTimeout)
+                autoFillTimeout = setTimeout(function() { options.autoFill = true; }, options.autoFillDelay);
         }
 
         // fills in the input box w/the first match (assumed to be the best match)
