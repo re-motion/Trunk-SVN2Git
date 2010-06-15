@@ -76,6 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection ());
 
+      var endPointMock = MockRepository.GenerateMock<IEndPoint>();
+
       CheckNotification (listener => listener.TransactionInitializing (ClientTransactionMock));
       CheckNotification (listener => listener.TransactionDiscarding (ClientTransactionMock));
 
@@ -119,11 +121,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           "Bar"));
 
       CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, "Foo", order, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, endPointMock, order, ValueAccess.Original));
       CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, "FooBar", relatedObjects, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, endPointMock, relatedObjects, ValueAccess.Original));
       CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, "Whatever", ValueAccess.Current));
-
+      CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, endPointMock, ValueAccess.Current));
+      
       CheckNotification (listener => listener.RelationChanging (ClientTransactionMock, order, "Fred?", order, order2));
+      CheckNotification (listener => listener.RelationChanging (ClientTransactionMock, order, endPointMock, order, order2));
       CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, "Baz"));
+      CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, endPointMock));
 
       CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionCommitted (ClientTransactionMock, domainObjects));

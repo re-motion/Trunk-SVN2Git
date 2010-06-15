@@ -140,10 +140,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
     }
 
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    {
+      foreach (var listener in _listeners)
+        listener.RelationReading (clientTransaction, domainObject, endPoint, valueAccess);
+    }
+
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
         listener.RelationRead (clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
+    }
+
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+      foreach (var listener in _listeners)
+        listener.RelationRead (clientTransaction, domainObject, endPoint, relatedObject, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
@@ -152,16 +164,34 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationRead (clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
     }
 
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    {
+      foreach (var listener in _listeners)
+        listener.RelationRead (clientTransaction, domainObject, endPoint, relatedObjects, valueAccess);
+    }
+
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       foreach (var listener in _listeners)
         listener.RelationChanging (clientTransaction, domainObject, propertyName, oldRelatedObject, newRelatedObject);
     }
 
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      foreach (var listener in _listeners)
+        listener.RelationChanging (clientTransaction, domainObject, endPoint, oldRelatedObject, newRelatedObject);
+    }
+
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
     {
       foreach (var listener in _listeners)
         listener.RelationChanged (clientTransaction, domainObject, propertyName);
+    }
+
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    {
+      foreach (var listener in _listeners)
+        listener.RelationChanged (clientTransaction, domainObject, endPoint);
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject

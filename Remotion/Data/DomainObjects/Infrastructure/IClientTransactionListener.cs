@@ -66,7 +66,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess);
+    void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess);
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
     /// Indicates that a relation has been read.
@@ -81,6 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </param>
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
     /// Indicates that a relation is about to change. 
@@ -96,6 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
     ///   being replaced by a new one.</param>
     void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
+    void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject);
 
     /// <summary>
     /// Indicates that a relation has been changed. 
@@ -107,6 +111,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="propertyName">The name of the property that changes.</param>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
+    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint);
 
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;
 

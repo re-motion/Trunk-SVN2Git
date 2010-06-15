@@ -93,7 +93,15 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    {
+    }
+
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+    }
+
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
     {
     }
 
@@ -101,11 +109,23 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    {
+    }
+
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
     }
 
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+    }
+
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    {
+    }
+
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
     {
     }
 

@@ -109,9 +109,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    {
+      throw CreateException();
+    }
+
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
     {
       throw CreateException();
+    }
+
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+      throw CreateException ();
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
@@ -119,14 +129,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    {
+      throw CreateException ();
+    }
+
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       throw CreateException();
     }
 
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      throw CreateException ();
+    }
+
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
     {
       throw CreateException();
+    }
+
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    {
+      throw CreateException ();
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject

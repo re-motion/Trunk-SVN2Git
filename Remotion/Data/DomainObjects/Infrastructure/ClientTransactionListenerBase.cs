@@ -88,7 +88,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
+    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    {
+    }
+
     public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+    }
+
+    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
     {
     }
 
@@ -96,11 +104,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
+    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    {
+    }
+
     public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
     }
 
+    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+    }
+
     public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    {
+    }
+
+    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
     {
     }
 

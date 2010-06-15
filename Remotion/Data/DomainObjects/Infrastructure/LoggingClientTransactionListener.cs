@@ -186,6 +186,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat (
+            "{0} RelationReading: {1} ({2}, {3})",
+            clientTransaction.ID,
+            endPoint,
+            valueAccess,
+            GetDomainObjectString (domainObject));
+      }
+    }
+
     public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
@@ -199,6 +212,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             "{0} RelationRead: {1}=={2} ({3}, {4})",
             clientTransaction.ID,
             propertyName,
+            GetDomainObjectString (relatedObject),
+            valueAccess,
+            GetDomainObjectString (domainObject));
+      }
+    }
+
+    public void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IEndPoint endPoint,
+        DomainObject relatedObject,
+        ValueAccess valueAccess)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat (
+            "{0} RelationRead: {1}=={2} ({3}, {4})",
+            clientTransaction.ID,
+            endPoint,
             GetDomainObjectString (relatedObject),
             valueAccess,
             GetDomainObjectString (domainObject));
@@ -225,6 +257,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public void RelationRead (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IEndPoint endPoint,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        var domainObjectsString = relatedObjects.IsDataAvailable ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
+        s_log.DebugFormat (
+            "{0} RelationRead: {1} ({2}, {3}): {4}",
+            clientTransaction.ID,
+            endPoint,
+            valueAccess,
+            domainObject.ID,
+            domainObjectsString);
+      }
+    }
+
     public void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
@@ -244,10 +296,35 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IEndPoint endPoint,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat (
+            "{0} RelationChanging: {1}: {2}->{3} /{4}",
+            clientTransaction.ID,
+            endPoint,
+            GetDomainObjectString (oldRelatedObject),
+            GetDomainObjectString (newRelatedObject),
+            GetDomainObjectString (domainObject));
+      }
+    }
+
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, propertyName, GetDomainObjectString (domainObject));
+    }
+
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, endPoint, GetDomainObjectString (domainObject));
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
