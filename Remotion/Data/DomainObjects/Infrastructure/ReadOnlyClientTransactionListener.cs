@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -125,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
     }
 
@@ -141,7 +142,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+        IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject relatedObject,
         ValueAccess valueAccess)
     {
@@ -159,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+       IRelationEndPointDefinition relationEndPointDefinition,
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)
     {
@@ -178,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+        IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
@@ -190,7 +191,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       Assertion.IsFalse (clientTransaction.IsReadOnly);
     }

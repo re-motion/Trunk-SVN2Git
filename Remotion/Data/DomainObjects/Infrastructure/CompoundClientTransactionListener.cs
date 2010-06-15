@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -140,10 +141,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
-        listener.RelationReading (clientTransaction, domainObject, endPoint, valueAccess);
+        listener.RelationReading (clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
@@ -152,10 +153,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationRead (clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
-        listener.RelationRead (clientTransaction, domainObject, endPoint, relatedObject, valueAccess);
+        listener.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
@@ -164,10 +165,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationRead (clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
-        listener.RelationRead (clientTransaction, domainObject, endPoint, relatedObjects, valueAccess);
+        listener.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
@@ -176,10 +177,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationChanging (clientTransaction, domainObject, propertyName, oldRelatedObject, newRelatedObject);
     }
 
-    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       foreach (var listener in _listeners)
-        listener.RelationChanging (clientTransaction, domainObject, endPoint, oldRelatedObject, newRelatedObject);
+        listener.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
@@ -188,10 +189,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationChanged (clientTransaction, domainObject, propertyName);
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       foreach (var listener in _listeners)
-        listener.RelationChanged (clientTransaction, domainObject, endPoint);
+        listener.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition);
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject

@@ -18,6 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Text;
@@ -186,14 +187,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
             "{0} RelationReading: {1} ({2}, {3})",
             clientTransaction.ID,
-            endPoint,
+            relationEndPointDefinition,
             valueAccess,
             GetDomainObjectString (domainObject));
       }
@@ -221,7 +222,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+        IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject relatedObject,
         ValueAccess valueAccess)
     {
@@ -230,7 +231,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationRead: {1}=={2} ({3}, {4})",
             clientTransaction.ID,
-            endPoint,
+            relationEndPointDefinition,
             GetDomainObjectString (relatedObject),
             valueAccess,
             GetDomainObjectString (domainObject));
@@ -260,7 +261,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+        IRelationEndPointDefinition relationEndPointDefinition,
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)
     {
@@ -270,7 +271,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationRead: {1} ({2}, {3}): {4}",
             clientTransaction.ID,
-            endPoint,
+            relationEndPointDefinition,
             valueAccess,
             domainObject.ID,
             domainObjectsString);
@@ -299,7 +300,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        IEndPoint endPoint,
+        IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
@@ -308,7 +309,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationChanging: {1}: {2}->{3} /{4}",
             clientTransaction.ID,
-            endPoint,
+            relationEndPointDefinition,
             GetDomainObjectString (oldRelatedObject),
             GetDomainObjectString (newRelatedObject),
             GetDomainObjectString (domainObject));
@@ -321,10 +322,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, propertyName, GetDomainObjectString (domainObject));
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, endPoint, GetDomainObjectString (domainObject));
+        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, relationEndPointDefinition, GetDomainObjectString (domainObject));
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject

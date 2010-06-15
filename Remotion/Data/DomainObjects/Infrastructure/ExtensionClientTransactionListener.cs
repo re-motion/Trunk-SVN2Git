@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -125,9 +126,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ValueAccess valueAccess)
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
-      Extensions.RelationReading (clientTransaction, domainObject, endPoint.Definition.PropertyName, valueAccess);
+      Extensions.RelationReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
@@ -135,9 +136,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationRead (clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject relatedObject, ValueAccess valueAccess)
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
-      Extensions.RelationRead (clientTransaction, domainObject, endPoint.Definition.PropertyName, relatedObject, valueAccess);
+      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, relatedObject, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
@@ -145,9 +146,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationRead (clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
-      Extensions.RelationRead (clientTransaction, domainObject, endPoint.Definition.PropertyName, relatedObjects, valueAccess);
+      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, relatedObjects, valueAccess);
     }
 
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
@@ -155,9 +156,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationChanging (clientTransaction, domainObject, propertyName, oldRelatedObject, newRelatedObject);
     }
 
-    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      Extensions.RelationChanging (clientTransaction, domainObject, endPoint.Definition.PropertyName, oldRelatedObject, newRelatedObject);
+      Extensions.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, oldRelatedObject, newRelatedObject);
     }
 
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
@@ -165,9 +166,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationChanged (clientTransaction, domainObject, propertyName);
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IEndPoint endPoint)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
-      Extensions.RelationChanged (clientTransaction, domainObject, endPoint.Definition.PropertyName);
+      Extensions.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
