@@ -387,12 +387,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2879")]
     public void QueryWithOrderBy_BeforeIncompatibleResultOperators ()
     {
       var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Distinct ().Count();
 
-      Assert.That (result, Is.EqualTo (1));
+      Assert.That (result, Is.EqualTo (5));
     }
 
     [Test]
