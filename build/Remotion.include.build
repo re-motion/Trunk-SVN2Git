@@ -435,6 +435,8 @@
         <!-- Executables, DB scripts, and config files -->
         <exclude name="*/bin/**/SecurityManager*.*" />
         <exclude name="*/bin/**/Dms*.*" />
+        <exclude name="*/bin/**/DocumentEventMonitor*.*" />
+        <exclude name="*/bin/**/ICSharpCode*.*" />
         <exclude name="*/bin/**/AclExpander*.*" />
       </fileset>
       
@@ -507,6 +509,8 @@
 
         <!-- Executables, DB scripts, and config files -->
         <exclude name="*/bin/**/Dms*.*" />
+        <exclude name="*/bin/**/DocumentEventMonitor*.*" />
+        <exclude name="*/bin/**/ICSharpCode*.*" />
       </fileset>
 
       <fileset basedir="${solution.basedir}\SecurityManager">
