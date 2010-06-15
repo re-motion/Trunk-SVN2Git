@@ -21,6 +21,7 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using Microsoft.Scripting;
 using Remotion.Scripting.UnitTests.Diagnostics.ToText;
+using Remotion.Utilities;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -164,17 +165,12 @@ namespace Remotion.Scripting.UnitTests
       return timings.ToArray ();
     }
 
-
     public static void ExecuteAndTime (string testName, int[] nrLoopsArray, Func<Object> func)
     {
       var timings = ExecuteAndTime (nrLoopsArray, func);
 
-      To.ConsoleLine.s ("Timings ").e (testName).s (",").e (() => nrLoopsArray).s (": ").nl ().sb ();
-      foreach (var timing in timings)
-      {
-        To.Console.e (timing);
-      }
-      To.Console.se ();
+      Console.WriteLine ("Timings \"{0}\", nrLoopsArray={{{1}}}:", testName, StringUtility.ConcatWithSeparator (nrLoopsArray, ", "));
+      Console.WriteLine ("(" + StringUtility.ConcatWithSeparator (timings, ", ") + ")");
     }
 
 
