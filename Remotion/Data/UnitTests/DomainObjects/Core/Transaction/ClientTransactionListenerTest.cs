@@ -223,14 +223,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 
+      var customerEndPointDefinition = (RelationEndPointDefinition) order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
+      var orderItemsEndPointDefinition = (ReflectionBasedVirtualRelationEndPointDefinition) order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
+
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (
-            mock => mock.RelationReading (ClientTransactionMock, order, typeof (Order).FullName + ".Customer", ValueAccess.Current));
+            mock => mock.RelationReading (ClientTransactionMock, order, customerEndPointDefinition, ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.RelationRead (ClientTransactionMock, order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current));
         _strictListenerMock.Expect (
-            mock => mock.RelationReading (ClientTransactionMock, order, typeof (Order).FullName + ".OrderItems", ValueAccess.Current));
+            mock => mock.RelationReading (ClientTransactionMock, order, orderItemsEndPointDefinition, ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.RelationRead (
                 Arg.Is (ClientTransactionMock), 

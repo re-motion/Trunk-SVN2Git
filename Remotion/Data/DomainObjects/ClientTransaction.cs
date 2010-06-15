@@ -1036,7 +1036,7 @@ public abstract class ClientTransaction : IDataSource
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Current);
+      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
       DomainObject relatedObject = _dataManager.RelationEndPointMap.GetRelatedObject (relationEndPointID, false);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition.PropertyName, relatedObject, ValueAccess.Current);
 
@@ -1058,7 +1058,7 @@ public abstract class ClientTransaction : IDataSource
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Original);
+      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
       DomainObject relatedObject = _dataManager.RelationEndPointMap.GetOriginalRelatedObject (relationEndPointID);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition.PropertyName, relatedObject, ValueAccess.Original);
 
@@ -1080,7 +1080,7 @@ public abstract class ClientTransaction : IDataSource
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Current);
+      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
       var relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition.PropertyName, readOnlyRelatedObjects, ValueAccess.Current);
@@ -1103,7 +1103,7 @@ public abstract class ClientTransaction : IDataSource
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Original);
+      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
       DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetOriginalRelatedObjects (relationEndPointID);
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition.PropertyName, readOnlyRelatedObjects, ValueAccess.Original);
