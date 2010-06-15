@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Scripting.StableBindingImplementation;
-using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 
 namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
