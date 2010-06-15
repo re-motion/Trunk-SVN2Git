@@ -18,9 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Castle.DynamicProxy;
 using Microsoft.Scripting;
-using Remotion.Scripting.UnitTests.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting.UnitTests
