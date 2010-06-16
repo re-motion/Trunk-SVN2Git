@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -22,7 +23,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Text;
-using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -187,14 +187,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public void RelationReading (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
             "{0} RelationReading: {1} ({2}, {3})",
             clientTransaction.ID,
-            relationEndPointDefinition,
+            relationEndPointDefinition.PropertyName,
             valueAccess,
             GetDomainObjectString (domainObject));
       }
@@ -231,7 +235,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationRead: {1}=={2} ({3}, {4})",
             clientTransaction.ID,
-            relationEndPointDefinition,
+            relationEndPointDefinition.PropertyName,
             GetDomainObjectString (relatedObject),
             valueAccess,
             GetDomainObjectString (domainObject));
@@ -271,7 +275,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationRead: {1} ({2}, {3}): {4}",
             clientTransaction.ID,
-            relationEndPointDefinition,
+            relationEndPointDefinition.PropertyName,
             valueAccess,
             domainObject.ID,
             domainObjectsString);
@@ -309,7 +313,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "{0} RelationChanging: {1}: {2}->{3} /{4}",
             clientTransaction.ID,
-            relationEndPointDefinition,
+            relationEndPointDefinition.PropertyName,
             GetDomainObjectString (oldRelatedObject),
             GetDomainObjectString (newRelatedObject),
             GetDomainObjectString (domainObject));
@@ -322,13 +326,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, propertyName, GetDomainObjectString (domainObject));
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
+    public void RelationChanged (
+        ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, relationEndPointDefinition, GetDomainObjectString (domainObject));
+      {
+        s_log.DebugFormat (
+            "{0} RelationChanged: {1} ({2})", 
+            clientTransaction.ID, 
+            relationEndPointDefinition.PropertyName, 
+            GetDomainObjectString (domainObject));
+      }
     }
 
-    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
+    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
       if (s_log.IsDebugEnabled)
       {
@@ -426,7 +437,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private string GetDomainObjectString (DomainObject domainObject)
     {
-      return domainObject != null ? domainObject.ID.ToString () : "<null>";
+      return domainObject != null ? domainObject.ID.ToString() : "<null>";
     }
 
     bool INullObject.IsNull
