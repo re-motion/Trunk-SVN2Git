@@ -90,12 +90,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       base.Delete();
     }
-    
-    //[StorageClassNone]
-    //public new PropertyIndexer Properties
-    //{
-    //  get { return base.Properties; }
-    //}
-
   }
 }

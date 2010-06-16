@@ -57,10 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      //IRelationEndPointDefinition customerEndPointDefinition = order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
-      //IRelationEndPointDefinition securableEndPointDefintion = securableObject[
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
 
-      _extension.RelationReading (_testHelper.Transaction, securableObject, "Parent", ValueAccess.Current);
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -75,7 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (_testHelper.Transaction, securableObject, "Parent", ValueAccess.Current);
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
     }
 
     [Test]
@@ -85,9 +86,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
       using (new SecurityFreeSection ())
       {
-        _extension.RelationReading (_testHelper.Transaction, securableObject, "Parent", ValueAccess.Current);
+        _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
       }
 
       _testHelper.VerifyAll ();
@@ -100,7 +103,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (_testHelper.Transaction, nonSecurableObject, "Parent", ValueAccess.Current);
+      var nonSecurableEndPointDefintion = nonSecurableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (NonSecurableObject).FullName + ".Parent");
+
+
+      _extension.RelationReading (_testHelper.Transaction, nonSecurableObject, nonSecurableEndPointDefintion, ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -120,7 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (_testHelper.Transaction, securableObject, "Parent", ValueAccess.Current);
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -140,7 +148,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (_testHelper.Transaction, securableObject, "Children", ValueAccess.Current);
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Children");
+      
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }

@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -462,15 +463,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RelationReading ()
     {
+      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.RelationReading (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", ValueAccess.Current);
-        _extension2.RelationReading (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", ValueAccess.Current);
+        _extension1.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current);
+        _extension2.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationReading (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", ValueAccess.Current);
+      _collectionWithExtensions.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current);
 
       _mockRepository.VerifyAll ();
     }
@@ -479,7 +481,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationReadWithOneToOneRelation ()
     {
       OrderTicket orderTicket = _order.OrderTicket;
-
+      
       using (_mockRepository.Ordered ())
       {
         _extension1.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Original);

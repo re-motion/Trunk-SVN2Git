@@ -149,14 +149,6 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      PropertyReading (clientTransaction, domainObject, propertyName);
-    }
-
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);

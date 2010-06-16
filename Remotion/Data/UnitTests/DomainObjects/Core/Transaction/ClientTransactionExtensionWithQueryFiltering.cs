@@ -82,10 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-    }
-
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
     }

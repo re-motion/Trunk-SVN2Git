@@ -243,8 +243,7 @@ namespace Remotion.Data.DomainObjects
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
-    void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess);
-
+    
     /// <summary>
     /// This method is invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.One"/> was read. 
     /// </summary>

@@ -251,16 +251,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      foreach (IClientTransactionExtension extension in this)
-        extension.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Never)]
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
