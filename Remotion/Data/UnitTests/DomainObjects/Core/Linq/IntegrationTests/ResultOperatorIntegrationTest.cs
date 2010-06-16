@@ -387,9 +387,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithOrderBy_BeforeIncompatibleResultOperators ()
+    public void QueryWithOrderBy_BeforeDistinct ()
     {
-      var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Distinct ().Count();
+      var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Distinct ().Count ();
+
+      Assert.That (result, Is.EqualTo (5));
+    }
+
+    [Test]
+    [Ignore ("TODO 2917")]
+    public void QueryWithOrderBy_BeforeCount ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Count();
+
+      Assert.That (result, Is.EqualTo (5));
+    }
+
+    [Test]
+    [Ignore ("TODO 2917")]
+    public void QueryWithOrderBy_BeforeCount_DueToIncompatibleResultOperators ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Take (10).Count ();
 
       Assert.That (result, Is.EqualTo (5));
     }
