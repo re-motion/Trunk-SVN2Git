@@ -37,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
 
-    private DataContainer CreateNewDataContainer (ClassDefinition classDefinition)
+    private DataContainer CreateAndRegisterNewDataContainer (ClassDefinition classDefinition)
     {
       DataContainer dataContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, dataContainer);
 
       return dataContainer;
     }
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void NewDataContainer ()
     {
-      DataContainer newDataContainer = CreateNewDataContainer(TestMappingConfiguration.Current.ClassDefinitions["Computer"]);
+      DataContainer newDataContainer = CreateAndRegisterNewDataContainer(TestMappingConfiguration.Current.ClassDefinitions["Computer"]);
 
       newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"] = "123";
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ClassDefinition classDefinition = TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
 
-      DataContainer classWithAllDataTypes = CreateNewDataContainer (classDefinition);
+      DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
 
       classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = true;
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ClassDefinition classDefinition = TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
 
-      DataContainer classWithAllDataTypes = CreateNewDataContainer (classDefinition);
+      DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
 
       classWithAllDataTypes["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"] = new DateTime (1753, 1, 1);
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (TestMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);

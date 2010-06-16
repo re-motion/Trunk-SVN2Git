@@ -242,8 +242,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       var domainObjectReference = _clientTransaction.GetObjectReference (dataContainer.ID);
 
-      dataContainer.RegisterWithTransaction (_clientTransaction);
       dataContainer.SetDomainObject (domainObjectReference);
+      _clientTransaction.DataManager.RegisterDataContainer (dataContainer);
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
       Assertion.IsTrue (dataContainer.ClientTransaction == _clientTransaction);

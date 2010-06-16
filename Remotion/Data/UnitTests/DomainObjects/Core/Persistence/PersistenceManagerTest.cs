@@ -389,12 +389,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
       DataContainer officialContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Official1);
 
-      orderContainer.RegisterWithTransaction (ClientTransactionMock);
-      officialContainer.RegisterWithTransaction (ClientTransactionMock);
+      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, officialContainer);
 
-      DataContainerCollection dataContainers = new DataContainerCollection ();
-      dataContainers.Add (orderContainer);
-      dataContainers.Add (officialContainer);
+      var dataContainers = new DataContainerCollection { orderContainer, officialContainer };
 
       orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
       officialContainer[typeof (Official).FullName + ".Name"] = "Zaphod"; //Stub implementation
@@ -515,8 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
             }
           });
 
-
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, dataContainer);
 
       return dataContainer;
     }

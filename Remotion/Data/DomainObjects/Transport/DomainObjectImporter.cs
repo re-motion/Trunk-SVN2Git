@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects
       var transportedObjects = new List<DomainObject> (bindingTargetTransaction.GetEnlistedDomainObjects());
-      SynchronizeData (dataContainerMapping);
+      SynchronizeData (bindingTargetTransaction, dataContainerMapping);
 
       return new TransportedDomainObjects (bindingTargetTransaction, transportedObjects);
     }
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Transport
         var instance = creator.CreateObjectReference (id, bindingTargetTransaction);
 
         var newDataContainer = DataContainer.CreateNew (id);
-        newDataContainer.RegisterWithTransaction (bindingTargetTransaction);
+        bindingTargetTransaction.DataManager.RegisterDataContainer (newDataContainer);
         newDataContainer.SetDomainObject (instance);
 
         return newDataContainer;
@@ -110,14 +110,13 @@ namespace Remotion.Data.DomainObjects.Transport
       return Array.ConvertAll (items, item => item.ID);
     }
 
-    private void SynchronizeData (IEnumerable<Tuple<TransportItem, DataContainer>> sourceToTargetMapping)
+    private void SynchronizeData (ClientTransaction targetTransaction, IEnumerable<Tuple<TransportItem, DataContainer>> sourceToTargetMapping)
     {
       foreach (Tuple<TransportItem, DataContainer> sourceToTargetContainer in sourceToTargetMapping)
       {
         TransportItem transportItem = sourceToTargetContainer.Item1;
         DataContainer targetContainer = sourceToTargetContainer.Item2;
         DomainObject targetObject = targetContainer.DomainObject;
-        ClientTransaction targetTransaction = targetContainer.ClientTransaction;
 
         foreach (KeyValuePair<string, object> sourceProperty in transportItem.Properties)
         {

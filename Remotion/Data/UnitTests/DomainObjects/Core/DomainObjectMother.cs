@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static T GetObjectReference<T> (ClientTransaction clientTransaction, ObjectID objectID) where T : DomainObject
     {
-      return (T) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, typeof (ClientTransaction), "GetObjectReference", objectID);
+      return (T) LifetimeService.GetObjectReference (clientTransaction, objectID);
     }
 
     public static DomainObject GetChangedObject (ClientTransaction transaction, ObjectID objectID)

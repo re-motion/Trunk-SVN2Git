@@ -176,7 +176,10 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-    // TODO: Check at this point that dataContainer.ClientTransaction has already been set and that _dataContainerMap does not yet contain the container.
+    if (_dataContainerMap[dataContainer.ID] != null)
+      throw new InvalidOperationException (string.Format ("A DataContainer with ID '{0}' already exists in this transaction.", dataContainer.ID));
+    
+    dataContainer.SetClientTransaction (_clientTransaction);
 
     _dataContainerMap.Register (dataContainer);
     _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);

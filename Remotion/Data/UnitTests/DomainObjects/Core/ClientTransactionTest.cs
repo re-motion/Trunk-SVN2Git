@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, registeredDataContainer, newlyLoadedDataContainer);
 
-      RegisterDataContainer (clientTransaction, registeredDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (clientTransaction, registeredDataContainer);
 
       var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
@@ -588,7 +588,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, registeredDataContainer, newlyLoadedDataContainer);
 
-      RegisterDataContainer (clientTransaction, registeredDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (clientTransaction, registeredDataContainer);
 
       var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
@@ -661,7 +661,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, loadedRegisteredDataContainer);
 
       var alreadyRegisteredDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
-      RegisterDataContainer (clientTransaction, alreadyRegisteredDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (clientTransaction, alreadyRegisteredDataContainer);
 
       var result = ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
 
@@ -675,7 +675,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, loadedRegisteredDataContainer);
 
       var alreadyRegisteredDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem1, null, pd => pd.DefaultValue);
-      RegisterDataContainer (clientTransaction, alreadyRegisteredDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (clientTransaction, alreadyRegisteredDataContainer);
 
       using (clientTransaction.EnterNonDiscardingScope())
       {
@@ -699,13 +699,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
-    }
-
-    private void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
-    {
-      var objectReference = DomainObjectMother.GetObjectReference<OrderItem> (clientTransaction, dataContainer.ID);
-      dataContainer.SetDomainObject (objectReference);
-      dataContainer.RegisterWithTransaction (clientTransaction);
     }
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)

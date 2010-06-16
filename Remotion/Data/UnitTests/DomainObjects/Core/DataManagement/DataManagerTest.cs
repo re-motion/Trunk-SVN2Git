@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -261,12 +260,124 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
+
+    [Test]
+    public void RegisterDataContainer_New ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
+
+      _dataManager.RegisterDataContainer (dc);
+
+      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+
+      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID].ObjectID, Is.EqualTo (dc.ID));
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+    }
+
+    [Test]
+    public void RegisterDataContainer_Existing ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
+
+      _dataManager.RegisterDataContainer (dc);
+
+      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+
+      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This DataContainer has already been registered with a ClientTransaction.")]
+    public void RegisterDataContainer_ContainerAlreadyHasTransaction ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var otherTransaction = new ClientTransactionMock ();
+      otherTransaction.DataManager.RegisterDataContainer (dc);
+      Assert.That (dc.IsRegistered, Is.True);
+
+      _dataManager.RegisterDataContainer (dc);
+    }
+
+    [Test]
+    public void RegisterDataContainer_ContainerAlreadyHasTransaction_DataRemainsIntact ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var otherTransaction = new ClientTransactionMock();
+      otherTransaction.DataManager.RegisterDataContainer (dc);
+      Assert.That (dc.IsRegistered, Is.True);
+
+      try
+      {
+        _dataManager.RegisterDataContainer (dc);
+        Assert.Fail ("Expected exception");
+      }
+      catch (InvalidOperationException)
+      {
+        // ok
+      }
+
+      Assert.That (dc.ClientTransaction, Is.SameAs (otherTransaction));
+      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "A DataContainer with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
+    public void RegisterDataContainer_AlreadyRegistered ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var otherDC = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (otherDC);
+      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.SameAs (otherDC));
+
+      _dataManager.RegisterDataContainer (dc);
+    }
+
+    [Test]
+    public void RegisterDataContainer_AlreadyRegistered_DataRemainsIntact ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var otherDC = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (otherDC);
+      Assert.That (otherDC.IsRegistered, Is.True);
+
+      try
+      {
+        _dataManager.RegisterDataContainer (dc);
+        Assert.Fail ("Expected exception");
+      }
+      catch (InvalidOperationException)
+      {
+        // ok
+      }
+
+      Assert.That (dc.IsRegistered, Is.False);
+      Assert.That (otherDC.IsRegistered, Is.True);
+      Assert.That (otherDC.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
+      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.SameAs (otherDC));
+    }
+
     [Test]
     public void IsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
       Assert.That (_dataManager.InvalidObjectCount, Is.EqualTo (0));
@@ -281,8 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetInvalidObjectReference ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
       _dataManager.Discard (dataContainer);
 
       var invalidObjectReference = _dataManager.GetInvalidObjectReference (dataContainer.ID);
@@ -302,8 +412,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_RemovesEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
@@ -317,8 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_RemovesDataContainer ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (dataContainer));
 
@@ -331,8 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_DiscardsDataContainer ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       _dataManager.Discard (dataContainer);
 
@@ -343,8 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_MarksObjectInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
@@ -356,23 +462,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_WithoutDomainObject_DataContainerNotMarkedInvalid ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      _dataManager.RegisterDataContainer (dataContainer);
-
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
-
-      _dataManager.Discard (dataContainer);
-      
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
-      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (Arg<ClientTransaction>.Is.Anything, Arg.Is (dataContainer.ID)));
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot discard data container 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', it might leave dangling references: 'End point "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' still "
@@ -380,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_ThrowsOnDanglingReferences ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -422,7 +511,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
       dataContainer.SetDomainObject (domainObject);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       _dataManager.MarkObjectInvalid (domainObject);
     }
@@ -456,7 +545,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -474,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_CommitsDataContainerMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
       
@@ -487,8 +576,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_RemovesDeletedEndPoints ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       dataContainer.Delete ();
 
@@ -504,8 +592,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_RemovesDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       dataContainer.Delete ();
 
@@ -522,8 +609,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_DiscardsDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       dataContainer.Delete ();
 
@@ -539,8 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_MarksDeletedObjectsAsInvalid ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       dataContainer.Delete ();
 
@@ -555,7 +640,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RollsBackRelationEndPointStates ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -573,7 +658,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RollsBackDataContainerStates ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       dataContainer.Delete ();
 
@@ -588,8 +673,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RemovesNewEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
@@ -603,8 +687,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RemovesNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
 
@@ -617,8 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_DiscardsNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (dataContainer.IsDiscarded, Is.False);
 
@@ -631,8 +713,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_MarksNewObjectsAsInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.False);
 
@@ -700,7 +781,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckMandatoryRelations_RelationsNotOk ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
@@ -712,7 +793,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckMandatoryRelations_UnregisteredRelations_Ignored ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
         _dataManager.RelationEndPointMap.RemoveEndPoint (endPointID);
@@ -724,7 +805,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasRelationChanged_True ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
       var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -740,7 +821,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasRelationChanged_False ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var result = _dataManager.HasRelationChanged (dataContainer);
 
@@ -751,7 +832,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasRelationChanged_IgnoresUnregisteredEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
       var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -792,7 +873,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainerWithoutLoading_Loaded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
       
       var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
 
@@ -813,7 +894,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainerWithLazyLoad_Loaded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var result = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
 
@@ -855,11 +936,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
       return Tuple.Create (domainObject, dataContainer, domainObject.State);
-    }
-
-    private void SetDomainObject (DataContainer dataContainer)
-    {
-      dataContainer.SetDomainObject (LifetimeService.GetObjectReference (ClientTransactionMock, dataContainer.ID));
     }
   }
 }

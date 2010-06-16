@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       var instance = creator.CreateObjectReference (cloneObjectID, CloneTransaction);
 
       var cloneDataContainer = DataContainer.CreateNew (cloneObjectID);
-      cloneDataContainer.RegisterWithTransaction (CloneTransaction);
+      CloneTransaction.DataManager.RegisterDataContainer (cloneDataContainer);
       cloneDataContainer.SetDomainObject (instance);
 
       return (T) instance;

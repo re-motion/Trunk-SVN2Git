@@ -255,7 +255,7 @@ namespace Remotion.Data.DomainObjects
 
       var newDataContainer = DataContainer.CreateNew (objectID);
       newDataContainer.SetDomainObject (this);
-      newDataContainer.RegisterWithTransaction (clientTransaction);
+      clientTransaction.DataManager.RegisterDataContainer (newDataContainer);
       clientTransaction.EnlistDomainObject (this);
 
       _needsLoadModeDataContainerOnly = true;

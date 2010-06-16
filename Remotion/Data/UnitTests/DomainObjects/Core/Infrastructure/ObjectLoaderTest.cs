@@ -677,10 +677,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private DomainObject PreregisterDataContainer (DataContainer dataContainer)
     {
-      var domainObject = ClientTransactionTestHelper.CallGetObjectReference (_clientTransaction, dataContainer.ID);
-      dataContainer.SetDomainObject (domainObject);
-      dataContainer.RegisterWithTransaction (_clientTransaction);
-      return domainObject;
+      ClientTransactionTestHelper.RegisterDataContainer (_clientTransaction, dataContainer);
+      return dataContainer.DomainObject;
     }
 
     private IQuery CreateFakeQuery ()

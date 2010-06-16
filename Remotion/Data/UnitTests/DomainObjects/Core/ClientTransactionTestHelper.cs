@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -97,6 +98,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static CompoundClientTransactionListener GetTransactionEventSink (ClientTransaction clientTransaction)
     {
       return (CompoundClientTransactionListener) PrivateInvoke.GetNonPublicProperty (clientTransaction, "TransactionEventSink");
+    }
+
+    public static void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
+    {
+      if (!dataContainer.HasDomainObject)
+      {
+        var objectReference = DomainObjectMother.GetObjectReference<DomainObject> (clientTransaction, dataContainer.ID);
+        dataContainer.SetDomainObject (objectReference);
+      }
+
+      var dataManager = GetDataManager (clientTransaction);
+      dataManager.RegisterDataContainer (dataContainer);
     }
   }
 }

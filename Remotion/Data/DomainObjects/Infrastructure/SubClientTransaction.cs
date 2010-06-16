@@ -274,7 +274,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
       parentDataContainer.SetDomainObject (dataContainer.DomainObject);
 
-      parentDataContainer.RegisterWithTransaction (ParentTransaction);
+      ParentTransaction.DataManager.RegisterDataContainer (parentDataContainer);
 
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
     }
