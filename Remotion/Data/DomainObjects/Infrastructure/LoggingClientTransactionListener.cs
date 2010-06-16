@@ -194,25 +194,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        string propertyName,
-        DomainObject relatedObject,
-        ValueAccess valueAccess)
-    {
-      if (s_log.IsDebugEnabled)
-      {
-        s_log.DebugFormat (
-            "{0} RelationRead: {1}=={2} ({3}, {4})",
-            clientTransaction.ID,
-            propertyName,
-            GetDomainObjectString (relatedObject),
-            valueAccess,
-            GetDomainObjectString (domainObject));
-      }
-    }
-
-    public void RelationRead (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject relatedObject,
         ValueAccess valueAccess)

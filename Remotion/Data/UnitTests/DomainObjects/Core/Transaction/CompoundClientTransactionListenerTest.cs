@@ -121,7 +121,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           "Foo", 
           "Bar"));
 
-      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, "Foo", order, ValueAccess.Original));
       CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, realtionEndPointDefinitionMock, order, ValueAccess.Original));
       CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, realtionEndPointDefinitionMock, relatedObjects, ValueAccess.Original));
       CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, realtionEndPointDefinitionMock, ValueAccess.Current));

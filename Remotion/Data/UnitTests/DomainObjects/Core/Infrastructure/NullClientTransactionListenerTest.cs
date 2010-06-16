@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationRead_SingleValue ()
     {
-      _listener.RelationRead (ClientTransactionMock, _domainObject, "Relation", _domainObject, ValueAccess.Current);
+      _listener.RelationRead (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, _domainObject, ValueAccess.Current);
     }
 
     [Test]

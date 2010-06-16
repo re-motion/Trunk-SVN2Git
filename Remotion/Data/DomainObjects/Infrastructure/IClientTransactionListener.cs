@@ -67,7 +67,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
-    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
+    
+    /// <summary>
+    /// Indicates that a scalar-value relation has been read.
+    /// </summary>
+    /// <param name="clientTransaction"></param>
+    /// <param name="domainObject">The domain object owning the relation that has been read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
+    /// <param name="relatedObject">The related object that is returned to the reader.</param>
+    /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>

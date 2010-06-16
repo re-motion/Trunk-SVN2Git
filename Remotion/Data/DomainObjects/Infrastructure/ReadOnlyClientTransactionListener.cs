@@ -129,15 +129,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        string propertyName,
-        DomainObject relatedObject,
-        ValueAccess valueAccess)
-    {
-    }
-
-    public virtual void RelationRead (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject relatedObject,
         ValueAccess valueAccess)
