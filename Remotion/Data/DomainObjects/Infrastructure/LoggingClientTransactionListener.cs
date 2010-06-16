@@ -301,12 +301,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationChanged: {1} ({2})", clientTransaction.ID, propertyName, GetDomainObjectString (domainObject));
-    }
-
     public void RelationChanged (
         ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {

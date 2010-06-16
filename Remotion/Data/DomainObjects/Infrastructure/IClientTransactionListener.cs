@@ -109,8 +109,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
-    /// <param name="propertyName">The name of the property that changes.</param>
-    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
+    /// <param name="relationEndPointDefinition">The relation endpoint defintition that changes.</param>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
 
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;

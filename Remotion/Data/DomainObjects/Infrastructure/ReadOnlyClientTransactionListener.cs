@@ -176,11 +176,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationChanging");
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
-    {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
-    }
-
     public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       Assertion.IsFalse (clientTransaction.IsReadOnly);

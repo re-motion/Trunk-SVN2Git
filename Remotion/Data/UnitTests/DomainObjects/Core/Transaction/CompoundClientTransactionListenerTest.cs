@@ -129,7 +129,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, realtionEndPointDefinitionMock, ValueAccess.Current));
       
       CheckNotification (listener => listener.RelationChanging (ClientTransactionMock, order, realtionEndPointDefinitionMock, order, order2));
-      CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, "Baz"));
       CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, realtionEndPointDefinitionMock));
 
       CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));

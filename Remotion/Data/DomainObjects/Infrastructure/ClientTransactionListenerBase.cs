@@ -113,10 +113,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
-    {
-    }
-
     public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
     }

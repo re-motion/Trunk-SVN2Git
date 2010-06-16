@@ -156,11 +156,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, oldRelatedObject, newRelatedObject);
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
-    {
-      Extensions.RelationChanged (clientTransaction, domainObject, propertyName);
-    }
-
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       Extensions.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
