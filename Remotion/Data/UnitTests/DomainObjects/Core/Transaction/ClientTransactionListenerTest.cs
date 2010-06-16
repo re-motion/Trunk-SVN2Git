@@ -231,14 +231,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (
             mock => mock.RelationReading (ClientTransactionMock, order, customerEndPointDefinition, ValueAccess.Current));
         _strictListenerMock.Expect (
-            mock => mock.RelationRead (ClientTransactionMock, order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current));
+            mock => mock.RelationRead (ClientTransactionMock, order, customerEndPointDefinition, customer, ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.RelationReading (ClientTransactionMock, order, orderItemsEndPointDefinition, ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.RelationRead (
                 Arg.Is (ClientTransactionMock), 
                 Arg.Is (order), 
-                Arg.Is (typeof (Order).FullName + ".OrderItems"),
+                Arg.Is (orderItemsEndPointDefinition),
                 Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (domainObjects => domainObjects.SequenceEqual (orderItems.Cast<DomainObject> ())),
                 Arg.Is (ValueAccess.Current)));
       }
