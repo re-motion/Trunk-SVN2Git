@@ -176,6 +176,9 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
+    if (!dataContainer.HasDomainObject)
+      throw new InvalidOperationException ("The DomainObject of a DataContainer must be set before it can be registered with a transaction.");
+
     if (_dataContainerMap[dataContainer.ID] != null)
       throw new InvalidOperationException (string.Format ("A DataContainer with ID '{0}' already exists in this transaction.", dataContainer.ID));
     
@@ -237,11 +240,8 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     dataContainer.Discard ();
 
-    if (dataContainer.HasDomainObject)
-    {
-      var domainObject = dataContainer.DomainObject;
-      MarkObjectInvalid(domainObject);
-    }
+    var domainObject = dataContainer.DomainObject;
+    MarkObjectInvalid(domainObject);
   }
 
   public void MarkObjectInvalid (DomainObject domainObject)

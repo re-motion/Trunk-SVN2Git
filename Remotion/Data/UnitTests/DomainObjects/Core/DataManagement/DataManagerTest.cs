@@ -242,6 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterDataContainer_RegistersDataContainerInMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
 
       _dataManager.RegisterDataContainer (dataContainer);
@@ -253,6 +254,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterDataContainer_RegistersEndPointsInMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
+
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
 
@@ -264,7 +267,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RegisterDataContainer_New ()
     {
-      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
       var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
@@ -272,19 +276,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
-      _dataManager.RegisterDataContainer (dc);
+      _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
-      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID].ObjectID, Is.EqualTo (dc.ID));
-      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+      Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID].ObjectID, Is.EqualTo (dataContainer.ID));
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dataContainer.ID));
     }
 
     [Test]
     public void RegisterDataContainer_Existing ()
     {
-      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      SetDomainObject (dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
       var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
@@ -292,13 +297,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
-      _dataManager.RegisterDataContainer (dc);
+      _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
-      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dataContainer.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The DomainObject of a DataContainer must be set before it can be registered with a transaction.")]
+    public void RegisterDataContainer_ContainerHasNoDomainObject ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
     }
 
     [Test]
@@ -306,25 +320,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "This DataContainer has already been registered with a ClientTransaction.")]
     public void RegisterDataContainer_ContainerAlreadyHasTransaction ()
     {
-      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var otherTransaction = new ClientTransactionMock ();
-      otherTransaction.DataManager.RegisterDataContainer (dc);
-      Assert.That (dc.IsRegistered, Is.True);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject(dataContainer);
 
-      _dataManager.RegisterDataContainer (dc);
+      var otherTransaction = new ClientTransactionMock ();
+      otherTransaction.DataManager.RegisterDataContainer (dataContainer);
+      Assert.That (dataContainer.IsRegistered, Is.True);
+
+      _dataManager.RegisterDataContainer (dataContainer);
     }
 
     [Test]
     public void RegisterDataContainer_ContainerAlreadyHasTransaction_DataRemainsIntact ()
     {
-      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var otherTransaction = new ClientTransactionMock();
-      otherTransaction.DataManager.RegisterDataContainer (dc);
-      Assert.That (dc.IsRegistered, Is.True);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
+
+      var otherTransaction = new ClientTransactionMock ();
+      otherTransaction.DataManager.RegisterDataContainer (dataContainer);
+      Assert.That (dataContainer.IsRegistered, Is.True);
 
       try
       {
-        _dataManager.RegisterDataContainer (dc);
+        _dataManager.RegisterDataContainer (dataContainer);
         Assert.Fail ("Expected exception");
       }
       catch (InvalidOperationException)
@@ -332,8 +350,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         // ok
       }
 
-      Assert.That (dc.ClientTransaction, Is.SameAs (otherTransaction));
-      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.Null);
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (otherTransaction));
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -341,25 +359,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "A DataContainer with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
     public void RegisterDataContainer_AlreadyRegistered ()
     {
-      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var otherDC = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (otherDC);
-      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.SameAs (otherDC));
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
 
-      _dataManager.RegisterDataContainer (dc);
+      var otherDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (otherDataContainer);
+
+      _dataManager.RegisterDataContainer (otherDataContainer);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (otherDataContainer));
+
+      _dataManager.RegisterDataContainer (dataContainer);
     }
 
     [Test]
     public void RegisterDataContainer_AlreadyRegistered_DataRemainsIntact ()
     {
-      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var otherDC = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterDataContainer (otherDC);
-      Assert.That (otherDC.IsRegistered, Is.True);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
+
+      var otherDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (otherDataContainer);
+
+      _dataManager.RegisterDataContainer (otherDataContainer);
+      Assert.That (otherDataContainer.IsRegistered, Is.True);
 
       try
       {
-        _dataManager.RegisterDataContainer (dc);
+        _dataManager.RegisterDataContainer (dataContainer);
         Assert.Fail ("Expected exception");
       }
       catch (InvalidOperationException)
@@ -367,10 +393,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         // ok
       }
 
-      Assert.That (dc.IsRegistered, Is.False);
-      Assert.That (otherDC.IsRegistered, Is.True);
-      Assert.That (otherDC.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
-      Assert.That (_dataManager.DataContainerMap[dc.ID], Is.SameAs (otherDC));
+      Assert.That (dataContainer.IsRegistered, Is.False);
+      Assert.That (otherDataContainer.IsRegistered, Is.True);
+      Assert.That (otherDataContainer.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (otherDataContainer));
     }
 
     [Test]
@@ -906,6 +932,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
+      dataContainer.SetDomainObject (domainObject);
       
       var transactionMock = ClientTransactionObjectMother.CreateStrictMock ();
       var dataManager = ClientTransactionTestHelper.GetDataManager (transactionMock);
@@ -936,6 +963,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
       return Tuple.Create (domainObject, dataContainer, domainObject.State);
+    }
+
+    private void SetDomainObject (DataContainer dc)
+    {
+      dc.SetDomainObject (DomainObjectMother.GetObjectReference<DomainObject> (_dataManager.ClientTransaction, dc.ID));
     }
   }
 }

@@ -98,8 +98,8 @@ namespace Remotion.Data.DomainObjects.Transport
         var instance = creator.CreateObjectReference (id, bindingTargetTransaction);
 
         var newDataContainer = DataContainer.CreateNew (id);
-        bindingTargetTransaction.DataManager.RegisterDataContainer (newDataContainer);
         newDataContainer.SetDomainObject (instance);
+        bindingTargetTransaction.DataManager.RegisterDataContainer (newDataContainer);
 
         return newDataContainer;
       }
