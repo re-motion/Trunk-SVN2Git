@@ -196,9 +196,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       FindNewDataContainersAndInitialize (queryResult);
 
       var relatedObjects = from loadedDataContainer in queryResult
-                           let maybeDataContainer = Maybe
-                               .ForValue (loadedDataContainer)
-                               .Select (dc => Assertion.IsNotNull (_clientTransaction.DataManager.DataContainerMap[dc.ID]))
+                           let maybeDataContainer = 
+                              Maybe // loadedDataContainer is null when the query returned null at this position
+                                .ForValue (loadedDataContainer)
+                                .Select (dc => Assertion.IsNotNull (_clientTransaction.DataManager.DataContainerMap[dc.ID]))
                            let maybeDomainObject = maybeDataContainer.Select (dc => GetCastQueryResultObject<T> (dc.DomainObject))
                            select maybeDomainObject.ValueOrDefault();
 

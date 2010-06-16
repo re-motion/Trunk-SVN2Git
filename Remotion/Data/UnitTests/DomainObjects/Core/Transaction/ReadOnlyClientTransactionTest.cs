@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-        + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
+        + "ClientTransaction is read-only. Offending transaction modification: RelationEndPointMapRegistering.")]
     public void ThrowsOnGetRelatedObjects1SideIfNotLoaded ()
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);

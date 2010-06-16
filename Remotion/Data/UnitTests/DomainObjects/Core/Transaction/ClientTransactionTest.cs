@@ -1040,6 +1040,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       LastCall.IgnoreArguments ().Repeat.Any ();
       listenerMock.ObjectsLoaded (null, null);
       LastCall.IgnoreArguments ();
+      listenerMock.VirtualRelationEndPointStateUpdated (null, null, null);
+      LastCall.IgnoreArguments ();
 
       mockRepository.ReplayAll ();
 

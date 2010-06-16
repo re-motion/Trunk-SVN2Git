@@ -41,12 +41,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
-        IEnumerable<DomainObject> initialContents)
+        IEnumerable<DomainObject> initialContentsOrNull)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       
-      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContents);
+      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContentsOrNull);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();

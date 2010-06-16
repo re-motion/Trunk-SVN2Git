@@ -157,13 +157,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
-    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContents)
+    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContentsOrNull)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("initialContents", initialContents);
       CheckCardinality (endPointID, CardinalityType.Many, "RegisterCollectionEndPoint", "endPointID");
 
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContents);
+      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContentsOrNull);
       Add (collectionEndPoint);
 
       return collectionEndPoint;
@@ -215,8 +214,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
       else
       {
-        var relatedObjects = _clientTransaction.LoadRelatedObjects (endPointID);
-        RegisterCollectionEndPoint (endPointID, relatedObjects);
+        var endPoint = RegisterCollectionEndPoint (endPointID, null);
+        endPoint.EnsureDataAvailable ();
       }
 
       var loadedEndPoint = _relationEndPoints[endPointID];
