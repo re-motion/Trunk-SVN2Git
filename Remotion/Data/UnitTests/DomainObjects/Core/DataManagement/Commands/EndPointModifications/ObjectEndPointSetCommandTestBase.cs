@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       listenerMock.AssertWasCalled (mock => mock.RelationChanged (
           ClientTransactionMock, 
           _endPoint.GetDomainObject (), 
-          _endPoint.PropertyName));
+          _endPoint.Definition));
     }
 
     protected IList<RelationEndPointModificationCommand> GetAllCommands (ExpandedCommand bidirectionalModification)

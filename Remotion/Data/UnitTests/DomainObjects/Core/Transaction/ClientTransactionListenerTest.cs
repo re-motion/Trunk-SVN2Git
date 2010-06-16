@@ -308,16 +308,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, oldCustomerEndPointID, null));
         _strictListenerMock.Expect (mock => mock.RelationChanged (
             ClientTransactionMock, 
-            oldCustomer, 
-            typeof (Customer).FullName + ".Orders"));
+            oldCustomer, oldCustomerEndPointID.Definition));
         _strictListenerMock.Expect (mock => mock.RelationChanged (
             ClientTransactionMock, 
-            newCustomer, 
-            typeof (Customer).FullName + ".Orders"));
+            newCustomer, newCustomerEndPointID.Definition));
         _strictListenerMock.Expect (mock => mock.RelationChanged (
             ClientTransactionMock, 
-            order, 
-            typeof (Order).FullName + ".Customer"));
+            order, customerEndPointDefinition));
       }
 
       _mockRepository.ReplayAll ();
