@@ -33,7 +33,7 @@ function (textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           displayListDelay: completionInterval,
           autoFillDelay: suggestionInterval,
 
-          autoFill: false,
+          autoFill: true,
           mustMatch: false, //set true if should clear input on no results
           matchContains: true,
           scrollHeight: 220,

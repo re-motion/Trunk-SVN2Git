@@ -138,7 +138,7 @@
                     if (select.visible()) {
                         select.prev();
                     } else {
-                        onChange(0, true);
+                        onChange(0, true, $input.val());
                     }
                     break;
 
@@ -147,7 +147,7 @@
                     if (select.visible()) {
                         select.next();
                     } else {
-                        onChange(0, true);
+                        onChange(0, true, $input.val());
                     }
                     break;
 
@@ -156,7 +156,7 @@
                     if (select.visible()) {
                         select.pageUp();
                     } else {
-                        onChange(0, true);
+                        onChange(0, true, $input.val());
                     }
                     break;
 
@@ -165,7 +165,7 @@
                     if (select.visible()) {
                         select.pageDown();
                     } else {
-                        onChange(0, true);
+                        onChange(0, true, $input.val());
                     }
                     break;
 
@@ -202,13 +202,47 @@
                     }
 
                 default:
-                    clearTimeout(timeout);
-                    timeout = setTimeout(onChange, options.displayListDelay);
-
-                    // re-motion: start the auto-fill enabler count-down
-                    enableAutoFill();
-
                     break;
+            }
+        }).keyup(function(event) { // re-motion
+            switch (event.keyCode) {
+                case KEY.UP:
+                case KEY.DOWN:
+                case KEY.PAGEUP:
+                case KEY.PAGEDOWN:
+                case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
+                case KEY.RETURN:
+                case KEY.TAB:
+                case KEY.ESC:
+                    break;
+                
+                default:
+                    clearTimeout(timeout);
+                    var currentValue = $input.val();
+                    timeout = setTimeout(
+                        new function () { 
+                            onChange(0, false, currentValue); 
+                        }, 
+                        options.displayListDelay);
+                    break;
+            }
+            
+            if (autoFillTimeout) {
+              clearTimeout(autoFillTimeout);
+              autoFillTimeout = null;
+            }
+            
+            if (options.autoFill) {
+                autoFillTimeout = setTimeout (
+                    new function() {
+                        if (!select.visible())
+                            return;
+                        var index = select.findItem ($input.val());
+                        select.selectItem (index);
+                        if (index != -1){
+                            autoFill ($input.val(), select.selected().result);
+                    }
+                }, options.autoFillDelay);
             }
         }).focus(function() {
             // track whether the field has focus, we shouldn't process any
@@ -265,7 +299,7 @@
                     select.hide();
                 } else {
                     $input.focus();
-                    onChange(1, true);
+                    onChange(1, true, $input.val());
                     clearTimeout(timeout);
                 }
             });
@@ -293,21 +327,22 @@
             hideResults();
             $input.trigger("result", selected.data);
 
-            // re-motion: set autoFill to false again and reset the timer
-            options.autoFill = false;
-            autoFillTimeout = null;
+            // re-motion: reset the timer
+            if (autoFillTimeout) {
+                clearTimeout(autoFillTimeout);
+                autoFillTimeout = null;
+            }
 
             return true;
         }
 
         // re-motion: use obsolete first parameter to indicate whether the onChange event is triggered by input (0) or the dropdownButton (1)
-        function onChange(isDropDown, skipPrevCheck) {
+        function onChange(isDropDown, skipPrevCheck, currentValue) {
             if (lastKeyPressCode == KEY.DEL) {
                 select.hide();
                 return;
             }
 
-            var currentValue = $input.val();
             if (!skipPrevCheck && currentValue == previousValue)
                 return;
 
@@ -352,24 +387,29 @@
             return words[words.length - 1];
         }
 
-        // re-motion: auto-fill is always enabled, but only after autoFillDelay has passed while typing
-        function enableAutoFill() {
-            if (!autoFillTimeout)
-                autoFillTimeout = setTimeout(function() { options.autoFill = true; }, options.autoFillDelay);
-        }
-
         // fills in the input box w/the first match (assumed to be the best match)
         // q: the term entered
         // sValue: the first matching result
         function autoFill(q, sValue) {
-            // autofill in the complete box w/the first match as long as the user hasn't entered in more data
+            // re-motion: rewritten
+            if (!options.autoFill)
+                return;
+
             // if the last user key pressed was backspace, don't autofill
-            if (options.autoFill && (lastWord($input.val()).toLowerCase() == q.toLowerCase()) && lastKeyPressCode != KEY.BACKSPACE) {
-                // fill in the value (keep the case the user has typed)
-                $input.val($input.val() + sValue.substring(lastWord(previousValue).length));
-                // select the portion of the value not typed by the user (so the next character will erase)
-                $.Autocompleter.Selection(input, previousValue.length, previousValue.length + sValue.length);
-           }
+            if (lastKeyPressCode == KEY.BACKSPACE)
+                return;
+
+            // autofill in the complete box w/the first match as long as the user hasn't entered in more data
+            if (lastWord($input.val()).toLowerCase() != q.toLowerCase())
+                return;
+            
+            if (lastWord(q).toLowerCase() == sValue.toLowerCase())
+                return;
+
+            // fill in the value (keep the case the user has typed)
+            $input.val($input.val() + sValue.substring(lastWord(q).length));
+            // select the portion of the value not typed by the user (so the next character will erase)
+            $.Autocompleter.Selection(input, q.length, q.length + sValue.length);
         };
 
         function hideResults() {
@@ -655,7 +695,7 @@
 
         var listItems,
     active = -1,
-    data,
+    data = null,
     term = "",
     needsInit = true,
     element,
@@ -833,6 +873,28 @@
                 list.bgiframe();
         }
 
+        // re-motion: Gets the index of first item matching the term. The lookup starts with the active item, 
+        //            goes to the end of the list, and if no match was found, tries the opposite direction next.
+        function findItemPosition(term, startPosition) {
+            if (data == null)
+                return -1;
+
+            var max = data.length;
+            for (var i = startPosition; i < max; i++) {
+                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) == 0) {
+                    return i;
+                }
+            }
+
+            for (var i = startPosition - 1; i >= 0; i--) {
+                if (data[i].result.toLowerCase().indexOf(term.toLowerCase()) == 0) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         return {
             display: function(d, q) {
                 init();
@@ -889,7 +951,7 @@
                     revertInputStausTimeout = setTimeout(revertInputStaus, 500);
                 });
 
-                //re-motion: scroll dropDown list to value from input
+                // re-motion: scroll dropDown list to value from input
                 var selectedItemIndex = -1;
                 var inputValue = $(input).val().toLowerCase();
                 listItems.each(function(i) {
@@ -956,6 +1018,19 @@
             },
             emptyList: function() {
                 list && list.empty();
+            },
+            // re-motion: returns the index of the item
+            findItem: function (term) {
+                return findItemPosition (term, Math.max (active, 0));
+            },
+            // re-motion: selects the item at the specified index
+            selectItem: function (index) {
+                if (index != -1) {
+                    var step = index - Math.max (active, 0);
+                    moveSelect (step, false);
+                } else if (listItems) {
+                    listItems.filter("." + CLASSES.ACTIVE).removeClass(CLASSES.ACTIVE);
+                }
             },
             unbind: function() {
                 element && element.remove();
