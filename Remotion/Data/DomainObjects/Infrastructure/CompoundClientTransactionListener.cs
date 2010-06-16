@@ -171,12 +171,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
-    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      foreach (var listener in _listeners)
-        listener.RelationChanging (clientTransaction, domainObject, propertyName, oldRelatedObject, newRelatedObject);
-    }
-
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       foreach (var listener in _listeners)

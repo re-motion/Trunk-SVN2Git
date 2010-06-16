@@ -285,25 +285,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        string propertyName,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
-    {
-      if (s_log.IsDebugEnabled)
-      {
-        s_log.DebugFormat (
-            "{0} RelationChanging: {1}: {2}->{3} /{4}",
-            clientTransaction.ID,
-            propertyName,
-            GetDomainObjectString (oldRelatedObject),
-            GetDomainObjectString (newRelatedObject),
-            GetDomainObjectString (domainObject));
-      }
-    }
-
-    public void RelationChanging (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)

@@ -94,12 +94,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
-    /// <param name="propertyName">The name of the property that changes.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition that changes.</param>
     /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
     ///   replacing an old one.</param>
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
     ///   being replaced by a new one.</param>
-    void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
     void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject);
 
     /// <summary>

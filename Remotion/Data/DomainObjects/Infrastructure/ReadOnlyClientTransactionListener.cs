@@ -169,16 +169,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        string propertyName,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
-    {
-      EnsureWriteable (clientTransaction, "RelationChanging");
-    }
-
-    public virtual void RelationChanging (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)

@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       listenerMock.AssertWasNotCalled (mock => mock.RelationChanging (
           Arg<ClientTransaction>.Is.Anything, 
           Arg<DomainObject>.Is.Anything,
-          Arg<string>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything,
           Arg<DomainObject>.Is.Anything,
           Arg<DomainObject>.Is.Anything));
     }
