@@ -223,8 +223,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 
-      var customerEndPointDefinition = (RelationEndPointDefinition) order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
-      var orderItemsEndPointDefinition = (ReflectionBasedVirtualRelationEndPointDefinition) order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition customerEndPointDefinition = order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition orderItemsEndPointDefinition = order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
 
       using (_mockRepository.Ordered ())
       {
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var oldCustomerEndPointID = oldCustomer.Orders.AssociatedEndPointID;
       var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;
 
-      RelationEndPointDefinition customerEndPointDefinition = (RelationEndPointDefinition) order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition customerEndPointDefinition = order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
       
       ClientTransactionMock.AddListener (_strictListenerMock);
       

@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Indicates that a scalar-value relation has been read.
     /// </summary>
-    /// <param name="clientTransaction"></param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
     /// <param name="relatedObject">The related object that is returned to the reader.</param>
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Indicates that a multi-value relation has been read.
     /// </summary>
-    /// <param name="clientTransaction"></param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
     /// <param name="relatedObjects">
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
-    /// <param name="clientTransaction"></param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint definition that changes.</param>
     /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
-    /// <param name="clientTransaction"></param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint defintition that changes.</param>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
