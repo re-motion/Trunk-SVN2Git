@@ -82,11 +82,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _extension.RelationChanging (
             ClientTransactionMock,
             _order1,
-            "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket",
+            _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
             _orderTicket1,
             null);
         _extension.RelationChanging (
-            ClientTransactionMock, _orderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _order1, null);
+            ClientTransactionMock, _orderTicket1, _orderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
 
         _order1EventReceiver.RelationChanging (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderTicket1, null);
 
@@ -118,10 +118,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered())
       {
+        
         _extension.RelationChanging (
-            ClientTransactionMock, order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", null, orderTicket);
+            ClientTransactionMock, order, order.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, orderTicket);
         _extension.RelationChanging (
-            ClientTransactionMock, orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, order);
+            ClientTransactionMock, orderTicket, orderTicket.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, order);
 
         var orderEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (order);
         var orderTicketEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket);
@@ -158,13 +159,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extension.RelationChanging (
-            ClientTransactionMock, orderTicket3, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", oldOrderOfOrderTicket3, _order1);
+            ClientTransactionMock, orderTicket3, orderTicket3.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, oldOrderOfOrderTicket3, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderOfOrderTicket3, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket3, null);
+            ClientTransactionMock, oldOrderOfOrderTicket3, oldOrderOfOrderTicket3.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, orderTicket3, null);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderTicket1, orderTicket3);
+            ClientTransactionMock, _order1,_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, _orderTicket1, orderTicket3);
         _extension.RelationChanging (
-            ClientTransactionMock, _orderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _order1, null);
+            ClientTransactionMock, _orderTicket1,_orderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
 
         orderTicket3EventReceiver.RelationChanging (
             orderTicket3, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", oldOrderOfOrderTicket3, _order1);
@@ -226,13 +227,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderTicket1, orderTicket3);
+            ClientTransactionMock, _order1,_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, _orderTicket1, orderTicket3);
         _extension.RelationChanging (
-            ClientTransactionMock, _orderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _order1, null);
+            ClientTransactionMock, _orderTicket1, _orderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
         _extension.RelationChanging (
-            ClientTransactionMock, orderTicket3, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", oldOrderOfOrderTicket3, _order1);
+            ClientTransactionMock, orderTicket3, orderTicket3.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, oldOrderOfOrderTicket3, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderOfOrderTicket3, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket3, null);
+            ClientTransactionMock, oldOrderOfOrderTicket3,oldOrderOfOrderTicket3.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, orderTicket3, null);
 
         _order1EventReceiver.RelationChanging (
             _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderTicket1, orderTicket3);
@@ -287,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extension.RelationChanging (
-            ClientTransactionMock, _location1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", _client1, null);
+            ClientTransactionMock, _location1, _location1.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, _client1, null);
 
         _location1EventReceiver.RelationChanging (_location1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", _client1, null);
 
@@ -314,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extension.RelationChanging (
-            ClientTransactionMock, newLocation, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", null, _client1);
+            ClientTransactionMock, newLocation, newLocation.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, null, _client1);
 
         newLocationEventReceiver.RelationChanging (newLocation, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", null, _client1);
 
@@ -341,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extension.RelationChanging (
-            ClientTransactionMock, _location1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", _client1, newClient);
+            ClientTransactionMock, _location1, _location1.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, _client1, newClient);
 
         _location1EventReceiver.RelationChanging (_location1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", _client1, newClient);
 
@@ -381,9 +382,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             Mocks_Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (
-            ClientTransactionMock, orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
+            ClientTransactionMock, orderItem, orderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderItem, null);
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, orderItem, null);
 
         orderItemEventReceiver.RelationChanging (orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
 
@@ -426,9 +427,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             Mocks_Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (
-            ClientTransactionMock, orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1);
+            ClientTransactionMock, orderItem, orderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, orderItem);
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, orderItem);
 
         orderItemEventReceiver.RelationChanging (orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1);
 
@@ -473,11 +474,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             Mocks_Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (
-            ClientTransactionMock, newOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", oldOrderOfNewOrderItem, _order1);
+            ClientTransactionMock, newOrderItem, newOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, oldOrderOfNewOrderItem, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem);
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem);
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderOfNewOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", newOrderItem, null);
+            ClientTransactionMock, oldOrderOfNewOrderItem, oldOrderOfNewOrderItem.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, newOrderItem, null);
 
         newOrderItemEventReceiver.RelationChanging (
             newOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", oldOrderOfNewOrderItem, _order1);
@@ -550,11 +551,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             Mocks_Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
+            ClientTransactionMock, oldOrderItem,oldOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
         _extension.RelationChanging (
-            ClientTransactionMock, newOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1);
+            ClientTransactionMock, newOrderItem, newOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", oldOrderItem, newOrderItem);
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, oldOrderItem, newOrderItem);
 
         oldOrderItemEventReceiver.RelationChanging (oldOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
 
@@ -610,13 +611,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             Mocks_Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
+            ClientTransactionMock, oldOrderItem,oldOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
         _extension.RelationChanging (
-            ClientTransactionMock, newOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", oldOrderOfNewOrderItem, _order1);
+            ClientTransactionMock, newOrderItem, newOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, oldOrderOfNewOrderItem, _order1);
         _extension.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", oldOrderItem, newOrderItem);
+            ClientTransactionMock, _order1,_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, oldOrderItem, newOrderItem);
         _extension.RelationChanging (
-            ClientTransactionMock, oldOrderOfNewOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", newOrderItem, null);
+            ClientTransactionMock, oldOrderOfNewOrderItem, oldOrderOfNewOrderItem.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, newOrderItem, null);
 
         oldOrderItemEventReceiver.RelationChanging (oldOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
 
@@ -670,13 +671,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _extension.Expect (mock => mock.RelationChanging (
-            ClientTransactionMock, removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null));
+            ClientTransactionMock, removedOrderItem, removedOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null));
         _extension.Expect (mock => mock.RelationChanging (
-            ClientTransactionMock, addedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1));
+            ClientTransactionMock, addedOrderItem, addedOrderItem.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, _order1));
         _extension.Expect (mock => mock.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", removedOrderItem, null));
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, removedOrderItem, null));
         _extension.Expect (mock => mock.RelationChanging (
-            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, addedOrderItem));
+            ClientTransactionMock, _order1, _order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, addedOrderItem));
 
         removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (
             removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null));

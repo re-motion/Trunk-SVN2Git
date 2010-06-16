@@ -53,7 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -68,7 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
     }
 
     [Test]
@@ -77,10 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
 
       using (new SecurityFreeSection ())
       {
-        _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
+        _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
       }
 
       _testHelper.VerifyAll ();
@@ -92,8 +97,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
+      var endPointDefinition = nonSecurableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (NonSecurableObject).FullName + ".Parent");
 
-      _extension.RelationChanging (_testHelper.Transaction, nonSecurableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, nonSecurableObject, endPointDefinition, null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -106,6 +112,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.Transaction.Execute (() => securableObject.OtherParent = _testHelper.CreateSecurableObject ());
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("Parent", TestAccessTypes.First);
+
+      var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
+
       HasAccessDelegate hasAccess = delegate
       {
         securableObject.OtherParent = newObject;
@@ -114,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
 
       _testHelper.VerifyAll ();
     }

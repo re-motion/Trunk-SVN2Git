@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      Extensions.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, oldRelatedObject, newRelatedObject);
+      Extensions.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)

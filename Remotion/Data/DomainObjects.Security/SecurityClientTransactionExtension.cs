@@ -189,12 +189,12 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
     }
 
-    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      PropertyChanging (clientTransaction, domainObject, propertyName);
+      PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
     }
 
     private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)

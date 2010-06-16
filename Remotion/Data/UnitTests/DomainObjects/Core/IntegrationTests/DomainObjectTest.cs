@@ -101,8 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         //1
         //newCeo1.Company = newCustomer1;
-        extension.RelationChanging (ClientTransactionMock, newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", null, newCeo1);
+        extension.RelationChanging (ClientTransactionMock, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, null, newCeo1);
 
         newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
 
@@ -120,9 +120,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //2
         //newCeo2.Company = newCustomer1;
-        extension.RelationChanging (ClientTransactionMock, newCeo2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", newCeo1, newCeo2);
-        extension.RelationChanging (ClientTransactionMock, newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", newCustomer1, null);
+        extension.RelationChanging (ClientTransactionMock, newCeo2,newCeo2.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, newCeo1, newCeo2);
+        extension.RelationChanging (ClientTransactionMock, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, newCustomer1, null);
 
         newCeo2EventReceiver.RelationChanging (newCeo2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
 
@@ -146,8 +146,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //3
         //newCeo1.Company = newCustomer2;
-        extension.RelationChanging (ClientTransactionMock, newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer2);
-        extension.RelationChanging (ClientTransactionMock, newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", null, newCeo1);
+        extension.RelationChanging (ClientTransactionMock, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer2);
+        extension.RelationChanging (ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition  , null, newCeo1);
 
         newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer2);
 
@@ -165,8 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //4
         //newCeo1.Company = null;
-        extension.RelationChanging (ClientTransactionMock, newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", newCustomer2, null);
-        extension.RelationChanging (ClientTransactionMock, newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", newCeo1, null);
+        extension.RelationChanging (ClientTransactionMock, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition , newCustomer2, null);
+        extension.RelationChanging (ClientTransactionMock, newCustomer2,newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, newCeo1, null);
 
         newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", newCustomer2, null);
 
@@ -194,8 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 0),
             Arg.Is (ValueAccess.Current)));
 
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder1);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder1);
 
         newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
 
@@ -227,8 +227,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 1 && data.ContainsObject (newOrder1)),
             Arg.Is (ValueAccess.Current)));
 
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
+        extension.RelationChanging (ClientTransactionMock, newOrder2,newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
 
         newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
 
@@ -261,8 +261,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 2 && data.ContainsObject (newOrder1) && data.ContainsObject (newOrder2)),
             Arg.Is (ValueAccess.Current)));
 
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, null);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
+        extension.RelationChanging (ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, null);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
 
         newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, null);
 
@@ -281,8 +281,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //8
         //newOrderItem1.Order = newOrder1;
-        extension.RelationChanging (ClientTransactionMock, newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem1);
+        extension.RelationChanging (ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem1);
 
         newOrderItem1EventReceiver.RelationChanging (
             newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
@@ -299,8 +299,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //9
         //newOrderItem2.Order = newOrder1;
-        extension.RelationChanging (ClientTransactionMock, newOrderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem2);
+        extension.RelationChanging (ClientTransactionMock, newOrderItem2, newOrderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem2);
 
         newOrderItem2EventReceiver.RelationChanging (
             newOrderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
@@ -318,8 +318,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //10
         //newOrderItem1.Order = null;
-        extension.RelationChanging (ClientTransactionMock, newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", newOrder1, null);
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", newOrderItem1, null);
+        extension.RelationChanging (ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, null);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, newOrderItem1, null);
 
         newOrderItem1EventReceiver.RelationChanging (
             newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", newOrder1, null);
@@ -337,8 +337,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //11
         //newOrderItem1.Order = newOrder2;
-        extension.RelationChanging (ClientTransactionMock, newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder2);
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem1);
+        extension.RelationChanging (ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder2);
+        extension.RelationChanging (ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem1);
 
         newOrderItem1EventReceiver.RelationChanging (
             newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder2);
@@ -356,8 +356,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //12
         //newOrder1.Official = official2;
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", null, official2);
-        extension.RelationChanging (ClientTransactionMock, official2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders", null, newOrder1);
+        extension.RelationChanging (ClientTransactionMock, newOrder1,newOrder1.Properties[typeof (Order), "Official"].PropertyData.RelationEndPointDefinition, null, official2);
+        extension.RelationChanging (ClientTransactionMock, official2, official2.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder1);
 
         newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", null, official2);
         official2OrdersEventReceiver.Adding (official2Orders, newOrder1);
@@ -380,13 +380,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg<OrderTicket>.Is.TypeOf,
-            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"),
+            Arg<IRelationEndPointDefinition>.Is.Anything,
             Arg.Is ((DomainObject) null),
             Arg.Is (newOrder1));
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newOrder1),
-            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"),
+            Arg<IRelationEndPointDefinition>.Is.Anything,
             Arg.Is ((DomainObject) null),
             Arg<OrderTicket>.Is.TypeOf);
 
@@ -463,9 +463,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         //14
         //newOrderTicket1.Order = newOrder2;
-        extension.RelationChanging (ClientTransactionMock, newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newOrder1, newOrder2);
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", newOrderTicket1, null);
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", null, newOrderTicket1);
+        extension.RelationChanging (ClientTransactionMock, newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, newOrder2);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, newOrderTicket1, null);
+        extension.RelationChanging (ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
 
         newOrderTicket1EventReceiver.RelationChanging (
             newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newOrder1, newOrder2);
@@ -486,8 +486,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //15a
         //newOrder2.Customer = newCustomer1;
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
+        extension.RelationChanging (ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition , null, newOrder2);
 
         newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
         newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder2);
@@ -503,9 +503,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //15b
         //newOrder2.Customer = newCustomer2;
-        extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, newCustomer2);
-        extension.RelationChanging (ClientTransactionMock, newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
-        extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
+        extension.RelationChanging (ClientTransactionMock, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, newCustomer2);
+        extension.RelationChanging (ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
+        extension.RelationChanging (ClientTransactionMock, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
 
         newOrder2EventReceiver.RelationChanging (
             newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, newCustomer2);
@@ -531,9 +531,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         using (mockRepository.Unordered())
         {
-          extension.RelationChanging (ClientTransactionMock, newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
-          extension.RelationChanging (ClientTransactionMock, newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newOrder2, null);
-          extension.RelationChanging (ClientTransactionMock, newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", newOrder2, null);
+          extension.RelationChanging (ClientTransactionMock, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+          extension.RelationChanging (ClientTransactionMock, newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
+          extension.RelationChanging (ClientTransactionMock, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
         }
 
         newOrder2EventReceiver.Deleting (null, null);
@@ -574,8 +574,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //17
         //newOrderTicket1.Order = newOrder1;
-        extension.RelationChanging (ClientTransactionMock, newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, newOrder1);
-        extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", null, newOrderTicket1);
+        extension.RelationChanging (ClientTransactionMock, newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
+        extension.RelationChanging (ClientTransactionMock, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
 
         newOrderTicket1EventReceiver.RelationChanging (
             newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, newOrder1);
