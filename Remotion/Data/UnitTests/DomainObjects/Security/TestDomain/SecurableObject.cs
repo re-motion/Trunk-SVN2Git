@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Security;
@@ -89,5 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       base.Delete();
     }
+    
+    //[StorageClassNone]
+    //public new PropertyIndexer Properties
+    //{
+    //  get { return base.Properties; }
+    //}
+
   }
 }

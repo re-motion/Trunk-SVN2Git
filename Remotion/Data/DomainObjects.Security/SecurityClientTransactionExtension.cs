@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -154,6 +155,14 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       PropertyReading (clientTransaction, domainObject, propertyName);
+    }
+
+    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      PropertyReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
     }
 
     private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)

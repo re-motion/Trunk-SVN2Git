@@ -184,7 +184,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //5
         //newCustomer1.Orders.Add (newOrder1);
-        extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
+        extension.RelationReading (ClientTransactionMock, newCustomer1,
+          newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+          ValueAccess.Current);
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
@@ -215,7 +217,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //6
         //newCustomer1.Orders.Add (newOrder2);
-        extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
+        extension.RelationReading (ClientTransactionMock, newCustomer1,
+          newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+          ValueAccess.Current);
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
@@ -247,7 +251,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         //7
         //newCustomer1.Orders.Remove (newOrder2);
-        extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
+        extension.RelationReading (ClientTransactionMock, newCustomer1,
+          newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+          ValueAccess.Current);
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction), 
             Arg.Is (newCustomer1), 

@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
-      Extensions.RelationReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, valueAccess);
+      Extensions.RelationReading (clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)

@@ -18,10 +18,12 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
@@ -30,13 +32,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
-
+    
     [SetUp]
     public void SetUp ()
     {
       _testHelper = new SecurityClientTransactionExtensionTestHelper ();
       _extension = new SecurityClientTransactionExtension ();
-
+      
       _testHelper.SetupSecurityConfiguration ();
     }
 
@@ -54,6 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions ("Parent", TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
+
+      //IRelationEndPointDefinition customerEndPointDefinition = order.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition;
+      //IRelationEndPointDefinition securableEndPointDefintion = securableObject[
 
       _extension.RelationReading (_testHelper.Transaction, securableObject, "Parent", ValueAccess.Current);
 

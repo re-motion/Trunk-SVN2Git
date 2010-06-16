@@ -18,6 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -257,6 +258,16 @@ namespace Remotion.Data.DomainObjects
 
       foreach (IClientTransactionExtension extension in this)
         extension.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationReading (clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
