@@ -71,18 +71,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
-    /// Indicates that a relation has been read.
+    /// Indicates that a multi-value relation has been read.
     /// </summary>
     /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
-    /// <param name="propertyName">The name of the property that has been read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
     /// <param name="relatedObjects">
     ///   A read-only wrapper of the related object data that is returned to the reader. Implementors should check the 
     ///   <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection data in order to avoid reloading 
     ///   an unloaded collection end-point.
     /// </param>
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
-    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>

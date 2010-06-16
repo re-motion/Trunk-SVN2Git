@@ -232,26 +232,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-        string propertyName,
-        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
-        ValueAccess valueAccess)
-    {
-      if (s_log.IsDebugEnabled)
-      {
-        var domainObjectsString = relatedObjects.IsDataAvailable ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
-        s_log.DebugFormat (
-            "{0} RelationRead: {1} ({2}, {3}): {4}",
-            clientTransaction.ID,
-            propertyName,
-            valueAccess,
-            domainObject.ID,
-            domainObjectsString);
-      }
-    }
-
-    public void RelationRead (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)

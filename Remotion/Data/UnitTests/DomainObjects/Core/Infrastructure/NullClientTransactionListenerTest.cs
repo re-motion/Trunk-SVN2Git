@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationRead_MultiValue ()
     {
-      _listener.RelationRead (ClientTransactionMock, _domainObject, "Relation", new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
+      _listener.RelationRead (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
     }
 
     [Test]
