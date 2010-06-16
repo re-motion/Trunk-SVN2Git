@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
@@ -154,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void OrderingsInSubQuery ()
+    public void OrderingsInSubQuery_WithDistinct ()
     {
       var query = from o in (
                     from oi in QueryFactory.CreateLinqQuery<OrderItem>() orderby oi.Order.OrderNumber select oi.Order).Distinct () 
