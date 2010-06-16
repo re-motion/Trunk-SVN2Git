@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationReading ()
     {
-      _listener.RelationReading (ClientTransactionMock, _domainObject, "Relation", ValueAccess.Current);
+      _listener.RelationReading (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, ValueAccess.Current);
     }
 
     [Test]

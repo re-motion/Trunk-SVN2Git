@@ -122,10 +122,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (clientTransaction.IsReadOnly);
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-    }
-
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
     }

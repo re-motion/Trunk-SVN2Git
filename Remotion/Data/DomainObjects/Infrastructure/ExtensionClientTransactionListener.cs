@@ -121,11 +121,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         Extensions.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      Extensions.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
-    }
-
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       Extensions.RelationReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, valueAccess);
