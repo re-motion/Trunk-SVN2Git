@@ -143,7 +143,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void OrderingsInSubQuery_WithDistinct ()
+    [Ignore ("TODO 2916")]
+    public void FirstOrDefault_WithEntity_InSelectAndWhere ()
+    {
+      var query = from e in QueryFactory.CreateLinqQuery<Order> ()
+                  where e.OrderItems.FirstOrDefault () != null
+                  select e.OrderItems.OrderBy(oi => oi.ID).FirstOrDefault ();
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
+    public void OrderingsInSubQuery ()
     {
       var query = from o in (
                     from oi in QueryFactory.CreateLinqQuery<OrderItem>() orderby oi.Order.OrderNumber select oi.Order).Distinct () 
@@ -165,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           query,
           DomainObjectIDs.Order1,
           DomainObjectIDs.OrderWithoutOrderItem);
-    }
+  }
 
     [Test]
     public void OrderingsInSubQuery_WithoutTakeOrDistinct ()
