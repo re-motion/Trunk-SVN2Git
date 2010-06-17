@@ -73,17 +73,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition of the relation that has been read.</param>
     /// <param name="relatedObject">The related object that is returned to the reader.</param>
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
-    /// Indicates that a multi-value relation has been read.
+    /// Indicates that a collection-value relation has been read.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint definition that has been read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition of the relation that has been read.</param>
     /// <param name="relatedObjects">
     ///   A read-only wrapper of the related object data that is returned to the reader. Implementors should check the 
     ///   <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection data in order to avoid reloading 
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint definition that changes.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition of the relation that changes.</param>
     /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
     ///   replacing an old one.</param>
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint defintition that changes.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint defintition of the relation that changes.</param>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
 
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;
