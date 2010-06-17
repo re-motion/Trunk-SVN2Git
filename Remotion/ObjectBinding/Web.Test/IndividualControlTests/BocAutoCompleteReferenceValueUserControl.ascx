@@ -28,8 +28,7 @@
   <tr>
     <td></td>
     <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" 
-    TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner"
-    CompletionInterval="50" SuggestionInterval="2000" CompletionSetCount="5">
+    TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" CompletionSetCount="5">
 <persistedcommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand>
@@ -62,7 +61,7 @@
     <td style="WIDTH: 20%"><asp:label id=ReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" hasvalueembeddedinsideoptionsmenu="False" showoptionsmenu="False" >
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" hasvalueembeddedinsideoptionsmenu="False" showoptionsmenu="False">
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
