@@ -435,6 +435,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     [Category ("AutoCompleteExtender")]
     [DefaultValue (1000)]
+    [Description ("Time in milliseconds when the timer will kick in to get suggestions using the web service.")]
     public int CompletionInterval
     {
       get { return _completionInterval; }
@@ -448,6 +449,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     [Category ("AutoCompleteExtender")]
     [DefaultValue (200)]
+    [Description ("Time in milliseconds when the timer will kick in to complete the user's input from the values in the drop down list.")]
     public int SuggestionInterval
     {
       get { return _suggestionInterval; }
