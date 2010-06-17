@@ -322,15 +322,16 @@ function SmartPage_Context(
     }
   }
 
-  this.PageRequestManager_pageLoaded = function(sender, args)
+  this.PageRequestManager_pageLoaded = function (sender, args)
   {
     this.Restore();
 
     _isSubmitting = false;
     _isSubmittingBeforeUnload = false;
     this.HideStatusMessage();
-    
-    ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached);
+
+    var isAsynchronous = sender && sender.get_isInAsyncPostBack();
+    ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached, isAsynchronous);
   }
 
   // Determines whether the page was loaded from cache.

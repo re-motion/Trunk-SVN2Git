@@ -21,7 +21,7 @@ namespace Remotion.Web.UI
   /// <summary> Specifies the client side events supported for registration by the <see cref="ISmartPage"/>. </summary>
   public enum SmartPageEvents
   {
-    /// <summary> Rasied when the document has finished loading. Signature: <c>void Function (hasSubmitted, isCached)</c> </summary>
+    /// <summary> Rasied when the document has finished loading. Signature: <c>void Function (hasSubmitted, isCached, isAsynchronous)</c> </summary>
     OnLoad,
     /// <summary> Raised when the user posts back to the server. Signature: <c>void Function (eventTargetID, eventArgs)</c> </summary>
     OnPostBack,
