@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     public bool OnDomainObjectCreatedCalled;
     public bool OnDomainObjectLoadedCalled;
     public LoadMode OnDomainObjectLoadedLoadMode;
-    public bool OnDomainObjectReferenceInitializedCalled;
+    public bool OnDomainObjectReferenceInitializingCalled;
 
     [StorageClassNone]
     public new ObjectID ID
@@ -68,9 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       get { return base.This; }
     }
 
-    protected override void OnDomainObjectReferenceInitialized ()
+    protected override void OnDomainObjectReferenceInitializing ()
     {
-      OnDomainObjectReferenceInitializedCalled = true;
+      OnDomainObjectReferenceInitializingCalled = true;
     }
 
     protected override void OnDomainObjectCreated ()

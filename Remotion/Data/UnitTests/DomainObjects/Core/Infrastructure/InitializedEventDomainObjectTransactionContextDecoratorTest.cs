@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         Assert.That (
             ex.Message, 
-            Is.EqualTo ("While the OnReferenceInitialized event is executing, this member cannot be used."), "Invalid exception message.");
+            Is.EqualTo ("While the OnReferenceInitializing event is executing, this member cannot be used."), "Invalid exception message.");
       }
 
       contextMock.AssertWasNotCalled (action);

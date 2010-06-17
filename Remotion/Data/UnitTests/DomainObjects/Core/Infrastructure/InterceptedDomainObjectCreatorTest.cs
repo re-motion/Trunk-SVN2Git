@@ -121,17 +121,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateObjectReference_CallsReferenceInitialized ()
+    public void CreateObjectReference_CallsReferenceInitializing ()
     {
       var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
-      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
+      Assert.That (domainObject.OnReferenceInitializingCalled, Is.True);
     }
 
     [Test]
-    public void CreateObjectReference_CallsReferenceInitialized_InRightTransaction ()
+    public void CreateObjectReference_CallsReferenceInitializing_InRightTransaction ()
     {
       var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
-      Assert.That (domainObject.OnReferenceInitializedTx, Is.SameAs (_transaction));
+      Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
     }
 
     [Test]

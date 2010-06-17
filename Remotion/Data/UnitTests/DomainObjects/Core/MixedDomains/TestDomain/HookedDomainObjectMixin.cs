@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     public LoadMode OnLoadedLoadMode;
     public bool OnCreatedCalled;
     
-    public bool OnDomainObjectReferenceInitializedCalled;
-    public int OnDomainObjectReferenceInitializedCount;
+    public bool OnDomainObjectReferenceInitializingCalled;
+    public int OnDomainObjectReferenceInitializingCount;
 
     public void OnDomainObjectLoaded (LoadMode loadMode)
     {
@@ -53,10 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       Assert.IsNotNull (This.OrderItems);
     }
 
-    public void OnDomainObjectReferenceInitialized ()
+    public void OnDomainObjectReferenceInitializing ()
     {
-      OnDomainObjectReferenceInitializedCalled = true;
-      ++OnDomainObjectReferenceInitializedCount;
+      OnDomainObjectReferenceInitializingCalled = true;
+      ++OnDomainObjectReferenceInitializingCount;
       Assert.IsNotNull (This.ID);
       if (InitializationHandler != null)
         InitializationHandler (this, EventArgs.Empty);

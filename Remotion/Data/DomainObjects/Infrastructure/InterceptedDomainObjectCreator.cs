@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       instance.Initialize (objectID, clientTransaction as BindingClientTransaction);
 
       clientTransaction.EnlistDomainObject (instance);
-      clientTransaction.Execute (instance.FinishReferenceInitialization);
+      clientTransaction.Execute (instance.RaiseReferenceInitializatingEvent);
 
       return instance;
     }

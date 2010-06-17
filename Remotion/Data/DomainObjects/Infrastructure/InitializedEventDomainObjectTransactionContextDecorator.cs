@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// Provides an implementation of the <see cref="IDomainObjectTransactionContext"/> interface that is returned while the 
-  /// <see cref="DomainObjects.DomainObject.OnReferenceInitialized"/> is run. It does not allow access to properties and methods that read or modify
+  /// <see cref="DomainObject.OnReferenceInitializing"/> is run. It does not allow access to properties and methods that read or modify
   /// the state of the <see cref="DomainObject"/> in the associated <see cref="ClientTransaction"/>.
   /// </summary>
   public class InitializedEventDomainObjectTransactionContextDecorator : IDomainObjectTransactionContext
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
+        throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
       }
     }
 
@@ -63,18 +63,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
+        throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
       }
     }
 
     public void MarkAsChanged()
     {
-      throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
+      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
     }
 
     public void EnsureDataAvailable ()
     {
-      throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
+      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
     }
 
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)

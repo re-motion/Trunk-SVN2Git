@@ -72,9 +72,9 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       base.BaseGetObjectData (info, context);
     }
 
-    protected override void OnReferenceInitialized ()
+    protected override void OnReferenceInitializing ()
     {
-      base.OnReferenceInitialized ();
+      base.OnReferenceInitializing ();
 
       if (_implementation == null) // may have been set by ctor
         _implementation = BindableDomainObjectImplementation.Create (this);

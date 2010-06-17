@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class DomainObjectTestHelper
   {
-    public static T ExecuteInReferenceInitialized_NewObject<T> (Func<Order, T> func)
+    public static T ExecuteInReferenceInitializing_NewObject<T> (Func<Order, T> func)
     {
       T result = default(T);
       EventHandler handler = (sender, args) => result = func ((Order) sender);
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return result;
     }
 
-    public static T ExecuteInReferenceInitialized_LoadedObject<T> (Func<Order, T> func)
+    public static T ExecuteInReferenceInitializing_LoadedObject<T> (Func<Order, T> func)
     {
       T result = default (T);
       EventHandler handler = (sender, args) => result = func ((Order) sender);

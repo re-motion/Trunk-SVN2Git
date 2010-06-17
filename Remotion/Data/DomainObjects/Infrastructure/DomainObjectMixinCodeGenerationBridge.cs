@@ -113,10 +113,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         Mixins.CodeGeneration.ConcreteTypeBuilder.Current.FinishDeserialization (objectReference);
     }
 
-    public static void OnDomainObjectReferenceInitialized (DomainObject instance)
+    public static void OnDomainObjectReferenceInitializing (DomainObject instance)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      NotifyDomainObjectMixins (instance, mixin => mixin.OnDomainObjectReferenceInitialized());
+      NotifyDomainObjectMixins (instance, mixin => mixin.OnDomainObjectReferenceInitializing());
     }
 
     public static void OnDomainObjectCreated (DomainObject instance)

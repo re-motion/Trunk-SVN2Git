@@ -112,10 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     }
 
     [Test]
-    public void OnDomainObjectReferenceInitialized ()
+    public void OnDomainObjectReferenceInitializing ()
     {
-      Assert.IsTrue (_loadedClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializedCalled);
-      Assert.IsTrue (_newClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializedCalled);
+      Assert.IsTrue (_loadedClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled);
+      Assert.IsTrue (_newClassWithAllDataTypesMixin.OnDomainObjectReferenceInitializingCalled);
     }
 
     [Test]

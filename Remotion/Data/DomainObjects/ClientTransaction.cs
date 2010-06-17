@@ -949,8 +949,6 @@ public abstract class ClientTransaction : IDataSource
 
       var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
       DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-
-      instance.FinishReferenceInitialization ();
       return instance;
     }
   }

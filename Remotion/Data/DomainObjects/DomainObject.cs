@@ -215,7 +215,7 @@ namespace Remotion.Data.DomainObjects
     private ObjectID _id;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
     private bool _needsLoadModeDataContainerOnly; // true if the object was created by a constructor call or OnLoaded has already been called once
-    private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitialized is executed
+    private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitializing is executed
 
     [NonSerialized] // required when ISerializable is not implemented by subclass
     private PropertyIndexer _properties; // lazily initialized
@@ -257,6 +257,8 @@ namespace Remotion.Data.DomainObjects
       newDataContainer.SetDomainObject (this);
       clientTransaction.DataManager.RegisterDataContainer (newDataContainer);
       clientTransaction.EnlistDomainObject (this);
+
+      RaiseReferenceInitializatingEvent ();
 
       _needsLoadModeDataContainerOnly = true;
     }
@@ -624,15 +626,15 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Calls the <see cref="OnReferenceInitialized"/> method, setting a flag indicating that no mapped properties must be used.
+    /// Calls the <see cref="OnReferenceInitializing"/> method, setting a flag indicating that no mapped properties must be used.
     /// </summary>
-    internal void FinishReferenceInitialization ()
+    internal void RaiseReferenceInitializatingEvent ()
     {
       _isReferenceInitializeEventExecuting = true;
       try
       {
-        OnReferenceInitialized ();
-        DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitialized (this);
+        OnReferenceInitializing ();
+        DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitializing (this);
       }
       finally
       {
@@ -653,10 +655,11 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// This method is invoked after this <see cref="DomainObject"/> reference has been initialized. This occurs whenever a <see cref="DomainObject"/> 
-    /// is initialized, no matter whether the object is created, loaded, transported, cloned, or somehow else instantiated, and it occurs at a point 
-    /// of time where it is safe to access the <see cref="ID"/> of the object. The <see cref="OnReferenceInitialized"/> notification occurs exactly 
-    /// once per DomainObject, and its purpose is the initialization of DomainObject fields that do not depend on the object's mapped data properties. 
+    /// This method is invoked while this <see cref="DomainObject"/> is being initialized. This occurs whenever a <see cref="DomainObject"/> 
+    /// is initialized, no matter whether the object is created, loaded, transported, cloned, or somehow else instantiated, and it occurs as early 
+    /// as possible, after the object was enlisted with a transaction and at a point of time where it is safe to access the <see cref="ID"/> of the 
+    /// object. The <see cref="OnReferenceInitializing"/> notification occurs exactly once per DomainObject, and its purpose is the initialization of 
+    /// DomainObject fields that do not depend on the object's mapped data properties. 
     /// See restrictions in the Remarks section.
     /// </summary>
     /// <remarks>
@@ -674,15 +677,19 @@ namespace Remotion.Data.DomainObjects
     /// is bound), and the object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
     /// </para>
     /// <para>The reason why it is explicitly disallowed to access mapped properties from the notification method is that 
-    /// <see cref="OnReferenceInitialized"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
+    /// <see cref="OnReferenceInitializing"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
     /// data to be loaded, defeating lazy loading via object references.
     /// </para>
     /// <para>
     /// To initialize an object based on its data, use the constructor, <see cref="OnLoaded(Remotion.Data.DomainObjects.LoadMode)"/>, or the facility 
     /// callbacks. <see cref="OnLoaded(Remotion.Data.DomainObjects.LoadMode)"/> might be called more than once per object.
     /// </para>
+    /// <para>
+    /// When a <see cref="DomainObject"/> is newly created (usually via <see cref="NewObject{T}()"/>), this method is called while the base 
+    /// <see cref="DomainObject"/> is executing. Fields initialized by a derived constructor will not be set yet.
+    /// </para>
     /// </remarks>
-    protected virtual void OnReferenceInitialized ()
+    protected virtual void OnReferenceInitializing ()
     {
     }
 
@@ -839,7 +846,7 @@ namespace Remotion.Data.DomainObjects
     private void CheckInitializeEventNotExecuting ()
     {
       if (_isReferenceInitializeEventExecuting)
-        throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
+        throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
     }
   }
 }

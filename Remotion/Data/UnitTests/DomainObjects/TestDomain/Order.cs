@@ -46,11 +46,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public static event EventHandler StaticInitializationHandler;
 
     public readonly bool CtorCalled;
+    public bool OnReferenceInitializingCalledBeforeCtor;
 
-    public bool OnReferenceInitializedCalled;
-    public ClientTransaction OnReferenceInitializedTx;
-    public ObjectID OnReferenceInitializedID;
-    public ClientTransaction OnReferenceInitializedBindingTransaction;
+    public bool OnReferenceInitializingCalled;
+    public ClientTransaction OnReferenceInitializingTx;
+    public ObjectID OnReferenceInitializingID;
+    public ClientTransaction OnReferenceInitializingBindingTransaction;
 
     public bool OnLoadedCalled;
     public ClientTransaction OnLoadedTx;
@@ -62,10 +63,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public bool OnUnloadedCalled;
     public ClientTransaction OnUnloadedTx;
     public DateTime OnUnloadedDateTime;
-    
+
     protected Order ()
     {
       CtorCalled = true;
+      OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;
     }
 
     [DBColumn ("OrderNo")]
@@ -159,14 +161,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       get { return CurrentProperty.GetValue<ObjectList<OrderItem>> (); }
     }
 
-    protected override void OnReferenceInitialized ()
+    protected override void OnReferenceInitializing ()
     {
-      base.OnReferenceInitialized ();
+      base.OnReferenceInitializing ();
 
-      OnReferenceInitializedCalled = true;
-      OnReferenceInitializedTx = ClientTransaction.Current;
-      OnReferenceInitializedID = ID;
-      OnReferenceInitializedBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
+      OnReferenceInitializingCalled = true;
+      OnReferenceInitializingTx = ClientTransaction.Current;
+      OnReferenceInitializingID = ID;
+      OnReferenceInitializingBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
 
       if (StaticInitializationHandler != null)
         StaticInitializationHandler (this, EventArgs.Empty);

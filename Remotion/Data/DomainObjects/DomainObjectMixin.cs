@@ -106,16 +106,16 @@ namespace Remotion.Data.DomainObjects
       get { return This.Properties; }
     }
 
-    void IDomainObjectMixin.OnDomainObjectReferenceInitialized ()
+    void IDomainObjectMixin.OnDomainObjectReferenceInitializing ()
     {
-      OnDomainObjectReferenceInitialized ();
+      OnDomainObjectReferenceInitializing ();
     }
 
     /// <summary>
-    /// Called when the mixin's target domain object has been initialized. This is executed right after 
-    /// <see cref="DomainObject.OnReferenceInitialized"/>, see <see cref="DomainObject.OnReferenceInitialized"/> for details.
+    /// Called when the mixin's target domain object is being initialized. This is executed right after 
+    /// <see cref="DomainObject.OnReferenceInitializing"/>, see <see cref="DomainObject.OnReferenceInitializing"/> for details.
     /// </summary>
-    protected virtual void OnDomainObjectReferenceInitialized ()
+    protected virtual void OnDomainObjectReferenceInitializing ()
     {
     }
 

@@ -45,6 +45,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void Ctor_RaisesReferenceInitializing ()
+    {
+      var domainObject = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (domainObject.OnReferenceInitializingCalled, Is.True);
+    }
+
+    [Test]
+    public void Ctor_RaisesReferenceInitializing_InRightTransaction ()
+    {
+      var domainObject = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
+    }
+
+    [Test]
+    public void Ctor_RaisesReferenceInitializing_CalledBeforeCtor ()
+    {
+      var domainObject = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (domainObject.OnReferenceInitializingCalledBeforeCtor, Is.True);
+    }
+
+    [Test]
     public void Ctor_RaisesNewObjectCreating ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
@@ -173,74 +194,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void FinishReferenceInitialization_IDAndBindingTransaction ()
+    public void RaiseReferenceInitializatingEvent_IDAndBindingTransaction ()
     {
-      var domainObject = _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
-      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
+      var domainObject = _transaction.Execute (() => Order.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
+      Assert.That (domainObject.OnReferenceInitializingCalled, Is.True);
 
-      Assert.That (domainObject.OnReferenceInitializedID, Is.EqualTo (domainObject.ID));
-      Assert.That (domainObject.OnReferenceInitializedBindingTransaction, Is.Null);
+      Assert.That (domainObject.OnReferenceInitializingID, Is.EqualTo (domainObject.ID));
+      Assert.That (domainObject.OnReferenceInitializingBindingTransaction, Is.Null);
 
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
       var boundDomainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
-      Assert.That (boundDomainObject.OnReferenceInitializedBindingTransaction, Is.SameAs (bindingTransaction));
+      Assert.That (boundDomainObject.OnReferenceInitializingBindingTransaction, Is.SameAs (bindingTransaction));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
-    public void FinishReferenceInitialization_CallsReferenceInitialized_PropertyAccessForbidden ()
+        "While the OnReferenceInitializing event is executing, this member cannot be used.")]
+    public void RaiseReferenceInitializatingEvent_CallsReferenceInitializing_PropertyAccessForbidden ()
     {
-      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.OrderNumber));
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => o.OrderNumber));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
-    public void FinishReferenceInitialization_CallsReferenceInitialized_PropertiesForbidden ()
+        "While the OnReferenceInitializing event is executing, this member cannot be used.")]
+    public void RaiseReferenceInitializatingEvent_CallsReferenceInitializing_PropertiesForbidden ()
     {
-      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.Properties));
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => o.Properties));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
-    public void FinishReferenceInitialization_CallsReferenceInitialized_CurrentPropertyForbidden ()
+        "While the OnReferenceInitializing event is executing, this member cannot be used.")]
+    public void RaiseReferenceInitializatingEvent_CallsReferenceInitializing_CurrentPropertyForbidden ()
     {
-      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.CurrentProperty));
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => o.CurrentProperty));
     }
 
     [Test]
-    public void FinishReferenceInitialization_CallsReferenceInitialized_TransactionContextIsRestricted ()
+    public void RaiseReferenceInitializatingEvent_CallsReferenceInitializing_TransactionContextIsRestricted ()
     {
-      var result = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.DefaultTransactionContext));
+      var result = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => o.DefaultTransactionContext));
       Assert.That (result, Is.TypeOf (typeof (InitializedEventDomainObjectTransactionContextDecorator)));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
-    public void FinishReferenceInitialization_CallsReferenceInitialized_DeleteForbidden ()
+        "While the OnReferenceInitializing event is executing, this member cannot be used.")]
+    public void RaiseReferenceInitializatingEvent_CallsReferenceInitializing_DeleteForbidden ()
     {
-      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => { o.Delete (); return o; }));
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => { o.Delete (); return o; }));
     }
 
     [Test]
-    public void FinishReferenceInitialization_InvokesMixinHook ()
+    public void RaiseReferenceInitializatingEvent_InvokesMixinHook ()
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
       {
-        var order = _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
+        var order = _transaction.Execute (() => Order.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
         var mixinInstance = Mixin.Get<HookedDomainObjectMixin> (order);
 
-        Assert.That (mixinInstance.OnDomainObjectReferenceInitializedCalled, Is.True);
+        Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
       }
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
-    public void FinishReferenceInitialization_InvokesMixinHook_WhilePropertyAccessForbidden ()
+        "While the OnReferenceInitializing event is executing, this member cannot be used.")]
+    public void RaiseReferenceInitializatingEvent_InvokesMixinHook_WhilePropertyAccessForbidden ()
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
       {
@@ -249,15 +270,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
-          _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
+          _transaction.Execute (() => Order.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
         }
       }
     }
 
     [Test]
-    public void FinishReferenceInitialization_ResetsFlagAfterNotification ()
+    public void RaiseReferenceInitializatingEvent_ResetsFlagAfterNotification ()
     {
-      var order = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o));
+      var order = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitializing_NewObject (o => o));
       Dev.Null = _transaction.Execute (() => order.OrderNumber); // succeeds
     }
 

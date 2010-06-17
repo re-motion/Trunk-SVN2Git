@@ -48,20 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void NewObject_CallsReferenceInitialized ()
-    {
-      var domainObject = (Order) ClientTransactionTestHelper.CallNewObject (_transaction, typeof (Order), ParamList.Empty);
-      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
-    }
-
-    [Test]
-    public void NewObject_CallsReferenceInitialized_InRightTransaction ()
-    {
-      var domainObject = (Order) ClientTransactionTestHelper.CallNewObject (_transaction, typeof (Order), ParamList.Empty);
-      Assert.That (domainObject.OnReferenceInitializedTx, Is.SameAs (_transaction));
-    }
-
-    [Test]
     public void GetObject_UnknownObject_IsLoaded ()
     {
       var result = ClientTransactionTestHelper.CallGetObject (_transaction, DomainObjectIDs.Order1, false);

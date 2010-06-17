@@ -38,9 +38,9 @@ namespace Remotion.Data.DomainObjects
   {
     /// <summary>
     /// Called when the mixin's target domain object has been initialized. This is executed right after 
-    /// <see cref="DomainObject.OnReferenceInitialized"/>, see <see cref="DomainObject.OnReferenceInitialized"/> for details.
+    /// <see cref="DomainObject.OnReferenceInitializing"/>, see <see cref="DomainObject.OnReferenceInitializing"/> for details.
     /// </summary>
-    void OnDomainObjectReferenceInitialized ();
+    void OnDomainObjectReferenceInitializing ();
 
     /// <summary>
     /// Called when the mixin's target domain object has been newly created, after the constructors have finished execution.
