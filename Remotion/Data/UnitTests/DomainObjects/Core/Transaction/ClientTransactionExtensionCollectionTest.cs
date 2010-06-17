@@ -214,7 +214,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [Ignore("fix test")]
     public void RelationChanging ()
     {
       OrderTicket orderTicket = _order.OrderTicket;
@@ -223,15 +222,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _mockRepository.BackToRecord (_extension1);
       _mockRepository.BackToRecord (_extension2);
 
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+
       using (_mockRepository.Ordered ())
       {
-        _extension1.RelationChanging (ClientTransactionMock, _order, _order.Properties[typeof (Order), "OrderNumber"].PropertyData.RelationEndPointDefinition, orderTicket, newOrderTicket);
-        _extension2.RelationChanging (ClientTransactionMock, _order, _order.Properties[typeof (Order), "OrderNumber"].PropertyData.RelationEndPointDefinition, orderTicket, newOrderTicket);
+        _extension1.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
+        _extension2.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
       }
 
       _mockRepository.ReplayAll ();
-      
-      _collectionWithExtensions.RelationChanging (ClientTransactionMock, _order, _order.Properties[typeof (Order), "OrderNumber"].PropertyData.RelationEndPointDefinition, orderTicket, newOrderTicket);
+
+      _collectionWithExtensions.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
       
       _mockRepository.VerifyAll ();
     }
