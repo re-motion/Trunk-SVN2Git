@@ -292,13 +292,13 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.RelationChanged (clientTransaction, domainObject, propertyName);
+        extension.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

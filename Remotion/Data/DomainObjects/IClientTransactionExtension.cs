@@ -346,7 +346,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was changed.</param>
-    /// <param name="propertyName">The name of the relation property.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
     /// <remarks>
     ///   <para>
     ///     Use this method to perform actions on a successful execution, whereas <see cref="RelationChanging"/> should be used to cancel the operation.
@@ -356,7 +356,7 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationChanging"/> instead.</note>
     /// </remarks>
-    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
+    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
 
     /// <summary>
     /// This method is invoked after a collection query was executed by <see cref="QueryManager.GetCollection"/>.

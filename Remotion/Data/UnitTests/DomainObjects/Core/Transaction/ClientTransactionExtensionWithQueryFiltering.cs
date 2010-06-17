@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
     }
 

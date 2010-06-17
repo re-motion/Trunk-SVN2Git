@@ -240,15 +240,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RelationChanged ()
     {
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      
       using (_mockRepository.Ordered ())
       {
-        _extension1.RelationChanged (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
-        _extension2.RelationChanged (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
+        _extension1.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition);
+        _extension2.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationChanged (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
+      _collectionWithExtensions.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition);
 
       _mockRepository.VerifyAll ();
     }

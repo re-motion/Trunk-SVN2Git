@@ -285,7 +285,7 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
-    void IClientTransactionExtension.RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    void IClientTransactionExtension.RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
     }
 

@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
-      Extensions.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
+      Extensions.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition);
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
