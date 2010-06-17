@@ -63,7 +63,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _oppositeDomainObjects; }
       set
       {
-        ArgumentUtility.CheckNotNullAndType ("value", value, _oppositeDomainObjects.GetType ());
+        ArgumentUtility.CheckNotNull ("value", value);
+        if (_oppositeDomainObjects.GetType () != value.GetType ())
+          throw new ArgumentTypeException ("value", _oppositeDomainObjects.GetType (), value.GetType ());
 
         if (!value.IsAssociatedWith (this))
         {

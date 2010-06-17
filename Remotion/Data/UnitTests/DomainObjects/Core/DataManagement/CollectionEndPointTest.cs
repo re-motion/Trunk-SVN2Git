@@ -739,6 +739,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+        "Argument value has type Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.DerivedOrderCollection when type "
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection was expected.\r\nParameter name: value")]
+    public void OppositeDomainObjects_Set_DerivedType ()
+    {
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
+      var newOppositeCollection = new DerivedOrderCollection (delegatingData);
+
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
+    }
+
+    [Test]
     public void OriginalCollectionReference_Get_DoesNotLoadData ()
     {
       var originalReference = _customerEndPoint.OriginalCollectionReference;
