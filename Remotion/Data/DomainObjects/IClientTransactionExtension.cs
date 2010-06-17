@@ -236,7 +236,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property is being read.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint definition being read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition of the relation property being read.</param>
     /// <param name="valueAccess">A value indicating whether the current or the original value is being accessed.</param>
     /// <remarks>
     ///   Use this method to cancel the operation, whereas <see cref="O:RelationRead"/> should be used to perform actions on its successful execution.
@@ -295,7 +295,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property is being changed.</param>
-    /// <param name="relationEndPointDefinition">The relation endpoint defintion.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
     /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
     /// replacing an old one.</param>
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
