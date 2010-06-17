@@ -44,13 +44,6 @@ namespace Remotion.ObjectBinding
       _implementation = BindableObjectBaseImplementation.Create (this);
     }
 
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    protected BindableObjectBase (IBindableObjectBaseImplementation implementation)
-    {
-      ArgumentUtility.CheckNotNull ("implementation", implementation);
-      _implementation = implementation;
-    }
-
     public object GetProperty(IBusinessObjectProperty property)
     {
       return _implementation.GetProperty(property);

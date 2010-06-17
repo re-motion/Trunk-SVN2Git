@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
@@ -26,8 +27,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     {
     }
 
-    public ClassDerivedFromBindableObjectBase (IBindableObjectBaseImplementation implementation) : base (implementation)
+    public ClassDerivedFromBindableObjectBase (IBindableObjectBaseImplementation implementation)
     {
+      PrivateInvoke.SetNonPublicField (this, "_implementation", implementation);
     }
 
     public string String { get; set; }

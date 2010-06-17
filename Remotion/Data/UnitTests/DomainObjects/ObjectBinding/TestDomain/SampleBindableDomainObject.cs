@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
@@ -47,8 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     }
 
     protected SampleBindableDomainObject (IBindableDomainObjectImplementation implementation)
-      : base (implementation)
     {
+      PrivateInvoke.SetNonPublicField (this, "_implementation", implementation);
     }
   
     public abstract string Name { get; set; }

@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -43,13 +41,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     /// </summary>
     protected BindableDomainObject ()
     {
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    protected BindableDomainObject (IBindableDomainObjectImplementation implementation)
-    {
-      ArgumentUtility.CheckNotNull ("implementation", implementation);
-      _implementation = implementation;
     }
 
     /// <summary>
