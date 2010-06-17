@@ -257,6 +257,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void CommitRootUnknown_SubNew_SubSubAlsoNew ()
+    {
+      ClassWithAllDataTypes objectCreatedInSub;
+      ClassWithAllDataTypes objectCreatedInSubSub;
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        objectCreatedInSub = GetNewUnchanged ();
+        Assert.AreEqual (StateType.New, objectCreatedInSub.State);
+
+        using (ClientTransactionScope.CurrentTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          objectCreatedInSubSub = GetNewUnchanged ();
+
+          Assert.AreEqual (StateType.NotLoadedYet, objectCreatedInSub.State);
+          Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
+
+          ClientTransactionScope.CurrentTransaction.Commit ();
+
+          Assert.AreEqual (StateType.NotLoadedYet, objectCreatedInSub.State);
+          Assert.AreEqual (StateType.Unchanged, objectCreatedInSubSub.State);
+        }
+
+        Assert.AreEqual (StateType.New, objectCreatedInSub.State);
+        Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
+        
+        ClientTransactionScope.CurrentTransaction.Commit ();
+
+        Assert.AreEqual (StateType.Unchanged, objectCreatedInSub.State);
+        Assert.AreEqual (StateType.Unchanged, objectCreatedInSubSub.State);
+      }
+
+      Assert.AreEqual (StateType.New, objectCreatedInSub.State);
+      Assert.AreEqual (StateType.New, objectCreatedInSubSub.State);
+    }
+
+    [Test]
     public void CommitRootUnknownSubDeleted ()
     {
       Order obj;

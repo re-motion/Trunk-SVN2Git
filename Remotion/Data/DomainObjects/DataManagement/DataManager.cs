@@ -248,10 +248,18 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
+    if (IsInvalid (domainObject.ID))
+    {
+      if (GetInvalidObjectReference (domainObject.ID) != domainObject)
+        throw new InvalidOperationException ("Cannot mark the given object invalid, another object with the same ID has already been marked.");
+
+      return;
+    }
+
     if (DataContainerMap[domainObject.ID] != null)
     {
       var message = String.Format (
-          "Cannot mark object '{0}' as invalid; there is a DataContainer registered for that object. Discard the DataContainer instead.", 
+          "Cannot mark object '{0}' as invalid; there is a DataContainer registered for that object. Discard the DataContainer instead.",
           domainObject.ID);
       throw new InvalidOperationException (message);
     }

@@ -529,6 +529,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void MarkObjectInvalid_Twice ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      _dataManager.MarkObjectInvalid (domainObject);
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
+
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      _dataManager.MarkObjectInvalid (domainObject);
+
+      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
+      Assert.That (_dataManager.GetInvalidObjectReference (domainObject.ID), Is.SameAs (domainObject));
+      listener.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot mark the given object invalid, another object with the same ID has already been marked.")]
+    public void MarkObjectInvalid_Twice_DifferentObject ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      _dataManager.MarkObjectInvalid (domainObject);
+
+      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (domainObject.ID);
+      _dataManager.MarkObjectInvalid (domainObject2);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot mark object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' as invalid; there is a DataContainer registered for that object. "
         + "Discard the DataContainer instead.")]
