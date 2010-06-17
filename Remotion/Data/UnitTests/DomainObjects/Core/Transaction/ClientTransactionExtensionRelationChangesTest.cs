@@ -377,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (ClientTransactionMock),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", preloadedOrderItems.Count) & new ContainsConstraint (preloadedOrderItems),
             Mocks_Is.Equal (ValueAccess.Current));
 
@@ -422,7 +422,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (ClientTransactionMock),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", preloadedOrderItems.Count) & new ContainsConstraint (preloadedOrderItems),
             Mocks_Is.Equal (ValueAccess.Current));
 
@@ -469,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (ClientTransactionMock),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", preloadedOrderItemsOfOrder1.Count) & new ContainsConstraint (preloadedOrderItemsOfOrder1),
             Mocks_Is.Equal (ValueAccess.Current));
 
@@ -546,7 +546,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (ClientTransactionMock),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", preloadedOrderItems.Count) & new ContainsConstraint (preloadedOrderItems),
             Mocks_Is.Equal (ValueAccess.Current));
 
@@ -606,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (ClientTransactionMock),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", preloadedOrderItemsOfOrder1.Count) & new ContainsConstraint (preloadedOrderItemsOfOrder1),
             Mocks_Is.Equal (ValueAccess.Current));
 

@@ -249,7 +249,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
-    /// <param name="propertyName">The name of the relation property that was read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
     /// <param name="relatedObject">The related <see cref="DomainObject"/> of the relation property.</param>
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>
     /// <remarks>
@@ -261,14 +261,14 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     /// </remarks>
-    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
     /// This method is invoked when a relation property with cardinality <see cref="Mapping.CardinalityType.Many"/> was read. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
-    /// <param name="propertyName">The name of the relation property that was read.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
     /// <param name="relatedObjects">
     ///   An implementation of <see cref="ReadOnlyDomainObjectCollectionAdapter{T}"/> wrapping the related object data that is returned to the reader.
     ///   Implementors should check the <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection 
@@ -284,7 +284,7 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     /// </remarks>
-    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
     /// This method is invoked before a relation is changed.

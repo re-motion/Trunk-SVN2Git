@@ -842,10 +842,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationReading (
-            _newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
-        _extensionMock.RelationRead (
-            _newTransaction, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Current);
+        _extensionMock.RelationReading (_newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
+        _extensionMock.RelationRead (_newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, orderTicket, ValueAccess.Current);
       }
 
       _mockRepository.ReplayAll();
@@ -871,10 +869,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.RelationReading (
-            _newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Original);
-        _extensionMock.RelationRead (
-            _newTransaction, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", originalOrderTicket, ValueAccess.Original);
+        _extensionMock.RelationReading (_newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Original);
+        _extensionMock.RelationRead (_newTransaction, _order1, _order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, originalOrderTicket, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll();
@@ -905,7 +901,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", 2) & Mocks_List.IsIn (orderItems[0]) & Mocks_List.IsIn (orderItems[1]),
             Mocks_Is.Equal (ValueAccess.Current));
       }
@@ -939,7 +935,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Property.Value ("Count", 2) & Mocks_List.IsIn (originalOrderItems[0]) & Mocks_List.IsIn (originalOrderItems[1]),
             Mocks_Is.Equal (ValueAccess.Original));
       }
@@ -973,7 +969,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
             Mocks_Is.NotNull(),
             Mocks_Is.Equal (ValueAccess.Current));
       }
@@ -1003,7 +999,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Is.NotNull(),
             Mocks_Is.Equal (ValueAccess.Current));
       }
@@ -1035,7 +1031,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition),
             Mocks_Is.NotNull(),
             Mocks_Is.Equal (ValueAccess.Original));
       }
@@ -1067,7 +1063,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"),
+            Mocks_Is.Equal (_order1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition),
             Mocks_Is.NotNull(),
             Mocks_Is.Equal (ValueAccess.Original));
       }

@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
-            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg.Is (newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition),
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 0),
             Arg.Is (ValueAccess.Current)));
 
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
-            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg.Is (newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition),
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 1 && data.ContainsObject (newOrder1)),
             Arg.Is (ValueAccess.Current)));
 
@@ -256,8 +256,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           ValueAccess.Current);
         extension.Expect (mock => mock.RelationRead (
             Arg.Is (ClientTransactionScope.CurrentTransaction), 
-            Arg.Is (newCustomer1), 
-            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg.Is (newCustomer1),
+            Arg.Is (newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition),
             Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 2 && data.ContainsObject (newOrder1) && data.ContainsObject (newOrder2)),
             Arg.Is (ValueAccess.Current)));
 

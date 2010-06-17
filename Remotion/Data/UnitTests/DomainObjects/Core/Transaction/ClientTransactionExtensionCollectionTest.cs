@@ -485,16 +485,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationReadWithOneToOneRelation ()
     {
       OrderTicket orderTicket = _order.OrderTicket;
-      
+      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Original);
-        _extension2.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Original);
+        _extension1.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original);
+        _extension2.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Original);
+      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }
@@ -503,16 +503,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationReadWithOneToManyRelation ()
     {
       var orderItems = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_order.OrderItems);
-
+      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderItems, ValueAccess.Original);
-        _extension2.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderItems, ValueAccess.Original);
+        _extension1.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original);
+        _extension2.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", orderItems, ValueAccess.Original);
+      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }

@@ -128,12 +128,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
-      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, relatedObject, valueAccess);
+      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
     }
 
     public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
-      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition.PropertyName, relatedObjects, valueAccess);
+      Extensions.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
     public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
