@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
@@ -46,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly int? _maxLength;
     [NonSerialized]
     private readonly StorageClass _storageClass;
-
+    
     // construction and disposing
 
     protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName, int? maxLength, StorageClass storageClass)
@@ -88,9 +89,11 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public abstract Type PropertyType { get; }
 
-    public abstract bool IsPropertyTypeResolved
-    {
-      get; }
+    public abstract bool IsPropertyTypeResolved { get;  }
+
+    public abstract PropertyInfo PropertyInfo { get;  }
+
+    public abstract bool IsPropertyInfoResolved { get; }
 
     public abstract bool IsNullable
     {

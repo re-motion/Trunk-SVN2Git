@@ -66,9 +66,14 @@ namespace Remotion.Data.DomainObjects.Mapping
         _isNullable = isNullable ?? true;
     }
 
-    public PropertyInfo PropertyInfo
+    public override PropertyInfo PropertyInfo
     {
       get { return _propertyInfo; }
+    }
+
+    public override bool IsPropertyInfoResolved
+    {
+      get { return true; }
     }
 
     public override Type PropertyType
