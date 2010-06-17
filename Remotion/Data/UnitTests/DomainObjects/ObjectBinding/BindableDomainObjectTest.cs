@@ -76,6 +76,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
+    public void Implementation_IsInitialized_BeforeDerivedCtorRuns ()
+    {
+      var instance = SampleBindableDomainObject_AccessingImplementationFromCtor.NewObject ();
+      Assert.That (instance.DisplayNameFromCtor, Is.Not.Null);
+      Assert.That (instance.DisplayNameFromCtor, Is.EqualTo (instance.DisplayName));
+    }
+
+    [Test]
     public void Serialization ()
     {
       var instance = SampleBindableDomainObject.NewObject ();

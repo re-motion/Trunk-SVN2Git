@@ -446,6 +446,7 @@
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableNonDomainObjectReferencingDomainObject.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_AccessingImplementationFromCtor.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinWithOverridableMethod.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObjectWithOverriddenDisplayName.cs" />
