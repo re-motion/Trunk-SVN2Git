@@ -380,13 +380,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg<OrderTicket>.Is.TypeOf,
-            Arg<IRelationEndPointDefinition>.Is.Anything,
+            Arg<IRelationEndPointDefinition>.Matches (args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"),
             Arg.Is ((DomainObject) null),
             Arg.Is (newOrder1));
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newOrder1),
-            Arg<IRelationEndPointDefinition>.Is.Anything,
+            Arg<IRelationEndPointDefinition>.Matches (args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"),
             Arg.Is ((DomainObject) null),
             Arg<OrderTicket>.Is.TypeOf);
 
