@@ -118,8 +118,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        EnsureDataAvailable ();
-
         _originalOppositeDomainObjectsContents.Commit (_collectionData);
         _collectionData.InvalidateCache ();
       }
