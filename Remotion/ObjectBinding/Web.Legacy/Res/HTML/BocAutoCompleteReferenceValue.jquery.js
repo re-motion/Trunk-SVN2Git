@@ -220,7 +220,7 @@
                     clearTimeout(timeout);
                     var currentValue = $input.val();
                     timeout = setTimeout(
-                        new function () { 
+                        function () { 
                             onChange(0, false, currentValue); 
                         }, 
                         options.displayListDelay);
@@ -234,7 +234,7 @@
             
             if (options.autoFill) {
                 autoFillTimeout = setTimeout (
-                    new function() {
+                    function() {
                         if (!select.visible())
                             return;
                         var index = select.findItem ($input.val());
