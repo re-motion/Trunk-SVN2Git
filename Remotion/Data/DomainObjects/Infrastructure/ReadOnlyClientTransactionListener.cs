@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
-       IRelationEndPointDefinition relationEndPointDefinition,
+        IRelationEndPointDefinition relationEndPointDefinition,
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)
     {
