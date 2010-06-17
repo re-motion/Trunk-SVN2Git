@@ -945,7 +945,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationReading (
-            _subTransaction, _order1, _order1.Properties[typeof(Order),"OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
+            _subTransaction, _order1, _order1.Properties[typeof(Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, ValueAccess.Current);
         _extensionMock.RelationRead (
             _subTransaction, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", orderTicket, ValueAccess.Current);
       }
@@ -1043,7 +1043,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _extensionMock.RelationReading (
             _subTransaction,
             _order1,
-            _order1.Properties[typeof(Order),"OrderTicket"].PropertyData.RelationEndPointDefinition,
+            _order1.Properties[typeof(Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
             
             ValueAccess.Current);
         _extensionMock.RelationReading (
@@ -1102,7 +1102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _extensionMock.RelationReading (
             _subTransaction.ParentTransaction, 
             _order1, 
-            _order1.Properties[typeof(Order),"OrderItems"].PropertyData.RelationEndPointDefinition,
+            _order1.Properties[typeof(Order), "OrderItems"].PropertyData.RelationEndPointDefinition,
             ValueAccess.Current);
 
         _extensionMock.ObjectsLoading (_subTransaction.ParentTransaction, null);
