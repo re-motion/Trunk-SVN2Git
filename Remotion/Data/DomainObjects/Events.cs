@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for change events of <see cref="PropertyValue"/> instances.
   /// </summary>
-  [Serializable]
   public class ValueChangeEventArgs : EventArgs
   {
     private readonly object _oldValue;
@@ -63,7 +62,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for a <b>PropertyChanging</b> event.
   /// </summary>
-  [Serializable]
   public class PropertyChangeEventArgs : ValueChangeEventArgs
   {
     private readonly PropertyValue _propertyValue;
@@ -94,7 +92,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for a <b>RelationChanging</b> event.
   /// </summary>
-  [Serializable]
   public class RelationChangingEventArgs : EventArgs
   {
     private readonly string _propertyName;
@@ -148,7 +145,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for a <b>RelationChanged</b> event.
   /// </summary>
-  [Serializable]
   public class RelationChangedEventArgs : EventArgs
   {
     private readonly string _propertyName;
@@ -177,7 +173,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for <see cref="ClientTransaction"/> events.
   /// </summary>
-  [Serializable]
   public class ClientTransactionEventArgs : EventArgs
   {
     private readonly ReadOnlyCollection<DomainObject> _domainObjects;
@@ -205,7 +200,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Provides data for the <see cref="ClientTransaction.SubTransactionCreated"/> event.
   /// </summary>
-  [Serializable]
   public class SubTransactionCreatedEventArgs : EventArgs
   {
     private readonly ClientTransaction _subTransaction;
