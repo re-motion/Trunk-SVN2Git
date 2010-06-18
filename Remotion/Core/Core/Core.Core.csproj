@@ -687,7 +687,6 @@
       <Link>remotion.snk</Link>
     </None>
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
-    <None Include="Migrated rules for Core.Core.ruleset" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Definitions\Definitions.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
