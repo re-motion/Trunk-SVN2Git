@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -25,25 +26,25 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public class RelationChangingEventArgs : EventArgs
   {
-    private readonly string _propertyName;
+    private readonly IRelationEndPointDefinition _relationEndPointDefintion;
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
     /// <summary>
     /// Initializes a new instance of the <b>RelationChangingEventArgs</b> class.
     /// </summary>
-    /// <param name="propertyName">The name of the property that is being changed due to the relation change. Must not be <see langword="null"/>.</param>
+    /// <param name="relationEndPointDefinition">The relation endpoint definition. Must not be <see langword="null"/>.</param>
     /// <param name="oldRelatedObject">The old object that was related.</param>
     /// <param name="newRelatedObject">The new object that is related.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointDefinition"/> is <see langword="null"/>.</exception>
     public RelationChangingEventArgs (
-        string propertyName,
+        IRelationEndPointDefinition relationEndPointDefinition,
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      _propertyName = propertyName;
+      _relationEndPointDefintion = relationEndPointDefinition;
       _oldRelatedObject = oldRelatedObject;
       _newRelatedObject = newRelatedObject;
     }
@@ -53,7 +54,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string PropertyName
     {
-      get { return _propertyName; }
+      get { return _relationEndPointDefintion.PropertyName; }
     }
 
     /// <summary>
@@ -70,6 +71,11 @@ namespace Remotion.Data.DomainObjects
     public DomainObject NewRelatedObject
     {
       get { return _newRelatedObject; }
+    }
+
+    public IRelationEndPointDefinition RelationEndPointDefintion
+    {
+      get { return _relationEndPointDefintion; }
     }
   }
 }

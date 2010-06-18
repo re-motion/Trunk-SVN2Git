@@ -116,9 +116,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
       foreach (var removedObject in RemovedObjects)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, removedObject, null));
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, removedObject, null));
       foreach (var addedObject in AddedObjects)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, null, addedObject));
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, null, addedObject));
     }
 
     public override void Perform ()

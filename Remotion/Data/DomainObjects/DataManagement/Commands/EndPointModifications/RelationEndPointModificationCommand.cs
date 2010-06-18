@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     protected virtual void ScopedBegin ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
-      domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, _oldRelatedObject, _newRelatedObject));
+      domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, _oldRelatedObject, _newRelatedObject));
     }
 
     protected virtual void ScopedEnd ()
