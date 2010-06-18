@@ -50,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -66,6 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -82,6 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsTrue (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -98,6 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -114,6 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -153,6 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -169,6 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -185,6 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
@@ -201,6 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.IsFalse (actual.IsObjectID);
+      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
     }
 
     [Test]
