@@ -1071,8 +1071,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
       EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
       EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };
-      SubTransactionCreatedEventHandler subTransactionCreatedHandler1 = delegate { };
-      SubTransactionCreatedEventHandler subTransactionCreatedHandler2 = delegate { };
+      EventHandler<SubTransactionCreatedEventArgs> subTransactionCreatedHandler1 = delegate { };
+      EventHandler<SubTransactionCreatedEventArgs> subTransactionCreatedHandler2 = delegate { };
 
       ClientTransaction.Current.Committed += committedHandler;
       ClientTransaction.Current.Committing += committingHandler;
@@ -1105,8 +1105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
         EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
         EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };
-        SubTransactionCreatedEventHandler subTransactionCreatedHandler1 = delegate { };
-        SubTransactionCreatedEventHandler subTransactionCreatedHandler2 = delegate { };
+        EventHandler<SubTransactionCreatedEventArgs> subTransactionCreatedHandler1 = delegate { };
+        EventHandler<SubTransactionCreatedEventArgs> subTransactionCreatedHandler2 = delegate { };
 
         ClientTransaction.Current.Committed += committedHandler;
         ClientTransaction.Current.Committing += committingHandler;

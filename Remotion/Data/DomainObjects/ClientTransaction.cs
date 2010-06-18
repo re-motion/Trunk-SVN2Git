@@ -103,7 +103,7 @@ public abstract class ClientTransaction : IDataSource
   /// <summary>
   /// Occurs when the <b>ClientTransaction</b> has created a subtransaction.
   /// </summary>
-  public event SubTransactionCreatedEventHandler SubTransactionCreated;
+  public event EventHandler<SubTransactionCreatedEventArgs> SubTransactionCreated;
 
   /// <summary>
   /// Occurs after the <b>ClientTransaction</b> has loaded a new object.

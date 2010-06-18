@@ -21,10 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {
-  /// <summary>
-  /// Represents the method that will handle <see cref="ClientTransaction.SubTransactionCreated"/> events.
-  /// </summary>
-  public delegate void SubTransactionCreatedEventHandler (object sender, SubTransactionCreatedEventArgs args);
+  //public delegate void SubTransactionCreatedEventHandler (object sender, SubTransactionCreatedEventArgs args);
 
   /// <summary>
   /// Provides data for change events of <see cref="PropertyValue"/> instances.
