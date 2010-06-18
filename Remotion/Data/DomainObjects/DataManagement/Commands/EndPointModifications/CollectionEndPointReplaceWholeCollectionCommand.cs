@@ -142,9 +142,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
 #pragma warning disable 168
       foreach (var addedObject in AddedObjects.Reverse ())
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
       foreach (var removedObject in RemovedObjects.Reverse())
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
 #pragma warning restore 168
     }
 

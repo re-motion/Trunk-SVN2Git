@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -25,18 +26,18 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public class RelationChangedEventArgs : EventArgs
   {
-    private readonly string _propertyName;
+    private readonly IRelationEndPointDefinition _relationEndPointDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <b>RelationChangingEventArgs</b> class.
     /// </summary>
-    /// <param name="propertyName">The name of the <see cref="PropertyValue"/> that is being changed due to the relation change. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    public RelationChangedEventArgs (string propertyName)
+    /// <param name="relationEndPointDefinition">The relation endpoint defintion. Must not be <see langword="null"/>.</param>
+    /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointDefinition"/> is <see langword="null"/>.</exception>
+    public RelationChangedEventArgs (IRelationEndPointDefinition relationEndPointDefinition)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      _propertyName = propertyName;
+      _relationEndPointDefinition = relationEndPointDefinition;
     }
 
     /// <summary>
@@ -44,7 +45,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string PropertyName
     {
-      get { return _propertyName; }
+      get { return _relationEndPointDefinition.PropertyName; }
     }
   }
 }
