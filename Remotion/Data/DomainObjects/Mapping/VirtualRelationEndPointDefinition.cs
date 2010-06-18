@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    public VirtualRelationEndPointDefinition (
+    protected VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
     }
 
-    public VirtualRelationEndPointDefinition (
+    protected VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
     }
 
-    public VirtualRelationEndPointDefinition (
+    protected VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,

@@ -97,14 +97,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "FirstClassToSecondClass",
           new RelationEndPointDefinition (firstClass, "SecondClass", false),
-          new VirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection)));
+          new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name")));
       firstClass.MyRelationDefinitions.Add (relationDefinition1);
       secondClass.MyRelationDefinitions.Add (relationDefinition1);
 
       RelationDefinition relationDefinition2 = new RelationDefinition (
           "FirstClassToThirdClass",
           new RelationEndPointDefinition (firstClass, "ThirdClass", false),
-          new VirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection)));
+          new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
       firstClass.MyRelationDefinitions.Add (relationDefinition2);
       thirdClass.MyRelationDefinitions.Add (relationDefinition2);
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "OtherClassToDerivedClass",
           new RelationEndPointDefinition (derivedClass, "OtherClass", false),
-          new VirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection)));
+          new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
 
       derivedClass.MyRelationDefinitions.Add (relationDefinition1);
       otherClass.MyRelationDefinitions.Add (relationDefinition1);
