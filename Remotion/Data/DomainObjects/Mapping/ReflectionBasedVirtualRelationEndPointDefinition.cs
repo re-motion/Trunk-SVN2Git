@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -55,9 +54,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyInfo = propertyInfo;
     }
 
-    public PropertyInfo PropertyInfo
+    public override PropertyInfo PropertyInfo
     {
       get { return _propertyInfo; }
+    }
+
+    public override bool IsPropertyInfoResolved 
+    {
+      get { return PropertyInfo != null; }
     }
   }
 }

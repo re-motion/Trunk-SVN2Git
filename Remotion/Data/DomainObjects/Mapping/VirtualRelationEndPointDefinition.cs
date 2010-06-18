@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
@@ -27,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
-  public class VirtualRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
+  public abstract class VirtualRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
   {
     // types
 
@@ -246,6 +247,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get { return _propertyTypeName; }
     }
+
+    public abstract PropertyInfo PropertyInfo { get; }
+
+    public abstract bool IsPropertyInfoResolved { get; }
+
 
     public bool IsVirtual
     {

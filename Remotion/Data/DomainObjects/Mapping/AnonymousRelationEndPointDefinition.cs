@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
@@ -84,6 +85,16 @@ namespace Remotion.Data.DomainObjects.Mapping
     public string PropertyTypeName
     {
       get { return null; }
+    }
+
+    public PropertyInfo PropertyInfo 
+    {
+      get { return null; }
+    }
+
+    public bool IsPropertyInfoResolved
+    {
+      get { return false; }
     }
 
     public bool IsMandatory

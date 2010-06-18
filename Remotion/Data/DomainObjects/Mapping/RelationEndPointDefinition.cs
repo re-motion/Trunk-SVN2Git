@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
@@ -141,6 +142,16 @@ namespace Remotion.Data.DomainObjects.Mapping
         else
           return TypeUtility.GetPartialAssemblyQualifiedName (typeof (ObjectID));
       }
+    }
+
+    public PropertyInfo PropertyInfo 
+    {
+      get { return _propertyDefinition.PropertyInfo; }
+    }
+
+    public bool IsPropertyInfoResolved 
+    {
+      get { return PropertyInfo != null; }
     }
 
     public bool IsVirtual

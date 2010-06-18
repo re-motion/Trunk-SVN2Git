@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,6 +27,8 @@ public interface IRelationEndPointDefinition
   Type PropertyType { get; }
   bool IsPropertyTypeResolved { get; }
   string PropertyTypeName { get; }
+  PropertyInfo PropertyInfo { get; }
+  bool IsPropertyInfoResolved { get; }
   bool IsMandatory { get; }
   CardinalityType Cardinality { get; }
   bool IsVirtual { get; }
