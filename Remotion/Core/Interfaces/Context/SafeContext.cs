@@ -24,9 +24,23 @@ using Remotion.Reflection;
 namespace Remotion.Context
 {
   /// <summary>
-  /// Superior alternative to [ThreadStatic] (see <see cref="ThreadStaticAttribute"/>) for making member variables
-  /// thread safe, which also works with ASP.NET threads.
+  /// Superior alternative to the <see cref="ThreadStaticAttribute"/> and <see cref="CallContext"/> for making member variables thread safe that 
+  /// also works with ASP.NET threads.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The data managed by this class is by default stored in the <see cref="CallContext"/>, but the storage provider can be replaced by application 
+  /// code if needed. Replacements for the storage provider must guarantee that all data stored by the <see cref="SafeContext"/> is thread-local.
+  /// </para>
+  /// <para>
+  /// The Remotion.Web assembly by default replaces the storage provider with one that stores all data in the <see cref="O:System.Web.HttpContext"/>. 
+  /// This ensures that <see cref="SafeContext"/> works as expected in ASP.NET environments when a session migrates between threads.
+  /// </para>
+  /// </remarks>
+  /// <threadsafety>
+  /// The data managed by this class is thread-local. The class is safe to be used from multiple threads at the same time, but each thread will have 
+  /// its own copy of the data.
+  /// </threadsafety>
   public class SafeContext
   {
     private static readonly object s_lock = new object ();
