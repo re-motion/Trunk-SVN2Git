@@ -25,8 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   [TestFixture]
   public class SubQueryIntegrationTest : IntegrationTestBase
   {
-
-
     [Test]
     public void QueryWithSubQuery_InWhere ()
     {
