@@ -73,6 +73,9 @@ namespace Remotion.Data.DomainObjects
       get { return _newRelatedObject; }
     }
 
+    /// <summary>
+    /// Gets the relation endpoint defintion of the <see cref="PropertyValue"/> that has been changed due to the relation change.
+    /// </summary>
     public IRelationEndPointDefinition RelationEndPointDefintion
     {
       get { return _relationEndPointDefintion; }

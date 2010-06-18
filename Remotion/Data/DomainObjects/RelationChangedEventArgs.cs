@@ -45,7 +45,15 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string PropertyName
     {
-      get { return _relationEndPointDefinition.PropertyName; }
+      get { return RelationEndPointDefinition.PropertyName; }
+    }
+
+    /// <summary>
+    /// Gets the relation endpoint defintion of the <see cref="PropertyValue"/> that has been changed due to the relation change.
+    /// </summary>
+    public IRelationEndPointDefinition RelationEndPointDefinition
+    {
+      get { return _relationEndPointDefinition; }
     }
   }
 }
