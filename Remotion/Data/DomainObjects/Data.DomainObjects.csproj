@@ -156,6 +156,7 @@
   <ItemGroup>
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
+    <Compile Include="ClientTransactionEventArgs.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="Cloning\CloneContext.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
+    <Compile Include="PropertyChangeEventArgs.cs" />
     <Compile Include="Queries\IEagerFetcher.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
@@ -305,6 +307,9 @@
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
+    <Compile Include="RelationChangedEventArgs.cs" />
+    <Compile Include="RelationChangingEventArgs.cs" />
+    <Compile Include="SubTransactionCreatedEventArgs.cs" />
     <Compile Include="Tracing\IPersistenceListener.cs" />
     <Compile Include="Tracing\IPersistenceListenerFactory.cs" />
     <Compile Include="Tracing\NullPersistenceListener.cs" />
@@ -501,9 +506,6 @@
     <Compile Include="DomainObjectException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Events.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IClientTransactionExtension.cs" />
     <Compile Include="InvalidTypeException.cs">
       <SubType>Code</SubType>
@@ -693,6 +695,7 @@
     <Compile Include="Transport\XmlExportStrategy.cs" />
     <Compile Include="Transport\XmlImportStrategy.cs" />
     <Compile Include="DataManagement\ValueAccess.cs" />
+    <Compile Include="ValueChangeEventArgs.cs" />
     <Compile Include="ValueTooLongException.cs">
       <SubType>Code</SubType>
     </Compile>
