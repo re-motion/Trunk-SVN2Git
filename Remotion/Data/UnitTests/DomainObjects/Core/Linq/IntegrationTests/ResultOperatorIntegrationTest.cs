@@ -233,6 +233,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithTake_SubQueryAsArgument ()
+    {
+      var query = from o in QueryFactory.CreateLinqQuery<Order> () 
+                  from oi in o.OrderItems.Take (o.OrderItems.Count() / 2)
+                  where o.OrderNumber == 1
+                  select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
     public void QueryWithContainsInWhere_OnCollection ()
     {
       var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
