@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (Mocks_Is.Same (ClientTransactionMock), Mocks_Property.Value ("Count", 1) & Mocks_List.IsIn (_order1));
 
         _clientTransactionMockEventReceiver.RollingBack (ClientTransactionMock, _order1);
-        LastCall.Do (new ClientTransactionEventHandler (ChangeCustomerNameCallback));
+        LastCall.Do (new EventHandler<ClientTransactionEventArgs> (ChangeCustomerNameCallback));
 
         _clientTransactionExtensionMock.PropertyValueChanging (ClientTransactionMock, null, null, null, null);
         LastCall.IgnoreArguments ();
@@ -339,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.Constraints (Mocks_Is.Same (ClientTransactionMock), Mocks_Property.Value ("Count", 2) & new ContainsConstraint (_order1, _customer1));
 
         _clientTransactionMockEventReceiver.RollingBack (ClientTransactionMock, _order1, _customer1);
-        LastCall.Do (new ClientTransactionEventHandler (ChangeCustomerNameBackToOriginalCallback));
+        LastCall.Do (new EventHandler<ClientTransactionEventArgs> (ChangeCustomerNameBackToOriginalCallback));
 
         _clientTransactionExtensionMock.PropertyValueChanging (ClientTransactionMock, null, null, null, null);
         LastCall.IgnoreArguments ();

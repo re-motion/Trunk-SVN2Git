@@ -108,27 +108,27 @@ public abstract class ClientTransaction : IDataSource
   /// <summary>
   /// Occurs after the <b>ClientTransaction</b> has loaded a new object.
   /// </summary>
-  public event ClientTransactionEventHandler Loaded;
+  public event EventHandler<ClientTransactionEventArgs> Loaded;
 
   /// <summary>
   /// Occurs immediately before the <b>ClientTransaction</b> performs a <see cref="Commit"/> operation.
   /// </summary>
-  public event ClientTransactionEventHandler Committing;
+  public event EventHandler<ClientTransactionEventArgs> Committing;
 
   /// <summary>
   /// Occurs immediately after the <b>ClientTransaction</b> has successfully performed a <see cref="Commit"/> operation.
   /// </summary>
-  public event ClientTransactionEventHandler Committed;
+  public event EventHandler<ClientTransactionEventArgs> Committed;
 
   /// <summary>
   /// Occurs immediately before the <b>ClientTransaction</b> performs a <see cref="Rollback"/> operation.
   /// </summary>
-  public event ClientTransactionEventHandler RollingBack;
+  public event EventHandler<ClientTransactionEventArgs> RollingBack;
 
   /// <summary>
   /// Occurs immediately after the <b>ClientTransaction</b> has successfully performed a <see cref="Rollback"/> operation.
   /// </summary>
-  public event ClientTransactionEventHandler RolledBack;
+  public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
   private readonly DataManager _dataManager;
   private readonly IObjectLoader _objectLoader;

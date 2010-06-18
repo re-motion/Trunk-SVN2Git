@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// This event does not fire when a <see cref="PropertyValue"/> has been changed due to a relation change.
     /// </remarks>
-    public event PropertyChangeEventHandler PropertyChanging;
+    public event EventHandler<PropertyChangeEventArgs> PropertyChanging;
 
     /// <summary>
     /// Occurs after a <see cref="PropertyValue"/> of the <see cref="DomainObject"/> is changed.
@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// This event does not fire when a <see cref="PropertyValue"/> has been changed due to a relation change.
     /// </remarks>
-    public event PropertyChangeEventHandler PropertyChanged;
+    public event EventHandler<PropertyChangeEventArgs> PropertyChanged;
 
     /// <summary>
     /// Occurs before a Relation of the <see cref="DomainObject"/> is changed.
@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects
     /// replaced in one go, this event is raised once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
-    public event RelationChangingEventHandler RelationChanging;
+    public event EventHandler<RelationChangingEventArgs> RelationChanging;
 
     /// <summary>
     /// Occurs after a Relation of the <see cref="DomainObject"/> has been changed.
@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects
     /// replaced in one go, this event is raised once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
-    public event RelationChangedEventHandler RelationChanged;
+    public event EventHandler<RelationChangedEventArgs> RelationChanged;
 
     /// <summary>
     /// Occurs before the <see cref="DomainObject"/> is deleted.
@@ -284,10 +284,10 @@ namespace Remotion.Data.DomainObjects
         _bindingTransaction = (ClientTransaction) info.GetValue ("DomainObject._bindingTransaction", typeof (ClientTransaction));
         _needsLoadModeDataContainerOnly = info.GetBoolean ("DomainObject._needsLoadModeDataContainerOnly");
 
-        PropertyChanging = (PropertyChangeEventHandler) info.GetValue ("DomainObject.PropertyChanging", typeof (PropertyChangeEventHandler));
-        PropertyChanged = (PropertyChangeEventHandler) info.GetValue ("DomainObject.PropertyChanged", typeof (PropertyChangeEventHandler));
-        RelationChanging = (RelationChangingEventHandler) info.GetValue ("DomainObject.RelationChanging", typeof (RelationChangingEventHandler));
-        RelationChanged = (RelationChangedEventHandler) info.GetValue ("DomainObject.RelationChanged", typeof (RelationChangedEventHandler));
+        PropertyChanging = (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanging", typeof (EventHandler<PropertyChangeEventArgs>));
+        PropertyChanged = (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanged", typeof (EventHandler<PropertyChangeEventArgs>));
+        RelationChanging = (EventHandler<RelationChangingEventArgs>) info.GetValue ("DomainObject.RelationChanging", typeof (EventHandler<RelationChangingEventArgs>));
+        RelationChanged = (EventHandler<RelationChangedEventArgs>) info.GetValue ("DomainObject.RelationChanged", typeof (EventHandler<RelationChangedEventArgs>));
         Deleting = (EventHandler) info.GetValue ("DomainObject.Deleting", typeof (EventHandler));
         Deleted = (EventHandler) info.GetValue ("DomainObject.Deleted", typeof (EventHandler));
         Committing = (EventHandler) info.GetValue ("DomainObject.Committing", typeof (EventHandler));

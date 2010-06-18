@@ -39,11 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      clientTransaction.Loaded += new ClientTransactionEventHandler (Loaded);
-      clientTransaction.Committing += new ClientTransactionEventHandler (Committing);
-      clientTransaction.Committed += new ClientTransactionEventHandler (Committed);
-      clientTransaction.RollingBack += new ClientTransactionEventHandler (RollingBack);
-      clientTransaction.RolledBack += new ClientTransactionEventHandler (RolledBack);
+      clientTransaction.Loaded += Loaded;
+      clientTransaction.Committing += Committing;
+      clientTransaction.Committed += Committed;
+      clientTransaction.RollingBack += RollingBack;
+      clientTransaction.RolledBack += RolledBack;
     }
 
     // abstract methods and properties

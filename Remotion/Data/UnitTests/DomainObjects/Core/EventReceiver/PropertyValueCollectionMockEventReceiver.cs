@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       ArgumentUtility.CheckNotNull ("propertyValueCollection", PropertyValueCollection);
 
-      PropertyValueCollection.PropertyChanged += new PropertyChangeEventHandler (PropertyChanged);
-      PropertyValueCollection.PropertyChanging += new PropertyChangeEventHandler (PropertyChanging);
+      PropertyValueCollection.PropertyChanged += PropertyChanged;
+      PropertyValueCollection.PropertyChanging += PropertyChanging;
 
     }
 

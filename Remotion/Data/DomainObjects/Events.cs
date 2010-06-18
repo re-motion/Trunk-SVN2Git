@@ -22,26 +22,6 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Represents the method that will handle a <b>PropertyChanging</b> event.
-  /// </summary>
-  public delegate void PropertyChangeEventHandler (object sender, PropertyChangeEventArgs args);
-
-  /// <summary>
-  /// Represents the method that will handle a <b>RelationChanging</b> event.
-  /// </summary>
-  public delegate void RelationChangingEventHandler (object sender, RelationChangingEventArgs args);
-
-  /// <summary>
-  /// Represents the method that will handle a <b>RelationChanged</b> event.
-  /// </summary>
-  public delegate void RelationChangedEventHandler (object sender, RelationChangedEventArgs args);
-
-  /// <summary>
-  /// Represents the method that will handle <see cref="ClientTransaction"/> events.
-  /// </summary>
-  public delegate void ClientTransactionEventHandler (object sender, ClientTransactionEventArgs args);
-
-  /// <summary>
   /// Represents the method that will handle <see cref="ClientTransaction.SubTransactionCreated"/> events.
   /// </summary>
   public delegate void SubTransactionCreatedEventHandler (object sender, SubTransactionCreatedEventArgs args);

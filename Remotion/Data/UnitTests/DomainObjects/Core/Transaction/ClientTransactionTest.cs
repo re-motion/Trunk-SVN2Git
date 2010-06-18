@@ -1066,11 +1066,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CopyTransactionEventHandlers ()
     {
-      ClientTransactionEventHandler committedHandler = delegate { };
-      ClientTransactionEventHandler committingHandler = delegate { };
-      ClientTransactionEventHandler loadedHandler = delegate { };
-      ClientTransactionEventHandler rolledBackHandler = delegate { };
-      ClientTransactionEventHandler rollingBackHandler = delegate { };
+      EventHandler<ClientTransactionEventArgs> committedHandler = delegate { };
+      EventHandler<ClientTransactionEventArgs> committingHandler = delegate { };
+      EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
+      EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
+      EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };
       SubTransactionCreatedEventHandler subTransactionCreatedHandler1 = delegate { };
       SubTransactionCreatedEventHandler subTransactionCreatedHandler2 = delegate { };
 
@@ -1100,11 +1100,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClientTransactionEventHandler committedHandler = delegate { };
-        ClientTransactionEventHandler committingHandler = delegate { };
-        ClientTransactionEventHandler loadedHandler = delegate { };
-        ClientTransactionEventHandler rolledBackHandler = delegate { };
-        ClientTransactionEventHandler rollingBackHandler = delegate { };
+        EventHandler<ClientTransactionEventArgs> committedHandler = delegate { };
+        EventHandler<ClientTransactionEventArgs> committingHandler = delegate { };
+        EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
+        EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
+        EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };
         SubTransactionCreatedEventHandler subTransactionCreatedHandler1 = delegate { };
         SubTransactionCreatedEventHandler subTransactionCreatedHandler2 = delegate { };
 

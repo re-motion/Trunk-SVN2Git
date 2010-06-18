@@ -507,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newOrder.Committing += new EventHandler (NewOrder_Committing);
       _newOrderTicket.Committing += new EventHandler (NewOrderTicket_Committing);
-      ClientTransactionMock.Committing += new ClientTransactionEventHandler (ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent);
+      ClientTransactionMock.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent;
 
       ClientTransactionMock.Commit ();
     }
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DeleteNewObjectsInClientTransactionsCommittingEvent ()
     {
-      ClientTransactionMock.Committing += new ClientTransactionEventHandler (ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent);
+      ClientTransactionMock.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent;
       ClientTransactionMock.Commit ();
     }
 
