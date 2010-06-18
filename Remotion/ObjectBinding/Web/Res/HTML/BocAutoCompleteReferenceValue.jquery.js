@@ -253,7 +253,6 @@
                 $input.val(previousValidValue);
             } else if (!config.mouseDownOnSelect) {
                 clearTimeout(timeout);
-                var timeoutValue = ($.browser.opera ? 200 : 200); // Only Opera has the mouseDown after the blur. 
                 timeout = setTimeout(
                     function() {
                         var isLastKeyPressedNavigationKey;
@@ -276,7 +275,7 @@
                             $input.val(previousValidValue);
                         }
                     }, 
-                    timeoutValue);
+                    200);
             }
         }).click(function() {
 
@@ -315,12 +314,52 @@
         // re-motion: bind onChange to the dropDownButton's click event
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
+            dropdownButton.mousedown(function() {
+                config.mouseDownOnSelect = true;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                config.inputOnChangeBackup = input.onchange;
+                input.onchange = null;
+            });
+
+            dropdownButton.mouseup(function() {
+                config.mouseDownOnSelect = false;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                input.onchange = config.inputOnChangeBackup;
+                config.inputOnChangeBackup = null;
+            });
+
             dropdownButton.click(function(event) {
                 // re-motion: block event bubbling
                 event.stopPropagation();
-
+                
                 if (select.visible()) {
-                    select.hide();
+                    var isLastKeyPressedNavigationKey;
+                    switch (lastKeyPressCode) {
+                        case KEY.UP:
+                        case KEY.DOWN:
+                        case KEY.PAGEUP:
+                        case KEY.PAGEDOWN:
+                            isLastKeyPressedNavigationKey = true;
+                            break;
+                        default:
+                            isLastKeyPressedNavigationKey = false;
+                            break;
+                    }
+
+                    if (isLastKeyPressedNavigationKey) {
+                        var index = -1;
+                        if ($input.val() != '')
+                            index = select.findItem ($input.val());
+                        
+                        select.selectItem (index);
+                    }
+
+                    if (isLastKeyPressedNavigationKey && selectCurrent()) {
+                        //SelectCurrent already does everything that's needed.
+                    } else {
+                        hideResults();
+                        $input.val(previousValidValue);
+                    }
                 } else {
                     $input.focus();
                     onChange(1, true, $input.val());
@@ -760,6 +799,7 @@
                 config.mouseDownOnSelect = false;
                 // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
                 input.onchange = config.inputOnChangeBackup;
+                config.inputOnChangeBackup = null;
             });
 
             if (options.width > 0)

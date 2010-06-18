@@ -86,7 +86,8 @@
             COMMA: 188,
             PAGEUP: 33,
             PAGEDOWN: 34,
-            BACKSPACE: 8
+            BACKSPACE: 8,
+            FIRSTTEXTCHARACTER: 48 // 0
         };
 
         // Create $ object for input element
@@ -179,8 +180,9 @@
 
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
-                    } else if ($input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
+                    } else if (wasVisible && $input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
                         hideResults();
+                        previousValidValue = '';
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
                     } else /* invalid input */ {
                         hideResults();
@@ -205,18 +207,10 @@
                     break;
             }
         }).keyup(function(event) { // re-motion
-            switch (event.keyCode) {
-                case KEY.UP:
-                case KEY.DOWN:
-                case KEY.PAGEUP:
-                case KEY.PAGEDOWN:
-                case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
-                case KEY.RETURN:
-                case KEY.TAB:
-                case KEY.ESC:
-                    break;
-                
-                default:
+            var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER && event.keyCode != KEY.BACKSPACE && event.keyCode != KEY.DEL;
+            var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
+
+            if (!isControlKey && !isValueSeparatorKey) {
                     clearTimeout(timeout);
                     var currentValue = $input.val();
                     timeout = setTimeout(
@@ -224,7 +218,6 @@
                             onChange(0, false, currentValue); 
                         }, 
                         options.displayListDelay);
-                    break;
             }
             
             if (autoFillTimeout) {
@@ -237,8 +230,13 @@
                     function() {
                         if (!select.visible())
                             return;
-                        var index = select.findItem ($input.val());
+                        
+                        var index = -1;
+                        if ($input.val() != '')
+                            index = select.findItem ($input.val());
+                        
                         select.selectItem (index);
+                        
                         if (index != -1){
                             autoFill ($input.val(), select.selected().result);
                     }
@@ -248,11 +246,36 @@
             // track whether the field has focus, we shouldn't process any
             // results if the field no longer has focus
             hasFocus++;
+            lastKeyPressCode = -1;
         }).blur(function() {
             hasFocus = 0;
-            if (select.visible() && !config.mouseDownOnSelect) {
+            if (!select.visible()) {
+                $input.val(previousValidValue);
+            } else if (!config.mouseDownOnSelect) {
                 clearTimeout(timeout);
-                timeout = setTimeout(hideResults, 200);
+                timeout = setTimeout(
+                    function() {
+                        var isLastKeyPressedNavigationKey;
+                        switch (lastKeyPressCode) {
+                            case KEY.UP:
+                            case KEY.DOWN:
+                            case KEY.PAGEUP:
+                            case KEY.PAGEDOWN:
+                                isLastKeyPressedNavigationKey = true;
+                                break;
+                            default:
+                                isLastKeyPressedNavigationKey = false;
+                                break;
+                        }
+
+                        if (isLastKeyPressedNavigationKey && selectCurrent()) {
+                            //SelectCurrent already does everything that's needed.
+                        } else {
+                            hideResults();
+                            $input.val(previousValidValue);
+                        }
+                    }, 
+                    200);
             }
         }).click(function() {
 
@@ -291,12 +314,52 @@
         // re-motion: bind onChange to the dropDownButton's click event
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
+            dropdownButton.mousedown(function() {
+                config.mouseDownOnSelect = true;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                config.inputOnChangeBackup = input.onchange;
+                input.onchange = null;
+            });
+
+            dropdownButton.mouseup(function() {
+                config.mouseDownOnSelect = false;
+                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
+                input.onchange = config.inputOnChangeBackup;
+                config.inputOnChangeBackup = null;
+            });
+
             dropdownButton.click(function(event) {
             // re-motion: block event bubbling
             event.stopPropagation();
 
             if (select.visible()) {
-                    select.hide();
+                    var isLastKeyPressedNavigationKey;
+                    switch (lastKeyPressCode) {
+                        case KEY.UP:
+                        case KEY.DOWN:
+                        case KEY.PAGEUP:
+                        case KEY.PAGEDOWN:
+                            isLastKeyPressedNavigationKey = true;
+                            break;
+                        default:
+                            isLastKeyPressedNavigationKey = false;
+                            break;
+                    }
+
+                    if (isLastKeyPressedNavigationKey) {
+                        var index = -1;
+                        if ($input.val() != '')
+                            index = select.findItem ($input.val());
+                        
+                        select.selectItem (index);
+                    }
+
+                    if (isLastKeyPressedNavigationKey && selectCurrent()) {
+                        //SelectCurrent already does everything that's needed.
+                    } else {
+                        hideResults();
+                        $input.val(previousValidValue);
+                    }
                 } else {
                     $input.focus();
                     onChange(1, true, $input.val());
@@ -395,8 +458,8 @@
             if (!options.autoFill)
                 return;
 
-            // if the last user key pressed was backspace, don't autofill
-            if (lastKeyPressCode == KEY.BACKSPACE)
+            // if the last user key pressed was backspace or delete, don't autofill
+            if (lastKeyPressCode == KEY.BACKSPACE || lastKeyPressCode == KEY.DEL)
                 return;
 
             // autofill in the complete box w/the first match as long as the user hasn't entered in more data
@@ -404,6 +467,9 @@
                 return;
             
             if (lastWord(q).toLowerCase() == sValue.toLowerCase())
+                return;
+
+            if (q == '')
                 return;
 
             // fill in the value (keep the case the user has typed)
@@ -439,6 +505,8 @@
             if (wasVisible)
             // position cursor at end of input field
                 $.Autocompleter.Selection(input, input.value.length, input.value.length);
+            
+            lastKeyPressCode = -1;
         };
 
         function receiveData(q, data) {
@@ -731,6 +799,7 @@
                 config.mouseDownOnSelect = false;
                 // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
                 input.onchange = config.inputOnChangeBackup;
+                config.inputOnChangeBackup = null;
             });
 
             if (options.width > 0)
