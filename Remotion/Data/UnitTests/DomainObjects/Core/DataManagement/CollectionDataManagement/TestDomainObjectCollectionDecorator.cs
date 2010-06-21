@@ -26,5 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         : base (wrappedData)
     {
     }
+
+    public new IDomainObjectCollectionData WrappedData
+    {
+      get { return base.WrappedData; }
+      set { base.WrappedData = value; }
+    }
   }
 }

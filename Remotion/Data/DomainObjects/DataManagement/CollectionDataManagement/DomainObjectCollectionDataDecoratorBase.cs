@@ -12,7 +12,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   [Serializable]
   public abstract class DomainObjectCollectionDataDecoratorBase : IDomainObjectCollectionData
   {
-    private readonly IDomainObjectCollectionData _wrappedData;
+    private IDomainObjectCollectionData _wrappedData;
 
     protected DomainObjectCollectionDataDecoratorBase (IDomainObjectCollectionData wrappedData)
     {
@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     protected IDomainObjectCollectionData WrappedData
     {
       get { return _wrappedData; }
+      set { _wrappedData = value; }
     }
 
     public virtual int Count

@@ -38,21 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       PrivateInvoke.SetNonPublicField (collection, "_dataStrategy", dataStrategy);
     }
 
-    public static T GetWrappedDataAndCheckType<T> (ModificationCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
-    }
-
-    public static T GetWrappedDataAndCheckType<T> (EventRaisingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
-    }
-
-    public static T GetWrappedDataAndCheckType<T> (ReadOnlyCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
+    public static T GetWrappedDataAndCheckType<T> (DomainObjectCollectionDataDecoratorBase decorator) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
       Assert.That (data, Is.InstanceOfType (typeof (T)));

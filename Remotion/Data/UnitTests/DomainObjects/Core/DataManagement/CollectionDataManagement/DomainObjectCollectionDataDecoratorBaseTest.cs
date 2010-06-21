@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
@@ -49,6 +50,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _order1 = DomainObjectMother.CreateFakeObject<Order> ();
       _order2 = DomainObjectMother.CreateFakeObject<Order> ();
+    }
+
+    [Test]
+    public void WrappedData ()
+    {
+      Assert.That (_decorator.WrappedData, Is.SameAs (_wrappedDataMock));
+      var newData = new DomainObjectCollectionData (new[] { _order1 });
+
+      _decorator.WrappedData = newData;
+      Assert.That (_decorator.WrappedData, Is.SameAs (newData));
+
+      Assert.That (_decorator.ToArray (), Is.EqualTo (newData.ToArray()));
     }
 
     [Test]
