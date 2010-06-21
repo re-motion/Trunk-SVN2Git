@@ -129,15 +129,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void OriginalDomainObjectCollectionIsSameAfterCommit ()
+    public void OriginalDomainObjectCollection_IsNotSameAfterCommit ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       DomainObjectCollection originalOrderItems = order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
-      OrderItem orderItem = OrderItem.NewObject (order);
+      OrderItem.NewObject (order);
 
       ClientTransactionMock.Commit ();
 
-      Assert.AreSame (originalOrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      Assert.AreNotSame (originalOrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      Assert.AreEqual (order.OrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
       Assert.IsTrue (order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems").IsReadOnly);
     }
   }

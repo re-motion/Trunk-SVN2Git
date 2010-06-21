@@ -117,9 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
 
+      var data = GetEndPointData (endPoint);
+
       strategyMock.Expect (mock => mock.HasDataChanged (
-          Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects), 
-          Arg.Is (endPoint.OriginalOppositeDomainObjectsContents))).Return (true);
+          Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects),
+          Arg.Is (data.OriginalCollectionData))).Return (true);
       strategyMock.Replay();
 
       var result = endPoint.HasChanged;
@@ -138,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var result = endPoint.HasChanged;
 
-      strategyMock.AssertWasNotCalled (mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<DomainObjectCollection>.Is.Anything));
+      strategyMock.AssertWasNotCalled (mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
       Assert.That (result, Is.EqualTo (true));
     }
 
@@ -256,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void OriginalOppositeDomainObjectsContents_Type ()
+    public void OriginalOppositeDomainObjectsContents ()
     {
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.GetType (), Is.EqualTo (typeof (OrderCollection)));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.True);
@@ -484,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.ContainsObject (newOrder), Is.False);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (originalCollectionBefore));
     }
 
     [Test]

@@ -10,9 +10,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface ICollectionEndPointData
   {
     bool IsDataAvailable { get; }
-    
+
     IDomainObjectCollectionData CollectionData { get; }
-    DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
+    IDomainObjectCollectionData OriginalCollectionData { get; }
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
     void EnsureDataAvailable ();

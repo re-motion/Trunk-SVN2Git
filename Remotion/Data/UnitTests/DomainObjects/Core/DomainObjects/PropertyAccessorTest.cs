@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newOrder.OrderItems.Add (OrderItem.NewObject ());
 
       object items = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalValueWithoutTypeCheck ();
-      Assert.AreSame (items,
+      Assert.AreEqual (items,
           newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ());
 
       ++newOrder.OrderNumber;

@@ -16,7 +16,6 @@
 // 
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   public class ChangeCachingCollectionDataDecoratorTest : StandardMappingTest
   {
     private IDomainObjectCollectionData _wrappedDataStub;
-    private DomainObjectCollection _originalData;
+    private DomainObjectCollectionData _originalData;
     private ICollectionDataStateUpdateListener _stateUpdateListenerMock;
 
     private ChangeCachingCollectionDataDecorator _decorator;
@@ -41,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       base.SetUp ();
 
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _originalData = new DomainObjectCollection ();
+      _originalData = new DomainObjectCollectionData ();
       _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionDataStateUpdateListener> ();
 
       _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _originalData, _stateUpdateListenerMock);
@@ -241,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var fake = DomainObjectMother.CreateFakeObject<Order> ();
 
       var wrappedData = new DomainObjectCollectionData (new[] { fake });
-      var originalData = new DomainObjectCollection ();
+      var originalData = new DomainObjectCollectionData ();
       var stateUpdateListenerStub = MockRepository.GenerateStub<ICollectionDataStateUpdateListener>();
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData, stateUpdateListenerStub);
 
@@ -263,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       WarmUpCache(_decorator, _originalData);
     }
 
-    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, DomainObjectCollection originalData)
+    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, IDomainObjectCollectionData originalData)
     {
       StubStrategyMock (decorator, originalData);
 
@@ -271,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Assert.That (decorator.IsCacheUpToDate, Is.True);
     }
 
-    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, DomainObjectCollection originalData)
+    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, IDomainObjectCollectionData originalData)
     {
       _strategyMock.Stub (mock => mock.HasDataChanged (decorator, originalData)).Return (false);
       _strategyMock.Replay ();

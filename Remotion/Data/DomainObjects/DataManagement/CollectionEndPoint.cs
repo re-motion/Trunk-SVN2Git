@@ -81,7 +81,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
-      get { return _data.OriginalOppositeDomainObjectsContents; }
+      get 
+      { 
+        var collectionType = Definition.PropertyType;
+        return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _data.OriginalCollectionData);
+      }
     }
 
     public DomainObjectCollection OriginalCollectionReference

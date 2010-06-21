@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly RelationEndPointID _endPointID;
 
     private ChangeCachingCollectionDataDecorator _collectionData;
-    private DomainObjectCollection _originalOppositeDomainObjectsContents;
+    private IDomainObjectCollectionData _originalCollectionData;
 
     public LazyLoadableCollectionEndPointData (
         ClientTransaction clientTransaction,
@@ -76,14 +76,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    public IDomainObjectCollectionData OriginalCollectionData
     {
       get
       {
         EnsureDataAvailable ();
 
-        Assertion.IsNotNull (_originalOppositeDomainObjectsContents);
-        return _originalOppositeDomainObjectsContents;
+        Assertion.IsNotNull (_originalCollectionData);
+        return _originalCollectionData;
       }
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Unload ()
     {
       _collectionData = null;
-      _originalOppositeDomainObjectsContents = null; // allow the DomainObjectCollection to be garbage-collected
+      _originalCollectionData = null; // allow the DomainObjectCollection to be garbage-collected
 
       RaiseChangeStateNotification (false);
     }
@@ -118,19 +118,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        _originalOppositeDomainObjectsContents.ReplaceItemsWithoutNotifications (_collectionData);
-        _collectionData.InvalidateCache ();
+        SetContents (_collectionData);
       }
     }
 
     private void SetContents (IEnumerable<DomainObject> initialContents)
     {
-      var collectionType = _endPointID.Definition.PropertyType;
-      _originalOppositeDomainObjectsContents = DomainObjectCollectionFactory.Instance.CreateReadOnlyCollection (collectionType, initialContents);
+      _originalCollectionData = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (initialContents));
 
       _collectionData = new ChangeCachingCollectionDataDecorator (
           new DomainObjectCollectionData (initialContents),
-          _originalOppositeDomainObjectsContents,
+          _originalCollectionData,
           this);
     }
 
@@ -154,7 +152,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
 
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
-      _originalOppositeDomainObjectsContents = info.GetValue<DomainObjectCollection> ();
+      _originalCollectionData = info.GetValue<IDomainObjectCollectionData> ();
 
       // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
       if (_collectionData != null)
@@ -169,7 +167,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_endPointID);
 
       info.AddValue (_collectionData);
-      info.AddValue (_originalOppositeDomainObjectsContents);
+      info.AddValue (_originalCollectionData);
     }
 
     #endregion

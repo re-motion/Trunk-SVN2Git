@@ -91,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var endPointData = GetData (delegator);
       Assert.That (endPointData, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_data")));
-      Assert.That (endPointData.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
+      if (expectedDataStore != null)
+        Assert.That (endPointData.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)

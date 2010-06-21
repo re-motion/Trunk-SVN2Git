@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeCollectionAndNotify_RemembersOriginalCollection ()
+    public void SetOppositeCollectionAndNotify_RemembersOriginalContentsAndReference ()
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var oldOriginalOpposites = _customerEndPoint.OriginalOppositeDomainObjectsContents;
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newOpposites = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.SameAs (oldOriginalOpposites));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (oldOriginalOpposites));
       Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (oldOpposites));
     }
 
@@ -346,8 +346,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_AfterReplace_DelegationChain ()
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
-      var oldCollectionDataStore =
-          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
@@ -359,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Commit ();
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (oldCollection, typeof (Order));
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint, oldCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint, null);
     }
 
     [Test]

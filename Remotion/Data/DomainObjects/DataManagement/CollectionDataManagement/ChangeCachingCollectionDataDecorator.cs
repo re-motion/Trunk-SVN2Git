@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   [Serializable]
   public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
-    private readonly DomainObjectCollection _originalData;
+    private readonly IDomainObjectCollectionData _originalData;
     
     [NonSerialized] // Fixed up by LazyLoadableCollectionEndPointData, see CollectionEndPoint.FixupAssociatedEndPoint for explanation
     private ICollectionDataStateUpdateListener _stateUpdateListener;
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public ChangeCachingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
-        DomainObjectCollection originalData,
+        IDomainObjectCollectionData originalData,
         ICollectionDataStateUpdateListener stateUpdateListener)
       : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
     {

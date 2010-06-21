@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class RootCollectionEndPointChangeDetectionStrategy : ICollectionEndPointChangeDetectionStrategy
   {
-    public bool HasDataChanged (IDomainObjectCollectionData currentData, DomainObjectCollection originalData)
+    public bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData)
     {
       ArgumentUtility.CheckNotNull ("currentData", currentData);
       ArgumentUtility.CheckNotNull ("originalData", originalData);

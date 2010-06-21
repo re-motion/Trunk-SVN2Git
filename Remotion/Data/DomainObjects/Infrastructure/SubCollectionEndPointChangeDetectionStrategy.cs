@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubCollectionEndPointChangeDetectionStrategy : ICollectionEndPointChangeDetectionStrategy
   {
-    public bool HasDataChanged (IDomainObjectCollectionData currentData, DomainObjectCollection originalData)
+    public bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData)
     {
       ArgumentUtility.CheckNotNull ("currentData", currentData);
       ArgumentUtility.CheckNotNull ("originalData", originalData);

@@ -25,6 +25,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPointChangeDetectionStrategy
   {
-    bool HasDataChanged (IDomainObjectCollectionData currentData, DomainObjectCollection originalData);
+    bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData);
   }
 }

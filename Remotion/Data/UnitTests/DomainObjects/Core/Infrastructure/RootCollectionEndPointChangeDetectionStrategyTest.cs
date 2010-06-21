@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -51,20 +50,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void HasDataChanged_False ()
     {
-      Assert.That (_strategy.HasDataChanged (_currentData, new DomainObjectCollection (_currentData, null)), Is.False);
+      Assert.That (_strategy.HasDataChanged (_currentData, new DomainObjectCollectionData (_currentData)), Is.False);
     }
 
     [Test]
     public void HasDataChanged_False_OrderOnly ()
     {
-      var originalData = new DomainObjectCollection (_currentData.Cast<DomainObject>().Reverse(), null);
+      var originalData = new DomainObjectCollectionData (_currentData.Reverse());
       Assert.That (_strategy.HasDataChanged (_currentData, originalData), Is.False);
     }
 
     [Test]
     public void HasDataChanged_True_Content ()
     {
-      var originalData = new DomainObjectCollection (new[] { _order1, _order2, _order3 }, null);
+      var originalData = new DomainObjectCollectionData (new[] { _order1, _order2, _order3 });
       Assert.That (_strategy.HasDataChanged (_currentData, originalData), Is.True);
     }
   }
