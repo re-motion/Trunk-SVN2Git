@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
@@ -122,6 +123,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       Assert.That (_originalData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
       Assert.That (_actualData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+     Assert.That (_originalData.Count, Is.EqualTo (2));
+
+      var deserialized = Serializer.SerializeAndDeserialize (_originalData);
+      Assert.That (deserialized.Count, Is.EqualTo (2));
     }
   }
 }

@@ -33,7 +33,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly RelationEndPointID _endPointID;
 
     private ChangeCachingCollectionDataDecorator _collectionData;
-    private IDomainObjectCollectionData _originalCollectionData;
 
     public LazyLoadableCollectionEndPointData (
         ClientTransaction clientTransaction,
@@ -82,8 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         EnsureDataAvailable ();
 
-        Assertion.IsNotNull (_originalCollectionData);
-        return _originalCollectionData;
+        return _collectionData.OriginalData;
       }
     }
 
@@ -109,7 +107,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Unload ()
     {
       _collectionData = null;
-      _originalCollectionData = null; // allow the DomainObjectCollection to be garbage-collected
 
       RaiseChangeStateNotification (false);
     }
@@ -117,19 +114,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void CommitOriginalContents ()
     {
       if (IsDataAvailable)
-      {
-        SetContents (_collectionData);
-      }
+        _collectionData.Commit ();
     }
 
     private void SetContents (IEnumerable<DomainObject> initialContents)
     {
-      _originalCollectionData = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (initialContents));
-
-      _collectionData = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (initialContents),
-          _originalCollectionData,
-          this);
+      var dataStore = new DomainObjectCollectionData (initialContents);
+      _collectionData = new ChangeCachingCollectionDataDecorator (dataStore, this);
     }
 
     private void RaiseChangeStateNotification (bool? newChangedState)
@@ -152,7 +143,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
 
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
-      _originalCollectionData = info.GetValue<IDomainObjectCollectionData> ();
 
       // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
       if (_collectionData != null)
@@ -167,7 +157,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_endPointID);
 
       info.AddValue (_collectionData);
-      info.AddValue (_originalCollectionData);
     }
 
     #endregion

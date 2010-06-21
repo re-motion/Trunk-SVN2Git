@@ -14,21 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
   public class ChangeCachingCollectionDataDecoratorTest : StandardMappingTest
   {
+    private Order _domainObject;
+
     private IDomainObjectCollectionData _wrappedDataStub;
-    private DomainObjectCollectionData _originalData;
     private ICollectionDataStateUpdateListener _stateUpdateListenerMock;
 
     private ChangeCachingCollectionDataDecorator _decorator;
@@ -39,19 +44,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
 
+      _domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _originalData = new DomainObjectCollectionData ();
+      _wrappedDataStub.Stub (stub => stub.GetEnumerator ()).Return (new List<DomainObject>().GetEnumerator());
       _stateUpdateListenerMock = MockRepository.GenerateMock<ICollectionDataStateUpdateListener> ();
 
-      _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _originalData, _stateUpdateListenerMock);
+      _decorator = new ChangeCachingCollectionDataDecorator (_wrappedDataStub, _stateUpdateListenerMock);
 
       _strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
     }
 
     [Test]
+    public void Initialization_OriginalDataPointsToActualData ()
+    {
+      Assert.That (_decorator.OriginalData, Is.TypeOf (typeof (OriginalDomainObjectCollectionData)));
+      var originalData = (OriginalDomainObjectCollectionData) _decorator.OriginalData;
+
+      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
+      Assert.That (originalDataStore, Is.SameAs (_decorator));
+    }
+
+    [Test]
     public void HasChanged_UsesStrategy ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
       _strategyMock.Replay ();
 
       var result = _decorator.HasChanged (_strategyMock);
@@ -63,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_RaisesStateChangedNotification ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
       _strategyMock.Replay ();
 
       _decorator.HasChanged (_strategyMock);
@@ -76,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_CachesData ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true).Repeat.Once();
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true).Repeat.Once();
       _strategyMock.Replay ();
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
 
@@ -93,36 +110,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void InvalidateCache ()
+    public void CallOnDataChanged ()
     {
       _decorator.HasChanged (_strategyMock);
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
-      _decorator.InvalidateCache ();
+      CallOnDataChanged (_decorator);
       
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
     }
 
     [Test]
-    public void InvalidateCache_RaisesStateNotification ()
+    public void OnDataChanged_RaisesStateNotification ()
     {
-      _decorator.InvalidateCache ();
+      CallOnDataChanged (_decorator);
 
       _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (null));
     }
 
     [Test]
-    public void InvalidateCache_InvalidatedCacheLeadsToReEvaluation ()
+    public void OnDataChanged_InvalidatedCacheLeadsToReEvaluation ()
     {
       using (_strategyMock.GetMockRepository ().Ordered ())
       {
-        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
-        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (false);
+        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
+        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (false);
       }
       _strategyMock.Replay ();
 
       var result1 = _decorator.HasChanged (_strategyMock);
-      _decorator.InvalidateCache ();
+      CallOnDataChanged (_decorator);
 
       var result2 = _decorator.HasChanged (_strategyMock);
 
@@ -151,16 +168,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Clear_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Clear());
+    }
+
+    [Test]
     public void Insert_InvalidatesCache ()
     {
       WarmUpCache ();
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
-      var fake = DomainObjectMother.CreateFakeObject<Order> ();
-      _decorator.Insert (0, fake);
+      _decorator.Insert (0, _domainObject);
 
-      _wrappedDataStub.AssertWasCalled (stub => stub.Insert (0, fake));
+      _wrappedDataStub.AssertWasCalled (stub => stub.Insert (0, _domainObject));
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    public void Insert_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Insert (0, _domainObject));
     }
 
     [Test]
@@ -169,12 +197,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       WarmUpCache ();
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
-      var fake = DomainObjectMother.CreateFakeObject<Order> ();
-      _wrappedDataStub.Stub (stub => stub.Remove (fake)).Return (true);
+      _wrappedDataStub.Stub (stub => stub.Remove (_domainObject)).Return (true);
 
-      _decorator.Remove (fake);
+      _decorator.Remove (_domainObject);
 
-      _wrappedDataStub.AssertWasCalled (stub => stub.Remove (fake));
+      _wrappedDataStub.AssertWasCalled (stub => stub.Remove (_domainObject));
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
     }
 
@@ -184,13 +211,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       WarmUpCache ();
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
-      var fake = DomainObjectMother.CreateFakeObject<Order> ();
-      _wrappedDataStub.Stub (stub => stub.Remove (fake)).Return (false);
+      _wrappedDataStub.Stub (stub => stub.Remove (_domainObject)).Return (false);
 
-      _decorator.Remove (fake);
+      _decorator.Remove (_domainObject);
 
-      _wrappedDataStub.AssertWasCalled (stub => stub.Remove (fake));
+      _wrappedDataStub.AssertWasCalled (stub => stub.Remove (_domainObject));
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
+    }
+
+    [Test]
+    public void Remove_Object_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Remove (obj));
     }
 
     [Test]
@@ -222,29 +254,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Remove_ID_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Remove (obj.ID));
+    }
+
+    [Test]
     public void Replace_InvalidatesCache ()
     {
       WarmUpCache ();
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
 
-      var fake = DomainObjectMother.CreateFakeObject<Order> ();
-      _decorator.Replace (0, fake);
+      _decorator.Replace (0, _domainObject);
 
-      _wrappedDataStub.AssertWasCalled (stub => stub.Replace (0, fake));
+      _wrappedDataStub.AssertWasCalled (stub => stub.Replace (0, _domainObject));
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    public void Replace_OriginalValuesCopied ()
+    {
+      CheckOriginalValuesCopiedBeforeModification ((d, obj) => d.Replace (0, _domainObject));
+    }
+
+    [Test]
+    public void Commit_ReversOriginalObjects_ToCurrentObjects ()
+    {
+      var wrappedData = new DomainObjectCollectionData ();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      decorator.Add (_domainObject);
+      Assert.That (decorator.OriginalData.ToArray (), Is.Empty);
+
+      decorator.Commit ();
+
+      Assert.That (decorator.OriginalData.ToArray (), Is.EqualTo (new[] { _domainObject }));
+    }
+
+    [Test]
+    public void Commit_SetsFlagUnchanged ()
+    {
+      var wrappedData = new DomainObjectCollectionData ();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      decorator.Add (_domainObject);
+      _strategyMock.Replay ();
+
+      decorator.Commit ();
+
+      Assert.That (decorator.HasChanged (_strategyMock), Is.False);
+      _strategyMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
+    }
+
+    [Test]
+    public void Commit_RaisesNotification ()
+    {
+      _decorator.Commit ();
+
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
     }
 
     [Test]
     public void Serializable ()
     {
-      var fake = DomainObjectMother.CreateFakeObject<Order> ();
-
-      var wrappedData = new DomainObjectCollectionData (new[] { fake });
-      var originalData = new DomainObjectCollectionData ();
+      var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
       var stateUpdateListenerStub = MockRepository.GenerateStub<ICollectionDataStateUpdateListener>();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData, stateUpdateListenerStub);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, stateUpdateListenerStub);
 
-      WarmUpCache (decorator, originalData);
+      WarmUpCache (decorator);
 
       Assert.That (decorator.Count, Is.EqualTo (1));
       Assert.That (decorator.IsCacheUpToDate, Is.True);
@@ -259,12 +335,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private void WarmUpCache ()
     {
-      WarmUpCache(_decorator, _originalData);
+      WarmUpCache (_decorator);
     }
 
-    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, IDomainObjectCollectionData originalData)
+    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator)
     {
-      StubStrategyMock (decorator, originalData);
+      StubStrategyMock (decorator, decorator.OriginalData);
 
       decorator.HasChanged (_strategyMock);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
@@ -276,5 +352,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _strategyMock.Replay ();
     }
 
+    private void CallOnDataChanged (ChangeCachingCollectionDataDecorator decorator)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (decorator, "OnDataChanged");
+    }
+
+    private void CheckOriginalValuesCopiedBeforeModification (Action<ChangeCachingCollectionDataDecorator, DomainObject> action)
+    {
+      var domainObject1 = DomainObjectMother.CreateFakeObject<Order>();
+      var domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var wrappedData = new DomainObjectCollectionData (new[] { domainObject1, domainObject2 });
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+
+      action (decorator, domainObject1);
+
+      Assert.That (decorator.OriginalData.ToArray (), Is.EqualTo (new[] { domainObject1, domainObject2 }));
+    }
   }
 }

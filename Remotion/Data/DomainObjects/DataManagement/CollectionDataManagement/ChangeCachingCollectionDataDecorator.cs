@@ -22,13 +22,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <summary>
   /// Decorates another <see cref="IDomainObjectCollectionData"/> object and provides an <see cref="HasChanged"/> method that determines
   /// whether the contents of that <see cref="IDomainObjectCollectionData"/> object has changed when compared to an original 
-  /// <see cref="DomainObjectCollection"/> instance. The result of the comparison is cached until the <see cref="InvalidateCache"/> method is
+  /// <see cref="DomainObjectCollection"/> instance. The result of the comparison is cached until the <see cref="OnDataChanged"/> method is
   /// called or a modifying method is called on <see cref="ChangeCachingCollectionDataDecorator"/>.
   /// </summary>
   [Serializable]
   public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
-    private readonly IDomainObjectCollectionData _originalData;
+    private readonly OriginalDomainObjectCollectionData _originalData;
     
     [NonSerialized] // Fixed up by LazyLoadableCollectionEndPointData, see CollectionEndPoint.FixupAssociatedEndPoint for explanation
     private ICollectionDataStateUpdateListener _stateUpdateListener;
@@ -38,26 +38,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public ChangeCachingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
-        IDomainObjectCollectionData originalData,
         ICollectionDataStateUpdateListener stateUpdateListener)
       : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
     {
-      ArgumentUtility.CheckNotNull ("originalData", originalData);
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
-      _originalData = originalData;
+      _originalData = new OriginalDomainObjectCollectionData (this);
       _stateUpdateListener = stateUpdateListener;
+    }
+
+    public IDomainObjectCollectionData OriginalData
+    {
+      get { return _originalData; }
     }
 
     public bool IsCacheUpToDate
     {
       get { return _isCacheUpToDate; }
-    }
-
-    public void InvalidateCache ()
-    {
-      _isCacheUpToDate = false;
-      RaiseStateUpdatedNotification (null);
     }
 
     public bool HasChanged (ICollectionEndPointChangeDetectionStrategy strategy)
@@ -78,36 +75,53 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public override void Clear ()
     {
+      _originalData.CopyOnWrite ();
       base.Clear ();
-      InvalidateCache ();
+      OnDataChanged ();
     }
 
     public override void Insert (int index, DomainObject domainObject)
     {
+      _originalData.CopyOnWrite ();
       base.Insert (index, domainObject);
-      InvalidateCache ();
+      OnDataChanged ();
     }
 
     public override bool Remove (DomainObject domainObject)
     {
+      _originalData.CopyOnWrite ();
       var found = base.Remove (domainObject);
       if (found)
-        InvalidateCache ();
+        OnDataChanged ();
       return found;
     }
 
     public override bool Remove (ObjectID objectID)
     {
+      _originalData.CopyOnWrite ();
       var found = base.Remove (objectID);
       if (found)
-        InvalidateCache ();
+        OnDataChanged ();
       return found;
     }
 
     public override void Replace (int index, DomainObject value)
     {
+      _originalData.CopyOnWrite ();
       base.Replace (index, value);
-      InvalidateCache ();
+      OnDataChanged ();
+    }
+
+    public void Commit ()
+    {
+      _originalData.RevertToActualData ();
+      SetCachedHasChangedFlag (false);
+    }
+
+    private void OnDataChanged ()
+    {
+      _isCacheUpToDate = false;
+      RaiseStateUpdatedNotification (null);
     }
 
     private void SetCachedHasChangedFlag (bool hasChanged)
