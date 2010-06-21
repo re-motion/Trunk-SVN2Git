@@ -105,20 +105,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedNotifyClientTransactionOfBegin ()
     {
-      foreach (var removedObject in RemovedObjects)
-        RaiseClientTransactionBeginNotification (removedObject, null);
-      foreach (var addedObject in AddedObjects)
-        RaiseClientTransactionBeginNotification (null, addedObject);
+      for (int i = 0; i < RemovedObjects.Length; i++)
+        RaiseClientTransactionBeginNotification (RemovedObjects[i], null);
+      for (int i = 0; i < AddedObjects.Length; i++)
+        RaiseClientTransactionBeginNotification (null, AddedObjects[i]);
     }
 
     protected override void ScopedBegin ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
-      foreach (var removedObject in RemovedObjects)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, removedObject, null));
-      foreach (var addedObject in AddedObjects)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, null, addedObject));
+      for (int i = 0; i < RemovedObjects.Length; i++)
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, RemovedObjects[i], null));
+      for (int i = 0; i < AddedObjects.Length; i++)
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, null, AddedObjects[i]));
     }
 
     public override void Perform ()
@@ -140,20 +140,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
-#pragma warning disable 168
-      foreach (var addedObject in AddedObjects.Reverse ())
+      for (int i = AddedObjects.Length - 1; i >= 0; i--)
         domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
-      foreach (var removedObject in RemovedObjects.Reverse())
+      for (int i = RemovedObjects.Length - 1; i >= 0; i--)
         domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
-#pragma warning restore 168
     }
 
     protected override void ScopedNotifyClientTransactionOfEnd ()
     {
-      foreach (var removedObject in RemovedObjects.Reverse ())
-        RaiseClientTransactionEndNotification (removedObject, null);
-      foreach (var addedObject in AddedObjects.Reverse ())
-        RaiseClientTransactionEndNotification (null, addedObject);
+      for (int i = RemovedObjects.Length - 1; i >= 0; i--)
+        RaiseClientTransactionEndNotification (RemovedObjects[i], null);
+      for (int i = AddedObjects.Length - 1; i >= 0; i--)
+        RaiseClientTransactionEndNotification (null, AddedObjects[i]);
     }
 
     /// <summary>
