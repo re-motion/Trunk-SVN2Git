@@ -17,7 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure

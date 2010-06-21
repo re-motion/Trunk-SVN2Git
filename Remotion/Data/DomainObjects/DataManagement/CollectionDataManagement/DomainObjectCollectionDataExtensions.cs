@@ -74,5 +74,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       data.Clear ();
       data.AddRange (items);
     }
+
+    public static bool SetEquals (this IDomainObjectCollectionData collection, IEnumerable<DomainObject> comparedSet)
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+      ArgumentUtility.CheckNotNull ("comparedSet", comparedSet);
+
+      var setOfComparedObjects = new HashSet<DomainObject> (); // this is used to get rid of all duplicates to get a correct result
+      foreach (var domainObject in comparedSet)
+      {
+        if (collection.GetObject (domainObject.ID) != domainObject)
+          return false;
+
+        setOfComparedObjects.Add (domainObject);
+      }
+
+      // the collection must contain exactly the same number of items as the comparedSet (duplicates ignored)
+      return collection.Count == setOfComparedObjects.Count;
+    }
   }
 }

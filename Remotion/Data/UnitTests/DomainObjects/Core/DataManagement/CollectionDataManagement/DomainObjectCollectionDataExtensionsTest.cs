@@ -101,5 +101,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order3, _order4, _order1 }));
     }
+
+    [Test]
+    public void SetEquals ()
+    {
+      Assert.That (_data.SetEquals (new[] { _order1, _order2 }), Is.True);
+      Assert.That (_data.SetEquals (new[] { _order2, _order1 }), Is.True);
+      Assert.That (_data.SetEquals (new[] { _order1, _order2, _order3 }), Is.False);
+    }
+
+    [Test]
+    public void SetEquals_UsesReferenceComparison ()
+    {
+      var order1FromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Order> (_order1.ID);
+      Assert.That (_data.SetEquals (new[] { order1FromOtherTransaction, _order2 }), Is.False);
+    }
+
+    [Test]
+    public void SetEquals_HandlesDuplicates ()
+    {
+      Assert.That (_data.SetEquals (new[] { _order1, _order2, _order2, _order1 }), Is.True);
+    }
   }
 }
