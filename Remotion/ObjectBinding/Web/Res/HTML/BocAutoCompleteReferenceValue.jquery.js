@@ -130,6 +130,7 @@
             // track last key pressed
             lastKeyPressCode = event.keyCode;
 
+            clearTimeout(timeout);
             // re-motion: cancel an already running request
             abortRequest();
 
@@ -209,7 +210,6 @@
             var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
 
             if (!isControlKey && !isValueSeparatorKey) {
-                clearTimeout(timeout);
                 var currentValue = $input.val();
                 timeout = setTimeout(
                     function () { 
