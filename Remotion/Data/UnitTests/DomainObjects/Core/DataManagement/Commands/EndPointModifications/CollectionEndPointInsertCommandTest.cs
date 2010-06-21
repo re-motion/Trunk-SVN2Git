@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         relationChangedCalled = true;
 
-        Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
         Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // collection gets event later
       };
 

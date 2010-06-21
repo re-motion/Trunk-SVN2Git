@@ -149,9 +149,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangedEventArgs.Count, Is.EqualTo (2)); // operation was started
       Assert.That (relationChangingCalled, Is.False); // operation was not finished
 
-      Assert.That (relationChangedEventArgs[0].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangedEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
 
-      Assert.That (relationChangedEventArgs[1].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangedEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
     }
 
     [Test]

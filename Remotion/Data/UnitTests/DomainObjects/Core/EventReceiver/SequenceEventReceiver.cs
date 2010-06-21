@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void DomainObject_RelationChanged (object sender, RelationChangedEventArgs args)
     {
-      _states.Add (new RelationChangeState (sender, args.PropertyName, null, null));
+      _states.Add (new RelationChangeState (sender, args.RelationEndPointDefinition.PropertyName, null, null));
     }
 
     public void DomainObject_Deleting (object sender, EventArgs args)

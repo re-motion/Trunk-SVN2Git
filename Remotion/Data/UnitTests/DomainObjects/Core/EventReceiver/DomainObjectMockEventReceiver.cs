@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
@@ -76,13 +77,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
           & Mocks_Property.Value ("NewRelatedObject", newRelatedObject));
     }
 
-    public void RelationChanged (object sender, string propertyName)
+    public void RelationChanged (object sender, IRelationEndPointDefinition relationEndPointDefinition)
     {
-      RelationChanged (null, (RelationChangedEventArgs) null);
-
-      LastCall.Constraints (
-          Mocks_Is.Same (sender),
-          Mocks_Property.Value ("PropertyName", propertyName));
+      this.Expect (mock => RelationChanged (Arg.Is (sender), Arg <RelationChangedEventArgs>.Matches (args => args.RelationEndPointDefinition == relationEndPointDefinition)));
     }
   }
 }

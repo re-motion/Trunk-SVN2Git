@@ -402,12 +402,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         using (_mockRepository.Unordered ())
         {
-          customerMockEventReceiver.RelationChanged (customer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+          customerMockEventReceiver.RelationChanged (customer, customer.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
           customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
-          orderTicketMockEventReceiver.RelationChanged (orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
-          orderItem1MockEventReceiver.RelationChanged (orderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-          orderItem2MockEventReceiver.RelationChanged (orderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-          officialMockEventReceiver.RelationChanged (official, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders");
+          
+          orderTicketMockEventReceiver.RelationChanged (orderTicket, orderTicket.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+          orderItem1MockEventReceiver.RelationChanged (orderItem1, orderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+          orderItem2MockEventReceiver.RelationChanged (orderItem2, orderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+          officialMockEventReceiver.RelationChanged (official, official.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition);
+
           officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
         }
 

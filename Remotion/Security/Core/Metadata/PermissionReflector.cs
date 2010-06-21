@@ -101,6 +101,8 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
+      //IMemberInformation mi = _memberResolver.GetMethodInformation (type, methodName);
+      //return GetPermissionsFromCache<DemandMethodPermissionAttribute> (mi);
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Instance);
     }
 

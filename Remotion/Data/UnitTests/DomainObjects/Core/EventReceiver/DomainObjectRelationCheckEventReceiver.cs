@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
       changedObjectState = domainObject.State;
 
-      string changedProperty = args.PropertyName;
+      string changedProperty = args.RelationEndPointDefinition.PropertyName;
 
 			if (CardinalityType.One == domainObject.InternalDataContainer.ClassDefinition.GetRelationEndPointDefinition (changedProperty).Cardinality)
       {
