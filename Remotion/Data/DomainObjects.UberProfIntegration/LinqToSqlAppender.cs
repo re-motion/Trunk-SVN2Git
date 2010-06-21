@@ -30,26 +30,48 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// The wrapper uses runtime-binding to redirect the calls to Linq to Sql Profiler's API. This removes the static dependcy on Linq to Sql Profiler.
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
+  [Serializable]
   public sealed class LinqToSqlAppender : IObjectReference
   {
-    private static readonly DoubleCheckedLockingContainer<LinqToSqlAppender> _instance =
+    private static readonly DoubleCheckedLockingContainer<LinqToSqlAppender> s_instance =
         new DoubleCheckedLockingContainer<LinqToSqlAppender> (() => new LinqToSqlAppender("re-store ClientTransaction"));
 
     public static LinqToSqlAppender Instance
     {
-      get { return _instance.Value; }
+      get { return s_instance.Value; }
     }
 
+    [NonSerialized]
     private readonly object _linqToSqlAppender;
+    
+    [NonSerialized]
     private readonly Action<Guid> _connectionStarted;
+    
+    [NonSerialized]
     private readonly Action<Guid> _connectionDisposed;
+    
+    [NonSerialized]
     private readonly Action<Guid, Guid, int> _statementRowCount;
+    
+    [NonSerialized]
     private readonly Action<Guid, Exception> _statementError;
+    
+    [NonSerialized]
     private readonly Action<Guid, long, int?> _commandDurationAndRowCount;
+    
+    [NonSerialized]
     private readonly Action<Guid, Guid, string> _statementExecuted;
+    
+    [NonSerialized]
     private readonly Action<Guid, IsolationLevel> _transactionBegan;
+    
+    [NonSerialized]
     private readonly Action<Guid> _transactionCommit;
+    
+    [NonSerialized]
     private readonly Action<Guid> _transactionDisposed;
+    
+    [NonSerialized]
     private readonly Action<Guid> _transactionRolledBack;
 
     private LinqToSqlAppender (string name)
