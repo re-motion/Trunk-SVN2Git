@@ -105,8 +105,8 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete (
-        "This method has been removed. GetNonNotifyingData in conjunction with DomainObjectCollectionDataExtensions.ReplaceContents to replace the "
-        + "contents of a collection without raising events. To hook commit or rollback events, override Commit or Rollback. (1.13.37)", true)]
+        "This method has been removed. ReplaceItemsWithoutNotifications can be used to replace the "
+        + "contents of a collection without raising events. (1.13.37)", true)]
     protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
       throw new NotImplementedException ();
@@ -125,6 +125,18 @@ namespace Remotion.Data.DomainObjects
         "This method has been removed. Create a new DomainObjectCollection via Clone (true) or Clone (false) rather than changing the read-only "
         + "property of an existing collection. (1.13.48)", true)]
     protected void SetIsReadOnly (bool isReadOnly)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete ("This method has been removed. Use/override ReplaceItemsWithoutNotifications instead. (1.13.65)", true)]
+    protected internal virtual void Rollback (DomainObjectCollection originalDomainObjects)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete ("This method has been removed. Use ReplaceItemsWithoutNotifications instead. (1.13.65)", true)]
+    protected internal virtual void Commit (IEnumerable<DomainObject> domainObjects)
     {
       throw new NotImplementedException ();
     }

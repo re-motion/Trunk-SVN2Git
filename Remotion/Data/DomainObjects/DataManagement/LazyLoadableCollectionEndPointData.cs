@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        _originalOppositeDomainObjectsContents.Commit (_collectionData);
+        _originalOppositeDomainObjectsContents.ReplaceItemsWithoutNotifications (_collectionData);
         _collectionData.InvalidateCache ();
       }
     }

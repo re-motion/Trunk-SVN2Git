@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -672,40 +673,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Rollback ()
+    public void ReplaceItemsWithoutNotifications ()
     {
-      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
-      CallRollback (_collection, sourceCollection);
+      var sourceCollection = new[] { _customer3NotInCollection };
+      CallReplaceItemsWithoutNotifications (_collection, sourceCollection);
 
       Assert.That (_collection, Is.EqualTo (sourceCollection));
     }
 
     [Test]
-    public void Rollback_ReadOnly ()
+    public void ReplaceItemsWithoutNotifications_NoNotifications ()
     {
-      var readOnlyCollection = _collection.Clone (true);
-      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
-      CallRollback (readOnlyCollection, sourceCollection);
+      var sourceCollection = new[] { _customer3NotInCollection };
 
-      Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
-      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection);
+      CallReplaceItemsWithoutNotifications (_collection, sourceCollection);
+
+      Assert.That (eventReceiver.AddingDomainObject, Is.Null);
+      Assert.That (eventReceiver.AddedDomainObject, Is.Null);
     }
 
     [Test]
-    public void Commit ()
-    {
-      var sourceCollection = new[] { _customer3NotInCollection };
-      CallCommit (_collection, sourceCollection);
-
-      Assert.That (_collection, Is.EqualTo (sourceCollection));
-    }
-
-    [Test]
-    public void Commit_ReadOnly ()
+    public void ReplaceItemsWithoutNotifications_ReadOnly ()
     {
       var readOnlyCollection = _collection.Clone (true);
       var sourceCollection = new[] { _customer3NotInCollection };
-      CallCommit (readOnlyCollection, sourceCollection);
+      CallReplaceItemsWithoutNotifications (readOnlyCollection, sourceCollection);
 
       Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
       Assert.That (readOnlyCollection.IsReadOnly, Is.True);
@@ -766,14 +759,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (eventArgs, Is.EqualTo (EventArgs.Empty));
     }
 
-    private void CallRollback (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
+    private void CallReplaceItemsWithoutNotifications (DomainObjectCollection collection, IEnumerable<DomainObject> newItems)
     {
-      PrivateInvoke.InvokeNonPublicMethod (collection, "Rollback", sourceCollection);
-    }
-
-    private void CallCommit (DomainObjectCollection collection, IEnumerable<DomainObject> sourceCollection)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (collection, "Commit", sourceCollection);
+      PrivateInvoke.InvokeNonPublicMethod (collection, "ReplaceItemsWithoutNotifications", newItems);
     }
 
     private void CallCopyEventHandlersFrom (DomainObjectCollection source, DomainObjectCollection destination)

@@ -87,20 +87,11 @@ namespace Remotion.Data.DomainObjects
   ///     </description>
   ///   </item>
   ///   <item>
-  ///     <term><see cref="Commit"/></term>
+  ///     <term><see cref="ReplaceItemsWithoutNotifications"/></term>
   ///     <description>
-  ///       This method is only called on <see cref="DomainObjectCollection"/>s representing the values 
-  ///       of a one-to-many relation during the commit operation of the associated <see cref="ClientTransaction"/>. 
-  ///       A derived collection should replace its internal state with the state of the provided collection passed 
-  ///       as an argument to this method.
-  ///     </description>
-  ///   </item>
-  ///   <item>
-  ///     <term><see cref="Rollback"/></term>
-  ///     <description>
-  ///       This method is only called on <see cref="DomainObjectCollection"/>s representing the current values 
+  ///       This method is automatically called on <see cref="DomainObjectCollection"/>s representing the current values 
   ///       of a one-to-many relation during the rollback operation of the associated <see cref="ClientTransaction"/>. 
-  ///       A derived collection should replace its internal state with the state of the provided collection passed 
+  ///       A derived collection should recalculate its internal state to match the new items passed 
   ///       as an argument to this method.
   ///     </description>
   ///   </item>
@@ -629,39 +620,20 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Performs a rollback of the collection by replacing the items in the collection with the items of a given <see cref="DomainObjectCollection"/>.
+    /// Replaces the items in the collection with a given set of new items.
     /// </summary>
-    /// <param name="originalDomainObjects">A <see cref="DomainObjectCollection"/> containing the original items of the collection. Must not be <see langword="null"/>.</param>
+    /// <param name="newItems">The items to be put into the collection. Must not be <see langword="null"/>.</param>
     /// <remarks>
     ///   This method is called for collections associated to a collection end point during the rollback operation of the associated 
-    ///   <see cref="ClientTransaction"/>. 
-    ///   A derived collection should replace its internal state with the state of <paramref name="originalDomainObjects"/>.
+    ///   <see cref="ClientTransaction"/>. A derived collection should recalculate its internal state to match the <paramref name="newItems"/>.
     /// </remarks>
-    /// <exception cref="System.ArgumentNullException"><paramref name="originalDomainObjects"/> is <see langword="null"/>.</exception>
-    protected internal virtual void Rollback (DomainObjectCollection originalDomainObjects)
+    /// <exception cref="System.ArgumentNullException"><paramref name="newItems"/> is <see langword="null"/>.</exception>
+    protected internal virtual void ReplaceItemsWithoutNotifications (IEnumerable<DomainObject> newItems)
     {
-      ArgumentUtility.CheckNotNull ("originalDomainObjects", originalDomainObjects);
+      ArgumentUtility.CheckNotNull ("newItems", newItems);
 
       var nonNotifyingData = GetNonNotifyingData ();
-      nonNotifyingData.ReplaceContents (originalDomainObjects.Cast<DomainObject> ());
-    }
-
-    /// <summary>
-    /// Performs a commit of the collection by replacing the items in the collection with the items of a given <see cref="DomainObjectCollection"/>.
-    /// </summary>
-    /// <param name="domainObjects">A <see cref="DomainObjectCollection"/> containing the new items for the collection. Must not be <see langword="null"/>.</param>
-    /// <remarks>
-    ///   This method is called for those collections representing the original values of a collection-valued relation during the commit operation
-    ///   of the associated <see cref="ClientTransaction"/>. 
-    ///   A derived collection should replace its internal state accordingly.
-    /// </remarks>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    protected internal virtual void Commit (IEnumerable<DomainObject> domainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-      var nonNotifyingData = GetNonNotifyingData ();
-      nonNotifyingData.ReplaceContents (domainObjects);
+      nonNotifyingData.ReplaceContents (newItems);
     }
 
     /// <summary>

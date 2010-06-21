@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
             _oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback 
             || !oppositeObjectsReferenceBeforeRollback.IsAssociatedWith (this));
 
-        _oppositeDomainObjects.Rollback (OriginalOppositeDomainObjectsContents);
+        _oppositeDomainObjects.ReplaceItemsWithoutNotifications (OriginalOppositeDomainObjectsContents.Cast<DomainObject>());
       }
 
       _hasBeenTouched = false;
