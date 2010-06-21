@@ -110,9 +110,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newCeo1);
 
-        newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
+        newCeo1EventReceiver.RelationChanging (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
 
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", null, newCeo1);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, null, newCeo1);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
 
@@ -135,11 +135,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.RelationChanging (
             ClientTransactionMock, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, newCustomer1, null);
 
-        newCeo2EventReceiver.RelationChanging (newCeo2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer1);
+        newCeo2EventReceiver.RelationChanging (newCeo2, newCeo2.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
 
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", newCeo1, newCeo2);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, newCeo1, newCeo2);
 
-        newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", newCustomer1, null);
+        newCeo1EventReceiver.RelationChanging (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, newCustomer1, null);
 
         newCeo1EventReceiver.RelationChanged (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
 
@@ -163,9 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newCeo1);
 
-        newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", null, newCustomer2);
+        newCeo1EventReceiver.RelationChanging (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer2);
 
-        newCustomer2EventReceiver.RelationChanging (newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", null, newCeo1);
+        newCustomer2EventReceiver.RelationChanging (newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, null, newCeo1);
 
         newCustomer2EventReceiver.RelationChanged (newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
 
@@ -188,9 +188,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newCeo1,
             null);
 
-        newCeo1EventReceiver.RelationChanging (newCeo1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company", newCustomer2, null);
+        newCeo1EventReceiver.RelationChanging (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, newCustomer2, null);
 
-        newCustomer2EventReceiver.RelationChanging (newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo", newCeo1, null);
+        newCustomer2EventReceiver.RelationChanging (newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, newCeo1, null);
 
         newCustomer2EventReceiver.RelationChanged (newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
 
@@ -230,11 +230,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newOrder1);
 
-        newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
+        newOrder1EventReceiver.RelationChanging (newOrder1, newOrder1.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
 
         newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder1);
 
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder1);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder1);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
 
@@ -274,11 +274,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newOrder2);
 
-        newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
+        newOrder2EventReceiver.RelationChanging (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
 
         newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder2);
 
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
 
@@ -321,10 +321,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrder2,
             null);
 
-        newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, null);
+        newOrder2EventReceiver.RelationChanging (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, null);
 
         newCustomer1OrdersEventReceiver.Removing (newCustomer1Orders, newOrder2);
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
 
@@ -354,9 +354,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderItem1);
 
         newOrderItem1EventReceiver.RelationChanging (
-            newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
+            newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
         newOrder1OrderItemsEventReceiver.Adding (newOrder1OrderItems, newOrderItem1);
-        newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem1);
+        newOrder1EventReceiver.RelationChanging (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem1);
 
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
 
@@ -385,9 +385,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderItem2);
 
         newOrderItem2EventReceiver.RelationChanging (
-            newOrderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder1);
+            newOrderItem2, newOrderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
         newOrder1OrderItemsEventReceiver.Adding (newOrder1OrderItems, newOrderItem2);
-        newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem2);
+        newOrder1EventReceiver.RelationChanging (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem2);
 
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
 
@@ -416,9 +416,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null);
 
         newOrderItem1EventReceiver.RelationChanging (
-            newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", newOrder1, null);
+            newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, null);
         newOrder1OrderItemsEventReceiver.Removing (newOrder1OrderItems, newOrderItem1);
-        newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", newOrderItem1, null);
+        newOrder1EventReceiver.RelationChanging (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, newOrderItem1, null);
 
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
 
@@ -447,9 +447,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderItem1);
 
         newOrderItem1EventReceiver.RelationChanging (
-            newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, newOrder2);
+            newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder2);
         newOrder2OrderItemsEventReceiver.Adding (newOrder2OrderItems, newOrderItem1);
-        newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, newOrderItem1);
+        newOrder2EventReceiver.RelationChanging (newOrder2, newOrder2.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition, null, newOrderItem1);
 
         newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
 
@@ -477,9 +477,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newOrder1);
 
-        newOrder1EventReceiver.RelationChanging (newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", null, official2);
+        newOrder1EventReceiver.RelationChanging (newOrder1, newOrder1.Properties[typeof (Order), "Official"].PropertyData.RelationEndPointDefinition, null, official2);
         official2OrdersEventReceiver.Adding (official2Orders, newOrder1);
-        official2EventReceiver.RelationChanging (official2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders", null, newOrder1);
+        official2EventReceiver.RelationChanging (official2, official2.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder1);
 
         official2EventReceiver.RelationChanged (official2, official2.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition);
 
@@ -516,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (newOrder1),
             Arg<RelationChangingEventArgs>.Matches (
                 args =>
-                args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
+                args.RelationEndPointDefintion.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
                 && args.OldRelatedObject == null
                 && args.NewRelatedObject is OrderTicket));
 
@@ -605,14 +605,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderTicket1);
 
         newOrderTicket1EventReceiver.RelationChanging (
-            newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newOrder1, newOrder2);
+            newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder1, newOrder2);
         newOrder1EventReceiver.RelationChanging (
-            newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", newOrderTicket1, null);
+            newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, newOrderTicket1, null);
         newOrder2EventReceiver.RelationChanging (
-            newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", null, newOrderTicket1);
+            newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
 
         newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
         newOrderTicket1EventReceiver.RelationChanged (newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
 
@@ -639,9 +638,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null,
             newOrder2);
 
-        newOrder2EventReceiver.RelationChanging (newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
+        newOrder2EventReceiver.RelationChanging (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
         newCustomer1OrdersEventReceiver.Adding (newCustomer1Orders, newOrder2);
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
         newCustomer1OrdersEventReceiver.Added (newCustomer1Orders, newOrder2);
@@ -675,11 +674,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             null);
 
         newOrder2EventReceiver.RelationChanging (
-            newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, newCustomer2);
+            newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, newCustomer2);
         newCustomer2OrdersEventReceiver.Adding (newCustomer2Orders, newOrder2);
-        newCustomer2EventReceiver.RelationChanging (newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
+        newCustomer2EventReceiver.RelationChanging (newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
         newCustomer1OrdersEventReceiver.Removing (newCustomer1Orders, newOrder2);
-        newCustomer1EventReceiver.RelationChanging (newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
+        newCustomer1EventReceiver.RelationChanging (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
 
         newCustomer1EventReceiver.RelationChanged (newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
 
@@ -730,11 +729,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         {
           newCustomer2OrdersEventReceiver.Removing (newCustomer2Orders, newOrder2);
           newCustomer2EventReceiver.RelationChanging (
-              newCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
+              newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
           newOrderTicket1EventReceiver.RelationChanging (
-              newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", newOrder2, null);
+              newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
           newOrderItem1EventReceiver.RelationChanging (
-              newOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", newOrder2, null);
+              newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
         }
 
         using (mockRepository.Unordered())
@@ -779,9 +778,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderTicket1);
 
         newOrderTicket1EventReceiver.RelationChanging (
-            newOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, newOrder1);
+            newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
         newOrder1EventReceiver.RelationChanging (
-            newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", null, newOrderTicket1);
+            newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
 
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
 

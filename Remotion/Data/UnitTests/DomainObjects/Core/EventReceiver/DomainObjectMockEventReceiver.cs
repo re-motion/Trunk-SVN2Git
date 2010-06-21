@@ -66,15 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // methods and properties
 
-    public void RelationChanging (object sender, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationChanging (object sender, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      RelationChanging (null, null);
-
-      LastCall.Constraints (
-          Mocks_Is.Same (sender),
-          Mocks_Property.Value ("PropertyName", propertyName)
-          & Mocks_Property.Value ("OldRelatedObject", oldRelatedObject)
-          & Mocks_Property.Value ("NewRelatedObject", newRelatedObject));
+      this.Expect (
+          mock => RelationChanging (
+              Arg.Is (sender),
+              Arg<RelationChangingEventArgs>.Matches (args => args.RelationEndPointDefintion == relationEndPointDefinition)
+                      ));
     }
 
     public void RelationChanged (object sender, IRelationEndPointDefinition relationEndPointDefinition)

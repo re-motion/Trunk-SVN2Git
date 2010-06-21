@@ -115,11 +115,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingEventArgs.Count, Is.EqualTo (2)); // operation was started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (relationChangingEventArgs[0].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[0].RelationEndPointDefintion.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
       Assert.That (relationChangingEventArgs[0].OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
       Assert.That (relationChangingEventArgs[0].NewRelatedObject, Is.Null);
 
-      Assert.That (relationChangingEventArgs[1].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[1].RelationEndPointDefintion.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
       Assert.That (relationChangingEventArgs[1].OldRelatedObject, Is.Null);
       Assert.That (relationChangingEventArgs[1].NewRelatedObject, Is.SameAs (_order2));
     }

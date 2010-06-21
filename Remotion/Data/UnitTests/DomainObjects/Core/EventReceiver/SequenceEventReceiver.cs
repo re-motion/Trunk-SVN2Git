@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void DomainObject_RelationChanging (object sender, RelationChangingEventArgs args)
     {
-      _states.Add (new RelationChangeState (sender, args.PropertyName, args.OldRelatedObject, args.NewRelatedObject));
+      _states.Add (new RelationChangeState (sender, args.RelationEndPointDefintion.PropertyName, args.OldRelatedObject, args.NewRelatedObject));
 
       if (_states.Count == _cancelEventNumber)
         CancelOperation();

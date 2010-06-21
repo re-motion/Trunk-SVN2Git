@@ -50,14 +50,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the name of the <see cref="PropertyValue"/> that is being changed due to the relation change.
-    /// </summary>
-    public string PropertyName
-    {
-      get { return _relationEndPointDefintion.PropertyName; }
-    }
-
-    /// <summary>
     /// Gets the <see cref="DomainObject"/> that was related.
     /// </summary>
     public DomainObject OldRelatedObject
