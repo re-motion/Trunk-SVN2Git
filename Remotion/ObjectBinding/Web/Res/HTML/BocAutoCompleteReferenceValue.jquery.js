@@ -99,7 +99,7 @@
         var timeout;
         var autoFillTimeout;
         // holds the last text the user entered into the input element
-        var previousValue = "";
+        var previousValue = '';
         // re-motion: holds the last valid value of the input element
         var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
@@ -181,12 +181,10 @@
                     if (selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else if (wasVisible && $input.val() == '') /* re-motion: allow deletion of current value by entering the empty string */ {
-                        hideResults();
-                        previousValidValue = '';
+                        closeDropDownListAndSetValue('');
                         $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
                     } else /* invalid input */ {
-                        hideResults();
-                        $input.val(previousValidValue);
+                        closeDropDownListAndSetValue(previousValidValue);
                     }
 
                     if (event.keyCode == KEY.RETURN) {
@@ -271,8 +269,7 @@
                         if (isLastKeyPressedNavigationKey && selectCurrent()) {
                             //SelectCurrent already does everything that's needed.
                         } else {
-                            hideResults();
-                            $input.val(previousValidValue);
+                            closeDropDownListAndSetValue(previousValidValue);
                         }
                     }, 
                     200);
@@ -357,8 +354,7 @@
                     if (isLastKeyPressedNavigationKey && selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
-                        hideResults();
-                        $input.val(previousValidValue);
+                        closeDropDownListAndSetValue(previousValidValue);
                     }
                 } else {
                     $input.focus();
@@ -386,8 +382,7 @@
                 v += options.multipleSeparator;
             }
 
-            $input.val(v);
-            hideResults();
+            closeDropDownListAndSetValue(v);
             $input.trigger("result", selected.data);
 
             // re-motion: reset the timer
@@ -417,11 +412,15 @@
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
 
+                var failureHandler = function() {
+                    closeDropDownListAndSetValue(previousValidValue);
+                }
+
                 // re-motion: if triggered by dropDownButton, get the full list
                 if (isDropDown == 1) {
-                    requestData('', receiveData, hideResults);
+                    requestData('', receiveData, failureHandler);
                 } else {
-                    requestData(currentValue, receiveData, hideResults);
+                    requestData(currentValue, receiveData, failureHandler);
                 }
 
             } else {
@@ -478,6 +477,12 @@
             $.Autocompleter.Selection(input, q.length, q.length + sValue.length);
         };
 
+        function closeDropDownListAndSetValue(value){
+            hideResults();
+            $input.val(value);
+            resetState();
+        }
+
         function hideResults() {
             if (config.mouseDownOnSelect)
                 return;
@@ -505,9 +510,14 @@
             if (wasVisible)
             // position cursor at end of input field
                 $.Autocompleter.Selection(input, input.value.length, input.value.length);
-            
-            lastKeyPressCode = -1;
         };
+
+        function resetState() {
+            lastKeyPressCode = -1;
+            previousValue = '';
+            config.mouseDownOnSelect = false;
+            config.inputOnChangeBackup = null;
+        }
 
         function receiveData(q, data) {
             if (data && data.length && hasFocus) {
@@ -516,7 +526,7 @@
                 autoFill(q, data[0].result);
                 select.show();
             } else {
-                hideResults();
+                closeDropDownListAndSetValue(previousValidValue);
             }
         };
 
