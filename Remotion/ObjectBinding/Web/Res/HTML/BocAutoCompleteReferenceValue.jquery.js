@@ -784,10 +784,30 @@
             if (!needsInit)
                 return;
             element = $("<div/>")
-    .hide()
-    .addClass(options.resultsClass)
-    .css("position", "absolute")
-    .appendTo(document.body);
+            .hide()
+            .addClass(options.resultsClass)
+            .css("position", "absolute")
+            .appendTo(document.body);
+
+            //re-motion: block blur bind as long we scroll dropDown list 
+            var revertInputStatusTimeout = null;
+            function revertInputStatus() {
+                if (config.mouseDownOnSelect) {
+                    config.mouseDownOnSelect = false;
+                    $(input).focus();
+                }
+            }
+            element.scroll(function() {
+                config.mouseDownOnSelect = true;
+                if (revertInputStatusTimeout) 
+                    clearTimeout(revertInputStatusTimeout);
+                revertInputStatusTimeout = setTimeout(revertInputStatus, 200);
+            }).mousedown(function() {
+                config.mouseDownOnSelect = true;
+                if (revertInputStatusTimeout) 
+                    clearTimeout(revertInputStatusTimeout);
+                revertInputStatusTimeout = setTimeout(revertInputStatus, 200);
+            });
 
             list = $("<ul/>").appendTo(element).mouseover(function(event) {
                 if (target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
@@ -1015,20 +1035,6 @@
                 return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst($(input).val(), null) && listItems[0]);
             },
             show: function() {
-
-                //re-motion: block blur bind as long we scroll dropDown list 
-                var revertInputStausTimeout = null;
-                function revertInputStaus() {
-                    if (config.mouseDownOnSelect) {
-                        config.mouseDownOnSelect = false;
-                        $(input).focus();
-                    }
-                }
-                element.scroll(function() {
-                    config.mouseDownOnSelect = true;
-                    if (revertInputStausTimeout) clearTimeout(revertInputStausTimeout);
-                    revertInputStausTimeout = setTimeout(revertInputStaus, 500);
-                });
 
                 // re-motion: scroll dropDown list to value from input
                 var selectedItemIndex = -1;
