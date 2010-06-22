@@ -244,15 +244,12 @@
             // track whether the field has focus, we shouldn't process any
             // results if the field no longer has focus
             hasFocus++;
-            lastKeyPressCode = -1;
         }).blur(function() {
             hasFocus = 0;
             if (!select.visible()) {
                 $input.val(previousValidValue);
             } else if (!config.mouseDownOnSelect) {
-                clearTimeout(timeout);
-                timeout = setTimeout(
-                    function() {
+                
                         var isLastKeyPressedNavigationKey;
                         switch (lastKeyPressCode) {
                             case KEY.UP:
@@ -264,6 +261,20 @@
                             default:
                                 isLastKeyPressedNavigationKey = false;
                                 break;
+                        }
+
+                var value = $input.val();
+
+                clearTimeout(timeout);
+                timeout = setTimeout(
+                    function() {
+                    
+                        if (isLastKeyPressedNavigationKey) {
+                            var index = -1;
+                            if (value != '')
+                                index = select.findItem (value);
+                        
+                            select.selectItem (index);
                         }
 
                         if (isLastKeyPressedNavigationKey && selectCurrent()) {
