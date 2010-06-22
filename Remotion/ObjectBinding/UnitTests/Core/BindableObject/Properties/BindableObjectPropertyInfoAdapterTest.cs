@@ -18,8 +18,8 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -34,28 +34,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     private PropertyInfo _implicitInterfaceImplementationProperty;
     private PropertyInfo _implicitInterfaceDeclarationProperty;
 
-    private PropertyInfoAdapter _adapter;
+    private BindableObjectPropertyInfoAdapter _adapter;
 
-    private PropertyInfoAdapter _explicitInterfaceAdapter;
-    private PropertyInfoAdapter _implicitInterfaceAdapter;
+    private BindableObjectPropertyInfoAdapter _explicitInterfaceAdapter;
+    private BindableObjectPropertyInfoAdapter _implicitInterfaceAdapter;
 
     [SetUp]
     public void SetUp ()
     {
       _property = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("NotVisibleAttributeScalar");
-      _adapter = new PropertyInfoAdapter (_property, null);
+      _adapter = new BindableObjectPropertyInfoAdapter (_property, null);
 
       _explicitInterfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ExplicitInterfaceScalar");
-      _explicitInterfaceAdapter = new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty);
+      _explicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty);
 
       _implicitInterfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar");
       _implicitInterfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "ImplicitInterfaceScalar",
           BindingFlags.Public | BindingFlags.Instance);
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty);
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
         ExpectedMessage = "Parameter must be a property declared on an interface.\r\nParameter name: interfacePropertyInfo")]
     public void InvalidInterfaceProperty ()
     {
-      new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceImplementationProperty);
+      new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceImplementationProperty);
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     public void CanBeSetFromOutside_Scalar ()
     {
       PropertyInfo propertyInfo = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar");
-      var adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfo);
 
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
       AssertCanSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     public void CanBeSetFromOutside_ReadOnlyScalar ()
     {
       PropertyInfo propertyInfo = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar");
-      var adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfo);
 
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
       AssertCanNotSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     public void CanBeSetFromOutside_ReadOnlyNonPublicSetterScalar ()
     {
       PropertyInfo propertyInfo = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar");
-      var adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfo);
 
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
       AssertCanNotSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     [Test]
     public void CanBeSetFromOutside_ExplicitInterfaceScalar ()
     {
-      PropertyInfoAdapter adapter = _explicitInterfaceAdapter;
+      BindableObjectPropertyInfoAdapter adapter = _explicitInterfaceAdapter;
 
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
       AssertCanSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -162,7 +162,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfo);
 
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
       AssertCanNotSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     [Test]
     public void CanBeSetFromOutside_ImplicitInterfaceScalar_FromImplementation ()
     {
-      PropertyInfoAdapter adapter = _implicitInterfaceAdapter;
+      BindableObjectPropertyInfoAdapter adapter = _implicitInterfaceAdapter;
 
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
       AssertCanSet (adapter, new TestDomain.ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType());
@@ -184,7 +184,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       var implementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "ImplicitInterfaceScalar",
           BindingFlags.Public | BindingFlags.Instance);
-      var adapter = new PropertyInfoAdapter (implementationProperty, declarationProperty);
+      var adapter = new BindableObjectPropertyInfoAdapter (implementationProperty, declarationProperty);
 
       // TODO 1439: Change this to Is.True/AssertCanSet
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
@@ -259,7 +259,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       object actualScalar = _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10 });
       Assert.That (actualScalar, Is.SameAs (scalar));
@@ -274,7 +274,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.GetValue (instanceStub, null);
     }
@@ -287,7 +287,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.GetValue (instanceStub, new object[0]);
     }
@@ -304,7 +304,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       object actualScalar = _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10, new DateTime (2000, 1, 1) });
       Assert.That (actualScalar, Is.SameAs (scalar));
@@ -321,7 +321,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.GetValue (instanceStub, null);
     }
@@ -336,7 +336,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.GetValue (instanceStub, new object[1]);
     }
@@ -353,7 +353,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       object actualScalar = _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
       Assert.That (actualScalar, Is.SameAs (scalar));
@@ -371,7 +371,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
     }
@@ -419,7 +419,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10 });
       instanceMock.VerifyAllExpectations();
@@ -434,7 +434,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceStub, scalar, null);
     }
@@ -448,7 +448,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       var interfaceDeclarationProperty = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceStub, scalar, new object[0]);
     }
@@ -465,7 +465,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1) });
       instanceMock.VerifyAllExpectations();
@@ -482,7 +482,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceStub, scalar, null);
     }
@@ -498,7 +498,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceStub, scalar, new object[1]);
     }
@@ -515,7 +515,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
       instanceMock.VerifyAllExpectations();
@@ -533,7 +533,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
       var interfaceImplementationProperty = typeof (TestDomain.ClassWithReferenceType<SimpleReferenceType>)
           .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
+      _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (interfaceImplementationProperty, interfaceDeclarationProperty);
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
     }
@@ -543,9 +543,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     {
       Assert.That (
           _implicitInterfaceAdapter,
-          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
+          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
       Assert.AreNotEqual (
-          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
+          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
     }
 
     [Test]
@@ -553,9 +553,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     {
       Assert.That (
           _implicitInterfaceAdapter,
-          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
+          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
       Assert.AreNotEqual (
-          new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
+          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
     }
 
     [Test]
@@ -563,12 +563,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     {
       Assert.That (
           _implicitInterfaceAdapter.GetHashCode(),
-          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode()));
+          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode()));
       Assert.AreNotEqual (
-          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode(),
+          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode(),
           _implicitInterfaceAdapter.GetHashCode());
       Assert.AreNotEqual (
-          new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode(),
+          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode(),
           _implicitInterfaceAdapter.GetHashCode());
     }
 
@@ -578,7 +578,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       Assert.That (_adapter.GetOriginalDeclaringType(), Is.EqualTo (_adapter.DeclaringType));
 
       PropertyInfo propertyInfo = typeof (ClassWithOverridingProperty).GetProperty ("BaseProperty");
-      PropertyInfoAdapter overrideAdapter = new PropertyInfoAdapter (propertyInfo);
+      BindableObjectPropertyInfoAdapter overrideAdapter = new BindableObjectPropertyInfoAdapter (propertyInfo);
       Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType());
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (typeof (ClassWithBaseProperty)));
@@ -604,13 +604,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
     }
 
-    private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
+    private void AssertCanSet (BindableObjectPropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);
       Assert.That (adapter.GetValue (instance, null), Is.SameAs (value));
     }
 
-    private void AssertCanNotSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
+    private void AssertCanNotSet (BindableObjectPropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       try
       {
