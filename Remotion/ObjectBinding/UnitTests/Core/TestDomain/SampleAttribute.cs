@@ -18,15 +18,7 @@ using System;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  public interface IInterfaceWithReferenceType<T>
-      where T : class
+  public class SampleAttribute : Attribute
   {
-    T ExplicitInterfaceScalar { get; set; }
-    T ExplicitInterfaceReadOnlyScalar { get; }
-    T ImplicitInterfaceScalar { get; set; }
-    T ImplicitInterfaceReadOnlyScalar { get; }
-    T this[int i] { get; set; }
-    T this[int i, DateTime j] { get; set; }
-    T this[int i, DateTime j, string k] { get; set; }
   }
 }

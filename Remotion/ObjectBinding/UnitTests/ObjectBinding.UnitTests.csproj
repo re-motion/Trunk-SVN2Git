@@ -96,6 +96,7 @@
     <Compile Include="Core\BindableObject\EnumValueFilterProviderTest.cs" />
     <Compile Include="Core\BindableObject\ExtensibleEnumerationPropertyTest.cs" />
     <Compile Include="Core\BindableObject\NullEnumerationValueFilterTest.cs" />
+    <Compile Include="Core\BindableObject\Properties\PropertyInfoAdapterTest.cs" />
     <Compile Include="Core\BindableObject\PropertyCollectionTest.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\BaseTestType.cs" />
@@ -137,10 +138,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBase.cs" />
+    <Compile Include="Core\TestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName.cs" />
+    <Compile Include="Core\TestDomain\ClassWithOverridingProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
     <Compile Include="Core\TestDomain\MixinOverridingProperty.cs" />
+    <Compile Include="Core\TestDomain\SampleAttribute.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceTypeProperty.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceTypePropertyReflectorMixin.cs" />
     <Compile Include="Core\TestDomain\TestFlags.cs" />
@@ -420,6 +424,10 @@
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\UnitTests\Core.UnitTests.csproj">
+      <Project>{C216DEC9-8820-4298-B10F-FB4131466B69}</Project>
+      <Name>Core.UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>

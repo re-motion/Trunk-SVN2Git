@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
   [BindableObject]
   public class ClassWithReferenceType<T> : IInterfaceWithReferenceType<T>
-      where T: class
+      where T : class
   {
     private T _explicitInterfaceScalar;
     private readonly T _readOnlyScalar = default (T);
@@ -45,6 +45,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public T ImplicitInterfaceScalar { get; set; }
 
     public T ImplicitInterfaceReadOnlyScalar { get; set; }
+
+    [ObjectBinding (Visible = false)]
+    public T this[int i]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
+
+    [ObjectBinding (Visible = false)]
+    public T this[int i, DateTime j]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
+
+    [ObjectBinding (Visible = false)]
+    public T this[int i, DateTime j, string k]
+    {
+      get { return Scalar; }
+      set { Scalar = value; }
+    }
 
     public T ReadOnlyScalar
     {
