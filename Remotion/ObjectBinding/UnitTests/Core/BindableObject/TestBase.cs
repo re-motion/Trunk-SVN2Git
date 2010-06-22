@@ -23,7 +23,6 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Security;
 using Rhino.Mocks;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -49,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
       Assert.IsNotNull (propertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
-      return new PropertyInfoAdapter (propertyInfo);
+      return new BindableObjectPropertyInfoAdapter (propertyInfo);
     }
 
     protected IPropertyInformation GetPropertyInfo (Type type, Type interfaceType, string propertyName)
@@ -65,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         Assert.IsNotNull (propertyInfo, "Property '{0}' (or '{1}') was not found on type '{2}'.", propertyName, explicitName, type);
       }
 
-      return new PropertyInfoAdapter (propertyInfo, interfacePropertyInfo);
+      return new BindableObjectPropertyInfoAdapter (propertyInfo, interfacePropertyInfo);
     }
 
     protected Type GetUnderlyingType (PropertyReflector reflector)

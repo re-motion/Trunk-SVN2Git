@@ -32,7 +32,6 @@ using System.Web;
 using Remotion.Reflection;
 using Remotion.Web.UI;
 using Rhino.Mocks;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering
 {
@@ -51,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
       _enumValue = MockRepository.GenerateStub<IBocEnumValue>();
       var businessObjectProvider = BindableObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
-      var propertyInfo = new PropertyInfoAdapter (typeof (TypeWithEnum).GetProperty ("EnumValue"));
+      var propertyInfo = new BindableObjectPropertyInfoAdapter (typeof (TypeWithEnum).GetProperty ("EnumValue"));
       IBusinessObjectEnumerationProperty property =
           new EnumerationProperty (
               new PropertyBase.Parameters (

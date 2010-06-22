@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   /// <summary>
   /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.
   /// </summary>
-  public class PropertyInfoAdapter : IPropertyInformation
+  public class BindableObjectPropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;
     private readonly PropertyInfo _interfacePropertyInfo;
@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly Delegate _getter;
     private readonly Delegate _setter;
 
-    public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
+    public BindableObjectPropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       if (interfacePropertyInfo != null && !interfacePropertyInfo.DeclaringType.IsInterface)
@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
 
-    public PropertyInfoAdapter (PropertyInfo propertyInfo)
+    public BindableObjectPropertyInfoAdapter (PropertyInfo propertyInfo)
         : this (propertyInfo, null)
     {
     }
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public override bool Equals (object obj)
     {
-      var other = obj as PropertyInfoAdapter;
+      var other = obj as BindableObjectPropertyInfoAdapter;
       return other != null && _propertyInfo.Equals (other._propertyInfo) && Equals (_interfacePropertyInfo, other._interfacePropertyInfo);
     }
 

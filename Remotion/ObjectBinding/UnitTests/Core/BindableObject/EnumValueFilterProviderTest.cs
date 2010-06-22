@@ -23,7 +23,6 @@ using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -191,9 +190,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value5 }));
     }
 
-    private PropertyInfoAdapter GetPropertyInformation (string name)
+    private BindableObjectPropertyInfoAdapter GetPropertyInformation (string name)
     {
-      return new PropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
+      return new BindableObjectPropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
     }
   }
 }

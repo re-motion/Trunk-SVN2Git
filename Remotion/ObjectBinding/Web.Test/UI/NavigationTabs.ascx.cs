@@ -26,7 +26,6 @@ using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace OBWTest.UI
 {
@@ -61,7 +60,7 @@ namespace OBWTest.UI
       EnumerationProperty property = new EnumerationProperty (
           new PropertyBase.Parameters (
               (BindableObjectProvider) BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>(),
-              new PropertyInfoAdapter (propertyInfo),
+              new BindableObjectPropertyInfoAdapter (propertyInfo),
               propertyInfo.PropertyType,
               propertyInfo.PropertyType,
               null,

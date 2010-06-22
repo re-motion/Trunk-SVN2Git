@@ -25,7 +25,6 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPropertyFinderTestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -116,7 +115,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ImplicitInterfaceProperties_GetInterfaceBasedPropertyInfo()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+      var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == "InterfaceProperty"
                                select p).Single ();
       Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (ITestInterface).GetProperty ("InterfaceProperty")));
@@ -126,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ExplicitInterfaceProperties_GetInterfaceBasedPropertyInfo ()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+      var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == typeof (IExplicitTestInterface).FullName + ".InterfaceProperty"
                                select p).Single ();
       Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
@@ -136,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void InterfaceProperties_PropertyWithoutGetter ()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+      var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
                                                      where p.Name == "NonGetterInterfaceProperty"
                                                      select p).SingleOrDefault ();
       Assert.That (interfaceProperty, Is.Null);
@@ -144,7 +143,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     private IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> properties)
     {
-      foreach (PropertyInfoAdapter adapter in properties)
+      foreach (BindableObjectPropertyInfoAdapter adapter in properties)
         yield return adapter.PropertyInfo;
     }
   }

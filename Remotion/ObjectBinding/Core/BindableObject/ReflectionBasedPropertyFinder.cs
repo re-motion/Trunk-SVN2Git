@@ -23,7 +23,6 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
-using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -67,7 +66,7 @@ namespace Remotion.ObjectBinding.BindableObject
           if (!propertyInfos.Contains (propertyInfo.Name))
           {
             PropertyInfo interfacePropertyInfo = GetPropertyInfoOnInterface (propertyInfo);
-            propertyInfos.Add (new PropertyInfoAdapter (propertyInfo, interfacePropertyInfo));
+            propertyInfos.Add (new BindableObjectPropertyInfoAdapter (propertyInfo, interfacePropertyInfo));
           }
         }
       }
