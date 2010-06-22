@@ -76,7 +76,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     public virtual string GetMappingPropertyIdentifier (PropertyBase property)
     {
       Type originalDeclaringType = property.PropertyInfo.GetOriginalDeclaringType();
-      var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
+      //var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
+      var interfacePropertyInfo = ((BindableObjectPropertyInfoAdapter) property.PropertyInfo).InterfacePropertyInfo;
 
       if (interfacePropertyInfo != null && Mixins.MixinTypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
       {

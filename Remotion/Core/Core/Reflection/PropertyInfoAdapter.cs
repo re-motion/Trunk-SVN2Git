@@ -26,28 +26,13 @@ namespace Remotion.Reflection
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;
-    private readonly PropertyInfo _interfacePropertyInfo;
     private Type _type;
-    private readonly Delegate _getter;
-    private readonly Delegate _setter;
-
-    public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
+    
+    public PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      if (interfacePropertyInfo != null && !interfacePropertyInfo.DeclaringType.IsInterface)
-        throw new ArgumentException ("Parameter must be a property declared on an interface.", "interfacePropertyInfo");
 
       _propertyInfo = propertyInfo;
-      _interfacePropertyInfo = interfacePropertyInfo;
-
-      _getter = CreateGetterDelegate();
-      _setter = CreateSetterDelegate();
-    }
-
-
-    public PropertyInfoAdapter (PropertyInfo propertyInfo)
-        : this (propertyInfo, null)
-    {
     }
 
     public PropertyInfo PropertyInfo
@@ -57,7 +42,7 @@ namespace Remotion.Reflection
 
     private PropertyInfo ValuePropertyInfo
     {
-      get { return InterfacePropertyInfo ?? PropertyInfo; }
+      get { return PropertyInfo; }
     }
 
     public Type PropertyType
@@ -73,11 +58,6 @@ namespace Remotion.Reflection
     public Type DeclaringType
     {
       get { return _propertyInfo.DeclaringType; }
-    }
-
-    public PropertyInfo InterfacePropertyInfo
-    {
-      get { return _interfacePropertyInfo; }
     }
 
     public Type GetOriginalDeclaringType ()
@@ -109,113 +89,37 @@ namespace Remotion.Reflection
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      if (_getter is Func<object, object>)
+      try
       {
-        return ((Func<object, object>) _getter) (instance);
+        return ValuePropertyInfo.GetValue (instance, indexParameters);
       }
-      else if (_getter is Func<object, object, object>)
+      catch (TargetInvocationException ex)
       {
-        if (indexParameters == null || indexParameters.Length != 1)
-          throw new TargetParameterCountException ("Parameter count mismatch.");
-        return ((Func<object, object, object>) _getter) (instance, indexParameters[0]);
-      }
-      else if (_getter is Func<object, object, object, object>)
-      {
-        if (indexParameters == null || indexParameters.Length != 2)
-          throw new TargetParameterCountException ("Parameter count mismatch.");
-        return ((Func<object, object, object, object>) _getter) (instance, indexParameters[0], indexParameters[1]);
-      }
-      else
-      {
-        try
-        {
-          return ValuePropertyInfo.GetValue (instance, indexParameters);
-        }
-        catch (TargetInvocationException ex)
-        {
-          throw ex.InnerException;
-        }
+        throw ex.InnerException;
       }
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      if (_setter is Action<object, object>)
+      try
       {
-        ((Action<object, object>) _setter) (instance, value);
+        ValuePropertyInfo.SetValue (instance, value, indexParameters);
       }
-      else if (_setter is Action<object, object, object>)
+      catch (TargetInvocationException ex)
       {
-        if (indexParameters == null || indexParameters.Length != 1)
-          throw new TargetParameterCountException ("Parameter count mismatch.");
-        ((Action<object, object, object>) _setter) (instance, indexParameters[0], value);
-      }
-      else if (_setter is Action<object, object, object, object>)
-      {
-        if (indexParameters == null || indexParameters.Length != 2)
-          throw new TargetParameterCountException ("Parameter count mismatch.");
-        ((Action<object, object, object, object>) _setter) (instance, indexParameters[0], indexParameters[1], value);
-      }
-      else
-      {
-        try
-        {
-          ValuePropertyInfo.SetValue (instance, value, indexParameters);
-        }
-        catch (TargetInvocationException ex)
-        {
-          throw ex.InnerException;
-        }
+        throw ex.InnerException;
       }
     }
 
     public override bool Equals (object obj)
     {
       var other = obj as PropertyInfoAdapter;
-      return other != null && _propertyInfo.Equals (other._propertyInfo) && Equals (_interfacePropertyInfo, other._interfacePropertyInfo);
+      return other != null && _propertyInfo.Equals (other._propertyInfo);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_propertyInfo, _interfacePropertyInfo);
-    }
-
-    private Delegate CreateGetterDelegate ()
-    {
-      var getMethod = ValuePropertyInfo.GetGetMethod (true);
-      if (getMethod == null)
-        return null;
-
-      switch (getMethod.GetParameters().Length)
-      {
-        case 0:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object>));
-        case 1:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object, object>));
-        case 2:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (getMethod, typeof (Func<object, object, object, object>));
-        default:
-          return null;
-      }
-    }
-
-    private Delegate CreateSetterDelegate ()
-    {
-      var setMethod = ValuePropertyInfo.GetSetMethod (true);
-      if (setMethod == null)
-        return null;
-
-      switch (setMethod.GetParameters().Length)
-      {
-        case 1:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object>));
-        case 2:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object, object>));
-        case 3:
-          return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (setMethod, typeof (Action<object, object, object, object>));
-        default:
-          return null;
-      }
+      return EqualityUtility.GetRotatedHashCode (_propertyInfo);
     }
   }
 }

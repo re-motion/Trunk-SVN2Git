@@ -42,11 +42,7 @@ namespace Remotion.Reflection
     /// <value>The declaring type of the property.</value>
     Type DeclaringType { get; }
 
-    /// <summary>
-    /// Gets a reflection <see cref="PropertyInfo"/> object representing the interface member implemented by this property.
-    /// </summary>
-    /// <value>The interface member implemented by this property, or <see langword="null"/> if the property is not an interface implementation.</value>
-    PropertyInfo InterfacePropertyInfo { get; }
+    //PropertyInfo InterfacePropertyInfo { get; }
 
     /// <summary>
     /// Gets the type the property was originally declared on.
