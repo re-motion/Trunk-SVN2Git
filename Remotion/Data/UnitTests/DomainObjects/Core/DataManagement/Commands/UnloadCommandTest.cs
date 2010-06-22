@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transaction = new ClientTransactionMock ();
       _dataManager = _transaction.DataManager;
       _dataContainerMap = DataManagerTestHelper.GetDataContainerMap (_dataManager);
-      _relationEndPointMap = _dataManager.RelationEndPointMap;
+      _relationEndPointMap = DataManagerTestHelper.GetRelationEndPointMap (_dataManager);
     }
 
     [Test]

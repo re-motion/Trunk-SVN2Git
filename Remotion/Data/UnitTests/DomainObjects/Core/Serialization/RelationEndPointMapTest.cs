@@ -29,32 +29,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   [TestFixture]
   public class RelationEndPointMapTest : ClientTransactionBaseTest
   {
+    private RelationEndPointMap _relationEndPointMap;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _relationEndPointMap = (RelationEndPointMap) ClientTransactionMock.DataManager.RelationEndPointMap;
+    }
+
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.RelationEndPointMap' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void RelationEndPointMapIsNotSerializable ()
     {
-      Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager.RelationEndPointMap);
+      Serializer.SerializeAndDeserialize (_relationEndPointMap);
     }
 
     [Test]
     public void RelationEndPointMapIsFlattenedSerializable ()
     {
-      RelationEndPointMap map = ClientTransactionMock.DataManager.RelationEndPointMap;
-
-      RelationEndPointMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
+      RelationEndPointMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (_relationEndPointMap);
       Assert.That (deserializedMap, Is.Not.Null);
-      Assert.That (deserializedMap, Is.Not.SameAs (map));
+      Assert.That (deserializedMap, Is.Not.SameAs (_relationEndPointMap));
     }
 
     [Test]
     public void RelationEndPointMap_Content ()
     {
-      RelationEndPointMap map = ClientTransactionMock.DataManager.RelationEndPointMap;
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      Assert.That (map.Count, Is.EqualTo (5));
+      Assert.That (_relationEndPointMap.Count, Is.EqualTo (5));
 
-      var deserializedMap = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
+      var deserializedMap = (RelationEndPointMap) Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
 
       Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedMap.ClientTransaction, Is.InstanceOfType (typeof (ClientTransactionMock)));

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp();
 
-      _map = ClientTransactionMock.DataManager.RelationEndPointMap;
+      _map = (RelationEndPointMap) ClientTransactionMock.DataManager.RelationEndPointMap;
     }
 
     [Test]

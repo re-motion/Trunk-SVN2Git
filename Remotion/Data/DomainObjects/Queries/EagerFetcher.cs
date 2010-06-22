@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       if (_dataManager.RelationEndPointMap[relationEndPointID] == null)
       {
-        _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
+        _dataManager.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
       }
       else
       {

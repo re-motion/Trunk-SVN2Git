@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       base.SetUp ();
 
-      _endPoints = ClientTransactionMock.DataManager.RelationEndPointMap;
+      _endPoints = (RelationEndPointMap) ClientTransactionMock.DataManager.RelationEndPointMap;
     }
 
     [Test]

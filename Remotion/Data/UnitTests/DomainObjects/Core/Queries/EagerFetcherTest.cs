@@ -29,7 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   [TestFixture]
   public class EagerFetcherTest : StandardMappingTest
   {
-    private RelationEndPointMap _relationEndPointMap;
+    private DataManager _dataManager;
+
     private IRelationEndPointDefinition _orderOrderItemsRelationEndPointDefinition;
     private IRelationEndPointDefinition _objectEndPointDefinitionReal;
     private IRelationEndPointDefinition _objectEndPointDefinitionVirtual;
@@ -49,39 +50,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       base.SetUp ();
 
-      var transaction = ClientTransaction.CreateRootTransaction ();
-      var dataManager = ClientTransactionTestHelper.GetDataManager (transaction);
-      _relationEndPointMap = dataManager.RelationEndPointMap;
+      var clientTransaction = ClientTransaction.CreateRootTransaction ();
+      _dataManager = ClientTransactionTestHelper.GetDataManager (clientTransaction);
 
-      _fetcher = new EagerFetcher (dataManager);
+      _fetcher = new EagerFetcher (_dataManager);
 
       _orderOrderItemsRelationEndPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _objectEndPointDefinitionVirtual = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       _objectEndPointDefinitionReal = DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
       _objectEndPointDefinitionOneMany = DomainObjectIDs.OrderItem1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
 
-      _order1 = _relationEndPointMap.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _order2 = _relationEndPointMap.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
-      _order3 = _relationEndPointMap.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
+      _order1 = _dataManager.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _order2 = _dataManager.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      _order3 = _dataManager.ClientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
 
-      _orderItem1 = _relationEndPointMap.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      _orderItem2 = _relationEndPointMap.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
-      _orderItem3 = _relationEndPointMap.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem3));
-      _orderItem4 = _relationEndPointMap.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem4));
-      _orderItemWithoutOrder = _relationEndPointMap.ClientTransaction.Execute (() => OrderItem.NewObject ());
+      _orderItem1 = _dataManager.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      _orderItem2 = _dataManager.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
+      _orderItem3 = _dataManager.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem3));
+      _orderItem4 = _dataManager.ClientTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem4));
+      _orderItemWithoutOrder = _dataManager.ClientTransaction.Execute (() => OrderItem.NewObject ());
 
-      _orderTicket1 = _relationEndPointMap.ClientTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
+      _orderTicket1 = _dataManager.ClientTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
     public void RelationLoad_Normally_RegistersEndPoint ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_dataManager.ClientTransaction);
 
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EquivalentTo (new[] { _orderItem1, _orderItem2 }));
 
       listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (
-          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg.Is (_dataManager.ClientTransaction), 
           Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
     }
 
@@ -90,12 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_dataManager.ClientTransaction);
 
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EqualTo (new[] { _orderItem1 })); // Order1 actually has two items, but we only return one of them
 
       listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (
-          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg.Is (_dataManager.ClientTransaction), 
           Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
     }
 
@@ -103,13 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CorrelateAndRegisterFetchResults_RegistersQueryResult ()
     {
       var id = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
-      Assert.That (_relationEndPointMap[id], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id], Is.Null);
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id], Is.Not.Null);
       Assert.That (
-          ((CollectionEndPoint) _relationEndPointMap[id]).OppositeDomainObjects, 
+          ((CollectionEndPoint) _dataManager.RelationEndPointMap[id]).OppositeDomainObjects, 
           Is.EqualTo (new[] { _orderItem1, _orderItem2 }));
     }
 
@@ -117,13 +117,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CorrelateAndRegisterFetchResults_RegistersQueryResult_WithCorrectCollectionType ()
     {
       var id = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
-      Assert.That (_relationEndPointMap[id], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id], Is.Null);
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id], Is.Not.Null);
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id]).OppositeDomainObjects.GetType(), Is.EqualTo (typeof (ObjectList<OrderItem>)));
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id]).OppositeDomainObjects.RequiredItemType, Is.EqualTo (typeof (OrderItem)));
+      Assert.That (_dataManager.RelationEndPointMap[id], Is.Not.Null);
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id]).OppositeDomainObjects.GetType(), Is.EqualTo (typeof (ObjectList<OrderItem>)));
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id]).OppositeDomainObjects.RequiredItemType, Is.EqualTo (typeof (OrderItem)));
     }
     
     [Test]
@@ -144,11 +144,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id1], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Null);
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
       
-      Assert.That (_relationEndPointMap[id1], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Null);
     }
 
     [Test]
@@ -158,8 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id1], Is.Not.Null);
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Not.Null);
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
@@ -169,8 +169,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id1], Is.Not.Null);
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Not.Null);
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
@@ -180,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { null, _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (_relationEndPointMap[id1], Is.Not.Null);
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Not.Null);
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
@@ -189,16 +189,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_dataManager.ClientTransaction);
       
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EquivalentTo (new[] { _orderItem1, _orderItem2 })); // this was loaded from the database
       Assert.That (GetOrderItemsInFetchTransaction (_order2), Is.EqualTo (new[] { _orderItem3 })); // this was prefetched
 
       listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapRegistering (
-          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg.Is (_dataManager.ClientTransaction), 
           Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order1.ID)));
       listenerMock.AssertWasNotCalled (mock => mock.RelationEndPointMapRegistering (
-          Arg.Is (_relationEndPointMap.ClientTransaction), 
+          Arg.Is (_dataManager.ClientTransaction), 
           Arg<RelationEndPoint>.Matches (ep => ep.ObjectID == _order2.ID)));
     }
 
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var fetcher = _fetcher;
       fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItemWithoutOrder, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
+      Assert.That (((CollectionEndPoint) _dataManager.RelationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
@@ -248,17 +248,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var id2 = new RelationEndPointID (_order2.ID, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EquivalentTo (new[] { _orderItem1, _orderItem2 })); // preloaded from db
-      Assert.That (_relationEndPointMap[id1], Is.Not.Null);
-      Assert.That (_relationEndPointMap[id2], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id1], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[id2], Is.Null);
 
       var fetcher = _fetcher;
       fetcher.CorrelateAndRegisterFetchResults (new[] { _order1, _order2 }, new[] { _orderItem1, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (
-          ((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects,
+          ((CollectionEndPoint) _dataManager.RelationEndPointMap[id1]).OppositeDomainObjects,
           Is.EquivalentTo (new[] { _orderItem1, _orderItem2 })); // not replaced
       Assert.That (
-          ((CollectionEndPoint) _relationEndPointMap[id2]).OppositeDomainObjects,
+          ((CollectionEndPoint) _dataManager.RelationEndPointMap[id2]).OppositeDomainObjects,
           Is.EqualTo (new[] { _orderItem3 })); // fetched
     }
 
@@ -269,8 +269,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderTicket1 }, _objectEndPointDefinitionVirtual);
 
-      Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
-      Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_orderTicket1.ID));
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_orderTicket1.ID));
     }
 
     [Test]
@@ -280,8 +280,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _orderTicket1 }, new[] { _order1 }, _objectEndPointDefinitionReal);
 
-      Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
-      Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
     }
 
     [Test]
@@ -291,13 +291,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _fetcher.CorrelateAndRegisterFetchResults (new[] { _orderItem1 }, new[] { _order1 }, _objectEndPointDefinitionOneMany);
 
-      Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
-      Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
     }
 
     private ObjectList<OrderItem> GetOrderItemsInFetchTransaction (Order order)
     {
-      return _relationEndPointMap.ClientTransaction.Execute (() => order.OrderItems);
+      return _dataManager.ClientTransaction.Execute (() => order.OrderItems);
     }
   }
 }

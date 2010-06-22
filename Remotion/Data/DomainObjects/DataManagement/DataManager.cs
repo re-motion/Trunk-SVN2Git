@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -54,8 +55,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     _invalidObjects = new Dictionary<ObjectID, DomainObject>();
   }
 
-  // methods and properties
-
   public ClientTransaction ClientTransaction
   {
     get { return _clientTransaction; }
@@ -74,6 +73,16 @@ public class DataManager : ISerializable, IDeserializationCallback
   public DomainObjectStateCache DomainObjectStateCache
   {
     get { return _domainObjectStateCache; }
+  }
+
+  public IDataContainerMapReadOnlyView DataContainerMap
+  {
+    get { return _dataContainerMap; }
+  }
+
+  public IRelationEndPointMapReadOnlyView RelationEndPointMap
+  {
+    get { return _relationEndPointMap; }
   }
 
   public bool IsInvalid (ObjectID id)
@@ -186,6 +195,20 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     _dataContainerMap.Register (dataContainer);
     _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
+  }
+
+  public void RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> relatedObjects)
+  {
+    ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+    ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
+
+    if (endPointID.Definition.Cardinality != CardinalityType.Many)
+      throw new ArgumentException ("EndPointID must specify a collection-valued end point.", "endPointID");
+
+    if (_relationEndPointMap[endPointID] != null)
+      throw new InvalidOperationException (string.Format ("An end point with ID '{0}' already exists in this transaction.", endPointID));
+
+    _relationEndPointMap.RegisterCollectionEndPoint (endPointID, relatedObjects);
   }
 
   public void Commit ()
@@ -312,16 +335,6 @@ public class DataManager : ISerializable, IDeserializationCallback
         .Do (message => { throw new InvalidOperationException (message); });
 
     return true;
-  }
-
-  public IDataContainerMapReadOnlyView DataContainerMap
-  {
-    get { return _dataContainerMap; }
-  }
-
-  public RelationEndPointMap RelationEndPointMap
-  {
-    get { return _relationEndPointMap; }
   }
 
   public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)

@@ -25,5 +25,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       return (DataContainerMap) dataManager.DataContainerMap;
     }
+
+    public static RelationEndPointMap GetRelationEndPointMap (DataManager dataManager)
+    {
+      return (RelationEndPointMap) dataManager.RelationEndPointMap;
+    }
+
+    public static void RemoveEndPoint (DataManager dataManager, RelationEndPointID endPointID)
+    {
+      GetRelationEndPointMap (dataManager).RemoveEndPoint (endPointID);
+    }
   }
 }
