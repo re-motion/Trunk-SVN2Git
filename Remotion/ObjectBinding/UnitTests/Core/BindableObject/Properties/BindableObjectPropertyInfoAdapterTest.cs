@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 {
   [TestFixture]
-  public class PropertyInfoAdapterTest
+  public class BindableObjectPropertyInfoAdapterTest
   {
     private PropertyInfo _property;
     private PropertyInfo _explicitInterfaceImplementationProperty;
