@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
       string changedProperty = args.RelationEndPointDefintion.PropertyName;
 
-			if (CardinalityType.One == domainObject.InternalDataContainer.ClassDefinition.GetRelationEndPointDefinition (changedProperty).Cardinality)
+      if (CardinalityType.One == domainObject.InternalDataContainer.ClassDefinition.GetRelationEndPointDefinition (changedProperty).Cardinality)
       {
         DomainObject relatedDomainObject = domainObject.GetRelatedObject (changedProperty);
         changingRelatedObjects.Add (changedProperty, relatedDomainObject);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
       string changedProperty = args.RelationEndPointDefinition.PropertyName;
 
-			if (CardinalityType.One == domainObject.InternalDataContainer.ClassDefinition.GetRelationEndPointDefinition (changedProperty).Cardinality)
+      if (CardinalityType.One == domainObject.InternalDataContainer.ClassDefinition.GetRelationEndPointDefinition (changedProperty).Cardinality)
       {
         DomainObject relatedDomainObject = domainObject.GetRelatedObject (changedProperty);
         changedRelatedObjects.Add (changedProperty, relatedDomainObject);
