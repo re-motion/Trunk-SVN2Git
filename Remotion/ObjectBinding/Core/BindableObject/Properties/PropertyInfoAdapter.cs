@@ -16,9 +16,10 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection
+namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   /// <summary>
   /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.

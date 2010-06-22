@@ -32,6 +32,7 @@ using System.Web;
 using Remotion.Reflection;
 using Remotion.Web.UI;
 using Rhino.Mocks;
+using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering
 {

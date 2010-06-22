@@ -26,6 +26,7 @@ using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
+using PropertyInfoAdapter = Remotion.ObjectBinding.BindableObject.Properties.PropertyInfoAdapter;
 
 namespace OBWTest.UI
 {
