@@ -627,11 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
           new SqlColumnDefinitionExpression(typeof(Guid), "t0", "ID", true),
-          new[] { sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false, null, null, null);
+          new[] { sqlTable }, null, null, new Ordering[] { }, null, false, null, null);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
           _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
