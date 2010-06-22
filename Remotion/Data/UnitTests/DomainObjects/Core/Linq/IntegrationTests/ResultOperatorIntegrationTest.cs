@@ -405,7 +405,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2917")]
     public void QueryWithOrderBy_BeforeCount ()
     {
       var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Count();
@@ -414,7 +413,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2917")]
     public void QueryWithOrderBy_BeforeCount_DueToIncompatibleResultOperators ()
     {
       var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Take (10).Count ();
