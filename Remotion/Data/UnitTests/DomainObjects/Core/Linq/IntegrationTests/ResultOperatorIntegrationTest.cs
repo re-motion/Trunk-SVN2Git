@@ -586,8 +586,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithCastToInterface_ThrowsNoException ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Cast<IOrder>();
-
-      Assert.That (query.Count(), Is.EqualTo (6));
     }
     
   }
