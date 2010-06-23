@@ -8,7 +8,7 @@ div.singleView
   background-color: #083779;
 }
 
-div.singleView div.wrapper
+div.singleView > div.wrapper
 {
   position: absolute;
   background-color: white;
@@ -20,62 +20,42 @@ div.singleView div.wrapper
   height: auto;
 }
 
-div.singleView div.wrapper > *.top, 
-div.singleView div.wrapper > *.left, 
-div.singleView div.wrapper > *.bottom, 
-div.singleView div.wrapper > *.bottom, 
-div.singleView div.wrapper > *.topLeft,
-div.singleView div.wrapper > *.bottomLeft, 
-div.singleView div.wrapper > *.topRight, 
-div.singleView div.wrapper > *.bottomRight
+div.singleView > div.wrapper > *.top, 
+div.singleView > div.wrapper > *.left, 
+div.singleView > div.wrapper > *.bottom, 
+div.singleView > div.wrapper > *.bottom, 
+div.singleView > div.wrapper > *.topLeft,
+div.singleView > div.wrapper > *.bottomLeft, 
+div.singleView > div.wrapper > *.topRight, 
+div.singleView > div.wrapper > *.bottomRight
 {
   display: none;
 }
 
-/*
-div.singleView div.wrapper > *.topLeft, 
-div.singleView div.wrapper > *.bottomLeft, 
-div.singleView div.wrapper > *.topRight, 
-div.singleView div.wrapper > *.bottomRight
+div.singleViewView
 {
-  position: absolute;
-  font-size: 0.5%;
-  display: block;
-  background-image: url(../Image/CornerBackgroundBlueTransparentNoBorder.gif);
-  background-repeat: no-repeat;
-  width: 5px;
-  height: 5px;
+  height: 80%;
 }
 
-div.singleView div.wrapper > *.topLeft
+body.mozilla  div.singleViewView,
+body.webkit   div.singleViewView,
+body.opera    div.singleViewView
 {
-  background-position: top left;
-  top: 0px;
-  left: 0px;
+  width: inherit;
 }
 
-div.singleView div.wrapper > *.topRight
+div.singleViewView > div.contentBorder
 {
-  background-position: top right;
-  top: 0px;
-  right: 0px;
+  position: relative;
+  border: solid 1px #083779;
+  background-color: white;
+  margin : 0 0.5em;
+  padding: 0.25em;
+  overflow: auto;
+  height: 60%;
 }
 
-div.singleView div.wrapper > *.bottomLeft
-{
-  background-position: bottom left;
-  bottom: 0px;
-  left: 0px;
-}
-
-div.singleView div.wrapper > *.bottomRight
-{
-  background-position: bottom right;
-  bottom: 0px;
-  right: 0px;
-}*/
-
-div.singleView div.content
+div.singleViewView > div.contentBorder > div.content
 {
   position: relative;
   left: 0;
@@ -84,89 +64,22 @@ div.singleView div.content
   height: 100%;
 }
 
-body.msie7 div.singleViewView div.content,
-body.nix.mozilla div.singleViewView div.content
+body.msie7 div.singleViewView > div.contentBorder > div.content
 {
   width: 98%;
   height: 98%;
 }
 
-div.singleViewView
-{
-  padding: 1px;
-  vertical-align: top; 	
-  margin: 0em 0.5em;
-  overflow: hidden;
-}
-
-div.singleViewView div.contentBorder
-{
-  position: relative;
-  border: solid 1px #083779;
-  padding: 0.25em;
-  overflow: auto;
-}
-
-div.singleViewView *.top, 
-div.singleViewView *.left, 
-div.singleViewView *.bottom, 
-div.singleViewView *.bottom, 
-div.singleViewView *.topLeft,
-div.singleViewView *.bottomLeft, 
-div.singleViewView *.topRight, 
-div.singleViewView *.bottomRight
+div.singleViewView > *.top, 
+div.singleViewView > *.left, 
+div.singleViewView > *.bottom, 
+div.singleViewView > *.bottom, 
+div.singleViewView > *.topLeft,
+div.singleViewView > *.bottomLeft, 
+div.singleViewView > *.topRight, 
+div.singleViewView > *.bottomRight
 {
   display: none;
-}
-
-/*
-div.singleViewView *.topLeft, 
-div.singleViewView *.bottomLeft, 
-div.singleViewView *.topRight, 
-div.singleViewView *.bottomRight
-{
-  position: absolute;
-  font-size: 0.5%;
-  display: block;
-  background-image: url(../Image/CornerBackgroundWhiteTransparentBlueBorder.gif);
-  background-repeat: no-repeat;
-  width: 5px;
-  height: 5px;
-}
-
-div.singleViewView *.topLeft
-{
-  background-position: top left;
-  top: 0px;
-  left: 0px;
-}
-
-div.singleViewView *.topRight
-{
-  background-position: top right;
-  top: 0px;
-  right: 0px;
-}
-
-div.singleViewView *.bottomLeft
-{
-  background-position: bottom left;
-  bottom: 0px;
-  left: 0px;
-}
-
-div.singleViewView *.bottomRight
-{
-  background-position: bottom right;
-  bottom: 0px;
-  right: 0px;
-}*/
-
-body.mozilla  div.singleViewView,
-body.webkit   div.singleViewView,
-body.opera    div.singleViewView
-{
- width: inherit;
 }
 
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
@@ -204,4 +117,3 @@ div.singleViewBottomControls.empty
   height: 1em;
   background-color: White;
 }
-
