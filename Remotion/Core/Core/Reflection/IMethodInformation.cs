@@ -23,7 +23,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Provides information about a method of a bindable object and offers a way to invoke the method.
   /// </summary>
-  public interface IMethodInformation
+  public interface IMethodInformation : IMemberInformation
   {
     /// <summary>
     /// Gets the return type of the method.
@@ -32,52 +32,13 @@ namespace Remotion.Reflection
     Type ReturnType { get; }
 
     /// <summary>
-    /// Gets the simple name of the method.
-    /// </summary>
-    /// <value>The simple name of the method.</value>
-    string Name { get; }
-
-    /// <summary>
-    /// Gets the type declaring the method.
-    /// </summary>
-    /// <value>The declaring type of the method.</value>
-    Type DeclaringType { get; }
-
-    /// <summary>
-    /// Gets the type originally declared on.
-    /// </summary>
-    /// <returns>The type where the method was originally declared on.</returns>
-    Type GetOriginalDeclaringType ();
-
-    /// <summary>
-    /// Gets the one custom attribute of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.
-    /// </summary>
-    /// <typeparam name="T">The type of attribute to retrieve.</typeparam>
-    /// <param name="inherited">If set to true, the inheritance hierarchy is searched for the attribute. Otherwise, only the <see cref="DeclaringType"/>
-    /// is checked.</param>
-    /// <exception cref="AmbiguousMatchException">More than one instance of the given attribute type <typeparamref name="T"/> is declared on this
-    /// property.</exception>
-    /// <returns>An instance of type <typeparamref name="T"/>, or <see langword="null"/> if no attribute of that type is declared on this member.</returns>
-    T GetCustomAttribute<T> (bool inherited) where T : class;
-
-    /// <summary>
-    /// Gets the custom attributes of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.
-    /// </summary>
-    /// <typeparam name="T">The type of the attributes to retrieve.</typeparam>
-    /// <param name="inherited">If set to true, the inheritance hierarchy is searched for the attributes. Otherwise, only the <see cref="DeclaringType"/>
-    /// is checked.</param>
-    /// <returns>An array of the attributes of type <typeparamref name="T"/> declared on this member, or an empty array if no attribute of
-    /// that type is declared on this property.</returns>
-    T[] GetCustomAttributes<T> (bool inherited) where T : class;
-
-    /// <summary>
     /// Invokes the method on the given instance using the given parameters.
     /// </summary>
     /// <param name="instance">The instance on which to invoke the method. If the method is static this argument is ignored.</param>
     /// <param name="parameters">An argument list for the invoked method.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
     object Invoke (object instance, object[] parameters);
-    
+
     /// <summary>
     /// Invokes the method on the given instance using the given parameters.
     /// </summary>
@@ -90,8 +51,5 @@ namespace Remotion.Reflection
     /// If culture is null the Culture of the current thread is used.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
     object Invoke (Object instance, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture);
-
-
-
   }
 }

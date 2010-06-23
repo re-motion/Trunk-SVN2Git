@@ -175,8 +175,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (actualScalar, Is.SameAs (scalar));
       instanceMock.VerifyAllExpectations ();
     }
-
-
+    
     [Test]
     [ExpectedException (typeof (TargetParameterCountException), ExpectedMessage = "Parameter count mismatch.")]
     public void GetValue_WithIndexerProperty_OneParameter_IndexParameterArrayLengthMismatch ()

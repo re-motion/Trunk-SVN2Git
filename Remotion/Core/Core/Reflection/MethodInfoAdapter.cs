@@ -97,6 +97,11 @@ namespace Remotion.Reflection
       }
     }
 
+    public bool IsDefined<T> (bool inherited) where T: class
+    {
+      return AttributeUtility.IsDefined<T> (_methodInfo, inherited);
+    }
+
     public override bool Equals (object obj)
     {
       var other = obj as MethodInfoAdapter;

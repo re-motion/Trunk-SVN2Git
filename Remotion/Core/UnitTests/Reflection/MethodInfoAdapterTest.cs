@@ -66,6 +66,14 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void IsDefined ()
+    {
+      Assert.That (
+          _adapter.IsDefined<SampleAttribute> (true),
+          Is.EqualTo (AttributeUtility.IsDefined<SampleAttribute> (_method, true)));
+    }
+
+    [Test]
     public void DeclaringType ()
     {
       Assert.That (_adapter.DeclaringType, Is.EqualTo (_method.DeclaringType));
