@@ -62,17 +62,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void DeletePosition_WithRole ()
     {
-      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper();
-      using (testHelper.Transaction.EnterNonDiscardingScope())
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        Tenant tenant = testHelper.CreateTenant ("TestTenant", "UID: testTenant");
-        Group userGroup = testHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
-        Group roleGroup = testHelper.CreateGroup ("RoleGroup", Guid.NewGuid().ToString(), null, tenant);
-        User user = testHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
-        Position position = testHelper.CreatePosition ("Position");
-        Role role = testHelper.CreateRole (user, roleGroup, position);
+        Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
+        User user = User.FindByTenantID (tenant.ID)[0];
+        Role role = user.Roles[0];
+        Position position = role.Position;
+        position.Delete ();
 
-        position.Delete();
+        ClientTransaction.Current.Commit ();
 
         Assert.IsTrue (role.IsInvalid);
       }
