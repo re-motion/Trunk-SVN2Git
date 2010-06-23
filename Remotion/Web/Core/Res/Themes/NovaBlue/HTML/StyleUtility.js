@@ -17,70 +17,8 @@ function StyleUtility()
 {
 }
 
-StyleUtility.CreateBorderSpans = function(selector)
+StyleUtility.CreateBorderSpans = function (selector)
 {
-  var element = $(selector);
-
-  StyleUtility.CreateAndAppendBorderSpan(element, 'top');
-  StyleUtility.CreateAndAppendBorderSpan(element, 'left');
-  StyleUtility.CreateAndAppendBorderSpan(element, 'bottom');
-  StyleUtility.CreateAndAppendBorderSpan(element, 'right');
-  StyleUtility.CreateAndAppendBorderSpan(element, 'topLeft');
-  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, 'topRight');
-  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, 'bottomLeft');
-  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, 'bottomRight');
-
-  if (StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight))
-    PageUtility.Instance.RegisterResizeHandler(selector, StyleUtility.OnResize);
-}
-
-StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRight)
-{
-  var scrollDiv = element;
-  while (scrollDiv.css('overflow') != 'auto' && scrollDiv.css('overflow') != 'scroll' && (scrollDiv.length > 0))
-      scrollDiv = scrollDiv.children().eq(0);
-  var scrolledDiv = scrollDiv.children().eq(0);
-
-  var hasScrollbarsOnOverflow = scrollDiv.css('overflow') == 'auto' || scrollDiv.css('overflow') == 'scroll';
-
-  if (scrolledDiv.length == 1 && scrolledDiv.attr('nodeName').toLowerCase() == 'div' && hasScrollbarsOnOverflow)
-  {
-    var offset = 1;
-    var hasVerticalScrollBar = scrolledDiv[0].scrollHeight > (scrolledDiv.height() + offset); //height includes the scrollbar, if it exists
-    var hasHorizontalScrollbar = scrolledDiv[0].scrollWidth > (scrolledDiv.outerWidth() + offset); //width includes the scrollbar, if it exists
-    var hasExactlyOneScrollbar = (hasVerticalScrollBar && !hasHorizontalScrollbar) || (!hasVerticalScrollBar && hasHorizontalScrollbar);
-
-    if (hasVerticalScrollBar)
-      $(topRight).css('display', 'none');
-    else
-      $(topRight).css('display', '');
-
-    if (hasHorizontalScrollbar)
-      $(bottomLeft).css('display', 'none');
-    else
-      $(bottomLeft).css('display', '');
-
-    if (hasExactlyOneScrollbar)
-      $(bottomRight).css('display', 'none');
-    else
-      $(bottomRight).css('display', '');
-
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-StyleUtility.CreateAndAppendBorderSpan = function(elementBody, className)
-{
-  var borderSpan = document.createElement('SPAN');
-  borderSpan.className = className;
-
-  elementBody[0].appendChild(borderSpan);
-
-  return borderSpan
 }
 
 StyleUtility.OnResize = function(element) {
