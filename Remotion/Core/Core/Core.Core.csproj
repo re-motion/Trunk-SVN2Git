@@ -191,6 +191,7 @@
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
     <Compile Include="Reflection\IMethodInformation.cs" />
     <Compile Include="Reflection\IPropertyInformation.cs" />
+    <Compile Include="Reflection\MethodInfoAdapter.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />

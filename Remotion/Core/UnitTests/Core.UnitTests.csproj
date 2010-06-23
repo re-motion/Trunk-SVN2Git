@@ -280,6 +280,7 @@
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactoryTest.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
+    <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithOverridingProperty.cs" />

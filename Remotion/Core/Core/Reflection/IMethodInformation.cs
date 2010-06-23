@@ -86,6 +86,6 @@ namespace Remotion.Reflection
     object Invoke (Object instance, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture);
 
 
-)
+
   }
 }
