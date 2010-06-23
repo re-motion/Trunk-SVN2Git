@@ -27,6 +27,7 @@ namespace Remotion.Reflection
   public class MethodInfoAdapter : IMethodInformation
   {
     private readonly MethodInfo _methodInfo;
+    private Type _type;
 
     public MethodInfoAdapter (MethodInfo methodInfo)
     {
@@ -42,27 +43,34 @@ namespace Remotion.Reflection
 
     public Type ReturnType
     {
-      get { throw new NotImplementedException(); }
+      get { return _methodInfo.ReturnType; }
     }
 
     public string Name
     {
-      get { throw new NotImplementedException(); }
+      get { return _methodInfo.Name; }
     }
 
     public Type DeclaringType
     {
-      get { throw new NotImplementedException(); }
+      get { return _methodInfo.DeclaringType; } 
+    }
+
+    public Type GetOriginalDeclaringType ()
+    {
+      if (_type == null)
+        _type = ReflectionUtility.GetOriginalDeclaringType (_methodInfo);
+      return _type;
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
-      throw new NotImplementedException();
+      return AttributeUtility.GetCustomAttribute<T> (_methodInfo, inherited);
     }
 
     public T[] GetCustomAttributes<T> (bool inherited) where T: class
     {
-      throw new NotImplementedException();
+      return AttributeUtility.GetCustomAttributes<T> (_methodInfo, inherited);
     }
 
     public object Invoke (object instance, object parameters)
@@ -74,5 +82,18 @@ namespace Remotion.Reflection
     {
       throw new NotImplementedException();
     }
+
+    public override bool Equals (object obj)
+    {
+      var other = obj as MethodInfoAdapter;
+
+      return other != null && _methodInfo.Equals (other._methodInfo);
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (_methodInfo);
+    }
+
   }
 }

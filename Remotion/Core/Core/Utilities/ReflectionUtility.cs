@@ -174,7 +174,8 @@ namespace Remotion.Utilities
             "propertyInfo");
       }
 
-      Type baseDeclaringType = accessors[0].GetBaseDefinition ().DeclaringType;
+      var methodInfo = accessors[0];
+      Type baseDeclaringType = GetOriginalDeclaringType (methodInfo);
       for (int i = 1; i < accessors.Length; i++)
       {
         if (accessors[i].GetBaseDefinition ().DeclaringType.IsSubclassOf (baseDeclaringType))
@@ -184,6 +185,18 @@ namespace Remotion.Utilities
       return baseDeclaringType;
     }
 
+    /// <summary>
+    /// Returns the <see cref="Type"/> where the method was initially declared.
+    /// </summary>
+    /// <param name="methodInfo">The method whose type should be returned. Must not be <see langword="null" />.</param>
+    /// <returns>The <see cref="Type"/> where the method was declared for the first time.</returns>
+    public static Type GetOriginalDeclaringType (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      return methodInfo.GetBaseDefinition ().DeclaringType;
+    }
+
+    
     /// <summary>
     /// Determines whether the given <see cref="PropertyInfo"/> is the original base declaration.
     /// </summary>

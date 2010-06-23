@@ -16,9 +16,12 @@
 // 
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
+using Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection
 {
@@ -41,9 +44,58 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_adapter.MethodInfo, Is.SameAs (_method));
     }
 
-
-    public class Test 
+    
+    [Test]
+    public void Equals ()
     {
+      Assert.That (_adapter, Is.EqualTo (new MethodInfoAdapter(_method)));
+      Assert.AreNotEqual (_adapter, new MethodInfoAdapter (typeof (Test).GetMethod ("TestMethod")));
+    }
+
+    [Test]
+    public void GetReturnType ()
+    {
+      Assert.That (_adapter.ReturnType, Is.EqualTo (_method.ReturnType));
+    }
+
+    [Test]
+    public void GetName ()
+    {
+      Assert.That (_adapter.Name, Is.EqualTo (_method.Name));
+    }
+
+    [Test]
+    public void DeclaringType ()
+    {
+      Assert.That (_adapter.DeclaringType, Is.EqualTo (_method.DeclaringType));
+    }
+
+    [Test]
+    public void GetOriginalDeclaringType ()
+    {
+      Assert.That (_adapter.GetOriginalDeclaringType(), Is.EqualTo (_method.DeclaringType));
+    }
+
+    [Test]
+    public void GetCustomAttribut ()
+    {
+      Assert.That (_adapter.GetCustomAttribute<SampleAttribute> (true), 
+        Is.EqualTo (AttributeUtility.GetCustomAttribute<SampleAttribute> (_method, true)));
+    }
+
+    [Test]
+    public void GetCustomAttributes ()
+    {
+      Assert.That (_adapter.GetCustomAttributes<SampleAttribute> (true), 
+        Is.EqualTo (AttributeUtility.GetCustomAttributes<SampleAttribute> (_method, false)));
+    }
+
+    public class Test
+    {
+      public void TestMethod ()
+      {
+      }
+
       public string GetStringWithoutArguments ()
       {
         return "Test";
@@ -55,6 +107,7 @@ namespace Remotion.UnitTests.Reflection
       }
     }
 
+    
   }
 
 }
