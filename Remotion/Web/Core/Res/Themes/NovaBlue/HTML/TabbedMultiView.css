@@ -157,9 +157,15 @@ div.tabbedMultiViewTabStrip span.tabStripTabWrapper
   position: relative;
 }
 
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabWrapper,
+body.opera div.tabbedMultiViewTabStrip span.tabStripTabWrapper
+{
+  margin-bottom: -1px;
+}
+
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
-  width: 0.6em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
+  width: 0.6em;
   border-bottom: solid 1px #083779;
 }
 
@@ -185,7 +191,7 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
 
 body.msie7 div.tabbedMultiViewTabStrip span.tabStripTab a
 {
-  padding-bottom: 2px;
+  padding-bottom: 1px;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
@@ -202,47 +208,42 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected
   border: solid 1px #083779;
 }
 
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected
+{
+  border-bottom: solid 1px White;
+}
+
 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
 {
   border: none;
+  border-bottom: solid 1px White;
+  margin-bottom: -1px;
   background-color: White;
   color: #0D4EBA;
 }
 
 body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
 {
-  padding-bottom: 2px;
+  padding-bottom: 1px;
 }
 
-/* Bottom tab border */
-div.tabbedMultiViewTabStrip a span.bottom
+div.tabbedMultiViewTabStrip > *.top, 
+div.tabbedMultiViewTabStrip > *.left, 
+div.tabbedMultiViewTabStrip > *.bottom, 
+div.tabbedMultiViewTabStrip > *.right, 
+div.tabbedMultiViewTabStrip > *.topLeft,
+div.tabbedMultiViewTabStrip > *.bottomLeft, 
+div.tabbedMultiViewTabStrip > *.topRight, 
+div.tabbedMultiViewTabStrip > *.bottomRight
 {
-  position: absolute;
-  font-size: 0.5%;
-  display: block;
-  left: 0px;
-  bottom: -1px;
-  height: 1px;
-  width: 100%;
-}
-
-/* Bottom tab border */
-div.tabbedMultiViewTabStrip span.tabStripTab a span.bottom
-{
-  border-bottom: solid 1px #083779;
-}
-
-/* Bottom tab border selected */
-div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.bottom
-{
-  border-bottom: solid 1px White;
+  display: none;
 }
 
 /* Content area of the tab */
 div.tabbedMultiViewTabStrip a span.anchorBody
 {
   padding-top: 0.15em;
-  padding-bottom: 0.25em; 
+  padding-bottom: 0.20em; 
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
@@ -251,7 +252,7 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   margin-bottom: 1px; /* The width of the top-border of the tabs. */
   padding-top: 0.2em; /* The padding used for the content span. */
-  padding-bottom: 0.2em; /* The padding used for the content span. */
+  padding-bottom: 0.15em; /* The padding used for the content span. */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
