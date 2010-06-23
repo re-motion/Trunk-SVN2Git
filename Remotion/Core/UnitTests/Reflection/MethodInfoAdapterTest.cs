@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
@@ -88,6 +89,30 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_adapter.GetCustomAttributes<SampleAttribute> (true), 
         Is.EqualTo (AttributeUtility.GetCustomAttributes<SampleAttribute> (_method, false)));
+    }
+
+    [Test]
+    public void Invoke_WithoutParameters ()
+    {
+      var result = _adapter.Invoke (new Test(), new object[]{});
+      Assert.That (result, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void Invoke_WithOneParameter ()
+    {
+      var methodInfo = typeof (Test).GetMethod ("GetStringWithOneArgument");
+      var adapter = new MethodInfoAdapter (methodInfo);
+      var result = adapter.Invoke (new Test(), new object[] {string.Empty });
+
+      Assert.That (result, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void Invoke ()
+    {
+      var result = _adapter.Invoke (new Test(), BindingFlags.Default, null, new object[] { }, CultureInfo.CurrentCulture);
+      Assert.That (result, Is.EqualTo ("Test"));
     }
 
     public class Test

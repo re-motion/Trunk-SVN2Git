@@ -73,14 +73,28 @@ namespace Remotion.Reflection
       return AttributeUtility.GetCustomAttributes<T> (_methodInfo, inherited);
     }
 
-    public object Invoke (object instance, object parameters)
+    public object Invoke (object instance, object[] parameters)
     {
-      throw new NotImplementedException();
-    }
+      try
+      {
+        return _methodInfo.Invoke (instance, parameters);
+      }
+      catch (TargetInvocationException ex)
+      {
+        throw ex.InnerException;
+      }
+  }
 
     public object Invoke (object instance, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
     {
-      throw new NotImplementedException();
+      try
+      {
+        return _methodInfo.Invoke (instance, invokeAttr, binder, parameters, culture);
+      }
+      catch (TargetInvocationException ex)
+      {
+        throw ex.InnerException;
+      }
     }
 
     public override bool Equals (object obj)

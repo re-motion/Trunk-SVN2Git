@@ -44,6 +44,12 @@ namespace Remotion.Reflection
     Type DeclaringType { get; }
 
     /// <summary>
+    /// Gets the type originally declared on.
+    /// </summary>
+    /// <returns>The type where the method was originally declared on.</returns>
+    Type GetOriginalDeclaringType ();
+
+    /// <summary>
     /// Gets the one custom attribute of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.
     /// </summary>
     /// <typeparam name="T">The type of attribute to retrieve.</typeparam>
@@ -70,7 +76,7 @@ namespace Remotion.Reflection
     /// <param name="instance">The instance on which to invoke the method. If the method is static this argument is ignored.</param>
     /// <param name="parameters">An argument list for the invoked method.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
-    object Invoke (object instance, object parameters);
+    object Invoke (object instance, object[] parameters);
     
     /// <summary>
     /// Invokes the method on the given instance using the given parameters.
