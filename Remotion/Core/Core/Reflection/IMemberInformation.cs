@@ -20,7 +20,9 @@ using System.Reflection;
 namespace Remotion.Reflection
 {
   /// <summary>
-  /// Base class for <see cref="IMethodInformation"/> and <see cref="IPropertyInformation"/>
+  /// Provides  information about the attributes of a member and provides access to member metadata.
+  /// <seealso cref="IPropertyInformation"/>
+  /// <seealso cref="IMethodInformation"/>
   /// </summary>
   public interface IMemberInformation
   {

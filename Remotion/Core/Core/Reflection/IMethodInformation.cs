@@ -21,7 +21,7 @@ using System.Reflection;
 namespace Remotion.Reflection
 {
   /// <summary>
-  /// Provides information about a method of a bindable object and offers a way to invoke the method.
+  /// Provides information about a method and offers a way to invoke the method.
   /// </summary>
   public interface IMethodInformation : IMemberInformation
   {
