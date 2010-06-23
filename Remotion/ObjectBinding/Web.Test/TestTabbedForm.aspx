@@ -20,7 +20,7 @@
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">
   <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" />
-  <asp:UpdatePanel ID="UpdatePanel" runat="server">          
+  <remotion:WebUpdatePanel ID="UpdatePanel" runat="server" style="height:100%">          
     <contenttemplate>
     <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">
       <TopControls>
@@ -165,5 +165,5 @@
       </BottomControls>
     </remotion:TabbedMultiView>
     </contenttemplate>
-  </asp:UpdatePanel>
+  </remotion:WebUpdatePanel>
 </asp:Content>
