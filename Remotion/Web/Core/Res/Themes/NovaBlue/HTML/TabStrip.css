@@ -13,7 +13,7 @@
 
 *.tabStripTabsPane ul
 {
-  margin: 0 0 -1px 0;
+  margin: 0;
   padding: 0px;  
   list-style: none;
   width: 100%; 

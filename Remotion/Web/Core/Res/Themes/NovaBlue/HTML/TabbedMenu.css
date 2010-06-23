@@ -44,11 +44,6 @@ td.tabbedMenuStatusCell
 }
 
 /* Main Menu Tabstrip */
-div.tabbedMainMenu div.tabStripTabsPane
-{
-  border-bottom: solid 1px #083779;
-}
-
 div.tabbedMainMenu span.tabStripTabWrapper
 {
   padding-top: 0.3em;
@@ -60,10 +55,16 @@ div.tabbedMainMenu span.tabStripTabSeparator
   display: none; /* magin-left must be set to 0 in the Non-IE browsers section for tabStripTab and tabStripTabSelected. */
 }
 
+div.tabbedMainMenu span.tabStripTab
+{
+  padding-bottom: 1px;
+}
+
 div.tabbedMainMenu span.tabStripTab a
 {  
   border: none;
-	background-color: #DDDDDD;
+  border-bottom: 1px solid 083779;
+  background-color: #DDDDDD;
   background-image: url(../Image/TabbedMenuTabBackground.gif);
   background-repeat: repeat-x;	
   background-position: center;
@@ -74,18 +75,24 @@ div.tabbedMainMenu span.tabStripTab a
 
 div.tabbedMainMenu span.tabStripTab a:hover
 {
-	background-color: #FEFFFF;
+  background-color: #FEFFFF;
   background-image: url(../Image/TabbedMenuTabBackgroundHover.gif);
   background-repeat: repeat-x;	
   background-position: top;
   color: Black;
   cursor: pointer;
-	cursor: hand;
+  cursor: hand;
+}
+
+div.tabbedMainMenu span.tabStripTabSelected
+{
+  padding-bottom: 0;
 }
 
 div.tabbedMainMenu span.tabStripTabSelected a
 {
   border: none;
+  border-bottom: 1px solid white;
   background-color: White;
   color: Black;
   font-size: 120%;
@@ -98,7 +105,7 @@ div.tabbedMainMenu span.tabStripTabSelected a:hover
   background-color: White;
   text-decoration: underline;
   cursor: pointer;
-	cursor: hand;
+  cursor: hand;
 }
 
 div.tabbedMainMenu span.tabStripTab.disabled a,
@@ -106,65 +113,21 @@ div.tabbedMainMenu span.tabStripTab.disabled a:hover
 {
   color: #b0b0b0;
   background-color: #efefef;
-	background-image: none;
-	text-decoration: none;
+  background-image: none;
+  text-decoration: none;
   cursor: default;
 }
 
-div.tabbedMainMenu li span.bottom, 
-div.tabbedMainMenu li span.topLeft, 
-div.tabbedMainMenu li span.topRight
+div.tabbedMainMenu > *.top, 
+div.tabbedMainMenu > *.left, 
+div.tabbedMainMenu > *.bottom, 
+div.tabbedMainMenu > *.right, 
+div.tabbedMainMenu > *.topLeft,
+div.tabbedMainMenu > *.bottomLeft, 
+div.tabbedMainMenu > *.topRight, 
+div.tabbedMainMenu > *.bottomRight
 {
-  position: absolute;
-  font-size: 0.5%;
-  display: block;
-}
-
-div.tabbedMainMenu a span.bottom
-{  
-  bottom: 0px;
-  left: 0px;
-  height: 1px;
-  width: 100%;  
-}
-
-/* Bottom tab border */
-div.tabbedMainMenu span.tabStripTab a span.bottom
-{  
-  border-bottom: solid 1px #083779;
-}
-
-/* Bottom tab border selected */
-div.tabbedMainMenu span.tabStripTabSelected a span.bottom
-{
-  border-bottom: solid 1px White;
-}
-
-div.tabbedMainMenu li span.topLeft,
-div.tabbedMainMenu li span.topRight
-{
-  display:none;
-  
-  background-image: url(../Image/CornerBackgroundBlueTransparentNoBorder.gif);
-  background-repeat: no-repeat;
-  width: 5px;
-  height: 5px;
-}
-
-/* Top Left tab corner */
-div.tabbedMainMenu li span.topLeft
-{
-  background-position: left top;
-  top: 0px;
-  left: 0px;
-}
-
-/* Top Right tab corner */
-div.tabbedMainMenu li span.topRight
-{
-  background-position: right top;
-  top: 0px;
-  right: 0px;
+  display: none;
 }
 
 /* Content area of the tab */
@@ -181,16 +144,6 @@ body.webkit   div.tabbedMainMenu span.tabStripTabWrapper,
 body.opera    div.tabbedMainMenu span.tabStripTabWrapper
 {
   margin-bottom: 0px; /* Removes an offset between the main menu and the sub menu */
-}
-
-body.mozilla  div.tabbedMainMenu span.tabStripTab,
-body.webkit   div.tabbedMainMenu span.tabStripTab,
-body.opera    div.tabbedMainMenu span.tabStripTab,
-body.mozilla  div.tabbedMainMenu span.tabStripTabSelected,
-body.webkit   div.tabbedMainMenu span.tabStripTabSelected,
-body.opera    div.tabbedMainMenu span.tabStripTabSelected
-{
-  margin-left: 0; /* No separator, no margin required. */
 }
 
 /* Sub Menu Tabstrip */
@@ -210,12 +163,12 @@ div.tabbedSubMenu div.tabStripTabsPane span.tabStripTabWrapper
 
 div.tabbedSubMenu span.tabStripTabSeparator
 {
-  display: none;	/* magin-left must be set to 0 in the Non-IE browsers section for tabStripTab and tabStripTabSelected. */
+  display: none; /* magin-left must be set to 0 in the Non-IE browsers section for tabStripTab and tabStripTabSelected. */
 }
 
 div.tabbedSubMenu span.tabStripTab,
 div.tabbedSubMenu span.tabStripTabSelected
-{  
+{
   border-right: solid 1px Black;
 
   padding-top: 0.1em;
@@ -225,7 +178,7 @@ div.tabbedSubMenu span.tabStripTabSelected
 }
 
 div.tabbedSubMenu span.tabStripTab a
-{  
+{
   border: none;
   background-color: White;
   color: Black;
@@ -234,11 +187,11 @@ div.tabbedSubMenu span.tabStripTab a
 div.tabbedSubMenu span.tabStripTab a:hover,
 div.tabbedSubMenu span.tabStripTabSelected a:hover
 {
-	background-color: White;	
+  background-color: White;
   color: Black;
   text-decoration: underline;
   cursor: pointer;
-	cursor: hand;
+  cursor: hand;
 }
 
 div.tabbedSubMenu span.tabStripTabSelected a
@@ -264,6 +217,18 @@ div.tabbedSubMenu span.tabStripTab.disabled img
   -moz-opacity: 1;
 }
 
+div.tabbedSubMenu > *.top, 
+div.tabbedSubMenu > *.left, 
+div.tabbedSubMenu > *.bottom, 
+div.tabbedSubMenu > *.right, 
+div.tabbedSubMenu > *.topLeft,
+div.tabbedSubMenu > *.bottomLeft, 
+div.tabbedSubMenu > *.topRight, 
+div.tabbedSubMenu > *.bottomRight
+{
+  display: none;
+}
+
 /* Content area of the tab */
 div.tabbedSubMenu span.anchorBody
 {
@@ -273,19 +238,12 @@ div.tabbedSubMenu span.anchorBody
   padding-right: 0.3em;
 }
 
-body.mozilla  div.tabbedSubMenu div.tabStripTabsPane.empty,
-body.webkit   div.tabbedSubMenu div.tabStripTabsPane.empty,
-body.opera    div.tabbedSubMenu div.tabStripTabsPane.empty
+div.tabbedSubMenu div.tabStripTabsPane.empty
 {
-  padding-top: 1.8em;
+  padding-top: 1.7em;
 }
 
-body.mozilla  div.tabbedSubMenu span.tabStripTab,
-body.webkit   div.tabbedSubMenu span.tabStripTab,
-body.opera    div.tabbedSubMenu span.tabStripTab,
-body.mozilla  div.tabbedSubMenu span.tabStripTabSelected,
-body.webkit   div.tabbedSubMenu span.tabStripTabSelected,
-body.opera    div.tabbedSubMenu span.tabStripTabSelected
+body.msie7 div.tabbedSubMenu div.tabStripTabsPane.empty
 {
-  margin-left: 0; /* No separator, no margin required. */
+  padding-top: 0.4em;
 }
