@@ -42,8 +42,6 @@ namespace Remotion.Reflection
     /// <value>The declaring type of the property.</value>
     Type DeclaringType { get; }
 
-    //PropertyInfo InterfacePropertyInfo { get; }
-
     /// <summary>
     /// Gets the type the property was originally declared on.
     /// </summary>
