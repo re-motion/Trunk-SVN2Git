@@ -15,25 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Infrastructure;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
-  public static class DataManagerTestHelper
+  [TestFixture]
+  public class RootClientTransactionComponentFactoryTest
   {
-    public static DataContainerMap GetDataContainerMap (IDataManager dataManager)
+    [Test]
+    public void CreateDataManager_CollectionEndPointChangeDetectionStrategy ()
     {
-      return (DataContainerMap) dataManager.DataContainerMap;
+      var factory = new RootClientTransactionComponentFactory ();
+      var dataManager = factory.CreateDataManager (new ClientTransactionMock());
+      
+      Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
+          Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
     }
 
-    public static RelationEndPointMap GetRelationEndPointMap (IDataManager dataManager)
-    {
-      return (RelationEndPointMap) dataManager.RelationEndPointMap;
-    }
-
-    public static void RemoveEndPoint (IDataManager dataManager, RelationEndPointID endPointID)
-    {
-      GetRelationEndPointMap (dataManager).RemoveEndPoint (endPointID);
-    }
   }
 }

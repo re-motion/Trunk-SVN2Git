@@ -35,9 +35,9 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetcher));
 
-    private readonly DataManager _dataManager;
+    private readonly IDataManager _dataManager;
 
-    public EagerFetcher (DataManager dataManager)
+    public EagerFetcher (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       _dataManager = dataManager;

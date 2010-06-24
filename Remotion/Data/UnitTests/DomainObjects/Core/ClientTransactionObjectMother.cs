@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -16,11 +14,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreatePartialMock (MockRepository mockRepository)
     {
-      return mockRepository.PartialMock<ClientTransaction> (
-          new Dictionary<Enum, object> (), 
-          new ClientTransactionExtensionCollection (), 
-          new RootCollectionEndPointChangeDetectionStrategy (), 
-          new DictionaryBasedEnlistedDomainObjectManager ());
+      var componentFactory = new RootClientTransactionComponentFactory ();
+      return mockRepository.PartialMock<ClientTransaction> (componentFactory);
     }
 
     public static ClientTransaction CreateStrictMock ()
@@ -30,11 +25,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreateStrictMock (MockRepository mockRepository)
     {
-      return mockRepository.StrictMock<ClientTransaction> (
-          new Dictionary<Enum, object> (),
-          new ClientTransactionExtensionCollection (),
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          new DictionaryBasedEnlistedDomainObjectManager ());
+      var componentFactory = new RootClientTransactionComponentFactory ();
+      return mockRepository.StrictMock<ClientTransaction> (componentFactory);
+    }
+
+    public static ClientTransaction CreateTransactionWithDataSource (IDataSource dataSource)
+    {
+      var factory = new TestComponentFactoryWithSpecificDataSource (dataSource);
+      return (ClientTransaction) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransaction), factory);
     }
   }
 }

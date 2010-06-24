@@ -27,7 +27,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
-  public class UnloadSubTransactionTest : ClientTransactionBaseTest
+  public class SubTransactionUnloadTest : ClientTransactionBaseTest
   {
     private ClientTransaction _subTransaction;
 

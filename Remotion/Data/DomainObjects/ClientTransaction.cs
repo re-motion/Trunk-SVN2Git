@@ -23,10 +23,8 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 using Remotion.Data.DomainObjects.Linq;
@@ -48,8 +46,9 @@ namespace Remotion.Data.DomainObjects
 /// </para>
 /// </remarks>
 [Serializable]
-public abstract class ClientTransaction : IDataSource
+public class ClientTransaction
 {
+  private readonly IClientTransactionComponentFactory _componentFactory;
   // types
 
   // static members and constants
@@ -63,7 +62,8 @@ public abstract class ClientTransaction : IDataSource
   /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootClientTransaction"/> to a mixin class.</remarks>
   public static ClientTransaction CreateRootTransaction ()
   {
-    return ObjectFactory.Create<RootClientTransaction> (true, ParamList.Empty);
+    var componentFactory = new RootClientTransactionComponentFactory();
+    return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
   }
 
   /// <summary>
@@ -83,7 +83,8 @@ public abstract class ClientTransaction : IDataSource
   /// </remarks>
   public static ClientTransaction CreateBindingTransaction ()
   {
-    return ObjectFactory.Create<BindingClientTransaction> (true, ParamList.Empty);
+    var componentFactory = new RootClientTransactionComponentFactory (); // binding transactions behave like root transactions
+    return ObjectFactory.Create<BindingClientTransaction> (true, ParamList.Create (componentFactory));
   }
 
   /// <summary>
@@ -130,11 +131,12 @@ public abstract class ClientTransaction : IDataSource
   /// </summary>
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
-  private readonly DataManager _dataManager;
+  private readonly IDataManager _dataManager;
   private readonly IObjectLoader _objectLoader;
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly CompoundClientTransactionListener _listeners;
+  private readonly IDataSource _dataSourceStrategy;
   private readonly ClientTransactionExtensionCollection _extensions;
   private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
@@ -145,22 +147,14 @@ public abstract class ClientTransaction : IDataSource
 
   private readonly Guid _id = Guid.NewGuid ();
 
-  // construction and disposing
-
-  protected ClientTransaction (
-      Dictionary<Enum, object> applicationData, 
-      ClientTransactionExtensionCollection extensions, 
-      ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
-      IEnlistedDomainObjectManager enlistedObjectManager)
+  protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
   {
-    ArgumentUtility.CheckNotNull ("applicationData", applicationData);
-    ArgumentUtility.CheckNotNull ("extensions", extensions);
-    ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
-    ArgumentUtility.CheckNotNull ("enlistedObjectManager", enlistedObjectManager);
+    ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
 
-    IsReadOnly = false;
-    _isDiscarded = false;
-    _extensions = extensions;
+    _componentFactory = componentFactory;
+
+    _applicationData = componentFactory.CreateApplicationData ();
+    _extensions = componentFactory.CreateExtensions ();
    
     _listeners = new CompoundClientTransactionListener ();
 
@@ -168,24 +162,25 @@ public abstract class ClientTransaction : IDataSource
     _listeners.AddListener (new ReadOnlyClientTransactionListener ());
     _listeners.AddListener (new ExtensionClientTransactionListener (_extensions));
 
-    foreach (var factory in SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ())
-      _listeners.AddListener (factory.CreateClientTransactionListener (this));
+    foreach (var listener in componentFactory.CreateListeners (this))
+      _listeners.AddListener (listener);
 
-    _applicationData = applicationData;
-    _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
-    _objectLoader = new ObjectLoader (this, this, TransactionEventSink, new EagerFetcher (_dataManager));
-    _enlistedObjectManager = enlistedObjectManager;
+    _dataManager = componentFactory.CreateDataManager (this);
+    _dataSourceStrategy = componentFactory.CreateDataSourceStrategy (_id, _dataManager);
+    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _dataSourceStrategy, _listeners);
+    _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
 
     TransactionEventSink.TransactionInitializing (this);
   }
-
-  // abstract methods and properties
 
   /// <summary>
   /// Gets the parent transaction for this <see cref="ClientTransaction"/>.
   /// </summary>
   /// <value>The parent transaction.</value>
-  public abstract ClientTransaction ParentTransaction { get; }
+  public ClientTransaction ParentTransaction 
+  { 
+    get { return _dataSourceStrategy.ParentTransaction; }
+  }
 
   /// <summary>
   /// Gets the root transaction of this <see cref="ClientTransaction"/>, i.e. the top-level parent transaction in a row of subtransactions.
@@ -193,177 +188,22 @@ public abstract class ClientTransaction : IDataSource
   /// <value>The root transaction of this <see cref="ClientTransaction"/>.</value>
   /// <remarks>When this transaction is an instance of <see cref="RootClientTransaction"/>, this property returns the transaction itself. If it
   /// is an instance of <see cref="SubClientTransaction"/>, it returns the parent's root transaction. </remarks>
-  public abstract ClientTransaction RootTransaction { get; }
+  public ClientTransaction RootTransaction 
+  { 
+    get 
+    { 
+      var current = this;
+      while (current.ParentTransaction != null)
+        current = current.ParentTransaction;
 
-  /// <summary>Initializes a new instance of this transaction.</summary>
-  public abstract ClientTransaction CreateEmptyTransactionOfSameType ();
+      return current;
+    }
+  }
 
-  /// <summary>
-  /// Persists changed data in the couse of a <see cref="Commit"/> operation.
-  /// </summary>
-  /// <param name="changedDataContainers">The data containers for any object that was changed in this transaction.</param>
-  protected abstract void PersistData (IEnumerable<DataContainer> changedDataContainers);
-
-  /// <summary>
-  /// Creates a new <see cref="ObjectID"/> for the given class definition.
-  /// </summary>
-  /// <param name="classDefinition">The class definition to create a new <see cref="ObjectID"/> for.</param>
-  /// <returns></returns>
-  protected internal abstract ObjectID CreateNewObjectID (ClassDefinition classDefinition);
-
-  /// <summary>
-  /// Loads a data container from the underlying storage or the <see cref="ParentTransaction"/>.
-  /// </summary>
-  /// <param name="id">The id of the <see cref="DataContainer"/> to load.</param>
-  /// <returns>A <see cref="DataContainer"/> with the given <paramref name="id"/>.</returns>
-  /// <remarks>
-  /// <para>
-  /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in the 
-  /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the caller. 
-  /// </para>
-  /// <para>
-  /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
-  /// </para>
-  /// </remarks>
-  protected abstract DataContainer LoadDataContainer (ObjectID id);
-
-  /// <summary>
-  /// Loads a number of data containers from the underlying storage or the <see cref="ParentTransaction"/>.
-  /// </summary>
-  /// <param name="objectIDs">The ids of the <see cref="DataContainer"/> objects to load.</param>
-  /// <returns>A <see cref="DataContainerCollection"/> with the loaded containers in the same order as in <paramref name="objectIDs"/>.</returns>
-  /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="BulkLoadException"/> if a data container 
-  /// cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should proceed as if the invalid ID hadn't been given.
-  /// </param>
-  /// <remarks>
-  /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
-  /// </para>
-  /// <para>
-  /// This method should not 
-  ///   set the <see cref="ClientTransaction"/> of the loaded data containers,
-  ///   register the containers in the <see cref="DataContainerMap"/>,
-  ///   or set the  <see cref="DomainObject"/> of the containers.
-  /// All of these activities are performed by the caller. 
-  /// </para>
-  /// </remarks>
-  protected abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
-
-  /// <summary>
-  /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <remarks>
-  /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
-  /// </para>
-  /// <para>
-  /// This method should not 
-  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
-  ///   register the container in the <see cref="DataContainerMap"/>,
-  ///   or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the caller. 
-  /// </para>
-  /// </remarks>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
-  /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>The related <see cref="DataContainer"/>.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
-  /// <see cref="DataManagement.ObjectEndPoint"/></exception>
-  /// <exception cref="Persistence.PersistenceException">
-  ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
-  ///   The relation refers to non-existing object.<br /> -or- <br />
-  ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/>.
-  /// </exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
-  /// </exception>
-  protected abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
-
-  /// <summary>
-  /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
-  /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>
-  /// A <see cref="DataContainerCollection"/> containing all related <see cref="DataContainer"/>s.
-  /// </returns>
-  /// <remarks>
-  /// <para>
-  /// This method does not raise any load events in this transaction. The load events are only raised when the loaded containers are merged with those
-  /// that have already been loaded.
-  /// </para>
-  /// <para>
-  /// This method should not 
-  ///   set the <see cref="ClientTransaction"/> of the loaded data containers,
-  ///   register the containers in the <see cref="DataContainerMap"/>,
-  ///   or set the  <see cref="DomainObject"/> of the containers.
-  /// All of these activities are performed by the caller. 
-  /// </para>
-  /// </remarks>
-  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Persistence.PersistenceException">
-  /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
-  /// The StorageProvider for the related objects could not be initialized.
-  /// </exception>
-  protected abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
-
-  /// <summary>
-  /// Executes the given <see cref="IQuery"/> and returns its results as an array of <see cref="DataContainer"/> instances.
-  /// </summary>
-  /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
-  /// <returns>
-  /// An array of <see cref="DataContainer"/> instances representing the result of the query.
-  /// </returns>
-  /// <remarks>
-  /// <para>
-  /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
-  /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the caller. 
-  /// </para>
-  /// <para>
-  /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
-  /// </para>
-  /// </remarks>
-  /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Collection"/>.</exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
-  /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
-  /// </exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
-  /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
-  /// </exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
-  /// An error occurred while executing the query.
-  /// </exception>
-  protected abstract DataContainer[] LoadDataContainersForQuery (IQuery query);
-
-  /// <summary>
-  /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.
-  /// </summary>
-  /// <param name="query">The query to be executed.</param>
-  /// <returns>The scalar query result.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Scalar"/>.
-  /// </exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
-  /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
-  /// </exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
-  /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
-  /// </exception>
-  /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
-  /// An error occurred while executing the query.
-  /// </exception>
-  protected abstract object LoadScalarForQuery (IQuery query);
-
-  // methods and properties
+  protected IDataSource DataSourceStrategy
+  {
+    get { return _dataSourceStrategy; }
+  }
 
   /// <summary>
   /// Returns a <see cref="Guid"/> that uniquely identifies this <see cref="ClientTransaction"/>.
@@ -413,6 +253,14 @@ public abstract class ClientTransaction : IDataSource
     get { return _extensions; }
   }
 
+  /// <summary>Initializes a new instance of this transaction.</summary>
+  public ClientTransaction CreateEmptyTransactionOfSameType ()
+  {
+    var transactionFactory = _componentFactory.CreateCloneFactory ();
+    return transactionFactory (this);
+  }
+
+
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <see cref="ClientTransaction"/>.
   /// </summary>
@@ -421,7 +269,7 @@ public abstract class ClientTransaction : IDataSource
     get
     {
       if (_queryManager == null)
-        _queryManager = new QueryManager (this, _objectLoader, TransactionEventSink);
+        _queryManager = new QueryManager (_dataSourceStrategy, _objectLoader, TransactionEventSink);
 
       return _queryManager;
     }
@@ -736,6 +584,18 @@ public abstract class ClientTransaction : IDataSource
   }
 
   /// <summary>
+  /// Creates a new <see cref="ObjectID"/> for the given class definition.
+  /// </summary>
+  /// <param name="classDefinition">The class definition to create a new <see cref="ObjectID"/> for.</param>
+  /// <returns></returns>
+  protected internal ObjectID CreateNewObjectID (ClassDefinition classDefinition)
+  {
+    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+    return _dataSourceStrategy.CreateNewObjectID (classDefinition);
+  }
+
+  /// <summary>
   /// Ensures that the data of the <see cref="IEndPoint"/> with the given <see cref="RelationEndPointID"/> has been loaded into this 
   /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the relation end point's data.
   /// </summary>
@@ -818,7 +678,12 @@ public abstract class ClientTransaction : IDataSource
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    ClientTransaction subTransaction = ObjectFactory.Create<SubClientTransaction> (true, ParamList.Create (this));
+    NotifyOfSubTransactionCreating ();
+
+    var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (this));
+    var subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
+
+    NotifyOfSubTransactionCreated (subTransaction);
     return subTransaction;
   }
 
@@ -844,7 +709,7 @@ public abstract class ClientTransaction : IDataSource
       var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
 
       var changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
-      PersistData (changedDataContainers);
+      _dataSourceStrategy.PersistData (changedDataContainers);
 
       _dataManager.Commit ();
       EndCommit (changedButNotDeletedDomainObjects);
@@ -1236,7 +1101,7 @@ public abstract class ClientTransaction : IDataSource
     }
   }
 
-  protected internal void NotifyOfSubTransactionCreated (SubClientTransaction subTransaction)
+  protected internal void NotifyOfSubTransactionCreated (ClientTransaction subTransaction)
   {
     OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
   }
@@ -1328,7 +1193,7 @@ public abstract class ClientTransaction : IDataSource
   /// <summary>
   /// Gets the <see cref="DataManager"/> of the <b>ClientTransaction</b>.
   /// </summary>
-  protected internal DataManager DataManager
+  protected internal IDataManager DataManager
   {
     get { return _dataManager; }
   }
@@ -1509,45 +1374,5 @@ public abstract class ClientTransaction : IDataSource
   {
     throw new NotImplementedException();
   }
-  
-  DataContainer IDataSource.LoadDataContainer (ObjectID id)
-  {
-    return LoadDataContainer (id);
   }
-
-  DataContainerCollection IDataSource.LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
-  {
-    return LoadDataContainers (objectIDs, throwOnNotFound);
-  }
-
-  DataContainer IDataSource.LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
-  {
-    return LoadRelatedDataContainer (relationEndPointID);
-  }
-
-  DataContainerCollection IDataSource.LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
-  {
-    return LoadRelatedDataContainers (relationEndPointID);
-  }
-
-  void IDataSource.PersistData (IEnumerable<DataContainer> changedDataContainers)
-  {
-    PersistData (changedDataContainers);
-  }
-
-  ObjectID IDataSource.CreateNewObjectID (ClassDefinition classDefinition)
-  {
-    return CreateNewObjectID (classDefinition);
-  }
-
-  DataContainer[] IDataSource.LoadDataContainersForQuery (IQuery query)
-  {
-    return LoadDataContainersForQuery (query);
-  }
-
-  object IDataSource.LoadScalarForQuery (IQuery query)
-  {
-    return LoadScalarForQuery (query);
-  }
-}
 }

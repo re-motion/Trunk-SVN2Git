@@ -292,6 +292,8 @@
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectStateCacheTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
@@ -344,7 +346,7 @@
     <Compile Include="DomainObjects\Core\DomainImplementation\UnloadServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadSubTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\SubTransactionUnloadTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
@@ -427,6 +429,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\FulltextIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
+    <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificDataSource.cs" />
     <Compile Include="DomainObjects\Core\Tracing\CompoundPersistenceListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\NullPersistenceListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDataReaderTest.cs" />

@@ -14,15 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
-  public class ClientTransactionWithCustomITransaction : RootClientTransaction
+  public class ClientTransactionWithCustomITransaction : ClientTransaction
   {
     private readonly ITransaction _wrapper;
 
     public ClientTransactionWithCustomITransaction (ITransaction wrapper)
+      : base (new RootClientTransactionComponentFactory())
     {
       _wrapper = wrapper;
     }

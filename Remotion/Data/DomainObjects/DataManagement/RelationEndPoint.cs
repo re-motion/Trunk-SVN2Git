@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public abstract void EnsureDataAvailable ();
     public abstract void Touch ();
-    public abstract IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager);
+    public abstract IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
 
     public abstract void Commit ();
     public abstract void Rollback ();

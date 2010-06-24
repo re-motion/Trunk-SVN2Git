@@ -183,6 +183,7 @@
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
     <Compile Include="DataManagement\ICollectionEndPointData.cs" />
+    <Compile Include="DataManagement\IDataManager.cs" />
     <Compile Include="DataManagement\IRelationEndPointMapReadOnlyView.cs" />
     <Compile Include="DataManagement\LazyLoadableCollectionEndPointData.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IAssociatableDomainObjectCollection.cs" />
     <Compile Include="Infrastructure\ClientTransactionListenerBase.cs" />
+    <Compile Include="Infrastructure\IClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\InitializedEventDomainObjectTransactionContextDecorator.cs" />
     <Compile Include="Infrastructure\IClientTransactionListenerFactory.cs" />
     <Compile Include="Infrastructure\IDataSource.cs" />
@@ -216,7 +218,9 @@
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
     <Compile Include="Infrastructure\DomainObjectStateCache.cs" />
+    <Compile Include="Infrastructure\RootClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\SubClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\SubClientTransactionComponentFactory.cs" />
     <Compile Include="LinqPropertyRedirectionAttribute.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />

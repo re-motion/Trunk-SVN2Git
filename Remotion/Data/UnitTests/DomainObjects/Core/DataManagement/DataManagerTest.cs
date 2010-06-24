@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _dataManager = ClientTransactionMock.DataManager;
+      _dataManager = (DataManager) ClientTransactionMock.DataManager;
     }
 
     [Test]

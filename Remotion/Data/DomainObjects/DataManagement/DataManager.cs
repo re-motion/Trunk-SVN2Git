@@ -30,7 +30,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
 [Serializable]
-public class DataManager : ISerializable, IDeserializationCallback
+public class DataManager : ISerializable, IDeserializationCallback, IDataManager
 {
   private ClientTransaction _clientTransaction;
   private IClientTransactionListener _transactionEventSink;

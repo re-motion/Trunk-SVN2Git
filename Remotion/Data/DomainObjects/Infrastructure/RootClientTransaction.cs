@@ -17,15 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -35,49 +32,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Represents a top-level <see cref="ClientTransaction"/>, which does not have a parent transaction.
   /// </summary>
   [Serializable]
-  public class RootClientTransaction : ClientTransaction
+  public class RootClientTransaction : IDataSource
   {
-    /// <summary>
-    /// Do not use this method, use <see>ClientTransaction.CreateBindingTransaction</see> instead.
-    /// </summary>
-    /// <returns></returns>
-    [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
-    public new static ClientTransaction CreateBindingTransaction ()
+    private readonly Guid _transactionID;
+    private readonly IDataManager _dataManager;
+
+    public RootClientTransaction (Guid transactionID, IDataManager dataManager)
     {
-      return ClientTransaction.CreateBindingTransaction();
+      _transactionID = transactionID;
+      _dataManager = dataManager;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <b>RootClientTransaction</b> class.
-    /// </summary>
-    protected RootClientTransaction ()
-        : base (
-            new Dictionary<Enum, object>(),
-            new ClientTransactionExtensionCollection(),
-            new RootCollectionEndPointChangeDetectionStrategy(),
-            new DictionaryBasedEnlistedDomainObjectManager())
-    {
-    }
-
-    public override ClientTransaction ParentTransaction
+    public ClientTransaction ParentTransaction
     {
       get { return null; }
     }
 
-    public override ClientTransaction RootTransaction
-    {
-      get { return this; }
-    }
-
-    /// <summary>Initializes a new instance of this transaction.</summary>
-    public override ClientTransaction CreateEmptyTransactionOfSameType ()
-    {
-      return
-          (ClientTransaction)
-          TypesafeActivator.CreateInstance (GetType(), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With();
-    }
-
-    protected override void PersistData (IEnumerable<DataContainer> changedDataContainers)
+    public void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       ArgumentUtility.CheckNotNull ("changedDataContainers", changedDataContainers);
 
@@ -91,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override ObjectID CreateNewObjectID (ClassDefinition classDefinition)
+    public ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -103,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return newObjectID;
     }
 
-    protected override DataContainer LoadDataContainer (ObjectID id)
+    public DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -113,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -126,11 +97,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    public DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      var originatingDataContainer = DataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
+      var originatingDataContainer = _dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
 
       DataContainer relatedDataContainer;
       using (var persistenceManager = CreatePersistenceManager())
@@ -140,14 +111,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
         // (Like in MergeLoadedDomainObjects.)
         Assertion.IsTrue (
-            relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null,
+            relatedDataContainer == null || _dataManager.DataContainerMap[relatedDataContainer.ID] == null,
             "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
             + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
         return relatedDataContainer;
       }
     }
 
-    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -157,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
+    public DataContainer[] LoadDataContainersForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -171,7 +142,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override object LoadScalarForQuery (IQuery query)
+    public object LoadScalarForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -198,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private IPersistenceListener CreatePersistenceListener ()
     {
       var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceListenerFactory>();
-      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (ID)));
+      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (_transactionID)));
     }
   }
 }

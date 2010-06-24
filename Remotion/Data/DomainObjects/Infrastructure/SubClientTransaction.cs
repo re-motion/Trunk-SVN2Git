@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -32,62 +31,34 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   /// <remarks>The parent transaction cannot be modified while a subtransaction is active.</remarks>
   [Serializable]
-  public class SubClientTransaction : ClientTransaction
+  public class SubClientTransaction : IDataSource
   {
-    /// <summary>
-    /// Do not use this method, use <see cref="ClientTransaction.CreateBindingTransaction"/> instead.
-    /// </summary>
-    /// <returns>Do not use this method, use <see cref="ClientTransaction.CreateBindingTransaction"/> instead.</returns>
-    [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
-    public new static ClientTransaction CreateBindingTransaction ()
-    {
-      return ClientTransaction.CreateBindingTransaction();
-    }
-
+    private readonly IDataManager _dataManager;
     private readonly ClientTransaction _parentTransaction;
 
-    protected SubClientTransaction (ClientTransaction parentTransaction)
-        : base (
-            ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction).ApplicationData,
-            parentTransaction.Extensions,
-            new SubCollectionEndPointChangeDetectionStrategy(),
-            new DelegatingEnlistedDomainObjectManager (parentTransaction))
+    protected SubClientTransaction (IDataManager dataManager, ClientTransaction parentTransaction)
     {
-      parentTransaction.NotifyOfSubTransactionCreating();
-      Assertion.IsTrue (parentTransaction.IsReadOnly);
+      Assertion.IsTrue (parentTransaction.IsReadOnly); // TODO 2621: should check and throw
 
+      _dataManager = dataManager;
       _parentTransaction = parentTransaction;
-      AddListener (new SubClientTransactionListener ());
 
       TransferDeletedAndInvalidObjects();
-
-      parentTransaction.NotifyOfSubTransactionCreated (this);
     }
 
-    public override ClientTransaction ParentTransaction
+    public ClientTransaction ParentTransaction
     {
       get { return _parentTransaction; }
     }
 
-    public override ClientTransaction RootTransaction
-    {
-      get { return ParentTransaction.RootTransaction; }
-    }
-
-    /// <summary>Initializes a new instance of this transaction.</summary>
-    public override ClientTransaction CreateEmptyTransactionOfSameType ()
-    {
-      return _parentTransaction.CreateSubTransaction();
-    }
-
-    protected internal override ObjectID CreateNewObjectID (ClassDefinition classDefinition)
+    public ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return ParentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    protected override DataContainer LoadDataContainer (ObjectID id)
+    public DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -99,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -120,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    public DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       if (!relationEndPointID.Definition.IsVirtual)
@@ -139,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
 
-    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
@@ -158,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
+    public DataContainer[] LoadDataContainersForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -181,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override object LoadScalarForQuery (IQuery query)
+    public object LoadScalarForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -195,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
       
       foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
-        DataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
+        _dataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
     }
 
 
@@ -207,7 +178,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
-      Assertion.IsFalse (DataManager.IsInvalid (parentDataContainer.ID));
+      Assertion.IsFalse (_dataManager.IsInvalid (parentDataContainer.ID));
       Assertion.IsFalse (parentDataContainer.State == StateType.Deleted, "Implied by previous assertion");
 
       var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
@@ -220,12 +191,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    protected override void PersistData (IEnumerable<DataContainer> changedDataContainers)
+    public void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
         PersistDataContainers (changedDataContainers);
-        PersistRelationEndPoints (DataManager.GetChangedRelationEndPoints());
+        PersistRelationEndPoints (_dataManager.GetChangedRelationEndPoints());
       }
     }
 
@@ -329,7 +300,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         if (parentEndPoint == null)
         {
           Assertion.IsTrue (
-              DataManager.DataContainerMap[endPoint.ObjectID].State == StateType.Deleted
+              _dataManager.DataContainerMap[endPoint.ObjectID].State == StateType.Deleted
               && ParentTransaction.DataManager.IsInvalid (endPoint.ObjectID),
               "Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of ParentTransaction and this now "
               + "contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known "

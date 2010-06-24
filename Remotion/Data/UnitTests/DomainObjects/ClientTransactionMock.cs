@@ -20,14 +20,12 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
   [Serializable]
-  public class ClientTransactionMock : RootClientTransaction
+  public class ClientTransactionMock : ClientTransaction
   {
     // types
 
@@ -41,9 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // construction and disposing
 
-    public ClientTransactionMock ()
+    public ClientTransactionMock () : this (new RootClientTransactionComponentFactory())
     {
-      Initialize();
+    }
+
+    private ClientTransactionMock (IClientTransactionComponentFactory componentFactory)
+        : base(componentFactory)
+    {
+      Initialize ();
       _queryManager = base.QueryManager;
     }
 
@@ -100,11 +103,10 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public IEnumerable<DomainObject> GetEnlistedObjects<T>()
       where T : DomainObject
     {
-      foreach (var t in GetEnlistedDomainObjects().OfType<T>())
-        yield return t;
+      return GetEnlistedDomainObjects().OfType<T>().Cast<DomainObject>();
     }
 
-    public new DataManager DataManager
+    public new IDataManager DataManager
     {
       get { return base.DataManager; }
     }

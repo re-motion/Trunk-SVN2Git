@@ -16,31 +16,25 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
   public class RootClientTransactionTest
   {
-    private RootClientTransaction _rootTx;
+    private IDataManager _dataManagerMock;
+    private RootClientTransaction _rootClientTransaction;
 
     [SetUp]
     public void SetUp ()
     {
-      _rootTx = (RootClientTransaction) ClientTransaction.CreateRootTransaction ();
+      _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
+      _rootClientTransaction = new RootClientTransaction (Guid.Empty, _dataManagerMock);
     }
 
-    [Test]
-    public void CollectionEndPointChangeDetectionStrategy ()
-    {
-      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (_rootTx, "DataManager");
-      Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy, 
-          Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
-    }
+    // TODO 2621: Add tests
   }
 }

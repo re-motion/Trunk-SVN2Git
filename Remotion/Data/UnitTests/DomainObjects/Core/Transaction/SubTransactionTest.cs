@@ -164,6 +164,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void EnlistedObjects_SharedWithParentTransaction ()
+    {
+      var subTx = ClientTransactionMock.CreateSubTransaction ();
+
+      var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
+      Assert.That (subTx.IsEnlisted (order), Is.False);
+      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
+
+      subTx.EnlistDomainObject (order);
+      Assert.That (subTx.IsEnlisted (order), Is.True);
+      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+    }
+
+    [Test]
     public void DomainObjects_CreatedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.NewObject();
@@ -995,6 +1009,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         ClientTransactionMock.Loaded += delegate { subTransaction.GetObjects<Order> (DomainObjectIDs.Order1); };
         Order.GetObject (DomainObjectIDs.Order2);
+      }
+    }
+
+    [Test]
+    public void LoadRelatedDataContainers_MakesParentWritableWhileGettingItsContainers ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+
+      // cause parent tx to require reload of data containers...
+      UnloadService.UnloadCollectionEndPointAndData (
+          ClientTransactionMock,
+          order.OrderItems.AssociatedEndPointID,
+          UnloadTransactionMode.ThisTransactionOnly);
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var relatedObjects = order.OrderItems.ToArray ();
+        Assert.That (relatedObjects,
+            Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
       }
     }
   }

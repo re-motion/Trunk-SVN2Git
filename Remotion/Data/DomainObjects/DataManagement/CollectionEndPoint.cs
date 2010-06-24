@@ -257,7 +257,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData);
     }
 
-    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager)
+    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
 

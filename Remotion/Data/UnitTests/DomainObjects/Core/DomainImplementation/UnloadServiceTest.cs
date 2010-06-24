@@ -354,10 +354,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     private void EnsureEndPointLoaded (RelationEndPointID endPointID)
     {
       var dataManager = ClientTransactionMock.DataManager;
-      EnsureEndPointLoaded(dataManager, endPointID);
+      EnsureEndPointLoaded (dataManager, endPointID);
     }
 
-    private void EnsureEndPointLoaded (DataManager dataManager, RelationEndPointID endPointID)
+    private void EnsureEndPointLoaded (IDataManager dataManager, RelationEndPointID endPointID)
     {
       dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (dataManager.RelationEndPointMap[endPointID], Is.Not.Null);

@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Touch ();
     }
 
-    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager)
+    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 

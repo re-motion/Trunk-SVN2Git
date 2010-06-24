@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   public class UnloadCommandTest : StandardMappingTest
   {
     private ClientTransactionMock _transaction;
-    private DataManager _dataManager;
+    private IDataManager _dataManager;
     private DataContainerMap _dataContainerMap;
     private RelationEndPointMap _relationEndPointMap;
 
@@ -446,7 +446,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Perform_NotLoaded ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_dataManager.ClientTransaction);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       Assert.That (_dataContainerMap[DomainObjectIDs.Order1], Is.Null);
 

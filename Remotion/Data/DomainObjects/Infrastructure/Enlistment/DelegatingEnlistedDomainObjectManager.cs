@@ -21,43 +21,48 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
 {
   /// <summary>
-  /// Implements the <see cref="IEnlistedDomainObjectManager"/> by delegating to a given <see cref="ClientTransaction"/>. Every object registered with
-  /// this manager actually is registered in the <see cref="ClientTransaction"/>.
+  /// Implements the <see cref="IEnlistedDomainObjectManager"/> by delegating to a given <see cref="TargetTransaction"/>. Every object registered with
+  /// this manager actually is registered in the <see cref="TargetTransaction"/>.
   /// </summary>
   [Serializable]
   public class DelegatingEnlistedDomainObjectManager : IEnlistedDomainObjectManager
   {
-    private readonly ClientTransaction _clientTransaction;
+    private readonly ClientTransaction _targetTransaction;
 
-    public DelegatingEnlistedDomainObjectManager (ClientTransaction clientTransaction)
+    public DelegatingEnlistedDomainObjectManager (ClientTransaction targetTransaction)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      _clientTransaction = clientTransaction;
+      ArgumentUtility.CheckNotNull ("targetTransaction", targetTransaction);
+      _targetTransaction = targetTransaction;
+    }
+
+    public ClientTransaction TargetTransaction
+    {
+      get { return _targetTransaction; }
     }
 
     public int EnlistedDomainObjectCount
     {
-      get { return _clientTransaction.EnlistedDomainObjectCount; }
+      get { return _targetTransaction.EnlistedDomainObjectCount; }
     }
 
     public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
     {
-      return _clientTransaction.GetEnlistedDomainObjects ();
+      return _targetTransaction.GetEnlistedDomainObjects ();
     }
 
     public DomainObject GetEnlistedDomainObject (ObjectID objectID)
     {
-      return _clientTransaction.GetEnlistedDomainObject (objectID);
+      return _targetTransaction.GetEnlistedDomainObject (objectID);
     }
 
     public bool EnlistDomainObject (DomainObject domainObject)
     {
-      return _clientTransaction.EnlistDomainObject (domainObject);
+      return _targetTransaction.EnlistDomainObject (domainObject);
     }
 
     public bool IsEnlisted (DomainObject domainObject)
     {
-      return _clientTransaction.IsEnlisted (domainObject);
+      return _targetTransaction.IsEnlisted (domainObject);
     }
   }
 }

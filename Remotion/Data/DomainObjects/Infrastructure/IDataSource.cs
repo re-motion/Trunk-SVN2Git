@@ -188,5 +188,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="classDefinition">The class definition to create a new <see cref="ObjectID"/> for.</param>
     /// <returns>A new <see cref="ObjectID"/> for the given class definition.</returns>
     ObjectID CreateNewObjectID (ClassDefinition classDefinition);
+
+    // TODO 2621: Consider removing
+    ClientTransaction ParentTransaction { get; }
   }
 }

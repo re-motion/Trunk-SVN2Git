@@ -48,11 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedObjects", endPointID);
     }
 
-    public static DataContainerCollection CallLoadRelatedDataContainers (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-      return (DataContainerCollection) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedDataContainers", endPointID);
-    }
-
     public static DomainObject CallNewObject (ClientTransaction clientTransaction, Type domainObjectType, ParamList constructorParameters)
     {
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "NewObject", domainObjectType, constructorParameters);
@@ -110,6 +105,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var dataManager = GetDataManager (clientTransaction);
       dataManager.RegisterDataContainer (dataContainer);
+    }
+
+    public static IDataSource GetDataSourceStrategy (ClientTransaction clientTransaction)
+    {
+      return (IDataSource) PrivateInvoke.GetNonPublicField (clientTransaction, "_dataSourceStrategy");
     }
   }
 }

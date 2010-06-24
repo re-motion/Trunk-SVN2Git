@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private ClientTransaction _ancestor1;
     private ClientTransaction _ancestor2;
-    private SubClientTransaction _subTransaction;
+    private ClientTransaction _subTransaction;
     
     private SubClientTransactionListener _listener;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _ancestor1 = ClientTransaction.CreateRootTransaction ();
       _ancestor2 = _ancestor1.CreateSubTransaction();
-      _subTransaction = (SubClientTransaction) _ancestor2.CreateSubTransaction ();
+      _subTransaction = _ancestor2.CreateSubTransaction ();
 
       _listener = new SubClientTransactionListener ();
     }

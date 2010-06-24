@@ -69,7 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ITransaction child = _transaction.CreateChild();
       Assert.IsNotNull (child);
       Assert.IsInstanceOfType (typeof (ClientTransactionWrapper), child);
-      Assert.IsInstanceOfType (typeof (SubClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
+      Assert.IsInstanceOfType (typeof (ClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
+
+      var dataSource = ClientTransactionTestHelper.GetDataSourceStrategy (((ClientTransactionWrapper) child).WrappedInstance);
+      Assert.IsInstanceOfType (typeof (SubClientTransaction), dataSource);
     }
 
     [Test]

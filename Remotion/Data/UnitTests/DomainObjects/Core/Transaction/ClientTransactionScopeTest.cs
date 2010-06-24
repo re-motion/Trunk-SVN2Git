@@ -15,12 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -391,27 +388,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void AutoDiscardBehavior ()
     {
-      var mockRepository = new MockRepository();
+      var transactionMock = ClientTransactionObjectMother.CreateStrictMock();
 
-      var transaction = mockRepository.StrictMock<ClientTransaction> (
-          new Dictionary<Enum, object> (), 
-          new ClientTransactionExtensionCollection (), 
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          new DictionaryBasedEnlistedDomainObjectManager());
-
-      Expect.Call (transaction.EnterScope (AutoRollbackBehavior.Discard))
+      transactionMock
+          .Expect (mock => mock.EnterScope (AutoRollbackBehavior.Discard))
           .Return (
           (ClientTransactionScope)
-          PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), transaction, AutoRollbackBehavior.Discard));
-      Expect.Call (transaction.Discard()).Return (true);
+          PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), transactionMock, AutoRollbackBehavior.Discard));
+      transactionMock.Expect (mock => mock.Discard ()).Return (true);
 
-      mockRepository.ReplayAll();
+      transactionMock.Replay();
 
-      using (transaction.EnterScope (AutoRollbackBehavior.Discard))
+      using (transactionMock.EnterScope (AutoRollbackBehavior.Discard))
       {
       }
 
-      mockRepository.VerifyAll();
+      transactionMock.VerifyAllExpectations();
     }
 
     [Test]

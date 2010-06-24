@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -492,17 +491,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void LoadRelatedObjects_CallsLoadRelatedDataContainers ()
     {
-      var clientTransactionPartialMock = ClientTransactionObjectMother.CreatePartialMock ();
-
-      clientTransactionPartialMock
-          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedDataContainers(mock, _orderItemsEndPointID))
+      var dataSourceMock = MockRepository.GenerateMock<IDataSource> ();
+      dataSourceMock
+          .Expect (mock => mock.LoadRelatedDataContainers (_orderItemsEndPointID))
           .Return (new DataContainerCollection ());
 
-      clientTransactionPartialMock.Replay ();
-      
-      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransactionPartialMock, _orderItemsEndPointID);
+      dataSourceMock.Replay ();
 
-      clientTransactionPartialMock.VerifyAllExpectations();
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithDataSource (dataSourceMock);
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      dataSourceMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -689,12 +688,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)
     {
-      var clientTransactionPartialMock = ClientTransactionObjectMother.CreatePartialMock ();
-      clientTransactionPartialMock
-          .Stub (mock => ClientTransactionTestHelper.CallLoadRelatedDataContainers (mock, endPointID))
+      var dataSourceStub = MockRepository.GenerateStub<IDataSource> ();
+      dataSourceStub
+          .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (dataContainers, false));
-      clientTransactionPartialMock.Replay ();
-      return clientTransactionPartialMock;
+      dataSourceStub.Replay ();
+
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithDataSource (dataSourceStub);
+      return clientTransaction;
     }
   }
 }

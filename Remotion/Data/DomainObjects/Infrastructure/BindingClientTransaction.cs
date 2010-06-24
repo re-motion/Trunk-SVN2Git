@@ -20,8 +20,13 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   [Serializable]
-  public class BindingClientTransaction : RootClientTransaction
+  public class BindingClientTransaction : ClientTransaction
   {
+    protected BindingClientTransaction (IClientTransactionComponentFactory componentFactory)
+      : base (componentFactory)
+    {
+    }
+
     /// <summary>
     /// Do not use this method, use <see>ClientTransaction.CreateRootTransaction</see> instead.
     /// </summary>
