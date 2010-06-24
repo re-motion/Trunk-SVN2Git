@@ -135,7 +135,7 @@ public class ClientTransaction
   private readonly IObjectLoader _objectLoader;
 
   private readonly Dictionary<Enum, object> _applicationData;
-  private readonly CompoundClientTransactionListener _listeners;
+  private readonly CompoundClientTransactionListener _eventSink;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly ClientTransactionExtensionCollection _extensions;
   private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
@@ -156,18 +156,18 @@ public class ClientTransaction
     _applicationData = componentFactory.CreateApplicationData ();
     _extensions = componentFactory.CreateExtensions ();
    
-    _listeners = new CompoundClientTransactionListener ();
+    _eventSink = new CompoundClientTransactionListener ();
 
-    _listeners.AddListener (new LoggingClientTransactionListener ());
-    _listeners.AddListener (new ReadOnlyClientTransactionListener ());
-    _listeners.AddListener (new ExtensionClientTransactionListener (_extensions));
+    _eventSink.AddListener (new LoggingClientTransactionListener ());
+    _eventSink.AddListener (new ReadOnlyClientTransactionListener ());
+    _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
 
     foreach (var listener in componentFactory.CreateListeners (this))
-      _listeners.AddListener (listener);
+      _eventSink.AddListener (listener);
 
     _dataManager = componentFactory.CreateDataManager (this);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id, _dataManager);
-    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _listeners);
+    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _eventSink);
     _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
 
     TransactionEventSink.TransactionInitializing (this);
@@ -285,12 +285,12 @@ public class ClientTransaction
   /// </remarks>
   internal IClientTransactionListener TransactionEventSink
   {
-    get { return _listeners; }
+    get { return _eventSink; }
   }
 
   protected internal void AddListener (IClientTransactionListener listener)
   {
-    _listeners.AddListener (listener);
+    _eventSink.AddListener (listener);
   }
 
   /// <summary>
