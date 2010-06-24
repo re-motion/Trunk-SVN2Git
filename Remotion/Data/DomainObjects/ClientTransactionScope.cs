@@ -226,7 +226,7 @@ namespace Remotion.Data.DomainObjects
     /// Commits the transaction scoped by this object. This is equivalent to <c>ScopedTransaction.Commit()</c>.
     /// </summary>
     /// <exception cref="Persistence.PersistenceException">Changes to objects from multiple storage providers were made.</exception>
-    /// <exception cref="Persistence.StorageProviderException">An error occurred while committing the changes to the datasource.</exception>
+    /// <exception cref="Persistence.StorageProviderException">An error occurred while committing the changes to the data source.</exception>
     public void Commit ()
     {
       if (ScopedTransaction != null)

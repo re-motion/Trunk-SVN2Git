@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Provides a common interface for classes that can load <see cref="DataContainer"/> instances from a data source and persist them.
   /// TODO 2246: Very similar to PersistenceManager.
   /// </summary>
-  public interface IDataSource
+  public interface IPersistenceStrategy
   {
     /// <summary>
     /// Loads a data container from the underlying data source.
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the datasource.
+    ///   An error occurred while accessing the data source.
     /// </exception>
     DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
 

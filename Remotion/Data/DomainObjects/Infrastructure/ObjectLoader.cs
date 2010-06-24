@@ -39,18 +39,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ObjectLoader));
 
-    private readonly IDataSource _dataSource;
+    private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _eventSink;
     private readonly IEagerFetcher _fetcher;
 
-    public ObjectLoader (ClientTransaction clientTransaction, IDataSource dataSource, IClientTransactionListener eventSink, IEagerFetcher fetcher)
+    public ObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink, IEagerFetcher fetcher)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("dataSource", dataSource);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
-      _dataSource = dataSource;
+      _persistenceStrategy = persistenceStrategy;
       _clientTransaction = clientTransaction;
       _eventSink = eventSink;
       
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var dataContainer = _dataSource.LoadDataContainer (id);
+      var dataContainer = _persistenceStrategy.LoadDataContainer (id);
       RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { id }));
 
       InitializeLoadedDataContainer (dataContainer);
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
-      var dataContainers = _dataSource.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
+      var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
       RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (idsToBeLoaded));
 
       foreach (DataContainer dataContainer in dataContainers)
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
         throw new ArgumentException ("LoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
-      DataContainer relatedDataContainer = _dataSource.LoadRelatedDataContainer (relationEndPointID);
+      DataContainer relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (relationEndPointID);
 
       if (relatedDataContainer != null)
       {
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
-      var relatedDataContainers = _dataSource.LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
+      var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
       return MergeQueryResult<DomainObject> (relatedDataContainers);
     }
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      var dataContainers = _dataSource.LoadDataContainersForQuery (query);
+      var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
       var resultArray = MergeQueryResult<T> (dataContainers);
       
       if (resultArray.Length > 0)

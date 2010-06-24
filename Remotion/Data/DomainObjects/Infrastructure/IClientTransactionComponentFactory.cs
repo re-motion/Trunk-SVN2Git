@@ -30,11 +30,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ClientTransactionExtensionCollection CreateExtensions ();
     IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction);
     IDataManager CreateDataManager (ClientTransaction clientTransaction);
-    IDataSource CreateDataSourceStrategy (Guid id, IDataManager dataManager);
+    IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager);
     IObjectLoader CreateObjectLoader (
         ClientTransaction clientTransaction, 
         IDataManager dataManager, 
-        IDataSource dataSource, 
+        IPersistenceStrategy persistenceStrategy, 
         IClientTransactionListener eventSink);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager ();
     

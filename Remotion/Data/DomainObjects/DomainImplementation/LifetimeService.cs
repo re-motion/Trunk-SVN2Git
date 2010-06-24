@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <exception cref="Persistence.StorageProviderException">
     /// The Mapping does not contain a class definition for the given <paramref name="objectID"/>.<br/> -or- <br/>
     /// An error occurred while reading a <see cref="PropertyValue"/>.<br/> -or- <br/>
-    /// An error occurred while accessing the datasource.
+    /// An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
     /// <see langword="false" />.</exception>

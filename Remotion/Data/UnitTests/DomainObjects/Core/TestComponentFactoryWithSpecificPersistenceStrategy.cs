@@ -23,14 +23,14 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  internal class TestComponentFactoryWithSpecificDataSource : IClientTransactionComponentFactory
+  internal class TestComponentFactoryWithSpecificPersistenceStrategy : IClientTransactionComponentFactory
   {
     private readonly IClientTransactionComponentFactory _actualFactory = new RootClientTransactionComponentFactory();
-    private readonly IDataSource _dataSource;
+    private readonly IPersistenceStrategy _persistenceStrategy;
 
-    public TestComponentFactoryWithSpecificDataSource (IDataSource dataSource)
+    public TestComponentFactoryWithSpecificPersistenceStrategy (IPersistenceStrategy persistenceStrategy)
     {
-      _dataSource = dataSource;
+      _persistenceStrategy = persistenceStrategy;
     }
 
     public Dictionary<Enum, object> CreateApplicationData ()
@@ -43,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return _actualFactory.CreateDataManager (clientTransaction);
     }
 
-    public IDataSource CreateDataSourceStrategy (Guid id, IDataManager dataManager)
+    public IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
     {
-      return _dataSource;
+      return _persistenceStrategy;
     }
 
     public IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public IObjectLoader CreateObjectLoader (
-        ClientTransaction clientTransaction, IDataManager dataManager, IDataSource dataSource, IClientTransactionListener eventSink)
+        ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
-      return _actualFactory.CreateObjectLoader (clientTransaction, dataManager, dataSource, eventSink);
+      return _actualFactory.CreateObjectLoader (clientTransaction, dataManager, persistenceStrategy, eventSink);
     }
   }
 }

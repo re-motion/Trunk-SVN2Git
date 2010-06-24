@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
+    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <typeparam name="T">The expected type of the concrete <see cref="DomainObject"/></typeparam>
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
     ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the datasource.
+    ///   An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="MissingMethodException">The concrete <see cref="DomainObject"/> doesn't implement the required constructor.</exception>
     /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="T"/>.</exception>
@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
+    /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
     ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-    ///   An error occurred while accessing the datasource.
+    ///   An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="MissingMethodException">The concrete <see cref="DomainObject"/> doesn't implement the required constructor.</exception>
     /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="T"/>.</exception>

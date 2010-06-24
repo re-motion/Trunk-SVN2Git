@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
@@ -28,13 +29,13 @@ namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
   /// Provides an abstract base implementation for classes encapsulating persistence-related functionality. Subclasses of <see cref="StorageProvider"/> 
-  /// are used by <see cref="Remotion.Data.DomainObjects.Infrastructure.RootClientTransaction"/> to load and store <see cref="DataContainer"/> 
+  /// are used by <see cref="RootPersistenceStrategy"/> to load and store <see cref="DataContainer"/> 
   /// instances and execute queries.
   /// </summary>
   /// <remarks>
   /// Implementers must ensure that calls to the storage provider do not modify the internal state of the calling 
-  /// <see cref="Remotion.Data.DomainObjects.Infrastructure.RootClientTransaction"/>. They cannot use <see cref="ClientTransaction.Current"/> to 
-  /// determine the calling <see cref="Remotion.Data.DomainObjects.Infrastructure.RootClientTransaction"/> as that property is not guaranteed to be 
+  /// <see cref="RootPersistenceStrategy"/>. They cannot use <see cref="ClientTransaction.Current"/> to 
+  /// determine the calling <see cref="RootPersistenceStrategy"/> as that property is not guaranteed to be 
   /// set by the caller.
   /// </remarks>
   public abstract class StorageProvider : IDisposable

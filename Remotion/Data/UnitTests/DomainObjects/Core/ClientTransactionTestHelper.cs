@@ -107,9 +107,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       dataManager.RegisterDataContainer (dataContainer);
     }
 
-    public static IDataSource GetDataSourceStrategy (ClientTransaction clientTransaction)
+    public static IPersistenceStrategy GetPersistenceStrategy (ClientTransaction clientTransaction)
     {
-      return (IDataSource) PrivateInvoke.GetNonPublicField (clientTransaction, "_dataSourceStrategy");
+      return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
     }
   }
 }

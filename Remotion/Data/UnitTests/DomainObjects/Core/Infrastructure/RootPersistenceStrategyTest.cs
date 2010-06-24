@@ -23,16 +23,16 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class RootClientTransactionTest
+  public class RootPersistenceStrategyTest
   {
     private IDataManager _dataManagerMock;
-    private RootClientTransaction _rootClientTransaction;
+    private RootPersistenceStrategy _rootPersistenceStrategy;
 
     [SetUp]
     public void SetUp ()
     {
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
-      _rootClientTransaction = new RootClientTransaction (Guid.Empty, _dataManagerMock);
+      _rootPersistenceStrategy = new RootPersistenceStrategy (Guid.Empty, _dataManagerMock);
     }
 
     // TODO 2621: Add tests

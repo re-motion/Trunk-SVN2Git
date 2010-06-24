@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.IsInstanceOfType (typeof (ClientTransactionWrapper), child);
       Assert.IsInstanceOfType (typeof (ClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
 
-      var dataSource = ClientTransactionTestHelper.GetDataSourceStrategy (((ClientTransactionWrapper) child).WrappedInstance);
-      Assert.IsInstanceOfType (typeof (SubClientTransaction), dataSource);
+      var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (((ClientTransactionWrapper) child).WrappedInstance);
+      Assert.IsInstanceOfType (typeof (SubPersistenceStrategy), persistenceStrategy);
     }
 
     [Test]

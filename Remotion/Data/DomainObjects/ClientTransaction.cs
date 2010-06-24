@@ -54,12 +54,12 @@ public class ClientTransaction
   // static members and constants
 
   /// <summary>
-  /// Creates a new root <see cref="ClientTransaction"/>, specifically a <see cref="RootClientTransaction"/>.
+  /// Creates a new root <see cref="ClientTransaction"/>, specifically a <see cref="RootPersistenceStrategy"/>.
   /// </summary>
   /// <returns>A new root <see cref="ClientTransaction"/> instance.</returns>
   /// <remarks>The object returned by this method can be extended with <b>Mixins</b> by configuring the <see cref="MixinConfiguration.ActiveConfiguration"/>
-  /// to include a mixin for type <see cref="RootClientTransaction"/>. Declaratively, this can be achieved by attaching an
-  /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootClientTransaction"/> to a mixin class.</remarks>
+  /// to include a mixin for type <see cref="RootPersistenceStrategy"/>. Declaratively, this can be achieved by attaching an
+  /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootPersistenceStrategy"/> to a mixin class.</remarks>
   public static ClientTransaction CreateRootTransaction ()
   {
     var componentFactory = new RootClientTransactionComponentFactory();
@@ -74,8 +74,8 @@ public class ClientTransaction
   /// <remarks>
   /// <para>
   /// The object returned by this method can be extended with <b>Mixins</b> by configuring the <see cref="MixinConfiguration.ActiveConfiguration"/>
-  /// to include a mixin for type <see cref="RootClientTransaction"/>. Declaratively, this can be achieved by attaching an
-  /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootClientTransaction"/> to a mixin class.
+  /// to include a mixin for type <see cref="RootPersistenceStrategy"/>. Declaratively, this can be achieved by attaching an
+  /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootPersistenceStrategy"/> to a mixin class.
   /// </para>
   /// <para>
   /// Binding transactions cannot have subtransactions.
@@ -136,7 +136,7 @@ public class ClientTransaction
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly CompoundClientTransactionListener _listeners;
-  private readonly IDataSource _dataSourceStrategy;
+  private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly ClientTransactionExtensionCollection _extensions;
   private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
@@ -166,8 +166,8 @@ public class ClientTransaction
       _listeners.AddListener (listener);
 
     _dataManager = componentFactory.CreateDataManager (this);
-    _dataSourceStrategy = componentFactory.CreateDataSourceStrategy (_id, _dataManager);
-    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _dataSourceStrategy, _listeners);
+    _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id, _dataManager);
+    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _listeners);
     _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
 
     TransactionEventSink.TransactionInitializing (this);
@@ -179,15 +179,15 @@ public class ClientTransaction
   /// <value>The parent transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
-    get { return _dataSourceStrategy.ParentTransaction; }
+    get { return _persistenceStrategy.ParentTransaction; }
   }
 
   /// <summary>
   /// Gets the root transaction of this <see cref="ClientTransaction"/>, i.e. the top-level parent transaction in a row of subtransactions.
   /// </summary>
   /// <value>The root transaction of this <see cref="ClientTransaction"/>.</value>
-  /// <remarks>When this transaction is an instance of <see cref="RootClientTransaction"/>, this property returns the transaction itself. If it
-  /// is an instance of <see cref="SubClientTransaction"/>, it returns the parent's root transaction. </remarks>
+  /// <remarks>When this transaction is an instance of <see cref="RootPersistenceStrategy"/>, this property returns the transaction itself. If it
+  /// is an instance of <see cref="SubPersistenceStrategy"/>, it returns the parent's root transaction. </remarks>
   public ClientTransaction RootTransaction 
   { 
     get 
@@ -200,9 +200,9 @@ public class ClientTransaction
     }
   }
 
-  protected IDataSource DataSourceStrategy
+  protected IPersistenceStrategy PersistenceStrategy
   {
-    get { return _dataSourceStrategy; }
+    get { return _persistenceStrategy; }
   }
 
   /// <summary>
@@ -269,7 +269,7 @@ public class ClientTransaction
     get
     {
       if (_queryManager == null)
-        _queryManager = new QueryManager (_dataSourceStrategy, _objectLoader, TransactionEventSink);
+        _queryManager = new QueryManager (_persistenceStrategy, _objectLoader, TransactionEventSink);
 
       return _queryManager;
     }
@@ -592,7 +592,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-    return _dataSourceStrategy.CreateNewObjectID (classDefinition);
+    return _persistenceStrategy.CreateNewObjectID (classDefinition);
   }
 
   /// <summary>
@@ -697,10 +697,10 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Commits all changes within the <b>ClientTransaction</b> to the persistent datasources.
+  /// Commits all changes within the <b>ClientTransaction</b> to the underlying data source.
   /// </summary>
   /// <exception cref="Persistence.PersistenceException">Changes to objects from multiple storage providers were made.</exception>
-  /// <exception cref="Persistence.StorageProviderException">An error occurred while committing the changes to the datasource.</exception>
+  /// <exception cref="Persistence.StorageProviderException">An error occurred while committing the changes to the data source.</exception>
   public virtual void Commit ()
   {
     using (EnterNonDiscardingScope ())
@@ -709,7 +709,7 @@ public class ClientTransaction
       var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
 
       var changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
-      _dataSourceStrategy.PersistData (changedDataContainers);
+      _persistenceStrategy.PersistData (changedDataContainers);
 
       _dataManager.Commit ();
       EndCommit (changedButNotDeletedDomainObjects);
@@ -734,7 +734,7 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
+  /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the data source.
   /// </summary>
   /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
   /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
@@ -745,7 +745,7 @@ public class ClientTransaction
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
+  ///   An error occurred while accessing the data source.
   /// </exception>
   protected internal virtual DomainObject GetObject (ObjectID id, bool includeDeleted)
   {
@@ -1004,7 +1004,7 @@ public class ClientTransaction
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
+  ///   An error occurred while accessing the data source.
   /// </exception>
   protected virtual DomainObject LoadObject (ObjectID id)
   {
@@ -1031,7 +1031,7 @@ public class ClientTransaction
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for one of the given <paramref name="idsToBeLoaded"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
+  ///   An error occurred while accessing the data source.
   /// </exception>
   protected virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
   {
@@ -1060,7 +1060,7 @@ public class ClientTransaction
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
+  ///   An error occurred while accessing the data source.
   /// </exception>
   protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
   {

@@ -31,12 +31,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   /// <remarks>The parent transaction cannot be modified while a subtransaction is active.</remarks>
   [Serializable]
-  public class SubClientTransaction : IDataSource
+  public class SubPersistenceStrategy : IPersistenceStrategy
   {
     private readonly IDataManager _dataManager;
     private readonly ClientTransaction _parentTransaction;
 
-    protected SubClientTransaction (IDataManager dataManager, ClientTransaction parentTransaction)
+    protected SubPersistenceStrategy (IDataManager dataManager, ClientTransaction parentTransaction)
     {
       Assertion.IsTrue (parentTransaction.IsReadOnly); // TODO 2621: should check and throw
 

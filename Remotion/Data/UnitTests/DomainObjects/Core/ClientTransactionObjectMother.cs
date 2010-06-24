@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return mockRepository.StrictMock<ClientTransaction> (componentFactory);
     }
 
-    public static ClientTransaction CreateTransactionWithDataSource (IDataSource dataSource)
+    public static ClientTransaction CreateTransactionWithPersistenceStrategy (IPersistenceStrategy persistenceStrategy)
     {
-      var factory = new TestComponentFactoryWithSpecificDataSource (dataSource);
+      var factory = new TestComponentFactoryWithSpecificPersistenceStrategy (persistenceStrategy);
       return (ClientTransaction) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransaction), factory);
     }
   }

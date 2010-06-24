@@ -491,17 +491,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void LoadRelatedObjects_CallsLoadRelatedDataContainers ()
     {
-      var dataSourceMock = MockRepository.GenerateMock<IDataSource> ();
-      dataSourceMock
+      var persistenceStragegyMock = MockRepository.GenerateMock<IPersistenceStrategy> ();
+      persistenceStragegyMock
           .Expect (mock => mock.LoadRelatedDataContainers (_orderItemsEndPointID))
           .Return (new DataContainerCollection ());
 
-      dataSourceMock.Replay ();
+      persistenceStragegyMock.Replay ();
 
-      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithDataSource (dataSourceMock);
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy (persistenceStragegyMock);
       ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
 
-      dataSourceMock.VerifyAllExpectations();
+      persistenceStragegyMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -688,13 +688,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)
     {
-      var dataSourceStub = MockRepository.GenerateStub<IDataSource> ();
-      dataSourceStub
+      var persistenceStrategyStub = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      persistenceStrategyStub
           .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (dataContainers, false));
-      dataSourceStub.Replay ();
+      persistenceStrategyStub.Replay ();
 
-      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithDataSource (dataSourceStub);
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy (persistenceStrategyStub);
       return clientTransaction;
     }
   }

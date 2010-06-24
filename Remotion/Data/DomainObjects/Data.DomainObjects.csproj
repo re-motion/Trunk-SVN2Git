@@ -213,7 +213,7 @@
     <Compile Include="Infrastructure\IClientTransactionComponentFactory.cs" />
     <Compile Include="Infrastructure\InitializedEventDomainObjectTransactionContextDecorator.cs" />
     <Compile Include="Infrastructure\IClientTransactionListenerFactory.cs" />
-    <Compile Include="Infrastructure\IDataSource.cs" />
+    <Compile Include="Infrastructure\IPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\IObjectLoader.cs" />
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
@@ -360,7 +360,7 @@
     <Compile Include="Infrastructure\IPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\PropertyIndexer.cs" />
     <Compile Include="Infrastructure\RelatedObjectPropertyAccessorStrategy.cs" />
-    <Compile Include="Infrastructure\RootClientTransaction.cs" />
+    <Compile Include="Infrastructure\RootPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\TransactionUnlocker.cs" />
     <Compile Include="Infrastructure\ValuePropertyAccessorStrategy.cs" />
     <Compile Include="LoadMode.cs" />
@@ -687,7 +687,7 @@
     <Compile Include="StateType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\SubClientTransaction.cs" />
+    <Compile Include="Infrastructure\SubPersistenceStrategy.cs" />
     <Compile Include="Transport\BinaryImportStrategy.cs" />
     <Compile Include="Transport\IExportStrategy.cs" />
     <Compile Include="Transport\IImportStrategy.cs" />

@@ -22,12 +22,12 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
-  /// <see cref="QueryManager"/> provides methods to execute queries within a <see cref="RootClientTransaction"/>.
+  /// <see cref="QueryManager"/> provides methods to execute queries within a <see cref="RootPersistenceStrategy"/>.
   /// </summary>
   [Serializable]
   public class QueryManager : IQueryManager
   {
-    private readonly IDataSource _dataSource;
+    private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly IClientTransactionListener _transactionEventSink;
 
@@ -36,17 +36,17 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryManager"/> class.
     /// </summary>
-    /// <param name="dataSource">The <see cref="IDataSource"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
+    /// <param name="persistenceStrategy">The <see cref="IPersistenceStrategy"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
     /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
     /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
-    public QueryManager (IDataSource dataSource, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
+    public QueryManager (IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("dataSource", dataSource);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
-      _dataSource = dataSource;
+      _persistenceStrategy = persistenceStrategy;
       _objectLoader = objectLoader;
       _transactionEventSink = transactionEventSink;
     }
@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Collection)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
-      return _dataSource.LoadScalarForQuery (query);
+      return _persistenceStrategy.LoadScalarForQuery (query);
     }
 
     /// <summary>

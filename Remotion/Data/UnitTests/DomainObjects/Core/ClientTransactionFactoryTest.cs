@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (transaction, Is.InstanceOfType (typeof (ClientTransactionWrapper)));
       Assert.That (transaction.To<ClientTransaction>(), Is.InstanceOfType (typeof (ClientTransaction)));
       
-      var dataSourceStrategy = ClientTransactionTestHelper.GetDataSourceStrategy (transaction.To<ClientTransaction>());
-      Assert.That (dataSourceStrategy, Is.InstanceOfType (typeof (RootClientTransaction)));
+      var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (transaction.To<ClientTransaction>());
+      Assert.That (persistenceStrategy, Is.InstanceOfType (typeof (RootPersistenceStrategy)));
     }
 
     [Test]

@@ -32,12 +32,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Represents a top-level <see cref="ClientTransaction"/>, which does not have a parent transaction.
   /// </summary>
   [Serializable]
-  public class RootClientTransaction : IDataSource
+  public class RootPersistenceStrategy : IPersistenceStrategy
   {
     private readonly Guid _transactionID;
     private readonly IDataManager _dataManager;
 
-    public RootClientTransaction (Guid transactionID, IDataManager dataManager)
+    public RootPersistenceStrategy (Guid transactionID, IDataManager dataManager)
     {
       _transactionID = transactionID;
       _dataManager = dataManager;

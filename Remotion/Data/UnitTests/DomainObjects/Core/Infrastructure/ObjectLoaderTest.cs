@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private MockRepository _mockRepository;
 
     private ClientTransactionMock _clientTransaction;
-    private IDataSource _dataSourceMock;
+    private IPersistenceStrategy _persistenceStrategyMock;
     private IClientTransactionListener _eventSinkMock;
     private IEagerFetcher _fetcherMock;
 
@@ -56,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _mockRepository = new MockRepository ();
       
       _clientTransaction = new ClientTransactionMock();
-      _dataSourceMock = _mockRepository.StrictMock<IDataSource> ();
+      _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _eventSinkMock = _mockRepository.DynamicMock<IClientTransactionListener> ();
       _fetcherMock = _mockRepository.StrictMock<IEagerFetcher> ();
 
-      _objectLoader = new ObjectLoader (_clientTransaction, _dataSourceMock, _eventSinkMock, _fetcherMock);
+      _objectLoader = new ObjectLoader (_clientTransaction, _persistenceStrategyMock, _eventSinkMock, _fetcherMock);
 
       _dataContainer1 = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _dataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
@@ -71,9 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadObject ()
     {
-      _dataSourceMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadObject (DomainObjectIDs.Order1);
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock.Expect (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+        _persistenceStrategyMock.Expect (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
         
         ExpectObjectsLoading (DomainObjectIDs.Order1);
         ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
@@ -105,11 +105,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadObjects ()
     {
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true);
 
@@ -122,11 +122,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadObjects_WithUnknownObjects ()
     {
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order2 }, true))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order2 }, true);
 
@@ -140,11 +140,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadObjects_Ordering ()
     {
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
           .Return (new DataContainerCollection (new[] { _dataContainer2, _dataContainer1 }, true));
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true);
 
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock
+        _persistenceStrategyMock
             .Expect (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainers (new ObjectID[0], true))
         .Return (new DataContainerCollection (new DataContainer[0], true));
 
@@ -203,11 +203,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
           .Return (_dataContainer1);
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObject (endPointID);
 
@@ -219,11 +219,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
           .Return (null);
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObject (endPointID);
 
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock.Expect (mock => mock.LoadRelatedDataContainer (endPointID)).Return (_dataContainer1);
+        _persistenceStrategyMock.Expect (mock => mock.LoadRelatedDataContainer (endPointID)).Return (_dataContainer1);
 
         ExpectObjectsLoading (DomainObjectIDs.Order1);
         ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
@@ -276,11 +276,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObjects (endPointID);
 
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock
+        _persistenceStrategyMock
             .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
         .Return (new DataContainerCollection (new DataContainer[0], true));
 
@@ -355,11 +355,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var domainObject1 = PreregisterDataContainer(_dataContainer1);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObjects (endPointID);
 
@@ -378,7 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock
+        _persistenceStrategyMock
             .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
@@ -398,11 +398,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadCollectionQueryResult ()
     {
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
@@ -416,7 +416,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
         .Return (new DataContainer[0]);
 
@@ -440,11 +440,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var domainObject1 = PreregisterDataContainer (_dataContainer1);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new []{ _dataContainer1, _dataContainer2 });
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
@@ -462,7 +462,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _dataSourceMock
+        _persistenceStrategyMock
             .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
@@ -485,11 +485,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' was expected.")]
     public void LoadCollectionQueryResult_CastError ()
     {
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1, _dataContainer2 });
 
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Customer> (_fakeQuery);
 
@@ -505,10 +505,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _fakeQuery.EagerFetchQueries.Add (endPointDefinition, fetchQueryStub);
       
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1 });
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
           .Return (new[] { _dataContainer2 });
       _fetcherMock
@@ -535,7 +535,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _fakeQuery.EagerFetchQueries.Add (endPointDefinition, fetchQueryStub);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new DataContainer[0]);
 
@@ -556,10 +556,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _fakeQuery.EagerFetchQueries.Add (endPointDefinition, fetchQueryStub);
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1 });
-      _dataSourceMock
+      _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
           .Return (new DataContainer[0]);
       _fetcherMock
@@ -592,10 +592,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ExpectObjectsLoading (_dataContainer2.ID);
       ExpectObjectsLoaded (null, _dataContainer2); // on second call, do not expect transaction receiver to be empty
 
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _dataContainer1 });
-      _dataSourceMock
+      _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
           .Return (new[] { _dataContainer2 });
       _fetcherMock
@@ -621,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ClientTransaction loadTransaction = null;
       _clientTransaction.Loaded += delegate { loadTransaction = ClientTransaction.Current; };
 
-      _dataSourceMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
       _mockRepository.ReplayAll ();
 
       _objectLoader.LoadObject (DomainObjectIDs.Order1);

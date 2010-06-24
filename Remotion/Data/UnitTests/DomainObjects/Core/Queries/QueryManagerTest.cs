@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   {
     private QueryManager _queryManager;
 
-    private IDataSource _dataSourceMock;
+    private IPersistenceStrategy _persistenceStrategyMock;
     private IObjectLoader _objectLoaderMock;
     private IClientTransactionListener _transactionEventSinkMock;
     
@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       base.SetUp ();
 
-      _dataSourceMock = MockRepository.GenerateMock<IDataSource> ();
+      _persistenceStrategyMock = MockRepository.GenerateMock<IPersistenceStrategy> ();
       _objectLoaderMock = MockRepository.GenerateMock<IObjectLoader> ();
       _transactionEventSinkMock = MockRepository.GenerateMock<IClientTransactionListener> ();
 
-      _queryManager = new QueryManager (_dataSourceMock, _objectLoaderMock, _transactionEventSinkMock);
+      _queryManager = new QueryManager (_persistenceStrategyMock, _objectLoaderMock, _transactionEventSinkMock);
 
       _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       _scalarQuery = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
@@ -61,12 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetScalar ()
     {
-      _dataSourceMock.Expect (mock => mock.LoadScalarForQuery (_scalarQuery)).Return (27);
-      _dataSourceMock.Replay ();
+      _persistenceStrategyMock.Expect (mock => mock.LoadScalarForQuery (_scalarQuery)).Return (27);
+      _persistenceStrategyMock.Replay ();
 
       var result = _queryManager.GetScalar (_scalarQuery);
 
-      _dataSourceMock.VerifyAllExpectations ();
+      _persistenceStrategyMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (27));
     }
 

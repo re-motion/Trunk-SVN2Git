@@ -17,22 +17,18 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
-using System.Linq;
 using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class SubClientTransactionTest : ClientTransactionBaseTest
+  public class SubPersistenceStrategyTest : ClientTransactionBaseTest
   {
     private ClientTransactionMock _parentTransaction;
     private ClientTransaction _subTransaction;
-    private IDataSource _dataSource;
+    private IPersistenceStrategy _persistenceStrategy;
 
     public override void SetUp ()
     {
@@ -40,8 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _parentTransaction = new ClientTransactionMock ();
       _subTransaction = _parentTransaction.CreateSubTransaction ();
-      _dataSource = ClientTransactionTestHelper.GetDataSourceStrategy (_subTransaction);
+      _persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (_subTransaction);
     }
+
+    // TODO 2621: Consider rewriting with mocks
 
     [Test]
     public void PersistData_NewDataContainer_ClearsDiscardFlagInParent ()
@@ -49,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var instance = _subTransaction.Execute (() => ClassWithAllDataTypes.NewObject ());
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.True);
 
-      _dataSource.PersistData (new[] { _subTransaction.Execute (() => instance.InternalDataContainer) });
+      _persistenceStrategy.PersistData (new[] { _subTransaction.Execute (() => instance.InternalDataContainer) });
 
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.False);
     }

@@ -63,16 +63,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy ());
     }
 
-    public IDataSource CreateDataSourceStrategy (Guid id, IDataManager dataManager)
+    public IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      return ObjectFactory.Create<SubClientTransaction> (true, ParamList.Create (dataManager, _parentTransaction));
+      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (dataManager, _parentTransaction));
     }
 
-    public IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IDataSource dataSource, IClientTransactionListener eventSink)
+    public IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
       var eagerFetcher = new EagerFetcher (dataManager);
-      return new ObjectLoader (clientTransaction, dataSource, eventSink, eagerFetcher);
+      return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 
     public IEnlistedDomainObjectManager CreateEnlistedObjectManager ()

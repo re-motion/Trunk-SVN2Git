@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.Unchanged"/>. All <see cref="PropertyValue"/>s for the class specified by <see cref="ObjectID.ClassID"/> are created.
     /// </remarks>
     /// <param name="id">The <see cref="ObjectID"/> of the new <see cref="DataContainer"/> to create. Must not be <see langword="null"/>.</param>
-    /// <param name="timestamp">The timestamp value of the existing object in the datasource.</param>
+    /// <param name="timestamp">The timestamp value of the existing object in the data source.</param>
     /// <param name="persistentValueLookup">A function object returning the value of a given persistent property for the existing object.</param>
     /// <returns>The new <see cref="DataContainer"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
