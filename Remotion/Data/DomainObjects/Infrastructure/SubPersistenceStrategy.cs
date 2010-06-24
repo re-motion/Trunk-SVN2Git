@@ -36,9 +36,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly IDataManager _dataManager;
     private readonly ClientTransaction _parentTransaction;
 
-    protected SubPersistenceStrategy (IDataManager dataManager, ClientTransaction parentTransaction)
+    public SubPersistenceStrategy (IDataManager dataManager, ClientTransaction parentTransaction)
     {
-      Assertion.IsTrue (parentTransaction.IsReadOnly); // TODO 2621: should check and throw
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
+
+      if (!parentTransaction.IsReadOnly)
+      {
+        throw new ArgumentException (
+            "In order for the subtransaction persistence strategy to work correctly, the parent transaction needs to be read-only.",
+            "parentTransaction");
+      }
 
       _dataManager = dataManager;
       _parentTransaction = parentTransaction;
@@ -108,8 +116,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       else
         return null;
     }
-
-
+    
     public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);

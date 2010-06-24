@@ -17,9 +17,12 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -39,7 +42,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (_subTransaction);
     }
 
-    // TODO 2621: Consider rewriting with mocks
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "In order for the subtransaction persistence strategy to work correctly, the parent transaction needs to be read-only.\r\n"
+        + "Parameter name: parentTransaction")] 
+    public void Initialization_ThrowsWhenParentTransactionWriteable ()
+    {
+      var writeableParentTransaction = new ClientTransactionMock();
+      new SubPersistenceStrategy (MockRepository.GenerateStub<IDataManager> (), writeableParentTransaction);
+    }
 
     [Test]
     public void PersistData_NewDataContainer_ClearsDiscardFlagInParent ()
