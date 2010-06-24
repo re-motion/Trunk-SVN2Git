@@ -37,52 +37,57 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public SubClientTransactionComponentFactory (ClientTransaction parentTransaction)
     {
+      ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       _parentTransaction = parentTransaction;
     }
 
-    public Dictionary<Enum, object> CreateApplicationData ()
+    public virtual Dictionary<Enum, object> CreateApplicationData ()
     {
       return _parentTransaction.ApplicationData;
     }
 
-    public ClientTransactionExtensionCollection CreateExtensions ()
+    public virtual ClientTransactionExtensionCollection CreateExtensions ()
     {
       return _parentTransaction.Extensions;
     }
 
-    public IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
+    public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
     {
-      var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ();
-      return new[] { new SubClientTransactionListener () }
+      var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory>();
+      return new[] { new SubClientTransactionListener() }
           .Concat (factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction)));
     }
 
-    public IDataManager CreateDataManager (ClientTransaction clientTransaction)
+    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy ());
+      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy());
     }
 
-    public IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
+    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (dataManager, _parentTransaction));
     }
 
-    public IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    public virtual IObjectLoader CreateObjectLoader (
+        ClientTransaction clientTransaction,
+        IDataManager dataManager,
+        IPersistenceStrategy persistenceStrategy,
+        IClientTransactionListener eventSink)
     {
       var eagerFetcher = new EagerFetcher (dataManager);
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 
-    public IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
+    public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
     {
       return new DelegatingEnlistedDomainObjectManager (_parentTransaction);
     }
 
-    public Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
+    public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {
-      return templateTransaction => _parentTransaction.CreateSubTransaction ();
+      return templateTransaction => _parentTransaction.CreateSubTransaction();
     }
   }
 }

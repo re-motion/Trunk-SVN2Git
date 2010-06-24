@@ -33,44 +33,44 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class RootClientTransactionComponentFactory : IClientTransactionComponentFactory
   {
-    public Dictionary<Enum, object> CreateApplicationData ()
+    public virtual Dictionary<Enum, object> CreateApplicationData ()
     {
       return new Dictionary<Enum, object> ();
     }
 
-    public ClientTransactionExtensionCollection CreateExtensions ()
+    public virtual ClientTransactionExtensionCollection CreateExtensions ()
     {
       return new ClientTransactionExtensionCollection ();
     }
 
-    public IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
+    public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
     {
       var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ();
       return factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction));
     }
 
-    public IDataManager CreateDataManager (ClientTransaction clientTransaction)
+    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction)
     {
       return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy ());
     }
 
-    public IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
+    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
     {
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (id, dataManager));
     }
 
-    public IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
       var eagerFetcher = new EagerFetcher (dataManager);
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 
-    public IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
+    public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
     {
       return new DictionaryBasedEnlistedDomainObjectManager ();
     }
 
-    public Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
+    public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {
       return templateTransaction => (ClientTransaction) TypesafeActivator
         .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
