@@ -15,13 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Security;
 using System.Security.Permissions;
+using System.Security.Policy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
@@ -49,22 +53,23 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     }
 
     [Test]
-    [Ignore("TODO: 2860")]
     public void ExecuteCodeWhichIsNotAllowedInMediumTrust_WithFullTrustAssembly ()
     {
-      using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new[] { typeof(SandboxTest).Assembly }))
+      using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new[] { typeof (SandboxTest).Assembly }))
       {
-        sandbox.AppDomain.DoCallBack (() => Environment.GetEnvironmentVariable ("USERDOMAIN"));
+        sandbox.AppDomain.DoCallBack (DangerousMethod);
       }
     }
-    
+
     [Test]
-    [ExpectedException(typeof(SecurityException))]
+    [ExpectedException (typeof (SecurityException), ExpectedMessage = 
+        "Request for the permission of type 'System.Security.Permissions.EnvironmentPermission.*' failed.",
+        MatchType = MessageMatch.Regex)]
     public void ExecuteCodeWhichIsNotAllowedInMediumTrust ()
     {
       using (var sandbox = Sandbox.CreateSandbox (_mediumTrustPermissions, new Assembly[0]))
       {
-        sandbox.AppDomain.DoCallBack (() => Environment.GetEnvironmentVariable ("USERDOMAIN"));
+        sandbox.AppDomain.DoCallBack (DangerousMethod);
       }
     }
 
@@ -104,6 +109,12 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       {
         return AppDomain.CurrentDomain;
       }
+    }
+
+    public static void DangerousMethod ()
+    {
+      new EnvironmentPermission (PermissionState.Unrestricted).Assert ();
+      Environment.GetEnvironmentVariable ("USERDOMAIN");
     }
   }
 }
