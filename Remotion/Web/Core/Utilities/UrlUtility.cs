@@ -133,8 +133,21 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNullOrEmpty ("url", url);
       if (HttpContext.Current == null)
         return url;
+      else
+        return ResolveUrl (new HttpContextWrapper (HttpContext.Current), url);
+    }
+
+    /// <summary> Resolves a URL. </summary>
+    /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
+    /// <param name="url"> The URL. Must not be <see langword="null"/> or empty.</param>
+    /// <returns> The resolved URL. </returns>
+    public static string ResolveUrl (HttpContextBase context, string url)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNullOrEmpty ("url", url);
+
       if (url.StartsWith ("/") || url.StartsWith ("~/"))
-        return GetAbsoluteUrl (new HttpContextWrapper (HttpContext.Current), url, false);
+        return GetAbsoluteUrl (context, url, false);
       return url;
     }
 

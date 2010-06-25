@@ -155,9 +155,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
           Control.TextBoxClientID,
           Control.HiddenFieldClientID,
           Control.DropDownButtonClientID,
-          string.IsNullOrEmpty (Control.ServicePath)
-              ? ""
-              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
+          string.IsNullOrEmpty (Control.ServicePath) ? "" : UrlUtility.GetAbsoluteUrl ((Page) Control.Page, Control.ServicePath, false),
           StringUtility.NullToEmpty (Control.ServiceMethod),
           Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
           Control.CompletionInterval,
