@@ -83,8 +83,9 @@ namespace Remotion.Reflection
       {
         throw ex.InnerException;
       }
-  }
+    }
 
+    //TODO: remove overload
     public object Invoke (object instance, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
     {
       try

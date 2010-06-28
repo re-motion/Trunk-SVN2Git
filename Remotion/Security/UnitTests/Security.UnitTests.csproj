@@ -137,6 +137,7 @@
     <Compile Include="Core\NullSecurityClientTests\NullSecurityClientTestHelper.cs" />
     <Compile Include="Core\NullSecurityProviderTest.cs" />
     <Compile Include="Core\NullPrincipalProviderTest.cs" />
+    <Compile Include="Core\ReflectionBasedMemberResolverTest.cs" />
     <Compile Include="Core\SampleDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\SecurityPrincipalRoleTest.cs" />
     <Compile Include="Core\SecurityPrincipalTest.cs" />

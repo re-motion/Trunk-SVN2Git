@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Reflection
   public class MethodInfoAdapterTest
   {
     private MethodInfo _method;
-    private MethodInfoAdapter _adapter;
+    private MethodInfoAdapter _adapter; //use IMethodInformation
 
     [SetUp]
     public void SetUp ()
