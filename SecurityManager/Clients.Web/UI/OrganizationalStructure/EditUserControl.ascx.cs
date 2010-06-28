@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       SubstitutedByList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
       var editModeColumn = (BocRowEditModeColumnDefinition) SubstitutedByList.FixedColumns[0];
       editModeColumn.EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit);
-      editModeColumn.SaveIcon = GetIcon ("SaveButton.gif", GlobalResources.Save);
+      editModeColumn.SaveIcon = GetIcon ("ApplyButton.gif", GlobalResources.Apply);
       editModeColumn.CancelIcon = GetIcon ("CancelButton.gif", GlobalResources.Cancel);
     }
 

@@ -72,6 +72,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
+    <Content Include="res\Themes\ClassicBlue\Image\ApplyButton.gif" />
+    <Content Include="res\Themes\Legacy\Image\ApplyButton.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\ApplyButton.gif" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -94,7 +97,6 @@
     <Content Include="res\Themes\ClassicBlue\Image\PermissionDenied.gif" />
     <Content Include="res\Themes\ClassicBlue\Image\PermissionGranted.gif" />
     <Content Include="res\Themes\ClassicBlue\Image\PermissionUndefined.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\SaveButton.gif" />
     <Content Include="res\Themes\Legacy\Html\Style.css" />
     <Content Include="res\Themes\Legacy\Image\CancelButton.gif" />
     <Content Include="res\Themes\Legacy\Image\Collapse.gif" />
@@ -108,7 +110,6 @@
     <Content Include="res\Themes\Legacy\Image\PermissionDenied.gif" />
     <Content Include="res\Themes\Legacy\Image\PermissionGranted.gif" />
     <Content Include="res\Themes\Legacy\Image\PermissionUndefined.gif" />
-    <Content Include="res\Themes\Legacy\Image\SaveButton.gif" />
     <Content Include="res\Themes\NovaBlue\Html\Style.css" />
     <Content Include="res\Themes\NovaBlue\Image\CancelButton.gif" />
     <Content Include="res\Themes\NovaBlue\Image\Collapse.gif" />
@@ -122,7 +123,6 @@
     <Content Include="res\Themes\NovaBlue\Image\PermissionDenied.gif" />
     <Content Include="res\Themes\NovaBlue\Image\PermissionGranted.gif" />
     <Content Include="res\Themes\NovaBlue\Image\PermissionUndefined.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\SaveButton.gif" />
     <Content Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
     <Content Include="UI\SecurityManagerSearchWebService.asmx" />
     <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
