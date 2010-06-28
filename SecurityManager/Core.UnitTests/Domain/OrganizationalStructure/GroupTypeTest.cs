@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -61,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     }
 
     [Test]
-    public void DeletePosition_WithGroupTypePosition ()
+    public void DeleteGroupType_WithGroupTypePosition ()
     {
       OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
@@ -73,6 +74,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         groupType.Delete ();
 
         Assert.IsTrue (concretePosition.IsInvalid);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The GroupType 'groupType 1' is still assigned to at least one group. Please update or delete the dependent groups before proceeding.")]
+    public void DeleteGroupType_WithGroup ()
+    {
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
+        Group group = Group.FindByTenantID (tenant.ID).Where (g => g.Name == "parentGroup0").Single ();
+        GroupType groupType = group.GroupType;
+
+        groupType.Delete ();
       }
     }
 

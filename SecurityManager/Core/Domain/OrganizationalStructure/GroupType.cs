@@ -71,9 +71,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract string Name { get; set; }
 
     [DBBidirectionalRelation ("GroupType")]
-    public abstract ObjectList<Group> Groups { get; }
-
-    [DBBidirectionalRelation ("GroupType")]
     public abstract ObjectList<GroupTypePosition> Positions { get; }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -83,8 +80,18 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
+     
+      using (DefaultTransactionContext.ClientTransaction.EnterNonDiscardingScope())
+      {
+        if (QueryFactory.CreateLinqQuery<Group>().Where (g => g.GroupType == this).Any())
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "The GroupType '{0}' is still assigned to at least one group. Please update or delete the dependent groups before proceeding.", Name));
+        }
 
-      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Positions);
+        _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Positions);
+      }
     }
 
     protected override void OnDeleted (EventArgs args)

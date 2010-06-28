@@ -154,7 +154,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("Parent")]
     public abstract ObjectList<Group> Children { get; }
 
-    [DBBidirectionalRelation ("Groups")]
     public abstract GroupType GroupType { get; set; }
 
     [DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignRole)]
