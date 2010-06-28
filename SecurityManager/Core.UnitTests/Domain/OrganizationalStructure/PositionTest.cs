@@ -47,13 +47,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void DeletePosition_WithAccessControlEntry ()
     {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper();
-      using (testHelper.Transaction.EnterNonDiscardingScope())
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        Position position = testHelper.CreatePosition ("Position");
-        AccessControlEntry ace = testHelper.CreateAceWithPositionAndGroupCondition (position, GroupCondition.None);
+        Tenant tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
+        User user = User.FindByTenantID (tenant.ID)[0];
+        Role role = user.Roles[0];
+        Position position = role.Position;
+        AccessControlEntry ace = testHelper.CreateAceWithPosition (position);
+        ClientTransaction.Current.Commit();
 
         position.Delete();
+
+        ClientTransaction.Current.Commit();
 
         Assert.IsTrue (ace.IsInvalid);
       }

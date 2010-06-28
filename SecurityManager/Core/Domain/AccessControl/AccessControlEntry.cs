@@ -110,7 +110,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract GroupType SpecificGroupType { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
-    [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract Position SpecificPosition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
