@@ -49,13 +49,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void DeleteGroupType_WithAccessControlEntry ()
     {
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        GroupType groupType = GroupType.NewObject();
+        dbFixtures.CreateEmptyDomain();
+        GroupType groupType = testHelper.CreateGroupType ("GroupType");
         AccessControlEntry ace = testHelper.CreateAceWithBranchOfOwningGroup (groupType);
+        ClientTransaction.Current.Commit ();
 
         groupType.Delete ();
+
+        ClientTransaction.Current.Commit ();
 
         Assert.IsTrue (ace.IsInvalid);
       }

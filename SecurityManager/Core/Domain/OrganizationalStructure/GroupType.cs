@@ -73,10 +73,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("GroupType")]
     public abstract ObjectList<GroupTypePosition> Positions { get; }
 
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelation ("SpecificGroupType")]
-    protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
-
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
@@ -90,7 +86,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
                   "The GroupType '{0}' is still assigned to at least one group. Please update or delete the dependent groups before proceeding.", Name));
         }
 
-        _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Positions);
+        var aces = QueryFactory.CreateLinqQuery<AccessControlEntry> ().Where (ace => ace.SpecificGroupType == this);
+        
+        _deleteHandler = new DomainObjectDeleteHandler (aces, Positions);
       }
     }
 
