@@ -61,12 +61,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (!IsPostBack)
       {
-        GroupsList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) GroupsList.FixedColumns[0], SortingDirection.Ascending));
         PositionsList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) PositionsList.FixedColumns[0], SortingDirection.Ascending));
       }
-
-      if (GroupsList.IsReadOnly)
-        GroupsList.Selection = RowSelection.Disabled;
 
       if (PositionsList.IsReadOnly)
         PositionsList.Selection = RowSelection.Disabled;
@@ -134,34 +130,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         new EditGroupTypePositionFormFunction (WxeTransactionMode.None, (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
 
       Page.ExecuteFunction (editGroupTypePositionFormFunction, WxeCallArguments.Default);
-    }
-
-    protected void GroupsList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      if (e.Item.ItemID == "AddItem")
-      {
-        if (!Page.IsReturningPostBack)
-        {
-          SearchGroupFormFunction searchGroupFormFunction = new SearchGroupFormFunction (WxeTransactionMode.None);
-
-          Page.ExecuteFunction (searchGroupFormFunction, WxeCallArguments.Default);
-        }
-        else
-        {
-          SearchGroupFormFunction returningFunction = (SearchGroupFormFunction) Page.ReturningFunction;
-
-          if (!returningFunction.HasUserCancelled)
-          {
-            if (!GroupsList.Value.Contains (returningFunction.SelectedGroup))
-              GroupsList.AddRow (returningFunction.SelectedGroup);
-          }
-        }
-      }
-
-      if (e.Item.ItemID == "RemoveItem")
-        GroupsList.RemoveRows (GroupsList.GetSelectedBusinessObjects ());
-
-      GroupsList.ClearSelectedRows ();
     }
   }
 }

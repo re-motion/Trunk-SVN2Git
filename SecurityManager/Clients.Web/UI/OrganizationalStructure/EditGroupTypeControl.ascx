@@ -37,33 +37,7 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="GroupsList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Groups" OnMenuItemClick="GroupsList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="true" ShowEmptyListReadOnlyMode="true">
-        <FixedColumns>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="DisplayName">
-            <PersistedCommand>
-              <remotion:BocListItemCommand />
-            </PersistedCommand>
-          </remotion:BocSimpleColumnDefinition>
-        </FixedColumns>
-        <ListMenuItems>
-          <remotion:BocMenuItem ItemID="AddItem" Text="$res:Add">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-          <remotion:BocMenuItem ItemID="RemoveItem" RequiredSelection="OneOrMore" Text="$res:Remove">
-            <PersistedCommand>
-              <remotion:BocMenuItemCommand Show="EditMode" />
-            </PersistedCommand>
-          </remotion:BocMenuItem>
-        </ListMenuItems>
-      </remotion:BocList>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-      <remotion:BocList ID="PositionsList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Positions" OnMenuItemClick="PositionsList_MenuItemClick" Selection="Multiple">
+      <remotion:BocList ID="PositionsList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Positions" OnMenuItemClick="PositionsList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
         <FixedColumns>
           <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Position">
             <PersistedCommand>
