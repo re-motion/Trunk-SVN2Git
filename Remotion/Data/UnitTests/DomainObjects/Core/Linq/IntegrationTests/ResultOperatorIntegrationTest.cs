@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2909: GroupByExpression should not have SingleValueSemantics but ValueSemantics/TODO 2990: Support full column lists")]
+    [Ignore ("TODO 2990: Support for full column lists required in order to group by entity")]
     public void GroupBy_EntityKey ()
     {
       var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -616,7 +616,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where ordersByOrderTicket.Key != null
           select ordersByOrderTicket.Key.FileName;
 
-      Assert.That (query2.Count(), Is.EqualTo (99)); // TODO 2909: Fill in right number
+      Assert.That (query2.Count(), Is.EqualTo (5));
     }
 
     [Test]
