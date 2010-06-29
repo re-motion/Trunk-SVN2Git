@@ -60,7 +60,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Save");
 
-      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Save"));
+      Assert.AreEqual (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Save"));
     }
 
     [Test]
@@ -133,13 +133,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     public void Test_PermissionsDeclaredOnBaseAndDerivedClass ()
     {
       _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Send");
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Load' has multiple DemandMethodPermissionAttribute defined.\r\nParameter name: memberName")]
-    public void Test_PermissionsDeclaredOnOverloads ()
-    {
-      _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Load");
     }
 
     [Test]

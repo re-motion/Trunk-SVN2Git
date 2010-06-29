@@ -128,7 +128,6 @@ namespace Remotion.Security.Metadata
             string.Format (c_memberPermissionsOnlyInBaseClassMessage, memberName, type.FullName, attributeName), "memberName");
       }
 
-      //return depending on member types
       if (memberType == MemberTypes.Method)
         return new MethodInfoAdapter ((MethodInfo) foundMember);
 

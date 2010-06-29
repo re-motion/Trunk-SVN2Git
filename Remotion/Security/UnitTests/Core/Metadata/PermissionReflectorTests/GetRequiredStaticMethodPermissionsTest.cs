@@ -46,7 +46,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions");
 
-      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions"));
+      Assert.AreEqual (requiredAccessTypes, _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions"));
     }
 
     [Test]

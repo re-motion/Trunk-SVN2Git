@@ -20,6 +20,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Configuration;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -29,12 +30,6 @@ namespace Remotion.Security.Metadata
   /// </summary>
   public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
-    private const string c_memberNotFoundMessage = "The member '{0}' could not be found.";
-    private const string c_memberHasMultipleAttributesMessage = "The member '{0}' has multiple {1} defined.";
-
-    private const string c_memberPermissionsOnlyInBaseClassMessage =
-        "The {2} must not be defined on members overriden or redefined in derived classes. A member '{0}' exists in class '{1}' and its base class.";
-
     private class CacheKey : IEquatable<CacheKey>
     {
       private readonly Type _attributeType;
@@ -54,21 +49,6 @@ namespace Remotion.Security.Metadata
         _bindingFlags = bindingFlags;
       }
 
-      public Type Type
-      {
-        get { return _type; }
-      }
-
-      public string MemberName
-      {
-        get { return _memberName; }
-      }
-
-      public BindingFlags BindingFlags
-      {
-        get { return _bindingFlags; }
-      }
-
       public override int GetHashCode ()
       {
         return _type.GetHashCode() ^ _memberName[0];
@@ -85,6 +65,8 @@ namespace Remotion.Security.Metadata
     }
 
     private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]>();
+    
+    private readonly IMemberResolver _memberResolver = new ReflectionBasedMemberResolver();
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
@@ -101,9 +83,10 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
-      //IMemberInformation mi = _memberResolver.GetMethodInformation (type, methodName);
-      //return GetPermissionsFromCache<DemandMethodPermissionAttribute> (mi);
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Instance);
+      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName);
+      if (memberInformation ==  null)
+        return new Enum[0];
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName)
@@ -111,8 +94,10 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (
-          type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      IMemberInformation memberInformation = _memberResolver.GetStaticMethodInformation (type, methodName);
+      if (memberInformation == null)
+        return new Enum[0];
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 
     public Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName)
@@ -120,8 +105,10 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
+      if (memberInformation == null)
+        return new Enum[0];
+      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredPropertyWritePermissions (Type type, string propertyName)
@@ -129,8 +116,10 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
+      if (memberInformation == null)
+        return new Enum[0];
+      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
@@ -149,70 +138,28 @@ namespace Remotion.Security.Metadata
       return permissions.ToArray();
     }
 
-    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
-        where TAttribute: BaseDemandPermissionAttribute
+    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation, BindingFlags bindingFlags)
+      where TAttribute: BaseDemandPermissionAttribute
     {
-      var cacheKey = new CacheKey (typeof (TAttribute), type, memberName, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Type, key.MemberName, key.BindingFlags));
+      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
     }
 
-    private Enum[] GetPermissions<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
-        where TAttribute: BaseDemandPermissionAttribute
+    public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
     {
-      MemberTypes memberType = GetApplicableMemberTypesFromAttributeType (typeof (TAttribute));
-      string attributeName = typeof (TAttribute).Name;
+      var permissionAttribute = memberInformation.GetCustomAttribute<TAttribute>(true);
 
-      if (!TypeHasMember (type, memberType, memberName, bindingFlags))
-        throw new ArgumentException (string.Format (c_memberNotFoundMessage, memberName), "memberName");
-
-      var foundMembers = new List<MemberInfo>();
-      for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
-      {
-        foundMembers.AddRange (
-            currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember<TAttribute>, memberName));
-      }
-      if (foundMembers.Count == 0)
+      if (permissionAttribute == null)
         return new Enum[0];
 
-      MemberInfo foundMember = foundMembers[0];
-      if (type.BaseType != null && foundMember.DeclaringType == type && TypeHasMember (type.BaseType, memberType, memberName, bindingFlags))
+      var permissions = new List<Enum> ();
+      foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes ())
       {
-        throw new ArgumentException (
-            string.Format (c_memberPermissionsOnlyInBaseClassMessage, memberName, type.FullName, attributeName), "memberName");
+        if (!permissions.Contains (accessTypeEnum))
+          permissions.Add (accessTypeEnum);
       }
 
-      if (foundMembers.Count > 1)
-        throw new ArgumentException (string.Format (c_memberHasMultipleAttributesMessage, memberName, attributeName), "memberName");
-
-      return GetPermissions<TAttribute> (foundMember);
-    }
-
-    private MemberTypes GetApplicableMemberTypesFromAttributeType (Type attributeType)
-    {
-      var attributeUsageAttributes = (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), false);
-      AttributeTargets targets = attributeUsageAttributes[0].ValidOn;
-
-      MemberTypes memberTypes = 0;
-
-      if ((targets & AttributeTargets.Method) != 0)
-        memberTypes |= MemberTypes.Method;
-
-      if ((targets & AttributeTargets.Property) != 0)
-        memberTypes |= MemberTypes.Property;
-
-      return memberTypes;
-    }
-
-    private bool TypeHasMember (Type type, MemberTypes memberType, string methodName, BindingFlags bindingFlags)
-    {
-      MemberInfo[] existingMembers = type.GetMember (methodName, memberType, bindingFlags);
-      return existingMembers.Length > 0;
-    }
-
-    private bool IsSecuredMember<TAttribute> (MemberInfo member, object filterCriteria) where TAttribute: BaseDemandPermissionAttribute
-    {
-      string memberName = (string) filterCriteria;
-      return member.Name == memberName && member.IsDefined (typeof (TAttribute), false);
+      return permissions.ToArray ();
     }
   }
 }
