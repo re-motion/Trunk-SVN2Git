@@ -494,12 +494,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool isTitleRowSelectorControl = (key == titleRowSelectorControlFilter);
         if (isDataRowSelectorControl || isTitleRowSelectorControl)
         {
-          if ((_selection == RowSelection.SingleCheckBox
-               || _selection == RowSelection.SingleRadioButton)
-              && (_selectorControlCheckedState.Count > 1
-                  || isTitleRowSelectorControl))
+          if ((_selection == RowSelection.SingleCheckBox || _selection == RowSelection.SingleRadioButton)
+              && (_selectorControlCheckedState.Count > 1 || isTitleRowSelectorControl))
             continue;
-          int rowIndex = int.Parse (postCollection[i]);
+          // The title row can occur multiple times, resulting in the title row value to be concatenated and thus not parsable.
+          int rowIndex = isTitleRowSelectorControl ? c_titleRowIndex : int.Parse (postCollection[i]);
           _selectorControlCheckedState.Add (rowIndex);
         }
       }
