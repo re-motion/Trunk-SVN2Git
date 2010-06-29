@@ -585,7 +585,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithCastToInterface_ThrowsNoException ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Cast<IOrder>();
+      (from o in QueryFactory.CreateLinqQuery<Order> () select o).Cast<IOrder>();
+    }
+
+    [Test]
+    public void GroupBy_NonEntityKey ()
+    {
+      var query = from o in QueryFactory.CreateLinqQuery<Order> ()
+                  group o by o.Customer.ID into ordersByCustomer
+                  from c in QueryFactory.CreateLinqQuery<Customer>()
+                  where c.ID == ordersByCustomer.Key
+                  select c;
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4, DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    [Ignore ("TODO 2909: GroupByExpression should not have SingleValueSemantics but ValueSemantics/TODO 2990: Support full column lists")]
+    public void GroupBy_EntityKey ()
+    {
+      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
+                  group o by o.Customer into ordersByCustomer 
+                  select ordersByCustomer.Key;
+
+      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
+
+      var query2 =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          group o by o.OrderTicket into ordersByOrderTicket
+          where ordersByOrderTicket.Key != null
+          select ordersByOrderTicket.Key.FileName;
+
+      Assert.That (query2.Count(), Is.EqualTo (99)); // TODO 2909: Fill in right number
+    }
+
+    [Test]
+    public void GroupBy_SelectKey_Nesting ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          from x in
+            (
+              from oi in o.OrderItems
+              group oi by oi.Product into orderItemsByProduct
+              select new { OrderID = o.ID, OrderItems = orderItemsByProduct }
+              )
+          let product = x.OrderItems.Key
+          where product == "Mainboard"
+          select o;
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
     }
     
   }
