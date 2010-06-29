@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
@@ -29,15 +30,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     [Test]
     public void CascadeToAccessControlEntry ()
     {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper();
-      using (testHelper.Transaction.EnterNonDiscardingScope())
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        var user = testHelper.CreateUser ("user", null, "user", null, null, testHelper.CreateTenant ("tenant"));
+        dbFixtures.CreateEmptyDomain ();
+        var tenant = testHelper.CreateTenant ("TestTenant");
+        var owningGroup = testHelper.CreateGroup ("group", null, tenant);
+        var user = testHelper.CreateUser ("user", null, "user", null, owningGroup, tenant);
         var ace = testHelper.CreateAceWithSpecificUser (user);
+        ClientTransaction.Current.Commit ();
 
-        user.Delete();
+        user.Delete ();
 
-        Assert.That (ace.IsInvalid, Is.True);
+        ClientTransaction.Current.Commit ();
+
+        Assert.IsTrue (ace.IsInvalid);
       }
     }
 

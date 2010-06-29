@@ -19,12 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -121,11 +119,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [SearchAvailableObjectsServiceType(typeof (UserPropertiesSearchService))]
     public abstract Group OwningGroup { get; set; }
 
-    // Must not be private because PermissionReflection would not work with derived classes.
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelation ("SpecificUser")]
-    protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
-
     [DBBidirectionalRelation ("SubstitutingUser")]
     protected abstract ObjectList<Substitution> SubstitutingFor { get; }
 
@@ -142,7 +135,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnDeleting (args);
 
-      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Roles, SubstitutingFor, SubstitutedBy);
+      using (DefaultTransactionContext.ClientTransaction.EnterNonDiscardingScope())
+      {
+        var aces = QueryFactory.CreateLinqQuery<AccessControlEntry>().Where (ace => ace.SpecificUser == this);
+
+        _deleteHandler = new DomainObjectDeleteHandler (aces, Roles, SubstitutingFor, SubstitutedBy);
+      }
     }
 
     protected override void OnDeleted (EventArgs args)

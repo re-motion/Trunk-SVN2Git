@@ -111,7 +111,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract Position SpecificPosition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
-    [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract User SpecificUser { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
