@@ -77,17 +77,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       Assert.Contains (TestAccessTypes.Second, requiredAccessTypes);
     }
 
-    //[Test]
-    //public void Test_NonPublicPropertyWithOneAttributeUsesCache ()
-    //{
-    //  Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), "NonPublicProperty");
-    //  requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), "NonPublicProperty");
-
-    //  Assert.IsNotNull (requiredAccessTypes);
-    //  Assert.AreEqual (1, requiredAccessTypes.Length);
-    //  Assert.Contains (TestAccessTypes.Second, requiredAccessTypes);
-    //}
-
     [Test]
     public void Test_ExplicitInterfacePropertyWithOneAttribute ()
     {

@@ -31,18 +31,15 @@ namespace Remotion.Security.Metadata
 
     private class CacheKey : IEquatable<CacheKey>
     {
-      private readonly Type _attributeType;
       private readonly Type _type;
       private readonly string _memberName;
       private readonly BindingFlags _bindingFlags;
 
-      public CacheKey (Type attributeType, Type type, string memberName, BindingFlags bindingFlags)
+      public CacheKey (Type type, string memberName, BindingFlags bindingFlags)
       {
-        Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
         Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
 
-        _attributeType = attributeType;
         _type = type;
         _memberName = memberName;
         _bindingFlags = bindingFlags;
@@ -71,7 +68,6 @@ namespace Remotion.Security.Metadata
       public bool Equals (CacheKey other)
       {
         return EqualityUtility.NotNullAndSameType (this, other)
-               && _attributeType.Equals (other._attributeType)
                && _type.Equals (other._type)
                && string.Equals (_memberName, other._memberName)
                && _bindingFlags == other._bindingFlags;
@@ -99,7 +95,7 @@ namespace Remotion.Security.Metadata
     private IMemberInformation GetPermissionsFromCache<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
         where TAttribute : BaseDemandPermissionAttribute
     {
-      var cacheKey = new CacheKey (typeof (TAttribute), type, memberName, bindingFlags);
+      var cacheKey = new CacheKey (type, memberName, bindingFlags);
       return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Type, key.MemberName, key.BindingFlags));
     }
 
