@@ -22,7 +22,8 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   /// <summary>
-  /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.
+  /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance 
+  /// for use in a bindable object <see cref="PropertyBase"/>.
   /// </summary>
   public class BindableObjectPropertyInfoAdapter : IPropertyInformation
   {
