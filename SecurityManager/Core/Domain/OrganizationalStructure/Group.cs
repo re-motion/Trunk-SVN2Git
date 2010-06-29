@@ -160,16 +160,16 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("Group")]
     public abstract ObjectList<Role> Roles { get; }
 
-    // Must not be private because PermissionReflection would not work with derived classes.
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelation ("SpecificGroup")]
-    protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
-
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
 
-      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Roles);
+      using (DefaultTransactionContext.ClientTransaction.EnterNonDiscardingScope())
+      {
+        var aces = QueryFactory.CreateLinqQuery<AccessControlEntry>().Where (ace => ace.SpecificGroup == this);
+
+        _deleteHandler = new DomainObjectDeleteHandler (aces, Roles);
+      }
     }
 
     protected override void OnDeleted (EventArgs args)

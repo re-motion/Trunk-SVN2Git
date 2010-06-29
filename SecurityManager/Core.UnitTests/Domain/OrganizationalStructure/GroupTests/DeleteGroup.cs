@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
@@ -28,13 +29,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void DeleteGroup_WithAccessControlEntry ()
     {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper();
-      using (testHelper.Transaction.EnterNonDiscardingScope())
+      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
+        dbFixtures.CreateEmptyDomain();
         var group = testHelper.CreateGroup ("group", null, testHelper.CreateTenant ("tenant"));
         var ace = testHelper.CreateAceWithSpecificGroup (group);
+        ClientTransaction.Current.Commit ();
 
-        group.Delete();
+        group.Delete ();
+
+        ClientTransaction.Current.Commit ();
 
         Assert.IsTrue (ace.IsInvalid);
       }
