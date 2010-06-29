@@ -78,9 +78,5 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Name = name;
       Value = value;
     }
-
-    [DBBidirectionalRelation ("SpecificAbstractRole")]
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
   }
 }

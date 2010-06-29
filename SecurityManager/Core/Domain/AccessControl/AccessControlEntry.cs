@@ -114,14 +114,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract User SpecificUser { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
-    [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract AbstractRoleDefinition SpecificAbstractRole { get; set; }
 
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract AccessControlList AccessControlList { get; set; }
 
     [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "[Index] ASC")]
-    [ObjectBinding (ReadOnly = true)]
     protected abstract ObjectList<Permission> PermissionsInternal { get; }
 
     [StorageClassNone]
