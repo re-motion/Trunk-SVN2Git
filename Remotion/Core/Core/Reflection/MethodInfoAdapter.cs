@@ -85,19 +85,6 @@ namespace Remotion.Reflection
       }
     }
 
-    //TODO: remove overload
-    public object Invoke (object instance, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
-    {
-      try
-      {
-        return _methodInfo.Invoke (instance, invokeAttr, binder, parameters, culture);
-      }
-      catch (TargetInvocationException ex)
-      {
-        throw ex.InnerException;
-      }
-    }
-
     public bool IsDefined<T> (bool inherited) where T: class
     {
       return AttributeUtility.IsDefined<T> (_methodInfo, inherited);

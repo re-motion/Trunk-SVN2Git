@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
-using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -38,18 +36,5 @@ namespace Remotion.Reflection
     /// <param name="parameters">An argument list for the invoked method.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
     object Invoke (object instance, object[] parameters);
-
-    /// <summary>
-    /// Invokes the method on the given instance using the given parameters.
-    /// </summary>
-    /// <param name="instance">The instance on which to invoke the method. If the method is static this argument is ignored. 
-    /// If instance is <see langword="null"/> the value Default for <see cref="BindingFlags"/> is used.</param>
-    /// <param name="invokeAttr">Specifies flags that control binding and the way in which the search is conducted by reflection.</param>
-    /// <param name="binder">An object that enables the binding. If binder is <see langword="null"/> the default binder is used.</param>
-    /// <param name="parameters">An argument list for the invoked method.</param>
-    /// <param name="culture">An instance of <see cref="CultureInfo"/> used to govern the coercion of types. 
-    /// If culture is null the Culture of the current thread is used.</param>
-    /// <returns>An object containing the return value of the invoked method.</returns>
-    object Invoke (Object instance, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture);
   }
 }

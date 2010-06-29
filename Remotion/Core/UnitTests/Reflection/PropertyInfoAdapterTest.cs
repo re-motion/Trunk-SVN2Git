@@ -187,8 +187,6 @@ namespace Remotion.UnitTests.Reflection
       _implicitInterfaceAdapter.GetValue (instanceStub, new object[0]);
     }
 
-    
-
     [Test]
     public void GetValue_WithIndexerProperty_TwoParameters ()
     {

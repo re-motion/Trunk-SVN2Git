@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
@@ -30,7 +28,7 @@ namespace Remotion.UnitTests.Reflection
   public class MethodInfoAdapterTest
   {
     private MethodInfo _method;
-    private MethodInfoAdapter _adapter; //use IMethodInformation
+    private IMethodInformation _adapter;
 
     [SetUp]
     public void SetUp ()
@@ -42,7 +40,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetMethodInfo ()
     {
-      Assert.That (_adapter.MethodInfo, Is.SameAs (_method));
+      Assert.That (((MethodInfoAdapter)_adapter).MethodInfo, Is.SameAs (_method));
     }
 
     
@@ -113,13 +111,6 @@ namespace Remotion.UnitTests.Reflection
       var adapter = new MethodInfoAdapter (methodInfo);
       var result = adapter.Invoke (new Test(), new object[] {string.Empty });
 
-      Assert.That (result, Is.EqualTo ("Test"));
-    }
-
-    [Test]
-    public void Invoke ()
-    {
-      var result = _adapter.Invoke (new Test(), BindingFlags.Default, null, new object[] { }, CultureInfo.CurrentCulture);
       Assert.That (result, Is.EqualTo ("Test"));
     }
 
