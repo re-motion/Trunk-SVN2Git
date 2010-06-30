@@ -154,41 +154,41 @@ namespace Remotion.Data.DomainObjects.Mapping
       return InterceptedDomainObjectCreator.Instance;
     }
 
-    public override PropertyDefinition ResolveProperty (PropertyInfo property)
-    {
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
-      var propertyDefinition = GetPropertyDefinition (propertyIdentifier);
-      if (propertyDefinition != null)
-        return propertyDefinition;
-
-      return GetMixinPropertyDefinition (this, property);
-    }
-
-    private PropertyDefinition GetMixinPropertyDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo property)
-    {
-      if (classDefinition != null)
-      {
-        foreach (var mixin in classDefinition.PersistentMixins)
-        {
-          if (property.DeclaringType.IsAssignableFrom (mixin))
-          {
-            string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
-            return classDefinition.GetPropertyDefinition (propertyIdentifier);
-          }
-        }
-
-        if (MappingConfiguration.Current.ClassDefinitions.Contains (classDefinition.ClassType.BaseType))
-          return MappingConfiguration.Current.ClassDefinitions[classDefinition.ClassType.BaseType].ResolveProperty (property);
-      }
-
-      return null;
-    }
-
     private void AddDerivedClass (ClassDefinition derivedClass)
     {
       var derivedClasses = new ClassDefinitionCollection (_derivedClasses, false);
       derivedClasses.Add (derivedClass);
       _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
+    }
+
+    public override PropertyDefinition ResolveProperty (PropertyInfo property)
+    {
+      return ResolveDefinition<PropertyDefinition> (property, GetPropertyDefinition);
+    }
+
+    public override RelationDefinition ResolveRelation (PropertyInfo property)
+    {
+      return ResolveDefinition<RelationDefinition> (property, GetRelationDefinition);
+    }
+
+    private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
+    {
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      var definition = definitionGetter (propertyIdentifier);
+      if (definition != null)
+        return definition;
+
+      var currentClassDefinition = this;
+      while (currentClassDefinition != null)
+      {
+        var mixin = currentClassDefinition.PersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault ();
+        if (mixin != null)
+          return definitionGetter (MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name));
+
+        currentClassDefinition = (ReflectionBasedClassDefinition) currentClassDefinition.BaseClass;
+      }
+
+      return null;
     }
   }
 }

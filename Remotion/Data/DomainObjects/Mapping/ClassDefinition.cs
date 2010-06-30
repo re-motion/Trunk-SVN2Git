@@ -378,6 +378,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract ClassDefinitionCollection DerivedClasses { get; }
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
     public abstract PropertyDefinition ResolveProperty (PropertyInfo property);
+    public abstract RelationDefinition ResolveRelation (PropertyInfo property);
 
     public string StorageProviderID
     {
@@ -587,6 +588,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     #endregion
-
   }
 }

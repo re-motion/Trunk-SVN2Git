@@ -24,7 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     int PersistentProperty { get; set; }
     int ExtraPersistentProperty { get; set; }
     int NonPersistentProperty { get; set; }
-    DomainObject RelationWithForeignKey { get; set; }
     RelationTargetForPersistentMixin UnidirectionalRelationProperty { get; set; }
     RelationTargetForPersistentMixin RelationProperty { get; set; }
     RelationTargetForPersistentMixin VirtualRelationProperty { get; set; }

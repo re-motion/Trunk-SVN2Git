@@ -138,6 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       classDefinitions.Add (derivedTargetClassForPersistentMixinDefinition);
       var derivedDerivedTargetClassForPersistentMixinDefinition = CreateDerivedDerivedTargetClassForPersistentMixinDefinition (derivedTargetClassForPersistentMixinDefinition);
       classDefinitions.Add (derivedDerivedTargetClassForPersistentMixinDefinition);
+      var relationTargetForPersistentMixinDefinition = CreateRelationTargetForPersistentMixinDefinition (null);
+      classDefinitions.Add (relationTargetForPersistentMixinDefinition);
 
       return classDefinitions;
     }
@@ -1010,6 +1012,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       return classDefinition;
     }
 
+    private ReflectionBasedClassDefinition CreateRelationTargetForPersistentMixinDefinition (ReflectionBasedClassDefinition baseClass)
+    {
+      ReflectionBasedClassDefinition relationTargetForPersistentMixinDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "RelationTargetForPersistentMixin",
+          "MixedDomains_RelationTarget",
+          DatabaseTest.c_testDomainProviderID,
+          typeof (RelationTargetForPersistentMixin),
+          false,
+          baseClass);
+
+      relationTargetForPersistentMixinDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              relationTargetForPersistentMixinDefinition,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty2",
+              "RelationProperty2ID",
+              typeof (ObjectID),
+              true));
+      relationTargetForPersistentMixinDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              relationTargetForPersistentMixinDefinition,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty3",
+              "RelationProperty3ID",
+              typeof (ObjectID),
+              true));
+
+      return relationTargetForPersistentMixinDefinition;
+    }
+
     #endregion
 
     #region Methods for creating relation definitions
@@ -1037,7 +1067,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       relationDefinitions.Add (CreateClassWithGuidKeyToClassWithRelatedClassIDColumnAndNoInheritanceRelation());
       relationDefinitions.Add (CreateIndustrialSectorToCompanyRelationDefinition());
       relationDefinitions.Add (CreateSupervisorToSubordinateRelationDefinition());
-      relationDefinitions.Add (CreateEmployeeToComputerRelationDefinition());
+      relationDefinitions.Add (CreateEmployeeToComputerRelationDefinition ());
+
+      relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedUnidirectionalRelationDefinition ());
+      relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedRelationPropertyRelationDefinition ());
+      relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedVirtualRelationPropertyRelationDefinition());
+      relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionProperty1SideCreateTargetClassForPersistentMixinMixedCollectionPropertyRelationDefinition());
+      relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
 
       return relationDefinitions;
     }
@@ -1496,6 +1532,149 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
       employeeClass.MyRelationDefinitions.Add (relation);
       computerClass.MyRelationDefinitions.Add (relation);
+
+      return relation;
+    }
+
+    private RelationDefinition CreateTargetClassForPersistentMixinMixedUnidirectionalRelationDefinition ()
+    {
+      ClassDefinition mixedClass = _classDefinitions[typeof (TargetClassForPersistentMixin)];
+
+      RelationEndPointDefinition endPoint1 = new RelationEndPointDefinition (
+          mixedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.UnidirectionalRelationProperty",
+          false);
+
+      ClassDefinition relatedClass = _classDefinitions[typeof (RelationTargetForPersistentMixin)];
+
+      AnonymousRelationEndPointDefinition endPoint2 = new AnonymousRelationEndPointDefinition (relatedClass);
+
+      RelationDefinition relation = new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.TargetClassForPersistentMixin->"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.UnidirectionalRelationProperty", 
+          endPoint1, 
+          endPoint2);
+
+      mixedClass.MyRelationDefinitions.Add (relation);
+      relatedClass.MyRelationDefinitions.Add (relation);
+
+      return relation;
+    }
+
+    private RelationDefinition CreateTargetClassForPersistentMixinMixedRelationPropertyRelationDefinition ()
+    {
+      ClassDefinition mixedClass = _classDefinitions[typeof (TargetClassForPersistentMixin)];
+
+      RelationEndPointDefinition endPoint1 = new RelationEndPointDefinition (
+          mixedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.RelationProperty",
+          false);
+
+      ClassDefinition relatedClass = _classDefinitions[typeof (RelationTargetForPersistentMixin)];
+
+      var endPoint2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          relatedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty1",
+          false,
+          CardinalityType.One,
+          typeof (TargetClassForPersistentMixin));
+
+      RelationDefinition relation = new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.TargetClassForPersistentMixin->"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.RelationProperty",
+          endPoint1,
+          endPoint2);
+
+      mixedClass.MyRelationDefinitions.Add (relation);
+      relatedClass.MyRelationDefinitions.Add (relation);
+
+      return relation;
+    }
+
+    private RelationDefinition CreateTargetClassForPersistentMixinMixedVirtualRelationPropertyRelationDefinition ()
+    {
+      ClassDefinition mixedClass = _classDefinitions[typeof (TargetClassForPersistentMixin)];
+
+      var endPoint1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          mixedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.VirtualRelationProperty",
+          false,
+          CardinalityType.One,
+          typeof (RelationTargetForPersistentMixin));
+
+      ClassDefinition relatedClass = _classDefinitions[typeof (RelationTargetForPersistentMixin)];
+
+      RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
+          relatedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty2",
+          false);
+
+      RelationDefinition relation = new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty2",
+          endPoint1,
+          endPoint2);
+
+      mixedClass.MyRelationDefinitions.Add (relation);
+      relatedClass.MyRelationDefinitions.Add (relation);
+
+      return relation;
+    }
+
+    private RelationDefinition CreateTargetClassForPersistentMixinMixedCollectionProperty1SideCreateTargetClassForPersistentMixinMixedCollectionPropertyRelationDefinition ()
+    {
+      ClassDefinition mixedClass = _classDefinitions[typeof (TargetClassForPersistentMixin)];
+
+      var endPoint1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          mixedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.CollectionProperty1Side",
+          false,
+          CardinalityType.Many,
+          typeof (ObjectList<RelationTargetForPersistentMixin>));
+
+      ClassDefinition relatedClass = _classDefinitions[typeof (RelationTargetForPersistentMixin)];
+
+      RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
+          relatedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty3",
+          false);
+
+      RelationDefinition relation = new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty3",
+          endPoint1,
+          endPoint2);
+
+      mixedClass.MyRelationDefinitions.Add (relation);
+      relatedClass.MyRelationDefinitions.Add (relation);
+
+      return relation;
+    }
+
+    private RelationDefinition CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition ()
+    {
+      ClassDefinition mixedClass = _classDefinitions[typeof (TargetClassForPersistentMixin)];
+
+      RelationEndPointDefinition endPoint1 = new RelationEndPointDefinition (
+          mixedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.CollectionPropertyNSide",
+          false);
+
+      ClassDefinition relatedClass = _classDefinitions[typeof (RelationTargetForPersistentMixin)];
+
+      var endPoint2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          relatedClass,
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.RelationTargetForPersistentMixin.RelationProperty4",
+          false,
+          CardinalityType.Many,
+          typeof (ObjectList<TargetClassForPersistentMixin>));
+
+      RelationDefinition relation = new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.TargetClassForPersistentMixin->"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.CollectionPropertyNSide",
+          endPoint1,
+          endPoint2);
+
+      mixedClass.MyRelationDefinitions.Add (relation);
+      relatedClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }

@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
-          where ((IMixinAddingPeristentProperties) o).RelationWithForeignKey != null
+          where ((IMixinAddingPeristentProperties) o).RelationProperty != null
           select o;
       CheckQueryResult (query);
     }
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
-          where ((IMixinAddingPeristentProperties) o).RelationWithForeignKey.ID != null
+          where ((IMixinAddingPeristentProperties) o).RelationProperty.ID != null
           select o;
       CheckQueryResult (query);
     }
