@@ -45,6 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       set { _nonPersistentProperty = value; }
     }
 
+    [StorageClassNone]
+    public DomainObject RelationWithForeignKey
+    {
+      get { return Properties[typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty"].GetValue<RelationTargetForPersistentMixin> (); }
+      set { Properties[typeof (MixinAddingPersistentProperties), "RelationProperty"].SetValue (value); }
+    }
+
     public RelationTargetForPersistentMixin UnidirectionalRelationProperty
     {
       get { return Properties[typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty"].GetValue<RelationTargetForPersistentMixin> (); }

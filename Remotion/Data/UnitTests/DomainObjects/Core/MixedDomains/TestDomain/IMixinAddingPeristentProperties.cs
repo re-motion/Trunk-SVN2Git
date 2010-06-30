@@ -16,19 +16,19 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   public interface IMixinAddingPeristentProperties
   {
     int PersistentProperty { get; set; }
-
-    [StorageClass (StorageClass.Persistent)]
     int ExtraPersistentProperty { get; set; }
-
-    [StorageClassNone]
     int NonPersistentProperty { get; set; }
+    DomainObject RelationWithForeignKey { get; set; }
+    RelationTargetForPersistentMixin UnidirectionalRelationProperty { get; set; }
+    RelationTargetForPersistentMixin RelationProperty { get; set; }
+    RelationTargetForPersistentMixin VirtualRelationProperty { get; set; }
+    ObjectList<RelationTargetForPersistentMixin> CollectionProperty1Side { get; }
+    RelationTargetForPersistentMixin CollectionPropertyNSide { get; set; }
   }
 }
