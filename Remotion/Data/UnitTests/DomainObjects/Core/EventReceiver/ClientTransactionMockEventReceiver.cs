@@ -44,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       clientTransaction.Committed += Committed;
       clientTransaction.RollingBack += RollingBack;
       clientTransaction.RolledBack += RolledBack;
+      clientTransaction.SubTransactionCreated += SubTransactionCreated;
     }
 
     // abstract methods and properties
@@ -53,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void Committed (object sender, ClientTransactionEventArgs args);
     public abstract void RollingBack (object sender, ClientTransactionEventArgs args);
     public abstract void RolledBack (object sender, ClientTransactionEventArgs args);
+    public abstract void SubTransactionCreated (object sender, SubTransactionCreatedEventArgs args);
 
     // methods and properties
 

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -31,6 +31,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static DataManager GetDataManager (ClientTransaction clientTransaction)
     {
       return (DataManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "DataManager");
+    }
+
+    public static IEnlistedDomainObjectManager GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)
+    {
+      return (IEnlistedDomainObjectManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_enlistedObjectManager");
+    }
+
+    public static IPersistenceStrategy GetPersistenceStrategy (ClientTransaction clientTransaction)
+    {
+      return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
     }
 
     public static DomainObject CallLoadObject (ClientTransaction clientTransaction, ObjectID objectID)
@@ -105,11 +115,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var dataManager = GetDataManager (clientTransaction);
       dataManager.RegisterDataContainer (dataContainer);
-    }
-
-    public static IPersistenceStrategy GetPersistenceStrategy (ClientTransaction clientTransaction)
-    {
-      return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
     }
   }
 }

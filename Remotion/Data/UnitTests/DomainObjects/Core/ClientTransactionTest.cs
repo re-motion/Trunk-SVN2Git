@@ -22,9 +22,12 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -684,6 +687,142 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+    }
+
+    [Test]
+    public void CreateSubTransaction_WithDefaultComponentFactory ()
+    {
+      Assert.That (_transaction.IsReadOnly, Is.False);
+      
+      var subTransaction = _transaction.CreateSubTransaction ();
+      Assert.That (subTransaction, Is.TypeOf (typeof (ClientTransaction)));
+      Assert.That (subTransaction.ParentTransaction, Is.SameAs (_transaction));
+      Assert.That (_transaction.IsReadOnly, Is.True);
+
+      Assert.That (subTransaction.Extensions, Is.SameAs (_transaction.Extensions));
+      Assert.That (subTransaction.ApplicationData, Is.SameAs (_transaction.ApplicationData));
+      
+      var enlistedObjectManager = ClientTransactionTestHelper.GetEnlistedDomainObjectManager (subTransaction);
+      Assert.That (enlistedObjectManager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
+      Assert.That (((DelegatingEnlistedDomainObjectManager) enlistedObjectManager).TargetTransaction, Is.SameAs (_transaction));
+
+      var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction);
+      Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
+    }
+
+    [Test]
+    public void CreateSubTransaction_WithCustomComponentFactory ()
+    {
+      Assert.That (_transaction.IsReadOnly, Is.False);
+
+      var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+
+      var componentFactoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (_transaction);
+      componentFactoryPartialMock
+          .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything, Arg<IDataManager>.Is.Anything))
+          .Return (fakePersistenceStrategy)
+          .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.True));
+      componentFactoryPartialMock.Replay ();
+
+      var subTransaction = _transaction.CreateSubTransaction (componentFactoryPartialMock);
+
+      componentFactoryPartialMock.VerifyAllExpectations();
+      Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction), Is.SameAs (fakePersistenceStrategy));
+    }
+
+    [Test]
+    public void CreateSubTransaction_Events ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      var mockRepository = listenerMock.GetMockRepository();
+      var componentFactoryPartialMock = mockRepository.PartialMock<SubClientTransactionComponentFactory> (_transaction);
+      var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
+      
+      var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+
+      using (mockRepository.Ordered ())
+      {
+        listenerMock
+            .Expect (mock => mock.SubTransactionCreating (_transaction))
+            .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.False));
+        componentFactoryPartialMock
+            .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything, Arg<IDataManager>.Is.Anything))
+            .Return (fakePersistenceStrategy);
+        eventReceiverMock
+            .Expect (mock => mock.SubTransactionCreated (
+                Arg.Is (_transaction), 
+                Arg<SubTransactionCreatedEventArgs>.Matches (arg => arg.SubTransaction.ParentTransaction == _transaction)))
+            .WhenCalled (mi =>
+            {
+              Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+              Assert.That (_transaction.IsReadOnly, Is.True);
+            });
+        listenerMock
+            .Expect (mock => mock.SubTransactionCreated (
+                Arg.Is (_transaction), 
+                Arg<ClientTransaction>.Matches (subTx => subTx.ParentTransaction == _transaction)));
+      }
+
+      mockRepository.ReplayAll ();
+
+      _transaction.CreateSubTransaction (componentFactoryPartialMock);
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void CreateSubTransaction_CancellationInCreatingNotification ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      var mockRepository = listenerMock.GetMockRepository();
+      var componentFactoryMock = mockRepository.DynamicMock<SubClientTransactionComponentFactory> (_transaction);
+      var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
+
+      var exception = new InvalidOperationException ("Canceled");
+      listenerMock
+          .Expect (mock => mock.SubTransactionCreating (_transaction))
+          .Throw (exception);
+      mockRepository.ReplayAll ();
+
+      try
+      {
+        _transaction.CreateSubTransaction (componentFactoryMock);
+        Assert.Fail ("Expected exception");
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex, Is.SameAs (exception));
+      }
+
+      listenerMock.AssertWasNotCalled (mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      listenerMock.VerifyAllExpectations ();
+      componentFactoryMock.AssertWasNotCalled (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything, Arg<IDataManager>.Is.Anything));
+      eventReceiverMock.AssertWasNotCalled (mock => mock.SubTransactionCreated (Arg<object>.Is.Anything, Arg<SubTransactionCreatedEventArgs>.Is.Anything));
+
+      Assert.That (_transaction.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void CreateSubTransaction_ExceptionInComponentFactory ()
+    {
+      var componentFactoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (_transaction);
+
+      var exception = new InvalidOperationException ("Canceled");
+      componentFactoryPartialMock.Expect (mock => mock.CreateApplicationData ()).Throw (exception);
+      componentFactoryPartialMock.Replay();
+
+      try
+      {
+        _transaction.CreateSubTransaction (componentFactoryPartialMock);
+        Assert.Fail ("Expected exception");
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex, Is.SameAs (exception));
+      }
+
+      componentFactoryPartialMock.VerifyAllExpectations();
+
+      Assert.That (_transaction.IsReadOnly, Is.False);
     }
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)

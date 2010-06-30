@@ -695,18 +695,24 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction (IClientTransactionComponentFactory customComponentFactory)
   {
-    // TODO 2622: Test this method
     ArgumentUtility.CheckNotNull ("customComponentFactory", customComponentFactory);
 
     TransactionEventSink.SubTransactionCreating (this);
 
     IsReadOnly = true;
 
-    // TODO 2622: Reset IsReadOnly if exception is thrown here
-    var subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory, this));
+    ClientTransaction subTransaction;
+    try
+    {
+      subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory, this));
+    }
+    catch
+    {
+      IsReadOnly = false;
+      throw;
+    }
 
-    // TODO 2622: Assert that subTransaction.Parent == this
-    // TODO 2622: Move TransferDeletedAndInvalidObjects implementation here
+    // TODO 2967: Move TransferDeletedAndInvalidObjects implementation here
 
     OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
 
