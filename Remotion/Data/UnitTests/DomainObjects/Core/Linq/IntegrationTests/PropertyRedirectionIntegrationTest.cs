@@ -76,5 +76,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           select o;
       CheckQueryResult (query);
     }
+
+    [Test]
+    [Ignore ("TODO: 2979")]
+    public void PropertyRelationWithForeignKeyRedirectedToMixin ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where ((IMixinAddingPeristentProperties) o).RelationWithForeignKey != null
+          select o;
+      CheckQueryResult (query);
+    }
+
+    [Test]
+    [Ignore ("TODO: 2979")]
+    public void PropertyRelationWithoutForeignKeyRedirectedToMixin ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where ((IMixinAddingPeristentProperties) o).VirtualRelationProperty != null
+          select o;
+      CheckQueryResult (query);
+    }
+
+    [Test]
+    [Ignore ("TODO: 2979")]
+    public void PropertyRelationWithForeignKeyRedirectedToMixin_AccessProperty ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where ((IMixinAddingPeristentProperties) o).RelationWithForeignKey.ID != null
+          select o;
+      CheckQueryResult (query);
+    }
+
+    [Test]
+    [Ignore ("TODO: 2979")]
+    public void PropertyRelationWithoutForeignKeyRedirectedToMixin_AccessProperty ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where ((IMixinAddingPeristentProperties) o).VirtualRelationProperty.ID != null
+          select o;
+      CheckQueryResult (query);
+    }
+
+    [Test]
+    [Ignore("TODO: 2979")]
+    public void CollectionValuedRelationPropertyAsFromExpression ()
+    {
+      //var query = from rel in  ((IMixinAddingPeristentProperties) rel).CollectionPropertyNSide
+
+    }
   }
 }
