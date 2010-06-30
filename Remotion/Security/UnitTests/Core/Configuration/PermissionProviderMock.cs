@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using Remotion.Configuration;
+using Remotion.Reflection;
 using Remotion.Security.Metadata;
 
 namespace Remotion.Security.UnitTests.Core.Configuration
@@ -33,6 +34,11 @@ namespace Remotion.Security.UnitTests.Core.Configuration
       throw new NotImplementedException();
     }
 
+    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
+    {
+      throw new NotImplementedException();
+    }
+
     public Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName)
     {
       throw new NotImplementedException();
@@ -43,7 +49,17 @@ namespace Remotion.Security.UnitTests.Core.Configuration
       throw new NotImplementedException();
     }
 
+    public Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation)
+    {
+      throw new NotImplementedException();
+    }
+
     public Enum[] GetRequiredPropertyWritePermissions (Type type, string methodName)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation)
     {
       throw new NotImplementedException();
     }

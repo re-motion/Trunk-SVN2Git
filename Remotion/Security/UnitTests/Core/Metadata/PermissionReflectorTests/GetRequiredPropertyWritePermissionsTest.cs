@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -42,6 +44,16 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_PropertyWithoutAttributes_PropertyInformation ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsEnabled"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
+
+      Assert.IsNotNull (requiredAccessTypes);
+      Assert.IsEmpty (requiredAccessTypes);
+    }
+
+    [Test]
     public void Test_CacheForPropertyWithoutAttributes ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), "IsEnabled");
@@ -50,9 +62,29 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_CacheForPropertyWithoutAttributes_PropertyInformation ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsEnabled"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
+
+      Assert.AreEqual (requiredAccessTypes, _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation));
+    }
+
+    [Test]
     public void Test_PropertyWithOneAttribute ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), "IsVisible");
+
+      Assert.IsNotNull (requiredAccessTypes);
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.Contains (TestAccessTypes.Fourth, requiredAccessTypes);
+    }
+
+    [Test]
+    public void Test_PropertyWithOneAttribute_PropertyInformation ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
 
       Assert.IsNotNull (requiredAccessTypes);
       Assert.AreEqual (1, requiredAccessTypes.Length);
@@ -68,9 +100,29 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_CacheForPropertyWithOneAttribute_PropertyInformation ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
+
+      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation));
+    }
+
+    [Test]
     public void Test_NonPublicPropertyWithOneAttribute ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), "NonPublicProperty");
+
+      Assert.IsNotNull (requiredAccessTypes);
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.Contains (TestAccessTypes.Second, requiredAccessTypes);
+    }
+
+    [Test]
+    public void Test_NonPublicPropertyWithOneAttribute_PropertyInformation ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("NonPublicProperty",BindingFlags.NonPublic | BindingFlags.Instance));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
 
       Assert.IsNotNull (requiredAccessTypes);
       Assert.AreEqual (1, requiredAccessTypes.Length);

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -34,6 +35,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
     [Test]
     public void Test_MethodWithoutAttributes ()
+    {
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions");
+
+      Assert.IsNotNull (requiredAccessTypes);
+      Assert.IsEmpty (requiredAccessTypes);
+    }
+
+    [Test]
+    public void Test_MethodWithoutAttributes_MethodInformation ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions");
 
