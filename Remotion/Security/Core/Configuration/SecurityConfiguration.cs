@@ -60,6 +60,7 @@ namespace Remotion.Security.Configuration
     private PermissionProviderHelper _permissionProviderHelper;
     private SecurityProviderHelper _securityProviderHelper;
     private PrincipalProviderHelper _principalProviderHelper;
+    private MemberResolverProviderHelper _memberResolverProviderHelper;
     private GlobalAccessTypeCacheProviderHelper _globalAccessTypeCacheProviderHelper;
     private List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
 
@@ -75,7 +76,10 @@ namespace Remotion.Security.Configuration
       
       _principalProviderHelper = new PrincipalProviderHelper (this);
       _providerHelpers.Add (_principalProviderHelper);
-      
+
+      _memberResolverProviderHelper = new MemberResolverProviderHelper (this);
+      _providerHelpers.Add (_memberResolverProviderHelper);
+
       _globalAccessTypeCacheProviderHelper = new GlobalAccessTypeCacheProviderHelper (this);
       _providerHelpers.Add (_globalAccessTypeCacheProviderHelper);
 
@@ -129,8 +133,7 @@ namespace Remotion.Security.Configuration
     {
       get { return _principalProviderHelper.Providers; }
     }
-
-
+    
     public IPermissionProvider PermissionProvider
     {
       get { return _permissionProviderHelper.Provider; }
@@ -142,6 +145,16 @@ namespace Remotion.Security.Configuration
       get { return _permissionProviderHelper.Providers; }
     }
 
+    public IMemberResolver MemberResolverProvider 
+    {
+      get { return _memberResolverProviderHelper.Provider; }
+      set { _memberResolverProviderHelper.Provider = value; }
+    }
+
+    public ProviderCollection MemberResolverProviders 
+    {
+      get { return _memberResolverProviderHelper.Providers; }
+    }
 
     public IFunctionalSecurityStrategy FunctionalSecurityStrategy
     {
