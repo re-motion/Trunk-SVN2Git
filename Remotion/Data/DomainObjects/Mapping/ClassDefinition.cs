@@ -379,6 +379,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
     public abstract PropertyDefinition ResolveProperty (PropertyInfo property);
     public abstract RelationDefinition ResolveRelation (PropertyInfo property);
+    public abstract IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property);
 
     public string StorageProviderID
     {

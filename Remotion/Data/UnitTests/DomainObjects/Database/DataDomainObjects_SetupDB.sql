@@ -1381,3 +1381,12 @@ CREATE VIEW [dbo].[StorageGroupClassView] ([ID], [ClassID], [Timestamp], [AboveI
     WHERE [ClassID] IN ('StorageGroupClass')
   WITH CHECK OPTION
 GO
+
+CREATE VIEW [dbo].[RelationTargetForPersistentMixinView] ([ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], 
+														  [RelationProperty3ID], [RelationProperty3IDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], [RelationProperty3ID], [RelationProperty3IDClassID]
+    FROM [dbo].[MixedDomains_RelationTarget]
+    WHERE [ClassID] IN ('RelationTargetForPersistentMixin')
+  WITH CHECK OPTION
+GO

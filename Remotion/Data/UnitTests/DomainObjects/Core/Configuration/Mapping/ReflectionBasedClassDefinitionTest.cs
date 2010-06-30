@@ -1248,5 +1248,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
       Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
     }
+
+    [Test]
+    public void ResolveRelation_MixinRelationProperty2 ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("VirtualRelationProperty");
+
+      var result = _targetClassForPersistentMixinClass.ResolveRelation (property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
+      Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_OneToOne ()
+    {
+      var property = typeof (Order).GetProperty ("OrderTicket");
+
+      var result = _orderClass.ResolveRelationEndPoint (property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_OneToMany ()
+    {
+      var property = typeof (Order).GetProperty ("OrderItems");
+
+      var result = _orderClass.ResolveRelationEndPoint (property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_MixinRelationProperty ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+
+      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (RelationEndPointDefinition)));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_MixinRelationProperty2 ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("VirtualRelationProperty");
+
+      var result = _targetClassForPersistentMixinClass.ResolveRelation (property);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
+    }
   }
 }

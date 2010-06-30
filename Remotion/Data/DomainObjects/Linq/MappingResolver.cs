@@ -55,35 +55,37 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (joinInfo.MemberInfo);
-      if (relationData == null)
+      var classDefinition = GetClassDefinition (joinInfo.OriginatingEntity.Type);
+      if (classDefinition == null)
+      {
+        string message = string.Format (
+            "The type '{0}' does not identify a queryable table.", joinInfo.OriginatingEntity.Type);
+        throw new UnmappedItemException (message);
+      }
+
+      var leftEndPointDefinition = GetRelationEndPointDefinition (joinInfo.MemberInfo, classDefinition);
+      if (leftEndPointDefinition == null)
       {
         string message =
             string.Format ("The member '{0}.{1}' does not identify a relation.", joinInfo.MemberInfo.DeclaringType.Name, joinInfo.MemberInfo.Name);
         throw new UnmappedItemException (message);
       }
 
-      RelationDefinition relationDefinition = relationData.Item1;
-      ClassDefinition classDefinition = relationData.Item2;
-      string propertyIdentifier = relationData.Item3;
-
-      var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
-      var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
-
+      var rightEndPointDefinition = leftEndPointDefinition.GetOppositeEndPointDefinition ();
       var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
 
       var alias = generator.GetUniqueIdentifier ("t");
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
-          rightEndPoint.ClassDefinition.ClassType,
-          rightEndPoint.ClassDefinition.GetViewName(),
+          rightEndPointDefinition.ClassDefinition.ClassType,
+          rightEndPointDefinition.ClassDefinition.GetViewName (),
           alias);
 
-      var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
+      var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPointDefinition), leftEndPointDefinition.IsVirtual);
       var rightKey = new SqlColumnDefinitionExpression (
           keyType,
           alias,
-          GetJoinColumnName (rightEndPoint),
-          rightEndPoint.IsVirtual);
+          GetJoinColumnName (rightEndPointDefinition),
+          rightEndPointDefinition.IsVirtual);
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
@@ -122,10 +124,6 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return originatingEntity.GetColumn (property.PropertyType, "ID", true);
-      
-      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
-      if (relationData != null)
-        return new SqlEntityRefMemberExpression (originatingEntity, property);
 
       var classDefinition = GetClassDefinition (originatingEntity.Type);
       if (classDefinition == null)
@@ -134,6 +132,10 @@ namespace Remotion.Data.DomainObjects.Linq
             "The type '{0}' does not identify a queryable table.", originatingEntity.Type);
         throw new UnmappedItemException (message);
       }
+
+      var endPointDefinition = GetRelationEndPointDefinition (property, classDefinition);
+      if (endPointDefinition != null)
+        return new SqlEntityRefMemberExpression (originatingEntity, property);
 
       var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
       var propertyDefinition = classDefinition.ResolveProperty (potentiallyRedirectedProperty);
@@ -203,25 +205,16 @@ namespace Remotion.Data.DomainObjects.Linq
         return Expression.Constant (false);
     }
 
-    private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
+    private IRelationEndPointDefinition GetRelationEndPointDefinition (MemberInfo relationMember, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
       var property = relationMember as PropertyInfo;
       if (property == null)
         return null;
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
-      if (classDefinition == null)
-        return null;
-
       var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
 
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
-      RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
-      if (relationDefinition == null)
-        return null;
-      else
-        return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
+      return classDefinition.ResolveRelationEndPoint (potentiallyRedirectedProperty);
     }
 
     private ClassDefinition GetClassDefinition (Type type)

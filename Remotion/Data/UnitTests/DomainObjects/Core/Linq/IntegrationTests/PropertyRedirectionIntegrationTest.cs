@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
           where ((IMixinAddingPeristentProperties) o).RelationProperty != null
           select o;
-      CheckQueryResult (query);
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
           where ((IMixinAddingPeristentProperties) o).VirtualRelationProperty != null
           select o;
-      CheckQueryResult (query);
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
           where ((IMixinAddingPeristentProperties) o).RelationProperty.ID != null
           select o;
-      CheckQueryResult (query);
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
 
     [Test]
@@ -118,15 +118,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
           where ((IMixinAddingPeristentProperties) o).VirtualRelationProperty.ID != null
           select o;
-      CheckQueryResult (query);
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
 
     [Test]
     [Ignore("TODO: 2979")]
     public void CollectionValuedRelationPropertyAsFromExpression ()
     {
-      //var query = from rel in  ((IMixinAddingPeristentProperties) rel).CollectionPropertyNSide
-
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          from related in ((IMixinAddingPeristentProperties) o).CollectionProperty1Side
+          select related;
+      CheckQueryResult (query);
     }
   }
 }

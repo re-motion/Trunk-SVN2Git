@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
 
@@ -112,6 +113,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveJoinInfo_WithMixedRelationProperty ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+        typeof (TargetClassForPersistentMixin), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var memberInfo = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
+
+      var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+
+      Assert.That (resolvedJoinInfo, Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), 
+      ExpectedMessage = "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPeristentProperties' "
+                       +"does not identify a queryable table.")]
+    public void ResolveJoinInfo_UnknownType ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+        typeof (IMixinAddingPeristentProperties), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var memberInfo = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
+
+      _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+    }
+
+    [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Order.OrderNumber' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_CardinalityOne_ThrowsException ()
     {
@@ -132,6 +160,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
     }
+
+    
 
     [Test]
     public void ResolveConstantExpression_ConstantExpression ()
@@ -206,6 +236,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveMemberExpression_MixedRelationProperty ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (TargetClassForPersistentMixin), "c", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+
+      var result = _resolver.ResolveMemberExpression (entityExpression, property);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlEntityRefMemberExpression)));
+      Assert.That (((SqlEntityRefMemberExpression) result).MemberInfo, Is.SameAs (property));
+      Assert.That (((SqlEntityRefMemberExpression) result).OriginatingEntity, Is.SameAs (entityExpression));
+    }
+
+    [Test]
     [ExpectedException (typeof (UnmappedItemException),
         ExpectedMessage = "The member 'Order.OriginalCustomer' does not have a queryable database mapping.")]
     public void ResolvememberExpression_NotAMappedMember ()
@@ -228,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity.Type, Is.EqualTo (typeof (Order)));
+      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity, Is.SameAs (entityExpression));
     }
 
     [Test]
@@ -236,13 +280,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var property = typeof (Employee).GetProperty ("Computer");
       var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+          typeof (Employee), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
-      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity.Type, Is.EqualTo (typeof (Customer)));
+      Assert.That (sqlEntityRefMemberExpression.OriginatingEntity, Is.SameAs (entityExpression));
     }
 
     [Test]

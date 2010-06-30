@@ -163,12 +163,23 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public override PropertyDefinition ResolveProperty (PropertyInfo property)
     {
+      ArgumentUtility.CheckNotNull ("property", property);
+
       return ResolveDefinition<PropertyDefinition> (property, GetPropertyDefinition);
     }
 
     public override RelationDefinition ResolveRelation (PropertyInfo property)
     {
+      ArgumentUtility.CheckNotNull ("property", property);
+
       return ResolveDefinition<RelationDefinition> (property, GetRelationDefinition);
+    }
+
+    public override IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property)
+    {
+      ArgumentUtility.CheckNotNull ("property", property);
+
+      return ResolveDefinition<IRelationEndPointDefinition> (property, GetRelationEndPointDefinition);
     }
 
     private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
