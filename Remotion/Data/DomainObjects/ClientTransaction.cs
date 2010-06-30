@@ -48,11 +48,6 @@ namespace Remotion.Data.DomainObjects
 [Serializable]
 public class ClientTransaction
 {
-  private readonly IClientTransactionComponentFactory _componentFactory;
-  // types
-
-  // static members and constants
-
   /// <summary>
   /// Creates a new root <see cref="ClientTransaction"/>, specifically a <see cref="RootPersistenceStrategy"/>.
   /// </summary>
@@ -63,7 +58,7 @@ public class ClientTransaction
   public static ClientTransaction CreateRootTransaction ()
   {
     var componentFactory = new RootClientTransactionComponentFactory();
-    return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
+    return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory, (ClientTransaction) null));
   }
 
   /// <summary>
@@ -131,13 +126,16 @@ public class ClientTransaction
   /// </summary>
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
-  private readonly IDataManager _dataManager;
-  private readonly IObjectLoader _objectLoader;
+  private readonly IClientTransactionComponentFactory _componentFactory;
+  private readonly ClientTransaction _parentTransaction;
 
   private readonly Dictionary<Enum, object> _applicationData;
-  private readonly CompoundClientTransactionListener _eventSink;
-  private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly ClientTransactionExtensionCollection _extensions;
+
+  private readonly CompoundClientTransactionListener _eventSink;
+  private readonly IDataManager _dataManager;
+  private readonly IPersistenceStrategy _persistenceStrategy;
+  private readonly IObjectLoader _objectLoader;
   private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
   private bool _isDiscarded;
@@ -147,11 +145,12 @@ public class ClientTransaction
 
   private readonly Guid _id = Guid.NewGuid ();
 
-  protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
+  protected ClientTransaction (IClientTransactionComponentFactory componentFactory, ClientTransaction parentTransaction)
   {
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
-
+    
     _componentFactory = componentFactory;
+    _parentTransaction = parentTransaction;
 
     _applicationData = componentFactory.CreateApplicationData ();
     _extensions = componentFactory.CreateExtensions ();
@@ -179,7 +178,7 @@ public class ClientTransaction
   /// <value>The parent transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
-    get { return _persistenceStrategy.ParentTransaction; }
+    get { return _parentTransaction; }
   }
 
   /// <summary>
@@ -299,7 +298,7 @@ public class ClientTransaction
   /// <returns>True if control was returned to the parent transaction, false if this transaction has no parent transaction.</returns>
   /// <remarks>
   /// <para>
-  /// When a subtransaction is created via <see cref="CreateSubTransaction"/>, the parent transaction is made read-only and cannot be
+  /// When a subtransaction is created via <see cref="CreateSubTransaction()"/>, the parent transaction is made read-only and cannot be
   /// used in potentially modifying operations until the subtransaction returns control to the parent transaction by calling this method.
   /// </para>
   /// <para>
@@ -678,12 +677,39 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    NotifyOfSubTransactionCreating ();
+    return CreateSubTransaction (ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (this)));
+  }
 
-    var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (this));
-    var subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
+  /// <summary>
+  /// Initializes a new subtransaction with this <see cref="ClientTransaction"/> as its <see cref="ParentTransaction"/>. A custom 
+  /// <see cref="IClientTransactionComponentFactory"/> is used to instantiate the subtransaction's components.
+  /// </summary>
+  /// <param name="customComponentFactory">A custom implementation of <see cref="IClientTransactionComponentFactory"/> to use when instantiating
+  /// the subtransaction.</param>
+  /// <remarks>
+  /// <para>
+  /// When a subtransaction is created, the parent transaction is automatically made read-only and cannot be modified until the subtransaction
+  /// returns control to it via <see cref="Discard"/>. <see cref="Discard"/> is automatically called when a
+  /// scope created by <see cref="EnterDiscardingScope"/> is left.
+  /// </para>
+  /// </remarks>
+  public virtual ClientTransaction CreateSubTransaction (IClientTransactionComponentFactory customComponentFactory)
+  {
+    // TODO 2622: Test this method
+    ArgumentUtility.CheckNotNull ("customComponentFactory", customComponentFactory);
 
-    NotifyOfSubTransactionCreated (subTransaction);
+    TransactionEventSink.SubTransactionCreating (this);
+
+    IsReadOnly = true;
+
+    // TODO 2622: Reset IsReadOnly if exception is thrown here
+    var subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory, this));
+
+    // TODO 2622: Assert that subTransaction.Parent == this
+    // TODO 2622: Move TransferDeletedAndInvalidObjects implementation here
+
+    OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
+
     return subTransaction;
   }
 
@@ -1087,36 +1113,6 @@ public class ClientTransaction
     return _objectLoader.LoadRelatedObjects (relationEndPointID);
   }
 
-  protected internal void NotifyOfSubTransactionCreating ()
-  {
-    OnSubTransactionCreating ();
-    IsReadOnly = true;
-  }
-
-  private void OnSubTransactionCreating ()
-  {
-    using (EnterNonDiscardingScope ())
-    {
-      TransactionEventSink.SubTransactionCreating (this);
-    }
-  }
-
-  protected internal void NotifyOfSubTransactionCreated (ClientTransaction subTransaction)
-  {
-    OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
-  }
-
-  protected virtual void OnSubTransactionCreated (SubTransactionCreatedEventArgs args)
-  {
-    using (EnterNonDiscardingScope ())
-    {
-      TransactionEventSink.SubTransactionCreated (this, args.SubTransaction);
-
-      if (SubTransactionCreated != null)
-        SubTransactionCreated (this, args);
-    }
-  }
-
   /// <summary>
   /// Raises the <see cref="Loaded"/> event.
   /// </summary>
@@ -1187,6 +1183,23 @@ public class ClientTransaction
         RolledBack (this, args);
 
       TransactionEventSink.TransactionRolledBack (this, args.DomainObjects);
+    }
+  }
+
+  /// <summary>
+  /// Raises the <see cref="SubTransactionCreated"/> event.
+  /// </summary>
+  /// <param name="eventArgs">A <see cref="Remotion.Data.DomainObjects.SubTransactionCreatedEventArgs"/> instance containing the event data.</param>
+  protected virtual void OnSubTransactionCreated (SubTransactionCreatedEventArgs eventArgs)
+  {
+    ArgumentUtility.CheckNotNull ("eventArgs", eventArgs);
+
+    using (EnterNonDiscardingScope ())
+    {
+      if (SubTransactionCreated != null)
+        SubTransactionCreated (this, eventArgs);
+
+      TransactionEventSink.SubTransactionCreated (this, eventArgs.SubTransaction);
     }
   }
 

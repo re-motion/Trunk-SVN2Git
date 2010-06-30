@@ -39,12 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // construction and disposing
 
-    public ClientTransactionMock () : this (new RootClientTransactionComponentFactory())
-    {
-    }
-
-    private ClientTransactionMock (IClientTransactionComponentFactory componentFactory)
-        : base(componentFactory)
+    public ClientTransactionMock () : base (new RootClientTransactionComponentFactory(), null)
     {
       Initialize ();
       _queryManager = base.QueryManager;

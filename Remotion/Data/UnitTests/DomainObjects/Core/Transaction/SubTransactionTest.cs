@@ -94,12 +94,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CreateEmptyTransactionOfSameType_ForRootTransaction ()
     {
-      ClientTransaction newRootTransaction = ClientTransactionMock.CreateEmptyTransactionOfSameType();
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.AreSame (ClientTransactionMock, subTransaction.ParentTransaction);
-      Assert.AreSame (ClientTransactionMock, subTransaction.RootTransaction);
-      Assert.AreNotSame (ClientTransactionMock, newRootTransaction);
-      Assert.AreEqual (ClientTransactionMock.GetType(), newRootTransaction.GetType());
+      var rootTransaction = ClientTransaction.CreateRootTransaction ();
+      ClientTransaction newRootTransaction = rootTransaction.CreateEmptyTransactionOfSameType ();
+      ClientTransaction subTransaction = rootTransaction.CreateSubTransaction ();
+      Assert.AreSame (rootTransaction, subTransaction.ParentTransaction);
+      Assert.AreSame (rootTransaction, subTransaction.RootTransaction);
+      Assert.AreNotSame (rootTransaction, newRootTransaction);
+      Assert.AreEqual (rootTransaction.GetType (), newRootTransaction.GetType ());
+      Assert.AreEqual (
+          ClientTransactionTestHelper.GetPersistenceStrategy (rootTransaction).GetType(),
+          ClientTransactionTestHelper.GetPersistenceStrategy (newRootTransaction).GetType ());
     }
 
     [Test]

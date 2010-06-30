@@ -45,11 +45,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _dataManager = dataManager;
     }
 
-    public ClientTransaction ParentTransaction
-    {
-      get { return null; }
-    }
-
     public void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       ArgumentUtility.CheckNotNull ("changedDataContainers", changedDataContainers);

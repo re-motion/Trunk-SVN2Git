@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class BindingClientTransaction : ClientTransaction
   {
     protected BindingClientTransaction (IClientTransactionComponentFactory componentFactory)
-      : base (componentFactory)
+      : base (componentFactory, null)
     {
     }
 
