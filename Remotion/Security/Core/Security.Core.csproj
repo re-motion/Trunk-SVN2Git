@@ -87,6 +87,7 @@
     <Compile Include="IFunctionalSecurityStrategy.cs" />
     <Compile Include="IGlobalAccessTypeCacheProvider.cs" />
     <Compile Include="IRevisionBasedSecurityProvider.cs" />
+    <Compile Include="Metadata\EnumInstanceStatic.cs" />
     <Compile Include="Metadata\IMemberResolver.cs" />
     <Compile Include="Metadata\ReflectionBasedMemberResolver.cs" />
     <Compile Include="NullSecurityPrincipal.cs" />

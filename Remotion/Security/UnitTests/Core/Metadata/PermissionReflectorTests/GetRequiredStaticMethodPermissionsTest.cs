@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
@@ -45,7 +46,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     [Test]
     public void Test_MethodWithoutAttributes_MethodInformation ()
     {
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CheckPermissions");
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CheckPermissions"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static);
 
       Assert.IsNotNull (requiredAccessTypes);
       Assert.IsEmpty (requiredAccessTypes);
@@ -60,9 +62,28 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_CacheForMethodWithoutAttributes_MethodInformation ()
+    {
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CheckPermissions"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static);
+
+      Assert.AreEqual (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static));
+    }
+
+    [Test]
     public void Test_MethodWithOneAttribute ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "CreateForSpecialCase");
+
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);
+    }
+
+    [Test]
+    public void Test_MethodWithOneAttribute_MethodInformation ()
+    {
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static);
 
       Assert.AreEqual (1, requiredAccessTypes.Length);
       Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);
@@ -77,6 +98,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_CacheForMethodWithOneAttribut_MethodInformation ()
+    {
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static);
+
+      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static));
+    }
+
+    [Test]
     public void Test_OverloadedMethodWithOneAttributes ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), "IsValid");
@@ -86,9 +116,30 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_OverloadedMethodWithOneAttributes_MethodInformation ()
+    {
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("IsValid", new[]{typeof(SecurableObject)}));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation, EnumInstanceStatic.Static);
+
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.AreEqual (GeneralAccessTypes.Read, requiredAccessTypes[0]);
+    }
+
+    [Test]
     public void Test_MethodOfDerivedClass ()
     {
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (DerivedSecurableObject), "CreateForSpecialCase");
+
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);
+    }
+
+    [Test]
+    [Ignore ("Check method")]
+    public void Test_MethodOfDerivedClass_MethodInformation ()
+    {
+      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("CreateForSpecialCase"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), methodInformation, EnumInstanceStatic.Static );
 
       Assert.AreEqual (1, requiredAccessTypes.Length);
       Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);

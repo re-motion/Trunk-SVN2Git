@@ -15,21 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Reflection;
 
 namespace Remotion.Security.Metadata
 {
-  public interface IPermissionProvider
+  public enum EnumInstanceStatic
   {
-    Enum[] GetRequiredMethodPermissions (Type type, string methodName);
-    Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, EnumInstanceStatic instanceStatic);
-
-    Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName);
-
-    Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName);
-    Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation);
-
-    Enum[] GetRequiredPropertyWritePermissions (Type type, string propertyName);
-    Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation);
+    Instance = 0,
+    Static
   }
 }
