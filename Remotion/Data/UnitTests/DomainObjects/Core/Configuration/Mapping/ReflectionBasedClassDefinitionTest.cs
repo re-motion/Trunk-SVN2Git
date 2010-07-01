@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -37,15 +38,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private ReflectionBasedClassDefinition _orderClass;
     private ReflectionBasedClassDefinition _distributorClass;
     private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
+    private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _orderClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _distributorClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
+
       _targetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
-      _distributorClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
+      _derivedTargetClassForPersistentMixinClass =
+          (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
     }
 
     [Test]
@@ -1028,13 +1033,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     private bool Contains (IEnumerable<IRelationEndPointDefinition> endPointDefinitions, string propertyName)
     {
-      foreach (var endPointDefinition in endPointDefinitions)
-      {
-        if (endPointDefinition.PropertyName == propertyName)
-          return true;
-      }
-
-      return false;
+      return endPointDefinitions.Any (endPointDefinition => endPointDefinition.PropertyName == propertyName);
     }
 
     [Test]
@@ -1178,20 +1177,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void ResolveProperty_DBColumn ()
+    public void ResolveProperty ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
       var result = _orderClass.ResolveProperty (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedPropertyDefinition)));
-      Assert.That (result.StorageSpecificName, Is.EqualTo ("OrderNo"));
-      Assert.That (result.PropertyType, Is.EqualTo (typeof (int)));
+      var expected = _orderClass.GetPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
+      Assert.That (result, Is.SameAs (expected));
     }
 
     [Test]
-    public void ResolveProperty_RedirectedProperty ()
+    public void ResolveProperty_StorageClassNoneProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
 
@@ -1207,58 +1204,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedPropertyDefinition)));
-      Assert.That (result.StorageSpecificName, Is.EqualTo ("PersistentProperty"));
-      Assert.That (result.PropertyType, Is.EqualTo (typeof (int)));
+      var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
+          typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
+      Assert.That (result, Is.SameAs (expected));
     }
 
     [Test]
-    public void ResolveRelation_OneToOne ()
+    public void ResolveProperty_MixinPropertyOnBaseClass ()
     {
-      var property = typeof (Order).GetProperty ("OrderTicket");
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("PersistentProperty");
 
-      var result = _orderClass.ResolveRelation (property);
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
-      Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
-    }
-
-    [Test]
-    public void ResolveRelation_OneToMany ()
-    {
-      var property = typeof (Order).GetProperty ("OrderItems");
-
-      var result = _orderClass.ResolveRelation (property);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
-      Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToMany));
-    }
-
-    [Test]
-    public void ResolveRelation_MixinRelationProperty ()
-    {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
-
-      var result = _targetClassForPersistentMixinClass.ResolveRelation (property);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
-      Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
-    }
-
-    [Test]
-    public void ResolveRelation_MixinRelationProperty2 ()
-    {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("VirtualRelationProperty");
-
-      var result = _targetClassForPersistentMixinClass.ResolveRelation (property);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
-      Assert.That (result.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
+      var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
+          typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
+      Assert.That (result, Is.SameAs (expected));
     }
 
     [Test]
@@ -1268,8 +1228,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var result = _orderClass.ResolveRelationEndPoint (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
+      var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      Assert.That (result, Is.SameAs (expected));
     }
 
     [Test]
@@ -1279,8 +1239,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var result = _orderClass.ResolveRelationEndPoint (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
+      var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_NonEndPointProperty ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+
+      var result = _orderClass.ResolveRelationEndPoint (property);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]
@@ -1290,19 +1260,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationEndPointDefinition)));
+      var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
+          typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");
+      Assert.That (result, Is.SameAs (expected));
     }
 
     [Test]
-    public void ResolveRelationEndPoint_MixinRelationProperty2 ()
+    public void ResolveRelationEndPoint_MixinRelationProperty_VirtualEndPoint ()
     {
       var property = typeof (IMixinAddingPeristentProperties).GetProperty ("VirtualRelationProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveRelation (property);
+      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (RelationDefinition)));
+      var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
+          typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveRelationEndPoint_MixinRelationProperty_DefinedOnBaseClass ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
+
+      var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
+          typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");
+      Assert.That (result, Is.SameAs (expected));
     }
   }
 }
