@@ -20,7 +20,7 @@ function BocAutoCompleteReferenceValue()
 
 BocAutoCompleteReferenceValue.Bind =
 function (textbox, hiddenField, button, webServiceUrl, webServiceMethod,
-         completionSetCount, completionInterval, suggestionInterval,
+         completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
          nullValueString, businessObjectClass, businessObjectPropery, businessObjectID, args)
 {
   textbox.autocomplete(webServiceUrl, webServiceMethod,
@@ -30,8 +30,9 @@ function (textbox, hiddenField, button, webServiceUrl, webServiceMethod,
           minChars: 0,
           max: completionSetCount, // Set query limit
 
-          displayListDelay: completionInterval,
-          autoFillDelay: suggestionInterval,
+          dropDownDisplayDelay: dropDownDisplayDelay,
+          dropDownRefreshDelay: dropDownRefreshDelay,
+          selectionUpdateDelay: selectionUpdateDelay,
 
           autoFill: true,
           mustMatch: false, //set true if should clear input on no results

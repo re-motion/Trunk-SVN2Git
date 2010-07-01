@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -111,9 +112,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private void RegisterBindScript ()
     {
       string key = Control.UniqueID + "_BindScript";
-      const string scriptTemplate =
-          @"$(document).ready( function() {{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), "
-          + "'{3}', '{4}', {5}, {6}, {7}, '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
 
       var dataSource = Maybe.ForValue (Control.DataSource);
       string businessObjectClass =
@@ -123,23 +121,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string businessObjectID =
           dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault ("");
 
-      string script = string.Format (
-          scriptTemplate,
-          Control.TextBoxClientID,
-          Control.HiddenFieldClientID,
-          Control.DropDownButtonClientID,
-          string.IsNullOrEmpty (Control.ServicePath) ? "" : UrlUtility.GetAbsoluteUrl ((Page) Control.Page, Control.ServicePath, false),
-          StringUtility.NullToEmpty (Control.ServiceMethod),
-          Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
-          Control.CompletionInterval,
-          Control.SuggestionInterval,
-          Control.NullValueString,
-          businessObjectClass,
-          businessObjectProperty,
-          businessObjectID,
-          Control.Args
-          );
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
+      var script = new StringBuilder (1000);
+      script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Bind(");
+      script.AppendFormat ("$('#{0}'), ", Control.TextBoxClientID);
+      script.AppendFormat ("$('#{0}'), ", Control.HiddenFieldClientID);
+      script.AppendFormat ("$('#{0}'),", Control.DropDownButtonClientID);
+      
+      script.AppendFormat (
+          "'{0}', ",
+          string.IsNullOrEmpty (Control.ServicePath) ? "" : UrlUtility.GetAbsoluteUrl ((Page) Control.Page, Control.ServicePath, false));
+      script.AppendFormat ("'{0}', ", StringUtility.NullToEmpty (Control.ServiceMethod));
+
+      script.AppendFormat ("{0}, ", Control.CompletionSetCount);
+      script.AppendFormat ("{0}, ", Control.DropDownDisplayDelay);
+      script.AppendFormat ("{0}, ", Control.DropDownRefreshDelay);
+      script.AppendFormat ("{0}, ", Control.SelectionUpdateDelay);
+
+      script.AppendFormat ("'{0}', ", Control.NullValueString);
+      script.AppendFormat ("'{0}', ", businessObjectClass);
+      script.AppendFormat ("'{0}', ", businessObjectProperty);
+      script.AppendFormat ("'{0}', ", businessObjectID);
+      script.AppendFormat ("'{0}'", Control.Args);
+      script.Append ("); } );");
+     
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString());
     }
 
     private void RegisterAdjustLayoutScript ()

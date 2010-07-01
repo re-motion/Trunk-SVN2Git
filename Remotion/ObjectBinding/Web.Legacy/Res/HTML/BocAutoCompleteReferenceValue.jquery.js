@@ -210,12 +210,13 @@
             var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
 
             if (!isControlKey && !isValueSeparatorKey) {
-                    var currentValue = $input.val();
-                    timeout = setTimeout(
-                        function () { 
-                            onChange(0, false, currentValue); 
-                        }, 
-                        options.displayListDelay);
+                var currentValue = $input.val();
+                var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
+                timeout = setTimeout(
+                    function () { 
+                        onChange(0, false, currentValue); 
+                    }, 
+                    dropDownDelay);
             }
             
             if (autoFillTimeout) {
@@ -238,7 +239,7 @@
                         if (index != -1){
                             autoFill ($input.val(), select.selected().result);
                     }
-                }, options.autoFillDelay);
+                }, options.selectionUpdateDelay);
             }
         }).focus(function() {
             // track whether the field has focus, we shouldn't process any
@@ -632,8 +633,10 @@
         resultsClass: "ac_results",
         loadingClass: "ac_loading",
         minChars: 1,
-        displayListDelay: 400,
-        autoFillDelay: 400,
+        // re-motion: modified delay concept
+        dropDownDisplayDelay: 400,
+        dropDownRefreshDelay: 400,
+        selectionUpdateDelay: 400,
         matchCase: false,
         matchSubset: true,
         matchContains: false,

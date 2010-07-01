@@ -34,9 +34,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     SingleRowTextBoxStyle TextBoxStyle { get; }
 
     string NullValueString { get; }
-    int? CompletionSetCount { get; }
-    int CompletionInterval { get; }
-    int SuggestionInterval { get; }
+    int CompletionSetCount { get; }
+    int DropDownDisplayDelay { get; }
+    int DropDownRefreshDelay { get; }
+    int SelectionUpdateDelay { get; }
     string Args { get; }
   }
 }

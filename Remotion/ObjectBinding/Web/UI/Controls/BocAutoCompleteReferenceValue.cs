@@ -74,9 +74,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _serviceMethod = string.Empty;
     private string _servicePath = string.Empty;
     private string _args = string.Empty;
-    private int? _completionSetCount = 10;
-    private int _completionInterval = 1000;
-    private int _suggestionInterval = 200;
+    private int _completionSetCount = 10;
+    private int _dropDownDisplayDelay = 1000;
+    private int _dropDownRefreshDelay = 2000;
+    private int _selectionUpdateDelay = 200;
 
 
     // construction and disposing
@@ -403,7 +404,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _labelStyle; }
     }
 
-    [Category ("AutoCompleteExtender")]
+    [Category ("AutoComplete")]
     [DefaultValue ("")]
     public string ServiceMethod
     {
@@ -412,7 +413,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     [Editor (typeof (UrlEditor), typeof (UITypeEditor))]
-    [Category ("AutoCompleteExtender")]
+    [Category ("AutoComplete")]
     [DefaultValue ("")]
     public string ServicePath
     {
@@ -420,9 +421,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _servicePath = StringUtility.NullToEmpty (value); }
     }
 
-    [Category ("AutoCompleteExtender")]
-    [DefaultValue (null)]
-    public int? CompletionSetCount
+    [Category ("AutoComplete")]
+    [DefaultValue (10)]
+    public int CompletionSetCount
     {
       get { return _completionSetCount; }
       set
@@ -433,35 +434,49 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    [Category ("AutoCompleteExtender")]
+    [Category ("AutoComplete")]
     [DefaultValue (1000)]
-    [Description ("Time in milliseconds when the timer will kick in to get suggestions using the web service.")]
-    public int CompletionInterval
+    [Description ("Time in milliseconds before the drop down is shown for the first time.")]
+    public int DropDownDisplayDelay
     {
-      get { return _completionInterval; }
+      get { return _dropDownDisplayDelay; }
       set
       {
         if (value < 0)
-          throw new ArgumentOutOfRangeException ("value", "The CompletionInterval must be greater than or equal to 0.");
-        _completionInterval = value;
+          throw new ArgumentOutOfRangeException ("value", "The DropDownDisplayDelay must be greater than or equal to 0.");
+        _dropDownDisplayDelay = value;
       }
     }
 
-    [Category ("AutoCompleteExtender")]
+    [Category ("AutoComplete")]
+    [DefaultValue (2000)]
+    [Description ("Time in milliseconds before the contents of the drop down is refreshed.")]
+    public int DropDownRefreshDelay
+    {
+      get { return _dropDownRefreshDelay; }
+      set
+      {
+        if (value < 0)
+          throw new ArgumentOutOfRangeException ("value", "The DropDownRefreshDelay must be greater than or equal to 0.");
+        _dropDownRefreshDelay = value;
+      }
+    }
+
+    [Category ("AutoComplete")]
     [DefaultValue (200)]
-    [Description ("Time in milliseconds when the timer will kick in to complete the user's input from the values in the drop down list.")]
-    public int SuggestionInterval
+    [Description ("Time in milliseconds before the user's input is used to select the best match in the drop down list.")]
+    public int SelectionUpdateDelay
     {
-      get { return _suggestionInterval; }
+      get { return _selectionUpdateDelay; }
       set
       {
         if (value < 0)
-          throw new ArgumentOutOfRangeException ("value", "The SuggestionInterval must be greater than or equal to 0.");
-        _suggestionInterval = value;
+          throw new ArgumentOutOfRangeException ("value", "The SelectionUpdateDelay must be greater than or equal to 0.");
+        _selectionUpdateDelay = value;
       }
     }
 
-    [Category ("AutoCompleteExtender")]
+    [Category ("AutoComplete")]
     [DefaultValue ("")]
     public string Args
     {
