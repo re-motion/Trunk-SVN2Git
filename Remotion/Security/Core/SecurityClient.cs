@@ -192,7 +192,10 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType(), propertyName);
+      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType(), propertyName);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType(), propertyInformation);
+      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType(), propertyName);
+
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
 

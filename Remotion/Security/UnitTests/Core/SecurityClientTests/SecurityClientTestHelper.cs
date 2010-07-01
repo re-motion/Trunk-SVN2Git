@@ -91,6 +91,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
     }
 
+    public void ExpectMemberResolverGetRequiredPropertyPermission (string propertyName, IPropertyInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
+    }
+
     public void ExpectPermissionReflectorGetRequiredStaticMethodPermissions (string methodName, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), methodName)).Return (returnValue);
@@ -104,6 +109,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (string propertyName, params Enum[] accessTypes)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (accessTypes);
+    }
+
+    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnValue)
+    {
+      Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (returnValue);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (Enum requiredAccessType, bool returnValue)
