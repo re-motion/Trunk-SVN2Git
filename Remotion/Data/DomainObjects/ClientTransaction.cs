@@ -163,7 +163,7 @@ public class ClientTransaction
       _eventSink.AddListener (listener);
 
     _dataManager = componentFactory.CreateDataManager (this);
-    _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id, _dataManager);
+    _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
     _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _eventSink);
     _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
 
@@ -723,8 +723,6 @@ public class ClientTransaction
       IsReadOnly = false;
       throw;
     }
-
-    // TODO 2967: Move TransferDeletedAndInvalidObjects implementation here
 
     OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
 

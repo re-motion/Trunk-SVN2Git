@@ -33,12 +33,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubPersistenceStrategy : IPersistenceStrategy
   {
-    private readonly IDataManager _dataManager;
     private readonly ClientTransaction _parentTransaction;
 
-    public SubPersistenceStrategy (IDataManager dataManager, ClientTransaction parentTransaction)
+    public SubPersistenceStrategy (ClientTransaction parentTransaction)
     {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
 
       if (!parentTransaction.IsReadOnly)
@@ -49,10 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             "parentTransaction");
       }
 
-      _dataManager = dataManager;
       _parentTransaction = parentTransaction;
-
-      TransferDeletedAndInvalidObjects();
     }
 
     public ClientTransaction ParentTransaction
@@ -165,16 +160,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("query", query);
 
       return _parentTransaction.QueryManager.GetScalar (query);
-    }
-
-    private void TransferDeletedAndInvalidObjects ()
-    {
-      var invalidObjects = _parentTransaction.DataManager.InvalidObjectIDs
-          .Select (id => _parentTransaction.DataManager.GetInvalidObjectReference (id));
-      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
-      
-      foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
-        _dataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
     }
 
     private DataContainer TransferParentObject (ObjectID objectID)

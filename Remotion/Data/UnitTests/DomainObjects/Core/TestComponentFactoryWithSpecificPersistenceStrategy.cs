@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return _actualFactory.CreateDataManager (clientTransaction);
     }
 
-    public IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
+    public IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
       return _persistenceStrategy;
     }

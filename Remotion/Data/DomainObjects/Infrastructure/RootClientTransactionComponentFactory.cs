@@ -54,9 +54,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy ());
     }
 
-    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
+    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
-      return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (id, dataManager));
+      return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (id));
     }
 
     public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)

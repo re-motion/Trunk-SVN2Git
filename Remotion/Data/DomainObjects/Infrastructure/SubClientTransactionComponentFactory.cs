@@ -35,7 +35,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private readonly ClientTransaction _parentTransaction;
 
-    // TODO 2622: Consider making parentTransaction a parameter of the methods below, supplied by ClientTransaction..ctor - or - make clientTransaction a parameter of the methods below
     public SubClientTransactionComponentFactory (ClientTransaction parentTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
@@ -62,13 +61,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy());
+      var dataManager = new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy ());
+
+      var parentDataManager = _parentTransaction.DataManager;
+      var invalidObjects = parentDataManager.InvalidObjectIDs.Select (id => parentDataManager.GetInvalidObjectReference (id));
+      var deletedObjects = parentDataManager.GetLoadedData ().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
+
+      foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
+        dataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
+
+      return dataManager;
     }
 
-    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id, IDataManager dataManager)
+    public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (dataManager, _parentTransaction));
+      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction));
     }
 
     public virtual IObjectLoader CreateObjectLoader (

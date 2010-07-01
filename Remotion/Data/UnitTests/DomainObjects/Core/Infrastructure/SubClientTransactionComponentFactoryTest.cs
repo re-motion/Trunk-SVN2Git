@@ -21,19 +21,21 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class SubClientTransactionComponentFactoryTest
+  public class SubClientTransactionComponentFactoryTest : StandardMappingTest
   {
-    private ClientTransaction _parentTransaction;
+    private ClientTransactionMock _parentTransaction;
     private SubClientTransactionComponentFactory _factory;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _parentTransaction = ClientTransaction.CreateRootTransaction();
+      base.SetUp ();
+
+      _parentTransaction = new ClientTransactionMock ();
       _factory = new SubClientTransactionComponentFactory (_parentTransaction);
     }
     [Test]
@@ -52,6 +54,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (
           dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
           Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
+    }
+
+    [Test]
+    public void CreateDataManager_ObjectsInvalidOrDeletedInParentTransaction_AreAutomaticallyMarkedInvalid ()
+    {
+      var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject());
+      var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
+      var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
+
+      _parentTransaction.Delete (objectInvalidInParent);
+      _parentTransaction.Delete (objectDeletedInParent);
+
+      Assert.That (objectInvalidInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Invalid));
+      Assert.That (objectDeletedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Deleted));
+      Assert.That (objectLoadedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Unchanged));
+
+      var dataManager = _factory.CreateDataManager (new ClientTransactionMock ());
+
+      Assert.That (dataManager.IsInvalid (objectInvalidInParent.ID), Is.True);
+      Assert.That (dataManager.IsInvalid (objectDeletedInParent.ID), Is.True);
+      Assert.That (dataManager.IsInvalid (objectLoadedInParent.ID), Is.False);
     }
 
     [Test]

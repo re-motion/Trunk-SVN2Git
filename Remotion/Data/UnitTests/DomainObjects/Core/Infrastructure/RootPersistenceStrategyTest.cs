@@ -17,23 +17,19 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
   public class RootPersistenceStrategyTest
   {
-    private IDataManager _dataManagerMock;
     private RootPersistenceStrategy _rootPersistenceStrategy;
 
     [SetUp]
     public void SetUp ()
     {
-      _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
-      _rootPersistenceStrategy = new RootPersistenceStrategy (Guid.Empty, _dataManagerMock);
+      _rootPersistenceStrategy = new RootPersistenceStrategy (Guid.Empty);
     }
 
     [Test]

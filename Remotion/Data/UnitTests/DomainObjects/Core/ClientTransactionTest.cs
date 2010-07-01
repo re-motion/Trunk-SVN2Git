@@ -746,7 +746,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Expect (mock => mock.SubTransactionCreating (_transaction))
             .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.False));
         componentFactoryPartialMock
-            .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything, Arg<IDataManager>.Is.Anything))
+            .Expect (mock => mock.CreatePersistenceStrategy (Arg<Guid>.Is.Anything))
             .Return (fakePersistenceStrategy);
         eventReceiverMock
             .Expect (mock => mock.SubTransactionCreated (

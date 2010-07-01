@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -38,8 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentTransaction = new ClientTransactionMock ();
       _parentTransaction.IsReadOnly = true;
 
-      var dataManagerStub = MockRepository.GenerateStub<IDataManager> ();
-      _persistenceStrategy = new SubPersistenceStrategy (dataManagerStub, _parentTransaction);
+      _persistenceStrategy = new SubPersistenceStrategy (_parentTransaction);
     }
 
     [Test]
@@ -50,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Initialization_ThrowsWhenParentTransactionWriteable ()
     {
       var writeableParentTransaction = new ClientTransactionMock();
-      new SubPersistenceStrategy (MockRepository.GenerateStub<IDataManager> (), writeableParentTransaction);
+      new SubPersistenceStrategy (writeableParentTransaction);
     }
 
     [Test]

@@ -36,10 +36,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private readonly Guid _transactionID;
 
-    public RootPersistenceStrategy (Guid transactionID, IDataManager dataManager)
+    public RootPersistenceStrategy (Guid transactionID)
     {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-
       _transactionID = transactionID;
     }
 
