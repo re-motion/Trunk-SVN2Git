@@ -260,7 +260,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
       parentDataContainer.SetPropertyValuesFrom (dataContainer);
 
-      if (dataContainer.HasBeenMarkedChanged)
+      if (dataContainer.HasBeenMarkedChanged && (parentDataContainer.State == StateType.Unchanged || parentDataContainer.State == StateType.Changed))
         parentDataContainer.MarkAsChanged();
     }
 

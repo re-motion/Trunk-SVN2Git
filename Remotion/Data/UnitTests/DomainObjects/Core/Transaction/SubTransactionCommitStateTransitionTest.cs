@@ -334,5 +334,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
+
+    [Test]
+    public void CommitObjectsMarkedAsChanged ()
+    {
+      var instanceNewInParent = ClassWithAllDataTypes.NewObject ();
+      var instanceChangedInParent = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      instanceChangedInParent.Int32Property++;
+      var instanceUnchangedInParent = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        instanceNewInParent.MarkAsChanged ();
+        instanceChangedInParent.MarkAsChanged ();
+        instanceUnchangedInParent.MarkAsChanged ();
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (instanceNewInParent.State, Is.EqualTo (StateType.New));
+      Assert.That (instanceChangedInParent.State, Is.EqualTo (StateType.Changed));
+      Assert.That (instanceUnchangedInParent.State, Is.EqualTo (StateType.Changed));
+
+      Assert.That (instanceNewInParent.InternalDataContainer.HasBeenMarkedChanged, Is.False);
+      Assert.That (instanceChangedInParent.InternalDataContainer.HasBeenMarkedChanged, Is.True);
+      Assert.That (instanceUnchangedInParent.InternalDataContainer.HasBeenMarkedChanged, Is.True);
+    }
+
+    [Test]
+    public void CommitObjectsNotMarkedAsChanged ()
+    {
+      var instanceChangedInSub = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var instanceUnchangedInSub = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        instanceChangedInSub.Int32Property++;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (instanceChangedInSub.State, Is.EqualTo (StateType.Changed));
+      Assert.That (instanceUnchangedInSub.State, Is.EqualTo (StateType.Unchanged));
+
+      Assert.That (instanceChangedInSub.InternalDataContainer.HasBeenMarkedChanged, Is.False);
+      Assert.That (instanceUnchangedInSub.InternalDataContainer.HasBeenMarkedChanged, Is.False);
+    }
   }
 }
