@@ -76,14 +76,14 @@ namespace Remotion.Security.Metadata
 
     private static readonly ICache<CacheKey, IMemberInformation> s_cache = new InterlockedCache<CacheKey, IMemberInformation> ();
 
-    public IMethodInformation GetMethodInformation (Type type, string methodName)
+    public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
-      return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Instance);
-    }
-
-    public IMethodInformation GetStaticMethodInformation (Type type, string methodName)
-    {
-      return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      if (memberAffiliation == MemberAffiliation.Instance)
+        return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Instance);
+      else if (memberAffiliation == MemberAffiliation.Static)
+        return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      else
+        return null;
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)

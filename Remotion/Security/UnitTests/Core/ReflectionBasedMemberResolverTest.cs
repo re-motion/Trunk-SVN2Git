@@ -32,7 +32,7 @@ namespace Remotion.Security.UnitTests.Core
       var expectedMethodInfoAdapter = new MethodInfoAdapter (typeof (SecurableObjectWithSecuredInstanceMethods).GetMethod ("InstanceMethod", new Type[] {}));
 
       var resolver = new ReflectionBasedMemberResolver();
-      var result = resolver.GetMethodInformation (typeof (SecurableObjectWithSecuredInstanceMethods), "InstanceMethod");
+      var result = resolver.GetMethodInformation (typeof (SecurableObjectWithSecuredInstanceMethods), "InstanceMethod", MemberAffiliation.Instance);
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
       Assert.That (result, Is.EqualTo (expectedMethodInfoAdapter));
@@ -56,7 +56,7 @@ namespace Remotion.Security.UnitTests.Core
       var expectedMethodInfoAdapter = new MethodInfoAdapter (typeof (SecurableObjectWithSecuredStaticMethods).GetMethod ("StaticMethod",new Type[] {}));
 
       var resolver = new ReflectionBasedMemberResolver();
-      var result = resolver.GetStaticMethodInformation (typeof (SecurableObjectWithSecuredStaticMethods), "StaticMethod");
+      var result = resolver.GetMethodInformation (typeof (SecurableObjectWithSecuredStaticMethods), "StaticMethod", MemberAffiliation.Static);
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
       Assert.That (result, Is.EqualTo (expectedMethodInfoAdapter));

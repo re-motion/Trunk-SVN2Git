@@ -49,7 +49,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
-      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName);
+      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Instance);
       if (memberInformation ==  null)
         return new Enum[0];
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
@@ -70,7 +70,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
-      IMemberInformation memberInformation = _memberResolver.GetStaticMethodInformation (type, methodName);
+      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Static);
       if (memberInformation == null)
         return new Enum[0];
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
