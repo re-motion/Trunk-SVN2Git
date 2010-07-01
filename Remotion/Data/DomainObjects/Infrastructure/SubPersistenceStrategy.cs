@@ -302,19 +302,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       foreach (RelationEndPoint endPoint in endPoints)
       {
-        Assertion.IsTrue (endPoint.HasChanged);
+        var parentEndPoint = _parentTransaction.DataManager.RelationEndPointMap[endPoint.ID];
 
-        RelationEndPoint parentEndPoint = _parentTransaction.DataManager.RelationEndPointMap[endPoint.ID];
-        if (parentEndPoint == null)
-        {
-          Assertion.IsTrue (
-              _dataManager.DataContainerMap[endPoint.ObjectID].State == StateType.Deleted
-              && _parentTransaction.DataManager.IsInvalid (endPoint.ObjectID),
-              "Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of ParentTransaction and this now "
-              + "contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known "
-              + "to the child transaction is when the object was of state New in the ParentTransaction and its DataContainer was just discarded.");
-        }
-        else
+        // Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of both parent and child transaction now
+        // contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known
+        // to the child transaction is when the object was of state New in the ParentTransaction and its DataContainer was just discarded.
+        // Therefore, we can safely ignore end points unknown to the parent transaction.
+
+        if (parentEndPoint != null)
           parentEndPoint.SetValueFrom (endPoint);
       }
     }
