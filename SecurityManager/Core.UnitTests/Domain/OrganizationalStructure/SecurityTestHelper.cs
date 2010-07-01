@@ -40,7 +40,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
           CreateSecurityProviderStub (typeof (T), principalStub, accessTypes),
           new PermissionReflector(),
           CreateUserProviderStub (principalStub),
-          MockRepository.GenerateStub<IFunctionalSecurityStrategy>());
+          MockRepository.GenerateStub<IFunctionalSecurityStrategy>(),
+          MockRepository.GenerateStub<IMemberResolver>());
     }
 
     private ISecurityProvider CreateSecurityProviderStub (Type securableClassType, ISecurityPrincipal principal, Enum[] returnedAccessTypes)

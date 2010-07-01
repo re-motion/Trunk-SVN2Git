@@ -40,29 +40,34 @@ namespace Remotion.Security
           securityProvider,
           SecurityConfiguration.Current.PermissionProvider,
           SecurityConfiguration.Current.PrincipalProvider,
-          SecurityConfiguration.Current.FunctionalSecurityStrategy);
+          SecurityConfiguration.Current.FunctionalSecurityStrategy,
+          SecurityConfiguration.Current.MemberResolver);
     }
 
     private readonly ISecurityProvider _securityProvider;
     private readonly IPermissionProvider _permissionProvider;
     private readonly IPrincipalProvider _principalProvider;
     private readonly IFunctionalSecurityStrategy _functionalSecurityStrategy;
+    private readonly IMemberResolver _memberResolver;
 
     public SecurityClient (
         ISecurityProvider securityProvider,
         IPermissionProvider permissionProvider,
         IPrincipalProvider principalProvider,
-        IFunctionalSecurityStrategy functionalSecurityStrategy)
+        IFunctionalSecurityStrategy functionalSecurityStrategy,
+        IMemberResolver memberResolver)
     {
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("permissionProvider", permissionProvider);
       ArgumentUtility.CheckNotNull ("userProvider", principalProvider);
       ArgumentUtility.CheckNotNull ("functionalSecurityStrategy", functionalSecurityStrategy);
+      ArgumentUtility.CheckNotNull ("memberResolver", memberResolver);
 
       _securityProvider = securityProvider;
       _permissionProvider = permissionProvider;
       _principalProvider = principalProvider;
       _functionalSecurityStrategy = functionalSecurityStrategy;
+      _memberResolver = memberResolver;
     }
 
 

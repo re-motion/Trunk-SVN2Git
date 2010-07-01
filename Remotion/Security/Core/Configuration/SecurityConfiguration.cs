@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Configuration;
 using System.Configuration.Provider;
 using Remotion.Configuration;
@@ -57,10 +58,12 @@ namespace Remotion.Security.Configuration
     private readonly ConfigurationProperty _functionalSecurityStrategyProperty;
     private DoubleCheckedLockingContainer<IFunctionalSecurityStrategy> _functionalSecurityStrategy;
 
+    private readonly ConfigurationProperty _memberResolverProperty;
+    private DoubleCheckedLockingContainer<IMemberResolver> _memberResolver;
+
     private PermissionProviderHelper _permissionProviderHelper;
     private SecurityProviderHelper _securityProviderHelper;
     private PrincipalProviderHelper _principalProviderHelper;
-    private MemberResolverProviderHelper _memberResolverProviderHelper;
     private GlobalAccessTypeCacheProviderHelper _globalAccessTypeCacheProviderHelper;
     private List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
 
@@ -77,9 +80,6 @@ namespace Remotion.Security.Configuration
       _principalProviderHelper = new PrincipalProviderHelper (this);
       _providerHelpers.Add (_principalProviderHelper);
 
-      _memberResolverProviderHelper = new MemberResolverProviderHelper (this);
-      _providerHelpers.Add (_memberResolverProviderHelper);
-
       _globalAccessTypeCacheProviderHelper = new GlobalAccessTypeCacheProviderHelper (this);
       _providerHelpers.Add (_globalAccessTypeCacheProviderHelper);
 
@@ -93,9 +93,18 @@ namespace Remotion.Security.Configuration
           null,
           ConfigurationPropertyOptions.None);
 
+      _memberResolver = 
+        new DoubleCheckedLockingContainer<IMemberResolver> (delegate { return MemberResolverElement.CreateInstance(); });
+      _memberResolverProperty = new ConfigurationProperty (
+          "memberResolver",
+          typeof (TypeElement<IMemberResolver, ReflectionBasedMemberResolver>),
+          null,
+          ConfigurationPropertyOptions.None);
+      
       _properties.Add (_xmlnsProperty);
       _providerHelpers.ForEach (delegate (ProviderHelperBase current) { current.InitializeProperties (_properties); });
       _properties.Add (_functionalSecurityStrategyProperty);
+      _properties.Add (_memberResolverProperty);
     }
 
     // methods and properties
@@ -145,17 +154,6 @@ namespace Remotion.Security.Configuration
       get { return _permissionProviderHelper.Providers; }
     }
 
-    public IMemberResolver MemberResolverProvider 
-    {
-      get { return _memberResolverProviderHelper.Provider; }
-      set { _memberResolverProviderHelper.Provider = value; }
-    }
-
-    public ProviderCollection MemberResolverProviders 
-    {
-      get { return _memberResolverProviderHelper.Providers; }
-    }
-
     public IFunctionalSecurityStrategy FunctionalSecurityStrategy
     {
       get { return _functionalSecurityStrategy.Value; }
@@ -168,6 +166,17 @@ namespace Remotion.Security.Configuration
       set { this[_functionalSecurityStrategyProperty] = value; }
     }
 
+    public IMemberResolver MemberResolver 
+    {
+      get { return _memberResolver.Value; }
+      set { _memberResolver.Value = value; }
+    }
+
+    protected TypeElement<IMemberResolver> MemberResolverElement
+    {
+      get { return (TypeElement<IMemberResolver>) this[_memberResolverProperty]; }
+      set { this[_memberResolverProperty] = value; }
+    }
 
     public IGlobalAccessTypeCacheProvider GlobalAccessTypeCacheProvider
     {

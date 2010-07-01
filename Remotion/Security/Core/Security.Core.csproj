@@ -82,7 +82,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="BaseDemandPermissionAttribute.cs" />
-    <Compile Include="Configuration\MemberResolverProviderHelper.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
