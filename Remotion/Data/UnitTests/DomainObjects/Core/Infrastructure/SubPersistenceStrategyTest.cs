@@ -29,7 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class SubPersistenceStrategyTest : ClientTransactionBaseTest
   {
     private ClientTransactionMock _parentTransaction;
-    private ClientTransaction _subTransaction;
     private SubPersistenceStrategy _persistenceStrategy;
 
     public override void SetUp ()
@@ -37,9 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _parentTransaction = new ClientTransactionMock ();
-      _subTransaction = _parentTransaction.CreateSubTransaction ();
-      // TODO 2967: Change to create a new strategy instead
-      _persistenceStrategy = (SubPersistenceStrategy) ClientTransactionTestHelper.GetPersistenceStrategy (_subTransaction);
+      _parentTransaction.IsReadOnly = true;
+
+      var dataManagerStub = MockRepository.GenerateStub<IDataManager> ();
+      _persistenceStrategy = new SubPersistenceStrategy (dataManagerStub, _parentTransaction);
     }
 
     [Test]
@@ -75,10 +75,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void PersistData_NewDataContainer_ClearsDiscardFlagInParent ()
     {
-      var instance = _subTransaction.Execute (() => ClassWithAllDataTypes.NewObject ());
+      var instance = DomainObjectMother.CreateFakeObject<Order> ();
+      _parentTransaction.DataManager.MarkObjectInvalid (instance);
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.True);
 
-      var dataContainers = new[] { _subTransaction.Execute (() => instance.InternalDataContainer) };
+      var dataContainer = DataContainer.CreateNew (instance.ID);
+      dataContainer.SetDomainObject (instance);
+
+      var dataContainers = new[] { dataContainer };
       var endPoints = new RelationEndPoint[0];
       _persistenceStrategy.PersistData (dataContainers, endPoints);
 
