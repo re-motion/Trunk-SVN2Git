@@ -44,7 +44,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (!parentTransaction.IsReadOnly)
       {
         throw new ArgumentException (
-            "In order for the subtransaction persistence strategy to work correctly, the parent transaction needs to be read-only.",
+            "In order for the subtransaction persistence strategy to work correctly, the parent transaction needs to be read-only. "
+            + "Use ClientTransaction.CreateSubTransaction() to create a subtransaction and automatically set the parent transaction read-only.",
             "parentTransaction");
       }
 

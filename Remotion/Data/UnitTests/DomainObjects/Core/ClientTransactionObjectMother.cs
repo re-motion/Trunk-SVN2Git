@@ -1,3 +1,4 @@
+using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
@@ -31,8 +32,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ClientTransaction CreateTransactionWithPersistenceStrategy (IPersistenceStrategy persistenceStrategy)
     {
-      var factory = new TestComponentFactoryWithSpecificPersistenceStrategy (persistenceStrategy);
-      return (ClientTransaction) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransaction), factory);
+      var componentFactory = new TestComponentFactoryWithSpecificPersistenceStrategy (persistenceStrategy);
+      return Create (componentFactory);
+    }
+
+    public static ClientTransaction Create (IClientTransactionComponentFactory componentFactory)
+    {
+      return (ClientTransaction) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransaction), componentFactory);
     }
   }
 }

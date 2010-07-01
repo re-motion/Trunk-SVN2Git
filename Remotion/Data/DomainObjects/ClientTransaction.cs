@@ -675,14 +675,20 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    return CreateSubTransaction (ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (this)));
+    return CreateSubTransaction (parentTx =>
+    {
+      var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (ParamList.Create (parentTx));
+      return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
+    });
   }
 
   /// <summary>
-  /// Initializes a new subtransaction with this <see cref="ClientTransaction"/> as its <see cref="ParentTransaction"/>. A custom 
-  /// <see cref="IClientTransactionComponentFactory"/> is used to instantiate the subtransaction's components.
+  /// Initializes a new subtransaction with this <see cref="ClientTransaction"/> as its <see cref="ParentTransaction"/>. A custom transaction
+  /// factory is used to instantiate the subtransaction. This allows subtransactions of types derived from <see cref="ClientTransaction"/>
+  /// to be created. The factory must create a subtransaction whose <see cref="ParentTransaction"/> is this <see cref="ClientTransaction"/>, otherwise
+  /// this method throws an exception.
   /// </summary>
-  /// <param name="customComponentFactory">A custom implementation of <see cref="IClientTransactionComponentFactory"/> to use when instantiating
+  /// <param name="subTransactionFactory">A custom implementation of <see cref="IClientTransactionComponentFactory"/> to use when instantiating
   /// the subtransaction.</param>
   /// <remarks>
   /// <para>
@@ -691,9 +697,9 @@ public class ClientTransaction
   /// scope created by <see cref="EnterDiscardingScope"/> is left.
   /// </para>
   /// </remarks>
-  public virtual ClientTransaction CreateSubTransaction (IClientTransactionComponentFactory customComponentFactory)
+  public virtual ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory)
   {
-    ArgumentUtility.CheckNotNull ("customComponentFactory", customComponentFactory);
+    ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
     TransactionEventSink.SubTransactionCreating (this);
 
@@ -702,7 +708,7 @@ public class ClientTransaction
     ClientTransaction subTransaction;
     try
     {
-      subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory));
+      subTransaction = subTransactionFactory (this);
       if (subTransaction.ParentTransaction != this)
         throw new InvalidOperationException ("The given component factory did not create a sub-transaction for this transaction.");
     }
