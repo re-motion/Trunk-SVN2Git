@@ -197,6 +197,12 @@ public class ClientTransaction
     }
   }
 
+  /// <summary>
+  /// Gets the persistence strategy associated with this <see cref="ClientTransaction"/>. The <see cref="PersistenceStrategy"/> is used to load
+  /// data from the underlying data source without actually registering the data in this transaction, and it can be used to store data in the
+  /// underlying data source.
+  /// </summary>
+  /// <value>The persistence strategy associated with this <see cref="ClientTransaction"/>.</value>
   protected IPersistenceStrategy PersistenceStrategy
   {
     get { return _persistenceStrategy; }
