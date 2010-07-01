@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
@@ -46,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     private readonly IPrincipalProvider _stubPrincipalProvider;
     private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private readonly IPermissionProvider _mockPermissionReflector;
+    private readonly IMemberResolver _mockMemberResolver;
     private readonly ClientTransaction _transaction;
 
     // construction and disposing
@@ -60,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SetupResult.For (_stubPrincipalProvider.GetPrincipal ()).Return (_stubUser);
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
       _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
+      _mockMemberResolver = _mocks.StrictMock<IMemberResolver>();
       _transaction = ClientTransaction.CreateRootTransaction();
 
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
@@ -94,6 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurityConfiguration.Current.PrincipalProvider = _stubPrincipalProvider;
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
       SecurityConfiguration.Current.PermissionProvider = _mockPermissionReflector;
+      SecurityConfiguration.Current.MemberResolver = _mockMemberResolver;
     }
 
     public void TearDownSecurityConfiguration ()
@@ -165,12 +169,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnedAccessTypes);
     }
 
+    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
+    {
+      Expect
+          .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation))
+          .WhenCalled (mi => CheckCurrentTransaction ())
+          .Return (returnedAccessTypes);
+    }
+
     public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (string propertyName, params Enum[] returnedAccessTypes)
     {
       Expect
           .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName))
           .WhenCalled (mi => CheckCurrentTransaction ())
           .Return (returnedAccessTypes);
+    }
+
+    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
+    {
+      Expect
+         .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation))
+         .WhenCalled (mi => CheckCurrentTransaction ())
+         .Return (returnedAccessTypes);
+    }
+
+    public void ExpectMemberResolverGetRequiredPropertyInformation (string propertyName, IPropertyInformation returnValue)
+    {
+      Expect
+        .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName))
+        .Return (returnValue);
     }
 
     public void ExpectSecurityProviderGetAccess (SecurityContext context, params Enum[] returnedAccessTypes)

@@ -88,7 +88,7 @@ namespace Remotion.Security.Metadata
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
-      return (IPropertyInformation) GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (
+      return (IPropertyInformation) GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> ( //TODO: check Demand property
           type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
