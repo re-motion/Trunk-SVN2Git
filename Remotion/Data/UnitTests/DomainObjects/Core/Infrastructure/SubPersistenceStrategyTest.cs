@@ -64,7 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var instance = _subTransaction.Execute (() => ClassWithAllDataTypes.NewObject ());
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.True);
 
-      _persistenceStrategy.PersistData (new[] { _subTransaction.Execute (() => instance.InternalDataContainer) });
+      var dataContainers = new[] { _subTransaction.Execute (() => instance.InternalDataContainer) };
+      var endPoints = new RelationEndPoint[0];
+      _persistenceStrategy.PersistData (dataContainers, endPoints);
 
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.False);
     }

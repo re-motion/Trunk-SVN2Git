@@ -48,20 +48,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return null; }
     }
 
-    public virtual void PersistData (IEnumerable<DataContainer> changedDataContainers)
-    {
-      ArgumentUtility.CheckNotNull ("changedDataContainers", changedDataContainers);
-
-      var collection = new DataContainerCollection (changedDataContainers, false);
-      if (collection.Count > 0)
-      {
-        using (var persistenceManager = CreatePersistenceManager())
-        {
-          persistenceManager.Save (collection);
-        }
-      }
-    }
-
     public virtual ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -142,6 +128,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteScalarQuery (query);
+      }
+    }
+
+    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+      ArgumentUtility.CheckNotNull ("endPoints", endPoints);
+
+      var collection = new DataContainerCollection (dataContainers, false);
+      if (collection.Count > 0)
+      {
+        using (var persistenceManager = CreatePersistenceManager ())
+        {
+          persistenceManager.Save (collection);
+        }
       }
     }
 

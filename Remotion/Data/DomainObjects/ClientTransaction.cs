@@ -753,7 +753,8 @@ public class ClientTransaction
       var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
 
       var changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
-      _persistenceStrategy.PersistData (changedDataContainers);
+      var changedEndPoints = _dataManager.GetChangedRelationEndPoints ();
+      _persistenceStrategy.PersistData (changedDataContainers, changedEndPoints);
 
       _dataManager.Commit ();
       EndCommit (changedButNotDeletedDomainObjects);

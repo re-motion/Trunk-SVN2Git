@@ -42,6 +42,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ClientTransaction ParentTransaction { get; }
 
     /// <summary>
+    /// Creates a new <see cref="ObjectID"/> for the given class definition. The <see cref="ObjectID"/> must be created in a such a way that it can 
+    /// later be used to identify objects when persisting or loading <see cref="DataContainer"/> instances.
+    /// </summary>
+    /// <param name="classDefinition">The class definition to create a new <see cref="ObjectID"/> for.</param>
+    /// <returns>A new <see cref="ObjectID"/> for the given class definition.</returns>
+    ObjectID CreateNewObjectID (ClassDefinition classDefinition);
+
+    /// <summary>
     /// Loads a data container from the underlying data source.
     /// </summary>
     /// <param name="id">The id of the <see cref="DataContainer"/> to load.</param>
@@ -193,15 +201,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Persists the changed data stored by the given <see cref="DataContainer"/> instances.
     /// </summary>
-    /// <param name="changedDataContainers">The data containers whose data should be persisted.</param>
-    void PersistData (IEnumerable<DataContainer> changedDataContainers);
-
-    /// <summary>
-    /// Creates a new <see cref="ObjectID"/> for the given class definition. The <see cref="ObjectID"/> must be created in a such a way that it can 
-    /// later be used to identify objects when persisting or loading <see cref="DataContainer"/> instances.
-    /// </summary>
-    /// <param name="classDefinition">The class definition to create a new <see cref="ObjectID"/> for.</param>
-    /// <returns>A new <see cref="ObjectID"/> for the given class definition.</returns>
-    ObjectID CreateNewObjectID (ClassDefinition classDefinition);
+    /// <param name="dataContainers">The data containers whose data should be persisted.</param>
+    /// <param name="endPoints">The end points whose data should be persisted.</param>
+    /// <remarks>
+    /// The caller must ensure that the data represented by <paramref name="dataContainers"/> and 
+    /// <paramref name="endPoints"/> is consistent and complete; otherwise an inconsistent state
+    /// might arise in the underlying data store.
+    /// </remarks>
+    void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints);
   }
 }

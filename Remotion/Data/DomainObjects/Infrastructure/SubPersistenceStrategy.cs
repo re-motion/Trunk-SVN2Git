@@ -198,24 +198,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    public virtual void PersistData (IEnumerable<DataContainer> changedDataContainers)
+    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints)
     {
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
-        PersistDataContainers (changedDataContainers);
-        PersistRelationEndPoints (_dataManager.GetChangedRelationEndPoints());
+        PersistDataContainers (dataContainers);
+        PersistRelationEndPoints (endPoints);
       }
     }
 
-    private void PersistDataContainers (IEnumerable<DataContainer> changedDataContainers)
+    private void PersistDataContainers (IEnumerable<DataContainer> dataContainers)
     {
-      foreach (DataContainer dataContainer in changedDataContainers)
+      foreach (DataContainer dataContainer in dataContainers)
       {
         Assertion.IsFalse (
             dataContainer.IsDiscarded,
-            "changedDataContainers cannot contain discarded DataContainers, because its items come"
+            "dataContainers cannot contain discarded DataContainers, because its items come"
             + "from DataManager.DataContainerMap, which does not contain discarded containers");
-        Assertion.IsTrue (dataContainer.State != StateType.Unchanged, "changedDataContainers cannot contain an unchanged container");
+        Assertion.IsTrue (dataContainer.State != StateType.Unchanged, "dataContainers cannot contain an unchanged container");
+        Assertion.IsTrue (dataContainer.State != StateType.NotLoadedYet, "dataContainers cannot contain an unloaded container");
         Assertion.IsTrue (
             dataContainer.State == StateType.New || dataContainer.State == StateType.Changed
             || dataContainer.State == StateType.Deleted,
@@ -297,9 +298,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _parentTransaction.DataManager.DataContainerMap[id];
     }
 
-    private void PersistRelationEndPoints (IEnumerable<RelationEndPoint> changedEndPoints)
+    private void PersistRelationEndPoints (IEnumerable<RelationEndPoint> endPoints)
     {
-      foreach (RelationEndPoint endPoint in changedEndPoints)
+      foreach (RelationEndPoint endPoint in endPoints)
       {
         Assertion.IsTrue (endPoint.HasChanged);
 
