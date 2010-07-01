@@ -185,8 +185,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
-      Assertion.IsFalse (_dataManager.IsInvalid (parentDataContainer.ID));
-      Assertion.IsFalse (parentDataContainer.State == StateType.Deleted, "Implied by previous assertion");
+      if (parentDataContainer.State == StateType.Deleted)
+      {
+        var message = string.Format ("Object '{0}' is already deleted in the parent transaction.", parentDataContainer.ID);
+        throw new ObjectDeletedException (message, parentDataContainer.ID);
+      }
 
       var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
 

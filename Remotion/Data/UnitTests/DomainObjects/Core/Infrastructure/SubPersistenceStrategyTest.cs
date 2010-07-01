@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private ClientTransactionMock _parentTransaction;
     private ClientTransaction _subTransaction;
-    private IPersistenceStrategy _persistenceStrategy;
+    private SubPersistenceStrategy _persistenceStrategy;
 
     public override void SetUp ()
     {
@@ -38,7 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _parentTransaction = new ClientTransactionMock ();
       _subTransaction = _parentTransaction.CreateSubTransaction ();
-      _persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (_subTransaction);
+      // TODO 2967: Change to create a new strategy instead
+      _persistenceStrategy = (SubPersistenceStrategy) ClientTransactionTestHelper.GetPersistenceStrategy (_subTransaction);
     }
 
     [Test]
@@ -56,6 +57,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void ParentTransaction ()
     {
       Assert.That (_persistenceStrategy.ParentTransaction, Is.SameAs (_parentTransaction));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException), ExpectedMessage = 
+        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is already deleted in the parent transaction.")]
+    public void LoadDataContainers_ObjectDeletedInParent ()
+    {
+      _parentTransaction.IsReadOnly = false;
+      var order1 = _parentTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _parentTransaction.Execute (order1.Delete);
+      _parentTransaction.IsReadOnly = true;
+      
+      _persistenceStrategy.LoadDataContainers (new[] { order1.ID }, false);
     }
 
     [Test]
