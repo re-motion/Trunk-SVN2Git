@@ -18,7 +18,10 @@ using System;
 
 namespace Remotion.Security.Metadata
 {
-  public enum EnumInstanceStatic
+  /// <summary>
+  /// Describes if a member is static or instance-based.
+  /// </summary>
+  public enum MemberAffiliation
   {
     Instance = 0,
     Static

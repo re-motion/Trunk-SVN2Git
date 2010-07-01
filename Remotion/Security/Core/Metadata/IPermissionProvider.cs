@@ -22,7 +22,7 @@ namespace Remotion.Security.Metadata
   public interface IPermissionProvider
   {
     Enum[] GetRequiredMethodPermissions (Type type, string methodName);
-    Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, EnumInstanceStatic instanceStatic);
+    Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, MemberAffiliation instanceStatic);
 
     Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName);
 

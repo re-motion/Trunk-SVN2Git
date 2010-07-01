@@ -55,7 +55,7 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
-    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, EnumInstanceStatic instanceStatic)
+    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, MemberAffiliation instanceStatic)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -63,9 +63,9 @@ namespace Remotion.Security.Metadata
         return new Enum[0];
 
       //instance
-      if (instanceStatic == EnumInstanceStatic.Instance)
+      if (instanceStatic == MemberAffiliation.Instance)
         return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
-      else if (instanceStatic == EnumInstanceStatic.Static)
+      else if (instanceStatic == MemberAffiliation.Static)
         return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
       else
         return new Enum[0];
