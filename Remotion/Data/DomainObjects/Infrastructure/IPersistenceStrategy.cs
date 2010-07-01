@@ -83,19 +83,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
-    /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the caller. 
-    /// </para>
-    /// <para>
-    /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
-    /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
-    /// </para>
-    /// </remarks>
+    /// <param name="originatingDataContainer">
+    ///   A <see cref="DataContainer"/> representing the object whose related object's <see cref="DataContainer"/> should be loaded.
+    /// </param>
     /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
-    /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
+    ///   <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
     /// <returns>The related <see cref="DataContainer"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
     /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
@@ -109,7 +101,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
     ///   An error occurred while accessing the data source.
     /// </exception>
-    DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
+    /// <remarks>
+    /// <para>
+    /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
+    /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
+    /// All of these activities are performed by the caller. 
+    /// </para>
+    /// <para>
+    /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
+    /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
+    /// </para>
+    /// </remarks>
+    DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID);
 
     /// <summary>
     /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.

@@ -35,14 +35,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class RootPersistenceStrategy : IPersistenceStrategy
   {
     private readonly Guid _transactionID;
-    private readonly IDataManager _dataManager;
 
     public RootPersistenceStrategy (Guid transactionID, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _transactionID = transactionID;
-      _dataManager = dataManager;
     }
 
     ClientTransaction IPersistenceStrategy.ParentTransaction
@@ -99,24 +97,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public virtual DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    public virtual DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      var originatingDataContainer = _dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
-
-      DataContainer relatedDataContainer;
       using (var persistenceManager = CreatePersistenceManager())
       {
-        relatedDataContainer = persistenceManager.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
-
-        // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
-        // (Like in MergeLoadedDomainObjects.)
-        Assertion.IsTrue (
-            relatedDataContainer == null || _dataManager.DataContainerMap[relatedDataContainer.ID] == null,
-            "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
-            + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
-        return relatedDataContainer;
+        return persistenceManager.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
       }
     }
 

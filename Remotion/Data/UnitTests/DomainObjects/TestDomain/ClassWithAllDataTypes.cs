@@ -52,10 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<ClassWithAllDataTypes> (id);
     }
 
-    private bool _onLoadedHasBeenCalled;
-    private int _onLoadedCallCount;
-    private LoadMode _onLoadedLoadMode;
-
     protected ClassWithAllDataTypes ()
     {
     }
@@ -68,34 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public void GetObjectData (SerializationInfo info, StreamingContext context)
     {
       BaseGetObjectData (info, context);
-    }
-
-    [StorageClassNone]
-    internal bool OnLoadedHasBeenCalled
-    {
-      get { return _onLoadedHasBeenCalled; }
-      set { _onLoadedHasBeenCalled = value; }
-    }
-
-    [StorageClassNone]
-    internal int OnLoadedCallCount
-    {
-      get { return _onLoadedCallCount; }
-      set { _onLoadedCallCount = value; }
-    }
-
-    [StorageClassNone]
-    internal LoadMode OnLoadedLoadMode
-    {
-      get { return _onLoadedLoadMode; }
-    }
-
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
-      _onLoadedHasBeenCalled = true;
-      ++_onLoadedCallCount;
-      _onLoadedLoadMode = loadMode;
     }
 
     [StorageClassNone]

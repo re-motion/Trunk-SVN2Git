@@ -44,8 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private ObjectLoader _objectLoader;
 
-    private DataContainer _dataContainer1;
-    private DataContainer _dataContainer2;
+    private DataContainer _order1DataContainer;
+    private DataContainer _order2DataContainer;
+    private DataContainer _orderTicket1DataContainer;
 
     private IQuery _fakeQuery;
 
@@ -62,8 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _objectLoader = new ObjectLoader (_clientTransaction, _persistenceStrategyMock, _eventSinkMock, _fetcherMock);
 
-      _dataContainer1 = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      _dataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      _order1DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      _order2DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      _orderTicket1DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
 
       _fakeQuery = CreateFakeQuery();
     }
@@ -71,13 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadObject ()
     {
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_order1DataContainer);
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadObject (DomainObjectIDs.Order1);
 
-      CheckLoadedObject (result, _dataContainer1);
+      CheckLoadedObject (result, _order1DataContainer);
     }
 
     [Test]
@@ -87,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       using (_mockRepository.Ordered ())
       {
-        _persistenceStrategyMock.Expect (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+        _persistenceStrategyMock.Expect (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_order1DataContainer);
         
         ExpectObjectsLoading (DomainObjectIDs.Order1);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
+        ExpectObjectsLoaded (transactionEventReceiver, _order1DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -107,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
       _persistenceStrategyMock.Replay ();
 
@@ -115,8 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result.Length, Is.EqualTo (2));
 
-      CheckLoadedObject (result[0], _dataContainer1);
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[0], _order1DataContainer);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
@@ -124,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order3, DomainObjectIDs.Order2 }, true))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
       _persistenceStrategyMock.Replay ();
 
@@ -132,9 +134,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result.Length, Is.EqualTo (3));
 
-      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[0], _order1DataContainer);
       Assert.That (result[1], Is.Null);
-      CheckLoadedObject (result[2], _dataContainer2);
+      CheckLoadedObject (result[2], _order2DataContainer);
     }
 
     [Test]
@@ -142,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
-          .Return (new DataContainerCollection (new[] { _dataContainer2, _dataContainer1 }, true));
+          .Return (new DataContainerCollection (new[] { _order2DataContainer, _order1DataContainer }, true));
 
       _persistenceStrategyMock.Replay ();
 
@@ -150,8 +152,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result.Length, Is.EqualTo (2));
 
-      CheckLoadedObject (result[0], _dataContainer1);
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[0], _order1DataContainer);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
@@ -163,10 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         _persistenceStrategyMock
             .Expect (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
         ExpectObjectsLoading (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1, _dataContainer2);
+        ExpectObjectsLoaded (transactionEventReceiver, _order1DataContainer, _order2DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -204,14 +206,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
       _persistenceStrategyMock
-          .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
-          .Return (_dataContainer1);
+          .Expect (mock => mock.LoadRelatedDataContainer (
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]), 
+              Arg.Is (endPointID)))
+          .Return (_orderTicket1DataContainer);
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObject (endPointID);
 
-      CheckLoadedObject (result, _dataContainer1);
+      _persistenceStrategyMock.VerifyAllExpectations ();
+      CheckLoadedObject (result, _orderTicket1DataContainer);
     }
 
     [Test]
@@ -220,13 +225,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
       _persistenceStrategyMock
-          .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
+          .Stub (mock => mock.LoadRelatedDataContainer (
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]), 
+              Arg.Is (endPointID)))
           .Return (null);
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObject (endPointID);
 
+      _persistenceStrategyMock.VerifyAllExpectations ();
       Assert.That (result, Is.Null);
     }
 
@@ -234,14 +242,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void LoadRelatedObject_Events ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _clientTransaction.EnsureDataAvailable (endPointID.ObjectID); // preload originating DataContainer to get clean events below
+
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
       using (_mockRepository.Ordered ())
       {
-        _persistenceStrategyMock.Expect (mock => mock.LoadRelatedDataContainer (endPointID)).Return (_dataContainer1);
+        _persistenceStrategyMock
+            .Expect (mock => mock.LoadRelatedDataContainer (Arg<DataContainer>.Is.Anything, Arg<RelationEndPointID>.Is.Anything))
+            .Return (_orderTicket1DataContainer);
 
-        ExpectObjectsLoading (DomainObjectIDs.Order1);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
+        ExpectObjectsLoading (DomainObjectIDs.OrderTicket1);
+        ExpectObjectsLoaded (transactionEventReceiver, _orderTicket1DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -278,15 +290,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObjects (endPointID);
 
       Assert.That (result.Length, Is.EqualTo (2));
-      CheckLoadedObject (result[0], _dataContainer1);
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[0], _order1DataContainer);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
@@ -299,10 +311,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         _persistenceStrategyMock
             .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
         ExpectObjectsLoading (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1, _dataContainer2);
+        ExpectObjectsLoaded (transactionEventReceiver, _order1DataContainer, _order2DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -353,11 +365,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      var domainObject1 = PreregisterDataContainer(_dataContainer1);
+      var domainObject1 = PreregisterDataContainer(_order1DataContainer);
 
       _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
       _persistenceStrategyMock.Replay ();
 
@@ -365,14 +377,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (result[0], Is.SameAs (domainObject1));
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
     public void LoadRelatedObjects_MergedResult_Events ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      PreregisterDataContainer (_dataContainer1);
+      PreregisterDataContainer (_order1DataContainer);
 
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
@@ -380,10 +392,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         _persistenceStrategyMock
             .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
-          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+          .Return (new DataContainerCollection (new[] { _order1DataContainer, _order2DataContainer }, true));
 
         ExpectObjectsLoading (DomainObjectIDs.Order2);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer2);
+        ExpectObjectsLoaded (transactionEventReceiver, _order2DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -400,15 +412,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1, _dataContainer2 });
+          .Return (new[] { _order1DataContainer, _order2DataContainer });
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
       Assert.That (result.Length, Is.EqualTo (2));
-      CheckLoadedObject (result[0], _dataContainer1);
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[0], _order1DataContainer);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
@@ -438,11 +450,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void LoadCollectionQueryResult_MergedResult ()
     {
-      var domainObject1 = PreregisterDataContainer (_dataContainer1);
+      var domainObject1 = PreregisterDataContainer (_order1DataContainer);
 
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new []{ _dataContainer1, _dataContainer2 });
+          .Return (new []{ _order1DataContainer, _order2DataContainer });
 
       _persistenceStrategyMock.Replay ();
 
@@ -450,13 +462,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (result[0], Is.SameAs (domainObject1));
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
     public void LoadCollectionQueryResult_MergedResult_Events ()
     {
-      PreregisterDataContainer (_dataContainer1);
+      PreregisterDataContainer (_order1DataContainer);
 
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
@@ -464,10 +476,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         _persistenceStrategyMock
             .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1, _dataContainer2 });
+          .Return (new[] { _order1DataContainer, _order2DataContainer });
 
         ExpectObjectsLoading (DomainObjectIDs.Order2);
-        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer2);
+        ExpectObjectsLoaded (transactionEventReceiver, _order2DataContainer);
       }
 
       _mockRepository.ReplayAll ();
@@ -487,15 +499,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1, _dataContainer2 });
+          .Return (new[] { _order1DataContainer, _order2DataContainer });
 
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Customer> (_fakeQuery);
 
       Assert.That (result.Length, Is.EqualTo (2));
-      CheckLoadedObject (result[0], _dataContainer1);
-      CheckLoadedObject (result[1], _dataContainer2);
+      CheckLoadedObject (result[0], _order1DataContainer);
+      CheckLoadedObject (result[1], _order2DataContainer);
     }
 
     [Test]
@@ -507,23 +519,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1 });
+          .Return (new[] { _order1DataContainer });
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
-          .Return (new[] { _dataContainer2 });
+          .Return (new[] { _order2DataContainer });
       _fetcherMock
           .Expect (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _dataContainer1.ID),
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _dataContainer2.ID),
+              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
+              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order2DataContainer.ID),
               Arg.Is (endPointDefinition)))
-          .WhenCalled (mi => CheckLoadedObject (((IEnumerable<DomainObject>) mi.Arguments[1]).Single(), _dataContainer2));
+          .WhenCalled (mi => CheckLoadedObject (((IEnumerable<DomainObject>) mi.Arguments[1]).Single(), _order2DataContainer));
 
       _mockRepository.ReplayAll ();
 
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
       Assert.That (result.Length, Is.EqualTo (1));
-      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[0], _order1DataContainer);
 
       _mockRepository.VerifyAll ();
     }
@@ -558,13 +570,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1 });
+          .Return (new[] { _order1DataContainer });
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
           .Return (new DataContainer[0]);
       _fetcherMock
           .Expect (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _dataContainer1.ID),
+              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
               Arg<IEnumerable<DomainObject>>.Matches (list => !list.Any()),
               Arg.Is (endPointDefinition)));
 
@@ -573,7 +585,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
       Assert.That (result.Length, Is.EqualTo (1));
-      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[0], _order1DataContainer);
 
       _mockRepository.VerifyAll ();
     }
@@ -587,21 +599,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
-      ExpectObjectsLoading (_dataContainer1.ID);
-      ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
-      ExpectObjectsLoading (_dataContainer2.ID);
-      ExpectObjectsLoaded (null, _dataContainer2); // on second call, do not expect transaction receiver to be empty
+      ExpectObjectsLoading (_order1DataContainer.ID);
+      ExpectObjectsLoaded (transactionEventReceiver, _order1DataContainer);
+      ExpectObjectsLoading (_order2DataContainer.ID);
+      ExpectObjectsLoaded (null, _order2DataContainer); // on second call, do not expect transaction receiver to be empty
 
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _dataContainer1 });
+          .Return (new[] { _order1DataContainer });
       _persistenceStrategyMock
           .Stub (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
-          .Return (new[] { _dataContainer2 });
+          .Return (new[] { _order2DataContainer });
       _fetcherMock
           .Stub (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _dataContainer1.ID),
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _dataContainer2.ID),
+              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
+              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order2DataContainer.ID),
               Arg.Is (endPointDefinition)));
 
       _mockRepository.ReplayAll ();
@@ -612,7 +624,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (2));
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[0] }));
-      Assert.That (transactionEventReceiver.LoadedDomainObjects[1], Is.EqualTo (new[] { _dataContainer2.DomainObject }));
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[1], Is.EqualTo (new[] { _order2DataContainer.DomainObject }));
     }
 
     [Test]
@@ -621,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ClientTransaction loadTransaction = null;
       _clientTransaction.Loaded += delegate { loadTransaction = ClientTransaction.Current; };
 
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_order1DataContainer);
       _mockRepository.ReplayAll ();
 
       _objectLoader.LoadObject (DomainObjectIDs.Order1);
@@ -660,10 +672,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                 expectedDataContainers.All (dc => _clientTransaction.DataManager.DataContainerMap[dc.ID] == dc),
                 "ObjectsLoaded must be raised after IDs are registered");
             Assert.That (
-                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((Order) item).OnLoadedCalled),
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((TestDomainBase) item).OnLoadedCalled),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             Assert.That (
-                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((Order) item).OnLoadedTx == _clientTransaction),
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((TestDomainBase) item).OnLoadedTx == _clientTransaction),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             if (transactionEventReceiver != null)
             {

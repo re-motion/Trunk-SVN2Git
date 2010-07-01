@@ -41,35 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<Order> (id, includeDeleted);
     }
 
-    public event EventHandler ProtectedLoaded;
-    public static event EventHandler StaticLoadHandler;
-    public static event EventHandler StaticInitializationHandler;
-
-    public readonly bool CtorCalled;
-    public bool OnReferenceInitializingCalledBeforeCtor;
-
-    public bool OnReferenceInitializingCalled;
-    public ClientTransaction OnReferenceInitializingTx;
-    public ObjectID OnReferenceInitializingID;
-    public ClientTransaction OnReferenceInitializingBindingTransaction;
-
-    public bool OnLoadedCalled;
-    public ClientTransaction OnLoadedTx;
-    public LoadMode OnLoadedLoadMode;
-
-    public bool OnUnloadingCalled;
-    public ClientTransaction OnUnloadingTx;
-    public DateTime OnUnloadingDateTime;
-    public bool OnUnloadedCalled;
-    public ClientTransaction OnUnloadedTx;
-    public DateTime OnUnloadedDateTime;
-
-    protected Order ()
-    {
-      CtorCalled = true;
-      OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;
-    }
-
     [DBColumn ("OrderNo")]
     public abstract int OrderNumber { get; set; }
 
@@ -159,55 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public virtual ObjectList<OrderItem> NotInMappingRelatedObjects
     {
       get { return CurrentProperty.GetValue<ObjectList<OrderItem>> (); }
-    }
-
-    protected override void OnReferenceInitializing ()
-    {
-      base.OnReferenceInitializing ();
-
-      OnReferenceInitializingCalled = true;
-      OnReferenceInitializingTx = ClientTransaction.Current;
-      OnReferenceInitializingID = ID;
-      OnReferenceInitializingBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
-
-      if (StaticInitializationHandler != null)
-        StaticInitializationHandler (this, EventArgs.Empty);
-    }
-
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
-      OnLoadedCalled = true;
-      OnLoadedTx = ClientTransaction.Current;
-      OnLoadedLoadMode = loadMode;
-      if (ProtectedLoaded != null)
-        ProtectedLoaded (this, EventArgs.Empty);
-      if (StaticLoadHandler != null)
-        StaticLoadHandler (this, EventArgs.Empty);
-    }
-
-    protected override void OnUnloading ()
-    {
-      base.OnUnloading ();
-      OnUnloadingCalled = true;
-      OnUnloadingTx = ClientTransaction.Current;
-
-      OnUnloadingDateTime = DateTime.Now;
-      while (DateTime.Now == OnUnloadingDateTime)
-      {
-      }
-    }
-
-    protected override void OnUnloaded ()
-    {
-      base.OnUnloading ();
-      OnUnloadedCalled = true;
-      OnUnloadedTx = ClientTransaction.Current;
-
-      OnUnloadedDateTime = DateTime.Now;
-      while (DateTime.Now == OnUnloadedDateTime)
-      {
-      }
     }
   }
 }

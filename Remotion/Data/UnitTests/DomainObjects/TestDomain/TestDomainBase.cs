@@ -21,13 +21,15 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
 
-#pragma warning disable 0618
-
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
   [Serializable]
   public abstract class TestDomainBase : DomainObject
   {
+    public static event EventHandler StaticLoadHandler;
+    public event EventHandler ProtectedLoaded;
+    public static event EventHandler StaticInitializationHandler;
+
     public static TestDomainBase GetObject (ObjectID id)
     {
       return GetObject<TestDomainBase> (id);
@@ -38,8 +40,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<TestDomainBase> (id, includeDeleted);
     }
 
+    public bool CtorCalled;
+
+    public bool OnReferenceInitializingCalledBeforeCtor;
+    public bool OnReferenceInitializingCalled;
+    public ClientTransaction OnReferenceInitializingTx;
+    public ObjectID OnReferenceInitializingID;
+    public ClientTransaction OnReferenceInitializingBindingTransaction;
+
+    public bool OnLoadedCalled;
+    public ClientTransaction OnLoadedTx;
+    public LoadMode OnLoadedLoadMode;
+    public int OnLoadedCallCount;
+
+    public bool OnUnloadingCalled;
+    public ClientTransaction OnUnloadingTx;
+    public DateTime OnUnloadingDateTime;
+    public StateType UnloadingState;
+
+    public bool OnUnloadedCalled;
+    public ClientTransaction OnUnloadedTx;
+    public DateTime OnUnloadedDateTime;
+    public StateType UnloadedState;
+
     protected TestDomainBase()
     {
+      CtorCalled = true;
+      OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;
     }
 
     protected TestDomainBase (SerializationInfo info, StreamingContext context)
@@ -104,6 +131,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       get { return (bool) PrivateInvoke.GetNonPublicField (this, typeof (DomainObject), "_needsLoadModeDataContainerOnly"); }
     }
+
+    protected override void OnReferenceInitializing ()
+    {
+      base.OnReferenceInitializing ();
+
+      OnReferenceInitializingCalled = true;
+      OnReferenceInitializingTx = ClientTransaction.Current;
+      OnReferenceInitializingID = ID;
+      OnReferenceInitializingBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
+
+      if (StaticInitializationHandler != null)
+        StaticInitializationHandler (this, EventArgs.Empty);
+    }
+
+    protected override void OnLoaded (LoadMode loadMode)
+    {
+      base.OnLoaded (loadMode);
+ 
+      OnLoadedCalled = true;
+      OnLoadedTx = ClientTransaction.Current;
+      OnLoadedLoadMode = loadMode;
+      ++OnLoadedCallCount;
+      
+      if (ProtectedLoaded != null)
+        ProtectedLoaded (this, EventArgs.Empty);
+      if (StaticLoadHandler != null)
+        StaticLoadHandler (this, EventArgs.Empty);
+    }
+
+    protected override void OnUnloading ()
+    {
+      base.OnUnloading ();
+      OnUnloadingCalled = true;
+      OnUnloadingTx = ClientTransaction.Current;
+
+      OnUnloadingDateTime = DateTime.Now;
+      while (DateTime.Now == OnUnloadingDateTime)
+      {
+      }
+
+      UnloadingState = State;
+    }
+
+    protected override void OnUnloaded ()
+    {
+      base.OnUnloading ();
+      OnUnloadedCalled = true;
+      OnUnloadedTx = ClientTransaction.Current;
+
+      OnUnloadedDateTime = DateTime.Now;
+      while (DateTime.Now == OnUnloadedDateTime)
+      {
+      }
+
+      UnloadedState = State;
+    }
   }
 }
-#pragma warning restore 0618

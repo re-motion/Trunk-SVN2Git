@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -146,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
-      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
       Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
     }
@@ -157,13 +154,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
-      classWithAllDataTypes.OnLoadedHasBeenCalled = false;
+      classWithAllDataTypes.OnLoadedCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObject (classWithAllDataTypes);
 
-      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.False);
+      Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.False);
     }
 
     [Test]
@@ -172,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
-      classWithAllDataTypes.OnLoadedHasBeenCalled = false;
+      classWithAllDataTypes.OnLoadedCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
@@ -183,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         classWithAllDataTypes.Int32Property = 5;
       }
 
-      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
       Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
     }
@@ -197,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
-        Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+        Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
         Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (2));
         Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
       }
@@ -209,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
-      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
       Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
@@ -226,14 +223,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void OnLoadedWithNewInParentAndGetInSubTransaction ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
-      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.False);
+      Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.False);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (0));
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = classWithAllDataTypes.Int32Property;
 
-        Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+        Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.True);
         Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
         Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
       }

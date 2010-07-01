@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void Serializable_LoadCount ()
     {
       ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.IsTrue (instance.OnLoadedHasBeenCalled);
+      Assert.IsTrue (instance.OnLoadedCalled);
       Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, instance.OnLoadedLoadMode);
 
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
@@ -92,12 +92,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
-        Assert.IsFalse (deserializedInstance.OnLoadedHasBeenCalled);
+        Assert.IsFalse (deserializedInstance.OnLoadedCalled);
         using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           ClientTransaction.Current.EnlistDomainObject (deserializedInstance);
           deserializedInstance.Int32Property = 15;
-          Assert.IsTrue (deserializedInstance.OnLoadedHasBeenCalled);
+          Assert.IsTrue (deserializedInstance.OnLoadedCalled);
           Assert.AreEqual (LoadMode.DataContainerLoadedOnly, deserializedInstance.OnLoadedLoadMode);
         }
       }

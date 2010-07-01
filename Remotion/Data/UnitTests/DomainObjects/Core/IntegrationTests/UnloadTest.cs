@@ -490,10 +490,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             .WhenCalled (
             mi =>
             {
-              Assert.That (orderItemA.UnloadingCalled, Is.False, "items unloaded after this method is called");
-              Assert.That (orderItemB.UnloadingCalled, Is.False, "items unloaded after this method is called");
-              Assert.That (orderItemA.UnloadedCalled, Is.False, "items unloaded after this method is called");
-              Assert.That (orderItemB.UnloadedCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemA.OnUnloadingCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemB.OnUnloadingCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemA.OnUnloadedCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemB.OnUnloadedCalled, Is.False, "items unloaded after this method is called");
 
               Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
               Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
@@ -505,10 +505,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             .WhenCalled (
             mi =>
             {
-              Assert.That (orderItemA.UnloadingCalled, Is.True, "items unloaded before this method is called");
-              Assert.That (orderItemB.UnloadingCalled, Is.True, "items unloaded before this method is called");
-              Assert.That (orderItemA.UnloadedCalled, Is.True, "items unloaded before this method is called");
-              Assert.That (orderItemB.UnloadedCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemA.OnUnloadingCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemB.OnUnloadingCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemA.OnUnloadedCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemB.OnUnloadedCalled, Is.True, "items unloaded before this method is called");
 
               Assert.That (orderItemA.State, Is.EqualTo (StateType.NotLoadedYet));
               Assert.That (orderItemB.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -527,11 +527,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItemA.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
       Assert.That (orderItemB.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
-      Assert.That (orderItemA.UnloadingDateTime, Is.LessThan (orderItemB.UnloadingDateTime), "orderItemA.OnUnloading before orderItemB.OnUnloading");
+      Assert.That (orderItemA.OnUnloadingDateTime, Is.LessThan (orderItemB.OnUnloadingDateTime), "orderItemA.OnUnloading before orderItemB.OnUnloading");
 
       Assert.That (orderItemA.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
       Assert.That (orderItemB.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
-      Assert.That (orderItemA.UnloadedDateTime, Is.GreaterThan (orderItemB.UnloadedDateTime), "orderItemA.OnUnloaded after orderItemB.OnUnloaded");
+      Assert.That (orderItemA.OnUnloadedDateTime, Is.GreaterThan (orderItemB.OnUnloadedDateTime), "orderItemA.OnUnloaded after orderItemB.OnUnloaded");
     }
 
     [Test]

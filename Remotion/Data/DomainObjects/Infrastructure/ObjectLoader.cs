@@ -105,7 +105,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
         throw new ArgumentException ("LoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
-      DataContainer relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (relationEndPointID);
+      var originatingDataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
+      var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
+
+      // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
+      // (Like in MergeLoadedDomainObjects.)
+      Assertion.IsTrue (
+          relatedDataContainer == null || _clientTransaction.DataManager.DataContainerMap[relatedDataContainer.ID] == null,
+          "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
+          + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
 
       if (relatedDataContainer != null)
       {

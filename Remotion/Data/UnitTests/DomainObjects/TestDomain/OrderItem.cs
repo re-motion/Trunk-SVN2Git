@@ -47,19 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<OrderItem> (id);
     }
 
-    public static event EventHandler StaticLoadHandler;
-    public event EventHandler ProtectedLoaded;
-
-    public bool UnloadingCalled = false;
-    public ClientTransaction UnloadingTx;
-    public DateTime UnloadingDateTime;
-    public StateType UnloadingState;
-
-    public bool UnloadedCalled = false;
-    public ClientTransaction UnloadedTx;
-    public DateTime UnloadedDateTime;
-    public StateType UnloadedState;
-
     protected OrderItem()
     {
     }
@@ -88,43 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public object OriginalOrder
     {
       get { return Properties[typeof (OrderItem), "Order"].GetOriginalValue<Order>(); }
-    }
-
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      if (ProtectedLoaded != null)
-        ProtectedLoaded (this, EventArgs.Empty);
-      if (StaticLoadHandler != null)
-        StaticLoadHandler (this, EventArgs.Empty);
-      base.OnLoaded (loadMode);
-    }
-
-    protected override void OnUnloading ()
-    {
-      base.OnUnloading ();
-      UnloadingCalled = true;
-      UnloadingTx = ClientTransaction.Current;
-
-      UnloadingDateTime = DateTime.Now;
-      while (DateTime.Now == UnloadingDateTime)
-      {
-      }
-
-      UnloadingState = State;
-    }
-
-    protected override void OnUnloaded ()
-    {
-      base.OnUnloading ();
-      UnloadedCalled = true;
-      UnloadedTx = ClientTransaction.Current;
-
-      UnloadedDateTime = DateTime.Now;
-      while (DateTime.Now == UnloadedDateTime)
-      {
-      }
-
-      UnloadedState = State;
     }
   }
 }

@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public virtual DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    public virtual DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       if (!relationEndPointID.Definition.IsVirtual)
