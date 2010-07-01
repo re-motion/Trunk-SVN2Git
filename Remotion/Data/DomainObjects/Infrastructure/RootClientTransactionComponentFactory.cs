@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       return templateTransaction => (ClientTransaction) TypesafeActivator
         .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-        .With (this, (ClientTransaction) null);
+        .With (this);
     }
   }
 }

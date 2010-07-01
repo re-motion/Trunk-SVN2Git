@@ -30,6 +30,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public interface IPersistenceStrategy
   {
     /// <summary>
+    /// Gets the parent transaction, or <see langword="null"/> if this <see cref="IPersistenceStrategy"/> does not define a parent-child
+    /// relationship with another <see cref="ClientTransaction"/>.
+    /// </summary>
+    /// <value>The parent transaction, or <see langword="null"/> if this <see cref="IPersistenceStrategy"/> does not define a parent-child
+    /// relationship.</value>
+    /// <remarks>
+    /// Implementations of <see cref="IPersistenceStrategy"/> can define a parent/child relationship with another transaction if they load and persist
+    /// data from that transaction. In that case, this property should return the other transaction.
+    /// </remarks>
+    ClientTransaction ParentTransaction { get; }
+
+    /// <summary>
     /// Loads a data container from the underlying data source.
     /// </summary>
     /// <param name="id">The id of the <see cref="DataContainer"/> to load.</param>

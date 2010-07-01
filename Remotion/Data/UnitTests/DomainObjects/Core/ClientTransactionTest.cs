@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -716,6 +715,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (_transaction.IsReadOnly, Is.False);
 
       var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
 
       var componentFactoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (_transaction);
       componentFactoryPartialMock
@@ -739,6 +739,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
       
       var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
 
       using (mockRepository.Ordered ())
       {
@@ -823,6 +824,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryPartialMock.VerifyAllExpectations();
 
       Assert.That (_transaction.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The given component factory did not create a sub-transaction for this transaction.")]
+    public void CreateSubTransaction_Throws_WhenParentTransactionDoesNotMatch ()
+    {
+      try
+      {
+        _transaction.CreateSubTransaction (new RootClientTransactionComponentFactory ());
+      }
+      catch (InvalidOperationException)
+      {
+        Assert.That (_transaction.IsReadOnly, Is.False);
+        throw;
+      }
     }
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)

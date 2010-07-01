@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Rhino.Mocks;
@@ -35,6 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _rootPersistenceStrategy = new RootPersistenceStrategy (Guid.Empty, _dataManagerMock);
     }
 
-    // TODO 2621: Add tests
+    [Test]
+    public void ParentTransaction ()
+    {
+      Assert.That (((IPersistenceStrategy) _rootPersistenceStrategy).ParentTransaction, Is.Null);
+    }
   }
 }

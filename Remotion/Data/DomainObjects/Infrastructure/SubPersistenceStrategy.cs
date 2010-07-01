@@ -54,14 +54,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       TransferDeletedAndInvalidObjects();
     }
 
-    public ObjectID CreateNewObjectID (ClassDefinition classDefinition)
+    public ClientTransaction ParentTransaction
+    {
+      get { return _parentTransaction; }
+    }
+
+    public virtual ObjectID CreateNewObjectID (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return _parentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    public DataContainer LoadDataContainer (ObjectID id)
+    public virtual DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -73,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -94,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    public virtual DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       if (!relationEndPointID.Definition.IsVirtual)
@@ -111,8 +116,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       else
         return null;
     }
-    
-    public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+
+    public virtual DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
@@ -131,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public DataContainer[] LoadDataContainersForQuery (IQuery query)
+    public virtual DataContainer[] LoadDataContainersForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -154,7 +159,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public object LoadScalarForQuery (IQuery query)
+    public virtual object LoadScalarForQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -192,7 +197,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    public void PersistData (IEnumerable<DataContainer> changedDataContainers)
+    public virtual void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {

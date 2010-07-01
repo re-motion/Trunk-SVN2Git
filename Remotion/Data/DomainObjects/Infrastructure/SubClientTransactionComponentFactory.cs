@@ -35,8 +35,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private readonly ClientTransaction _parentTransaction;
 
-    // TODO 2622: Consider making parentTransaction a parameter of the methods below, supplied by ClientTransaction..ctor - or - make 
-    // clientTransaction a parameter of the methods below
+    // TODO 2622: Consider making parentTransaction a parameter of the methods below, supplied by ClientTransaction..ctor - or - make clientTransaction a parameter of the methods below
     public SubClientTransactionComponentFactory (ClientTransaction parentTransaction)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);

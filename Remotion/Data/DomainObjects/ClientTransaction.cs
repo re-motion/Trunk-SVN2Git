@@ -58,7 +58,7 @@ public class ClientTransaction
   public static ClientTransaction CreateRootTransaction ()
   {
     var componentFactory = new RootClientTransactionComponentFactory();
-    return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory, (ClientTransaction) null));
+    return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
   }
 
   /// <summary>
@@ -127,7 +127,6 @@ public class ClientTransaction
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
   private readonly IClientTransactionComponentFactory _componentFactory;
-  private readonly ClientTransaction _parentTransaction;
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ClientTransactionExtensionCollection _extensions;
@@ -145,12 +144,11 @@ public class ClientTransaction
 
   private readonly Guid _id = Guid.NewGuid ();
 
-  protected ClientTransaction (IClientTransactionComponentFactory componentFactory, ClientTransaction parentTransaction)
+  protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
   {
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
-    _parentTransaction = parentTransaction;
 
     _applicationData = componentFactory.CreateApplicationData ();
     _extensions = componentFactory.CreateExtensions ();
@@ -178,7 +176,7 @@ public class ClientTransaction
   /// <value>The parent transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
-    get { return _parentTransaction; }
+    get { return _persistenceStrategy.ParentTransaction; }
   }
 
   /// <summary>
@@ -704,7 +702,9 @@ public class ClientTransaction
     ClientTransaction subTransaction;
     try
     {
-      subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory, this));
+      subTransaction = ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (customComponentFactory));
+      if (subTransaction.ParentTransaction != this)
+        throw new InvalidOperationException ("The given component factory did not create a sub-transaction for this transaction.");
     }
     catch
     {
