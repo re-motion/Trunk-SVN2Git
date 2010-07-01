@@ -16,7 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
@@ -25,7 +27,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
-
+    
     [SetUp]
     public void SetUp ()
     {

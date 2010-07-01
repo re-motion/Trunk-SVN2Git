@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
@@ -78,6 +79,16 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (string methodName, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodName)).Return (returnValue);
+    }
+
+    public void ExpectPermissionReflectorGetRequiredMethodPermissionsWithMethodInformation (IMethodInformation methodInformation, params Enum[] returnValue)
+    {
+      Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnValue);
+    }
+
+    public void ExpectMemberResolverGetRequiredMethodPermissions (string methodName, MemberAffiliation memberAffiliation, IMethodInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
     }
 
     public void ExpectPermissionReflectorGetRequiredStaticMethodPermissions (string methodName, params Enum[] returnValue)
