@@ -24,7 +24,7 @@ namespace Remotion.Security.Metadata
   /// </summary>
   public interface IMemberResolver
   {
-    IMethodInformation GetMethodInformation (Type type, string methodName);
+    IMethodInformation GetMethodInformation (Type type, string methodName); //TODO: one method, change signature so that Enum is passed (MemberAffialiation)
     IMethodInformation GetStaticMethodInformation (Type type, string methodName);
     IPropertyInformation GetPropertyInformation (Type type, string propertyName);
   }

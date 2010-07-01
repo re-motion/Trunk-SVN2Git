@@ -55,20 +55,14 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
-    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, MemberAffiliation instanceStatic)
+    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
       if (methodInformation == null)
         return new Enum[0];
 
-      //instance
-      if (instanceStatic == MemberAffiliation.Instance)
-        return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
-      else if (instanceStatic == MemberAffiliation.Static)
-        return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-      else
-        return new Enum[0];
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName)
@@ -80,6 +74,16 @@ namespace Remotion.Security.Metadata
       if (memberInformation == null)
         return new Enum[0];
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+    }
+
+    public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      if (methodInformation == null)
+        return new Enum[0];
+
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 
     public Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName)

@@ -34,7 +34,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration
       throw new NotImplementedException();
     }
 
-    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation, MemberAffiliation instanceStatic)
+    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       throw new NotImplementedException();
     }
@@ -42,6 +42,11 @@ namespace Remotion.Security.UnitTests.Core.Configuration
     public Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName)
     {
       throw new NotImplementedException();
+    }
+
+    public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
+    {
+      throw new NotImplementedException ();
     }
 
     public Enum[] GetRequiredPropertyReadPermissions (Type type, string methodName)
