@@ -106,6 +106,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName)).Return (accessTypes);
     }
 
+    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] accessTypes)
+    {
+      Expect.Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation)).Return (accessTypes);
+    }
+
     public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (string propertyName, params Enum[] accessTypes)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (accessTypes);
