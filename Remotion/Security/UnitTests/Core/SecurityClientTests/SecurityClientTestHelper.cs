@@ -76,24 +76,24 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       get { return _securableObject; }
     }
 
+    public void ExpectMemberResolverGetMethodInformation (string methodName, MemberAffiliation memberAffiliation, IMethodInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
+    }
+
+    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
+    }
+
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (string methodName, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodName)).Return (returnValue);
     }
 
-    public void ExpectPermissionReflectorGetRequiredMethodPermissionsWithMethodInformation (IMethodInformation methodInformation, params Enum[] returnValue)
+    public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnValue);
-    }
-
-    public void ExpectMemberResolverGetRequiredMethodPermissions (string methodName, MemberAffiliation memberAffiliation, IMethodInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
-    }
-
-    public void ExpectMemberResolverGetRequiredPropertyPermission (string propertyName, IPropertyInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
     }
 
     public void ExpectPermissionReflectorGetRequiredStaticMethodPermissions (string methodName, params Enum[] returnValue)
@@ -106,7 +106,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName)).Return (accessTypes);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] accessTypes)
+    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation, params Enum[] accessTypes)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation)).Return (accessTypes);
     }
@@ -116,7 +116,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (accessTypes);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnValue)
+    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (returnValue);
     }
