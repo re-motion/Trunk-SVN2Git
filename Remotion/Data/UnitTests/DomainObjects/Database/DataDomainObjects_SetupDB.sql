@@ -122,6 +122,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DerivedDer
   DROP VIEW [dbo].[DerivedDerivedTargetClassForPersistentMixinView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'RelationTargetForPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[RelationTargetForPersistentMixinView]
+GO
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StorageGroupClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StorageGroupClassView]
 GO
@@ -1374,19 +1378,19 @@ CREATE VIEW [dbo].[DerivedDerivedTargetClassForPersistentMixinView] ([ID], [Clas
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StorageGroupClassView] ([ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier])
-  WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier]
-    FROM [dbo].[StorageGroupClass]
-    WHERE [ClassID] IN ('StorageGroupClass')
-  WITH CHECK OPTION
-GO
-
 CREATE VIEW [dbo].[RelationTargetForPersistentMixinView] ([ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], 
 														  [RelationProperty3ID], [RelationProperty3IDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], [RelationProperty3ID], [RelationProperty3IDClassID]
     FROM [dbo].[MixedDomains_RelationTarget]
     WHERE [ClassID] IN ('RelationTargetForPersistentMixin')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[StorageGroupClassView] ([ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier]
+    FROM [dbo].[StorageGroupClass]
+    WHERE [ClassID] IN ('StorageGroupClass')
   WITH CHECK OPTION
 GO
