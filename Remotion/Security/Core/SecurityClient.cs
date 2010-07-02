@@ -308,7 +308,9 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodName);
+      var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodName,MemberAffiliation.Static);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodInformation);
+      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
 
