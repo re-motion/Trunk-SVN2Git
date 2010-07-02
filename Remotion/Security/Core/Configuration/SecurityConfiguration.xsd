@@ -18,6 +18,11 @@
             <xs:attribute name="type" type="c:DotNetType" default="None" />
           </xs:complexType>
         </xs:element>
+        <xs:element name="memberResolver" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="type" type="c:DotNetType" default="None" />
+          </xs:complexType>
+        </xs:element>
       </xs:all>
       <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
       <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />

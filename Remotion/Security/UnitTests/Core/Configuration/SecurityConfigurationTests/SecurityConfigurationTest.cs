@@ -75,5 +75,18 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       Assert.IsInstanceOfType (typeof (FunctionalSecurityStrategyMock), Configuration.FunctionalSecurityStrategy);
     }
+
+    [Test]
+    public void DeserializeSecurityConfiguration_WithCustomMemberResolver ()
+    {
+      string xmlFragment =
+          @"<remotion.security>
+            <memberResolver type=""Remotion.Security.UnitTests::Core.Configuration.MemberResolverMock"" />
+          </remotion.security>";
+
+      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
+
+      Assert.IsInstanceOfType (typeof (MemberResolverMock), Configuration.MemberResolver);
+    }
   }
 }
