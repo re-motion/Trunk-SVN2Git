@@ -225,10 +225,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Return (sqlStatement);
       generationStageMock
           .Expect (
-              mock => mock.GenerateTextForSqlStatement (
+              mock => mock.GenerateTextForOuterSqlStatement (
                   Arg<SqlCommandBuilder>.Is.Anything,
                   Arg<SqlStatement>.Is.Anything))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
+          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"))
+          .Return (Expression.Lambda<Func<IDatabaseResultRow, object>> (Expression.Constant ("test"), Expression.Parameter (typeof (IDatabaseResultRow), "row")));
 
       preparationStageMock.Replay();
 
@@ -312,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class TestSqlGenerationStageMixin
   {
     [OverrideTarget]
-    public virtual void GenerateTextForSqlStatement (
+    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (
         ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
@@ -321,6 +322,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
 
       commandBuilder.Append ("Value added by generation mixin");
+
+      return null;
     }
   }
 }

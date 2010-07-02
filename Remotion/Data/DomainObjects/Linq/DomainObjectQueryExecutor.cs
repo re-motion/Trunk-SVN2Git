@@ -425,7 +425,7 @@ namespace Remotion.Data.DomainObjects.Linq
     protected virtual SqlCommandData CreateSqlCommand (SqlStatement sqlStatement)
     {
       var commandBuilder = new SqlCommandBuilder();
-      _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
+      commandBuilder.InMemoryProjection = _generationStage.GenerateTextForOuterSqlStatement (commandBuilder, sqlStatement);
       return commandBuilder.GetCommand();
     }
   }
