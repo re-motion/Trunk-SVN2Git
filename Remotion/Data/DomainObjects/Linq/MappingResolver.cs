@@ -17,12 +17,10 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -63,7 +61,14 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var leftEndPointDefinition = GetRelationEndPointDefinition (joinInfo.MemberInfo, classDefinition);
+      var property = joinInfo.MemberInfo as PropertyInfo;
+      IRelationEndPointDefinition leftEndPointDefinition = null;
+      if (property != null)
+      {
+        property = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+        leftEndPointDefinition = classDefinition.ResolveRelationEndPoint (property);
+      }
+
       if (leftEndPointDefinition == null)
       {
         string message =
@@ -122,6 +127,8 @@ namespace Remotion.Data.DomainObjects.Linq
                 memberInfo.Name));
       }
 
+      property = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return originatingEntity.GetColumn (property.PropertyType, "ID", true);
 
@@ -133,12 +140,11 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var endPointDefinition = GetRelationEndPointDefinition (property, classDefinition);
+      var endPointDefinition = classDefinition.ResolveRelationEndPoint (property);
       if (endPointDefinition != null)
         return new SqlEntityRefMemberExpression (originatingEntity, property);
 
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-      var propertyDefinition = classDefinition.ResolveProperty (potentiallyRedirectedProperty);
+      var propertyDefinition = classDefinition.ResolveProperty (property);
       if (propertyDefinition == null)
       {
         string message = string.Format (
@@ -203,18 +209,6 @@ namespace Remotion.Data.DomainObjects.Linq
       }
       else
         return Expression.Constant (false);
-    }
-
-    private IRelationEndPointDefinition GetRelationEndPointDefinition (MemberInfo relationMember, ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-      var property = relationMember as PropertyInfo;
-      if (property == null)
-        return null;
-
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      return classDefinition.ResolveRelationEndPoint (potentiallyRedirectedProperty);
     }
 
     private ClassDefinition GetClassDefinition (Type type)
