@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterNonDiscardingScope ())
       {
-        IMixinAddingPeristentProperties properties = TargetClassForPersistentMixin.NewObject () as IMixinAddingPeristentProperties;
+        IMixinAddingPersistentProperties properties = TargetClassForPersistentMixin.NewObject () as IMixinAddingPersistentProperties;
         Assert.IsNotNull (properties);
 
         properties.ExtraPersistentProperty = 10;

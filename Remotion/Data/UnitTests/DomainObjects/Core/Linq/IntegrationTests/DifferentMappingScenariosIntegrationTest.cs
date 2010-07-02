@@ -172,36 +172,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
     }
-
-    [Test]
-    public void PropertyDeclaredByMixin_AppliedToSameObject ()
-    {
-      var mixins = (from t in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
-                          where ((IMixinAddingPeristentProperties) t).PersistentProperty == 99
-                          select t);
-
-      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins1);
-    }
-
-    [Test]
-    public void PropertyDeclaredByMixin_AppliedToBaseObject ()
-    {
-      var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedTargetClassForPersistentMixin> ()
-                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 199
-                    select m);
-
-      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins2);
-    }
-
-    [Test]
-    public void PropertyDeclaredByMixin_AppliedToBaseBaseObject ()
-    {
-      var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedDerivedTargetClassForPersistentMixin> ()
-                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 299
-                    select m);
-
-      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins3);
-    }
-
   }
 }

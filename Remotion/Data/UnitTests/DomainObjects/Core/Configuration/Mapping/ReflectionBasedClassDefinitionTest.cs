@@ -1200,7 +1200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ResolveProperty_MixinProperty ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("PersistentProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
       var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
 
@@ -1212,7 +1212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ResolveProperty_MixinPropertyOnBaseClass ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("PersistentProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
       var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (property);
 
@@ -1256,7 +1256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ResolveRelationEndPoint_MixinRelationProperty ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
 
       var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
 
@@ -1268,7 +1268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ResolveRelationEndPoint_MixinRelationProperty_VirtualEndPoint ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("VirtualRelationProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("VirtualRelationProperty");
 
       var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
 
@@ -1280,7 +1280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ResolveRelationEndPoint_MixinRelationProperty_DefinedOnBaseClass ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
 
       var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
 

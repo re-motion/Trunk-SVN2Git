@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public interface IMixinAddingPeristentProperties
+  public interface IMixinAddingPersistentProperties
   {
     int PersistentProperty { get; set; }
     int ExtraPersistentProperty { get; set; }

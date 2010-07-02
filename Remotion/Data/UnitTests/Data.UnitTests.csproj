@@ -302,6 +302,7 @@
     <Compile Include="DomainObjects\Core\Linq\ExpressionTreeComparer.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\DifferentMappingScenariosIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ExplicitJoinsIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MixinAddedPropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\LegacyTestQueryExecutorMixin.cs" />
@@ -573,7 +574,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DOWithVirtualPropertiesAndMethods.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\HookedDomainObjectMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IInterfaceAddedByMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingPeristentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingUnidirectionalRelation1.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinWithAccessToDomainObjectProperties.cs" />

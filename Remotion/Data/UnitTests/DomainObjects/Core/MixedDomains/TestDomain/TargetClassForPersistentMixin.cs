@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     [StorageClassNone]
     public int RedirectedPersistentProperty
     {
-      get { return ((IMixinAddingPeristentProperties) this).PersistentProperty; }
+      get { return ((IMixinAddingPersistentProperties) this).PersistentProperty; }
     }
   }
 }

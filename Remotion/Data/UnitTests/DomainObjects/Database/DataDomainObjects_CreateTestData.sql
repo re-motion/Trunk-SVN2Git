@@ -3,7 +3,12 @@ use TestDomain
 delete from [MixedDomains_TargetWithTwoUnidirectionalMixins]
 delete from [MixedDomains_TargetWithUnidirectionalMixin1]
 delete from [MixedDomains_TargetWithUnidirectionalMixin2]
-delete from [MixedDomains_Target] where PersistentProperty IN (99, 199, 299)
+
+-- update required to avoid foreign key violations
+update [MixedDomains_Target] set [UnidirectionalRelationPropertyID]=NULL,[RelationPropertyID]=NULL,[PrivateBaseRelationPropertyID]=NULL,[CollectionPropertyNSideID]=NULL
+update [MixedDomains_RelationTarget] set [RelationProperty2ID]=NULL,[RelationProperty2IDClassID]=NULL,[RelationProperty3ID]=NULL,[RelationProperty3IDClassID]=NULL
+delete from [MixedDomains_Target]
+delete from [MixedDomains_RelationTarget]
 
 delete from [FileSystemItem]
 delete from [Location]

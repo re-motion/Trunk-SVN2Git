@@ -21,9 +21,8 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class MixinAddingPersistentProperties : BaseForMixinAddingPersistentProperties, IMixinAddingPeristentProperties
+  public class MixinAddingPersistentProperties : BaseForMixinAddingPersistentProperties, IMixinAddingPersistentProperties
   {
-    private int _nonPersistentProperty = 0;
 
     public int PersistentProperty
     {
@@ -39,11 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     }
 
     [StorageClassNone]
-    public int NonPersistentProperty
-    {
-      get { return _nonPersistentProperty; }
-      set { _nonPersistentProperty = value; }
-    }
+    public int NonPersistentProperty { get; set; }
 
     public RelationTargetForPersistentMixin UnidirectionalRelationProperty
     {

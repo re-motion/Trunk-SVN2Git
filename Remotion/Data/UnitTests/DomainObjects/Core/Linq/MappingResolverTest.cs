@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var entityExpression = new SqlEntityDefinitionExpression (
         typeof (TargetClassForPersistentMixin), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
-      var memberInfo = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -127,13 +127,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException), 
-      ExpectedMessage = "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPeristentProperties' "
+      ExpectedMessage = "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPersistentProperties' "
                        +"does not identify a queryable table.")]
     public void ResolveJoinInfo_UnknownType ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
-        typeof (IMixinAddingPeristentProperties), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
-      var memberInfo = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+        typeof (IMixinAddingPersistentProperties), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
+      var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveMemberExpression_MixedRelationProperty ()
     {
-      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("RelationProperty");
+      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (TargetClassForPersistentMixin), "c", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
 
