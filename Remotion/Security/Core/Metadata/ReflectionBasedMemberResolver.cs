@@ -79,31 +79,28 @@ namespace Remotion.Security.Metadata
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
       if (memberAffiliation == MemberAffiliation.Instance)
-        return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Instance);
+        return (IMethodInformation) GetPermissionsFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
       else if (memberAffiliation == MemberAffiliation.Static)
-        return (IMethodInformation) GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        return (IMethodInformation) GetPermissionsFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
       else
         return null;
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
-      return (IPropertyInformation) GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> ( //TODO: check Demand property
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return (IPropertyInformation) GetPermissionsFromCache (
+          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
 
-    private IMemberInformation GetPermissionsFromCache<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
-        where TAttribute : BaseDemandPermissionAttribute
+    private IMemberInformation GetPermissionsFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
     {
       var cacheKey = new CacheKey (type, memberName, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Type, key.MemberName, key.BindingFlags));
+      return s_cache.GetOrCreateValue (cacheKey, key => GetMember (key.Type, key.MemberName, key.BindingFlags, memberType));
     }
 
-    private IMemberInformation GetPermissions<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
-      where TAttribute : BaseDemandPermissionAttribute
+    private IMemberInformation GetMember (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
     {
-      MemberTypes memberType = GetApplicableMemberTypesFromAttributeType (typeof (TAttribute));
-      string attributeName = typeof (TAttribute).Name;
+      string attributeName = typeof (BaseDemandPermissionAttribute).Name;
 
       if (!TypeHasMember (type, memberType, memberName, bindingFlags))
         throw new ArgumentException (string.Format (c_memberNotFoundMessage, memberName), "memberName");
@@ -112,7 +109,7 @@ namespace Remotion.Security.Metadata
       for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
       {
         foundMembers.AddRange (
-            currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember<TAttribute>, memberName));
+            currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember, memberName));
       }
       if (foundMembers.Count == 0)
         return null; //TODO: throw exeception (not found)
@@ -130,32 +127,16 @@ namespace Remotion.Security.Metadata
       return new PropertyInfoAdapter ((PropertyInfo) foundMember);
     }
 
-    private MemberTypes GetApplicableMemberTypesFromAttributeType (Type attributeType)
-    {
-      var attributeUsageAttributes =  (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), false);
-      AttributeTargets targets = attributeUsageAttributes[0].ValidOn;
-
-      MemberTypes memberTypes = 0;
-
-      if ((targets & AttributeTargets.Method) != 0)
-        memberTypes |= MemberTypes.Method;
-
-      if ((targets & AttributeTargets.Property) != 0)
-        memberTypes |= MemberTypes.Property;
-
-      return memberTypes;
-    }
-
     private bool TypeHasMember (Type type, MemberTypes memberType, string methodName, BindingFlags bindingFlags)
     {
       MemberInfo[] existingMembers = type.GetMember (methodName, memberType, bindingFlags);
       return existingMembers.Length > 0;
     }
 
-    private bool IsSecuredMember<TAttribute> (MemberInfo member, object filterCriteria) where TAttribute : BaseDemandPermissionAttribute
+    private bool IsSecuredMember (MemberInfo member, object filterCriteria)
     {
       string memberName = (string) filterCriteria;
-      return member.Name == memberName && member.IsDefined (typeof (TAttribute), false);
+      return member.Name == memberName && member.IsDefined (typeof (BaseDemandPermissionAttribute), false);
     }
 
   }
