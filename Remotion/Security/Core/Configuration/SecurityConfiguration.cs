@@ -93,8 +93,7 @@ namespace Remotion.Security.Configuration
           null,
           ConfigurationPropertyOptions.None);
 
-      _memberResolver = 
-        new DoubleCheckedLockingContainer<IMemberResolver> (delegate { return MemberResolverElement.CreateInstance(); });
+      _memberResolver = new DoubleCheckedLockingContainer<IMemberResolver> (delegate { return MemberResolverElement.CreateInstance(); });
       _memberResolverProperty = new ConfigurationProperty (
           "memberResolver",
           typeof (TypeElement<IMemberResolver, ReflectionBasedMemberResolver>),
