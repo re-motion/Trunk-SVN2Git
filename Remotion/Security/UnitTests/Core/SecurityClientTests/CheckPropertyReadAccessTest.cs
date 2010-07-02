@@ -140,7 +140,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, (Enum[]) null);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions ("InstanceProperty");
       _testHelper.ReplayAll ();
 
       _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");

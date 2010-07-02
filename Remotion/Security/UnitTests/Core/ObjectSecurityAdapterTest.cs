@@ -181,11 +181,6 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
     }
 
-    private void ExpectGetRequiredPropertyReadPermissions (string propertyName)
-    {
-      Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (new Enum[] { TestAccessTypes.First });
-    }
-
     private void ExpectGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation)
     {
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
@@ -194,11 +189,6 @@ namespace Remotion.Security.UnitTests.Core
     public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
-    }
-
-    private void ExpectGetRequiredPropertyWritePermissions (string propertyName)
-    {
-      Expect.Call (_mockPermissionProvider.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName)).Return (new Enum[] { TestAccessTypes.First });
     }
 
     private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)

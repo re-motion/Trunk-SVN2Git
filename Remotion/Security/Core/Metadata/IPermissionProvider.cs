@@ -21,16 +21,9 @@ namespace Remotion.Security.Metadata
 {
   public interface IPermissionProvider
   {
-    Enum[] GetRequiredMethodPermissions (Type type, string methodName);
     Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation);
-
-    Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName);
     Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation);
-
-    Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName);
     Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation);
-
-    Enum[] GetRequiredPropertyWritePermissions (Type type, string propertyName);
     Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation);
   }
 }
