@@ -91,8 +91,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessGranted ()
     {
-      ExpectMemberResolverGetRequiredPropertyPermission ("Name", _mockPropertyInformation);
-      ExpectGetRequiredPropertyReadPermissionsWithPropertyInformation (_mockPropertyInformation);
+      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
+      ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
 
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
@@ -106,8 +106,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessDenied ()
     {
-      ExpectMemberResolverGetRequiredPropertyPermission ("Name", _mockPropertyInformation);
-      ExpectGetRequiredPropertyReadPermissionsWithPropertyInformation (_mockPropertyInformation);
+      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
+      ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
@@ -135,8 +135,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
-      ExpectMemberResolverGetRequiredPropertyPermission ("Name", _mockPropertyInformation);
-      ExpectGetRequiredPropertyWritePermissionsWithPropertyInformation (_mockPropertyInformation);
+      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
+      ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
@@ -149,8 +149,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
-      ExpectMemberResolverGetRequiredPropertyPermission ("Name", _mockPropertyInformation);
-      ExpectGetRequiredPropertyWritePermissionsWithPropertyInformation (_mockPropertyInformation);
+      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
+      ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
@@ -186,12 +186,12 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (new Enum[] { TestAccessTypes.First });
     }
 
-    private void ExpectGetRequiredPropertyReadPermissionsWithPropertyInformation (IPropertyInformation propertyInformation)
+    private void ExpectGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation)
     {
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
     }
 
-    public void ExpectMemberResolverGetRequiredPropertyPermission (string propertyName, IPropertyInformation returnValue)
+    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
     }
@@ -201,7 +201,7 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName)).Return (new Enum[] { TestAccessTypes.First });
     }
 
-    private void ExpectGetRequiredPropertyWritePermissionsWithPropertyInformation (IPropertyInformation propertyInformation)
+    private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)
     {
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
     }
