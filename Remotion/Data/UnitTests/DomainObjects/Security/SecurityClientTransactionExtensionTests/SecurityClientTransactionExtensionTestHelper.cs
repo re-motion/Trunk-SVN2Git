@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnedAccessTypes);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
+    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
     {
       Expect
           .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation))
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnedAccessTypes);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissionsWithPropertyInformation (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
+    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
     {
       Expect
          .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation))
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
          .Return (returnedAccessTypes);
     }
 
-    public void ExpectMemberResolverGetRequiredPropertyInformation (string propertyName, IPropertyInformation returnValue)
+    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect
         .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName))
