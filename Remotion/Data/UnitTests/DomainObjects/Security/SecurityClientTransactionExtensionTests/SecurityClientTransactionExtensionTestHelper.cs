@@ -161,26 +161,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnValue);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (string propertyName, params Enum[] returnedAccessTypes)
-    {
-      Expect
-          .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName))
-          .WhenCalled (mi => CheckCurrentTransaction ())
-          .Return (returnedAccessTypes);
-    }
-
     public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
     {
       Expect
           .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation))
-          .WhenCalled (mi => CheckCurrentTransaction ())
-          .Return (returnedAccessTypes);
-    }
-
-    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (string propertyName, params Enum[] returnedAccessTypes)
-    {
-      Expect
-          .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName))
           .WhenCalled (mi => CheckCurrentTransaction ())
           .Return (returnedAccessTypes);
     }
