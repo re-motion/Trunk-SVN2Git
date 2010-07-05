@@ -28,6 +28,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   public class WhereIntegrationTest : IntegrationTestBase
   {
     [Test]
+    public void QueryWithStringLengthProperty ()
+    {
+      var computers =
+          from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+          where oi.Product.Length == "Mainboard".Length
+          select oi;
+
+      CheckQueryResult (computers, DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
+    public void QueryWithStringIsNullOrEmpty ()
+    {
+      var computers =
+          from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+          where string.IsNullOrEmpty(oi.Product)
+          select oi;
+
+      CheckQueryResult (computers);
+    }
+
+    [Test]
     public void QueryWithWhereConditions ()
     {
       var computers =
