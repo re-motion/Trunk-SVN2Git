@@ -70,28 +70,5 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), methodInformation));
     }
-
-    [Test]
-    public void Test_OverloadedMethodWithOneAttributes ()
-    {
-      IMethodInformation methodInformation = new MethodInfoAdapter (
-          typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) }));
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (SecurableObject), methodInformation);
-
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.AreEqual (GeneralAccessTypes.Read, requiredAccessTypes[0]);
-    }
-
-    [Test]
-    [Ignore ("Check method")]
-    public void Test_MethodOfDerivedClass ()
-    {
-      var methodInfo = typeof (DerivedSecurableObject).GetMethod ("CreateForSpecialCase");
-      IMethodInformation methodInformation = new MethodInfoAdapter (methodInfo);
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredStaticMethodPermissions (typeof (DerivedSecurableObject), methodInformation);
-
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.AreEqual (GeneralAccessTypes.Create, requiredAccessTypes[0]);
-    }
   }
 }
