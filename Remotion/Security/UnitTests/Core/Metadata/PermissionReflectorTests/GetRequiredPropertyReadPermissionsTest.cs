@@ -72,30 +72,5 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation));
     }
-
-    [Test]
-    public void Test_NonPublicPropertyWithOneAttribute ()
-    {
-      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance));
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation);
-
-      Assert.IsNotNull (requiredAccessTypes);
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.Contains (TestAccessTypes.First, requiredAccessTypes);
-    }
-
-    [Test]
-    [Ignore("Check correct syntax.")]
-    public void Test_ExplicitInterfacePropertyWithOneAttribute_PropertyInformation ()
-    {
-      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (IInterfaceWithProperty).GetProperty ("InterfaceProperty"));
-
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject),
-          propertyInformation);
-
-      Assert.IsNotNull (requiredAccessTypes);
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.Contains (TestAccessTypes.First, requiredAccessTypes);
-    }
   }
 }
