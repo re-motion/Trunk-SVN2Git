@@ -50,8 +50,6 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
       IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Instance);
-      if (memberInformation ==  null)
-        return new Enum[0];
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -71,8 +69,6 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
       IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Static);
-      if (memberInformation == null)
-        return new Enum[0];
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 
@@ -92,8 +88,6 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
-      if (memberInformation == null)
-        return new Enum[0]; //return new NullPropertyInformation(); ???
       return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -112,8 +106,6 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
-      if (memberInformation == null) //can be deleted, both lines
-        return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
