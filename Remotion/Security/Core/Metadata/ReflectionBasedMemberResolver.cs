@@ -79,21 +79,20 @@ namespace Remotion.Security.Metadata
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
       if (memberAffiliation == MemberAffiliation.Instance)
-        return (IMethodInformation) GetPermissionsFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
+        return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
       else if (memberAffiliation == MemberAffiliation.Static)
-        return (IMethodInformation) GetPermissionsFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+        return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
       else
         return null;
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
-      return (IPropertyInformation) GetPermissionsFromCache (
+      return (IPropertyInformation) GetMemberFromCache (
           type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
 
-    //TODO: rename
-    private IMemberInformation GetPermissionsFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
+    private IMemberInformation GetMemberFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
     {
       var cacheKey = new CacheKey (type, memberName, bindingFlags);
       return s_cache.GetOrCreateValue (cacheKey, key => GetMember (key.Type, key.MemberName, key.BindingFlags, memberType));
