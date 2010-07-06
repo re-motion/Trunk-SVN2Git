@@ -19,5 +19,10 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
   public class ClassWithOverridingMember : ClassWithBaseMember
   {
     public override int BaseProperty { get { return 0; } }
+
+    public override void BaseMethod ()
+    {
+      //do nothing
+    }
   }
 }

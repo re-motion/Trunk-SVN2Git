@@ -19,5 +19,10 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
   public class ClassWithBaseMember
   {
     public virtual int BaseProperty { get { return 0; } }
+
+    public virtual void BaseMethod ()
+    {
+      //do nothing
+    }
   }
 }
