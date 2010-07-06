@@ -92,6 +92,7 @@ namespace Remotion.Security.Metadata
           type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
 
+    //TODO: rename
     private IMemberInformation GetPermissionsFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
     {
       var cacheKey = new CacheKey (type, memberName, bindingFlags);
