@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                     where ((IMixinAddingPersistentProperties) m).PersistentProperty == 199
                     select m);
 
-      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins2);
+      CheckQueryResult (mixins, DomainObjectIDs.DerivedTargetClassForPersistentMixin1);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                     where ((IMixinAddingPersistentProperties) m).PersistentProperty == 299
                     select m);
 
-      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins3);
+      CheckQueryResult (mixins, DomainObjectIDs.DerivedDerivedTargetClassForPersistentMixin1);
     }
 
     [Test]
