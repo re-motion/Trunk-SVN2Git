@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Reflection
     [SetUp]
     public void SetUp ()
     {
-      _method = typeof (Test).GetMethod ("GetStringWithoutArguments");
+      _method = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       _adapter = new MethodInfoAdapter (_method);
     }
 
@@ -42,13 +42,12 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (((MethodInfoAdapter)_adapter).MethodInfo, Is.SameAs (_method));
     }
-
     
     [Test]
     public void Equals ()
     {
-      Assert.That (_adapter, Is.EqualTo (new MethodInfoAdapter(_method)));
-      Assert.AreNotEqual (_adapter, new MethodInfoAdapter (typeof (Test).GetMethod ("TestMethod")));
+      Assert.That (_adapter, Is.EqualTo (new MethodInfoAdapter (_method)));
+      Assert.AreNotEqual (_adapter, new MethodInfoAdapter (typeof (ClassWithOverridingMember).GetMethod ("BaseMethod")));
     }
 
     [Test]
@@ -98,38 +97,16 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void Invoke_WithoutParameters ()
+    public void Invoke_BaseMethod ()
     {
-      var result = _adapter.Invoke (new Test(), new object[]{});
-      Assert.That (result, Is.EqualTo ("Test"));
-    }
-
-    [Test]
-    public void Invoke_WithOneParameter ()
-    {
-      var methodInfo = typeof (Test).GetMethod ("GetStringWithOneArgument");
+      var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       var adapter = new MethodInfoAdapter (methodInfo);
-      var result = adapter.Invoke (new Test(), new object[] {string.Empty });
+      var result = adapter.Invoke (new ClassWithBaseMember (),new object[]{});
 
-      Assert.That (result, Is.EqualTo ("Test"));
+      Assert.That (result, Is.EqualTo (null));
     }
 
-    public class Test
-    {
-      public void TestMethod ()
-      {
-      }
-
-      public string GetStringWithoutArguments ()
-      {
-        return "Test";
-      }
-
-      public string GetStringWithOneArgument (string parameter)
-      {
-        return "Test";
-      }
-    }
+    
 
     
   }
