@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Reflection
       _adapter = new PropertyInfoAdapter (_property);
 
       _explicitInterfaceImplementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-          "Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceAdapter = new PropertyInfoAdapter (_explicitInterfaceImplementationProperty);
 
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_explicitInterfaceAdapter.Name, Is.EqualTo (_explicitInterfaceImplementationProperty.Name));
       Assert.That (
           _explicitInterfaceAdapter.Name,
-          Is.EqualTo ("Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
+          Is.EqualTo ("Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
     }
 
     [Test]
@@ -413,11 +413,11 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_adapter.GetOriginalDeclaringType (), Is.EqualTo (_adapter.DeclaringType));
 
-      PropertyInfo propertyInfo = typeof (ClassWithOverridingProperty).GetProperty ("BaseProperty");
+      PropertyInfo propertyInfo = typeof (ClassWithOverridingMember).GetProperty ("BaseProperty");
       PropertyInfoAdapter overrideAdapter = new PropertyInfoAdapter (propertyInfo);
       Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType ());
       Assert.That (overrideAdapter.GetOriginalDeclaringType (), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
-      Assert.That (overrideAdapter.GetOriginalDeclaringType (), Is.EqualTo (typeof (ClassWithBaseProperty)));
+      Assert.That (overrideAdapter.GetOriginalDeclaringType (), Is.EqualTo (typeof (ClassWithBaseMember)));
     }
     
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)

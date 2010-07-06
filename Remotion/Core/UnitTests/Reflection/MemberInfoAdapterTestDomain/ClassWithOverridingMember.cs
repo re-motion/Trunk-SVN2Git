@@ -16,8 +16,8 @@
 // 
 namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
 {
-  public class ClassWithBaseProperty
+  public class ClassWithOverridingMember : ClassWithBaseMember
   {
-    public virtual int BaseProperty { get { return 0; } }
+    public override int BaseProperty { get { return 0; } }
   }
 }
