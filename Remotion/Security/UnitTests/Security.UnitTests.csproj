@@ -90,9 +90,9 @@
     <Compile Include="Core\Configuration\SecurityProviderMock.cs" />
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
-    <Compile Include="Core\Metadata\MemberResolverTests\GetInstanceMethodTest.cs" />
-    <Compile Include="Core\Metadata\MemberResolverTests\GetPropertyTest.cs" />
-    <Compile Include="Core\Metadata\MemberResolverTests\GetStaticMethodTest.cs" />
+    <Compile Include="Core\Metadata\MemberResolverTests\GetInstanceMethodInformationTest.cs" />
+    <Compile Include="Core\Metadata\MemberResolverTests\GetPropertyInformationTest.cs" />
+    <Compile Include="Core\Metadata\MemberResolverTests\GetStaticMethodInformationTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredMethodPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyReadPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyWritePermissionsTest.cs" />

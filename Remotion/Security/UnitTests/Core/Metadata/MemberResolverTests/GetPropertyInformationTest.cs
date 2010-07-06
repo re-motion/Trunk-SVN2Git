@@ -25,7 +25,7 @@ using Remotion.Security.UnitTests.Core.SampleDomain;
 namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
 {
   [TestFixture]
-  public class GetPropertyTest
+  public class GetPropertyInformationTest
   {
     private ReflectionBasedMemberResolver _resolver;
 
