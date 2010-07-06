@@ -81,11 +81,10 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     }
 
     [Test]
-    [Ignore("TODO: refactor")]
     public void Test_MethodOfDerivedClass ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "CreateForSpecialCase", MemberAffiliation.Static);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("CreateForSpecialCase", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy));
+      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("CreateForSpecialCase"));
 
       Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));

@@ -81,22 +81,20 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     }
 
     [Test]
-    [Ignore ("TODO: refactor")]
     public void Test_MethodOfDerivedClass ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Show", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("Show"));
+      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Show"));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
     }
 
     [Test]
-    [Ignore("TODO: refactor")]
     public void Test_OverriddenMethodFromBaseMethod ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Record", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("Record", BindingFlags.FlattenHierarchy));
+      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Record"));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
