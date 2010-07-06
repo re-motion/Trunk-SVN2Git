@@ -83,7 +83,7 @@ namespace Remotion.Security.Metadata
       else if (memberAffiliation == MemberAffiliation.Static)
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
       else
-        return null; //return NullMethodInformation;
+        return new NullMethodInformation();
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
@@ -115,7 +115,7 @@ namespace Remotion.Security.Metadata
       if (foundMembers.Count == 0)
       {
         if (memberType == MemberTypes.Method)
-          return new NullMethodInformation(); //TODO: throw exeception (not found)
+          return new NullMethodInformation();
         return new NullPropertyInformation();
       }
       MemberInfo foundMember = foundMembers[0];
