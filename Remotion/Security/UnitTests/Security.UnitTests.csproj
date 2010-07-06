@@ -91,6 +91,7 @@
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
     <Compile Include="Core\Metadata\MemberResolverTests\GetInstanceMethodTest.cs" />
+    <Compile Include="Core\Metadata\MemberResolverTests\GetPropertyTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredMethodPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyReadPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyWritePermissionsTest.cs" />
