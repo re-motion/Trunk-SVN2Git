@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -146,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
+      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
@@ -154,14 +155,15 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      PropertyReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
+      PropertyReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyInfo propertyInfo)
     {
+      //TODO: add check IsPropertyInfoResolved
       if (_isActive)
         return;
-
+      
       if (SecurityFreeSection.IsActive)
         return;
 
@@ -173,7 +175,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, GetSimplePropertyName (propertyName)));
+        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, GetSimplePropertyName (propertyInfo.Name)));
       }
       finally
       {
