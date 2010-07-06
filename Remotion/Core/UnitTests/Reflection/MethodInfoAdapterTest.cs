@@ -19,7 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain;
+using Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection

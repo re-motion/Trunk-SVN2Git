@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
+namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
 {
   public class ClassWithReferenceType<T> : IInterfaceWithReferenceType<T>
       where T: class
