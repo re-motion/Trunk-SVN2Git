@@ -532,11 +532,15 @@
         }
 
         function receiveData(q, data) {
-            if (data && data.length && hasFocus) {
+            if (data && hasFocus) {
                 stopLoading();
                 select.display(data, q);
+                if (data.length) {
                     autoFill(q, data[0].result);
-                select.show();
+                    select.show();
+                } else {
+                    select.hide();
+                }
             } else {
                 closeDropDownListAndSetValue(previousValidValue);
             }
