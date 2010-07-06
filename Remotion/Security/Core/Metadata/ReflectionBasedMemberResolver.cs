@@ -83,13 +83,13 @@ namespace Remotion.Security.Metadata
       else if (memberAffiliation == MemberAffiliation.Static)
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
       else
-        return null;
+        return null; //return NullMethodInformation;
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
       return (IPropertyInformation) GetMemberFromCache (
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
+          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property); //if nothing is found return null object
     }
 
     private IMemberInformation GetMemberFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
@@ -111,9 +111,13 @@ namespace Remotion.Security.Metadata
         foundMembers.AddRange (
             currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember, memberName));
       }
-      if (foundMembers.Count == 0)
-        return null; //TODO: throw exeception (not found)
 
+      if (foundMembers.Count == 0)
+      {
+        if (memberType == MemberTypes.Method)
+          return new NullMethodInformation(); //TODO: throw exeception (not found)
+        return new NullPropertyInformation();
+      }
       MemberInfo foundMember = foundMembers[0];
       if (type.BaseType != null && foundMember.DeclaringType == type && TypeHasMember (type.BaseType, memberType, memberName, bindingFlags))
       {

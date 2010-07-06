@@ -93,7 +93,7 @@ namespace Remotion.Security.Metadata
 
       IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
       if (memberInformation == null)
-        return new Enum[0];
+        return new Enum[0]; //return new NullPropertyInformation(); ???
       return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -102,7 +102,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
 
       if (propertyInformation == null)
-        return new Enum[0];
+        return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -112,8 +112,8 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
-      if (memberInformation == null)
-        return new Enum[0];
+      if (memberInformation == null) //can be deleted, both lines
+        return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
 
       if (propertyInformation == null)
-        return new Enum[0];
+        return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 

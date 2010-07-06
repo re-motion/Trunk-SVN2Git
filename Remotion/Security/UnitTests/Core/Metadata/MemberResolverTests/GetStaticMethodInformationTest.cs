@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CheckPermissions", MemberAffiliation.Static);
 
-      Assert.That (methodInformation, Is.Null);
+      Assert.That (methodInformation, Is.InstanceOfType (typeof(NullMethodInformation)));
     }
 
     [Test]

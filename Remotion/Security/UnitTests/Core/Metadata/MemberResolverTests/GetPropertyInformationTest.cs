@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var propertyInformation = _resolver.GetPropertyInformation (typeof (SecurableObject), "IsEnabled");
 
-      Assert.That  (propertyInformation, Is.Null);
+      Assert.That  (propertyInformation, Is.InstanceOfType (typeof(NullPropertyInformation)));
     }
 
     [Test]
