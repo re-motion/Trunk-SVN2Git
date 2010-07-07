@@ -35,17 +35,17 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
-      throw CreateException ();
+      return null;
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
-      throw CreateException ();
+      return null;
     }
 
     public T[] GetCustomAttributes<T> (bool inherited) where T: class
     {
-      throw CreateException ();
+      return new T[] {};
     }
 
     public bool IsDefined<T> (bool inherited) where T: class
@@ -60,12 +60,8 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      throw CreateException ();
+      return null;
     }
-
-    private Exception CreateException ()
-    {
-      return new NotSupportedException ("The NullPropertyInformation cannot be used to get an usable instance of IPropertyInformation.");
-    }
+    
   }
 }
