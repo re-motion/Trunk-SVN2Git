@@ -636,6 +636,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order1);
     }
+
+    [Test]
+    public void GroupBy_UseGroupInFromExpression ()
+    {
+      var query = from o in QueryFactory.CreateLinqQuery<Order> ()
+                  group o.ID by o.OrderNumber into orderByOrderNo
+                  from id in orderByOrderNo
+                  select new { orderByOrderNo.Key, OrderID = id };
+      Assert.That (query.Count(), Is.GreaterThan (0));
+
+      var query2 =
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          group o by o.OrderNumber
+          into orderByOrderNo
+          from o in orderByOrderNo
+          where o != null
+          select new { orderByOrderNo.Key, Order = o };
+      Assert.That (query2.Count (), Is.GreaterThan (0));
+      
+      var query3 =
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          group o.OrderNumber by o.OrderNumber into orderByOrderNo
+          from o in
+            (
+              from so in orderByOrderNo
+              select so).Distinct ()
+          select new { orderByOrderNo.Key, Order = o };
+      Assert.That (query3.Count (), Is.GreaterThan (0));
+    }
     
   }
 }
