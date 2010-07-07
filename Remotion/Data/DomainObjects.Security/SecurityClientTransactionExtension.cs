@@ -147,6 +147,9 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
+      if (!propertyValue.Definition.IsPropertyInfoResolved)
+        throw new InvalidOperationException ("PropertyInfo cannot be resolved.");
+
       PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
@@ -160,7 +163,6 @@ namespace Remotion.Data.DomainObjects.Security
 
     private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyInfo propertyInfo)
     {
-      //TODO: add check IsPropertyInfoResolved
       if (_isActive)
         return;
       
