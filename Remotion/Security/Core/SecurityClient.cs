@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Reflection;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -146,6 +147,11 @@ namespace Remotion.Security
       return HasMethodAccess (securableObject, methodName, _principalProvider.GetPrincipal());
     }
 
+    public bool HasMethodAccess (ISecurableObject securableObject, MethodInfo methodInfo)
+    {
+      return HasMethodAccess (securableObject, methodInfo, _principalProvider.GetPrincipal ());
+    }
+
     public virtual bool HasMethodAccess (ISecurableObject securableObject, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -159,6 +165,21 @@ namespace Remotion.Security
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasAccess (securableObject, methodName, requiredAccessTypeEnums, principal);
+    }
+
+    public virtual bool HasMethodAccess (ISecurableObject securableObject, MethodInfo methodInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), methodInfo, MemberAffiliation.Instance);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
+
+      if (requiredAccessTypeEnums == null)
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+
+      return HasAccess (securableObject, methodInfo.Name, requiredAccessTypeEnums, principal);
     }
 
     public void CheckMethodAccess (ISecurableObject securableObject, string methodName)
@@ -178,11 +199,15 @@ namespace Remotion.Security
             "Access to method '{0}' on type '{1}' has been denied.", methodName, securableObject.GetSecurableType().FullName);
       }
     }
-
-
+    
     public bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName)
     {
       return HasPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
+    }
+
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    {
+      return HasPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
     }
 
     public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
@@ -201,6 +226,24 @@ namespace Remotion.Security
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
 
       return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, principal);
+    }
+
+    public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo );
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), propertyInformation);
+
+      if (requiredAccessTypeEnums == null)
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
+
+      if (requiredAccessTypeEnums.Length == 0)
+        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
+
+      return HasAccess (securableObject, propertyInfo.Name, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName)
@@ -226,6 +269,11 @@ namespace Remotion.Security
       return HasPropertyWriteAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
+    public bool HasPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    {
+      return HasPropertyWriteAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+    }
+
     public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -243,6 +291,25 @@ namespace Remotion.Security
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
 
       return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, principal);
+    }
+
+    public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+
+      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
+
+      if (requiredAccessTypeEnums == null)
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
+
+      if (requiredAccessTypeEnums.Length == 0)
+        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
+
+      return HasAccess (securableObject, propertyInfo.Name, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
@@ -300,6 +367,11 @@ namespace Remotion.Security
       return HasStaticMethodAccess (securableClass, methodName, _principalProvider.GetPrincipal());
     }
 
+    public bool HasStaticMethodAccess (Type securableClass, MethodInfo methodInfo)
+    {
+      return HasStaticMethodAccess (securableClass, methodInfo, _principalProvider.GetPrincipal ());
+    }
+
     public virtual bool HasStaticMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
@@ -313,6 +385,21 @@ namespace Remotion.Security
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
+    }
+
+    public virtual bool HasStaticMethodAccess (Type securableClass, MethodInfo methodInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Static);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodInformation);
+
+      if (requiredAccessTypeEnums == null)
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
+
+      return HasStatelessAccess (securableClass, methodInfo.Name, requiredAccessTypeEnums, principal);
     }
 
     public void CheckStaticMethodAccess (Type securableClass, string methodName)
@@ -338,6 +425,12 @@ namespace Remotion.Security
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
+    public bool HasStatelessMethodAccess (Type securableClass, MethodInfo methodInfo)
+    {
+      return HasStatelessMethodAccess (securableClass, methodInfo, _principalProvider.GetPrincipal ());
+    }
+    
+    [EditorBrowsable (EditorBrowsableState.Never)]
     public virtual bool HasStatelessMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
@@ -351,6 +444,22 @@ namespace Remotion.Security
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public virtual bool HasStatelessMethodAccess (Type securableClass, MethodInfo methodInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableClass", securableClass);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Instance);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
+
+      if (requiredAccessTypeEnums == null)
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+
+      return HasStatelessAccess (securableClass, methodInfo.Name, requiredAccessTypeEnums, principal);
     }
 
 
