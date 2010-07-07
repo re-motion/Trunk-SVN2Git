@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 
@@ -28,6 +29,16 @@ namespace Remotion.Security.UnitTests.Core.Configuration
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
     {
       throw new NotImplementedException();
     }

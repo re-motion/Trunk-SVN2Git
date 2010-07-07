@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Reflection;
 
 namespace Remotion.Security.Metadata
@@ -26,5 +27,8 @@ namespace Remotion.Security.Metadata
   {
     IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation);
     IPropertyInformation GetPropertyInformation (Type type, string propertyName);
+
+    IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation);
+    IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo);
   }
 }

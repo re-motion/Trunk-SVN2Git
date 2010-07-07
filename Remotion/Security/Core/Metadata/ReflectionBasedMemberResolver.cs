@@ -82,14 +82,29 @@ namespace Remotion.Security.Metadata
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
       else if (memberAffiliation == MemberAffiliation.Static)
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
-      else
+      else //TODO: else can be removed
         return new NullMethodInformation();
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
       return (IPropertyInformation) GetMemberFromCache (
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property); //if nothing is found return null object
+          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
+    }
+
+    public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
+    {
+      if (memberAffiliation == MemberAffiliation.Instance)
+        return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
+      else if (memberAffiliation == MemberAffiliation.Static)
+        return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+      return new NullMethodInformation ();
+    }
+
+    public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
+    {
+      return (IPropertyInformation) GetMemberFromCache (
+          type, propertyInfo.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
 
     private IMemberInformation GetMemberFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)

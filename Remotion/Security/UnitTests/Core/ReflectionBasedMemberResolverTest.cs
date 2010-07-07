@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
@@ -39,12 +40,37 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
+    public void GetMethodInfoAdapter_WithMethodInfo ()
+    {
+      MethodInfo methodInfo = typeof (SecurableObjectWithSecuredInstanceMethods).GetMethod ("InstanceMethod", new Type[] { });
+      var expectedMethodInfoAdapter = new MethodInfoAdapter (methodInfo);
+      var resolver = new ReflectionBasedMemberResolver ();
+      var result = resolver.GetMethodInformation (typeof (SecurableObjectWithSecuredInstanceMethods),methodInfo, MemberAffiliation.Instance);
+
+      Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
+      Assert.That (result, Is.EqualTo (expectedMethodInfoAdapter));
+    }
+
+    [Test]
     public void GetPropertyInfoAdapter ()
     {
       var expectedPropertyInfoAdapter = new PropertyInfoAdapter (typeof (SecurableObjectWithSecuredProperties).GetProperty ("SecretProperty"));
 
       var resolver = new ReflectionBasedMemberResolver ();
       var result = resolver.GetPropertyInformation (typeof (SecurableObjectWithSecuredProperties), "SecretProperty");
+
+      Assert.That (result, Is.TypeOf (typeof (PropertyInfoAdapter)));
+      Assert.That (result, Is.EqualTo (expectedPropertyInfoAdapter));
+    }
+
+    [Test]
+    public void GetPropertyInfoAdapter_WithPropertyInfo ()
+    {
+      var propertyInfo = typeof (SecurableObjectWithSecuredProperties).GetProperty ("SecretProperty");
+      var expectedPropertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
+
+      var resolver = new ReflectionBasedMemberResolver ();
+      var result = resolver.GetPropertyInformation (typeof (SecurableObjectWithSecuredProperties), propertyInfo);
 
       Assert.That (result, Is.TypeOf (typeof (PropertyInfoAdapter)));
       Assert.That (result, Is.EqualTo (expectedPropertyInfoAdapter));
