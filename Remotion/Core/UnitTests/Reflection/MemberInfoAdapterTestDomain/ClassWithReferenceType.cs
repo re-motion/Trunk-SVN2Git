@@ -63,9 +63,18 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
       set { Scalar = value; }
     }
 
-    public T InterfaceMethod ()
+    T IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod ()
     {
-      return _explicitInterfaceScalar;
+      return null;
+    }
+
+    public T ImplicitInterfaceMethod ()
+    {
+      return null; 
+    }
+
+    public void TestMethod ()
+    {
     }
 
     public T ReadOnlyScalar

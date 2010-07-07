@@ -28,6 +28,7 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
     T this[int i] { get; set; }
     T this[int i, DateTime j] { get; set; }
     T this[int i, DateTime j, string k] { get; set; }
-    T InterfaceMethod ();
+    T ExplicitInterfaceMethod (); 
+    T ImplicitInterfaceMethod ();
   }
 }
