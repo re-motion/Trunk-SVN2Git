@@ -81,6 +81,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
     }
 
+    
+
     public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);

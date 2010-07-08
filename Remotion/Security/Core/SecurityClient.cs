@@ -174,7 +174,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), new MethodInfoAdapter(methodInfo));
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType(), methodInfo, MemberAffiliation.Instance);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
@@ -234,7 +235,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo );
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), new PropertyInfoAdapter(propertyInfo));
+      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), propertyInformation);
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
@@ -298,7 +300,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), new PropertyInfoAdapter(propertyInfo));
+      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
@@ -390,7 +393,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, new MethodInfoAdapter (methodInfo));
+      var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Static);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodInformation);
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
@@ -449,7 +453,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, new MethodInfoAdapter (methodInfo));
+      var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Instance);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
