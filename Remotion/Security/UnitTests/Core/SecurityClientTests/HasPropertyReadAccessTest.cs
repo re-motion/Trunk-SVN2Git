@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
@@ -28,6 +29,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private IPropertyInformation _propertyInformation;
+    private PropertyInfo _propertyInfo;
 
     [SetUp]
     public void SetUp ()
@@ -35,6 +37,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
+      _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
     }
 
     [Test]
@@ -53,6 +56,21 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -61,6 +79,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -84,6 +116,23 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -98,6 +147,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithDefaultAccessType_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessDenied_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -106,6 +169,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithDefaultAccessType_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -129,6 +206,23 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
@@ -138,6 +232,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       _securityClient.HasPropertyReadAccess (new SecurableObject (null), "InstanceProperty");
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
+    public void Test_WithSecurityStrategyIsNull_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+
+      _testHelper.ReplayAll ();
+
+      _securityClient.HasPropertyReadAccess (new SecurableObject (null), _propertyInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -157,6 +265,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.")]
+    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, (Enum[]) null);
+      _testHelper.ReplayAll ();
+
+      _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -166,6 +287,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       using (new SecurityFreeSection ())
       {
         _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.")]
+    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException_WithPropertyInfo ()
+    {
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, (Enum[]) null);
+      _testHelper.ReplayAll ();
+
+      using (new SecurityFreeSection ())
+      {
+        _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
       }
 
       _testHelper.VerifyAll ();
