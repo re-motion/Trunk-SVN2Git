@@ -601,25 +601,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2990: Support for full column lists required in order to group by entity")]
-    public void GroupBy_EntityKey ()
-    {
-      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
-                  group o by o.Customer into ordersByCustomer 
-                  select ordersByCustomer.Key;
-
-      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
-
-      var query2 =
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          group o by o.OrderTicket into ordersByOrderTicket
-          where ordersByOrderTicket.Key != null
-          select ordersByOrderTicket.Key.FileName;
-
-      Assert.That (query2.Count(), Is.EqualTo (5));
-    }
-
-    [Test]
     public void GroupBy_SelectKey_Nesting ()
     {
       var query =
@@ -644,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   group o.ID by o.OrderNumber into orderByOrderNo
                   from id in orderByOrderNo
                   select new { orderByOrderNo.Key, OrderID = id };
-      Assert.That (query.Count(), Is.GreaterThan (0));
+      Assert.That (query.Count(), Is.EqualTo (6));
 
       var query2 =
           from o in QueryFactory.CreateLinqQuery<Order>()
@@ -653,7 +634,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from o in orderByOrderNo
           where o != null
           select new { orderByOrderNo.Key, Order = o };
-      Assert.That (query2.Count (), Is.GreaterThan (0));
+      Assert.That (query2.Count (), Is.EqualTo (6));
       
       var query3 =
           from o in QueryFactory.CreateLinqQuery<Order>()
@@ -663,6 +644,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
               from so in orderByOrderNo
               select so).Distinct ()
           select new { orderByOrderNo.Key, Order = o };
+      Assert.That (query3.Count (), Is.EqualTo (6));
+    }
+
+    [Test]
+    [Ignore ("TODO 2990: Support for full column lists required in order to group by entity")]
+    public void GroupBy_EntityKey ()
+    {
+      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
+                   group o by o.Customer into ordersByCustomer
+                   select ordersByCustomer.Key;
+
+      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
+
+      var query2 =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          group o by o.OrderTicket into ordersByOrderTicket
+          where ordersByOrderTicket.Key != null
+          select ordersByOrderTicket.Key.FileName;
+
+      Assert.That (query2.Count (), Is.EqualTo (5));
+
+      var query3 = from r in QueryFactory.CreateLinqQuery<Order> ()
+                   from c in r.OrderItems
+                   group c.ID by r
+                     into cooksByRestaurant
+                     from cook in cooksByRestaurant
+                     select new { cooksByRestaurant.Key.DeliveryDate, CookID = cook };
       Assert.That (query3.Count (), Is.GreaterThan (0));
     }
     
