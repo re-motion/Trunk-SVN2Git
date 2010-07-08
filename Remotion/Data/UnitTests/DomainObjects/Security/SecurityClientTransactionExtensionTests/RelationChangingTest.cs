@@ -186,10 +186,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject newObject = _testHelper.CreateSecurableObject ();
+      var childrenPropertyInfo = typeof (SecurableObject).GetProperty ("Children");
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered())
       {
-        _testHelper.ExpectMemberResolverGetPropertyInformation ("Children", _propertyInformation);
+        _testHelper.ExpectMemberResolverGetPropertyInformation (childrenPropertyInfo, _propertyInformation);
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
         _testHelper.ExpectMemberResolverGetPropertyInformation ("Parent", _propertyInformation);
@@ -211,11 +212,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject oldObject = _testHelper.CreateSecurableObject ();
+      var childrenPropertyInfo = typeof (SecurableObject).GetProperty ("Children");
+      
       _testHelper.Transaction.Execute (() => securableObject.Children.Add (oldObject));
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
-        _testHelper.ExpectMemberResolverGetPropertyInformation ("Children", _propertyInformation);
+        _testHelper.ExpectMemberResolverGetPropertyInformation (childrenPropertyInfo, _propertyInformation);
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
         _testHelper.ExpectMemberResolverGetPropertyInformation ("Parent", _propertyInformation);

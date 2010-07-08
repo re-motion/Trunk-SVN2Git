@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
@@ -181,6 +182,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       Expect
         .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName))
+        .Return (returnValue);
+    }
+
+    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
+    {
+      Expect
+        .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo))
         .Return (returnValue);
     }
 
