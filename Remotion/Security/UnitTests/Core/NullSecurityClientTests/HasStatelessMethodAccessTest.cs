@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -25,12 +26,14 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
   {
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
+    private MethodInfo _methodInfo;
 
     [SetUp]
     public void SetUp()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatelessSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
+      _methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) });
     }
 
     [Test]
@@ -41,6 +44,17 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
 
       _testHelper.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithMethodInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInfo);
+
+      _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
 
@@ -56,6 +70,21 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       }
 
       _testHelper.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithMEthodAccess ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInfo);
+      }
+
+      _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
   }

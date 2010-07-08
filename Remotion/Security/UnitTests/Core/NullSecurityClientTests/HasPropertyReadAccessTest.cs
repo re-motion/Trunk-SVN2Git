@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -25,12 +26,14 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
   {
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
+    private PropertyInfo _propertyInfo;
 
     [SetUp]
     public void SetUp()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
+      _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
     }
 
     [Test]
@@ -41,6 +44,17 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
 
       _testHelper.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithPropertyInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
 
@@ -60,6 +74,21 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     }
 
     [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithPropertyInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_WithSecurityStrategyIsNull()
     {
       _testHelper.ReplayAll();
@@ -67,6 +96,17 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), "InstanceProperty");
 
       _testHelper.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_WithSecurityStrategyIsNull_PropertyInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _propertyInfo);
+
+      _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
   }
