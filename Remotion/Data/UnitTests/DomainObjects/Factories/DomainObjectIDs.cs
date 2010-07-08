@@ -415,12 +415,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     #region "TargetClassForPersistentMixins"
 
+    // PersistentProperty: 99
+    // ExtraPersistentProperty: 100
+    // RelationProperty: -
+    // VirtualRelationProperty: -
+    // CollectionProperty1Side: -
+    // CollectionPropertyNSide: -
     public readonly ObjectID TargetClassForPersistentMixins1 = new ObjectID ("TargetClassForPersistentMixin", new Guid ("{784EBDDD-EE94-456D-A5F4-F6CB1B41B6CA}"));
-    // TODO Review 2980: Add one other TargetClassForPersistentMixins ID (and record)
 
+    // PersistentProperty: 13
+    // ExtraPersistentProperty: 1333
+    // RelationProperty: RelationTargetForPersistentMixin1
+    // VirtualRelationProperty: RelationTargetForPersistentMixin2
+    // CollectionProperty1Side: RelationTargetForPersistentMixin3
+    // CollectionPropertyNSide: RelationTargetForPersistentMixin4
+    // UnidirectionalRelationProperty: RelationTargetForPersistentMixin5
+    public readonly ObjectID TargetClassForPersistentMixins2 = new ObjectID ("TargetClassForPersistentMixin", new Guid ("{FF79502F-FF40-45E0-929A-230006EA3E83}"));
+
+    // PersistentProperty: 199
+    // ExtraPersistentProperty: 100
+    // RelationProperty: -
+    // VirtualRelationProperty: -
+    // CollectionProperty1Side: -
+    // CollectionPropertyNSide: -
     public readonly ObjectID DerivedTargetClassForPersistentMixin1 = new ObjectID ("DerivedTargetClassForPersistentMixin", new Guid ("{4ED563B8-B337-4C8E-9A77-5FA907919377}"));
 
+    // PersistentProperty: 299
+    // ExtraPersistentProperty: 100
+    // RelationProperty: -
+    // VirtualRelationProperty: -
+    // CollectionProperty1Side: -
+    // CollectionPropertyNSide: -
     public readonly ObjectID DerivedDerivedTargetClassForPersistentMixin1 = new ObjectID ("DerivedDerivedTargetClassForPersistentMixin", new Guid ("{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}"));
+    
+    #endregion
+
+    #region RelationTargetForPersistentMixin
+
+    public readonly ObjectID RelationTargetForPersistentMixin1 = new ObjectID ("RelationTargetForPersistentMixin", new Guid ("{DC42158C-7DA6-4D5C-B522-C0879E404DEC}"));
+    public readonly ObjectID RelationTargetForPersistentMixin2 = new ObjectID ("RelationTargetForPersistentMixin", new Guid ("{332F9971-E6FD-411C-862A-23416E0019BC}"));
+    public readonly ObjectID RelationTargetForPersistentMixin3 = new ObjectID ("RelationTargetForPersistentMixin", new Guid ("{58458546-9C4A-4E36-9D62-C6CF171748A6}"));
+    public readonly ObjectID RelationTargetForPersistentMixin4 = new ObjectID ("RelationTargetForPersistentMixin", new Guid ("{A5AC369E-9742-412C-8275-4B31B48CEFF3}"));
+    public readonly ObjectID RelationTargetForPersistentMixin5 = new ObjectID ("RelationTargetForPersistentMixin", new Guid ("{C007F590-7953-4429-A34E-778309F2FC1D}"));
     
     #endregion
   }

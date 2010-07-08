@@ -469,3 +469,61 @@ insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersist
 	values ('{4ED563B8-B337-4C8E-9A77-5FA907919377}', 'DerivedTargetClassForPersistentMixin', 199, 100)
 insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
 	values ('{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}', 'DerivedDerivedTargetClassForPersistentMixin', 299, 100)
+
+
+insert into [MixedDomains_Target] ([ID], [ClassID], [PersistentProperty], [ExtraPersistentProperty]) 
+	values ('{FF79502F-FF40-45E0-929A-230006EA3E83}', 'TargetClassForPersistentMixin', 13, 1333)
+
+insert into [MixedDomains_RelationTarget] ([ID], [ClassID]) 
+	values ('{DC42158C-7DA6-4D5C-B522-C0879E404DEC}', 'RelationTargetForPersistentMixin')
+insert into [MixedDomains_RelationTarget] ([ID], [ClassID]) 
+	values ('{332F9971-E6FD-411C-862A-23416E0019BC}', 'RelationTargetForPersistentMixin')
+insert into [MixedDomains_RelationTarget] ([ID], [ClassID]) 
+	values ('{58458546-9C4A-4E36-9D62-C6CF171748A6}', 'RelationTargetForPersistentMixin')
+insert into [MixedDomains_RelationTarget] ([ID], [ClassID]) 
+	values ('{A5AC369E-9742-412C-8275-4B31B48CEFF3}', 'RelationTargetForPersistentMixin')
+insert into [MixedDomains_RelationTarget] ([ID], [ClassID]) 
+	values ('{C007F590-7953-4429-A34E-778309F2FC1D}', 'RelationTargetForPersistentMixin')
+
+update [MixedDomains_Target] 
+	set [UnidirectionalRelationPropertyID] = 'C007F590-7953-4429-A34E-778309F2FC1D', 
+		[RelationPropertyID] = 'DC42158C-7DA6-4D5C-B522-C0879E404DEC', 
+		[CollectionPropertyNSideID] = 'A5AC369E-9742-412C-8275-4B31B48CEFF3', 
+		[PrivateBaseRelationPropertyID] = null 
+	where [ID] = 'FF79502F-FF40-45E0-929A-230006EA3E83'
+
+update [MixedDomains_RelationTarget] 
+	set [RelationProperty2ID] = NULL, 
+		[RelationProperty2IDClassID] = NULL, 
+		[RelationProperty3ID] = NULL, 
+		[RelationProperty3IDClassID] = NULL 
+	where [ID] = 'DC42158C-7DA6-4D5C-B522-C0879E404DEC'
+
+update [MixedDomains_RelationTarget] 
+	set [RelationProperty2ID] = 'FF79502F-FF40-45E0-929A-230006EA3E83', 
+		[RelationProperty2IDClassID] = 'TargetClassForPersistentMixin', 
+		[RelationProperty3ID] = NULL, 
+		[RelationProperty3IDClassID] = NULL 
+	where [ID] = '332F9971-E6FD-411C-862A-23416E0019BC'
+
+update [MixedDomains_RelationTarget] 
+	set [RelationProperty2ID] = NULL, 
+		[RelationProperty2IDClassID] = NULL, 
+		[RelationProperty3ID] = 'FF79502F-FF40-45E0-929A-230006EA3E83', 
+		[RelationProperty3IDClassID] = 'TargetClassForPersistentMixin' 
+	where [ID] = '58458546-9C4A-4E36-9D62-C6CF171748A6'
+
+update [MixedDomains_RelationTarget] 
+	set [RelationProperty2ID] = NULL, 
+		[RelationProperty2IDClassID] = NULL, 
+		[RelationProperty3ID] = NULL, 
+		[RelationProperty3IDClassID] = NULL 
+	where [ID] = 'A5AC369E-9742-412C-8275-4B31B48CEFF3'
+
+update [MixedDomains_RelationTarget] 
+	set [RelationProperty2ID] = NULL, 
+		[RelationProperty2IDClassID] = NULL, 
+		[RelationProperty3ID] = NULL, 
+		[RelationProperty3IDClassID] = NULL 
+	where [ID] = 'C007F590-7953-4429-A34E-778309F2FC1D'
+
