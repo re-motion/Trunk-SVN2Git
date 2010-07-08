@@ -252,6 +252,11 @@ namespace Remotion.Security
       CheckPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    {
+      CheckPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+    }
+
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -262,6 +267,19 @@ namespace Remotion.Security
       {
         throw CreatePermissionDeniedException (
             "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType().FullName);
+      }
+    }
+
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      if (!HasPropertyReadAccess (securableObject, propertyInfo, principal))
+      {
+        throw CreatePermissionDeniedException (
+            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyInfo.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 
@@ -317,6 +335,11 @@ namespace Remotion.Security
       CheckPropertyWriteAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    {
+      CheckPropertyWriteAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+    }
+
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -327,6 +350,19 @@ namespace Remotion.Security
       {
         throw CreatePermissionDeniedException (
             "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType().FullName);
+      }
+    }
+
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      if (!HasPropertyWriteAccess (securableObject, propertyInfo, principal))
+      {
+        throw CreatePermissionDeniedException (
+            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyInfo.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 
