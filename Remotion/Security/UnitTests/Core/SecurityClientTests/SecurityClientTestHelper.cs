@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
@@ -81,11 +82,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodName, memberAffiliation)).Return (returnValue);
     }
 
-    
+    public void ExpectMemberResolverGetMethodInformation (MethodInfo methodInfo, MemberAffiliation memberAffiliation, IMethodInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodInfo, memberAffiliation)).Return (returnValue);
+    }
 
     public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
+    }
+
+    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo)).Return (returnValue);
     }
 
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnValue)
