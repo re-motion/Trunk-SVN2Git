@@ -314,6 +314,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\TestRdbmsProvider.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\TestMappingResolutionStageMixin.cs" />
+    <Compile Include="DomainObjects\Core\Queries\TestSqlGenerationStageMixin.cs" />
+    <Compile Include="DomainObjects\Core\Queries\TestSqlPreparationStageMixin.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommandTest.cs" />

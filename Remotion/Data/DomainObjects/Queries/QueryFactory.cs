@@ -38,10 +38,10 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public static class QueryFactory
   {
-    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
-    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
     private static readonly MethodCallExpressionNodeTypeRegistry s_methodCallExpressionNodeTypeRegistry = CreateNodeTypeRegistry();
- 
+    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = CreateMethodCallTransformerRegistry();
+    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = CreateResultOperatorHandlerRegistry();
+
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
     /// generation.
@@ -256,6 +256,16 @@ namespace Remotion.Data.DomainObjects.Queries
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
       return nodeTypeRegistry;
+    }
+
+    private static MethodCallTransformerRegistry CreateMethodCallTransformerRegistry ()
+    {
+      return MethodCallTransformerRegistry.CreateDefault ();
+    }
+
+    private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
+    {
+      return ResultOperatorHandlerRegistry.CreateDefault ();
     }
   }
 }

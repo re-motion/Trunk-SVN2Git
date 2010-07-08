@@ -25,16 +25,21 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
 
@@ -168,39 +173,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CreateLinqQuery_DefaultMethodCallExpressionNodeTypeRegistry_KnowsContainsObject ()
-    {
-      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order>();
-      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
-      Assert.That (
-          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
-          Is.SameAs (typeof (ContainsObjectExpressionNode)));
-    }
-
-    [Test]
-    public void CreateLinqQuery_DefaultMethodCallExpressionNodeTypeRegistry_KnowsFetchObject ()
-    {
-      var domainObjectQueryable = QueryFactory.CreateLinqQuery<Order>();
-      var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
-      var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
-      var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
-      var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
-
-      Assert.That (
-          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchOneMethod),
-          Is.SameAs (typeof (FetchOneExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchManyMethod),
-          Is.SameAs (typeof (FetchManyExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod),
-          Is.SameAs (typeof (ThenFetchOneExpressionNode)));
-      Assert.That (
-          ((DefaultQueryProvider) domainObjectQueryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod),
-          Is.SameAs (typeof (ThenFetchManyExpressionNode)));
-    }
-
-    [Test]
     public void CreateLinqQuery_WithStages ()
     {
       var preparationStageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
@@ -275,55 +247,70 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var queryable = new TestQueryable<int> (MockRepository.GenerateMock<IQueryExecutor>()).AsQueryable();
       QueryFactory.CreateQuery ("<dynamic query>", queryable);
     }
-  }
 
-  public class TestSqlPreparationStageMixin
-  {
-    [OverrideTarget]
-    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context)
+    [Test]
+    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersDefaultNodes ()
     {
-      var builder = new SqlStatementBuilder
-                    {
-                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
-                        SelectProjection = Expression.Constant ("Value added by preparation mixin")
-                    };
-      return builder.GetSqlStatement();
+      var selectMethod = SelectExpressionNode.SupportedMethods[0];
+      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
     }
-  }
 
-  public class TestMappingResolutionStageMixin
-  {
-    [OverrideTarget]
-    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
+    [Test]
+    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersContainsObject ()
     {
-      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));
-
-      var builder = new SqlStatementBuilder
-                    {
-                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
-                        SelectProjection =
-                            new SqlEntityDefinitionExpression (
-                                typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false))
-                    };
-      return builder.GetSqlStatement();
+      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
+      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      
+      Assert.That (nodeTypeRegistry.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
     }
-  }
 
-  public class TestSqlGenerationStageMixin
-  {
-    [OverrideTarget]
-    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (
-        ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    [Test]
+    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersFetchObject ()
     {
-      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
-      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo(typeof(int)));
-      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).TableAlias, Is.EqualTo ("c"));
-      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
+      var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
+      var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
+      var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
+      var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
 
-      commandBuilder.Append ("Value added by generation mixin");
+      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      Assert.That (nodeTypeRegistry.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
+      Assert.That (nodeTypeRegistry.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
+      Assert.That (nodeTypeRegistry.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
+      Assert.That (nodeTypeRegistry.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+    }
 
-      return null;
+    [Test]
+    public void CreateMethodCallTransformerRegistry_RegistersDefaultTransformers ()
+    {
+      var toStringMethod = ToStringMethodCallTransformer.SupportedMethods[0];
+      var nodeTypeRegistry = CallCreateMethodCallTransformerRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetItem (toStringMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
+    }
+
+    [Test]
+    public void CreateResultOperatorHandlerRegistry_RegistersDefaultTransformers ()
+    {
+      var nodeTypeRegistry = CreateResultOperatorHandlerRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetItem (typeof (CountResultOperator)), Is.TypeOf (typeof (CountResultOperatorHandler)));
+    }
+
+    private MethodCallExpressionNodeTypeRegistry CallCreateNodeTypeRegistry ()
+    {
+      return (MethodCallExpressionNodeTypeRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateNodeTypeRegistry");
+    }
+
+    private MethodCallTransformerRegistry CallCreateMethodCallTransformerRegistry ()
+    {
+      return (MethodCallTransformerRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateMethodCallTransformerRegistry");
+    }
+
+    private ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
+    {
+      return (ResultOperatorHandlerRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateResultOperatorHandlerRegistry");
     }
   }
 }
