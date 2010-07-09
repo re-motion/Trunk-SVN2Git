@@ -28,6 +28,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -38,9 +39,14 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public static class QueryFactory
   {
-    private static readonly MethodCallExpressionNodeTypeRegistry s_methodCallExpressionNodeTypeRegistry = CreateNodeTypeRegistry();
-    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = CreateMethodCallTransformerRegistry();
-    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = CreateResultOperatorHandlerRegistry();
+    // Use DoubleCheckedLockingContainers to ensure that the registries are created as lazily as possible in order to allow users to register
+    // customizers via IoC
+    private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry = 
+        new DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> (CreateNodeTypeRegistry);
+    private static readonly DoubleCheckedLockingContainer<MethodCallTransformerRegistry> s_methodCallTransformerRegistry = 
+        new DoubleCheckedLockingContainer<MethodCallTransformerRegistry> (CreateMethodCallTransformerRegistry);
+    private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry = 
+        new DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> (CreateResultOperatorHandlerRegistry);
 
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
@@ -69,10 +75,10 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return new DomainObjectQueryable<T> (
           ObjectFactory.Create<DefaultSqlPreparationStage> (
-              ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, generator)),
+              ParamList.Create (s_methodCallTransformerRegistry.Value, s_resultOperatorHandlerRegistry.Value, generator)),
           ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
           ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
-          s_methodCallExpressionNodeTypeRegistry);
+          s_methodCallExpressionNodeTypeRegistry.Value);
     }
 
     /// <summary>
@@ -255,17 +261,37 @@ namespace Remotion.Data.DomainObjects.Queries
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
+      var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes ());
+      foreach (var customNodeType in customNodeTypes)
+        nodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+
       return nodeTypeRegistry;
     }
 
     private static MethodCallTransformerRegistry CreateMethodCallTransformerRegistry ()
     {
-      return MethodCallTransformerRegistry.CreateDefault ();
+      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
+      var customTransformers = customizers.SelectMany (c => c.GetCustomMethodCallTransformers());
+      foreach (var customNodeType in customTransformers)
+        methodCallTransformerRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+
+      return methodCallTransformerRegistry;
     }
 
     private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
     {
-      return ResultOperatorHandlerRegistry.CreateDefault ();
+      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
+      var customHandlers = customizers.SelectMany (c => c.GetCustomResultOperatorHandlers());
+      foreach (var customNodeType in customHandlers)
+        resultOperatorHandlerRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+
+      return resultOperatorHandlerRegistry;
     }
   }
 }

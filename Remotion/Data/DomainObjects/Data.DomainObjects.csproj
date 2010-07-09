@@ -228,6 +228,7 @@
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
     <Compile Include="PropertyChangeEventArgs.cs" />
+    <Compile Include="Queries\ILinqParserCustomizer.cs" />
     <Compile Include="Queries\IEagerFetcher.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />

@@ -15,10 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
@@ -48,6 +52,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   [TestFixture]
   public class QueryFactoryTest : StandardMappingTest
   {
+    private ServiceLocatorProvider _serviceLocatorProviderBackup;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _serviceLocatorProviderBackup = (ServiceLocatorProvider) PrivateInvoke.GetNonPublicStaticField (typeof (ServiceLocator), "currentProvider");
+    }
+
+    public override void TearDown ()
+    {
+      PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", _serviceLocatorProviderBackup);
+      base.TearDown ();
+    }
+
     [Test]
     public void CreateQuery_FromDefinition ()
     {
@@ -275,10 +293,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
 
       var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+
       Assert.That (nodeTypeRegistry.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
       Assert.That (nodeTypeRegistry.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
       Assert.That (nodeTypeRegistry.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
       Assert.That (nodeTypeRegistry.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+    }
+
+    [Test]
+    public void CreateMethodCallExpressionNodeTypeRegistry_UsesCustomizers ()
+    {
+      var customMethod1 = typeof (object).GetMethod ("ToString");
+      var customMethod2 = typeof (object).GetMethod ("GetHashCode");
+
+      var customizer1 = CreateCustomizerStub (
+          stub => stub.GetCustomNodeTypes (), 
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, Type> (new[] { customMethod1 }, typeof (SelectExpressionNode)) });
+      var customizer2 = CreateCustomizerStub (
+          stub => stub.GetCustomNodeTypes (), 
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, Type> (new[] { customMethod2 }, typeof (WhereExpressionNode)) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+
+      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (nodeTypeRegistry.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
     }
 
     [Test]
@@ -291,11 +331,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void CreateMethodCallTransformerRegistry_UsesCustomizers ()
+    {
+      var customMethod1 = typeof (object).GetMethod ("ToString");
+      var customTransformer1 = MockRepository.GenerateStub<IMethodCallTransformer> ();
+      var customMethod2 = typeof (object).GetMethod ("GetHashCode");
+      var customTransformer2 = MockRepository.GenerateStub<IMethodCallTransformer> ();
+
+      var customizer1 = CreateCustomizerStub (
+          stub => stub.GetCustomMethodCallTransformers (), 
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, IMethodCallTransformer> (new[] { customMethod1 }, customTransformer1 )});
+      var customizer2 = CreateCustomizerStub (
+          stub => stub.GetCustomMethodCallTransformers (),
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, IMethodCallTransformer> (new[] { customMethod2 }, customTransformer2) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+
+      var nodeTypeRegistry = CallCreateMethodCallTransformerRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetItem (customMethod1), Is.SameAs (customTransformer1));
+      Assert.That (nodeTypeRegistry.GetItem (customMethod2), Is.SameAs (customTransformer2));
+    }
+
+    [Test]
     public void CreateResultOperatorHandlerRegistry_RegistersDefaultTransformers ()
     {
-      var nodeTypeRegistry = CreateResultOperatorHandlerRegistry ();
+      var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
 
       Assert.That (nodeTypeRegistry.GetItem (typeof (CountResultOperator)), Is.TypeOf (typeof (CountResultOperatorHandler)));
+    }
+
+    [Test]
+    public void CreateResultOperatorHandlerRegistry_UsesCustomizers ()
+    {
+      var customType1 = typeof (CountResultOperator);
+      var customTransformer1 = MockRepository.GenerateStub<IResultOperatorHandler> ();
+      var customType2 = typeof (CastResultOperator);
+      var customTransformer2 = MockRepository.GenerateStub<IResultOperatorHandler> ();
+
+      var customizer1 = CreateCustomizerStub (
+          stub => stub.GetCustomResultOperatorHandlers (),
+          new[] { Tuple.Create<IEnumerable<Type>, IResultOperatorHandler> (new[] { customType1 }, customTransformer1) });
+      var customizer2 = CreateCustomizerStub (
+          stub => stub.GetCustomResultOperatorHandlers (),
+          new[] { Tuple.Create<IEnumerable<Type>, IResultOperatorHandler> (new[] { customType2 }, customTransformer2) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
+
+      var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetItem (customType1), Is.SameAs (customTransformer1));
+      Assert.That (nodeTypeRegistry.GetItem (customType2), Is.SameAs (customTransformer2));
     }
 
     private MethodCallExpressionNodeTypeRegistry CallCreateNodeTypeRegistry ()
@@ -308,9 +394,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       return (MethodCallTransformerRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateMethodCallTransformerRegistry");
     }
 
-    private ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
+    private ResultOperatorHandlerRegistry CallCreateResultOperatorHandlerRegistry ()
     {
       return (ResultOperatorHandlerRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateResultOperatorHandlerRegistry");
+    }
+
+    private ILinqParserCustomizer CreateCustomizerStub<T> (Function<ILinqParserCustomizer, T> stubExpectation, T results)
+    {
+      var customizerStub = MockRepository.GenerateStub<ILinqParserCustomizer> ();
+      customizerStub.Stub (stubExpectation).Return (results);
+      customizerStub.Replay ();
+      return customizerStub;
+    }
+
+    private void PrepareServiceLocatorWithParserCustomizers (params ILinqParserCustomizer[] extensionFactories)
+    {
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorStub.Stub (stub => stub.GetAllInstances<ILinqParserCustomizer> ()).Return (extensionFactories);
+      serviceLocatorStub.Replay ();
+      ServiceLocator.SetLocatorProvider (() => serviceLocatorStub);
     }
   }
 }
