@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -32,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
     private IPropertyInformation _propertyInformation;
+    private PropertyInfo _propertyInfo;
 
     [SetUp]
     public void SetUp ()
@@ -39,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper = new SecurityClientTransactionExtensionTestHelper ();
       _extension = new SecurityClientTransactionExtension ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
+      _propertyInfo = typeof (SecurableObject).GetProperty ("StringProperty");
 
       _testHelper.SetupSecurityConfiguration ();
     }
@@ -55,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("StringProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
@@ -72,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("StringProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
@@ -115,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("StringProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
       HasAccessDelegate hasAccess = delegate 
       {
@@ -135,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("StringProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();

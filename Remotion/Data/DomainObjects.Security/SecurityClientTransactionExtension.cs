@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
+      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
     public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
@@ -198,10 +198,10 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyName);
+      PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyInfo propertyInfo)
     {
       if (_isActive)
         return;
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, GetSimplePropertyName (propertyName)));
+        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, propertyInfo));
       }
       finally
       {
