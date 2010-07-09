@@ -45,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       _resolver = new MappingResolver();
       _generator = new UniqueIdentifierGenerator();
-      _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"));
+      _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
+      _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"), JoinSemantics.Inner);
     }
 
     [Test]
@@ -404,7 +404,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_NoQueryableTable ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (AboveInheritanceRootClass), "Table", "t"));
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (AboveInheritanceRootClass), "Table", "t"), JoinSemantics.Inner);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
 

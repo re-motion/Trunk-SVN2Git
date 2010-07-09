@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       QueryModel queryModel = ParseQuery (expression);
 
       var unresolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "Order", "t0");
-      var sqlTable = new SqlTable (unresolvedTableInfo);
+      var sqlTable = new SqlTable (unresolvedTableInfo, JoinSemantics.Inner);
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
           new SqlColumnDefinitionExpression(typeof(Guid), "t0", "ID", true),
