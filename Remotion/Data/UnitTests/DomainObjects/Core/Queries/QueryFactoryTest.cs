@@ -322,6 +322,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void CreateMethodCallExpressionNodeTypeRegistry_CustomizersCanOverrideDefaults ()
+    {
+      var exstingMethod = SelectExpressionNode.SupportedMethods[0];
+      var defaultNodeTypeRegistry = CallCreateNodeTypeRegistry ();
+
+      Assert.That (defaultNodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (SelectExpressionNode)));
+
+      var customizer = CreateCustomizerStub (
+          stub => stub.GetCustomNodeTypes (),
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, Type> (new[] { exstingMethod }, typeof (WhereExpressionNode)) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer);
+
+      var nodeTypeRegistryWithOverrides = CallCreateNodeTypeRegistry ();
+
+      Assert.That (nodeTypeRegistryWithOverrides.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
+    }
+
+    [Test]
     public void CreateMethodCallTransformerRegistry_RegistersDefaultTransformers ()
     {
       var toStringMethod = ToStringMethodCallTransformer.SupportedMethods[0];
@@ -354,6 +373,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void CreateMethodCallTransformerRegistry_CustomizersCanOverrideDefaults ()
+    {
+      var existingMethod = typeof (object).GetMethod ("ToString");
+      var defaultRegistry = CallCreateMethodCallTransformerRegistry ();
+
+      Assert.That (defaultRegistry.GetItem (existingMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
+
+      var customTransformer = MockRepository.GenerateStub<IMethodCallTransformer> ();
+      var customizer = CreateCustomizerStub (
+          stub => stub.GetCustomMethodCallTransformers (),
+          new[] { Tuple.Create<IEnumerable<MethodInfo>, IMethodCallTransformer> (new[] { existingMethod }, customTransformer) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer);
+
+      var registryWithOverrides = CallCreateMethodCallTransformerRegistry ();
+
+      Assert.That (registryWithOverrides.GetItem(existingMethod), Is.SameAs (customTransformer));
+    }
+
+    [Test]
     public void CreateResultOperatorHandlerRegistry_RegistersDefaultTransformers ()
     {
       var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
@@ -382,6 +421,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       Assert.That (nodeTypeRegistry.GetItem (customType1), Is.SameAs (customTransformer1));
       Assert.That (nodeTypeRegistry.GetItem (customType2), Is.SameAs (customTransformer2));
+    }
+
+    [Test]
+    public void CreateResultOperatorHandlerRegistry_CustomizersCanOverrideDefaults ()
+    {
+      var existingType = typeof (CountResultOperator);
+      var defaultRegistry = CallCreateResultOperatorHandlerRegistry ();
+
+      Assert.That (defaultRegistry.GetItem (existingType), Is.TypeOf (typeof (CountResultOperatorHandler)));
+
+      var customTransformer = MockRepository.GenerateStub<IResultOperatorHandler>();
+      var customizer = CreateCustomizerStub (
+          stub => stub.GetCustomResultOperatorHandlers(),
+          new[] { Tuple.Create<IEnumerable<Type>, IResultOperatorHandler> (new[] { existingType }, customTransformer) });
+
+      PrepareServiceLocatorWithParserCustomizers (customizer);
+
+      var registryWithOverrides = CallCreateResultOperatorHandlerRegistry ();
+
+      Assert.That (registryWithOverrides.GetItem (existingType), Is.SameAs (customTransformer));
     }
 
     private MethodCallExpressionNodeTypeRegistry CallCreateNodeTypeRegistry ()
