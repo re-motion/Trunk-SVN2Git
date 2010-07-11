@@ -30,7 +30,41 @@ namespace Remotion.Security.Metadata
   /// </summary>
   public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
-    private static readonly ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> s_cache = new InterlockedCache<Tuple<Type, Type, string, BindingFlags>, Enum[]> ();
+    private class CacheKey : IEquatable<CacheKey>
+    {
+      private readonly Type _attributeType;
+      private readonly Type _type;
+      private readonly string _memberName;
+      private readonly BindingFlags _bindingFlags;
+
+      public CacheKey (Type attributeType, Type type, string memberName, BindingFlags bindingFlags)
+      {
+        Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
+        Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
+        Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
+        
+        _attributeType = attributeType;
+        _type = type;
+        _memberName = memberName;
+        _bindingFlags = bindingFlags;
+      }
+
+      public override int GetHashCode ()
+      {
+        return _type.GetHashCode() ^ _memberName[0];
+      }
+
+      public bool Equals (CacheKey other)
+      {
+        return EqualityUtility.NotNullAndSameType (this, other)
+               && _attributeType.Equals (other._attributeType)
+               && _type.Equals (other._type)
+               && string.Equals (_memberName, other._memberName)
+               && _bindingFlags == other._bindingFlags;
+      }
+    }
+
+    private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]>();
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
@@ -97,10 +131,10 @@ namespace Remotion.Security.Metadata
     }
 
     private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation, BindingFlags bindingFlags)
-      where TAttribute: BaseDemandPermissionAttribute
+        where TAttribute: BaseDemandPermissionAttribute
     {
-      var tuple = new Tuple<Type, Type, string, BindingFlags> (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
-      return s_cache.GetOrCreateValue (tuple, key => GetPermissions<TAttribute> (memberInformation));
+      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
     }
 
     public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
