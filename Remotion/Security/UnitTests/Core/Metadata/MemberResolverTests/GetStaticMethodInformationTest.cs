@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
@@ -66,15 +65,14 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static);
 
-      Assert.AreSame (
-          methodInformation, _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static));
+      Assert.AreSame (methodInformation, _resolver.GetMethodInformation (typeof (SecurableObject), "CreateForSpecialCase", MemberAffiliation.Static));
     }
 
     [Test]
     public void Test_OverloadedMethodWithOneAttributes ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "IsValid", MemberAffiliation.Static);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("IsValid", new Type[] {typeof(SecurableObject)}));
+      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("IsValid", new [] {typeof(SecurableObject)}));
 
       Assert.That (methodInformation, Is.Not.Null);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -94,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Sve' could not be found.\r\nParameter name: memberName")]
     public void Test_NotExistingMethod ()
     {
-      var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Sve", MemberAffiliation.Static);
+      _resolver.GetMethodInformation (typeof (SecurableObject), "Sve", MemberAffiliation.Static);
     }
   }
 }

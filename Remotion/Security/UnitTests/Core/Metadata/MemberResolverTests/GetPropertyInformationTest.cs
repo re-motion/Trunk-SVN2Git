@@ -32,7 +32,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new ReflectionBasedMemberResolver ();
+      _resolver = new ReflectionBasedMemberResolver();
     }
 
     [Test]
@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var propertyInformation = _resolver.GetPropertyInformation (typeof (SecurableObject), "IsEnabled");
 
-      Assert.That  (propertyInformation, Is.InstanceOfType (typeof(NullPropertyInformation)));
+      Assert.That (propertyInformation, Is.InstanceOfType (typeof (NullPropertyInformation)));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_PropertyWithOneAttribute ()
     {
       var propertyInformation = _resolver.GetPropertyInformation (typeof (SecurableObject), "IsVisible");
-      var expectedPropertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty("IsVisible"));
+      var expectedPropertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible"));
 
       Assert.That (propertyInformation, Is.Not.Null);
       Assert.That (propertyInformation, Is.EqualTo (expectedPropertyInformation));
@@ -74,8 +74,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     public void Test_NonPublicPropertyWithOneAttribute ()
     {
       var propertyInformation = _resolver.GetPropertyInformation (typeof (SecurableObject), "NonPublicProperty");
-      var expectedPropertyInformation = 
-        new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance));
+      var expectedPropertyInformation =
+          new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance));
 
       Assert.That (propertyInformation, Is.Not.Null);
       Assert.That (propertyInformation, Is.EqualTo (expectedPropertyInformation));
@@ -88,12 +88,13 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
       var propertyInformation = _resolver.GetPropertyInformation (
           typeof (SecurableObject),
           typeof (IInterfaceWithProperty).FullName + ".InterfaceProperty");
-      var expectedPropertyInformation = 
-        new PropertyInfoAdapter (typeof (SecurableObject).GetProperty (typeof (IInterfaceWithProperty).FullName + ".InterfaceProperty", BindingFlags.NonPublic | BindingFlags.Instance));
+      var expectedPropertyInformation =
+          new PropertyInfoAdapter (
+              typeof (SecurableObject).GetProperty (
+                  typeof (IInterfaceWithProperty).FullName + ".InterfaceProperty", BindingFlags.NonPublic | BindingFlags.Instance));
 
       Assert.That (propertyInformation, Is.Not.Null);
       Assert.That (propertyInformation, Is.EqualTo (expectedPropertyInformation));
     }
-
   }
 }

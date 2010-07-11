@@ -72,16 +72,5 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation));
     }
-
-    [Test]
-    public void Test_NonPublicPropertyWithOneAttribute ()
-    {
-      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance));
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
-
-      Assert.IsNotNull (requiredAccessTypes);
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.Contains (TestAccessTypes.Second, requiredAccessTypes);
-    }
   }
 }

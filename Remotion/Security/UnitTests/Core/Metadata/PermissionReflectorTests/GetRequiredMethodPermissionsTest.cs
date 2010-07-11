@@ -78,16 +78,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
-    public void Test_OverloadedMethodWithOneAttribute ()
-    {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Delete", new[]{typeof(int)}));
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
-
-      Assert.AreEqual (1, requiredAccessTypes.Length);
-      Assert.AreEqual (GeneralAccessTypes.Delete, requiredAccessTypes[0]);
-    }
-
-    [Test]
     public void Test_MethodWithTwoPermissions ()
     {
       IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Show"));
@@ -105,17 +95,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
-    }
-
-    [Test]
-    public void Test_MethodOfDerivedClass ()
-    {
-      IMethodInformation methodInformation = new MethodInfoAdapter (typeof (DerivedSecurableObject).GetMethod ("Show"));
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), methodInformation);
-
-      Assert.AreEqual (2, requiredAccessTypes.Length);
-      Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
-      Assert.Contains (GeneralAccessTypes.Create, requiredAccessTypes);
     }
 
     [Test]

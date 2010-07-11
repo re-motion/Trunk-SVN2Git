@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
@@ -66,15 +65,14 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Load", MemberAffiliation.Instance);
 
-      Assert.That (
-          methodInformation, Is.SameAs(_resolver.GetMethodInformation (typeof (SecurableObject), "Load", MemberAffiliation.Instance)));
+      Assert.That (methodInformation, Is.SameAs(_resolver.GetMethodInformation (typeof (SecurableObject), "Load", MemberAffiliation.Instance)));
     }
 
     [Test]
     public void Test_OverloadedMethodWithOneAttribute ()
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Delete", MemberAffiliation.Instance);
-      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Delete", new Type[] {typeof(int)}));
+      var expectedMethodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Delete", new [] {typeof(int)}));
 
       Assert.IsNotNull (methodInformation);
       Assert.That (methodInformation, Is.EqualTo (expectedMethodInformation));
@@ -108,8 +106,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-      ExpectedMessage = "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
         + "A member 'Send' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
         + "\r\nParameter name: memberName")]
     public void Test_MethodDeclaredOnBaseAndDerivedClass ()
@@ -118,21 +116,13 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-      ExpectedMessage = "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
         + "A member 'Print' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
         + "\r\nParameter name: memberName")]
     public void Test_OverriddenMethods ()
     {
       _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Print", MemberAffiliation.Instance);
-    }
-
-    [Test]
-    public void Test_MethodWithMultipleAccessTypes ()
-    {
-      var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "Close", MemberAffiliation.Instance);
-
-      Assert.That (methodInformation, Is.Not.Null);
     }
   }
 }
