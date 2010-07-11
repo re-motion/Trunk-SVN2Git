@@ -31,8 +31,6 @@ namespace Remotion.Security.Metadata
   public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
     private static readonly ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> s_cache = new InterlockedCache<Tuple<Type, Type, string, BindingFlags>, Enum[]> ();
-    
-    private readonly IMemberResolver _memberResolver = new ReflectionBasedMemberResolver();
 
     public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
@@ -42,15 +40,6 @@ namespace Remotion.Security.Metadata
     public PermissionReflector (string name, NameValueCollection config)
         : base (name, config)
     {
-    }
-
-    public Enum[] GetRequiredMethodPermissions (Type type, string methodName)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-
-      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Instance);
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
@@ -63,15 +52,6 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
-    public Enum[] GetRequiredStaticMethodPermissions (Type type, string methodName)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-
-      IMemberInformation memberInformation = _memberResolver.GetMethodInformation (type, methodName, MemberAffiliation.Static);
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-    }
-
     public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
@@ -82,15 +62,6 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 
-    public Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
-      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-    }
-
     public Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
@@ -98,15 +69,6 @@ namespace Remotion.Security.Metadata
       if (propertyInformation == null)
         return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-    }
-
-    public Enum[] GetRequiredPropertyWritePermissions (Type type, string propertyName)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      IMemberInformation memberInformation = _memberResolver.GetPropertyInformation (type, propertyName);
-      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, memberInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation)
