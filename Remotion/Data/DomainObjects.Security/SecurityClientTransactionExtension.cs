@@ -225,16 +225,6 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    //TODO: Move to reflection Utility and test
-    // Note: maybe use MappingConfiguration.NameResolver.GetProperty (string propertyName).Name instead?
-    private string GetSimplePropertyName (string propertyName)
-    {
-      int lastIndex = propertyName.LastIndexOf ('.');
-      if (lastIndex != -1 && lastIndex + 1 < propertyName.Length)
-        return propertyName.Substring (lastIndex + 1);
-      return propertyName;
-    }
-
     private SecurityClient GetSecurityClient ()
     {
       if (_securityClient == null)
