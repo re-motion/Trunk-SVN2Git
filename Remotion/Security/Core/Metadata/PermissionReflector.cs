@@ -79,19 +79,15 @@ namespace Remotion.Security.Metadata
     public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-
-      if (methodInformation == null)
-        return new Enum[0];
-
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
+      
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-
-      if (methodInformation == null)
-        return new Enum[0];
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
 
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
@@ -99,24 +95,23 @@ namespace Remotion.Security.Metadata
     public Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      if (propertyInformation == null)
-        return new Enum[0]; 
       return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-
-      if (propertyInformation == null)
-        return new Enum[0]; 
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      
       return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
     {
       var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute> (methodInfo, true);
+      
       if (permissionAttribute == null)
         return new Enum[0];
 

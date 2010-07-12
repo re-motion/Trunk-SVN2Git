@@ -67,6 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
+    [Ignore("property info should be set")]
     public void SubstitutedBy_PropertyWriteAccessDenied ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> ();

@@ -200,7 +200,8 @@ namespace Remotion.Security
             "Access to method '{0}' on type '{1}' has been denied.", methodName, securableObject.GetSecurableType().FullName);
       }
     }
-    
+ 
+
     public bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName)
     {
       return HasPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
@@ -282,6 +283,7 @@ namespace Remotion.Security
             "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyInfo.Name, securableObject.GetSecurableType ().FullName);
       }
     }
+
 
     public bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
     {
