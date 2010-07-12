@@ -80,10 +80,7 @@ namespace Remotion.Security.Metadata
     {
       if (memberAffiliation == MemberAffiliation.Instance)
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
-      else if (memberAffiliation == MemberAffiliation.Static)
-        return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
-      else //TODO: else can be removed
-        return new NullMethodInformation();
+      return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
@@ -133,6 +130,7 @@ namespace Remotion.Security.Metadata
           return new NullMethodInformation();
         return new NullPropertyInformation();
       }
+
       MemberInfo foundMember = foundMembers[0];
       if (type.BaseType != null && foundMember.DeclaringType == type && TypeHasMember (type.BaseType, memberType, memberName, bindingFlags))
       {
