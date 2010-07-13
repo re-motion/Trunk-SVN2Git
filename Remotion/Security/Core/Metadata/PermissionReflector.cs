@@ -108,29 +108,22 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
-    public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
-    {
-      var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute> (methodInfo, true);
+    //public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
+    //{
+    //  var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute> (methodInfo, true);
       
-      if (permissionAttribute == null)
-        return new Enum[0];
+    //  if (permissionAttribute == null)
+    //    return new Enum[0];
 
-      var permissions = new List<Enum>();
-      foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes())
-      {
-        if (!permissions.Contains (accessTypeEnum))
-          permissions.Add (accessTypeEnum);
-      }
+    //  var permissions = new List<Enum>();
+    //  foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes())
+    //  {
+    //    if (!permissions.Contains (accessTypeEnum))
+    //      permissions.Add (accessTypeEnum);
+    //  }
 
-      return permissions.ToArray();
-    }
-
-    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation, BindingFlags bindingFlags)
-        where TAttribute: BaseDemandPermissionAttribute
-    {
-      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
-    }
+    //  return permissions.ToArray();
+    //}
 
     public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
     {
@@ -147,6 +140,13 @@ namespace Remotion.Security.Metadata
       }
 
       return permissions.ToArray ();
+    }
+
+    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation, BindingFlags bindingFlags)
+        where TAttribute : BaseDemandPermissionAttribute
+    {
+      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
     }
   }
 }

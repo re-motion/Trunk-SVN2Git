@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
@@ -97,10 +99,15 @@ namespace Remotion.Security.Metadata
       MemberInfo[] instanceMethods = GetInstanceMethods (type);
       MemberInfo[] staticMethods = GetStaticMethods (type);
       MemberInfo[] constructors = GetConstructors (type);
-      MemberInfo[] memberInfos = (MemberInfo[]) ArrayUtility.Combine (instanceMethods, staticMethods, constructors);
-      AddAccessTypesFromAttribute<DemandMethodPermissionAttribute> (memberInfos, accessTypes, cache);
+
+      var memberInfos2 = instanceMethods
+                            .Concat (staticMethods)
+                            .Concat (constructors)
+                            .Select (pi => (IMemberInformation) new MethodInfoAdapter ((MethodInfo) pi));
+
+      AddAccessTypesFromAttribute<DemandMethodPermissionAttribute> (memberInfos2, accessTypes, cache);
       
-      MemberInfo[] properties = GetProperties (type);
+      var properties = GetProperties (type);
       AddAccessTypesFromAttribute<DemandPropertyReadPermissionAttribute> (properties, accessTypes, cache);
       AddAccessTypesFromAttribute<DemandPropertyWritePermissionAttribute> (properties, accessTypes, cache);
     }
@@ -135,14 +142,14 @@ namespace Remotion.Security.Metadata
       return instanceMethods;
     }
 
-    private MemberInfo[] GetProperties (Type type)
+    private IEnumerable<IMemberInformation> GetProperties (Type type)
     {
-      MemberInfo[] instanceMethods = type.FindMembers (
+      MemberInfo[] instanceProperties = type.FindMembers (
           MemberTypes.Property,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
           new Type[] { typeof (DemandPropertyReadPermissionAttribute), typeof (DemandPropertyWritePermissionAttribute) });
-      return instanceMethods;
+      return instanceProperties.Cast<PropertyInfo> ().Select (pi => (IMemberInformation) new PropertyInfoAdapter (pi));
     }
 
     private bool FindSecuredMembersFilter (MemberInfo member, object filterCriteria)
@@ -158,9 +165,9 @@ namespace Remotion.Security.Metadata
       return false;
     }  
 
-    private void AddAccessTypesFromAttribute<T> (MemberInfo[] memberInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache) where T : BaseDemandPermissionAttribute
+    private void AddAccessTypesFromAttribute<T> (IEnumerable<IMemberInformation> memberInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache) where T : BaseDemandPermissionAttribute
     {
-      foreach (MemberInfo memberInfo in memberInfos)
+      foreach (var memberInfo in memberInfos)
       {
         Enum[] values = _permissionReflector.GetPermissions<T> (memberInfo);
         foreach (Enum value in values)
