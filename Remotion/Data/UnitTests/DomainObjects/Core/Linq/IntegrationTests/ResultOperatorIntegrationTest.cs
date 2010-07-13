@@ -673,6 +673,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                      select new { cooksByRestaurant.Key.DeliveryDate, CookID = cook };
       Assert.That (query3.Count (), Is.GreaterThan (0));
     }
+
+    [Test]
+    [Ignore ("TODO 3027")]
+    public void GroupBy_ResultSelector ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Order> ().GroupBy (o => o.Customer, (key, group) => group.Count());
+
+      Assert.That (query.Count (), Is.EqualTo (3));
+    }
     
   }
 }
