@@ -30,8 +30,8 @@ namespace Remotion.Security.Metadata
     // static members
 
     // member fields
-    private IEnumerationReflector _enumerationReflector;
-    private PermissionReflector _permissionReflector = new PermissionReflector();
+    private readonly IEnumerationReflector _enumerationReflector;
+    private readonly PermissionReflector _permissionReflector = new PermissionReflector();
 
     // construction and disposing
 
@@ -96,14 +96,13 @@ namespace Remotion.Security.Metadata
 
     private void AddAccessTypes (Type type, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
     {
-      MemberInfo[] instanceMethods = GetInstanceMethods (type);
-      MemberInfo[] staticMethods = GetStaticMethods (type);
-      MemberInfo[] constructors = GetConstructors (type);
+      var instanceMethods = GetInstanceMethods (type); //IMemberInformation
+      var staticMethods = GetStaticMethods (type);
+      var constructors = GetConstructors (type);
 
       var memberInfos2 = instanceMethods
-                            .Concat (staticMethods)
-                            .Concat (constructors)
-                            .Select (pi => (IMemberInformation) new MethodInfoAdapter ((MethodInfo) pi));
+          .Concat (staticMethods)
+          .Concat (constructors);
 
       AddAccessTypesFromAttribute<DemandMethodPermissionAttribute> (memberInfos2, accessTypes, cache);
       
@@ -112,34 +111,34 @@ namespace Remotion.Security.Metadata
       AddAccessTypesFromAttribute<DemandPropertyWritePermissionAttribute> (properties, accessTypes, cache);
     }
 
-    private MemberInfo[] GetConstructors (Type type)
+    private IEnumerable<IMemberInformation> GetConstructors (Type type)
     {
       MemberInfo[] constructors = type.FindMembers (
           MemberTypes.Constructor,
           BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new Type[] { typeof (DemandMethodPermissionAttribute) });
-      return constructors;
+          new[] { typeof (DemandMethodPermissionAttribute) });
+      return constructors.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
     }
 
-    private MemberInfo[] GetStaticMethods (Type type)
+    private IEnumerable<IMemberInformation> GetStaticMethods (Type type)
     {
       MemberInfo[] staticMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
           FindSecuredMembersFilter,
-          new Type[] { typeof (DemandMethodPermissionAttribute) });
-      return staticMethods;
+          new[] { typeof (DemandMethodPermissionAttribute) });
+      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
     }
 
-    private MemberInfo[] GetInstanceMethods (Type type)
+    private IEnumerable<IMemberInformation> GetInstanceMethods (Type type)
     {
       MemberInfo[] instanceMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new Type[] { typeof (DemandMethodPermissionAttribute) });
-      return instanceMethods;
+          new[] { typeof (DemandMethodPermissionAttribute) });
+      return instanceMethods.Cast<MethodInfo>().Select (mi => (IMemberInformation)new MethodInfoAdapter (mi));
     }
 
     private IEnumerable<IMemberInformation> GetProperties (Type type)
@@ -148,7 +147,7 @@ namespace Remotion.Security.Metadata
           MemberTypes.Property,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new Type[] { typeof (DemandPropertyReadPermissionAttribute), typeof (DemandPropertyWritePermissionAttribute) });
+          new[] { typeof (DemandPropertyReadPermissionAttribute), typeof (DemandPropertyWritePermissionAttribute) });
       return instanceProperties.Cast<PropertyInfo> ().Select (pi => (IMemberInformation) new PropertyInfoAdapter (pi));
     }
 
