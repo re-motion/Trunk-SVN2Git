@@ -48,7 +48,7 @@ namespace Remotion.Security.Metadata
 
       public override int GetHashCode ()
       {
-        return _type.GetHashCode () ^ _memberInformation.Name[0];
+        return _memberInformation.GetHashCode();
       }
 
       public bool Equals (CacheKey other)

@@ -80,8 +80,7 @@ namespace Remotion.Security.Metadata
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
-
+      
       switch (memberAffiliation)
       {
         case MemberAffiliation.Instance:
@@ -97,8 +96,7 @@ namespace Remotion.Security.Metadata
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
-
+      
       switch (memberAffiliation)
       {
         case MemberAffiliation.Instance:
