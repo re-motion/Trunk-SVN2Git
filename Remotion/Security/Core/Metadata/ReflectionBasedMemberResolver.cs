@@ -78,6 +78,10 @@ namespace Remotion.Security.Metadata
 
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
+      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
+
       if (memberAffiliation == MemberAffiliation.Instance)
         return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
       return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
@@ -85,12 +89,19 @@ namespace Remotion.Security.Metadata
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
       return (IPropertyInformation) GetMemberFromCache (
           type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
 
     public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
+
       if (memberAffiliation == MemberAffiliation.Instance)
         return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
       else if (memberAffiliation == MemberAffiliation.Static)
@@ -100,6 +111,9 @@ namespace Remotion.Security.Metadata
 
     public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
       return (IPropertyInformation) GetMemberFromCache (
           type, propertyInfo.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
     }
