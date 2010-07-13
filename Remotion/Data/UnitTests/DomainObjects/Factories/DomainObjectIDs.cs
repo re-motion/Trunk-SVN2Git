@@ -413,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     
     #endregion
 
-    #region "TargetClassForPersistentMixins"
+    #region TargetClassForPersistentMixins
 
     // PersistentProperty: 99
     // ExtraPersistentProperty: 100
