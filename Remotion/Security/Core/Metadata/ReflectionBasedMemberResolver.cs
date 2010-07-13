@@ -97,15 +97,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       
-      switch (memberAffiliation)
-      {
-        case MemberAffiliation.Instance:
-          return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
-        case MemberAffiliation.Static:
-          return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
-        default:
-          throw new ArgumentException ("Wrong parameter 'memberAffiliation' passed.");
-      }
+      return GetMethodInformation (type, methodInfo.Name, memberAffiliation);
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
