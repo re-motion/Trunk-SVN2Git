@@ -70,6 +70,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithMethodInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInformation);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
@@ -92,6 +105,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithMethodInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -125,6 +151,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       using (new SecurityFreeSection ())
       {
         hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithMethodInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -208,13 +250,25 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
-    public void Test_WithSecurityStrategyIsNull_WithMethidInfo ()
+    public void Test_WithSecurityStrategyIsNull_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       _securityClient.HasMethodAccess (new SecurableObject (null), _methodInfo);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
+    public void Test_WithSecurityStrategyIsNull_WithMethidInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ReplayAll ();
+
+      _securityClient.HasMethodAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -247,6 +301,18 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
+    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException_WithMethodInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ReplayAll ();
+
+      _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInformation);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
@@ -272,6 +338,21 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       using (new SecurityFreeSection ())
       {
         _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInfo);
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
+    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException_WithMethodInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ReplayAll ();
+
+      using (new SecurityFreeSection ())
+      {
+        _securityClient.HasMethodAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();

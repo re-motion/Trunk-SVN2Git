@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -72,5 +73,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       return principalStub;
     }
+
+    private IMemberResolver CreateMemberResolver (ISecurableObject securableObject)
+    {
+      var memberResolverStub = MockRepository.GenerateStub<IMemberResolver>();
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+
+      memberResolverStub.Stub (stub => stub.GetPropertyInformation (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
+        .Return (propertyInformationStub);
+
+      return memberResolverStub;
+    }
+
+  
   }
 }
