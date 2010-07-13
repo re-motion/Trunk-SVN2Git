@@ -71,6 +71,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -93,6 +107,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -133,6 +160,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -155,6 +198,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithDefaultAccessType_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -189,6 +245,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessDenied_WithDefaultAccessType_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -216,6 +285,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       using (new SecurityFreeSection ())
       {
         hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (_propertyInformation);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
       }
 
       _testHelper.VerifyAll ();

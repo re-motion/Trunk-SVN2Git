@@ -71,6 +71,20 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.Second);
+
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      Assert.IsTrue (hasAccess);
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -95,6 +109,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
 
       _testHelper.VerifyAll();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.Second);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
     }
 
@@ -133,6 +160,22 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -161,6 +204,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithDefaultAccessType_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, true);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_AccessDenied_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
@@ -183,6 +239,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+
+      _testHelper.VerifyAll ();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void Test_AccessDenied_WithDefaultAccessType_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, false);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -221,6 +290,23 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
+
+    [Test]
+    public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection_WithPropertyInformation ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
