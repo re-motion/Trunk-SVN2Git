@@ -82,9 +82,32 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
       ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
 
-      if (memberAffiliation == MemberAffiliation.Instance)
-        return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
-      return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+      switch (memberAffiliation)
+      {
+        case MemberAffiliation.Instance:
+          return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
+        case MemberAffiliation.Static:
+          return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+        default:
+          throw new ArgumentException ("Wrong parameter 'memberAffiliation' passed.");
+      }
+    }
+
+    public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
+
+      switch (memberAffiliation)
+      {
+        case MemberAffiliation.Instance:
+          return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
+        case MemberAffiliation.Static:
+          return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+        default:
+          throw new ArgumentException ("Wrong parameter 'memberAffiliation' passed.");
+      }
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
@@ -94,19 +117,6 @@ namespace Remotion.Security.Metadata
 
       return (IPropertyInformation) GetMemberFromCache (
           type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
-    }
-
-    public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      ArgumentUtility.CheckNotNull ("memberAffiliation", memberAffiliation);
-
-      if (memberAffiliation == MemberAffiliation.Instance)
-        return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
-      else if (memberAffiliation == MemberAffiliation.Static)
-        return (IMethodInformation) GetMemberFromCache (type, methodInfo.Name, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
-      return new NullMethodInformation ();
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
