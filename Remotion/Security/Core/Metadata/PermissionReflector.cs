@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Reflection;
 using Remotion.Collections;
 using Remotion.Configuration;
 using Remotion.Reflection;
@@ -34,24 +33,22 @@ namespace Remotion.Security.Metadata
     {
       private readonly Type _attributeType;
       private readonly Type _type;
-      private readonly string _memberName;
-      private readonly BindingFlags _bindingFlags;
+      private readonly IMemberInformation _memberInformation;
 
-      public CacheKey (Type attributeType, Type type, string memberName, BindingFlags bindingFlags)
+      public CacheKey (Type attributeType, Type type, IMemberInformation memberInformation)
       {
         Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
-        Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
+        Assertion.DebugAssert (memberInformation != null, "Parameter 'memberInformation' us null.");
         
         _attributeType = attributeType;
         _type = type;
-        _memberName = memberName;
-        _bindingFlags = bindingFlags;
+        _memberInformation = memberInformation;
       }
 
       public override int GetHashCode ()
       {
-        return _type.GetHashCode() ^ _memberName[0];
+        return _type.GetHashCode () ^ _memberInformation.Name[0];
       }
 
       public bool Equals (CacheKey other)
@@ -59,8 +56,7 @@ namespace Remotion.Security.Metadata
         return EqualityUtility.NotNullAndSameType (this, other)
                && _attributeType.Equals (other._attributeType)
                && _type.Equals (other._type)
-               && string.Equals (_memberName, other._memberName)
-               && _bindingFlags == other._bindingFlags;
+               && _memberInformation == other._memberInformation;
       }
     }
 
@@ -81,7 +77,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Instance);
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
     }
 
     public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
@@ -89,7 +85,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
 
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
     }
 
     public Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation)
@@ -97,7 +93,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (type, propertyInformation);
     }
 
     public Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation)
@@ -105,25 +101,8 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       
-      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation);
     }
-
-    //public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
-    //{
-    //  var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute> (methodInfo, true);
-      
-    //  if (permissionAttribute == null)
-    //    return new Enum[0];
-
-    //  var permissions = new List<Enum>();
-    //  foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes())
-    //  {
-    //    if (!permissions.Contains (accessTypeEnum))
-    //      permissions.Add (accessTypeEnum);
-    //  }
-
-    //  return permissions.ToArray();
-    //}
 
     public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
     {
@@ -142,10 +121,10 @@ namespace Remotion.Security.Metadata
       return permissions.ToArray ();
     }
 
-    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation, BindingFlags bindingFlags)
+    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation)
         where TAttribute : BaseDemandPermissionAttribute
     {
-      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation.Name, bindingFlags);
+      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation);
       return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
     }
   }
