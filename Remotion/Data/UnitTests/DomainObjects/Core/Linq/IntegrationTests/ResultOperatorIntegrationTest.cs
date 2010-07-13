@@ -675,12 +675,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3027")]
     public void GroupBy_ResultSelector ()
     {
-      var query = QueryFactory.CreateLinqQuery<Order> ().GroupBy (o => o.Customer, (key, group) => group.Count());
+      var query = QueryFactory.CreateLinqQuery<Order> ().GroupBy (o => o.Customer.ID, (key, group) => key);
 
-      Assert.That (query.Count (), Is.EqualTo (3));
+      Assert.That (query.Count (), Is.EqualTo (4));
     }
     
   }
