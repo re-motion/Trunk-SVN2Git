@@ -218,8 +218,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
               mock => mock.GenerateTextForOuterSqlStatement (
                   Arg<SqlCommandBuilder>.Is.Anything,
                   Arg<SqlStatement>.Is.Anything))
-          .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"))
-          .Return (Expression.Lambda<Func<IDatabaseResultRow, object>> (Expression.Constant ("test"), Expression.Parameter (typeof (IDatabaseResultRow), "row")));
+          .WhenCalled (mi =>
+          {
+            var commandBuilder = ((SqlCommandBuilder) mi.Arguments[0]);
+            commandBuilder.Append ("test");
+            commandBuilder.SetInMemoryProjectionBody (Expression.Constant ("test"));
+          });
 
       preparationStageMock.Replay();
 
