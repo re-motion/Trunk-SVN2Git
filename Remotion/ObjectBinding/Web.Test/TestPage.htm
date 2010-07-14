@@ -36,8 +36,8 @@
 
       statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' trigger Change Begin';
 
-      var textBox = document.getElementById('TextBox');
-      fireEvent(textBox, 'change');
+      var hiddenInput = document.getElementById('HiddenInput');
+      fireEvent(hiddenInput, 'change');
 
       statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' trigger Change End';
       statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onKeyDown End';
@@ -104,8 +104,10 @@
 
 <div id="UP1">
 <span id="PostBackCountLabel" >0</span>
-<input id="TextBox" onchange="onChangeHandler()"/>
+<input id="TextBox" type="text" />
+<input id="HiddenInput" type="hidden" onchange="onChangeHandler()" />
 </div>
+
 <div id="StatusLabel"> </div>
 
 </form>
