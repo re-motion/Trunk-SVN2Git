@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 {
@@ -25,12 +28,16 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
   {
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
+    private MethodInfo _methodInfo;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp ()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
+      _methodInfo = typeof (SecurableObject).GetMethod ("Show");
+      _methodInformation = MockRepository.GenerateStub<IMethodInformation>();
     }
 
     [Test]
@@ -38,7 +45,27 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
+      _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "Show");
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithMethodInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInfo);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithMethodInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -50,7 +77,33 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
+        _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "Show");
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithMethodInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      using (new SecurityFreeSection ())
+      {
+        _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInfo);
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGrantedWithMethodInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      using (new SecurityFreeSection ())
+      {
+        _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -61,7 +114,27 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckMethodAccess (new SecurableObject (null), "InstanceMethod");
+      _securityClient.CheckMethodAccess (new SecurableObject (null), "Show");
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithSecurityStrategyIsNull_WithMethodInfo ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckMethodAccess (new SecurableObject (null), _methodInfo);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithSecurityStrategyIsNull_WithMethodInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckMethodAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }

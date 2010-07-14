@@ -38,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
+      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "IsValid");
 
       _testHelper.VerifyAll ();
     }
@@ -50,7 +50,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
+        _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "IsValid");
       }
 
       _testHelper.VerifyAll ();

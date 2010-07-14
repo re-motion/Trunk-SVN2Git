@@ -17,7 +17,9 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 {
@@ -27,6 +29,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private MethodInfo _methodInfo;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp()
@@ -34,7 +37,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _testHelper = NullSecurityClientTestHelper.CreateForStatelessSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
       _methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) });
-
+      _methodInformation = MockRepository.GenerateStub<IMethodInformation>();
     }
 
     [Test]
@@ -42,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll();
 
-      bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
+      bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "IsValid");
 
       _testHelper.VerifyAll();
       Assert.IsTrue (hasAccess);
@@ -60,6 +63,17 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithMethodInfo_WithMethodInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted()
     {
       _testHelper.ReplayAll();
@@ -67,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess;
       using (new SecurityFreeSection())
       {
-        hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
+        hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "IsValid");
       }
 
       _testHelper.VerifyAll();
@@ -83,6 +97,21 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       using (new SecurityFreeSection ())
       {
         hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
+      }
+
+      _testHelper.VerifyAll ();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithMethodInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      bool hasAccess;
+      using (new SecurityFreeSection ())
+      {
+        hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       }
 
       _testHelper.VerifyAll ();

@@ -17,7 +17,9 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 {
@@ -27,14 +29,15 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private PropertyInfo _propertyInfo;
-    
+    private IPropertyInformation _propertyInformation;
+
     [SetUp]
     public void SetUp()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
       _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
-
+      _propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
     }
 
     [Test]
@@ -42,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, "IsVisible");
 
       _testHelper.VerifyAll();
     }
@@ -58,13 +61,23 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     }
 
     [Test]
+    public void Test_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted()
     {
       _testHelper.ReplayAll();
 
       using (new SecurityFreeSection())
       {
-        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
+        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, "IsVisible");
       }
     
       _testHelper.VerifyAll ();
@@ -84,11 +97,24 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     }
 
     [Test]
+    public void Test_WithinSecurityFreeSection_AccessGranted_WithPropertyInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      using (new SecurityFreeSection ())
+      {
+        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      }
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
     public void Test_WithSecurityStrategyIsNull()
     {
       _testHelper.ReplayAll();
 
-      _securityClient.CheckPropertyReadAccess (new SecurableObject (null), "InstanceProperty");
+      _securityClient.CheckPropertyReadAccess (new SecurableObject (null), "IsVisible");
 
       _testHelper.VerifyAll ();
     }
@@ -99,6 +125,16 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _testHelper.ReplayAll ();
 
       _securityClient.CheckPropertyReadAccess (new SecurableObject (null), _propertyInfo);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    public void Test_WithSecurityStrategyIsNull_WithPropertyInformation ()
+    {
+      _testHelper.ReplayAll ();
+
+      _securityClient.CheckPropertyReadAccess (new SecurableObject (null), _propertyInformation);
 
       _testHelper.VerifyAll ();
     }
