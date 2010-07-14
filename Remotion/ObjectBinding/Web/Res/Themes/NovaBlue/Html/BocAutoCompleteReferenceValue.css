@@ -1,3 +1,5 @@
+/* Style applied to the BocAutoCompleteReferenceValue. */
+
 span.bocAutoCompleteReferenceValue
 {
   width: 21.5em;
@@ -16,7 +18,7 @@ body.msie7 span.bocAutoCompleteReferenceValue
 
 span.bocAutoCompleteReferenceValue span.body
 {
-	display: block;
+  display: block;
 }
 
 span.bocAutoCompleteReferenceValue input
@@ -30,7 +32,7 @@ body.mozilla span.bocAutoCompleteReferenceValue input
   height: 1.2em;
 }
 
-span.bocAutoCompleteReferenceValueButton 
+span.bocAutoCompleteReferenceValueButton
 {
   display: inline-block;
   position: absolute;
@@ -45,7 +47,7 @@ span.bocAutoCompleteReferenceValueButton
   height: 1.6em;
 }
 
-body.msie7 span.bocAutoCompleteReferenceValueButton 
+body.msie7 span.bocAutoCompleteReferenceValueButton
 {
   top: 0.1em;
   height: 1.55em;
@@ -175,9 +177,9 @@ span.bocAutoCompleteReferenceValue.disabled span.content
   display: inline-block;
   top: 0;
   left: 0;
-	height: 21px;
-	width: auto;
-	white-space: nowrap;
+  height: 21px;
+  width: auto;
+  white-space: nowrap;
 }
 
 span.bocAutoCompleteReferenceValue span.content.hasIcon,

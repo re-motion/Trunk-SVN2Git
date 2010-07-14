@@ -1,8 +1,6 @@
-@import url("TabStrip.css");
+/* Style applied to the TabbedMenu. */
 
-table
-{
-}
+@import url("TabStrip.css");
 
 table.tabbedMenu
 {
@@ -118,18 +116,6 @@ div.tabbedMainMenu span.tabStripTab.disabled a:hover
   cursor: default;
 }
 
-div.tabbedMainMenu > *.top, 
-div.tabbedMainMenu > *.left, 
-div.tabbedMainMenu > *.bottom, 
-div.tabbedMainMenu > *.right, 
-div.tabbedMainMenu > *.topLeft,
-div.tabbedMainMenu > *.bottomLeft, 
-div.tabbedMainMenu > *.topRight, 
-div.tabbedMainMenu > *.bottomRight
-{
-  display: none;
-}
-
 /* Content area of the tab */
 div.tabbedMainMenu li span.anchorBody
 {
@@ -215,18 +201,6 @@ div.tabbedSubMenu span.tabStripTab.disabled img
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=1),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
   -moz-opacity: 1;
-}
-
-div.tabbedSubMenu > *.top, 
-div.tabbedSubMenu > *.left, 
-div.tabbedSubMenu > *.bottom, 
-div.tabbedSubMenu > *.right, 
-div.tabbedSubMenu > *.topLeft,
-div.tabbedSubMenu > *.bottomLeft, 
-div.tabbedSubMenu > *.topRight, 
-div.tabbedSubMenu > *.bottomRight
-{
-  display: none;
 }
 
 /* Content area of the tab */

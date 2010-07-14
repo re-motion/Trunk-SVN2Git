@@ -70,8 +70,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterAdjustLayoutScript();
-
       AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -135,15 +133,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
         timeTextBox.RenderControl (writer);
         writer.RenderEndTag();
       }
-    }
-
-    private void RegisterAdjustLayoutScript ()
-    {
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
-          typeof (BocDateTimeValueRenderer),
-          Guid.NewGuid().ToString(),
-          string.Format ("BocBrowserCompatibility.AdjustDateTimeValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     public override string CssClassBase

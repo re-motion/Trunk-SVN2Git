@@ -1,4 +1,6 @@
-﻿td.listMenuRow
+﻿/* Style applied to the ListMenu. */
+
+td.listMenuRow
 {
   font-size: 80%;
   padding-top: 3px;
@@ -21,10 +23,10 @@ span.listMenuItem a
 span.listMenuItem a:hover
 {
   color: Blue;
-	padding: 1px;
-	border-width: 1px;
-	background-color: #e6f0ff;
-	border: solid 1px #083779;
+  padding: 1px;
+  border-width: 1px;
+  background-color: #e6f0ff;
+  border: solid 1px #083779;
 }
 
 span.listMenuItemDisabled
@@ -36,5 +38,5 @@ span.listMenuItemDisabled a
 {
   padding: 2px;
   color: gray;
-	cursor: default;
+  cursor: default;
 }

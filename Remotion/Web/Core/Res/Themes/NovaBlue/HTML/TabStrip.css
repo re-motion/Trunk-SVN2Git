@@ -1,3 +1,5 @@
+/* Style applied to the TabStrip. */
+
 /* Applied to the tab strip itself.*/
 *.tabStrip
 {
@@ -14,19 +16,19 @@
 *.tabStripTabsPane ul
 {
   margin: 0;
-  padding: 0px;  
+  padding: 0px;
   list-style: none;
   width: 100%; 
 }
 
 *.tabStripTabsPane ul li
 {
-   display: inline;
+  display: inline;
 }
 
 *.tabStripTab a
 {
-  border: solid 1px #083779;	
+  border: solid 1px #083779;
   background-color: #e1ecfc;
   color: Blue;
   text-decoration: none;
@@ -35,14 +37,14 @@
 
 *.tabStripTab a:hover
 {
-  background-color: #e6f0ff;	
+  background-color: #e6f0ff;
   cursor: pointer;
   cursor: hand;
 }
 
 *.tabStripTabSelected a
 {
-  border: solid 1px #083779;	
+  border: solid 1px #083779;
   background-color: White;
   color: Blue;
   text-decoration: none;
@@ -93,7 +95,7 @@
 *.tabStripTabSelected
 {
   position: relative;
-  display: inline-block; 
+  display: inline-block;
 }
 
 *.tabStripTabSeparator
@@ -118,29 +120,9 @@
   clear: left;
 }
 
-*.tabStripTab *.top, 
-*.tabStripTab *.left, 
-*.tabStripTab *.bottom, 
-*.tabStripTab *.bottom, 
-*.tabStripTab *.topLeft,
-*.tabStripTab *.bottomLeft, 
-*.tabStripTab *.topRight, 
-*.tabStripTab *.bottomRight,
-*.tabStripTabSelected *.top, 
-*.tabStripTabSelected *.left, 
-*.tabStripTabSelected *.bottom, 
-*.tabStripTabSelected *.bottom, 
-*.tabStripTabSelected *.topLeft,
-*.tabStripTabSelected *.bottomLeft, 
-*.tabStripTabSelected *.topRight, 
-*.tabStripTabSelected *.bottomRight
-{
-  display: none;
-}
-
 *.tabStripTabsPane ul
 {
-  width: auto; 
+  width: auto;
 }
 
 body.mozilla  *.tabStripTabSeparator span,

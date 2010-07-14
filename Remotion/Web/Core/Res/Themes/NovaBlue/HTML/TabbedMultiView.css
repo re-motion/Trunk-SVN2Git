@@ -1,3 +1,5 @@
+/* Style applied to the TabbedMultiView. */
+
 @import url("TabStrip.css");
 
 div.tabbedMultiView
@@ -20,18 +22,6 @@ div.tabbedMultiView > div.wrapper
   right: 0.5em;
   width: auto;
   height: auto;
-}
-
-div.tabbedMultiView > div.wrapper > *.top, 
-div.tabbedMultiView > div.wrapper > *.left, 
-div.tabbedMultiView > div.wrapper > *.bottom, 
-div.tabbedMultiView > div.wrapper > *.bottom, 
-div.tabbedMultiView > div.wrapper > *.topLeft,
-div.tabbedMultiView > div.wrapper > *.bottomLeft, 
-div.tabbedMultiView > div.wrapper > *.topRight, 
-div.tabbedMultiView > div.wrapper > *.bottomRight
-{
-  display: none;
 }
 
 div.tabbedMultiViewActiveView
@@ -71,18 +61,6 @@ body.msie7 div.tabbedMultiViewActiveView > div.contentBorder > div.content
 {
   width: 98%;
   height: 98%;
-}
-
-div.tabbedMultiViewActiveView > *.top, 
-div.tabbedMultiViewActiveView > *.left, 
-div.tabbedMultiViewActiveView > *.bottom, 
-div.tabbedMultiViewActiveView > *.right, 
-div.tabbedMultiViewActiveView > *.topLeft,
-div.tabbedMultiViewActiveView > *.bottomLeft, 
-div.tabbedMultiViewActiveView > *.topRight, 
-div.tabbedMultiViewActiveView > *.bottomRight
-{
-  display: none;
 }
 
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
@@ -227,18 +205,6 @@ body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
   padding-bottom: 1px;
 }
 
-div.tabbedMultiViewTabStrip > *.top, 
-div.tabbedMultiViewTabStrip > *.left, 
-div.tabbedMultiViewTabStrip > *.bottom, 
-div.tabbedMultiViewTabStrip > *.right, 
-div.tabbedMultiViewTabStrip > *.topLeft,
-div.tabbedMultiViewTabStrip > *.bottomLeft, 
-div.tabbedMultiViewTabStrip > *.topRight, 
-div.tabbedMultiViewTabStrip > *.bottomRight
-{
-  display: none;
-}
-
 /* Content area of the tab */
 div.tabbedMultiViewTabStrip a span.anchorBody
 {
@@ -255,8 +221,8 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
   padding-bottom: 0.15em; /* The padding used for the content span. */
 }
 
-div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
-div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
+div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody,
+div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody,
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.2em;

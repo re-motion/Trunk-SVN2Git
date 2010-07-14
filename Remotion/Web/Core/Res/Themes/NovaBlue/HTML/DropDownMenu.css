@@ -1,3 +1,5 @@
+/* Style applied to the DropDownMenu. */
+
 span.DropDownMenuContainer 
 {
   display: block;
@@ -9,12 +11,12 @@ span.DropDownMenuContainer
 }
 
 tr.bocListDataRow span.DropDownMenuContainer,
-tr.bocListDataRowSelected span.DropDownMenuContainer   
+tr.bocListDataRowSelected span.DropDownMenuContainer
 {
   display: inline-block;
 }
 
-span.DropDownMenuSelect 
+span.DropDownMenuSelect
 {
   display: block;
   position: relative;
@@ -27,7 +29,7 @@ span.DropDownMenuSelect
   height: 1.4em;
 }
 
-td.buttonCell span.DropDownMenuSelect 
+td.buttonCell span.DropDownMenuSelect
 {
   /* only when display just arrow */
   display: inline-block;
@@ -38,13 +40,13 @@ span.DropDownMenuSelect.disabled
   cursor: default;
 }
 
-span.DropDownMenuSelect span 
+span.DropDownMenuSelect span
 {
   left: 0;
   vertical-align: middle;
 }
 
-span.DropDownMenuSelect a 
+span.DropDownMenuSelect a
 {
   position: relative;
   left: 0.1em;
@@ -57,23 +59,23 @@ span.DropDownMenuSelect a
   height: 1.2em !important;
 }
 
-body.msie7 span.DropDownMenuSelect a 
+body.msie7 span.DropDownMenuSelect a
 {
   top: 0.12em;
 }
 
-span.DropDownMenuSelect a:hover 
+span.DropDownMenuSelect a:hover
 {
   border-style: none;
   background-color: Transparent;
 }
 
-span.DropDownMenuContainer span.disabled a 
+span.DropDownMenuContainer span.disabled a
 {
   color: Gray;
 }
 
-a.DropDownMenuSelectButton 
+a.DropDownMenuSelectButton
 {
   background-color: #083779;
   display: inline-block;
@@ -106,12 +108,12 @@ span.DropDownMenuSelect span.DropDownMenuButton img
   width: 16px;
 }
 
-span.DropDownMenuSelect img 
+span.DropDownMenuSelect img
 {
   border: 0;
 }
 
-ul.DropDownMenuOptions 
+ul.DropDownMenuOptions
 {
   font-size: 80%;
   border: solid 1px #083779;
@@ -121,7 +123,10 @@ ul.DropDownMenuOptions
   margin-top: -1px;
   padding: 0;
   list-style: none;
-  background: #FFFFFF url(../Image/DropDownMenuItemIconPane.gif) repeat-y top left;
+  background-color: #FFFFFF;
+  background-image: url('../Image/DropDownMenuItemIconPane.gif');
+  background-repeat: repeat-y;
+  background-position: top left;
   z-index: 1000;
 }
 
@@ -132,43 +137,44 @@ ul.DropDownMenuOptions li.selected a
   padding: 0px 2px 2px 2px;
 }
 
-ul.DropDownMenuOptions li a {
+ul.DropDownMenuOptions li a
+{
   text-decoration: none;
   display: block;
   margin: 1px;
-  padding: 1px 3px 3px 3px;
+  padding: 1px 3px 3px 1px;
   white-space: nowrap;
   color: #083779;
 }
 
-ul.DropDownMenuOptions li a:hover 
+ul.DropDownMenuOptions li a:hover
 {
   background-color: #e6f0ff;
   border: solid 1px #083779;
-  padding: 0px 2px 2px 2px;
+  padding: 0px 2px 2px 0px;
 }
 
-ul.DropDownMenuOptions li a img 
+ul.DropDownMenuOptions li a img
 {
   border: 0;
   margin-right: 15px;
   vertical-align: middle;
 }
 
-ul.DropDownMenuOptions li a span 
+ul.DropDownMenuOptions li a span
 {
   display: inline-block;
   padding: 2px 0px;
 }
 
-ul.DropDownMenuOptions li.DropDownMenuItemDisabled a 
+ul.DropDownMenuOptions li.DropDownMenuItemDisabled a
 {
   border-style: none;
   padding: 1px 3px 3px 3px;
   color: gray;
 }
 
-ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover 
+ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover
 {
   background-color: transparent;
   border-style: none;
@@ -178,10 +184,11 @@ ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover
 
 
 /* style separator */
-span.DropDownMenuSeparator 
+span.DropDownMenuSeparator
 {
+  display: block;
   line-height: 0.1em;
-  margin-left: 35px; 
+  margin-left: 30px;
   border: 0;
   background-image: url('../Image/DropDownMenuSeparator.gif');
   background-repeat: repeat-x;

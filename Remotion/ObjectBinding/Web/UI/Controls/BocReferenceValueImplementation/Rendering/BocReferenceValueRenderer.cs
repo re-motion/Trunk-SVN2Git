@@ -64,8 +64,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterAdjustLayoutScript ();
-
       base.Render (writer);
     }
 
@@ -81,15 +79,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    private void RegisterAdjustLayoutScript ()
-    {
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
-          typeof (BocReferenceValueRenderer),
-          Guid.NewGuid ().ToString (),
-          string.Format ("BocBrowserCompatibility.AdjustReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)

@@ -1,7 +1,8 @@
+/* Basic styles used to define the font, text-size, etc. */
+
 body
 {
   overflow: auto;
-  /*background-color: #073779;*/
 }
 
 body, input, select, textarea
@@ -16,47 +17,6 @@ body
 {
   /* Font-Size in body must be in percent. Otherwise IE has a cascading bug. */  
   font-size: 80%; 
-}
-
-body.mozilla  td,
-body.webkit   td,
-body.opera    td,
-body.mozilla  th,
-body.webkit   th,
-body.opera    th
-{
-  font-size: 100%;
-}
-
-/*  Style applied to the title cell  */
-/*  Style applied to the sub title cell  */
-td.formGridTitleCell,
-td.formGridSubTitleCell
-{
-  font-size: 100%;
-}
-
-body.mozilla  td.formGridTitleCell,
-body.webkit   td.formGridTitleCell,
-body.opera    td.formGridTitleCell,
-body.mozilla  td.formGridSubTitleCell,
-body.webkit   td.formGridSubTitleCell,
-body.opera    td.formGridSubTitleCell
-{
-  font-size: 125%;
-}
-
-/*  Style applied to the BocList's in-place menu  */
-td.contentMenuRow
-{
-  font-size: 64%;
-}
-
-body.mozilla  td.contentMenuRow,
-body.webkit   td.contentMenuRow,
-body.opera    td.contentMenuRow
-{
-  font-size: 80%;
 }
 
 /* No scaling without a reference value */

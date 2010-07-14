@@ -283,7 +283,7 @@ function DropDownMenu_CreateSeparatorItem()
 {
   var item = document.createElement('li');
 
-  var textPane = document.createElement('div');
+  var textPane = document.createElement('span');
   textPane.className = _dropDownMenu_itemSeparatorClassName;
   textPane.innerHTML = '&nbsp;';
 

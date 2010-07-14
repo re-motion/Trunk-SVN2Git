@@ -847,6 +847,7 @@
     <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuArrow.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuArrow_disabled.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuItemIconPane.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuSeparator.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\Help.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\RequiredField.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\Spacer.gif" />

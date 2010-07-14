@@ -1,3 +1,5 @@
+/* Style applied to the WebButton. */
+
 button.webButton
 {
   background-color: Transparent;
@@ -13,9 +15,9 @@ button.webButton
   outline: none;
 }
 
-button.webButton::-moz-focus-inner 
+button.webButton::-moz-focus-inner
 { 
-  border: 0; 
+  border: 0;
 }
 
 button.webButton.mouseDown span.buttonBody

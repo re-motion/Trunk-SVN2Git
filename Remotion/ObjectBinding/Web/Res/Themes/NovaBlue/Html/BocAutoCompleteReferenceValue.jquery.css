@@ -1,52 +1,70 @@
-﻿.ac_results 
+﻿/* Style applied to the BocAutoCompleteReferenceValue's drop-down list. */
+
+.ac_results
 {
-	padding: 0px;
-	border: 1px solid black;
-	background-color: white;
-	overflow: hidden;
-	overflow-y: auto;
-	z-index: 99999;
+  padding: 0px;
+  border: 1px solid WindowFrame;
+  background-color: Window;
+  overflow: hidden;
+  overflow-y: auto;
+  z-index: 99999;
 }
 
-.ac_results ul {
-	width: 100%;
-	list-style-position: outside;
-	list-style: none;
-	padding: 0;
-	margin: 0;
+.ac_results ul
+{
+  width: 100%;
+  list-style-position: outside;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.ac_results li {
-	margin: 0px;
-	padding: 2px 5px;
-	cursor: default;
-	display: block;
-	/* 
-	if width will be 100% horizontal scrollbar will apear 
-	when scroll mode will be used
-	*/
-	/*width: 100%;*/
-	/* 
-	it is very important, if line-height not setted or setted 
-	in relative units scroll will be broken in firefox
-	*/
-	line-height: 16px;
-	overflow: hidden;
+.ac_results li
+{
+  margin: 0px;
+  padding: 2px 5px;
+  cursor: default;
+  display: block;
+  /* 
+  if width will be 100% horizontal scrollbar will apear 
+  when scroll mode will be used
+  */
+  /*width: 100%;*/
+  /* 
+  it is very important, if line-height not setted or setted 
+  in relative units scroll will be broken in firefox
+  */
+  line-height: 16px;
+  overflow: hidden;
 }
 
-.ac_results li img {
+.ac_results li img
+{
   vertical-align: bottom;
 }
 
-.ac_loading {
-	background: white url('../Image/RequestInProgressIndicator.gif') right center no-repeat;
+.ac_loading
+{
+  background-color: white;
+  background-image: url('../Image/RequestInProgressIndicator.gif');
+  background-position: right center;
+  background-repeat: no-repeat;
 }
 
-.ac_odd {
-	background-color: #eee;
+.ac_even
+{
+  background-color: White;
+  color: WindowText;
 }
 
-.ac_over {
-	background-color: #0A246A;
-	color: white;
+.ac_odd
+{
+  background-color: #f4f4f4;
+  color: WindowText;
+}
+
+.ac_over
+{
+  background-color: Highlight;
+  color: HighlightText;
 }

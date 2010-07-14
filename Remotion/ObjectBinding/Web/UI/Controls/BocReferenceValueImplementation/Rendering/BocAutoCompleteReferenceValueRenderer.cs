@@ -65,7 +65,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       RegisterBindScript();
-      RegisterAdjustLayoutScript ();
 
       base.Render (writer);
     }
@@ -145,15 +144,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append ("); } );");
      
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString());
-    }
-
-    private void RegisterAdjustLayoutScript ()
-    {
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
-          typeof (BocAutoCompleteReferenceValueRenderer),
-          Guid.NewGuid ().ToString (),
-          string.Format ("BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)

@@ -1,3 +1,5 @@
+/* Style applied to the SmartPage. */
+
 #SmartPageStatusIsSubmittingMessage
 {
   background-color: White;
@@ -9,6 +11,5 @@
   background-color: White;
   border: solid 3pt Gray;
   font-weight: bold;
-  font-size: 100%;
   color: Gray;
 }
