@@ -170,8 +170,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       textBox.AutoPostBack = autoPostBack;
       writer.RenderEndTag();
 
-      if (Control.Enabled)
-        RenderDropdownButton (writer);
+      RenderDropdownButton (writer);
 
       var hiddenField = GetHiddenField();
       if (autoPostBack)

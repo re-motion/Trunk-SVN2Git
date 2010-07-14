@@ -464,6 +464,7 @@
     <Content Include="Res\Themes\ClassicBlue\HTML\BocReferenceValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.js" />
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
+    <Content Include="Res\Themes\ClassicBlue\Image\DropDownMenuArrowDisabled.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\RequestInProgressIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
