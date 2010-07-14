@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         relatedIDValue = null;
       }
 
-      AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, relatedIDValue);
+      AddCommandParameter (command, propertyValue.Definition.StorageProperty.Name, relatedIDValue);
 
       if (classDefinition.StorageProviderID == relatedClassDefinition.StorageProviderID)
         AddClassIDParameter (updateSetBuilder, command, relatedClassDefinition, propertyValue);
@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
-        string classIDColumnName = RdbmsProvider.GetClassIDColumnName (propertyValue.Definition.StorageSpecificName);
+        string classIDColumnName = RdbmsProvider.GetClassIDColumnName (propertyValue.Definition.StorageProperty.Name);
         AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
 
         string classID = null;
@@ -164,10 +164,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private void AddPropertyValue (StringBuilder updateSetBuilder, IDbCommand command, PropertyValue propertyValue)
     {
-      AppendColumn (updateSetBuilder, propertyValue.Definition.StorageSpecificName, propertyValue.Definition.StorageSpecificName);
+      AppendColumn (updateSetBuilder, propertyValue.Definition.StorageProperty.Name, propertyValue.Definition.StorageProperty.Name);
 
       if (propertyValue.Definition.PropertyType != typeof (ObjectID))
-        AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, propertyValue);
+        AddCommandParameter (command, propertyValue.Definition.StorageProperty.Name, propertyValue);
       else
         AddObjectIDAndClassIDParameters (updateSetBuilder, command, _dataContainer.ClassDefinition, propertyValue);
     }

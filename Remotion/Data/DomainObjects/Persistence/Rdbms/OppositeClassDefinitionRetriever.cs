@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             "Incorrect database format encountered."
             + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
+            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageProperty.Name),
             _relatedClassDefinition.ID);
       }
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain a value.",
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
+            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageProperty.Name),
             _classDefinition.GetEntityName());
       }
 
@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain null.",
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
+            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageProperty.Name),
             _classDefinition.GetEntityName());
       }
     }
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             "Incorrect database format encountered."
             + " Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
+            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageProperty.Name),
             _relatedClassDefinition.ID);
       }
     }
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       //Note: Despite the IDataReaders documentation, some implementations of IDataReader.GetOrdinal return -1 instead of throwing an IndexOutOfRangeException
       try
       {
-        classIDColumnOrdinal = dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName));
+        classIDColumnOrdinal = dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageProperty.Name));
         if (classIDColumnOrdinal == -1)
           return false;
         else

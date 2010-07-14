@@ -201,8 +201,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       if (expectedDefinition.StorageClass == StorageClass.Persistent)
       {
         Assert.AreEqual (
-            expectedDefinition.StorageSpecificName,
-            actualDefinition.StorageSpecificName,
+            expectedDefinition.StorageProperty.Name,
+            actualDefinition.StorageProperty.Name,
             "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
             expectedDefinition.PropertyName,
             classDefinition.ID);

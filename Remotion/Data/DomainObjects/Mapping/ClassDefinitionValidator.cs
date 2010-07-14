@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
           List<PropertyDefinition> basePropertyDefinitions;
-          if (persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StorageSpecificName, out basePropertyDefinitions)
+          if (persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StorageProperty.Name, out basePropertyDefinitions)
               && basePropertyDefinitions != null && basePropertyDefinitions.Count > 0)
           {
             PropertyDefinition basePropertyDefinition = basePropertyDefinitions[0];
@@ -102,12 +102,12 @@ namespace Remotion.Data.DomainObjects.Mapping
                     + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
                 myPropertyDefinition.PropertyName,
                 _classDefinition.ID,
-                myPropertyDefinition.StorageSpecificName,
+                myPropertyDefinition.StorageProperty.Name,
                 basePropertyDefinition.ClassDefinition.ID,
                 basePropertyDefinition.PropertyName);
           }
 
-          persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StorageSpecificName] =
+          persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StorageProperty.Name] =
               new List<PropertyDefinition> (new PropertyDefinition[] {myPropertyDefinition});
         }
       }

@@ -205,6 +205,7 @@
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassDefinitionValidatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondRight.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />

@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.IsInstanceOfType (typeof (ReflectionBasedPropertyDefinition), actual);
       Assert.IsNotNull (actual);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
-      Assert.AreEqual ("Boolean", actual.StorageSpecificName);
+      Assert.AreEqual ("Boolean", actual.StorageProperty.Name);
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreSame (typeof (bool), actual.PropertyType);
     }

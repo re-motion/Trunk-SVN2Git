@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       _collection.Add (_propertyDefinition1);
 
-      PropertyDefinition copy = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition((ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition, _propertyDefinition1.PropertyName, _propertyDefinition1.StorageSpecificName, _propertyDefinition1.PropertyType, _propertyDefinition1.IsNullable, _propertyDefinition1.MaxLength, _propertyDefinition1.StorageClass);
+      PropertyDefinition copy = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition((ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition, _propertyDefinition1.PropertyName, _propertyDefinition1.StorageProperty.Name, _propertyDefinition1.PropertyType, _propertyDefinition1.IsNullable, _propertyDefinition1.MaxLength, _propertyDefinition1.StorageClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }

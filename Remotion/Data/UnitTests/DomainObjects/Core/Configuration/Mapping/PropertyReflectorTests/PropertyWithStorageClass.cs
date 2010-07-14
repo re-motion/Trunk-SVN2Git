@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.AreEqual ("NoAttribute", actual.StorageSpecificName);
+      Assert.AreEqual ("NoAttribute", actual.StorageProperty.Name);
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.AreEqual ("Persistent", actual.StorageSpecificName);
+      Assert.AreEqual ("Persistent", actual.StorageProperty.Name);
     }
 
     [Test]

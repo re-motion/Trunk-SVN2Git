@@ -354,7 +354,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
       return new ReflectionBasedPropertyDefinition (
-          classDefinition, dummyPropertyInfo, propertyName, columnName, propertyType, isNullable, maxLength, storageClass);
+          classDefinition,
+          dummyPropertyInfo,
+          propertyName,
+          propertyType,
+          isNullable,
+          maxLength,
+          storageClass,
+          new ColumnDefinition (columnName, dummyPropertyInfo));
     }
   }
 }

@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (int), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (0, actual.DefaultValue);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (int?), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (ObjectID), true, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (ClassWithAllDataTypes.EnumType), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (ClassWithAllDataTypes.EnumType?), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (string.Empty, actual.DefaultValue);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (byte[]), true, 100, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
       Assert.AreEqual (100, actual.MaxLength);
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (byte[]), false, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StorageSpecificName);
+      Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (new byte[0], actual.DefaultValue);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -221,12 +221,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot access property 'StorageSpecificName' for non-persistent property definitions.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot access property 'StorageProperty' for non-persistent property definitions.")]
     public void NonPersistentProperty ()
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "ThePropertyName", "TheColumnName", typeof (int), null, null, StorageClass.Transaction);
       Assert.AreEqual (StorageClass.Transaction, actual.StorageClass);
-      Dev.Null = actual.StorageSpecificName;
+      Dev.Null = actual.StorageProperty;
     }
 
     [Test]

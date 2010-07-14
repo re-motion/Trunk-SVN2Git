@@ -42,27 +42,32 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly ClassDefinition _classDefinition;
     [NonSerialized]
-    private readonly string _storageSpecificName;
-    [NonSerialized]
     private readonly int? _maxLength;
     [NonSerialized]
     private readonly StorageClass _storageClass;
-    
+    [NonSerialized]
+    private readonly IStorageProperty _storageProperty;
+
     // construction and disposing
 
-    protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName, int? maxLength, StorageClass storageClass)
+    protected PropertyDefinition (
+        ClassDefinition classDefinition,
+        string propertyName,
+        int? maxLength,
+        StorageClass storageClass,
+        IStorageProperty storageProperty)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       if (storageClass == StorageClass.Persistent)
-        ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+        ArgumentUtility.CheckNotNull ("storageProperty", storageProperty);
 
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = classDefinition.ID;
       _propertyName = propertyName;
-      _storageSpecificName = columnName;
       _maxLength = maxLength;
       _storageClass = storageClass;
+      _storageProperty = storageProperty;
     }
 
     // methods and properties
@@ -77,13 +82,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyName; }
     }
 
-    public string StorageSpecificName
+    public IStorageProperty StorageProperty
     {
       get
       {
         if (StorageClass != StorageClass.Persistent)
-          throw new InvalidOperationException ("Cannot access property 'StorageSpecificName' for non-persistent property definitions.");
-        return _storageSpecificName;
+          throw new InvalidOperationException ("Cannot access property 'StorageProperty' for non-persistent property definitions.");
+
+        return _storageProperty;
       }
     }
 

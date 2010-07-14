@@ -378,7 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       else
         Assert.IsNull (actual.ClassDefinition);
 
-      Assert.AreEqual (expected.StorageSpecificName, actual.StorageSpecificName);
+      Assert.AreEqual (expected.StorageProperty.Name, actual.StorageProperty.Name);
       Assert.AreEqual (expected.DefaultValue, actual.DefaultValue);
       Assert.AreEqual (expected.IsNullable, actual.IsNullable);
       Assert.AreEqual (expected.MaxLength, actual.MaxLength);

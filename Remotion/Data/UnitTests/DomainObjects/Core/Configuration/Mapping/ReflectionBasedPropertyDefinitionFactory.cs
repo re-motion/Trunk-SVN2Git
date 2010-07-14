@@ -56,8 +56,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       PropertyInfo propertyInfo = typeof (Order).GetProperty ("OrderNumber");
-      return new ReflectionBasedPropertyDefinition(classDefinition, propertyInfo, propertyName, columnName, propertyType, isNullable, maxLength,
-          storageClass);
+      ColumnDefinition columnDefinition = null;
+      if (storageClass == StorageClass.Persistent)
+        columnDefinition = new ColumnDefinition (columnName, propertyInfo);
+      return new ReflectionBasedPropertyDefinition (
+          classDefinition,
+          propertyInfo,
+          propertyName,
+          propertyType,
+          isNullable,
+          maxLength,
+          storageClass,
+          columnDefinition);
     }
   }
 }

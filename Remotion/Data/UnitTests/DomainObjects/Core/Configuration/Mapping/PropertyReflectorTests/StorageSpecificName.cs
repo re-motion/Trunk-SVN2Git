@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.NoAttribute",
           actual.PropertyName);
-      Assert.AreEqual ("NoAttribute", actual.StorageSpecificName);
+      Assert.AreEqual ("NoAttribute", actual.StorageProperty.Name);
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.StorageSpecificName",
           actual.PropertyName);
-      Assert.AreEqual ("CustomName", actual.StorageSpecificName);
+      Assert.AreEqual ("CustomName", actual.StorageProperty.Name);
     }
   }
 }

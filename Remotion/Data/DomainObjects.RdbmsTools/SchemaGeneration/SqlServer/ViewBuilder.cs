@@ -123,10 +123,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       {
         if (IsPartOfInheritanceBranch (classDefinitionForUnionSelect, propertyDefinition.ClassDefinition))
         {
-          stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageSpecificName);
+          stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageProperty.Name);
 
           if (TableBuilder.HasClassIDColumn (propertyDefinition))
-            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageSpecificName));
+            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageProperty.Name));
         }
         else
         {
@@ -144,10 +144,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       StringBuilder stringBuilder = new StringBuilder();
       foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
       {
-        stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageSpecificName);
+        stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageProperty.Name);
 
         if (TableBuilder.HasClassIDColumn (propertyDefinition))
-          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageSpecificName));
+          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageProperty.Name));
       }
       return stringBuilder.ToString();
     }

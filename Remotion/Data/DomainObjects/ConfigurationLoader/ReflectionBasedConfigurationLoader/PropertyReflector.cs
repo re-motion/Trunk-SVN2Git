@@ -42,13 +42,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ValidatePropertyInfo();
       CheckValidPropertyType();
 
+      PropertyInfo propertyInfo = PropertyInfo;
+      var storageSpecificIdentifier = GetStorageSpecificIdentifier();
       return new ReflectionBasedPropertyDefinition (
-          _classDefinition, PropertyInfo, GetPropertyName(),
-          GetStorageSpecificIdentifier(),
+          _classDefinition,
+          propertyInfo,
+          GetPropertyName(),
           IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
-          StorageClass);
+          StorageClass,
+          new ColumnDefinition (storageSpecificIdentifier, propertyInfo));
     }
 
     private void CheckValidPropertyType()

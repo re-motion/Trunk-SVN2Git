@@ -37,12 +37,11 @@ namespace Remotion.Data.DomainObjects.Mapping
         ReflectionBasedClassDefinition classDefinition,
         PropertyInfo propertyInfo,
         string propertyName,
-        string columnName,
         Type propertyType,
         bool? isNullable,
         int? maxLength,
-        StorageClass storageClass)
-        : base (classDefinition, propertyName, columnName, maxLength, storageClass)
+        StorageClass storageClass, IStorageProperty storageProperty)
+        : base (classDefinition, propertyName, maxLength, storageClass, storageProperty)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);

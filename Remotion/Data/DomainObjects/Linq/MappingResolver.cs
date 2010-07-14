@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageSpecificName, false);
+      return originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageProperty.Name, false);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
-      return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
+      return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageProperty.Name;
     }
   }
 }
