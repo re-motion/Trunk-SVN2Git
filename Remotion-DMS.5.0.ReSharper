@@ -144,6 +144,7 @@ Additional permissions are listed in the file re-motion_exceptions.txt.
       <PredefinedRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
       <PredefinedRule Inspect="True" Prefix="c_" Suffix="" Style="aaBb" ElementKind="PrivateConstants" />
       <PredefinedRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" ElementKind="PrivateStaticReadonly" />
+      <Abbreviation Text="DB" />
       <Abbreviation Text="ID" />
       <Abbreviation Text="UI" />
     </Naming2>
