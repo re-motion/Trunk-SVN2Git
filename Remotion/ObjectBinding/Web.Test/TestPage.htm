@@ -2,80 +2,111 @@
 <html>
 <head>
   <title></title>
-  <link type="text/css" rel="stylesheet" href="Html/WebButton.css" />
-  <script type="text/javascript" src="/dev/Remotion/trunk/remotion/Web/Test/res/Remotion.Web/Html/WebButton.js"></script>
-  <script type="text/javascript">
-function GetFrame (frameName)
-{
-  if (window.parent == null)
-    return null;
-  else
-    return window.parent[frameName];
-}
-function Test()
-{
-  var frame = GetFrame('left');
-  if (frame != null)
-    frame.__doPostBack('PersonTreeView_Boc_TreeView','Expand=00000000-0000-0000-0000-000000000001\tChildren');
-}
+<script type="text/javascript">
+  var count = 0;
+  function SetUp()
+  {
+    var textBox = document.getElementById('TextBox');
 
-function CreateBorderSpans (element)
-{
-  var elementBody = element.firstChild;
-  
-  CreateAndAppendBorderSpan (elementBody, 'top');  
-  CreateAndAppendBorderSpan (elementBody, 'left');
-  CreateAndAppendBorderSpan (elementBody, 'bottom');
-  CreateAndAppendBorderSpan (elementBody, 'right');
-  CreateAndAppendBorderSpan (elementBody, 'topLeft');
-  
-  var topRight = CreateAndAppendBorderSpan (elementBody, 'topRight');
-  topRight.style.left = topRight.offsetParent.clientLeft + topRight.offsetParent.clientWidth - topRight.offsetWidth  + 'px';
+    if (textBox.attachEvent)
+    {
+      textBox.attachEvent('onkeydown', onKeyDownHandler);
+    }
+    else
+    {
+      textBox.addEventListener('keydown', onKeyDownHandler, false);
+    }
+  }
 
-  var bottomLeft = CreateAndAppendBorderSpan (elementBody, 'bottomLeft');
-  bottomLeft.style.top = bottomLeft.offsetParent.clientTop + bottomLeft.offsetParent.clientHeight - bottomLeft.offsetHeight  + 'px';
+  function onKeyDownHandler(event)
+  {
+    var statusLabel = document.getElementById('StatusLabel');
+    statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onKeyDown Begin';
 
-  var bottomRight = CreateAndAppendBorderSpan (elementBody, 'bottomRight');
-  bottomRight.style.top = bottomRight.offsetParent.clientTop + bottomRight.offsetParent.clientHeight - bottomRight.offsetHeight  + 'px';
-  bottomRight.style.left = bottomRight.offsetParent.clientLeft + bottomRight.offsetParent.clientWidth - bottomRight.offsetWidth  + 'px';
-}
+    if (!event)
+      event = window.event;
+    event.cancelBubble = true;
+    if (event.stopPropagation)
+      event.stopPropagation();
 
-function CreateAndAppendBorderSpan (elementBody, className)
-{
-  var borderSpan = document.createElement ('SPAN');
-  borderSpan.className = className;
-  elementBody.appendChild (borderSpan);
-  
-  return borderSpan
-}
-  </script>
+    if (event.keyCode == 13)
+    {
+      if (event.preventDefault)
+        event.preventDefault();
+
+      statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' trigger Change Begin';
+
+      var textBox = document.getElementById('TextBox');
+      fireEvent(textBox, 'change');
+
+      statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' trigger Change End';
+      statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onKeyDown End';
+      return false;
+    }
+    else
+    {
+      statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onKeyDown End';
+      return;
+    }
+  }
+
+  function onChangeHandler()
+  {
+    var statusLabel = document.getElementById('StatusLabel');
+    statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onChange Begin';
+    var updatePanel = document.getElementById('UP1');
+    count = count + 1;
+    updatePanel.innerHTML = "<span id=\"PostBackCountLabel\">" + count + "</span>\r\n<input id=\"TextBox\" onchange=\"onChangeHandler()\"/>";
+
+    var scriptElement = document.createElement('script');
+    scriptElement.setAttribute('type', 'text/javascript');
+    var scriptText =  "SetUp();";
+    if (scriptElement.canHaveChildren)
+    {
+      scriptElement.appendChild(document.createTextNode(scriptText));
+    } 
+    else
+    {
+      scriptElement.text = scriptText;
+    }
+    var headElements = document.getElementsByTagName('head');
+    headElements[0].appendChild(scriptElement);
+                
+    statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onChange End';
+  }
+
+  function fireEvent(element, event)
+  {
+    if (document.createEventObject)
+    {
+      // dispatch for IE
+      var evt = document.createEventObject();
+      return element.fireEvent('on' + event, evt)
+    }
+    else
+    {
+      // dispatch for firefox + others
+      var evt = document.createEvent("HTMLEvents");
+      evt.initEvent(event, true, true); // event type,bubbling,cancelable
+      return !element.dispatchEvent(evt);
+    }
+  }
+</script>
 
 </head>
 <body>
-  <button onclick="Test()">
-    Test</button>
-    <p>
-  <button id="Button1" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Partner Set New Item</span></button>
-  .
-  <button id="Button2" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Read Only Partner Set Null</span></button>
-  .
-  <button id="Button3" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Read Only Partner Set New Item</span></button>
-  .
-  <button id="TheButton" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">The Button 0</span></button>
+<form name="Form" method="post" action="javascript:alert('form submit should never be executed')"> 
 
-<div id="Header_StatusBlock" class="status">
-  <div class="bar">
-    <span id="Header_StatusLabel" class="content"><br /></span>
-  </div>
-
+<div id="UP1">
+<span id="PostBackCountLabel" >0</span>
+<input id="TextBox" onchange="onChangeHandler()"/>
 </div>
-  <script type="text/javascript">
-    CreateBorderSpans (document.getElementById ('TheButton'));
-    CreateBorderSpans (document.getElementById ('Button1'));
-    CreateBorderSpans (document.getElementById ('Button2'));
-    CreateBorderSpans (document.getElementById ('Button3'));
-    CreateBorderSpans (document.getElementById ('Header_StatusBlock'));
- </script>
-</p>
+<div id="StatusLabel"> </div>
+
+</form>
+
+<script type="text/javascript">
+  SetUp();
+</script>
 </body>
 </html>
