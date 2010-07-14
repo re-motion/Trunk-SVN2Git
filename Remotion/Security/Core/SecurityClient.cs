@@ -189,7 +189,7 @@ namespace Remotion.Security
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      return HasAccess (securableObject, methodInformation.Name, requiredAccessTypeEnums, principal);
+      return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckMethodAccess (ISecurableObject securableObject, string methodName)
@@ -296,7 +296,7 @@ namespace Remotion.Security
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
 
-      return HasAccess (securableObject, propertyInformation.Name, requiredAccessTypeEnums, principal);
+      return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName)
@@ -403,7 +403,7 @@ namespace Remotion.Security
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
 
-      return HasAccess (securableObject, propertyInformation.Name, requiredAccessTypeEnums, principal);
+      return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
@@ -538,7 +538,7 @@ namespace Remotion.Security
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
 
-      return HasStatelessAccess (securableClass, methodInformation.Name, requiredAccessTypeEnums, principal);
+      return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckStaticMethodAccess (Type securableClass, string methodName)
@@ -639,22 +639,22 @@ namespace Remotion.Security
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      return HasStatelessAccess (securableClass, methodInformation.Name, requiredAccessTypeEnums, principal);
+      return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
     }
 
 
-    private bool HasAccess (ISecurableObject securableObject, string memberName, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
+    private bool HasAccess (ISecurableObject securableObject, IMemberInformation memberInformation, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
     {
       if (requiredAccessTypeEnums.Length == 0)
-        throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberName), "requiredAccessTypeEnums");
+        throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberInformation.Name), "requiredAccessTypeEnums");
 
       return HasAccess (securableObject, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
-    private bool HasStatelessAccess (Type securableClass, string memberName, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
+    private bool HasStatelessAccess (Type securableClass, IMemberInformation memberInformation, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
     {
       if (requiredAccessTypeEnums.Length == 0)
-        throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberName), "requiredAccessTypeEnums");
+        throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberInformation.Name), "requiredAccessTypeEnums");
 
       return HasStatelessAccess (securableClass, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }

@@ -67,7 +67,7 @@ namespace Remotion.Security.UnitTests.Core
       _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider> ();
       _mockMemberResolver = _mocks.StrictMock<IMemberResolver> ();
       _mockPropertyInformation = _mocks.StrictMock<IPropertyInformation>();
-
+      
       _userStub = _mocks.Stub < ISecurityPrincipal>();
       SetupResult.For (_userStub.User).Return ("user");
       SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (_userStub);
@@ -93,8 +93,7 @@ namespace Remotion.Security.UnitTests.Core
     {
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
-      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
-
+      
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
@@ -110,7 +109,6 @@ namespace Remotion.Security.UnitTests.Core
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
-      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
       _mocks.ReplayAll ();
 
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, "Name");
@@ -137,7 +135,6 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
-      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
@@ -152,7 +149,6 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
-      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
