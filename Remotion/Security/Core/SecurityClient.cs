@@ -155,12 +155,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), methodName, MemberAffiliation.Instance);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
-
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
-
-      return HasAccess (securableObject, methodName, requiredAccessTypeEnums, principal);
+      return HasMethodAccess (securableObject, methodInformation, principal);
     }
     
     public bool HasMethodAccess (ISecurableObject securableObject, MethodInfo methodInfo)
@@ -175,12 +170,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType(), methodInfo, MemberAffiliation.Instance);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
-
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
-
-      return HasAccess (securableObject, methodInfo.Name, requiredAccessTypeEnums, principal);
+      return HasMethodAccess (securableObject, methodInformation, principal);
     }
 
     public bool HasMethodAccess (ISecurableObject securableObject, IMethodInformation methodInformation)

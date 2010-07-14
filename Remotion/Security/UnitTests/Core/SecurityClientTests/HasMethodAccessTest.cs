@@ -38,6 +38,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper = SecurityClientTestHelper.CreateForStatelessSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _methodInformation.Expect (n => n.Name).Return ("InstanceMethod");
       _methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) });
     }
 
@@ -189,7 +190,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'IsValid' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
+        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
@@ -220,7 +221,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'IsValid' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
+        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
