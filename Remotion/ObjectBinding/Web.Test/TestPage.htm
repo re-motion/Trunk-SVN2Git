@@ -54,23 +54,12 @@
   {
     var statusLabel = document.getElementById('StatusLabel');
     statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onChange Begin';
+    
     var updatePanel = document.getElementById('UP1');
     count = count + 1;
     updatePanel.innerHTML = "<span id=\"PostBackCountLabel\">" + count + "</span>\r\n<input id=\"TextBox\" onchange=\"onChangeHandler()\"/>";
-
-    var scriptElement = document.createElement('script');
-    scriptElement.setAttribute('type', 'text/javascript');
-    var scriptText =  "SetUp();";
-    if (scriptElement.canHaveChildren)
-    {
-      scriptElement.appendChild(document.createTextNode(scriptText));
-    } 
-    else
-    {
-      scriptElement.text = scriptText;
-    }
-    var headElements = document.getElementsByTagName('head');
-    headElements[0].appendChild(scriptElement);
+    
+    registerScript("SetUp();");
                 
     statusLabel.innerHTML += '<br/>' + new Date().getTime() + ' onChange End';
   }
@@ -90,6 +79,22 @@
       evt.initEvent(event, true, true); // event type,bubbling,cancelable
       return !element.dispatchEvent(evt);
     }
+  }
+
+  function registerScript(scriptText)
+  {
+    var scriptElement = document.createElement('script');
+    scriptElement.setAttribute('type', 'text/javascript');
+    if (scriptElement.canHaveChildren)
+    {
+      scriptElement.appendChild(document.createTextNode(scriptText));
+    }
+    else
+    {
+      scriptElement.text = scriptText;
+    }
+    var headElements = document.getElementsByTagName('head');
+    headElements[0].appendChild(scriptElement);
   }
 </script>
 
