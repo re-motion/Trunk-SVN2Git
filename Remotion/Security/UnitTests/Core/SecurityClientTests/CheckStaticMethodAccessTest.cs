@@ -36,6 +36,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper = SecurityClientTestHelper.CreateForStatelessSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _methodInformation.Expect (n => n.Name).Return ("StaticMethod");
     }
 
     [Test]

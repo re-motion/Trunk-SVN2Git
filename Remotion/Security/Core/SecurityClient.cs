@@ -504,12 +504,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodName,MemberAffiliation.Static);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodInformation);
-      
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
-
-      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
+      return HasStaticMethodAccess (securableClass, methodInformation, principal);
     }
 
     public bool HasStaticMethodAccess (Type securableClass, MethodInfo methodInfo)
@@ -524,12 +519,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Static);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodInformation);
-
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
-
-      return HasStatelessAccess (securableClass, methodInfo.Name, requiredAccessTypeEnums, principal);
+      return HasStaticMethodAccess (securableClass, methodInformation, principal);
     }
 
     public bool HasStaticMethodAccess (Type securableClass, IMethodInformation methodInformation)
