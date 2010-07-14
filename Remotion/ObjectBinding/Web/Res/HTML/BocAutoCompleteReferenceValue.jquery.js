@@ -106,8 +106,7 @@
         var hasFocus = 0;
         var lastKeyPressCode;
         var config = {
-            mouseDownOnSelect: false,
-            inputOnChangeBackup: null
+            mouseDownOnSelect: false
         };
         var select = $.Autocompleter.Select(options, input, selectCurrent, config);
 
@@ -325,16 +324,10 @@
         if (dropdownButton.length > 0) {
             dropdownButton.mousedown(function() {
                 config.mouseDownOnSelect = true;
-                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
-                config.inputOnChangeBackup = input.onchange;
-                input.onchange = null;
             });
 
             dropdownButton.mouseup(function() {
                 config.mouseDownOnSelect = false;
-                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
-                input.onchange = config.inputOnChangeBackup;
-                config.inputOnChangeBackup = null;
             });
 
             dropdownButton.click(function(event) {
@@ -528,7 +521,6 @@
             lastKeyPressCode = -1;
             previousValue = '';
             config.mouseDownOnSelect = false;
-            config.inputOnChangeBackup = null;
         }
 
         function receiveData(q, data) {
@@ -840,14 +832,8 @@
                 return false;
             }).mousedown(function() {
                 config.mouseDownOnSelect = true;
-                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
-                config.inputOnChangeBackup = input.onchange;
-                input.onchange = null;
             }).mouseup(function() {
                 config.mouseDownOnSelect = false;
-                // re-motion: the input's change-event is fired between mouse-down and mouse-up but the data is only available after the click-event.
-                input.onchange = config.inputOnChangeBackup;
-                config.inputOnChangeBackup = null;
             });
 
             if (options.width > 0)

@@ -469,8 +469,25 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
         writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
       if (isDropDownListWidthEmpty)
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      
+      bool autoPostBack = textBox.AutoPostBack;
+      textBox.AutoPostBack = false;
       textBox.RenderControl (writer);
+      textBox.AutoPostBack = autoPostBack;
 
+      if (autoPostBack)
+      {
+        PostBackOptions options = new PostBackOptions (textBox, string.Empty);
+        if (textBox.CausesValidation)
+        {
+          options.PerformValidation = true;
+          options.ValidationGroup = textBox.ValidationGroup;
+        }
+        if (Control.Page.Form != null)
+          options.AutoPostBack = true;
+        var postBackEventReference = Control.Page.ClientScript.GetPostBackEventReference (options, true);
+        writer.AddAttribute (HtmlTextWriterAttribute.Onchange, postBackEventReference);
+      }
       hiddenField.RenderControl (writer);
 
       writer.RenderEndTag(); //  End td

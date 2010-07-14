@@ -73,7 +73,7 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
     ).result(function(e, item)
     {
       hiddenField.val(item.UniqueIdentifier); //What we populate on hidden box
-      textbox.trigger('change');
+      hiddenField.trigger('change');
     });
 };
 

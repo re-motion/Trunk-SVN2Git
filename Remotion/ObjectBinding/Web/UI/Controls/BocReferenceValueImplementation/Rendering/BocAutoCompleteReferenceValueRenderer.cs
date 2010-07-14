@@ -173,13 +173,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      bool autoPostBack = textBox.AutoPostBack;
+      textBox.AutoPostBack = false;
       textBox.RenderControl (writer);
+      textBox.AutoPostBack = autoPostBack;
       writer.RenderEndTag();
 
       if (Control.Enabled)
         RenderDropdownButton (writer);
 
       var hiddenField = GetHiddenField();
+      if (autoPostBack)
+      {
+        PostBackOptions options = new PostBackOptions (textBox, string.Empty);
+        if (textBox.CausesValidation)
+        {
+            options.PerformValidation = true;
+            options.ValidationGroup = textBox.ValidationGroup;
+        }
+        if (Control.Page.Form != null)
+            options.AutoPostBack = true;
+        var postBackEventReference = Control.Page.ClientScript.GetPostBackEventReference (options, true);
+        writer.AddAttribute (HtmlTextWriterAttribute.Onchange, postBackEventReference);
+      }
       hiddenField.RenderControl (writer);
     }
 
@@ -201,7 +218,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         ID = Control.HiddenFieldUniqueID,
         Page = Control.Page.WrappedInstance,
         EnableViewState = true,
-        Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString
+        Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString        
       };
     }
 
