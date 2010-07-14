@@ -137,6 +137,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
+      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
@@ -151,6 +152,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
+      _mockPropertyInformation.Expect (n => n.Name).Return ("Name");
       ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
