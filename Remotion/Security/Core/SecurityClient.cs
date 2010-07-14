@@ -601,12 +601,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodName, MemberAffiliation.Instance);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
-
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
-
-      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
+      return HasStatelessMethodAccess (securableClass, methodInformation, principal);
     }
     
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -623,12 +618,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var methodInformation = _memberResolver.GetMethodInformation (securableClass, methodInfo, MemberAffiliation.Instance);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
-
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
-
-      return HasStatelessAccess (securableClass, methodInfo.Name, requiredAccessTypeEnums, principal);
+      return HasStatelessMethodAccess (securableClass, methodInformation, principal);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
