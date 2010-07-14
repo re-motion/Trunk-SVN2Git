@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
   [TestFixture]
-  public class HasStaticMethodAccessTest
+  public class HasStaticMethodAccessTest_WithMethodInfo
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
@@ -37,27 +37,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       _testHelper = SecurityClientTestHelper.CreateForStatelessSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
-      _methodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
       _methodInformation.Expect (n => n.Name).Return ("StaticMethod");
       _methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[] { typeof (SecurableObject) });
     }
 
     [Test]
     public void Test_AccessGranted ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-
-      _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
-    public void Test_AccessGranted_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
@@ -73,20 +59,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessDenied ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-
-      _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
-    }
-
-    [Test]
-    public void Test_AccessDenied_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
@@ -98,25 +70,9 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Assert.IsFalse (hasAccess);
     }
 
+
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess;
-      using (new SecurityFreeSection ())
-      {
-        hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-      }
-
-      _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
-    public void Test_WithinSecurityFreeSection_AccessGranted_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
@@ -137,20 +93,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
         ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
-      _testHelper.ReplayAll ();
-
-      _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
-    public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
@@ -164,23 +106,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
-      _testHelper.ReplayAll ();
-
-      using (new SecurityFreeSection ())
-      {
-        _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-      }
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
-    public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
@@ -198,19 +123,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll ();
-
-      _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
-    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
@@ -224,22 +136,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll ();
-
-      using (new SecurityFreeSection ())
-      {
-        _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
-      }
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
-    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
@@ -251,5 +147,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       _testHelper.VerifyAll ();
     }
+
   }
 }
