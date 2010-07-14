@@ -25,13 +25,13 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
   [TestFixture]
-  public class HasStatelessMethodAccessTest
+  public class HasStatelessMethodAccess_WithMethodInfo
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private IMethodInformation _methodInformation;
     private MethodInfo _methodInfo;
-    
+
     [SetUp]
     public void SetUp ()
     {
@@ -44,20 +44,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     public void Test_AccessGranted ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
-
-      _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
-    public void Test_AccessGranted_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
@@ -73,20 +59,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessDenied ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
-
-      _testHelper.VerifyAll ();
-      Assert.IsFalse (hasAccess);
-    }
-
-    [Test]
-    public void Test_AccessDenied_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
@@ -100,23 +72,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
-      _testHelper.ReplayAll ();
-
-      bool hasAccess;
-      using (new SecurityFreeSection ())
-      {
-        hasAccess = _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
-      }
-
-      _testHelper.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
-    public void Test_WithinSecurityFreeSection_AccessGranted_WithMethodInfo ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
@@ -137,20 +92,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
         ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
-      _testHelper.ReplayAll ();
-
-      _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
-    public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
@@ -165,25 +106,24 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
         ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "InstanceMethod");
+        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInfo);
       }
 
       _testHelper.VerifyAll ();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
-    public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException_WithMethodInfo ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
+    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
@@ -198,19 +138,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation,  (Enum[]) null);
-      _testHelper.ReplayAll ();
-
-      _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "StaticMethod");
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
-    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException_WithMethodInfo ()
-    {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
@@ -220,36 +147,5 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
-    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll ();
-
-      using (new SecurityFreeSection ())
-      {
-        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), "StaticMethod");
-      }
-
-      _testHelper.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
-    public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException_WithMethodInfo ()
-    {
-      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll ();
-
-      using (new SecurityFreeSection ())
-      {
-        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInfo);
-      }
-
-      _testHelper.VerifyAll ();
-    }
   }
 }
