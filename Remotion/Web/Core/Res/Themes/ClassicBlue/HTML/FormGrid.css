@@ -1,3 +1,5 @@
+/* Style applied to the FormGrid. */
+
 /*  Style applied to the form grid table's outer structure  */
 table.formGridTable
 {
@@ -11,9 +13,8 @@ table.formGridTable
 td.formGridTitleCell,
 td.formGridSubTitleCell
 {
-	font-weight: bold;
-	/*  no inheritence from body */
-	font-size: 125%;
+  font-weight: bold;
+  font-size: 125%;
 
   padding: 2px 2px 2px 2px;
   border-style: solid;
@@ -27,8 +28,8 @@ td.formGridSubTitleCell
 /*  Style applied to the cells containing the labels  */
 td.formGridLabelsCell
 {
-	background-color: #e1ecfc;
-	text-align: right;
+  background-color: #e1ecfc;
+  text-align: right;
 
   padding: 2px 5px 2px 5px;
   border-style: solid;
@@ -95,17 +96,17 @@ td.formGridTopDataRow
 /*  Style applied to the validation messages, additiv to formGridValidationMessagesCell  */
 .formGridValidationMessage
 {
-	color: Red;
+  color: Red;
 }
 
 /*  Style applied to the validators created by FormGridManager  */
 .formGridValidator
 {
-	color: Red;
+  color: Red;
 }
 
 /*  Style applied to the validation notice that can be displayed by the ValidationStateViewer  */
 .formGridValidationNotice
 {
-	color: Red;
+  color: Red;
 }

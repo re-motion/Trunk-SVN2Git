@@ -95,23 +95,16 @@ StyleUtility.OnResize = function(element) {
 StyleUtility.AddBrowserSwitch = function ()
 {
   var browser;
-  var version = parseInt($.browser.version); ;
+  var version = parseInt($.browser.version);
+
   if ($.browser.msie)
-  {
     (version < 8) ? browser = 'msie' + version : browser = 'msie';
-  }
-  if ($.browser.mozilla)
-  {
+  else if ($.browser.mozilla)
     browser = 'mozilla';
-  }
-  if ($.browser.webkit)
-  {
+  else if ($.browser.webkit)
     browser = 'webkit';
-  }
-  if ($.browser.opera)
-  {
+  else if ($.browser.opera)
     browser = 'opera';
-  }
 
   StyleUtility.AddPlatformSwitch();
 
@@ -121,10 +114,15 @@ StyleUtility.AddBrowserSwitch = function ()
 
 StyleUtility.AddPlatformSwitch = function ()
 {
-  var platform = "unknown";
-  if (navigator.appVersion.indexOf("Win") != -1) platform = "win";
-  if (navigator.appVersion.indexOf("Mac") != -1) platform = "mac";
-  if (navigator.appVersion.indexOf("X11") != -1) platform = "nix";
+  var platform;
+  if (navigator.appVersion.indexOf("Win") != -1)
+    platform = "win";
+  else if (navigator.appVersion.indexOf("Mac") != -1)
+    platform = "mac";
+  else if (navigator.appVersion.indexOf("X11") != -1)
+    platform = "x11";
+  else
+    platform = "unknown";
 
   if (!$('body').hasClass(platform))
     $('body').addClass(platform);

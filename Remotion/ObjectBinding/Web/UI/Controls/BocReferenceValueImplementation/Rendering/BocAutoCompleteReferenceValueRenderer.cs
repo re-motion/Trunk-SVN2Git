@@ -194,8 +194,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
-      var imgUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocAutoCompleteReferenceValueRenderer), ResourceType.Image, "DropDownMenuArrow.gif");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl.GetUrl()));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.Spacer.Render (writer);
       writer.RenderEndTag();

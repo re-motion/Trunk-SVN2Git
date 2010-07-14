@@ -8,18 +8,18 @@ span.bocDateValue
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
-  height:2em;
-  line-height:2em;
-  margin-right:0.2em;
-  min-width:14em;
-  padding:0;
-  white-space:nowrap;
+  height: 2em;
+  line-height: 2em;
+  margin-right: 0.2em;
+  min-width: 14em;
+  padding: 0;
+  white-space: nowrap;
   zoom: 1;
 }
 
 span.bocDateValue
 {
-  min-width:8em;
+  min-width: 8em;
 }
 
 span.bocDateTimeValue span.bocDateInputWrapper,
@@ -31,67 +31,67 @@ span.bocDateValue span.bocDateInputWrapper
 
 input.bocDateTimeDate
 {
-  width:100%;
+  width: 100%;
 }
 
 input.bocDateTimeTime
 {
-  width:5em;
+  width: 5em;
 }
 
 span.bocTime24HoursWithSeconds input.bocDateTimeTime,
 span.bocTime12HoursWithSeconds input.bocDateTimeTime
 {
-  width:6em;
+  width: 6em;
 }
 
 
 input.bocDate24HoursWithSeconds,
 input.bocDate12HoursWithSeconds
 {
-  width:6em;
+  width: 6em;
 }
 
 span.bocDate24Hours,
 span.bocDate12Hours
 {
-  display:inline;
-  left:0;
-  min-width:4em;
-  position:absolute;
-  right:8.8em;
-  width:auto;
+  display: inline;
+  left: 0;
+  min-width: 4em;
+  position: absolute;
+  right: 8.8em;
+  width: auto;
   top: 0.15em;
 }
 
 span.bocDateValue span.bocDate24Hours,
 span.bocDateValue span.bocDate12Hours
 {
-  display:inline;
-  left:0;
-  min-width:4em;
-  position:absolute;
-  right:3.2em;
-  width:auto;
+  display: inline;
+  left: 0;
+  min-width: 4em;
+  position: absolute;
+  right: 3.2em;
+  width: auto;
   top: 0.15em;
 }
 
 span.bocDate24HoursWithSeconds,
 span.bocDate12HoursWithSeconds
 {
-  display:inline;
-  left:0;
-  min-width:4em;
-  position:absolute;
-  right:9.8em;
-  width:auto;
+  display: inline;
+  left: 0;
+  min-width: 4em;
+  position: absolute;
+  right: 9.8em;
+  width: auto;
   top: 0.15em;
 }
 
 a.bocPicker24Hours,
 a.bocPicker12Hours
 {
-  position:absolute;
+  position: absolute;
   top: 0.15em;
   right: 5.7em;
 }
@@ -99,18 +99,18 @@ a.bocPicker12Hours
 a.bocPicker24HoursWithSeconds,
 a.bocPicker12HoursWithSeconds
 {
-  position:absolute;
+  position: absolute;
   top: 0.15em;
-  right:7em;
+  right: 7em;
 }
 
 
 span.bocDateValue a.bocPicker24Hours,
 span.bocDateValue a.bocPicker12Hours
 {
-  position:absolute;
+  position: absolute;
   top: 0.15em;
-  right:0;
+  right: 0;
 }
 
 body.webkit a.bocPicker24Hours,
@@ -120,19 +120,19 @@ body.webkit a.bocPicker12HoursWithSeconds,
 body.webkit span.bocDateValue a.bocPicker24Hours,
 body.webkit span.bocDateValue a.bocPicker12Hours
 {
-	top: 0.2em;
+  top: 0.2em;
 }
 
 body.webkit span.bocDateValue span.bocDate24Hours,
 body.webkit span.bocDateValue span.bocDate12Hours
 {
-  right:3.25em;
+  right: 3.25em;
 }
 
 body.webkit span.bocDate24HoursWithSeconds,
 body.webkit span.bocDate12HoursWithSeconds
 {
-  right:10.1em;
+  right: 10.1em;
 }
 
 a.bocPicker24Hours img,
@@ -140,8 +140,8 @@ a.bocPicker12Hours img,
 a.bocPicker24HoursWithSeconds img,
 a.bocPicker12HoursWithSeconds img
 {
-  border:0;
-  text-decoration:none;
+  border: 0;
+  text-decoration: none;
 }
 
 span.disabled a
@@ -152,8 +152,8 @@ span.disabled a
 span.disabled a img
 {
   opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  filter: progid: DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid: DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -moz-opacity: 0.4;
 }
 
@@ -163,8 +163,8 @@ span.bocTime12Hours,
 span.bocTime24HoursWithSeconds,
 span.bocTime12HoursWithSeconds
 {
-  position:absolute;
-  right:0;
+  position: absolute;
+  right: 0;
   top: 0.15em;
 }
 
@@ -179,4 +179,3 @@ body.msie7 span.bocTime12HoursWithSeconds
 {
   top: 0.1em;
 }
-

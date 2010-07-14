@@ -1,3 +1,5 @@
+/* Style applied to the WxePage. */
+
 #WxeStatusIsAbortingMessage,
 #WxeStatusIsCachedMessage
 {
@@ -10,7 +12,6 @@
   background-color: White;
   border: solid 3pt Gray;
   font-weight: bold;
-  font-size: 100%;
   color: Gray;
 }
     

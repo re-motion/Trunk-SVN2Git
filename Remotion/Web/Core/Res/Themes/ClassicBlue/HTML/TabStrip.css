@@ -1,3 +1,5 @@
+/* Style applied to the WebTabStrip. */
+
 /* Applied to the tab strip itself.*/
 *.tabStrip
 {
@@ -26,7 +28,7 @@
 
 *.tabStripTab a
 {
-  border: solid 1px #005588;	
+  border: solid 1px #005588;
   background-color: #e1ecfc;
   color: Blue;
   text-decoration: none;
@@ -35,14 +37,14 @@
 
 *.tabStripTab a:hover
 {
-	background-color: #fee197;	
+  background-color: #fee197;
   cursor: pointer;
-	cursor: hand;
+  cursor: hand;
 }
 
 *.tabStripTabSelected a
 {
-  border: solid 1px #005588;	
+  border: solid 1px #005588;
   background-color: White;
   color: Blue;
   text-decoration: none;
@@ -93,7 +95,7 @@
 *.tabStripTabSelected
 {
   position: relative;
-  display: inline-block; 
+  display: inline-block;
 }
 
 *.tabStripTabSeparator
@@ -118,21 +120,21 @@
   clear: left;
 }
 
-*.tabStripTab *.top, 
-*.tabStripTab *.left, 
-*.tabStripTab *.bottom, 
-*.tabStripTab *.bottom, 
+*.tabStripTab *.top,
+*.tabStripTab *.left,
+*.tabStripTab *.bottom,
+*.tabStripTab *.bottom,
 *.tabStripTab *.topLeft,
-*.tabStripTab *.bottomLeft, 
-*.tabStripTab *.topRight, 
+*.tabStripTab *.bottomLeft,
+*.tabStripTab *.topRight,
 *.tabStripTab *.bottomRight,
-*.tabStripTabSelected *.top, 
-*.tabStripTabSelected *.left, 
-*.tabStripTabSelected *.bottom, 
-*.tabStripTabSelected *.bottom, 
+*.tabStripTabSelected *.top,
+*.tabStripTabSelected *.left,
+*.tabStripTabSelected *.bottom,
+*.tabStripTabSelected *.bottom,
 *.tabStripTabSelected *.topLeft,
-*.tabStripTabSelected *.bottomLeft, 
-*.tabStripTabSelected *.topRight, 
+*.tabStripTabSelected *.bottomLeft,
+*.tabStripTabSelected *.topRight,
 *.tabStripTabSelected *.bottomRight
 {
   display: none;

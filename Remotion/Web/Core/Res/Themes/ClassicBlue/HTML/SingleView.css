@@ -1,3 +1,5 @@
+/* Style applied to the SingleView. */
+
 div.singleView
 {
   width: 100%;
@@ -20,13 +22,13 @@ div.singleView > div.wrapper
   height: auto;
 }
 
-div.singleView > div.wrapper > *.top, 
-div.singleView > div.wrapper > *.left, 
-div.singleView > div.wrapper > *.bottom, 
-div.singleView > div.wrapper > *.bottom, 
+div.singleView > div.wrapper > *.top,
+div.singleView > div.wrapper > *.left,
+div.singleView > div.wrapper > *.bottom,
+div.singleView > div.wrapper > *.bottom,
 div.singleView > div.wrapper > *.topLeft,
-div.singleView > div.wrapper > *.bottomLeft, 
-div.singleView > div.wrapper > *.topRight, 
+div.singleView > div.wrapper > *.bottomLeft,
+div.singleView > div.wrapper > *.topRight,
 div.singleView > div.wrapper > *.bottomRight
 {
   display: none;
@@ -69,13 +71,13 @@ body.msie7 div.singleViewView > div.contentBorder > div.content
   height: 98%;
 }
 
-div.singleViewView > *.top, 
-div.singleViewView > *.left, 
-div.singleViewView > *.bottom, 
-div.singleViewView > *.bottom, 
+div.singleViewView > *.top,
+div.singleViewView > *.left,
+div.singleViewView > *.bottom,
+div.singleViewView > *.bottom,
 div.singleViewView > *.topLeft,
-div.singleViewView > *.bottomLeft, 
-div.singleViewView > *.topRight, 
+div.singleViewView > *.bottomLeft,
+div.singleViewView > *.topRight,
 div.singleViewView > *.bottomRight
 {
   display: none;

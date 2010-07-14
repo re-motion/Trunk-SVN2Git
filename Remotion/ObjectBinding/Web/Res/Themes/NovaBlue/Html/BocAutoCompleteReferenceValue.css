@@ -41,9 +41,10 @@ span.bocAutoCompleteReferenceValueButton
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: #083779;
+  background-image: url('../Image/DropDownMenuArrow.gif');
   background-position: center center;
-  background-repeat:no-repeat;
+  background-repeat: no-repeat;
+  background-color: #083779;
   height: 1.6em;
 }
 

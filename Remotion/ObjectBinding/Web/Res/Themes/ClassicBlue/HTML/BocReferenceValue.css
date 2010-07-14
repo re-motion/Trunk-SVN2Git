@@ -1,3 +1,5 @@
+/* Style applied to the BocReferenceValue. */
+
 span.bocReferenceValue
 {
   width: 21.5em;
@@ -11,9 +13,9 @@ span.bocReferenceValue
 
 span.bocReferenceValue span.body
 {
-	display: block;
+  display: block;
 }
-			
+
 span.bocReferenceValue select
 {
    width: 100%;
@@ -54,7 +56,7 @@ span.bocReferenceValue a.command *
 
 span.bocReferenceValue .command span
 {
-   vertical-align: top;  
+  vertical-align: top;
 }
 
 span.bocReferenceValue.readOnly .command img
