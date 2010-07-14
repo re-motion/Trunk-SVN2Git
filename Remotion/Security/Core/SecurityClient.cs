@@ -252,16 +252,6 @@ namespace Remotion.Security
       return HasPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
-    {
-      return HasPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
-    }
-
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
-    {
-      return HasPropertyReadAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
-    }
-
     public bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -269,15 +259,12 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType(), propertyName);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType(), propertyInformation);
-      
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
+      return HasPropertyReadAccess (securableObject, propertyInformation, principal);
+    }
 
-      if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
-
-      return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, principal);
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    {
+      return HasPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
     }
 
     public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
@@ -287,15 +274,12 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), propertyInformation);
+      return HasPropertyReadAccess (securableObject, propertyInformation, principal);
+    }
 
-      if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
-
-      if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
-
-      return HasAccess (securableObject, propertyInfo.Name, requiredAccessTypeEnums, principal);
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
+    {
+      return HasPropertyReadAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
     }
 
     public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
