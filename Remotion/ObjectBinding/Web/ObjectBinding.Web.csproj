@@ -464,8 +464,8 @@
     <Content Include="Res\Themes\ClassicBlue\HTML\BocReferenceValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.js" />
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
-    <Content Include="Res\Themes\ClassicBlue\Image\DropDownMenuArrowDisabled.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\RequestInProgressIndicator.gif" />
+    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownArrowDisabled.gif" />
+    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocBooleanValue.css" />
@@ -480,7 +480,7 @@
     <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\DropDownMenuArrow.gif" />
+    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownArrow.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\MoveFirst.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\MoveFirstInactive.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\MoveLast.gif" />
@@ -491,11 +491,12 @@
     <Content Include="Res\Themes\ClassicBlue\Image\MovePreviousInactive.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownArrowDisabled.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\DatePicker.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuArrow.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownArrow.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveFirst.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveFirstInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveLast.gif" />
@@ -504,7 +505,7 @@
     <Content Include="Res\Themes\NovaBlue\Image\MoveNextInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MovePrevious.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\RequestInProgressIndicator.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
     <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">

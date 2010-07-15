@@ -46,7 +46,7 @@
 .ac_loading
 {
   background-color: white;
-  background-image: url('../Image/RequestInProgressIndicator.gif');
+  background-image: url('../Image/AutoCompleteReferenceValueRequestInProgressIndicator.gif');
   background-position: right center;
   background-repeat: no-repeat;
 }
