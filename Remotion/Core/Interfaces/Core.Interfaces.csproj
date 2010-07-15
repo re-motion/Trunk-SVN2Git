@@ -129,6 +129,9 @@
     <Compile Include="Mixins\UsesAttribute.cs" />
     <Compile Include="PermanentGuidAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\IMemberInformation.cs" />
+    <Compile Include="Reflection\IMethodInformation.cs" />
+    <Compile Include="Reflection\IPropertyInformation.cs" />
     <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
