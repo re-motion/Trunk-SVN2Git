@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -35,7 +36,7 @@ namespace Remotion.Security
 
     // methods and properties
 
-    public bool HasAccessOnGetAccessor (ISecurableObject securableObject, string propertyName)
+    public bool HasAccessOnGetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
 
@@ -43,10 +44,10 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyName);
+      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation);
     }
 
-    public bool HasAccessOnSetAccessor (ISecurableObject securableObject, string propertyName)
+    public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
 
@@ -54,7 +55,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyName);
+      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation);
     }
   }
 }

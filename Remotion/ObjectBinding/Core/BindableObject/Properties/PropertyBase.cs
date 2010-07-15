@@ -164,7 +164,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (objectSecurityAdapter == null)
         return true;
 
-      return objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo.Name);
+      return objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
     }
 
     /// <summary> Indicates whether this property can be modified by the user. </summary>
@@ -184,7 +184,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (objectSecurityAdapter == null)
         return false;
 
-      return !objectSecurityAdapter.HasAccessOnSetAccessor (securableObject, _propertyInfo.Name);
+      return !objectSecurityAdapter.HasAccessOnSetAccessor (securableObject, _propertyInfo);
     }
 
     /// <summary> Gets the <see cref="BindableObjectProvider"/> for this property. </summary>

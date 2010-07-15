@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Reflection;
@@ -91,13 +92,12 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessGranted ()
     {
-      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
       
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, "Name");
+      bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -106,12 +106,11 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessDenied ()
     {
-      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, "Name");
+      bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -125,7 +124,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, "Name");
+        hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
       }
 
       _mocks.VerifyAll ();
@@ -135,12 +134,11 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
-      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, "Name");
+      bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -149,12 +147,11 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
-      ExpectMemberResolverGetPropertyInformation ("Name", _mockPropertyInformation);
       ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, "Name");
+      bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
       _mocks.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -168,7 +165,7 @@ namespace Remotion.Security.UnitTests.Core
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, "Name");
+        hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
       }
 
       _mocks.VerifyAll ();
@@ -189,6 +186,11 @@ namespace Remotion.Security.UnitTests.Core
     public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
+    }
+
+    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
+    {
+      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo)).Return (returnValue);
     }
 
     private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)

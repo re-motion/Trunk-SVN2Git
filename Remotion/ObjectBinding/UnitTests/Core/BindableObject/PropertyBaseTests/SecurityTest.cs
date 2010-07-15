@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       Expect.Call (
           _mockObjectSecurityAdapter.HasAccessOnGetAccessor (
-              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableExplicitInterfaceProperty).PropertyInfo.Name)).Return (true);
+              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableExplicitInterfaceProperty).PropertyInfo)).Return (true);
 
       _mocks.ReplayAll ();
 
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       Expect.Call (
           _mockObjectSecurityAdapter.HasAccessOnSetAccessor (
-              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableExplicitInterfaceProperty).PropertyInfo.Name)).Return (false);
+              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableExplicitInterfaceProperty).PropertyInfo)).Return (false);
 
       _mocks.ReplayAll ();
 
@@ -220,14 +220,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       Expect.Call (
           _mockObjectSecurityAdapter.HasAccessOnGetAccessor (
-              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableProperty).PropertyInfo.Name)).Return (returnValue);
+              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableProperty).PropertyInfo)).Return (returnValue);
     }
 
     private void ExpectHasAccessOnSetAccessor (bool returnValue)
     {
       Expect.Call (
           _mockObjectSecurityAdapter.HasAccessOnSetAccessor (
-              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableProperty).PropertyInfo.Name)).Return (returnValue);
+              (ISecurableObject) _securableObject, ((StubPropertyBase) _securableProperty).PropertyInfo)).Return (returnValue);
     }
   }
 }
