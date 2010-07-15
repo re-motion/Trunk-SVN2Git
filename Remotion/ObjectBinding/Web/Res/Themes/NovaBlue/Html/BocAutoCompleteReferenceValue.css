@@ -38,6 +38,12 @@ span.bocAutoCompleteReferenceValueButton
   border: none;
 }
 
+span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
+{
+  right: 0.1em;
+  left: auto;
+}
+
 body.msie7 span.content.withoutOptionsMenu span.bocAutoCompleteReferenceValueButton,
 body.msie7 span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
 {
@@ -137,12 +143,6 @@ body.webkit  span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMe
 {
   margin-top: 0.1em;
 }  
-
-span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
-{
-  right: 0.1em;
-  left: auto;
-}
 
 span.bocAutoCompleteReferenceValue span.content.embeddedOptionsMenu
 {
