@@ -28,17 +28,21 @@ span.bocAutoCompleteReferenceValueButton
   position: absolute;
   margin: 0;
   padding: 0;
-  top: 2px;
-  right: 1px;
-  bottom: 1px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
   background-image: url('../Image/AutoCompleteReferenceValueDropDownArrow.gif');
   background-position: center center;
   background-repeat: no-repeat;
-  background-color: ThreeDFace;
-  border-left: 1px solid ThreeDLightShadow;
-  border-top: 1px solid ThreeDLightShadow;
-  border-right: 1px solid ThreeDDarkShadow;
-  border-bottom: 1px solid ThreeDDarkShadow;
+  background-color: #083779;
+  border: none;
+}
+
+body.msie7 span.content.withoutOptionsMenu span.bocAutoCompleteReferenceValueButton,
+body.msie7 span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
+{
+  top: 1px;
+  bottom: 0px;
 }
 
 span.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueButton
@@ -50,10 +54,7 @@ span.bocAutoCompleteReferenceValueButton img
 {
   height: 1.1em;
   width: 13px;
-  border-left: 1px solid ThreeDHighlight;
-  border-top: 1px solid ThreeDHighlight;
-  border-right: 1px solid ThreeDDarkShadow;
-  border-bottom: 1px solid ThreeDDarkShadow;
+  border: none;
 }
 
 span.bocAutoCompleteReferenceValue.disabled *.command img
@@ -139,7 +140,7 @@ body.webkit  span.bocAutoCompleteReferenceValue span.optionsMenu span.DropDownMe
 
 span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
 {
-  right: 0.2em;
+  right: 0.1em;
   left: auto;
 }
 
