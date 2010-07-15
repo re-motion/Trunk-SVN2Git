@@ -942,7 +942,7 @@
             } else if (parseInt(element.css('width')) > 0) {
                 elementWidth = element.css('width');
             } else {
-                elementWidth = $(input).outerWidth() + $('#' + options.dropDownButtonId).outerWidth();
+                elementWidth = $(input).outerWidth();
             }
 
             element.css({
