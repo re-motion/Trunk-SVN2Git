@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Security;
 using Rhino.Mocks;
@@ -72,14 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [Ignore("TODO: refactor")]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
       ISecurableObject securableObject = SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
       BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
-      //Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (true);
-      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _mockPropertyInformation)).Return (true);
+      var displayNamePropertyInformation = ((PropertyBase) bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName")).PropertyInfo;
+      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, displayNamePropertyInformation)).Return (true);
       _mockRepository.ReplayAll();
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
@@ -89,14 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [Ignore("TODO: refactor")]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
       ISecurableObject securableObject = SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
       BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
-      //Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (false);
-      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _mockPropertyInformation)).Return (false);
+      var displayNamePropertyInformation = ((PropertyBase) bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName")).PropertyInfo;
+      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, displayNamePropertyInformation)).Return (false);
       _mockRepository.ReplayAll();
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
