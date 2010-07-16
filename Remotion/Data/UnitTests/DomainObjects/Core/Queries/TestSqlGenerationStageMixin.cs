@@ -28,8 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class TestSqlGenerationStageMixin
   {
     [OverrideTarget]
-    public virtual Expression<Func<IDatabaseResultRow, object>> GenerateTextForOuterSqlStatement (
-        ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    public virtual void GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
       Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo (typeof (int)));
@@ -37,8 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
 
       commandBuilder.Append ("Value added by generation mixin");
-
-      return null;
+      commandBuilder.SetInMemoryProjectionBody (Expression.Constant (null));
     }
   }
 }
