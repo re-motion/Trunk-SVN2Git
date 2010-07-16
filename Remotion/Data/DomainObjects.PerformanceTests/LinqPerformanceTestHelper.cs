@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var resolvedSqlStatement = _mappingResolutionStage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
 
       var commandBuilder = new SqlCommandBuilder();
-      commandBuilder.InMemoryProjection = _sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, resolvedSqlStatement);
+      _sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, resolvedSqlStatement);
       return !string.IsNullOrEmpty(commandBuilder.GetCommand().CommandText);
     }
 
