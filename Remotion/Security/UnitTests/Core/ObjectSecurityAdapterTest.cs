@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Reflection;
@@ -174,23 +173,13 @@ namespace Remotion.Security.UnitTests.Core
 
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
-      AccessType[] accessTypes = new AccessType[] { AccessType.Get (TestAccessTypes.First) };
+      AccessType[] accessTypes = new [] { AccessType.Get (TestAccessTypes.First) };
       Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
     }
 
     private void ExpectGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation)
     {
       Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
-    }
-
-    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
-    }
-
-    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo)).Return (returnValue);
     }
 
     private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)
