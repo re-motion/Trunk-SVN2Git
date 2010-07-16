@@ -1508,13 +1508,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           EndListEditMode (false);
       }
 
-      bool isDirtyBackUp = base.IsDirty;
-      Value = value;
+      _value = value;
 
-      if (interim)
-        IsDirty = isDirtyBackUp;
-      else
+      if (!interim)
+      {
         IsDirty = false;
+        _selectorControlCheckedState.Clear();
+        ResetRows();
+      }
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
@@ -2634,6 +2635,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         IsDirty = true;
         _value = value;
+        _selectorControlCheckedState.Clear();
         ResetRows();
       }
     }
