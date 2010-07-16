@@ -133,10 +133,7 @@ namespace Remotion.Security.Metadata
 
       var foundMembers = new List<MemberInfo> ();
       for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
-      {
-        foundMembers.AddRange (
-            currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember, memberName));
-      }
+        foundMembers.AddRange (currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember, memberName));
 
       if (foundMembers.Count == 0)
       {
