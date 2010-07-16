@@ -46,6 +46,11 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
       base.Print ();
     }
 
+    public override void Make ()
+    {
+      //only for testing
+    }
+
     public override void Record ()
     {
       base.Record ();

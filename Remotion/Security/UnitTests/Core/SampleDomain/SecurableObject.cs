@@ -103,6 +103,11 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
     {
     }
 
+    [DemandMethodPermission (GeneralAccessTypes.Create)]
+    public virtual void Make ()
+    {
+    }
+
     public void Delete ()
     {
     }
