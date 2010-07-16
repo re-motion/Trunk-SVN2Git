@@ -40,7 +40,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    [Ignore("activate when SecurityTestHelper is refactored")]
     public void Roles_PropertyWriteAccessGranted ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> (SecurityManagerAccessTypes.AssignRole);
@@ -49,7 +48,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    [Ignore ("activate when SecurityTestHelper is refactored")]
     public void Roles_PropertyWriteAccessDenied ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User>();
@@ -58,7 +56,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    [Ignore ("activate when SecurityTestHelper is refactored")]
     public void SubstitutedBy_PropertyWriteAccessGranted ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> (SecurityManagerAccessTypes.AssignSubstitute);
@@ -67,7 +64,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     }
 
     [Test]
-    [Ignore("property info should be set")]
     public void SubstitutedBy_PropertyWriteAccessDenied ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> ();
