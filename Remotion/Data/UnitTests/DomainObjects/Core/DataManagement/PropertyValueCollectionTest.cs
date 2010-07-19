@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -86,16 +84,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private PropertyValue CreatePropertyValue (string name, Type propertyType, object value)
     {
-      return CreatePropertyValue (name, propertyType, null, value);
-    }
-
-    private PropertyValue CreatePropertyValue (string name, Type propertyType, bool? isNullable, object value)
-    {
-      int? maxLength = (propertyType == typeof (string)) ? (int?) 100 : null;
-
-      ReflectionBasedClassDefinition classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", c_testDomainProviderID, typeof (Order), false);
+      var definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, name, name, propertyType, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }
   }

@@ -17,9 +17,12 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyFinderTests;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -29,36 +32,99 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   /// </summary>
   public static class ReflectionBasedPropertyDefinitionFactory
   {
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType)
+    public static string FakeProperty { get { return null; } }
+
+    public static PropertyInfo GetFakePropertyInfo ()
     {
-      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, null, null, StorageClass.Persistent);
+      return typeof (ReflectionBasedPropertyDefinitionFactory).GetProperty ("FakeProperty", BindingFlags.Static | BindingFlags.Public);
     }
 
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable)
+    public static IStorageProperty GetFakeStorageProperty (string name)
     {
-      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, isNullable, null, StorageClass.Persistent);
+      return new FakeColumnDefinition (name);
     }
 
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, int maxLength)
+    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType)
     {
-      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, null, maxLength, StorageClass.Persistent);
+      return Create (classDefinition, propertyName, columnName, propertyType, null, null, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable, int maxLength)
+    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable)
     {
-      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, isNullable, maxLength, StorageClass.Persistent);
+      return Create (classDefinition, propertyName, columnName, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
+    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, int maxLength)
+    {
+      return Create (classDefinition, propertyName, columnName, propertyType, null, maxLength, StorageClass.Persistent);
+    }
+
+    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable, int maxLength)
+    {
+      return Create(classDefinition, propertyName, columnName, propertyType, isNullable, maxLength, StorageClass.Persistent);
+    }
+
+    public static ReflectionBasedPropertyDefinition Create (
+        ReflectionBasedClassDefinition classDefinition,
+        string propertyName,
+        string columnName,
+        Type propertyType,
+        bool? isNullable,
+        int? maxLength,
+        StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      PropertyInfo propertyInfo = typeof (Order).GetProperty ("OrderNumber");
-      ColumnDefinition columnDefinition = null;
+      var reflectionBasedNameResolver = new ReflectionBasedNameResolver();
+      var propertyFinder = new PropertyFinder (classDefinition.ClassType, true, reflectionBasedNameResolver);
+      var propertyInfo = propertyFinder.FindPropertyInfos(classDefinition)
+          .Single (property => reflectionBasedNameResolver.GetPropertyName (property) == propertyName);
+
+      IStorageProperty columnDefinition = null;
       if (storageClass == StorageClass.Persistent)
         columnDefinition = new ColumnDefinition (columnName, propertyInfo);
+
+      return Create (
+          classDefinition, propertyName, propertyType, isNullable, maxLength, storageClass, propertyInfo, columnDefinition);
+    }
+
+    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)
+    {
+      return Create (classDefinition, propertyName, typeof(string), null, null, storageClass, GetFakePropertyInfo(), GetFakeStorageProperty (columnName));
+    }
+
+    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, StorageClass storageClass)
+    {
+      return Create (classDefinition, propertyName, propertyType, null, null, storageClass, GetFakePropertyInfo (), GetFakeStorageProperty (columnName));
+    }
+
+    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool? isNullable, StorageClass storageClass)
+    {
+      return Create (classDefinition, propertyName, propertyType, isNullable, null, storageClass, GetFakePropertyInfo (), GetFakeStorageProperty (columnName));
+    }
+
+    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
+    {
+      return Create (classDefinition, propertyName, propertyType, isNullable, maxLength, storageClass, GetFakePropertyInfo (), GetFakeStorageProperty (columnName));
+    }
+
+    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName)
+    {
+      return Create (classDefinition, propertyName, typeof (string), null, null, StorageClass.Persistent, GetFakePropertyInfo (), GetFakeStorageProperty (columnName));
+    }
+
+    public static ReflectionBasedPropertyDefinition Create (
+        ReflectionBasedClassDefinition classDefinition,
+        string propertyName,
+        Type propertyType,
+        bool? isNullable,
+        int? maxLength,
+        StorageClass storageClass,
+        PropertyInfo propertyInfo,
+        IStorageProperty columnDefinition)
+    {
       return new ReflectionBasedPropertyDefinition (
           classDefinition,
           propertyInfo,

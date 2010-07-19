@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       base.SetUp ();
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
-      _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "Name", "Name", typeof (string), 100);
-      _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "Name2", "Name", typeof (string), 100);
-      _propertyDefinitionNonPersisted = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "Name3", "Name", typeof (string), null, 100, StorageClass.Transaction);
+      _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name", "Name", StorageClass.Persistent);
+      _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name2", "Name", StorageClass.Persistent);
+      _propertyDefinitionNonPersisted = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name3", "Name", StorageClass.Transaction);
       _collection = new PropertyDefinitionCollection ();
     }
 
@@ -123,7 +123,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       _collection.Add (_propertyDefinition1);
 
-      PropertyDefinition copy = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition((ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition, _propertyDefinition1.PropertyName, _propertyDefinition1.StorageProperty.Name, _propertyDefinition1.PropertyType, _propertyDefinition1.IsNullable, _propertyDefinition1.MaxLength, _propertyDefinition1.StorageClass);
+      PropertyDefinition copy =
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              (ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition,
+              _propertyDefinition1.PropertyName,
+              _propertyDefinition1.StorageProperty.Name);
 
       Assert.IsFalse (_collection.Contains (copy));
     }
@@ -157,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ContainsColumName ()
     {
-      _collection.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (int)));
+      _collection.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "PropertyName", "ColumnName", StorageClass.Persistent));
 
       Assert.IsTrue (_collection.ContainsColumnName ("ColumnName"));
     }

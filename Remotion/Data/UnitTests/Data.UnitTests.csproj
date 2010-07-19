@@ -206,6 +206,7 @@
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeColumnDefinition.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondRight.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassD.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderMock.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\ExtensibleEnumProperty.cs" />

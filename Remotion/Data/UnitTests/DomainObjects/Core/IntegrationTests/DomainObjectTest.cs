@@ -991,7 +991,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Employee employee = Employee.NewObject();
 
       PropertyDefinition propertyDefinition =
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          ReflectionBasedPropertyDefinitionFactory.Create (
               (ReflectionBasedClassDefinition) employee.InternalDataContainer.ClassDefinition,
               "testproperty",
               "testproperty",
@@ -1017,7 +1017,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Employee employee = Employee.NewObject();
 
       PropertyDefinition propertyDefinition =
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          ReflectionBasedPropertyDefinitionFactory.Create (
               (ReflectionBasedClassDefinition) employee.InternalDataContainer.ClassDefinition,
               "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name",
               "Name",

@@ -46,13 +46,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void TwoRelationEndPointDefinitions ()
     {
       ReflectionBasedClassDefinition partnerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Partner", "Partner", "TestDomain", typeof (Partner), false);
-      partnerDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(partnerDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", "ContactPersonID", typeof (ObjectID)));
+      partnerDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create(partnerDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", "ContactPersonID", typeof (ObjectID)));
 
       RelationEndPointDefinition endPointDefinition1 = new RelationEndPointDefinition (
           partnerDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", false);
 
       ReflectionBasedClassDefinition personDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "Person", "TestDomain", typeof (Person), false);
-      personDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(personDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany", "AssociatedPartnerCompanyID", typeof (ObjectID)));
+      personDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(personDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany", "AssociatedPartnerCompanyID", typeof (ObjectID), StorageClass.Persistent));
 
       RelationEndPointDefinition endPointDefinition2 = new RelationEndPointDefinition (
           personDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany", false);

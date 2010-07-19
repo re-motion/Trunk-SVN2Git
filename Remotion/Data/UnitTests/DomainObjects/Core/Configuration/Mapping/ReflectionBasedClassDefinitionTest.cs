@@ -426,9 +426,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Company", "Company", "TestDomain", typeof (Company), false);
 
       companyClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name"));
       companyClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name"));
     }
 
     [Test]
@@ -442,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Order", "Order", "TestDomain", typeof (Order), false);
 
       ReflectionBasedPropertyDefinition propertyDefinition =
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100);
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       orderClass.MyPropertyDefinitions.Add (propertyDefinition);
     }
 
@@ -457,7 +457,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Company", "Company", "TestDomain", typeof (Company), false);
 
       ReflectionBasedPropertyDefinition propertyDefinition =
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100);
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name");
       otherCompanyClass.MyPropertyDefinitions.Add (propertyDefinition);
     }
 
@@ -469,12 +469,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ReflectionBasedClassDefinition companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Company", "Company", "TestDomain", typeof (Company), false);
       companyClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name"));
 
       ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", "Company", "TestDomain", typeof (Customer), false, companyClass);
       customerClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (customerClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (customerClass, "Name", "Name"));
     }
 
     [Test]
@@ -485,7 +485,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ReflectionBasedClassDefinition companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Company", "Company", "TestDomain", typeof (Company), false);
       companyClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (companyClass, "Name", "Name"));
 
       ReflectionBasedClassDefinition partnerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass);
@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass);
 
       supplierClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (supplierClass, "Name", "Name", typeof (string), 100));
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (supplierClass, "Name", "Name"));
     }
 
     [Test]
@@ -942,8 +942,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", "TestDomain", typeof (Order), false);
 
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          classDefinition, "Test", "Test", typeof (int));
+      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, "Test", "Test");
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
 
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
@@ -958,8 +958,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", "TestDomain", typeof (Order), false);
 
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          classDefinition, "Test", "Test", typeof (int));
+      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
 
       new PropertyDefinitionCollectionEventReceiver (classDefinition.MyPropertyDefinitions, true);
@@ -979,8 +978,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       Assert.IsFalse (
           _orderClass.Contains (
-              ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-                  _orderClass, "PropertyName", "ColumnName", typeof (int))));
+              ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+                  _orderClass, "PropertyName", "ColumnName")));
       Assert.IsTrue (_orderClass.Contains (_orderClass["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
     }
 

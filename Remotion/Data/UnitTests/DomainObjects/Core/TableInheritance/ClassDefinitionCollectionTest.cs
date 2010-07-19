@@ -157,20 +157,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "Property 'OrganizationalUnitName' of class 'OrganizationalUnit' must not define storage specific name 'NameColumn', because class 'Person' "
-        + "in same inheritance hierarchy already defines property 'PersonName' with the same storage specific name.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.OrganizationalUnit.Name' of class 'OrganizationalUnit' must not define storage specific name 'NameColumn', because class 'Person' "
+        + "in same inheritance hierarchy already defines property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName' with the same storage specific name.")]
     public void ValidateWithSameColumnNameInDifferentInheritanceBranches ()
     {
       ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true);
 
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(personClass, "PersonName", "NameColumn", typeof (string), false, 100));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", "NameColumn", typeof (string), false, 100));
 
       ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
 
-      organizationalUnitClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(organizationalUnitClass, "OrganizationalUnitName", "NameColumn", typeof (string), false, 100));
+      organizationalUnitClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnitClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.OrganizationalUnit.Name", "NameColumn", typeof (string), false, 100));
 
       _classDefinitions.Add (domainBaseClass);
       _classDefinitions.Add (personClass);

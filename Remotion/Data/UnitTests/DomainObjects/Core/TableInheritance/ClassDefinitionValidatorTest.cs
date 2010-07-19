@@ -26,6 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   [TestFixture]
   public class ClassDefinitionValidatorTest : TableInheritanceMappingTest
   {
+    public string DummyProperty { get; set; }
+
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Property 'OtherName' of class 'OrganizationalUnit' must not define storage specific name 'NameColumn', because class 'Person' "
@@ -36,8 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
       ReflectionBasedClassDefinition organizationalUnit = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "Name", "NameColumn", typeof (string), 100));
-      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (organizationalUnit, "OtherName", "NameColumn", typeof (string), 100));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (personClass, "Name", "NameColumn"));
+      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (organizationalUnit, "OtherName", "NameColumn"));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
@@ -56,8 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
       ReflectionBasedClassDefinition organizationalUnit = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", null, TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "Name", "NameColumn", typeof (string), 100));
-      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (organizationalUnit, "OtherName", "NameColumn", typeof (string), 100));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (personClass, "Name", "NameColumn"));
+      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (organizationalUnit, "OtherName", "NameColumn"));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
@@ -75,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true);
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
 
-      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "OtherName", "NameColumn", typeof (string), 100));
+      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (domainBaseClass, "Name", "NameColumn"));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (personClass, "OtherName", "NameColumn"));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
@@ -94,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
       ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass);
 
-      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
-      customerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (customerClass, "OtherName", "NameColumn", typeof (string), 100));
+      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (domainBaseClass, "Name", "NameColumn"));
+      customerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (customerClass, "OtherName", "NameColumn"));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
@@ -113,13 +115,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true);
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), true, domainBaseClass);
 
-      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "OtherName", "NameColumn", typeof (string), 100));
+      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (domainBaseClass, "Name", "NameColumn"));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (personClass, "OtherName", "NameColumn"));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
 
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
+
+    [Test]
+    public void ValidateMappingWithDerivationInDifferentEntitiesAndMatchingColumnNames_SameStorageProperty ()
+    {
+      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true);
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
+      ReflectionBasedClassDefinition organizationalUnit = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
+
+      var propertyInfo = GetType ().GetProperty ("DummyProperty");
+
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnit, "OtherName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      organizationalUnit.SetReadOnly ();
+
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+    }
+
+    [Test]
+    public void ValidateMappingWithParallelDerivationInSameEntitiesAndMatchingColumnNames_SameStorageProperty ()
+    {
+      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", "TableInheritance_DomainBase", TableInheritanceTestDomainProviderID, typeof (DomainBase), true);
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
+      ReflectionBasedClassDefinition organizationalUnit = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", null, TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
+
+      var propertyInfo = GetType ().GetProperty ("DummyProperty");
+
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+      organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnit, "OtherName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      organizationalUnit.SetReadOnly ();
+
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+    }
+
   }
 }
