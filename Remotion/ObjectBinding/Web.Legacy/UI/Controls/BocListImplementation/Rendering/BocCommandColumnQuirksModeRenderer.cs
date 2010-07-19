@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private void RenderCellCommand (HtmlTextWriter writer)
     {
       if (Column.Icon.HasRenderingInformation)
-        Column.Icon.Render (writer);
+        Column.Icon.Render (Context, writer);
 
       if (!StringUtility.IsNullOrEmpty (Column.Text))
         writer.Write (Column.Text); // Do not HTML encode

@@ -34,14 +34,19 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
   {
     private IListMenu _control;
     private IClientScriptManager _clientScriptManagerMock;
-    private HttpContextBase _httpContext;
+    private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+
+      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
+      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any();
+      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");
@@ -50,6 +55,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       _control.Stub (stub => stub.Enabled).Return (true);
       _control.Stub (stub => stub.HasClientScript).Return (true);
+      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       var pageStub = MockRepository.GenerateStub<IPage>();
 
@@ -75,7 +81,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuQuirksModeRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuQuirksModeRenderer (_httpContext, _control);
+      var renderer = new ListMenuQuirksModeRenderer (_httpContextStub, _control);
       renderer.Render (_htmlHelper.Writer);
   
       _clientScriptManagerMock.VerifyAllExpectations ();
@@ -150,7 +156,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuQuirksModeRenderer (_httpContext, _control);
+      var renderer = new ListMenuQuirksModeRenderer (_httpContextStub, _control);
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();
@@ -214,8 +220,6 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       var img = parent.GetAssertedChildElement ("img", 0);
       img.AssertAttributeValueContains ("src", "/Images/ClassicBlue/NullIcon.gif");
-      img.AssertStyleAttribute ("vertical-align", "middle");
-      img.AssertStyleAttribute ("border-style", "none");
     }
 
     private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex)
@@ -291,8 +295,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _control.ClientID + "_" + itemIndex,
           menuItem.Category,
           menuItem.Style!=WebMenuItemStyle.Icon ? "'" + menuItem.Text + "'" : "null",
-          menuItem.Style!=WebMenuItemStyle.Text ? "'" + menuItem.Icon.Url + "'" : "null",
-          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.DisabledIcon.Url + "'" : "null",
+          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.Icon.Url.TrimStart ('~') + "'" : "null",
+          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.DisabledIcon.Url.TrimStart ('~') + "'" : "null",
           (int) menuItem.RequiredSelection,
           (itemIndex==4) ? "true" : "false",
           href,

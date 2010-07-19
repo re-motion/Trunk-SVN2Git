@@ -40,10 +40,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
 
       Uri uri = new Uri ("http://localhost/root.wxe");
 
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("/session/sub.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/sub.wxe")).Return ("/session/sub.wxe").Repeat.Any ();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("/session/root.wxe").Repeat.Any ();
       ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
       ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
       ResponseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
@@ -72,7 +71,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
-                Is.EqualTo ("~/session/sub.wxe?WxeFunctionToken=" + SubFunction.FunctionToken));
+                Is.EqualTo ("/session/sub.wxe?WxeFunctionToken=" + SubFunction.FunctionToken));
           });
 
       MockRepository.ReplayAll ();
@@ -95,7 +94,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
-                Is.EqualTo ("~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
+                Is.EqualTo ("/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
           });
 
       MockRepository.ReplayAll();
@@ -116,10 +115,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
           invocation =>
           {
             var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
-            Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("~/session/root.wxe?WxeFunctionToken=" + WxeContext.FunctionToken));
+            Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("/session/root.wxe?WxeFunctionToken=" + WxeContext.FunctionToken));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
-                Is.EqualTo ("~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
+                Is.EqualTo ("/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
           });
 
       MockRepository.ReplayAll();
@@ -143,10 +142,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (
                 nextState.Parameters.SubFunction.ReturnUrl,
-                Is.EqualTo ("~/session/root.wxe?Key=Value&WxeFunctionToken=" + WxeContext.FunctionToken));
+                Is.EqualTo ("/session/root.wxe?Key=Value&WxeFunctionToken=" + WxeContext.FunctionToken));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
-                Is.EqualTo ("~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
+                Is.EqualTo ("/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + SubFunction.FunctionToken));
           });
 
       MockRepository.ReplayAll();
@@ -170,7 +169,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
-                Is.EqualTo ("~/session/sub.wxe?Key=NewValue&WxeFunctionToken=" + SubFunction.FunctionToken));
+                Is.EqualTo ("/session/sub.wxe?Key=NewValue&WxeFunctionToken=" + SubFunction.FunctionToken));
           });
 
       MockRepository.ReplayAll();
@@ -196,7 +195,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             
             string destinationUrl = UrlUtility.AddParameters (
-                "~/session/sub.wxe",
+                "/session/sub.wxe",
                 new NameValueCollection
                 {
                     { "Parameter1", "OtherValue" },

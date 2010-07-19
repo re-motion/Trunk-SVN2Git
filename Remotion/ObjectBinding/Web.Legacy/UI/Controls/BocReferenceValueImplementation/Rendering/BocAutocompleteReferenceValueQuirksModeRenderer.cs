@@ -154,9 +154,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       script.AppendFormat ("$('#{0}'), ", Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", Control.DropDownButtonClientID);
 
-      script.AppendFormat (
-          "'{0}', ",
-          string.IsNullOrEmpty (Control.ServicePath) ? "" : UrlUtility.GetAbsoluteUrl ((Page) Control.Page, Control.ServicePath, false));
+      script.AppendFormat ("'{0}', ", Control.ResolveClientUrl (StringUtility.NullToEmpty (Control.ServicePath)));
       script.AppendFormat ("'{0}', ", StringUtility.NullToEmpty (Control.ServiceMethod));
 
       script.AppendFormat ("{0}, ", Control.CompletionSetCount);
@@ -512,7 +510,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      IconInfo.Spacer.Render (writer);
+      IconInfo.Spacer.Render (Context, writer);
       writer.RenderEndTag ();
     }
 

@@ -79,9 +79,9 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
     get { return CurrentObject; }
   }
 
-	override protected void OnInit(EventArgs e)
-	{
-		InitializeComponent();
+  override protected void OnInit(EventArgs e)
+  {
+    InitializeComponent();
 
     base.OnInit (e);
 
@@ -122,7 +122,7 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
     menuItem.ItemID = "Copy";
     menuItem.Text = "Copy";
     menuItem.Category = "Edit";
-    menuItem.Icon.Url = "Images/CopyItem.gif";
+    menuItem.Icon.Url = "~/Images/CopyItem.gif";
     menuItem.RequiredSelection = RequiredSelection.OneOrMore;
     menuItem.Command.Type = CommandType.Event;
     referenceValue.OptionsMenuItems.Add (menuItem);
@@ -146,8 +146,8 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
     menuItem.ItemID = "Delete";
     menuItem.Text = "Delete";
     menuItem.Category = "Edit";
-    menuItem.Icon.Url = "Images/DeleteItem.gif";
-    menuItem.DisabledIcon.Url = "Images/DeleteItemDisabled.gif";
+    menuItem.Icon.Url = "~/Images/DeleteItem.gif";
+    menuItem.DisabledIcon.Url = "~/Images/DeleteItemDisabled.gif";
     menuItem.RequiredSelection = RequiredSelection.OneOrMore;
     menuItem.Style = WebMenuItemStyle.Icon;
     menuItem.Command.Type = CommandType.Event;
@@ -261,13 +261,13 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
     PartnerCommandClickLabel.Text = "ReadOnlyPartnerField clicked";
   }
 
-	#region Web Form Designer generated code
-	/// <summary>
-	///		Required method for Designer support - do not modify
-	///		the contents of this method with the code editor.
-	/// </summary>
-	private void InitializeComponent()
-	{
+  #region Web Form Designer generated code
+  /// <summary>
+  ///		Required method for Designer support - do not modify
+  ///		the contents of this method with the code editor.
+  /// </summary>
+  private void InitializeComponent()
+  {
 
   }
   #endregion

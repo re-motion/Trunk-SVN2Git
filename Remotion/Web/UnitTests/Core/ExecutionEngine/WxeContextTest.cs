@@ -66,7 +66,7 @@ public class WxeContextTest
     Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
   }
 
-	[Test]
+  [Test]
   public void GetStaticPermanentUrlWithDefaultWxeHandlerWithoutMappingForFunctionType()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetExecutionEngineWithDefaultWxeHandler();
@@ -83,7 +83,7 @@ public class WxeContextTest
     Assert.AreEqual (expectedUrl, permanentUrl);
   }
 
-	[Test]
+  [Test]
   public void GetStaticPermanentUrlWithDefaultWxeHandlerForMappedFunctionType()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetExecutionEngineWithDefaultWxeHandler();
@@ -95,7 +95,7 @@ public class WxeContextTest
     Assert.AreEqual (expectedUrl, permanentUrl);
   }
 
-	[Test]
+  [Test]
   public void GetStaticPermanentUrlWithEmptyQueryString()
   {
     string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, _resource);
@@ -137,7 +137,7 @@ public class WxeContextTest
     WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, queryString);
   }
 
-	[Test]
+  [Test]
   [ExpectedException (typeof (WxeException))]
   public void GetStaticPermanentUrlWithoutWxeHandler()
   {
@@ -146,7 +146,7 @@ public class WxeContextTest
     WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
   }
 
-	[Test]
+  [Test]
   public void GetPermanentUrlWithEmptyQueryString()
   {
     string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, _resource);

@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       if (icon != null)
       {
-        icon.Render (writer);
+        icon.Render (Context, writer);
         writer.Write (c_whiteSpace);
       }
     }

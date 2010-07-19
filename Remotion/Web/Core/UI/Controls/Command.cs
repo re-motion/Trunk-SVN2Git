@@ -476,23 +476,21 @@ namespace Remotion.Web.UI.Controls
         throw new InvalidOperationException ("Call to AddAttributesToRenderForHrefCommand not allowed unless Type is set to CommandType.Href.");
 
       string href = HrefCommand.FormatHref (parameters);
-      if (HttpContext.Current != null)
+      if (includeNavigationUrlParameters)
       {
-        if (includeNavigationUrlParameters)
-        {
-          ISmartNavigablePage page = null;
-          if (OwnerControl != null)
-            page = OwnerControl.Page as ISmartNavigablePage;
+        ISmartNavigablePage page = null;
+        if (OwnerControl != null)
+          page = OwnerControl.Page as ISmartNavigablePage;
 
-          if (page != null)
-          {
-            additionalUrlParameters = additionalUrlParameters.Clone();
-            NameValueCollectionUtility.Append (additionalUrlParameters, page.GetNavigationUrlParameters());
-          }
+        if (page != null)
+        {
+          additionalUrlParameters = additionalUrlParameters.Clone();
+          NameValueCollectionUtility.Append (additionalUrlParameters, page.GetNavigationUrlParameters());
         }
-        href = UrlUtility.AddParameters (href, additionalUrlParameters);
-        href = UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (HttpContext.Current), href);
       }
+      href = UrlUtility.AddParameters (href, additionalUrlParameters);
+      if (OwnerControl != null)
+        href = OwnerControl.ResolveClientUrl (href);
       writer.AddAttribute (HtmlTextWriterAttribute.Href, href);
       if (!StringUtility.IsNullOrEmpty (HrefCommand.Target))
         writer.AddAttribute (HtmlTextWriterAttribute.Target, HrefCommand.Target);

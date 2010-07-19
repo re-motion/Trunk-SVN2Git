@@ -53,6 +53,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
       _control.Stub (stub => stub.GetBindOpenEventScript(null, null, true)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
       _control.Stub (stub => stub.MenuHeadClientID).Return ("DropDownMenu1_MenuDiv");
+      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
       pageStub.Stub (stub => stub.Context).Return (MockRepository.GenerateStub<HttpContextBase>());
@@ -265,7 +266,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       string link;
       if (commandType == CommandType.Href)
-        link = string.Format ("~/Target.aspx?index={0}&itemID={1}", null, null);
+        link = string.Format ("/Target.aspx?index={0}&itemID={1}", null, null);
       else
       {
         if (isVisible && _control.Enabled)
@@ -285,11 +286,11 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
                 index,
                 category,
                 text,
-                iconUrl,
-                disabledIconUrl,
+                iconUrl.TrimStart ('~'),
+                disabledIconUrl.TrimStart ('~'),
                 (int) requiredSelection,
                 isDisabled ? "true" : "false",
-                link,
+                link.TrimStart ('~'),
                 (commandType == CommandType.Href) ? "'_blank'" : "null"));
       }
     }

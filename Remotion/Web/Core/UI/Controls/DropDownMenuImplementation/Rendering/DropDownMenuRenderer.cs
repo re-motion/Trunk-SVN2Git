@@ -94,7 +94,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
-        Control.TitleIcon.Render (writer);
+        Control.TitleIcon.Render (Context, writer);
 
       if (!string.IsNullOrEmpty (Control.TitleText))
       {
@@ -113,7 +113,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      IconInfo.Spacer.Render (writer);
+      IconInfo.Spacer.Render (Context, writer);
 
       writer.RenderEndTag();
     }
@@ -233,9 +233,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            if (Control is Control)
-              href = UrlUtility.GetAbsoluteUrl (((Control) Control).Page, href);
-            href = "'" + href + "'";
+            href = "'" +  Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
         }
@@ -269,7 +267,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
         string url = menuItem.Icon.Url;
-        icon = "'" + UrlUtility.ResolveUrl (url) + "'";
+        icon = "'" + Control.ResolveClientUrl (url) + "'";
       }
       return icon;
     }
@@ -280,7 +278,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
       {
         string url = menuItem.DisabledIcon.Url;
-        disabledIcon = "'" + UrlUtility.ResolveUrl (url) + "'";
+        disabledIcon = "'" + Control.ResolveClientUrl (url) + "'";
       }
       return disabledIcon;
     }

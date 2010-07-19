@@ -273,23 +273,11 @@ namespace Remotion.Web.ExecutionEngine
     /// </remarks>
     public string GetResumeUrl (bool includeServer)
     {
-      string pathPart = GetResumePath ();
-      pathPart = _httpContext.Response.ApplyAppPathModifier (pathPart);
+      string pathPart = GetPath (_httpContext.Request.Url.AbsolutePath, FunctionToken, QueryString);
       if (includeServer)
-      {
-        string serverPart = _httpContext.Request.Url.GetLeftPart (System.UriPartial.Authority);
-        return serverPart + pathPart;
-      }
+        return UrlUtility.GetAbsoluteUrlWithProtocolAndHostname (_httpContext, pathPart);
       else
-      {
         return pathPart;
-      }
-    }
-
-    /// <summary> Gets the absolute path that resumes the current function. </summary>
-    protected internal string GetResumePath ()
-    {
-      return GetPath (_httpContext.Request.Url.AbsolutePath, FunctionToken, QueryString);
     }
 
     /// <summary> Gets the absolute path to the WXE handler used for the current function. </summary>
@@ -319,7 +307,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   The function token of the function to resume. Must not be <see langword="null"/> or emtpy.
     /// </param>
     /// <param name="queryString"> An optional list of URL parameters to be appended to the <paramref name="path"/>. </param>
-    protected internal string GetPath (string path, string functionToken, NameValueCollection queryString)
+    private string GetPath (string path, string functionToken, NameValueCollection queryString)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("path", path);
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
@@ -334,7 +322,7 @@ namespace Remotion.Web.ExecutionEngine
 
       queryString.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
 
-      path = _httpContext.Response.ApplyAppPathModifier (path);
+      path = UrlUtility.GetAbsoluteUrl (_httpContext, _httpContext.Response.ApplyAppPathModifier (path));
       return UrlUtility.AddParameters (path, queryString, _httpContext.Response.ContentEncoding);
     }
 

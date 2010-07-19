@@ -43,15 +43,20 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     private static readonly IconInfo s_titleIcon = new IconInfo (c_Icon_Url, c_IconAlternateText, c_Icon_ToolTip, s_iconWidth, s_iconHeight);
 
     private IDropDownMenu _control;
-    private HttpContextBase _httpContext;
+    private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private HttpResponseBase _responseStub;
 
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateStub<HttpContextBase>();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
+
+      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
+      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any ();
+      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _control = MockRepository.GenerateStub<IDropDownMenu> ();
       _control.ID = "DropDownMenu1";
@@ -60,6 +65,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
       _control.Stub (stub => stub.GetBindOpenEventScript (null, null, true)).IgnoreArguments ().Return ("OpenDropDownMenuEventReference");
+      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       IPage pageStub = MockRepository.GenerateStub<IPage> ();
       _control.Stub (stub => stub.Page).Return (pageStub);
@@ -153,7 +159,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (_httpContext, _control, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
+      var renderer = new DropDownMenuRenderer (_httpContextStub, _control, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
       renderer.Render (_htmlHelper.Writer);
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
@@ -202,9 +208,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
               isDisabled,
               command) { IsVisible = isVisible });
 
-      string link;
       if (commandType == CommandType.Href)
-        link = string.Format ("~/Target.aspx?index={0}&itemID={1}", null, null);
+      {
+      }
       else
       {
         if (isVisible && _control.Enabled)
@@ -213,7 +219,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
               mock => mock.GetPostBackClientHyperlink (Arg.Is<IControl> (_control), Arg.Text.Like (index.ToString ())))
               .Return ("PostBackHyperLink:" + index);
         }
-        link = "PostBackHyperLink:" + index;
       }
     }
   }

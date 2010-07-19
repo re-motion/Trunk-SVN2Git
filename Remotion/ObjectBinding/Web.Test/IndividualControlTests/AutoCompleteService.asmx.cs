@@ -182,7 +182,7 @@ namespace OBWTest.IndividualControlTests
 
     private string GetUrl (IconInfo iconInfo)
     {
-      return UrlUtility.ResolveUrl (iconInfo.Url);
+      return UrlUtility.GetAbsoluteUrl (Context, iconInfo.Url);
     }
 
     private IconInfo GetIcon (IBusinessObject businessObject)

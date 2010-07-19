@@ -29,6 +29,8 @@ namespace Remotion.Web.Utilities
   /// </summary>
   public static class UrlUtility
   {
+    #region Obsoletes
+
     /// <summary>
     /// Makes a relative URL absolute.
     /// </summary>
@@ -36,6 +38,8 @@ namespace Remotion.Web.Utilities
     /// <param name="relativeUrl">The relative URL.</param>
     /// <param name="includeServer"><see langword="true"/> to include the server part. Defaults to <see langword="false"/>.</param>
     /// <returns>The absolute URL.</returns>
+    [Obsolete ("Use UrlUtility.GetAbsoluteUrlWithProtocolAndHostName (HttpContextBase, string) if you passed true for the includeServer parameter. "
+        + "Otherwise, use Page.ResolveClientUrl (string). (Version 1.13.68)")]
     public static string GetAbsoluteUrl (Page page, string relativeUrl, bool includeServer)
     {
       if (relativeUrl.StartsWith ("http"))
@@ -57,6 +61,7 @@ namespace Remotion.Web.Utilities
     /// <param name="page">The requesting page.</param>
     /// <param name="relativeUrl">The relative URL.</param>
     /// <returns>The absolute URL.</returns>
+    [Obsolete ("Use Page.ResolveClientUrl (string). (Version 1.13.68)")]
     public static string GetAbsoluteUrl (Page page, string relativeUrl)
     {
       return GetAbsoluteUrl (page, relativeUrl, false);
@@ -68,6 +73,8 @@ namespace Remotion.Web.Utilities
     /// <param name="page">The requesting page.</param>
     /// <param name="relativeUrl">The relative URL.</param>
     /// <returns>The absolute URL without the protocol part.</returns>
+    [Obsolete ("If you have access to an instance of type System.Web.UI.Control, use the Control.ResolveClientUrl method. "
+        + "Otherwise, use UrlUtility.GetAbsoluteUrl (HttpContextBase, string). (Version 1.13.68)")]
     public static string GetAbsoluteUrlWithoutProtocol (Page page, string relativeUrl)
     {
       string absoluteUrl = GetAbsoluteUrl (page, relativeUrl);
@@ -78,6 +85,7 @@ namespace Remotion.Web.Utilities
       return absoluteUrl;
     }
 
+    [Obsolete ("Use page.Request.Url.AbsolutePath. (Version 1.13.68)")]
     public static string GetAbsolutePageUrl (Page page)
     {
       return GetAbsoluteUrl (page, Path.GetFileName (page.Request.Url.AbsolutePath));
@@ -88,46 +96,21 @@ namespace Remotion.Web.Utilities
     /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
     /// <param name="includeServer"><see langword="true"/> to include the server part. Defaults to <see langword="false"/>.</param>
     /// <returns> The absolute URL. </returns>
+    [Obsolete ("Use UrlUtility.GetAbsoluteUrlWithProtocolAndHostName (HttpContextBase, string) if you passed true for the includeServer parameter. "
+        + "Otherwise, use GetAbsoluteUrl (HttpContextBase, string). (Version 1.13.68)")]
     public static string GetAbsoluteUrl (HttpContextBase context, string relativeUrl, bool includeServer)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
-
-      if (relativeUrl.StartsWith ("http"))
-        return relativeUrl;
-
-      string pathPart = context.Response.ApplyAppPathModifier (relativeUrl);
       if (includeServer)
-      {
-        string serverPart = context.Request.Url.GetLeftPart (UriPartial.Authority);
-        return serverPart + pathPart;
-      }
+        return GetAbsoluteUrlWithProtocolAndHostname (context, relativeUrl);
       else
-        return pathPart;
-    }
-
-    /// <summary> Makes a relative URL absolute. </summary>
-    /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
-    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
-    /// <returns> The absolute URL. </returns>
-    public static string GetAbsoluteUrl (HttpContextBase context, string relativeUrl)
-    {
-      return GetAbsoluteUrl (context, relativeUrl, false);
-    }
-
-    /// <summary> Makes a relative URL absolute. </summary>
-    /// <param name="context"> The <see cref="HttpContext"/> to be used. Must not be <see langword="null"/>. </param>
-    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
-    /// <returns> The absolute URL. </returns>
-    public static string GetAbsoluteUrl (HttpContext context, string relativeUrl)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      return GetAbsoluteUrl (new HttpContextWrapper (context), relativeUrl, false);
+        return GetAbsoluteUrl (context, relativeUrl);
     }
 
     /// <summary> Resolves a URL. </summary>
     /// <param name="url"> The URL. Must not be <see langword="null"/> or empty.</param>
     /// <returns> The resolved URL. </returns>
+    [Obsolete ("If you have access to an instance of type System.Web.UI.Control, use the Control.ResolveClientUrl method. "
+        + "Otherwise, use UrlUtility.GetAbsoluteUrl (HttpContextBase, string). (Version 1.13.68)")]
     public static string ResolveUrl (string url)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("url", url);
@@ -141,14 +124,58 @@ namespace Remotion.Web.Utilities
     /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
     /// <param name="url"> The URL. Must not be <see langword="null"/> or empty.</param>
     /// <returns> The resolved URL. </returns>
+    [Obsolete ("If you have access to an instance of type System.Web.UI.Control, use the Control.ResolveClientUrl method. "
+        + "Otherwise, use UrlUtility.GetAbsoluteUrl (HttpContextBase, string). (Version 1.13.68)")]
     public static string ResolveUrl (HttpContextBase context, string url)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNullOrEmpty ("url", url);
 
-      if (url.StartsWith ("/") || url.StartsWith ("~/"))
-        return GetAbsoluteUrl (context, url, false);
-      return url;
+      return GetAbsoluteUrl (context, url);
+    }
+    
+    #endregion
+
+    /// <summary> Makes a relative URL absolute and prepends the name of the server used by the request. </summary>
+    /// <param name="context"> The <see cref="HttpContextBase"/> to be used for retrieving the protocol and hostname. Must not be <see langword="null"/>. </param>
+    /// <param name="virtualPath"> The relative URL. Must not be <see langword="null"/>. </param>
+    /// <returns> The absolute URL. </returns>
+    public static string GetAbsoluteUrlWithProtocolAndHostname (HttpContextBase context, string virtualPath)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("virtualPath", virtualPath);
+
+      if (HasScheme (virtualPath))
+        return virtualPath;
+
+      string serverPart = context.Request.Url.GetLeftPart (UriPartial.Authority);
+      return serverPart + GetAbsoluteUrl (context, virtualPath);
+    }
+
+    /// <summary> Makes a relative URL absolute. </summary>
+    /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
+    /// <param name="virtualPath"> The relative URL. Must not be <see langword="null"/>. </param>
+    /// <returns> The absolute URL. </returns>
+    public static string GetAbsoluteUrl (HttpContextBase context, string virtualPath)
+    {
+      ArgumentUtility.CheckNotNull ("virtualPath", virtualPath);
+
+      if (HasScheme (virtualPath))
+        return virtualPath;
+
+      return context.Response.ApplyAppPathModifier (virtualPath);
+    }
+
+    /// <summary> Makes a relative URL absolute. </summary>
+    /// <param name="context"> The <see cref="HttpContext"/>. </param>
+    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/>. </param>
+    /// <returns> The absolute URL. </returns>
+    public static string GetAbsoluteUrl (HttpContext context, string relativeUrl)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
+
+      return GetAbsoluteUrl (new HttpContextWrapper (context), relativeUrl);
     }
 
     /// <summary>
@@ -172,7 +199,7 @@ namespace Remotion.Web.Utilities
         return format;
 
       string[] encodedArgs = new string[args.Length];
-      Encoding encoding = HttpContext.Current.Response.ContentEncoding;
+      Encoding encoding = GetResponseEncoding();
       for (int i = 0; i < args.Length; ++i)
         encodedArgs[i] = HttpUtility.UrlEncode (args.ToString(), encoding);
 
@@ -213,7 +240,7 @@ namespace Remotion.Web.Utilities
     /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/AddParameter/returns' />
     public static string AddParameter (string url, string name, string value)
     {
-      return AddParameter (url, name, value, HttpContext.Current.Response.ContentEncoding);
+      return AddParameter (url, name, value, GetResponseEncoding());
     }
 
 
@@ -237,9 +264,8 @@ namespace Remotion.Web.Utilities
     /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/AddParameters/returns' />
     public static string AddParameters (string url, NameValueCollection queryStringCollection)
     {
-      return AddParameters (url, queryStringCollection, HttpContext.Current.Response.ContentEncoding);
+      return AddParameters (url, queryStringCollection, GetResponseEncoding());
     }
-
 
     /// <summary> Builds a query string from the <paramref name="queryStringCollection"/>. </summary>
     /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/FormatQueryString/*' />
@@ -253,7 +279,7 @@ namespace Remotion.Web.Utilities
     /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/FormatQueryString/returns' />
     public static string FormatQueryString (NameValueCollection queryStringCollection)
     {
-      return FormatQueryString (queryStringCollection, HttpContext.Current.Response.ContentEncoding);
+      return FormatQueryString (queryStringCollection, GetResponseEncoding());
     }
 
 
@@ -323,7 +349,7 @@ namespace Remotion.Web.Utilities
     /// <include file='doc\include\Utilities\UrlUtility.xml' path='UrlUtility/GetParameter/returns' />
     public static string GetParameter (string url, string name)
     {
-      return GetParameter (url, name, HttpContext.Current.Request.ContentEncoding);
+      return GetParameter (url, name, GetRequestEncoding());
     }
 
     /// <summary> Gets the index of the <paramref name="parameter"/> in the <paramref name="url"/>. </summary>
@@ -348,6 +374,47 @@ namespace Remotion.Web.Utilities
     private static bool IsParameterDelimiter (char c)
     {
       return c == '?' || c == '&';
+    }
+
+    private static bool IsRelativeUrl (string virtualPath)
+    {
+      if (HasScheme (virtualPath))
+      {
+        return false;
+      }
+      return !IsRooted (virtualPath);
+    }
+
+    private static bool IsRooted (string basepath)
+    {
+      if (!string.IsNullOrEmpty (basepath) && (basepath[0] != '/'))
+      {
+        return (basepath[0] == '\\');
+      }
+      return true;
+    }
+
+    private static bool HasScheme (string virtualPath)
+    {
+      int colonIndex = virtualPath.IndexOf (':');
+      if (colonIndex == -1)
+        return false;
+      
+      int slashIndex = virtualPath.IndexOf ('/');
+      if (slashIndex != -1)
+        return (colonIndex < slashIndex);
+      
+      return true;
+    }
+
+    private static Encoding GetRequestEncoding ()
+    {
+      return HttpContext.Current != null ? HttpContext.Current.Request.ContentEncoding : Encoding.UTF8;
+    }
+
+    private static Encoding GetResponseEncoding ()
+    {
+      return HttpContext.Current != null ? HttpContext.Current.Response.ContentEncoding : Encoding.UTF8;
     }
   }
 }

@@ -2911,7 +2911,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     
     HtmlAnchor helpAnchor = new HtmlAnchor();
     helpAnchor.Controls.Add (helpIcon);
-    helpAnchor.HRef = UrlUtility.ResolveUrl (helpInfo.NavigateUrl);
+    helpAnchor.HRef = ResolveClientUrl (helpInfo.NavigateUrl);
     helpAnchor.Target = helpInfo.Target;
     if (!string.IsNullOrEmpty (helpInfo.OnClick))
       helpAnchor.Attributes.Add ("onclick", helpInfo.OnClick);

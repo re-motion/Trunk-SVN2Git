@@ -159,7 +159,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       bool hasIcon = Tab.Icon != null && !string.IsNullOrEmpty (Tab.Icon.Url);
       bool hasText = !string.IsNullOrEmpty (Tab.Text);
       if (hasIcon)
-        Tab.Icon.Render (writer);
+        Tab.Icon.Render (Context, writer);
       else
         IconInfo.RenderInvisibleSpacer (writer);
       if (hasIcon && hasText)

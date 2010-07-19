@@ -79,9 +79,9 @@ public class BocListAsGridUserControl : BaseUserControl
     get { return CurrentObject; }
   }
 
-	override protected void OnInit(EventArgs e)
-	{
-		InitializeComponent();
+  override protected void OnInit(EventArgs e)
+  {
+    InitializeComponent();
     base.OnInit (e);
     InitializeMenuItems();
   }
@@ -277,13 +277,13 @@ public class BocListAsGridUserControl : BaseUserControl
   {
   }
 
-	#region Web Form Designer generated code	
-	/// <summary>
-	///		Required method for Designer support - do not modify
-	///		the contents of this method with the code editor.
-	/// </summary>
-	private void InitializeComponent()
-	{
+  #region Web Form Designer generated code	
+  /// <summary>
+  ///		Required method for Designer support - do not modify
+  ///		the contents of this method with the code editor.
+  /// </summary>
+  private void InitializeComponent()
+  {
 
   }
   #endregion

@@ -293,9 +293,7 @@ namespace Remotion.Web.Legacy.UI.Controls
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            if (Control is Control)
-              href = UrlUtility.GetAbsoluteUrl (((Control) Control).Page, href);
-            href = "'" + href + "'";
+            href = "'" + Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
         }
@@ -329,7 +327,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
         string url = menuItem.Icon.Url;
-        icon = "'" + UrlUtility.ResolveUrl (url) + "'";
+        icon = "'" + Control.ResolveClientUrl (url) + "'";
       }
       return icon;
     }
@@ -340,7 +338,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
       {
         string url = menuItem.DisabledIcon.Url;
-        disabledIcon = "'" + UrlUtility.ResolveUrl (url) + "'";
+        disabledIcon = "'" + Control.ResolveClientUrl (url) + "'";
       }
       return disabledIcon;
     }

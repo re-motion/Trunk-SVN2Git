@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
@@ -167,11 +168,13 @@ namespace Remotion.Web.UI.Controls
       return _url;
     }
 
-    public void Render (HtmlTextWriter writer)
+    public void Render (HttpContextBase context, HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      string url = UrlUtility.ResolveUrl (_url);
+      string url = UrlUtility.GetAbsoluteUrl (context, _url);
+
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
 
       AddDimensionToAttributes (writer, HtmlTextWriterAttribute.Width, _width);

@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
-      Html.AssertIcon (a, EventArgs.BusinessObject, Column.Icon.Url);
+      Html.AssertIcon (a, EventArgs.BusinessObject, Column.Icon.Url.TrimStart ('~'));
 
       Html.AssertTextNode (a, "TestCommand", 1);
     }

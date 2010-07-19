@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
       ArgumentUtility.CheckNotNull ("context", context);
 
       string destinationUrl = GetDestinationPermanentUrl (context);
-      string resumeUrl = context.GetResumePath();
+      string resumeUrl = context.GetResumeUrl (false);
 
       ExecutionStateContext.SetExecutionState (
           new RedirectingToSubFunctionState (

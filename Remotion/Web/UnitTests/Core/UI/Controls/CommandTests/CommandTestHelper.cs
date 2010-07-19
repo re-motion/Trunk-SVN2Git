@@ -48,7 +48,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
     private string _functionTypeName;
     private string _wxeFunctionParameters = "\"Value1\"";
     private string _toolTip = "This is a Tool Tip.";
-    private string _href = "test.html?Param1={0}&Param2={1}";
+    private string _href = "/test.html?Param1={0}&Param2={1}";
     private string _target = "_blank";
     private string _postBackEvent = "__doPostBack (\"Target\", \"Args\");";
     private string _onClick = "return false;";

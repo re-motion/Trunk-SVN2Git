@@ -41,14 +41,19 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private WebTabStripQuirksModeRenderer _renderer;
     private IPage _pageStub;
     private IWebTab _tab0;
-    private HttpContextBase _httpContext;
+    private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+      
+      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
+      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any();
+      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
@@ -147,16 +152,16 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       _tab0.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink(_webTabStrip, _tab0.ItemID));
       _tab0.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new WebTabRenderer (_httpContext, _webTabStrip, _tab0));
+          new WebTabRenderer (_httpContextStub, _webTabStrip, _tab0));
 
       var tab1 = MockRepository.GenerateStub<IWebTab> ();
       tab1.Stub (stub => stub.ItemID).Return ("Tab1");
       tab1.Stub (stub => stub.Text).Return ("Second Tab");
-      tab1.Stub (stub => stub.Icon).Return (new IconInfo ("myImageUrl"));
+      tab1.Stub (stub => stub.Icon).Return (new IconInfo ("~/myImageUrl"));
       tab1.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab1.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
       tab1.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContext, _webTabStrip, tab1));
+          new WebTabRenderer (_httpContextStub, _webTabStrip, tab1));
 
       var tab2 = MockRepository.GenerateStub<IWebTab> ();
       tab2.Stub (stub => stub.ItemID).Return ("Tab2");
@@ -165,7 +170,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab2.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab2.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
       tab2.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContext, _webTabStrip, tab2));
+          new WebTabRenderer (_httpContextStub, _webTabStrip, tab2));
 
       var tab3 = MockRepository.GenerateStub<IWebTab> ();
       tab3.Stub (stub => stub.ItemID).Return ("Tab3");
@@ -174,7 +179,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab3.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab3.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
       tab3.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContext, _webTabStrip, tab3));
+          new WebTabRenderer (_httpContextStub, _webTabStrip, tab3));
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);
       _webTabStrip.GetVisibleTabs().Add (tab1);
@@ -184,7 +189,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripQuirksModeRenderer (_httpContext, _webTabStrip);
+      _renderer = new WebTabStripQuirksModeRenderer (_httpContextStub, _webTabStrip);
       _renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();
@@ -282,7 +287,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       var anchorBody = link.GetAssertedChildElement ("span", 0);
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
-      string url = "Spacer.gif";
+      string url = "/Spacer.gif";
       string alt = "";
       string text = StringUtility.NullToEmpty (tab.Text);
       if (tab.Icon != null)
@@ -290,7 +295,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);
         if (!string.IsNullOrEmpty (tab.Icon.Url))
         {
-          url = tab.Icon.Url;
+          url = tab.Icon.Url.TrimStart ('~');
           text = HtmlHelper.WhiteSpace + text;
         }
       }

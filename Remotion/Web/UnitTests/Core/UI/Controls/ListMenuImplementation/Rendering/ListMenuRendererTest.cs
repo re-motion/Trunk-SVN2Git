@@ -33,14 +33,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
   {
     private IListMenu _control;
     private IClientScriptManager _clientScriptManagerMock;
-    private HttpContextBase _httpContext;
+    private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+
+      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
+      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any ();
+      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");
@@ -49,7 +54,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       _control.Stub (stub => stub.Enabled).Return (true);
       _control.Stub (stub => stub.HasClientScript).Return (true);
-
+      _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
       var pageStub = MockRepository.GenerateStub<IPage>();
 
       _clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
@@ -58,12 +63,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _control.Stub (stub => stub.Page).Return (pageStub);
 
       PopulateMenu();
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      _clientScriptManagerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -80,8 +79,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
+      var renderer = new ListMenuRenderer (_httpContextStub, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
+      _clientScriptManagerMock.VerifyAllExpectations ();
     }
 
 
@@ -147,7 +147,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
+      var renderer = new ListMenuRenderer (_httpContextStub, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();
@@ -211,8 +211,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     {
       var img = parent.GetAssertedChildElement ("img", 0);
       img.AssertAttributeValueContains ("src", "/Images/ClassicBlue/NullIcon.gif");
-      img.AssertStyleAttribute ("vertical-align", "middle");
-      img.AssertStyleAttribute ("border-style", "none");
     }
 
     private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex)
@@ -288,8 +286,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
           _control.ClientID + "_" + itemIndex,
           menuItem.Category,
           menuItem.Style!=WebMenuItemStyle.Icon ? "'" + menuItem.Text + "'" : "null",
-          menuItem.Style!=WebMenuItemStyle.Text ? "'" + menuItem.Icon.Url + "'" : "null",
-          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.DisabledIcon.Url + "'" : "null",
+          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.Icon.Url.TrimStart ('~') + "'" : "null",
+          menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.DisabledIcon.Url.TrimStart ('~') + "'" : "null",
           (int) menuItem.RequiredSelection,
           (itemIndex==4) ? "true" : "false",
           href,

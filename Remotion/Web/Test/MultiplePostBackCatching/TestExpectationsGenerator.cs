@@ -59,7 +59,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       _testControlGenerator = new TestControlGenerator (_testPage, new PostBackEventHandler());
 
       List<TableRow> rows = new List<TableRow>();
-      rows.Add (Expect ("open", UrlUtility.AddParameter (_testPage.ResolveUrl (_sutPage), SutGenerator.ServerDelayParameter, "500"), null));
+      rows.Add (Expect ("open", UrlUtility.AddParameter (_testPage.ResolveClientUrl (_sutPage), SutGenerator.ServerDelayParameter, "500"), null));
 
       foreach (Control control in _testControlGenerator.GetTestControls (null))
         rows.AddRange (ExpectControlAttributes (control));

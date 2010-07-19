@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
@@ -25,19 +27,26 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
   public class IconInfoTest
   {
     private HtmlHelper _html;
+    private HttpContextBase _httpContextStub;
+    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _html = new HtmlHelper();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
+
+      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
+      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any ();
+      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
     }
 
     [Test]
     public void Render_HeightInPixels ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") { Height = Unit.Pixel (20) };
+      IconInfo iconInfo = new IconInfo ("/image.gif") { Height = Unit.Pixel (20) };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
@@ -48,9 +57,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Render_WidthInPixels ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") { Width = Unit.Pixel (10) };
+      IconInfo iconInfo = new IconInfo ("/image.gif") { Width = Unit.Pixel (10) };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
@@ -61,9 +70,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Render_HeightInPercent ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") {  Height = Unit.Percentage (20) };
+      IconInfo iconInfo = new IconInfo ("/image.gif") {  Height = Unit.Percentage (20) };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
@@ -75,9 +84,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Render_WidthInPercent ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") { Width = Unit.Percentage (10) };
+      IconInfo iconInfo = new IconInfo ("/image.gif") { Width = Unit.Percentage (10) };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
@@ -88,9 +97,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Render_HeightInPoint ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") { Height = Unit.Point (20) };
+      IconInfo iconInfo = new IconInfo ("/image.gif") { Height = Unit.Point (20) };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);
@@ -102,9 +111,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void Render_WidthInEm ()
     {
-      IconInfo iconInfo = new IconInfo ("image.gif") { Width = Unit.Parse ("20em") };
+      IconInfo iconInfo = new IconInfo ("/image.gif") { Width = Unit.Parse ("20em") };
 
-      iconInfo.Render (_html.Writer);
+      iconInfo.Render (_httpContextStub, _html.Writer);
 
       var document = _html.GetResultDocument ();
       var imgTag = _html.GetAssertedChildElement (document, "img", 0);

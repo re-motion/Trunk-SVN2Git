@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
   {
     public string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl)
     {
-      return relativeUrl;
+      return "/" + relativeUrl;
     }
   }
 }

@@ -81,8 +81,8 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       Uri uri = new Uri ("http://localhost/root.wxe");
 
       _responseMock = _mockRepository.StrictMock<HttpResponseBase>();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
+      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("/session/sub.wxe").Repeat.Any();
+      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/sub.wxe")).Return ("/session/sub.wxe").Repeat.Any();
       _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
       _responseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
       _responseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
@@ -112,7 +112,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
 
         //Redirect to external subfunction
         _responseMock
-            .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "~/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
+            .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
             .WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Show external sub function
@@ -196,7 +196,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
         }
         //Redirect to external subfunction
         _responseMock
-            .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "~/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
+            .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
             .WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Show external sub function

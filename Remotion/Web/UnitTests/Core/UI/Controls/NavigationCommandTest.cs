@@ -207,16 +207,9 @@ public class NavigationCommandTest
     string mappingID = "Test";
     string resource = "~/Test.wxe";
     Type functionWithNestingType = typeof (TestFunctionWithNesting);
-    string functionWithNestingTypeName = WebTypeUtility.GetQualifiedName (functionWithNestingType);
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (mappingID, functionWithNestingType, resource));
     string parameter1 = "Value1";
     
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, resource);
-    NameValueCollection expectedQueryString = new NameValueCollection();
-    expectedQueryString.Add ("Parameter1", parameter1);
-    expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
-    expectedUrl += UrlUtility.FormatQueryString (expectedQueryString);
-
     NavigationCommand command = new NavigationCommand ();
     command.Type = CommandType.WxeFunction;
     command.WxeFunctionCommand.MappingID = mappingID;

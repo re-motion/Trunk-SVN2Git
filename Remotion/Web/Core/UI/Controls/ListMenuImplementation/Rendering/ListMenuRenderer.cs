@@ -115,12 +115,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
-        writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (menuItem.Icon.AlternateText));
-        writer.AddStyleAttribute ("vertical-align", "middle");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-        writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        writer.RenderEndTag();
+        menuItem.Icon.Render (Context, writer);
         if (showText)
           writer.Write (c_whiteSpace);
       }
@@ -197,9 +192,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            if ((Control is Control) && !ControlHelper.IsDesignMode (Control))
-              href = UrlUtility.GetAbsoluteUrl (((Control) Control).Page, href);
-            href = "'" + href + "'";
+            href = "'" + Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
         }
@@ -209,10 +202,10 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
       string icon = "null";
       if (showIcon && menuItem.Icon.HasRenderingInformation)
-        icon = "'" + UrlUtility.ResolveUrl (menuItem.Icon.Url) + "'";
+        icon = "'" + Control.ResolveClientUrl (menuItem.Icon.Url) + "'";
       string disabledIcon = "null";
       if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
-        disabledIcon = "'" + UrlUtility.ResolveUrl (menuItem.DisabledIcon.Url) + "'";
+        disabledIcon = "'" + Control.ResolveClientUrl (menuItem.DisabledIcon.Url) + "'";
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
       bool isDisabled = !Control.Enabled

@@ -72,7 +72,7 @@ namespace OBWTest
       key = GetType().FullName + "_Global";
       if (! HtmlHeadAppender.Current.IsRegistered (key))
       {
-        string href = UrlUtility.GetAbsoluteUrl (Page, "~/Html/global.css", false);
+        string href = ResolveClientUrl ("~/Html/global.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
       }
 

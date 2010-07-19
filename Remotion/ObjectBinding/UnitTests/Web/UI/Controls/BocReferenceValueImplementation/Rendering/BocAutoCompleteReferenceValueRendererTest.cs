@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.OptionsMenu).Return (OptionsMenu);
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
-      pageStub.Stub (stub => stub.Form).Return (new HtmlForm ());
+      pageStub.Stub (stub => stub.Form).Return (new HtmlForm());
       Control.Stub (stub => stub.Page).Return (pageStub);
 
       ClientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
@@ -114,6 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
       Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
+      Control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => "Resolved: " + url));
     }
 
     [TearDown]
@@ -521,7 +522,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         dropDownButton.AssertChildElementCount (1);
 
         var dropDownSpacer = dropDownButton.GetAssertedChildElement ("img", 0);
-        dropDownSpacer.AssertAttributeValueEquals ("src", Control.ResolveClientUrl (IconInfo.Spacer.Url));
+        dropDownSpacer.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
         dropDownSpacer.AssertChildElementCount (0);
 
         hiddenFieldIndex++;
