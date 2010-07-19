@@ -51,7 +51,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    public void HasAccess ()
+    public void HasAccess_InstanceMethod ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
@@ -68,7 +68,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    public void HasAccess_Derived ()
+    public void HasAccess_MethodInDerivedClass ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
@@ -85,7 +85,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    public void HasAccess_Static ()
+    public void HasAccess_StaticMethod ()
     {
       var securityContext = SecurityContext.CreateStateless (typeof (SecurableObject));
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
@@ -108,7 +108,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    public void HasAccess_Stateless ()
+    public void HasAccess_StatelessMethod ()
     {
       var securityContext = SecurityContext.CreateStateless (typeof (SecurableObject));
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
@@ -130,6 +130,21 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Assert.That (hasMethodAccess, Is.True);
     }
 
-    //TODO: add test with mixins
+    [Test]
+    public void HasAccess_Property ()
+    {
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.Third) });
+
+      ISecurableObject securableObject = new SecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
+      var propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
+
+      var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, propertyInfo);
+
+      Assert.That (hasMethodAccess, Is.True);
+    }
   }
 }
