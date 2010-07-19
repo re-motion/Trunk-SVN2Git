@@ -66,55 +66,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       string name = _resolver.GetPropertyName (_propertyInGenericClass);
       Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
     }
-
-    [Test]
-    public void GetProperty ()
-    {
-      string name = typeof (Order).FullName + ".OrderNumber";
-      PropertyInfo resolvedProperty = _resolver.GetProperty (typeof (Order), name);
-      Assert.That (resolvedProperty, Is.EqualTo (_orderNumberProperty));
-    }
-
-    [Test]
-    public void GetProperty_ShortName ()
-    {
-      string name = "OrderNumber";
-      PropertyInfo resolvedProperty = _resolver.GetProperty (typeof (Order), name);
-      Assert.That (resolvedProperty, Is.EqualTo (_orderNumberProperty));
-    }
-
-    [Test]
-    public void GetProperty_ForOverriddenProperty ()
-    {
-      string name = typeof (ClassWithMixedProperties).FullName + ".Int32";
-      PropertyInfo resolvedProperty1 = _resolver.GetProperty (typeof (ClassWithMixedProperties), name);
-      PropertyInfo resolvedProperty2 = _resolver.GetProperty (typeof (DerivedClassWithMixedProperties), name);
-      Assert.That (resolvedProperty1, Is.EqualTo (_overriddenPropertyOnBase));
-      Assert.That (resolvedProperty2, Is.EqualTo (_overriddenProperty));
-    }
-
-    [Test]
-    public void GetProperty_ForPropertyInGenericType ()
-    {
-      string name = typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional";
-      PropertyInfo resolvedProperty1 = _resolver.GetProperty (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), name);
-      PropertyInfo resolvedProperty2 = _resolver.GetProperty (typeof (ClosedGenericClassWithManySideRelationProperties), name);
-      Assert.That (resolvedProperty1, Is.EqualTo (_propertyInOpenGenericClass));
-      Assert.That (resolvedProperty2, Is.EqualTo (_propertyInGenericClass));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "'bla.' is not a valid mapping property name.\r\nParameter name: propertyName")]
-    public void GetProperty_ForMalformedPropertyName_PeriodAtEnd ()
-    {
-      _resolver.GetProperty (typeof (Order), "bla.");
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not contain a property named 'Bla'.\r\nParameter name: propertyName")]
-    public void GetProperty_ForNonExistingProperty ()
-    {
-      _resolver.GetProperty (typeof (Order), typeof (Order).FullName + ".Bla");
-    }
   }
 }

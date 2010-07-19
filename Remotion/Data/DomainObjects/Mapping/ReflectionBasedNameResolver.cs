@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -28,7 +27,6 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class ReflectionBasedNameResolver : IMappingNameResolver
   {
     private static readonly InterlockedCache<Tuple<Type, string>, string> s_propertyNameCache = new InterlockedCache<Tuple<Type, string>, string>();
-    private static readonly InterlockedCache<Tuple<Type, string>, PropertyInfo> s_propertyCache = new InterlockedCache<Tuple<Type, string>, PropertyInfo>();
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="property"/>.
@@ -57,45 +55,12 @@ namespace Remotion.Data.DomainObjects.Mapping
           key => GetPropertyNameInternal (key.Item1, key.Item2));
     }
 
-    /// <summary>
-    /// Returns the property identified by the given mapping property name on the given type.
-    /// </summary>
-    /// <param name="concreteType">The type on which to search for the property. This can be the same type whose name is encoded in 
-    /// <paramref name="propertyName"/> or a derived type or generic specialization.</param>
-    /// <param name="propertyName">The long mapping property name of the property to be retrieved.</param>
-    /// <returns>The <see cref="PropertyInfo"/> corresponding to the given mapping property.</returns>
-    public PropertyInfo GetProperty (Type concreteType, string propertyName)
-    {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
-      ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-
-      return s_propertyCache.GetOrCreateValue (Tuple.Create (concreteType, propertyName), key => GetPropertyInternal(key.Item2, key.Item1));
-    }
-
     private string GetPropertyNameInternal (Type originalDeclaringType, string shortPropertyName)
     {
       if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
         originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
 
       return originalDeclaringType.FullName + "." + shortPropertyName;
-    }
-
-    private PropertyInfo GetPropertyInternal (string propertyName, Type concreteType)
-    {
-      int shortPropertyNameStart = propertyName.LastIndexOf ('.');
-      string shortPropertyName = propertyName.Substring (shortPropertyNameStart + 1);
-
-      if (shortPropertyName == "")
-        throw new ArgumentException (string.Format ("'{0}' is not a valid mapping property name.", propertyName), "propertyName");
-
-      PropertyInfo property = concreteType.GetProperty (shortPropertyName, PropertyFinderBase.PropertyBindingFlags);
-      if (property == null)
-      {
-        throw new ArgumentException (
-            string.Format ("Type '{0}' does not contain a property named '{1}'.", concreteType.FullName, shortPropertyName),
-            "propertyName");
-      }
-      return property;
     }
   }
 }
