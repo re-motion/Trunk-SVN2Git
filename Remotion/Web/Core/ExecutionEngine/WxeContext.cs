@@ -100,12 +100,12 @@ namespace Remotion.Web.ExecutionEngine
         }
         else
         {
-          path = httpContext.Response.ApplyAppPathModifier (defaultWxeHandler);
+          path = defaultWxeHandler;
         }
       }
       else
       {
-        path = httpContext.Response.ApplyAppPathModifier (mappingEntry.Resource);
+        path = mappingEntry.Resource;
       }
 
       string permanentUrl = UrlUtility.GetAbsoluteUrl (httpContext, path)
@@ -322,7 +322,7 @@ namespace Remotion.Web.ExecutionEngine
 
       queryString.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
 
-      path = UrlUtility.GetAbsoluteUrl (_httpContext, _httpContext.Response.ApplyAppPathModifier (path));
+      path = UrlUtility.GetAbsoluteUrl (_httpContext, path);
       return UrlUtility.AddParameters (path, queryString, _httpContext.Response.ContentEncoding);
     }
 
