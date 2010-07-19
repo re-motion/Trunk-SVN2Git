@@ -147,6 +147,8 @@
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodInformation.cs" />
     <Compile Include="Core\SecurityClientTests\CheckPropertyReadAccessTest_WithPropertyInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckPropertyReadAccessTest_WithPropertyInformation.cs" />
+    <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest_WithPropertyInfo.cs" />
+    <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest_WithPropertyInformation.cs" />
     <Compile Include="Core\SecurityClientTests\HasMethodAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\HasMethodAccessTest_WithMethodInformation.cs" />
     <Compile Include="Core\SecurityClientTests\HasPropertyReadAccessTest_WithPropertyInfo.cs" />
@@ -181,7 +183,7 @@
     <Compile Include="Core\SecurityClientTests\CheckConstructorAccessTest.cs" />
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodName.cs" />
     <Compile Include="Core\SecurityClientTests\CheckPropertyReadAccessTest_WithPropertyName.cs" />
-    <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest.cs" />
+    <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest_WithPropertyName.cs" />
     <Compile Include="Core\SecurityClientTests\CheckStaticMethodAccessTest.cs" />
     <Compile Include="Core\SecurityClientTests\CheckAccessTest.cs" />
     <Compile Include="Core\SecurityClientTests\CheckStatelessAccessTest.cs" />
