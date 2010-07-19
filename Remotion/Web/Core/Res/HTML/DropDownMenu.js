@@ -152,44 +152,22 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt)
     $(ul).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight() - titleDiv.height()));
   }
 
-  if (ClientNeedsIFrame())
-    DropDownMenu_CreateIFrame(ul);
+  // apply bgiframe if available
+  if ($.fn.bgiframe)
+    $(ul).bgiframe({ top: '0px', left: '0px', width: '100%', height: '100%' });
 }
 
-function ClientNeedsIFrame()
-{
-  var isIE = jQuery.browser.msie;
-  var version = parseFloat(jQuery.browser.version);
-
-  return isIE && (version < 7);
-}
-
-function DropDownMenu_CreateIFrame(listElement)
-{
-  var iFrame = document.createElement('iframe');
-  iFrame.setAttribute('src', 'javascript:false');
-  $(iFrame).css('position', 'absolute');
-  $(iFrame).css('zIndex', '999');
-  $(iFrame).css('top', $(listElement).offset().top);
-  $(iFrame).css('height', $(listElement).outerHeight());
-  $(iFrame).css('left', $(listElement).offset().left);
-  $(iFrame).css('width', $(listElement).outerWidth());
-  $(listElement).parent()[0].appendChild(iFrame);
-}
 
 function DropDownMenu_ClosePopUp()
 {
   if (_dropDownMenu_currentMenu == null)
     return;
 
-  var ul = $('body').children('ul');
+  var ul = $(_dropDownMenu_currentPopup);
 
   $('body').unbind('click', DropDownMenu_ClosePopUp);
   _dropDownMenu_currentMenu = null;
   _dropDownMenu_currentPopup = null;
-
-  var iframe = ul.siblings('iframe');
-  iframe.hide();
 
   ul.remove();
 

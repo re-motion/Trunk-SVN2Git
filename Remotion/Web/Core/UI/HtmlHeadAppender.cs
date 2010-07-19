@@ -321,7 +321,7 @@ namespace Remotion.Web.UI
     public void RegisterJQueryBgiFramesJavaScriptInclude ()
     {
       string key = typeof (HtmlHeadContents).FullName + "_JQueryBgiFrames";
-      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.min.js");
+      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.js");
       RegisterJavaScriptInclude (key, href);
     }
 

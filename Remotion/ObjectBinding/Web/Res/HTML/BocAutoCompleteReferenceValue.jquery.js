@@ -973,7 +973,7 @@
             }
             // apply bgiframe if available
             if ($.fn.bgiframe)
-                list.bgiframe();
+                element.bgiframe({top: '0px', left: '0px', width: '100%', height: '100%'});
         }
 
         // re-motion: Gets the index of first item matching the term. The lookup starts with the active item, 
