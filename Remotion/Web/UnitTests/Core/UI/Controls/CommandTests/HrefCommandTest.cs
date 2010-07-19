@@ -60,7 +60,6 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
       string expectedHref = command.HrefCommand.FormatHref (parameters);
       expectedHref = UrlUtility.AddParameter (expectedHref, additionalUrlParameters.GetKey (0), additionalUrlParameters.Get (0));
-      expectedHref = UrlUtility.GetAbsoluteUrl (_testHelper.HttpContext, expectedHref);
       string expectedOnClick = _testHelper.OnClick;
 
       _testHelper.ExpectOnceOnHasAccess (command, true);

@@ -77,7 +77,7 @@ namespace Remotion.Web.Utilities
         + "Otherwise, use UrlUtility.GetAbsoluteUrl (HttpContextBase, string). (Version 1.13.68)")]
     public static string GetAbsoluteUrlWithoutProtocol (Page page, string relativeUrl)
     {
-      string absoluteUrl = GetAbsoluteUrl (page, relativeUrl);
+      string absoluteUrl = GetAbsoluteUrl (page, relativeUrl, false);
 
       absoluteUrl = absoluteUrl.Replace ("https://", string.Empty);
       absoluteUrl = absoluteUrl.Replace ("http://", string.Empty);
@@ -88,12 +88,12 @@ namespace Remotion.Web.Utilities
     [Obsolete ("Use page.Request.Url.AbsolutePath. (Version 1.13.68)")]
     public static string GetAbsolutePageUrl (Page page)
     {
-      return GetAbsoluteUrl (page, Path.GetFileName (page.Request.Url.AbsolutePath));
+      return GetAbsoluteUrl (page, Path.GetFileName (page.Request.Url.AbsolutePath), false);
     }
 
     /// <summary> Makes a relative URL absolute. </summary>
     /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
-    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
+    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. Must be rooted or absolute. </param>
     /// <param name="includeServer"><see langword="true"/> to include the server part. Defaults to <see langword="false"/>.</param>
     /// <returns> The absolute URL. </returns>
     [Obsolete ("Use UrlUtility.GetAbsoluteUrlWithProtocolAndHostName (HttpContextBase, string) if you passed true for the includeServer parameter. "
@@ -104,6 +104,20 @@ namespace Remotion.Web.Utilities
         return GetAbsoluteUrlWithProtocolAndHostname (context, relativeUrl);
       else
         return GetAbsoluteUrl (context, relativeUrl);
+    }
+
+    /// <summary> Makes a relative URL absolute. </summary>
+    /// <param name="context"> The <see cref="HttpContext"/>. </param>
+    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/>. Must be rooted or absolute. </param>
+    /// <returns> The absolute URL. </returns>
+    [Obsolete ("Use UrlUtility.GetAbsoluteUrl (HttpContextBase, string), "
+        +"wrapping the context parameter into an instance of type HttpContextWrapper. (Version 1.13.68)")]
+    public static string GetAbsoluteUrl (HttpContext context, string relativeUrl)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
+
+      return GetAbsoluteUrl (new HttpContextWrapper (context), relativeUrl);
     }
 
     /// <summary> Resolves a URL. </summary>
@@ -177,18 +191,6 @@ namespace Remotion.Web.Utilities
         throw new ArgumentException (
             "The path could not be resolved to an app-relative path. Most likely reason: The path did not begin with the root-operator ('~').");
       }
-    }
-
-    /// <summary> Makes a relative URL absolute. </summary>
-    /// <param name="context"> The <see cref="HttpContext"/>. </param>
-    /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/>. Must be rooted or absolute. </param>
-    /// <returns> The absolute URL. </returns>
-    public static string GetAbsoluteUrl (HttpContext context, string relativeUrl)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
-
-      return GetAbsoluteUrl (new HttpContextWrapper (context), relativeUrl);
     }
 
     /// <summary>

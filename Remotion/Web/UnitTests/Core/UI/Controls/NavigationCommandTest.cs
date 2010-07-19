@@ -135,8 +135,8 @@ public class NavigationCommandTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetExecutionEngineWithDefaultWxeHandler();    
     
     string wxeHandler = Remotion.Web.Configuration.WebConfiguration.Current.ExecutionEngine.DefaultWxeHandler;
-    
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, wxeHandler);
+
+    string expectedUrl = wxeHandler.TrimStart ('~');
     NameValueCollection expectedQueryString = new NameValueCollection();
     expectedQueryString.Add ("Parameter1", _wxeFunctionParameter1Value);
     expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
@@ -160,7 +160,7 @@ public class NavigationCommandTest
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_functionType, resource));
     string parameter1 = "Value1";
     
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, resource);
+    string expectedUrl = resource.TrimStart ('~');
     NameValueCollection expectedQueryString = new NameValueCollection();
     expectedQueryString.Add ("Parameter1", parameter1);
     expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
@@ -183,9 +183,9 @@ public class NavigationCommandTest
     string resource = "~/Test.wxe";
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (mappingID, _functionType, resource));
     string parameter1 = "Value1";
-    
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, resource);
-    NameValueCollection expectedQueryString = new NameValueCollection();
+
+    string expectedUrl = resource.TrimStart ('~');
+    NameValueCollection expectedQueryString = new NameValueCollection ();
     expectedQueryString.Add ("Parameter1", parameter1);
     expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
     expectedUrl += UrlUtility.FormatQueryString (expectedQueryString);
@@ -228,7 +228,7 @@ public class NavigationCommandTest
     NameValueCollection additionalUrlParameters = new NameValueCollection();
     additionalUrlParameters.Add ("Parameter2", "Value2");
 
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, wxeHandler);
+    string expectedUrl = wxeHandler.TrimStart ('~');
     NameValueCollection expectedQueryString = new NameValueCollection();
     expectedQueryString.Add ("Parameter1", _wxeFunctionParameter1Value);
     expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
@@ -255,9 +255,9 @@ public class NavigationCommandTest
 
     NameValueCollection additionalUrlParameters = new NameValueCollection();
     additionalUrlParameters.Add ("Parameter2", "Value2");
-    
-    string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, resource);
-    NameValueCollection expectedQueryString = new NameValueCollection();
+
+    string expectedUrl = resource.TrimStart ('~');
+    NameValueCollection expectedQueryString = new NameValueCollection ();
     expectedQueryString.Add ("Parameter1", parameter1);
     expectedQueryString.Add (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
     expectedQueryString.Add (additionalUrlParameters);

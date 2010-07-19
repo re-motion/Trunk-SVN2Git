@@ -60,11 +60,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           writer.Write (HttpUtility.HtmlEncode (AccessControlResources.TenantCondition_None));
           break;
         case TenantCondition.OwningTenant:
-          RenderTenantHierarchyIcon (writer);
+          RenderTenantHierarchyIcon (writer, container);
           RenderPropertyPathString (writer, "TenantCondition");
           break;
         case TenantCondition.SpecificTenant:
-          RenderTenantHierarchyIcon (writer);
+          RenderTenantHierarchyIcon (writer, container);
           RenderLabelAfterPropertyPathString (writer, "SpecificTenant.DisplayName");
           break;
         default:
@@ -83,11 +83,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           writer.Write (HttpUtility.HtmlEncode (AccessControlResources.GroupCondition_None));
           break;
         case GroupCondition.OwningGroup:
-          RenderGroupHierarchyIcon (writer);
+          RenderGroupHierarchyIcon (writer, container);
           RenderPropertyPathString (writer, "GroupCondition");
           break;
         case GroupCondition.SpecificGroup:
-          RenderGroupHierarchyIcon (writer);
+          RenderGroupHierarchyIcon (writer, container);
           RenderLabelAfterPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
     }
 
-    private void RenderTenantHierarchyIcon (HtmlTextWriter writer)
+    private void RenderTenantHierarchyIcon (HtmlTextWriter writer, IControl container)
     {
       string url;
       string text;
@@ -191,10 +191,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
 
       var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
-      icon.Render (writer);
+      icon.Render (container, writer);
     }
 
-    private void RenderGroupHierarchyIcon (HtmlTextWriter writer)
+    private void RenderGroupHierarchyIcon (HtmlTextWriter writer, IControl container)
     {
       string url;
       string text;
@@ -227,7 +227,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
 
       var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
-      icon.Render (writer);
+      icon.Render (container, writer);
     }
 
     private IResourceUrl GetIconUrl (string url)

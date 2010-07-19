@@ -31,7 +31,7 @@ namespace Remotion.Web.Test.ExecutionEngine
         throw new InvalidOperationException ("Url-Parameter 'RedirectTo' is missing.");
 
 
-      context.Response.Redirect (UrlUtility.GetAbsoluteUrl (context, target));
+      context.Response.Redirect (UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (context), target));
     }
 
     public bool IsReusable

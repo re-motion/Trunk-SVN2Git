@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.ObjectBinding;
@@ -182,7 +183,7 @@ namespace OBWTest.IndividualControlTests
 
     private string GetUrl (IconInfo iconInfo)
     {
-      return UrlUtility.GetAbsoluteUrl (Context, iconInfo.Url);
+      return UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (Context), iconInfo.Url);
     }
 
     private IconInfo GetIcon (IBusinessObject businessObject)
