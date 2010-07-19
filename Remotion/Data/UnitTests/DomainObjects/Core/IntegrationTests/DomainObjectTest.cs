@@ -991,13 +991,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Employee employee = Employee.NewObject();
 
       PropertyDefinition propertyDefinition =
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               (ReflectionBasedClassDefinition) employee.InternalDataContainer.ClassDefinition,
               "testproperty",
               "testproperty",
               typeof (string),
               true,
-              10);
+              10,
+              StorageClass.Persistent);
       PropertyValueCollection propertyValues = employee.InternalDataContainer.PropertyValues;
 
       Assert.IsFalse (propertyValues.Contains ("testproperty"));

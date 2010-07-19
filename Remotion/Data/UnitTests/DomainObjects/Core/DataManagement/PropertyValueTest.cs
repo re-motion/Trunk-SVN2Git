@@ -20,14 +20,12 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -270,8 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheck ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
@@ -280,8 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheckInConstructor ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -289,8 +287,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheckInConstructor ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
       new PropertyValue (definition, 123);
     }
 
@@ -298,8 +296,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
@@ -389,12 +387,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void SetExtensibleEnumWithInvalidType ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.Create (
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _orderClassDefinition,
           "test",
           "test",
           typeof (Color),
-          false);
+          false, 
+          StorageClass.Persistent);
       new PropertyValue (definition, 12);
     }
 
