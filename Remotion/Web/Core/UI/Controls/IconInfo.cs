@@ -152,12 +152,12 @@ namespace Remotion.Web.UI.Controls
       return _url;
     }
 
-    public void Render (IControl control, HtmlTextWriter writer)
+    public void Render (HtmlTextWriter writer, IControl container)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("container", container);
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      string url = control.ResolveClientUrl (_url);
+      string url = container.ResolveClientUrl (_url);
 
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
 

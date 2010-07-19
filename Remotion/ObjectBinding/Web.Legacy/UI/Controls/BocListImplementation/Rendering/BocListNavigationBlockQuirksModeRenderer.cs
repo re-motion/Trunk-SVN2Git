@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (isInactive || List.EditModeController.IsRowEditModeActive)
       {
         string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
-        new IconInfo (imageUrl).Render (List, writer);
+        new IconInfo (imageUrl).Render (writer, List);
       }
       else
       {
@@ -186,7 +186,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
         var icon = new IconInfo (imageUrl);
         icon.AlternateText = List.GetResourceManager().GetString (s_alternateTexts[command]);
-        icon.Render (List, writer);
+        icon.Render (writer, List);
 
         writer.RenderEndTag();
       }

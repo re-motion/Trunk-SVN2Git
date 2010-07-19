@@ -159,9 +159,9 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       bool hasIcon = Tab.Icon != null && !string.IsNullOrEmpty (Tab.Icon.Url);
       bool hasText = !string.IsNullOrEmpty (Tab.Text);
       if (hasIcon)
-        Tab.Icon.Render (Control, writer);
+        Tab.Icon.Render (writer, Control);
       else
-        IconInfo.Spacer.Render (Control, writer);
+        IconInfo.Spacer.Render (writer, Control);
       if (hasIcon && hasText)
         writer.Write ("&nbsp;");
       if (hasText)

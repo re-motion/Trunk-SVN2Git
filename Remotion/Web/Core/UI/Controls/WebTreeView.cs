@@ -626,7 +626,7 @@ namespace Remotion.Web.UI.Controls
         writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
 
-      nodeIcon.Render (this, writer);
+      nodeIcon.Render (writer, this);
       if (hasExpansionLink)
         writer.RenderEndTag();
     }
@@ -651,7 +651,7 @@ namespace Remotion.Web.UI.Controls
       {
         if (node.Icon != null && node.Icon.HasRenderingInformation)
         {
-          node.Icon.Render (this, writer);
+          node.Icon.Render (writer, this);
           writer.Write ("&nbsp;");
         }
         if (!StringUtility.IsNullOrEmpty (node.Text))

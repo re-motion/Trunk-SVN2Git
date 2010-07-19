@@ -185,7 +185,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       var icon = new IconInfo (imageUrl.GetUrl());
       icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
-      icon.Render (List, writer);
+      icon.Render (writer, List);
 
       if (List.IsShowSortingOrderEnabled && orderIndex >= 0)
         writer.Write (c_whiteSpace + (orderIndex + 1));

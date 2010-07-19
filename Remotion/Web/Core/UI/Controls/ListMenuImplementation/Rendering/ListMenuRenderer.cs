@@ -115,7 +115,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
-        menuItem.Icon.Render (Control, writer);
+        menuItem.Icon.Render (writer, Control);
         if (showText)
           writer.Write (c_whiteSpace);
       }

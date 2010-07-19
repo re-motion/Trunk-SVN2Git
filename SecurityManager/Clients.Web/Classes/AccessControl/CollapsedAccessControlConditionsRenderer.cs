@@ -191,7 +191,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
 
       var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
-      icon.Render (container, writer);
+      icon.Render (writer, container);
     }
 
     private void RenderGroupHierarchyIcon (HtmlTextWriter writer, IControl container)
@@ -227,7 +227,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
 
       var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
-      icon.Render (container, writer);
+      icon.Render (writer, container);
     }
 
     private IResourceUrl GetIconUrl (string url)

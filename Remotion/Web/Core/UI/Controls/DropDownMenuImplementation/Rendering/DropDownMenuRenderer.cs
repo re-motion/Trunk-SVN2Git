@@ -94,7 +94,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
-        Control.TitleIcon.Render (Control, writer);
+        Control.TitleIcon.Render (writer, Control);
 
       if (!string.IsNullOrEmpty (Control.TitleText))
       {
@@ -113,7 +113,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      IconInfo.Spacer.Render (Control, writer);
+      IconInfo.Spacer.Render (writer, Control);
 
       writer.RenderEndTag();
     }
