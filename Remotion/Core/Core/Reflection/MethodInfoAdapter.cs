@@ -101,5 +101,9 @@ namespace Remotion.Reflection
       return EqualityUtility.GetRotatedHashCode (_methodInfo);
     }
 
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

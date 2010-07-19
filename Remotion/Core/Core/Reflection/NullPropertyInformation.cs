@@ -72,5 +72,9 @@ namespace Remotion.Reflection
     {
     }
 
+    public bool IsNull
+    {
+      get { return true; }
+    }
   }
 }
