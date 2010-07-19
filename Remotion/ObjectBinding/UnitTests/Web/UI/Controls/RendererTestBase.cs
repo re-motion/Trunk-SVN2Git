@@ -27,7 +27,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
   {
     protected HttpContextBase HttpContext { get; private set; }
     protected HtmlHelper Html { get; private set; }
-    protected HttpResponseBase HttpResponse { get; private set; }
 
     protected RendererTestBase ()
     {
@@ -44,10 +43,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Html = new HtmlHelper();
 
       HttpContext = MockRepository.GenerateStub<HttpContextBase>();
-
-      HttpResponse = MockRepository.GenerateStub<HttpResponseBase> ();
-      HttpContext.Stub (stub => stub.Response).Return (HttpResponse).Repeat.Any ();
-      HttpResponse.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
     }
   }
 }

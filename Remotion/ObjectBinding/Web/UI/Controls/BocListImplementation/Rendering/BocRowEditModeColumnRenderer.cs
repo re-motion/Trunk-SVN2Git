@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       if (hasIcon && hasText)
       {
-        icon.Render (Context, writer);
+        icon.Render (List, writer);
         writer.Write (c_whiteSpace);
       }
       else if (hasIcon)
@@ -163,7 +163,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         if (!hasAlternateText)
           icon.AlternateText = List.GetResourceManager().GetString (alternateText);
 
-        icon.Render (Context, writer);
+        icon.Render (List, writer);
       }
       if (hasText)
         writer.Write (text); // Do not HTML encode.

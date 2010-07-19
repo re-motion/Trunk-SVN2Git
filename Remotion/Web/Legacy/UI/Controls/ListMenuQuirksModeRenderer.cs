@@ -123,7 +123,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
-        menuItem.Icon.Render (Context, writer);
+        menuItem.Icon.Render (Control, writer);
         if (showText)
           writer.Write (c_whiteSpace);
       }

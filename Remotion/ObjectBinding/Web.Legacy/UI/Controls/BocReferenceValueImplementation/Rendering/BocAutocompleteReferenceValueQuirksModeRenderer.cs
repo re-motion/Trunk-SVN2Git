@@ -510,7 +510,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      IconInfo.Spacer.Render (Context, writer);
+      IconInfo.Spacer.Render (Control, writer);
       writer.RenderEndTag ();
     }
 

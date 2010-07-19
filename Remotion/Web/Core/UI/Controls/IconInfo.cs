@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
@@ -28,7 +27,6 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Globalization;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -56,25 +54,11 @@ namespace Remotion.Web.UI.Controls
         return true;
     }
 
-    public static void RenderInvisibleSpacer (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, Spacer.Url);
-      writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
-      writer.AddAttribute ("class", "Icon");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0px");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "0px");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag();
-    }
-
     private static IconInfo CreateSpacerIcon ()
     {
       var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
       string url = themedResourceUrlResolver.GetResourceUrl (null, ResourceType.Image, "Spacer.gif");
-      return new IconInfo (url);
+      return new IconInfo (url) { Height = Unit.Pixel (0), Width = Unit.Pixel (0), AlternateText = "" };
     }
 
     private string _url;
@@ -168,12 +152,12 @@ namespace Remotion.Web.UI.Controls
       return _url;
     }
 
-    public void Render (HttpContextBase context, HtmlTextWriter writer)
+    public void Render (IControl control, HtmlTextWriter writer)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      string url = UrlUtility.GetAbsoluteUrl (context, _url);
+      string url = control.ResolveClientUrl (_url);
 
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
 

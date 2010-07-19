@@ -35,17 +35,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     private IClientScriptManager _clientScriptManagerMock;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
-    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
-
-      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
-      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any ();
-      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");

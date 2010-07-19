@@ -43,20 +43,16 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private IWebTab _tab0;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
-    private HttpResponseBase _responseStub;
 
     [SetUp]
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
-      
-      _responseStub = MockRepository.GenerateStub<HttpResponseBase> ();
-      _httpContextStub.Stub (stub => stub.Response).Return (_responseStub).Repeat.Any();
-      _responseStub.Stub (stub => stub.ApplyAppPathModifier (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
+      _webTabStrip.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _pageStub = MockRepository.GenerateStub<IPage>();
       var clientScriptStub = MockRepository.GenerateStub<IClientScriptManager>();

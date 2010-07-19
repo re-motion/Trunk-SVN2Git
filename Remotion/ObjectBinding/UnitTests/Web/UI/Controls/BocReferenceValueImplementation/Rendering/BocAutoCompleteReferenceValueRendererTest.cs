@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
       Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
-      Control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => "Resolved: " + url));
+      Control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
     }
 
     [TearDown]
