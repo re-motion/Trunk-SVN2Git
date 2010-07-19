@@ -62,10 +62,5 @@ namespace Remotion.Reflection
     {
       return null;
     }
-
-    public bool IsNull
-    {
-      get { return true; }
-    }
   }
 }

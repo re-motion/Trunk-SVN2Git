@@ -219,10 +219,5 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           return null;
       }
     }
-
-    public bool IsNull
-    {
-      get { return false; }
-    }
   }
 }

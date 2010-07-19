@@ -122,9 +122,5 @@ namespace Remotion.Reflection
       return EqualityUtility.GetRotatedHashCode (_propertyInfo);
     }
 
-    public bool IsNull
-    {
-      get { return false; }
-    }
   }
 }
