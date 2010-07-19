@@ -138,7 +138,7 @@ namespace Remotion.Web.Utilities
 
     /// <summary> Makes a relative URL absolute and prepends the name of the server used by the request. </summary>
     /// <param name="context"> The <see cref="HttpContextBase"/> to be used for retrieving the protocol and hostname. Must not be <see langword="null"/>. </param>
-    /// <param name="virtualPath"> The relative URL. Must not be <see langword="null"/>. </param>
+    /// <param name="virtualPath"> The virtual path. Must not be <see langword="null"/>. Must be rooted or absolute.</param>
     /// <returns> The absolute URL. </returns>
     public static string GetAbsoluteUrlWithProtocolAndHostname (HttpContextBase context, string virtualPath)
     {
@@ -148,13 +148,20 @@ namespace Remotion.Web.Utilities
       if (HasScheme (virtualPath))
         return virtualPath;
 
+      string resolvedPath = GetAbsoluteUrl (context, virtualPath);
+      if (resolvedPath.Length > 0 && resolvedPath[0] != '/')
+      {
+        throw new ArgumentException (
+            "The path could not be resolved to an app-relative path. Most likely reason: The path did not begin with the root-operator ('~').");
+      }
+
       string serverPart = context.Request.Url.GetLeftPart (UriPartial.Authority);
-      return serverPart + GetAbsoluteUrl (context, virtualPath);
+      return serverPart + resolvedPath;
     }
 
     /// <summary> Makes a relative URL absolute. </summary>
     /// <param name="context"> The <see cref="HttpContextBase"/> to be used. Must not be <see langword="null"/>. </param>
-    /// <param name="virtualPath"> The relative URL. Must not be <see langword="null"/>. </param>
+    /// <param name="virtualPath"> The virtual path. Must not be <see langword="null"/>. </param>
     /// <returns> The absolute URL. </returns>
     public static string GetAbsoluteUrl (HttpContextBase context, string virtualPath)
     {
@@ -163,7 +170,13 @@ namespace Remotion.Web.Utilities
       if (HasScheme (virtualPath))
         return virtualPath;
 
-      return context.Response.ApplyAppPathModifier (virtualPath);
+      if (virtualPath.Length == 0)
+        return virtualPath;
+
+      if (virtualPath[0] == '\\' || virtualPath[0] == '/' || virtualPath[0] == '~')
+        return context.Response.ApplyAppPathModifier (virtualPath);
+      else
+        return virtualPath;
     }
 
     /// <summary> Makes a relative URL absolute. </summary>
@@ -374,24 +387,6 @@ namespace Remotion.Web.Utilities
     private static bool IsParameterDelimiter (char c)
     {
       return c == '?' || c == '&';
-    }
-
-    private static bool IsRelativeUrl (string virtualPath)
-    {
-      if (HasScheme (virtualPath))
-      {
-        return false;
-      }
-      return !IsRooted (virtualPath);
-    }
-
-    private static bool IsRooted (string basepath)
-    {
-      if (!string.IsNullOrEmpty (basepath) && (basepath[0] != '/'))
-      {
-        return (basepath[0] == '\\');
-      }
-      return true;
     }
 
     private static bool HasScheme (string virtualPath)
