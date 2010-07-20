@@ -248,7 +248,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
        "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber")]
     public void IntPropertyWithMaxLength ()
     {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
       ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), 10);
     }
 
@@ -257,8 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
        "IsNullable parameter can only be supplied for reference types but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber")]
     public void CheckValueTypeCtors ()
     {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, propertyName, "test", typeof (int), false, StorageClass.Persistent);
+      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), false);
     }
   }
 }
