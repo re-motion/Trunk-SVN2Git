@@ -158,30 +158,18 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      Group parent = (Group) ParentField.Value;
-      if (parent == null)
-        args.IsValid = true;
-      else
-        args.IsValid = IsParentHierarchyValid (parent);
+      args.IsValid = IsParentHierarchyValid ((Group) ParentField.Value);
     }
 
     protected void ChildrenValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      args.IsValid = true;
-      foreach (Group child in ChildrenList.Value)
-      {
-        if (!IsParentHierarchyValid (child))
-        {
-          args.IsValid = false;
-          break;
-        }
-      }
+      args.IsValid = ChildrenList.Value.Cast<Group>().All (IsParentHierarchyValid);
     }
 
     private bool IsParentHierarchyValid (Group group)
     {
-      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentObject.BusinessObject).ToArray();
-      if (groups.Length > 0 && groups[groups.Length-1].Parent != null)
+      var groups = group.CreateSequence (g => g.Parent, g => g != null && g.Parent != group);
+      if (groups.Any() && groups.Last().Parent != null)
         return false;
       return true;
     }
