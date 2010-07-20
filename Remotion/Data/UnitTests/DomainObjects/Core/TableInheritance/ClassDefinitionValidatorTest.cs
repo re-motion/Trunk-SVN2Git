@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var propertyInfo = GetType ().GetProperty ("DummyProperty");
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, typeof (Person), "FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
       organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnit, "OtherName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
 
       domainBaseClass.SetReadOnly ();
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var propertyInfo = GetType ().GetProperty ("DummyProperty");
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, typeof (Person), "FirstName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
       organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnit, "OtherName", typeof (string), null, 100, StorageClass.Persistent, propertyInfo, new ColumnDefinition ("NameColumn", propertyInfo)));
 
       domainBaseClass.SetReadOnly ();

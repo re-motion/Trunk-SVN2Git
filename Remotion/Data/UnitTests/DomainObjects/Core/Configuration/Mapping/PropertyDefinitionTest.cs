@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithValueType ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (int), null, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (0, actual.DefaultValue);
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNullableValueType ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (int?), null, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int?), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithObjectID ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (ObjectID), true, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (ObjectID), true, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithEnum ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (ClassWithAllDataTypes.EnumType), null, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (ClassWithAllDataTypes.EnumType), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNullableEnum ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (ClassWithAllDataTypes.EnumType?), null, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (ClassWithAllDataTypes.EnumType?), null, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNullableStringAndMaxLength ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNotNullableStringWithoutMaxLength ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (string), false, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (string.Empty, actual.DefaultValue);
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNullableArrayAndMaxLength ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (byte[]), true, 100, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (byte[]), true, 100, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.IsNull (actual.DefaultValue);
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void InitializeWithNotNullableArrayWithoutMaxLength ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "ColumnName", typeof (byte[]), false, null, StorageClass.Persistent);
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (byte[]), false, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", actual.StorageProperty.Name);
       Assert.AreEqual (new byte[0], actual.DefaultValue);
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IntPropertyWithMaxLength ()
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, propertyName, "test", typeof (int), 10);
+      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), 10);
     }
 
     [Test]

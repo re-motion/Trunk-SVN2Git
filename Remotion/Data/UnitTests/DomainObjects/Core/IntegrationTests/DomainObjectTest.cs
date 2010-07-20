@@ -997,7 +997,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               "testproperty",
               typeof (string),
               true,
-              10,
+              10, 
               StorageClass.Persistent);
       PropertyValueCollection propertyValues = employee.InternalDataContainer.PropertyValues;
 
@@ -1020,7 +1020,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PropertyDefinition propertyDefinition =
           ReflectionBasedPropertyDefinitionFactory.Create (
               (ReflectionBasedClassDefinition) employee.InternalDataContainer.ClassDefinition,
-              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name",
+              typeof (Employee), "Name",
               "Name",
               typeof (string),
               true,

@@ -166,11 +166,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
 
-      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Person.FirstName", "NameColumn", typeof (string), false, 100));
+      personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (personClass, typeof (Person), "FirstName", "NameColumn", typeof (string), false, 100));
 
       ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
 
-      organizationalUnitClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnitClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.OrganizationalUnit.Name", "NameColumn", typeof (string), false, 100));
+      organizationalUnitClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create (organizationalUnitClass, typeof (OrganizationalUnit), "Name", "NameColumn", typeof (string), false, 100));
 
       _classDefinitions.Add (domainBaseClass);
       _classDefinitions.Add (personClass);

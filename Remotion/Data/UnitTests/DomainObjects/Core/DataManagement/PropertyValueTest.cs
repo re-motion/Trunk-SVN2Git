@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheck ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheckInConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheckInConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
       new PropertyValue (definition, 123);
     }
 
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheck ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), false, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
@@ -392,7 +392,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "test",
           "test",
           typeof (Color),
-          false, 
+          false,
+          null,
           StorageClass.Persistent);
       new PropertyValue (definition, 12);
     }
