@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
-      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude();
+      htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteScript";
       htmlHeadAppender.RegisterJavaScriptInclude (

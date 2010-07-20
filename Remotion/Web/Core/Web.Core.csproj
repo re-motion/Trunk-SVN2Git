@@ -773,7 +773,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
-    <Content Include="Res\HTML\jquery.bgiframe.js" />
+    <Content Include="Res\HTML\jquery.iFrameShim.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\DatePicker.css" />
     <Content Include="Res\HTML\DatePicker.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\ExecutionEngine.css" />

@@ -152,9 +152,7 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt)
     $(ul).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight() - titleDiv.height()));
   }
 
-  // apply bgiframe if available
-  if ($.fn.bgiframe)
-    $(ul).bgiframe({ top: '0px', left: '0px', width: '100%', height: '100%' });
+  $(ul).iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
 }
 
 

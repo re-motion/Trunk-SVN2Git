@@ -318,10 +318,10 @@ namespace Remotion.Web.UI
       RegisterJavaScriptInclude (utilitiesKey, utilitiesScripFileUrl);
     }
 
-    public void RegisterJQueryBgiFramesJavaScriptInclude ()
+    public void RegisterJQueryIFrameShimJavaScriptInclude ()
     {
       string key = typeof (HtmlHeadContents).FullName + "_JQueryBgiFrames";
-      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.js");
+      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.IFrameShim.js");
       RegisterJavaScriptInclude (key, href);
     }
 

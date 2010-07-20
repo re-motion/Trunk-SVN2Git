@@ -491,7 +491,7 @@
         function hideResults() {
             if (config.mouseDownOnSelect)
                 return;
-
+return;
             var wasVisible = select.visible();
             select.hide();
             clearTimeout(timeout);
@@ -971,9 +971,7 @@
                 listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
                 active = 0;
             }
-            // apply bgiframe if available
-            if ($.fn.bgiframe)
-                element.bgiframe({top: '0px', left: '0px', width: '100%', height: '100%'});
+            element.iFrameShim({top: '0px', left: '0px', width: '100%', height: '100%'});
         }
 
         // re-motion: Gets the index of first item matching the term. The lookup starts with the active item, 
