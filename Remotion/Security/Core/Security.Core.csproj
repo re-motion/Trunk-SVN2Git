@@ -89,6 +89,7 @@
     <Compile Include="IRevisionBasedSecurityProvider.cs" />
     <Compile Include="Metadata\MemberAffiliation.cs" />
     <Compile Include="Metadata\IMemberResolver.cs" />
+    <Compile Include="Metadata\NullMemberResolver.cs" />
     <Compile Include="Metadata\ReflectionBasedMemberResolver.cs" />
     <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />

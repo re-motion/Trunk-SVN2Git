@@ -17,35 +17,47 @@
 using System;
 using System.Reflection;
 using Remotion.Reflection;
-using Remotion.Security.Metadata;
+using Remotion.Utilities;
 
-namespace Remotion.Security.UnitTests.Core.Configuration
+namespace Remotion.Security.Metadata
 {
-  public class MemberResolverMock : IMemberResolver
+  public class NullMemberResolver : IMemberResolver
   {
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
-      throw new NotImplementedException();
+      return new NullMethodInformation();
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
     {
-      throw new NotImplementedException();
+      return new NullPropertyInformation();
     }
 
     public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
     {
-      throw new NotImplementedException();
+      return new NullMethodInformation();
     }
 
     public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
     {
-      throw new NotImplementedException();
+      return new NullPropertyInformation();
     }
 
     public bool IsNull
     {
-      get { throw new NotImplementedException(); }
+      get { return true; }
+    }
+
+    public override bool Equals (object obj)
+    {
+      var other = obj as NullMemberResolver;
+
+      return other != null && other.GetType() == GetType();
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (this);
     }
   }
 }

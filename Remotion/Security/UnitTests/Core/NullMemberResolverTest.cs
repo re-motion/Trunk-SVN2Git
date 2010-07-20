@@ -15,37 +15,41 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 
-namespace Remotion.Security.UnitTests.Core.Configuration
+namespace Remotion.Security.UnitTests.Core
 {
-  public class MemberResolverMock : IMemberResolver
+  [TestFixture]
+  public class NullMemberResolverTest
   {
-    public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
+    [Test]
+    public void GetMethodInformation ()
     {
-      throw new NotImplementedException();
+      var resolver = new NullMemberResolver();
+      var result = resolver.GetMethodInformation (typeof (ISecurableObject), "method", MemberAffiliation.Instance);
+
+      Assert.That (result, Is.TypeOf (typeof (NullMethodInformation)));
     }
 
-    public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
+    [Test]
+    public void GetPropertyInformation ()
     {
-      throw new NotImplementedException();
+      var resolver = new NullMemberResolver ();
+      var result = resolver.GetPropertyInformation (typeof (ISecurableObject), "property");
+
+      Assert.That (result, Is.TypeOf (typeof (NullPropertyInformation)));
     }
 
-    public IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation)
+    [Test]
+    public void Equal ()
     {
-      throw new NotImplementedException();
-    }
+      var resolver1 = new NullMemberResolver();
+      var resolver2 = new NullMemberResolver();
 
-    public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool IsNull
-    {
-      get { throw new NotImplementedException(); }
+      Assert.That (resolver1, Is.EqualTo (resolver2));
     }
   }
 }

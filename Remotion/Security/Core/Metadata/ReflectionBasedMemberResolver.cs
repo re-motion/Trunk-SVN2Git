@@ -167,5 +167,9 @@ namespace Remotion.Security.Metadata
       return member.Name == memberName && member.IsDefined (typeof (BaseDemandPermissionAttribute), false);
     }
 
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

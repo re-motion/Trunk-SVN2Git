@@ -23,7 +23,7 @@ namespace Remotion.Security.Metadata
   /// <summary>
   /// Class is used to get 
   /// </summary>
-  public interface IMemberResolver
+  public interface IMemberResolver : INullObject
   {
     IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation);
     IPropertyInformation GetPropertyInformation (Type type, string propertyName);

@@ -35,7 +35,7 @@ namespace Remotion.Security
             new NullPrincipalProvider(),
             new FunctionalSecurityStrategy (
                 new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCacheProvider())),
-            new ReflectionBasedMemberResolver())
+            new NullMemberResolver())
     {
     }
 
