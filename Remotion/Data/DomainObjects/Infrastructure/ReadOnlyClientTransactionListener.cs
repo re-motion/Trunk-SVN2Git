@@ -62,12 +62,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "ObjectsUnloaded");
     }
 
     public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "ObjectsLoaded");
     }
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "ObjectDeleted");
     }
 
     public virtual void PropertyValueReading (
@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         object oldValue,
         object newValue)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "PropertyValueChanged");
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "RelationChanged");
     }
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
@@ -171,7 +171,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "TransactionCommitted");
     }
 
     public virtual void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "TransactionRolledBack");
     }
 
     public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
-      Assertion.IsFalse (clientTransaction.IsReadOnly);
+      EnsureWriteable (clientTransaction, "DataContainerMapRegistering");
     }
 
     public virtual void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)

@@ -295,6 +295,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectStateCacheTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ReadOnlyClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />

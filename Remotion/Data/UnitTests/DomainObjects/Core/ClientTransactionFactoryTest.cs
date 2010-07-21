@@ -62,12 +62,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ITransactionFactory factory = MockRepository.GenerateMock<ClientTransactionFactory>();
 
       var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
+      
       factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).WhenCalled (
           invocation => ((ClientTransaction) invocation.Arguments[0]).Extensions.Add ("extension", extensionStub));
 
       ITransaction rootTransaction = factory.CreateRootTransaction();
       ITransaction childTransaction = rootTransaction.CreateChild();
-
+      
       var clientTransaction = childTransaction.To<ClientTransaction>();
       Assert.That (rootTransaction.To<ClientTransaction>().Extensions[0], Is.SameAs (extensionStub));
       Assert.That (clientTransaction.Extensions, Is.EqualTo (rootTransaction.To<ClientTransaction>().Extensions));
