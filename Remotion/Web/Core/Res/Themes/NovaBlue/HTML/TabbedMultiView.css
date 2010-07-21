@@ -227,3 +227,8 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.2em;
 }
+
+div.tabbedMultiViewTabStrip div.clearingPane
+{
+  clear: both;
+}

@@ -132,3 +132,8 @@ body.opera    *.tabStripTabSeparator span
   padding-top: 1px; /* The padding used for the content span. */
   padding-bottom: 1px; /* The padding used for the content span. */
 }
+
+*.tabStrip div.clearingPane
+{
+  clear: both;
+}

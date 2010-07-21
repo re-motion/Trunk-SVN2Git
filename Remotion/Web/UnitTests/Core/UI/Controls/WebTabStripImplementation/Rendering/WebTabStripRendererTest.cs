@@ -228,7 +228,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
     {
       var outerDiv = document.GetAssertedChildElement ("div", 0);
       outerDiv.AssertAttributeValueEquals ("class", withCssClass ? _webTabStrip.CssClass : _renderer.CssClassBase);
-      outerDiv.AssertChildElementCount (1);
+      outerDiv.AssertChildElementCount (2);
 
       var innerDiv = outerDiv.GetAssertedChildElement ("div", 0);
       innerDiv.AssertAttributeValueContains ("class", _renderer.CssClassTabsPane);
@@ -236,6 +236,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
         innerDiv.AssertAttributeValueContains ("class", _renderer.CssClassTabsPaneEmpty);
 
       innerDiv.AssertChildElementCount (1);
+
+      var clearingPaneDiv = outerDiv.GetAssertedChildElement ("div", 1);
+      clearingPaneDiv.AssertAttributeValueContains ("class", _renderer.CssClassClearingPane);
 
       var list = innerDiv.GetAssertedChildElement ("ul", 0);
       if (isDesignMode)

@@ -158,3 +158,8 @@ body.msie7 span.tabStripTabSeparator
 {
   padding-bottom: 1px;
 }
+
+*.tabStrip div.clearingPane
+{
+  clear: both;
+}

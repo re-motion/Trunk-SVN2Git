@@ -150,6 +150,11 @@ body.opera    div.tabbedMainMenu span.tabStripTabSelected
   margin-left: 0; /* No separator, no margin required. */
 }
 
+div.tabbedMainMenu div.clearingPane
+{
+  clear: both;
+}
+
 
 /* Sub Menu Tabstrip */
 div.tabbedSubMenu div.tabStripTabsPane
@@ -245,4 +250,9 @@ body.webkit   div.tabbedSubMenu span.tabStripTabSelected,
 body.opera    div.tabbedSubMenu span.tabStripTabSelected
 {
   margin-left: 0; /* No separator, no margin required. */
+}
+
+div.tabbedSubMenu div.clearingPane
+{
+  clear: both;
 }

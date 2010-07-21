@@ -61,6 +61,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         RenderTab (writer, tab, isLast);
       }
       RenderEndTabsPane (writer);
+      RenderClearingPane (writer);
       writer.RenderEndTag();
     }
 
@@ -98,6 +99,13 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
       writer.RenderEndTag(); // End List
       writer.RenderEndTag(); // End Div
+    }
+
+    private void RenderClearingPane (HtmlTextWriter writer)
+    {
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassClearingPane);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.RenderEndTag ();
     }
 
     private void RenderTab (HtmlTextWriter writer, IWebTab tab, bool isLast)
@@ -206,6 +214,15 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     public virtual string CssClassDisabled
     {
       get { return "disabled"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the div used to clear the flow-layout at the end of the tab-strip. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>clearingPane</c>. </para>
+    /// </remarks>
+    public virtual string CssClassClearingPane
+    {
+      get { return "clearingPane"; }
     }
 
     #endregion

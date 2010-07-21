@@ -132,6 +132,11 @@ body.opera    div.tabbedMainMenu span.tabStripTabWrapper
   margin-bottom: 0px; /* Removes an offset between the main menu and the sub menu */
 }
 
+div.tabbedMainMenu div.clearingPane
+{
+  clear: both;
+}
+
 /* Sub Menu Tabstrip */
 div.tabbedSubMenu div.tabStripTabsPane
 {
@@ -220,4 +225,9 @@ div.tabbedSubMenu div.tabStripTabsPane.empty
 body.msie7 div.tabbedSubMenu div.tabStripTabsPane.empty
 {
   padding-top: 0.4em;
+}
+
+div.tabbedSubMenu div.clearingPane
+{
+  clear: both;
 }
