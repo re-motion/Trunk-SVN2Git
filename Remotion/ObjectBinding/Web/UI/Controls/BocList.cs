@@ -1508,13 +1508,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           EndListEditMode (false);
       }
 
-      _value = value;
-
-      if (!interim)
+      if (interim)
       {
+        _value = value;
+      }
+      else
+      {
+        Value = value;
         IsDirty = false;
-        _selectorControlCheckedState.Clear();
-        ResetRows();
       }
     }
 
