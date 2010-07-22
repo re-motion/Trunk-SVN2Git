@@ -50,14 +50,12 @@ namespace Remotion.Security.Metadata
 
     public override bool Equals (object obj)
     {
-      var other = obj as NullMemberResolver;
-
-      return other != null && other.GetType() == GetType();
+      return obj != null && obj.GetType () == GetType ();
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (this);
+      return GetHashCode();
     }
   }
 }
