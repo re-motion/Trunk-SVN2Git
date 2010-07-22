@@ -292,6 +292,7 @@
     <Compile Include="DomainObjects\Core\DataManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\InitializedEventDomainObjectTransactionContextDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\LoggingClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectStateCacheTest.cs" />
