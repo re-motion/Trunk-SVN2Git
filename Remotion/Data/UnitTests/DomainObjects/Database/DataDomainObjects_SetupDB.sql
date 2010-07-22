@@ -130,6 +130,38 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StorageGro
   DROP VIEW [dbo].[StorageGroupClassView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SingleInheritanceBaseClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SingleInheritanceBaseClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SingleInheritanceFirstDerivedClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SingleInheritanceFirstDerivedClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SingleInheritanceSecondDerivedClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SingleInheritanceSecondDerivedClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteInheritanceBaseClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ConcreteInheritanceBaseClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteInheritanceFirstDerivedClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ConcreteInheritanceFirstDerivedClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteInheritanceSecondDerivedClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ConcreteInheritanceSecondDerivedClassView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SingleInheritanceObjectWithRelationsView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SingleInheritanceObjectWithRelationsView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteInheritanceObjectWithRelationsView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ConcreteInheritanceObjectWithRelationsView]
+GO
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_RelationProperty]
@@ -324,6 +356,26 @@ GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StorageGroupClass' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[StorageGroupClass]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SingleInheritanceBaseClass') 
+  DROP TABLE [SingleInheritanceBaseClass]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ConcreteInheritanceFirstDerivedClass') 
+  DROP TABLE [ConcreteInheritanceFirstDerivedClass]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ConcreteInheritanceSecondDerivedClass') 
+  DROP TABLE [ConcreteInheritanceSecondDerivedClass]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SingleInheritanceObjectWithRelations') 
+  DROP TABLE [SingleInheritanceObjectWithRelations]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ConcreteInheritanceObjectWithRelations') 
+  DROP TABLE [ConcreteInheritanceObjectWithRelations]
 GO
 
 IF OBJECT_ID ('rpf_testSPQuery', 'P') IS NOT NULL 
@@ -1028,6 +1080,91 @@ CREATE TABLE [dbo].[StorageGroupClass]
 )
 GO
 
+CREATE TABLE [dbo].[SingleInheritanceBaseClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- SingleInheritanceBaseClass columns
+  [BaseProperty] nvarchar (max) NULL,
+  [VectorOpposingPropertyID] uniqueidentifier NULL,
+
+  -- SingleInheritanceFirstDerivedClass columns
+  [FirstDerivedProperty] nvarchar (max) NULL,
+  [PersistentProperty] nvarchar (max) NULL,
+
+  -- SingleInheritanceSecondDerivedClass columns
+  [SecondDerivedProperty] nvarchar (max) NULL,
+
+  CONSTRAINT [PK_SingleInheritanceBaseClass] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
+CREATE TABLE [dbo].[ConcreteInheritanceFirstDerivedClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- ConcreteInheritanceBaseClass columns
+  [BaseProperty] nvarchar (max) NULL,
+  [VectorOpposingPropertyID] uniqueidentifier NULL,
+
+  -- ConcreteInheritanceFirstDerivedClass columns
+  [FirstDerivedProperty] nvarchar (max) NULL,
+  [PersistentProperty] nvarchar (max) NULL,
+
+  CONSTRAINT [PK_ConcreteInheritanceFirstDerivedClass] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
+CREATE TABLE [dbo].[ConcreteInheritanceSecondDerivedClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- ConcreteInheritanceBaseClass columns
+  [BaseProperty] nvarchar (max) NULL,
+  [VectorOpposingPropertyID] uniqueidentifier NULL,
+
+  -- ConcreteInheritanceSecondDerivedClass columns
+  [SecondDerivedProperty] nvarchar (max) NULL,
+  [PersistentProperty] nvarchar (max) NULL,
+
+  CONSTRAINT [PK_ConcreteInheritanceSecondDerivedClass] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
+CREATE TABLE [dbo].[SingleInheritanceObjectWithRelations]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- SingleInheritanceObjectWithRelations columns
+  [ScalarPropertyID] uniqueidentifier NULL,
+  [ScalarPropertyIDClassID] varchar (100) NULL,
+
+  CONSTRAINT [PK_SingleInheritanceObjectWithRelations] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
+CREATE TABLE [dbo].[ConcreteInheritanceObjectWithRelations]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- ConcreteInheritanceObjectWithRelations columns
+  [ScalarPropertyID] uniqueidentifier NULL,
+  [ScalarPropertyIDClassID] varchar (100) NULL,
+
+  CONSTRAINT [PK_ConcreteInheritanceObjectWithRelations] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
 CREATE PROCEDURE rpf_testSPQuery
 AS
   SELECT * FROM [Order] WHERE [OrderNo] = 1 OR [OrderNo] = 3 ORDER BY [OrderNo] ASC
@@ -1394,3 +1531,71 @@ CREATE VIEW [dbo].[StorageGroupClassView] ([ID], [ClassID], [Timestamp], [AboveI
     WHERE [ClassID] IN ('StorageGroupClass')
   WITH CHECK OPTION
 GO
+
+CREATE VIEW [dbo].[SingleInheritanceBaseClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty], [SecondDerivedProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty], [SecondDerivedProperty]
+    FROM [dbo].[SingleInheritanceBaseClass]
+    WHERE [ClassID] IN ('SingleInheritanceBaseClass', 'SingleInheritanceFirstDerivedClass', 'SingleInheritanceSecondDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SingleInheritanceFirstDerivedClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty]
+    FROM [dbo].[SingleInheritanceBaseClass]
+    WHERE [ClassID] IN ('SingleInheritanceFirstDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SingleInheritanceSecondDerivedClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [SecondDerivedProperty], [PersistentProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [SecondDerivedProperty], [PersistentProperty]
+    FROM [dbo].[SingleInheritanceBaseClass]
+    WHERE [ClassID] IN ('SingleInheritanceSecondDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ConcreteInheritanceBaseClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty], [SecondDerivedProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty], null
+    FROM [dbo].[ConcreteInheritanceFirstDerivedClass]
+    WHERE [ClassID] IN ('ConcreteInheritanceFirstDerivedClass', 'ConcreteInheritanceSecondDerivedClass')
+  UNION ALL
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], null, [PersistentProperty], [SecondDerivedProperty]
+    FROM [dbo].[ConcreteInheritanceSecondDerivedClass]
+    WHERE [ClassID] IN ('ConcreteInheritanceFirstDerivedClass', 'ConcreteInheritanceSecondDerivedClass')
+GO
+
+CREATE VIEW [dbo].[ConcreteInheritanceFirstDerivedClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [FirstDerivedProperty], [PersistentProperty]
+    FROM [dbo].[ConcreteInheritanceFirstDerivedClass]
+    WHERE [ClassID] IN ('ConcreteInheritanceFirstDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ConcreteInheritanceSecondDerivedClassView] ([ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [SecondDerivedProperty], [PersistentProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [BaseProperty], [VectorOpposingPropertyID], [SecondDerivedProperty], [PersistentProperty]
+    FROM [dbo].[ConcreteInheritanceSecondDerivedClass]
+    WHERE [ClassID] IN ('ConcreteInheritanceSecondDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SingleInheritanceObjectWithRelationsView] ([ID], [ClassID], [Timestamp], [ScalarPropertyID], [ScalarPropertyIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ScalarPropertyID], [ScalarPropertyIDClassID]
+    FROM [dbo].[SingleInheritanceObjectWithRelations]
+    WHERE [ClassID] IN ('SingleInheritanceObjectWithRelations')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ConcreteInheritanceObjectWithRelationsView] ([ID], [ClassID], [Timestamp], [ScalarPropertyID], [ScalarPropertyIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ScalarPropertyID], [ScalarPropertyIDClassID]
+    FROM [dbo].[ConcreteInheritanceObjectWithRelations]
+    WHERE [ClassID] IN ('ConcreteInheritanceObjectWithRelations')
+  WITH CHECK OPTION
+GO
+

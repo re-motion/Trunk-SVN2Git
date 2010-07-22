@@ -37,7 +37,11 @@ delete from [TableWithoutIDColumn]
 delete from [TableWithoutClassIDColumn]
 delete from [TableWithoutTimestampColumn]
 delete from [StorageGroupClass]
-
+delete from [SingleInheritanceBaseClass]
+delete from [ConcreteInheritanceFirstDerivedClass]
+delete from [ConcreteInheritanceSecondDerivedClass]
+delete from [SingleInheritanceObjectWithRelations]
+delete from [ConcreteInheritanceObjectWithRelations]
 
 -- FileSystemItem
 -- An invalid file points to this folder:
