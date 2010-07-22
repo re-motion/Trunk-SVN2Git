@@ -102,6 +102,8 @@
     <Compile Include="TestDomain\AbstractWithoutConcreteClass.cs" />
     <Compile Include="TestDomain\InternalStorageGroupAttribute.cs" />
     <Compile Include="TestDomain\DerivedClass.cs" />
+    <Compile Include="TestDomain\PersistentMixin.cs" />
+    <Compile Include="TestDomain\ProductLicenseMixin.cs" />
     <Compile Include="TestDomain\SecondDerivedClass.cs" />
     <Compile Include="TestDomain\DerivedOfDerivedClass.cs" />
     <Compile Include="TestDomain\DevelopmentPartner.cs" />

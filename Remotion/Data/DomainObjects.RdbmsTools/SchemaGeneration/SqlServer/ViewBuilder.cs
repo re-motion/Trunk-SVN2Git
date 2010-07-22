@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -58,7 +59,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
           GetViewName (classDefinition),
-          GetColumnList (GetAllPropertyDefinitions (classDefinition)),
+          GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
           classDefinition.GetEntityName(),
           GetClassIDList (GetClassDefinitionsForWhereClause (classDefinition)));
     }
@@ -72,7 +73,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       ArgumentUtility.CheckNotNullOrEmpty ("concreteClasses", concreteClasses);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
 
-      List<PropertyDefinition> allPropertyDefinitions = GetAllPropertyDefinitions (classDefinition);
+      var groupedPropertyDefinitions = GetGroupedPropertyDefinitions (classDefinition);
       string classIDListForWhereClause = GetClassIDList (GetClassDefinitionsForWhereClause (classDefinition));
 
       createViewStringBuilder.AppendFormat (
@@ -80,7 +81,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           + "  WITH SCHEMABINDING AS\r\n",
           FileBuilder.DefaultSchema,
           GetViewName (classDefinition),
-          GetColumnList (allPropertyDefinitions));
+          GetColumnList (groupedPropertyDefinitions));
 
       int numberOfSelects = 0;
       foreach (ClassDefinition tableRootClass in concreteClasses)
@@ -92,7 +93,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
             "  SELECT [ID], [ClassID], [Timestamp]{0}\r\n"
             + "    FROM [{1}].[{2}]\r\n"
             + "    WHERE [ClassID] IN ({3})\r\n",
-            GetColumnListForUnionSelect (tableRootClass, allPropertyDefinitions),
+            GetColumnListForUnionSelect (tableRootClass, groupedPropertyDefinitions),
             FileBuilder.DefaultSchema,
             tableRootClass.MyEntityName,
             classIDListForWhereClause);
@@ -115,39 +116,45 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           FileBuilder.DefaultSchema);
     }
 
-    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, List<PropertyDefinition> allPropertyDefinitions)
+    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<IStorageProperty, PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
 
-      foreach (PropertyDefinition propertyDefinition in allPropertyDefinitions)
+      foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
       {
-        if (IsPartOfInheritanceBranch (classDefinitionForUnionSelect, propertyDefinition.ClassDefinition))
-        {
-          stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageProperty.Name);
+        var storageProperty = propertyDefinitionGroup.Key;
 
-          if (TableBuilder.HasClassIDColumn (propertyDefinition))
-            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageProperty.Name));
+        if (propertyDefinitionGroup.Any (
+                propertyDefinition => IsPartOfInheritanceBranch (classDefinitionForUnionSelect, propertyDefinition.ClassDefinition)))
+        {
+          stringBuilder.AppendFormat (", [{0}]", storageProperty.Name);
+
+          if (TableBuilder.HasClassIDColumn (propertyDefinitionGroup.First ()))
+            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storageProperty.Name));
         }
         else
         {
           stringBuilder.Append (", null");
 
-          if (TableBuilder.HasClassIDColumn (propertyDefinition))
+          if (TableBuilder.HasClassIDColumn (propertyDefinitionGroup.First ()))
             stringBuilder.Append (", null");
         }
       }
       return stringBuilder.ToString();
     }
 
-    private string GetColumnList (List<PropertyDefinition> propertyDefinitions)
+    private string GetColumnList (IEnumerable<IGrouping<IStorageProperty, PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
-      foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
+      foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
       {
-        stringBuilder.AppendFormat (", [{0}]", propertyDefinition.StorageProperty.Name);
+        var storageProperty = propertyDefinitionGroup.Key;
+        var propertyDefinition = propertyDefinitionGroup.First ();
+
+        stringBuilder.AppendFormat (", [{0}]", storageProperty.Name);
 
         if (TableBuilder.HasClassIDColumn (propertyDefinition))
-          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageProperty.Name));
+          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storageProperty.Name));
       }
       return stringBuilder.ToString();
     }

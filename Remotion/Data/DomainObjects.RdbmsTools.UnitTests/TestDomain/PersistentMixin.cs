@@ -15,25 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 {
-  [DBTable]
-  [Instantiable]
-  [Uses (typeof (ProductLicenseMixin))]
-  public abstract class DevelopmentPartner : Partner
+  public class PersistentMixin : DomainObjectMixin<DomainObject>
   {
-    public new static DevelopmentPartner NewObject()
+    public string PersistentProperty
     {
-      return DomainObject.NewObject<DevelopmentPartner> ();
+      get { return Properties[typeof (ProductLicenseMixin), "PersistentProperty"].GetValue<string> (); }
+      set { Properties[typeof (ProductLicenseMixin), "PersistentProperty"].SetValue (value); }
     }
-
-    protected DevelopmentPartner()
-    {
-    }
-
-    [StringProperty (IsNullable = false, MaximumLength = 255)]
-    public abstract string Competences { get; set; }
   }
 }

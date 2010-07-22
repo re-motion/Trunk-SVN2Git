@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 {
   [DBTable]
   [Instantiable]
+  [Uses (typeof (ProductLicenseMixin))]
   public abstract class Customer : Company
   {
     public new static Customer NewObject()

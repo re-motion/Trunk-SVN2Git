@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 {
   [Instantiable]
+  [Uses (typeof (PersistentMixin))]
   public abstract class DerivedClass : ConcreteClass
   {
     public new static DerivedClass NewObject()

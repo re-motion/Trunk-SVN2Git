@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 {
@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       return false;
     }
 
-    protected List<PropertyDefinition> GetAllPropertyDefinitions (ClassDefinition classDefinition)
+    protected IEnumerable<IGrouping<IStorageProperty, PropertyDefinition>> GetGroupedPropertyDefinitions (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -204,7 +204,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       FillAllPropertyDefinitionsFromDerivedClasses (classDefinition, allPropertyDefinitions);
 
-      return allPropertyDefinitions;
+      return allPropertyDefinitions.GroupBy (propertyDefinition => propertyDefinition.StorageProperty);
     }
 
     private void FillAllPropertyDefinitionsFromBaseClasses (ClassDefinition classDefinition, List<PropertyDefinition> allPropertyDefinitions)

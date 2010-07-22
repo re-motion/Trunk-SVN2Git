@@ -147,39 +147,46 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       string columnList = string.Empty;
       ClassDefinition currentClassDefinition = classDefinition;
+      var addedStorageProperties = new HashSet<IStorageProperty>();
+
       while (currentClassDefinition != null)
       {
-        columnList = GetColumnListOfParticularClass (currentClassDefinition, false) + columnList;
+        columnList = GetColumnListOfParticularClass (currentClassDefinition, false, addedStorageProperties) + columnList;
 
         currentClassDefinition = currentClassDefinition.BaseClass;
       }
 
       StringBuilder columnListStringBuilder = new StringBuilder();
-      AppendColumnListOfDerivedClasses (classDefinition, columnListStringBuilder);
+      AppendColumnListOfDerivedClasses (classDefinition, columnListStringBuilder, addedStorageProperties);
       columnList += columnListStringBuilder.ToString();
       return columnList;
     }
 
-    private void AppendColumnListOfDerivedClasses (ClassDefinition classDefinition, StringBuilder columnListStringBuilder)
+    private void AppendColumnListOfDerivedClasses (ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<IStorageProperty> addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("columnListStringBuilder", columnListStringBuilder);
+      ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
 
       foreach (ClassDefinition derivedClassDefinition in classDefinition.DerivedClasses)
       {
-        columnListStringBuilder.Append (GetColumnListOfParticularClass (derivedClassDefinition, true));
-        AppendColumnListOfDerivedClasses (derivedClassDefinition, columnListStringBuilder);
+        columnListStringBuilder.Append (GetColumnListOfParticularClass (derivedClassDefinition, true, addedStorageProperties));
+        AppendColumnListOfDerivedClasses (derivedClassDefinition, columnListStringBuilder, addedStorageProperties);
       }
     }
 
-    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable)
+    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<IStorageProperty> addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
 
       StringBuilder columnListStringBuilder = new StringBuilder();
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent())
-        columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
+      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent ())
+      {
+        if (addedStorageProperties.Add (propertyDefinition.StorageProperty))
+          columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
+      }
 
       return string.Format (ColumnListOfParticularClassFormatString, classDefinition.ID, columnListStringBuilder);
     }
