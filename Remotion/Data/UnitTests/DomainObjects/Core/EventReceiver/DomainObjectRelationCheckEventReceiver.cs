@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,11 +30,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     // static members and constants
 
     // member fields
-    private Hashtable changingRelatedObjects;
-    private Hashtable changedRelatedObjects;
+    private IDictionary changingRelatedObjects;
+    private IDictionary changedRelatedObjects;
     private StateType changingObjectState;
     private StateType changedObjectState;
-
+    
     // construction and disposing
 
     public DomainObjectRelationCheckEventReceiver (DomainObject domainObject)
@@ -44,8 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public DomainObjectRelationCheckEventReceiver (DomainObject domainObject, bool cancel)
       : base (domainObject, cancel)
     {
-      changingRelatedObjects = new Hashtable ();
-      changedRelatedObjects = new Hashtable ();
+      changingRelatedObjects = new Dictionary<string, DomainObject> ();
+      changedRelatedObjects = new Dictionary<string, DomainObject> ();
     }
 
     // methods and properties
