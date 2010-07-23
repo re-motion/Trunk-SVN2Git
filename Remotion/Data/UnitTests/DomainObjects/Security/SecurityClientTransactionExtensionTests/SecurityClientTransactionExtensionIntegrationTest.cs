@@ -139,7 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
     
     [Test]
-    [Ignore("TODO: refactor SecurityClientTransactionExtension")]
     public void AccessGranted_MixedPropertyWithDefaultPermission ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
@@ -158,7 +157,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    [Ignore ("TODO: refactor SecurityClientTransactionExtension")]
     public void AccessGranted_MixedPropertyWithCustomPermission ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
@@ -178,7 +176,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
 
     [Test]
-    [Ignore ("TODO: refactor SecurityClientTransactionExtension")]
     [ExpectedException (typeof (PermissionDeniedException), 
       ExpectedMessage = "Access to get-accessor of property 'MixedPropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithDefaultPermission ()
@@ -198,7 +195,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
-    [Ignore ("TODO: refactor SecurityClientTransactionExtension")]
     [ExpectedException (typeof (PermissionDeniedException),
       ExpectedMessage = "Access to get-accessor of property 'MixedPropertyWithCustomPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithCustomPermission ()
