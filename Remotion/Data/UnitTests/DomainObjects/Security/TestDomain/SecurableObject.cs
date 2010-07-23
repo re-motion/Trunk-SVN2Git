@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Security;
 
@@ -25,6 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   [Instantiable]
   [DBTable]
+  [Uses (typeof (SecurableObjectMixin))]
   public abstract class SecurableObject : DomainObject, ISecurableObject, ISecurityContextFactory
   {
     public static SecurableObject NewObject (ClientTransaction clientTransaction, IObjectSecurityStrategy securityStrategy)
@@ -79,6 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     [DBBidirectionalRelation ("OtherParent")]
     public abstract ObjectList<SecurableObject> OtherChildren { get; }
+
+    public abstract string PropertyWithDefaultPermission { get; set; }
+    
+    [DemandPropertyReadPermission(TestAccessTypes.First)]
+    public abstract string PropertyWithCustomPermission { get; set; }
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {

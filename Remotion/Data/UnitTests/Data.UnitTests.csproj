@@ -482,8 +482,10 @@
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Security\SetupFixture.cs" />
+    <Compile Include="DomainObjects\Security\TestDomain\ISecurableObjectMixin.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\NonSecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />
+    <Compile Include="DomainObjects\Security\TestDomain\SecurableObjectMixin.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\StubStorageProvider.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\NullEndPointModificationCommandTest.cs" />
