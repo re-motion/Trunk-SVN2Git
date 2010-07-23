@@ -17,7 +17,7 @@
 using Remotion.Data.DomainObjects;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.SingleInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.SingleInheritance
 {
   [Instantiable]
   [Uses (typeof (SingleInheritancePersistentMixin))]

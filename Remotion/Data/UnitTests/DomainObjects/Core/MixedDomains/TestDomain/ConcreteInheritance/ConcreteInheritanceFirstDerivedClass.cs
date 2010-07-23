@@ -14,22 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ConcreteInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.ConcreteInheritance
 {
   [Instantiable]
   [DBTable]
   [Uses (typeof (ConcreteInheritancePersistentMixin))]
-  public abstract class ConcreteInheritanceSecondDerivedClass : ConcreteInheritanceBaseClass
+  public abstract class ConcreteInheritanceFirstDerivedClass : ConcreteInheritanceBaseClass
   {
-    public static ConcreteInheritanceSecondDerivedClass NewObject ()
+    public static ConcreteInheritanceFirstDerivedClass NewObject ()
     {
-      return NewObject<ConcreteInheritanceSecondDerivedClass> ();
+      return NewObject<ConcreteInheritanceFirstDerivedClass>();
     }
 
-    public virtual string SecondDerivedProperty { get; set; }
+    public virtual string FirstDerivedProperty { get; set; }
   }
 }

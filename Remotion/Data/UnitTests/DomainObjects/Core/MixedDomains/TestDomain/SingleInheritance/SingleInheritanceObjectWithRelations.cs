@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,19 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.SingleInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.SingleInheritance
 {
   [Instantiable]
-  [Uses (typeof (SingleInheritancePersistentMixin))]
-  public abstract class SingleInheritanceSecondDerivedClass : SingleInheritanceBaseClass
+  [DBTable]
+  public abstract class SingleInheritanceObjectWithRelations : DomainObject
   {
-    public static SingleInheritanceSecondDerivedClass NewObject ()
+    public static SingleInheritanceObjectWithRelations NewObject ()
     {
-      return NewObject<SingleInheritanceSecondDerivedClass> ();
+      return NewObject<SingleInheritanceObjectWithRelations>();
     }
 
-    public virtual string SecondDerivedProperty { get; set; }
+    [DBBidirectionalRelation ("ScalarOpposingProperty", ContainsForeignKey = true)]
+    public virtual SingleInheritanceBaseClass ScalarProperty { get; set; }
+
+    [DBBidirectionalRelation ("VectorOpposingProperty")]
+    public virtual ObjectList<SingleInheritanceBaseClass> VectorProperty { get; set; }
   }
 }

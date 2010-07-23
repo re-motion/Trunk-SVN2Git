@@ -301,7 +301,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\PersistentMixinsInInheritanceHierarchyTest.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\PersistentMixinsInInheritanceHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
@@ -659,12 +659,12 @@
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\TestDomain\Color.cs" />
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\ConcreteInheritanceBaseClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\ConcreteInheritanceSecondDerivedClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\ConcreteInheritanceFirstDerivedClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\ConcreteInheritancePersistentMixin.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\IConcreteInheritancePersistentMixin.cs" />
-    <Compile Include="DomainObjects\TestDomain\ConcreteInheritance\ConcreteInheritanceObjectWithRelations.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritanceBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritanceSecondDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritanceFirstDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritancePersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\IConcreteInheritancePersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\ConcreteInheritance\ConcreteInheritanceObjectWithRelations.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\AboveInheritanceRootClass.cs" />
     <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\StorageGroupClass.cs" />
@@ -673,12 +673,12 @@
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnum.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnumExtensions.cs" />
     <Compile Include="DomainObjects\Core\Linq\EagerFetchingExtensionMethodsTest.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\ISingleInheritancePersistentMixin.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\SingleInheritanceObjectWithRelations.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\SingleInheritanceBaseClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\SingleInheritanceFirstDerivedClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
-    <Compile Include="DomainObjects\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\ISingleInheritancePersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceObjectWithRelations.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceFirstDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
