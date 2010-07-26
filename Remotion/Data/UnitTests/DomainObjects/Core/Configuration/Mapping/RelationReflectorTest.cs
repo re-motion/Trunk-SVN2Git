@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationReflectorTest : StandardMappingTest
+  public class RelationReflectorTest : MappingReflectionTestBase
   {
     private ReflectionBasedClassDefinition _classWithManySideRelationPropertiesClassDefinition;
     private ReflectionBasedClassDefinition _classWithOneSideRelationPropertiesClassDefinition;

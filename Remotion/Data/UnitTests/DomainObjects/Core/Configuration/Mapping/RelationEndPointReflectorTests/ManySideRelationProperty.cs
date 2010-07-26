@@ -26,7 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSam
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.RelationEndPointReflectorTests
 {
   [TestFixture]
-  public class ManySideRelationProperty : StandardMappingTest
+  public class ManySideRelationProperty : MappingReflectionTestBase
   {
     private ReflectionBasedClassDefinition _classDefinition;
 

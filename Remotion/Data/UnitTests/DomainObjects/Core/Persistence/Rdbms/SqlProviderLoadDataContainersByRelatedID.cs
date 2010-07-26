@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Loading ()
     {
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)],
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)],
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
           DomainObjectIDs.Customer1);
 
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer personContainer = Provider.LoadDataContainer (DomainObjectIDs.Person6);
 
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          TestMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)],
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)],
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson",
           DomainObjectIDs.Person6);
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadWithOrderBy ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
+      ClassDefinition orderDefinition = FakeMappingConfiguration.Current.ClassDefinitions["Order"];
 
       DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (
           orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Customer1);
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedIDOfDifferentStorageProvider ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
+      ClassDefinition orderDefinition = FakeMappingConfiguration.Current.ClassDefinitions["Order"];
 
       DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", DomainObjectIDs.Official1);
       Assert.IsNotNull (orderContainers);

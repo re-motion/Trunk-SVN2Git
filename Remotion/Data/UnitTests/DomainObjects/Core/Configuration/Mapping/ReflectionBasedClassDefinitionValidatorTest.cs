@@ -27,7 +27,7 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedClassDefinitionValidatorTest : StandardMappingTest
+  public class ReflectionBasedClassDefinitionValidatorTest : MappingReflectionTestBase
   {
     [Test]
     public void ValidateCurrentMixinConfiguration_OkWhenNoPersistentChanges ()

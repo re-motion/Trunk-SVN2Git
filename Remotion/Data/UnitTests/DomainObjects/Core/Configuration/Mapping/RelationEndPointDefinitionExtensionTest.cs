@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationEndPointDefinitionExtensionTest : StandardMappingTest
+  public class RelationEndPointDefinitionExtensionTest : MappingReflectionTestBase
   {
     [Test]
     public void GetOppositeEndPointDefinition ()

@@ -24,7 +24,7 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ClassDefinitionCollectionTest : StandardMappingTest
+  public class ClassDefinitionCollectionTest : MappingReflectionTestBase
   {
     // types
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
       _collection = new ClassDefinitionCollection ();
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       try
       {
-        _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", c_testDomainProviderID, typeof (Order), false));
+        _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", TestDomainProviderID, typeof (Order), false));
         Assert.Fail ("Expected an ArgumentException.");
       }
       catch (ArgumentException e)
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void AddTwiceWithSameClassID ()
     {
       _collection.Add (_classDefinition);
-      _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Customer), false));
+      _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Customer), false));
     }
 
     [Test]
@@ -156,14 +156,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassDefinitionCollectionTest'.")]
     public void GetMandatoryForInvalidClass ()
     {
-      TestMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType ());
+      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType ());
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Zaphod'.")]
     public void GetMandatoryForInvalidClassID ()
     {
-      TestMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Zaphod");
+      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Zaphod");
     }
 
     [Test]

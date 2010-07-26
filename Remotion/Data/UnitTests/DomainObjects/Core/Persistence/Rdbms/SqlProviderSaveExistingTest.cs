@@ -380,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         DataContainer orderContainer = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
 
         PropertyDefinition newDefinition =
-            TestMappingConfiguration.Current.ClassDefinitions[typeof (OrderItem)]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
+            FakeMappingConfiguration.Current.ClassDefinitions[typeof (OrderItem)]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
 
         orderContainer.PropertyValues.Add (new PropertyValue (newDefinition, "Raumschiff"));
         orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"] = "Auto";
@@ -522,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         sqlProvider.BeginTransaction ();
 
         DataContainerCollection orderTicketContainers = sqlProvider.LoadDataContainersByRelatedID (
-            TestMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)],
+            FakeMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)],
             "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order",
             DomainObjectIDs.Order1);
 

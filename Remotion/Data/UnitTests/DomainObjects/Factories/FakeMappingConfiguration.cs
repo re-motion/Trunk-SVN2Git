@@ -23,16 +23,16 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public class TestMappingConfiguration
+  public class FakeMappingConfiguration
   {
     // types
 
     // static members and constants
 
-    private static readonly DoubleCheckedLockingContainer<TestMappingConfiguration> s_current
-        = new DoubleCheckedLockingContainer<TestMappingConfiguration> (() => new TestMappingConfiguration());
+    private static readonly DoubleCheckedLockingContainer<FakeMappingConfiguration> s_current
+        = new DoubleCheckedLockingContainer<FakeMappingConfiguration> (() => new FakeMappingConfiguration());
 
-    public static TestMappingConfiguration Current
+    public static FakeMappingConfiguration Current
     {
       get { return s_current.Value; }
     }
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     // construction and disposing
 
-    private TestMappingConfiguration ()
+    private FakeMappingConfiguration ()
     {
       _classDefinitions = CreateClassDefinitions();
       _relationDefinitions = CreateRelationDefinitions();

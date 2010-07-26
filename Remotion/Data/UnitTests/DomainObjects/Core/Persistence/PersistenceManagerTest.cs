@@ -403,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewObjectID ()
     {
-      ClassDefinition orderClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      ClassDefinition orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       ObjectID id1 = _persistenceManager.CreateNewObjectID (orderClass);
       Assert.IsNotNull (id1);
       ObjectID id2 = _persistenceManager.CreateNewObjectID (orderClass);
@@ -414,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewDataContainer ()
     {
-      ClassDefinition orderClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      ClassDefinition orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       DataContainer container = CreateDataContainer (orderClass);
 
       Assert.IsNotNull (container);

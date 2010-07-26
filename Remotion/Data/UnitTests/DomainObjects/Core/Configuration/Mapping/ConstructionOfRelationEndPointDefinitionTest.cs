@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "'System.String', but non-virtual properties must be of type 'Remotion.Data.DomainObjects.ObjectID'.")]
     public void PropertyOfWrongType()
     {
-      ClassDefinition companyDefinition = TestMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
 
       new RelationEndPointDefinition (companyDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name", false);
     }
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         ExpectedMessage = "Relation definition error for end point: Class 'Company' has no property 'UndefinedProperty'.")]
     public void UndefinedProperty()
     {
-      ClassDefinition companyDefinition = TestMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
 
       new RelationEndPointDefinition (companyDefinition, "UndefinedProperty", false);
     }

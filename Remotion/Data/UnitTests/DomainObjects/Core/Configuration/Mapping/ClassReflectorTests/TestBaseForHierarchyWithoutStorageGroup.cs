@@ -21,7 +21,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSam
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassReflectorTests
 {
-  public class TestBaseForHierarchyWithoutStorageGroup : StandardMappingTest
+  public class TestBaseForHierarchyWithoutStorageGroup : MappingReflectionTestBase
   {
     protected void CreatePropertyDefinitionsForClassWithoutStorageGroupWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
     {

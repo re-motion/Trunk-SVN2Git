@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationDefinitionCollectionTest : StandardMappingTest
+  public class RelationDefinitionCollectionTest : MappingReflectionTestBase
   {
     // types
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _relationDefinition = TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
+      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
       _collection = new RelationDefinitionCollection ();
     }
 

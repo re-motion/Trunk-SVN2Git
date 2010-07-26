@@ -33,7 +33,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedClassDefinitionTest : StandardMappingTest
+  public class ReflectionBasedClassDefinitionTest : MappingReflectionTestBase
   {
     private ReflectionBasedClassDefinition _orderClass;
     private ReflectionBasedClassDefinition _distributorClass;
@@ -44,13 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp();
 
-      _orderClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _distributorClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
+      _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _distributorClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
 
       _targetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
     }
 
     [Test]
@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointTrue ()
     {
       RelationDefinition orderToOrderItem =
-          TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"];
+          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"];
       IRelationEndPointDefinition endPointDefinition =
           orderToOrderItem.GetEndPointDefinition ("Order", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
 
@@ -273,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointFalse ()
     {
       RelationDefinition partnerToPerson =
-          TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"];
+          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"];
       IRelationEndPointDefinition partnerEndPoint =
           partnerToPerson.GetEndPointDefinition ("Partner", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
 
@@ -291,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointWithInheritance ()
     {
       RelationDefinition partnerToPerson =
-          TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"];
+          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"];
       IRelationEndPointDefinition partnerEndPoint =
           partnerToPerson.GetEndPointDefinition ("Partner", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
 
@@ -396,12 +396,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void ClassTypeIsNotDerivedFromBaseClassType ()
     {
       ReflectionBasedClassDefinition orderClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "Order", c_testDomainProviderID, typeof (Order), false);
+          "Order", "Order", TestDomainProviderID, typeof (Order), false);
 
       try
       {
         ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-            "Distributor", "Company", c_testDomainProviderID, typeof (Distributor), false, orderClass);
+            "Distributor", "Company", TestDomainProviderID, typeof (Distributor), false, orderClass);
         Assert.Fail ("MappingException was expected.");
       }
       catch (MappingException ex)
@@ -992,14 +992,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetInheritanceRootClass ()
     {
-      ClassDefinition expected = TestMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition expected = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
       Assert.AreSame (expected, _distributorClass.GetInheritanceRootClass());
     }
 
     [Test]
     public void GetAllDerivedClasses ()
     {
-      ClassDefinition companyClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
       ClassDefinitionCollection allDerivedClasses = companyClass.GetAllDerivedClasses();
       Assert.IsNotNull (allDerivedClasses);
       Assert.AreEqual (4, allDerivedClasses.Count);
@@ -1025,7 +1025,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void IsSameOrBaseClassOfTrueWithBaseClass ()
     {
-      ClassDefinition companyClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
 
       Assert.IsTrue (companyClass.IsSameOrBaseClassOf (_distributorClass));
     }

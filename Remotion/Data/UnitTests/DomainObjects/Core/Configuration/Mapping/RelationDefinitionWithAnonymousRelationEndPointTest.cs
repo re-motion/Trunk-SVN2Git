@@ -24,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationDefinitionWithAnonymousRelationEndPointTest : StandardMappingTest
+  public class RelationDefinitionWithAnonymousRelationEndPointTest : MappingReflectionTestBase
   {
     private RelationDefinition _relation;
     private AnonymousRelationEndPointDefinition _clientEndPoint;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _relation = TestMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      _relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       _clientEndPoint = (AnonymousRelationEndPointDefinition) _relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) _relation.EndPointDefinitions[1];
     }
@@ -49,8 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetOppositeClassDefinition ()
     {
-      Assert.AreSame (TestMappingConfiguration.Current.ClassDefinitions[typeof (Client)], _relation.GetOppositeClassDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
-      Assert.AreSame (TestMappingConfiguration.Current.ClassDefinitions[typeof (Location)], _relation.GetOppositeClassDefinition ("Client", null));
+      Assert.AreSame (FakeMappingConfiguration.Current.ClassDefinitions[typeof (Client)], _relation.GetOppositeClassDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
+      Assert.AreSame (FakeMappingConfiguration.Current.ClassDefinitions[typeof (Location)], _relation.GetOppositeClassDefinition ("Client", null));
     }
 
     [Test]

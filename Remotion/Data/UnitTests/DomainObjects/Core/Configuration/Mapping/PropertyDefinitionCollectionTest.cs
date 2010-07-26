@@ -28,7 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class PropertyDefinitionCollectionTest : StandardMappingTest
+  public class PropertyDefinitionCollectionTest : MappingReflectionTestBase
   {
     private PropertyDefinitionCollection _collection;
     private PropertyDefinition _propertyDefinition1;
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
       _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name", "Name", StorageClass.Persistent);
       _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name2", "Name", StorageClass.Persistent);
       _propertyDefinitionNonPersisted = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name3", "Name", StorageClass.Transaction);
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void InitializeWithClassDefinition ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      ClassDefinition orderDefinition = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       PropertyDefinitionCollection collection = new PropertyDefinitionCollection (orderDefinition);
       Assert.AreSame (orderDefinition, collection.ClassDefinition);
     }

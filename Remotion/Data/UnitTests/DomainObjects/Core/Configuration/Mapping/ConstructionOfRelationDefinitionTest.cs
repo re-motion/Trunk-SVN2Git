@@ -24,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ConstructionOfRelationDefinitionTest : StandardMappingTest
+  public class ConstructionOfRelationDefinitionTest : MappingReflectionTestBase
   {
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' cannot have two virtual end points.")]

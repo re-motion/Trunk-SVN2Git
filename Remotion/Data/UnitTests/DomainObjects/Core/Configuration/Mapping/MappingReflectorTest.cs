@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.IsNotNull (actualClassDefinitions);
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
-      classDefinitionChecker.Check (TestMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
+      classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
       Assert.IsFalse (actualClassDefinitions.Contains (typeof (TestDomainBase)));
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       RelationDefinitionCollection actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions);
 
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
-      relationDefinitionChecker.Check (TestMappingConfiguration.Current.RelationDefinitions, actualRelationDefinitions, true);
+      relationDefinitionChecker.Check (FakeMappingConfiguration.Current.RelationDefinitions, actualRelationDefinitions, true);
     }
 
     [Test]

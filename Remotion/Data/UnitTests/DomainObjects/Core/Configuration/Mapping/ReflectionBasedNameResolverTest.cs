@@ -26,7 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSam
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedNameResolverTest : StandardMappingTest
+  public class ReflectionBasedNameResolverTest : MappingReflectionTestBase
   {
     private PropertyInfo _orderNumberProperty;
     private PropertyInfo _overriddenProperty;

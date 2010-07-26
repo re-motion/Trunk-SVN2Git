@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ClassDefinitionValidatorTest : StandardMappingTest
+  public class ClassDefinitionValidatorTest : MappingReflectionTestBase
   {
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =

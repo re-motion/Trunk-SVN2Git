@@ -15,42 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
+using NUnit.Framework;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Factories
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
-  public class StandardConfiguration: BaseConfiguration
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    private static StandardConfiguration s_instance;
 
-    public static StandardConfiguration Instance
+    [SetUp]
+    public void SetUp ()
     {
-      get
-      {
-        if (s_instance == null)
-        {
-          Debugger.Break ();
-          throw new InvalidOperationException ("StandardConfiguration has not been Initialized by invoking Initialize()");
-        }
-        return s_instance;
-      }
-    }
-
-    public static void Initialize()
-    {
-      s_instance = new StandardConfiguration();
-    }
-
-    private readonly DomainObjectIDs _domainObjectIDs;
-
-    private StandardConfiguration()
-    {
-      _domainObjectIDs = new DomainObjectIDs();
-    }
-
-    public DomainObjectIDs GetDomainObjectIDs()
-    {
-      return _domainObjectIDs;
+      TestMappingConfiguration.Initialize();
     }
   }
 }

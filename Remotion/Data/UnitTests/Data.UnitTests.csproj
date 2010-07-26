@@ -207,6 +207,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeColumnDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\MappingReflectionTestBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondRight.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />
@@ -263,6 +264,8 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\SetUpFixture.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
@@ -924,7 +927,7 @@
     <Compile Include="DomainObjects\Factories\TestDataContainerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Factories\TestMappingConfiguration.cs">
+    <Compile Include="DomainObjects\Factories\FakeMappingConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectTest.cs">

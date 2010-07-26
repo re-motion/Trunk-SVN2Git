@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedVirtualRelationEndPointDefinitionTest : StandardMappingTest
+  public class ReflectionBasedVirtualRelationEndPointDefinitionTest : MappingReflectionTestBase
   {
     [Test]
     public void PropertyInfo ()

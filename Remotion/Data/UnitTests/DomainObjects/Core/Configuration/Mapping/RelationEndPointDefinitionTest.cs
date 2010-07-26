@@ -24,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationEndPointDefinitionTest : StandardMappingTest
+  public class RelationEndPointDefinitionTest : MappingReflectionTestBase
   {
     private VirtualRelationEndPointDefinition _customerEndPoint;
     private RelationEndPointDefinition _orderEndPoint;
@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      RelationDefinition customerToOrder = TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
+      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
 
       _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
           "Customer", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void RelationDefinitionNull ()
     {
       RelationEndPointDefinition definition = new RelationEndPointDefinition (
-          TestMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)], 
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)], 
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", 
           true);
 

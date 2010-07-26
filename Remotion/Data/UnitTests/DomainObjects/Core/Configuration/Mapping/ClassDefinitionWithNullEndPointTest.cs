@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ClassDefinitionWithNullEndPointTest : StandardMappingTest
+  public class ClassDefinitionWithNullEndPointTest : MappingReflectionTestBase
   {
     // types
 
@@ -42,10 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _clientClass = TestMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
-      _locationClass = TestMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
+      _clientClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
+      _locationClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
 
-      RelationDefinition relation = TestMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       _clientEndPoint = (AnonymousRelationEndPointDefinition) relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) relation.EndPointDefinitions[1];
     }

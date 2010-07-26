@@ -15,43 +15,45 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
-namespace Remotion.Data.UnitTests.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
-  public class StandardMappingTest : DatabaseTest
+  [TestFixture]
+  public class MappingReflectionTestBase
   {
-    public const string CreateTestDataFileName = "DataDomainObjects_CreateTestData.sql";
+    public const string DefaultStorageProviderID = "DefaultStorageProvider";
+    public const string TestDomainProviderID = "TestDomain";
 
-    protected StandardMappingTest ()
-        : base (new StandardMappingDatabaseAgent (TestDomainConnectionString), CreateTestDataFileName)
+    [SetUp]
+    public virtual void SetUp ()
+    {
+      DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
+      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
+      ConfigurationWrapper.SetCurrent (null);
+    }
+
+    [TearDown]
+    public virtual void TearDown ()
     {
     }
 
-    public override void TestFixtureSetUp ()
+    [TestFixtureSetUp]
+    public virtual void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp();
-      DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration());
-      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
+      DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
+      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
-      FakeMappingConfiguration.Reset();
-    }
-
-    public override void SetUp ()
-    {
-      base.SetUp();
-      DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration());
-      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
-      ConfigurationWrapper.SetCurrent (null);
+      FakeMappingConfiguration.Reset ();
     }
 
     protected DomainObjectIDs DomainObjectIDs
     {
-      get { return StandardConfiguration.Instance.GetDomainObjectIDs(); }
+      get { return TestMappingConfiguration.Instance.GetDomainObjectIDs(); }
     }
 
     protected MappingConfiguration Configuration

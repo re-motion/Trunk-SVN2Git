@@ -29,7 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationReflectorWithMixinsTest : StandardMappingTest
+  public class RelationReflectorWithMixinsTest : MappingReflectionTestBase
   {
     private ReflectionBasedClassDefinition _mixinTargetClassDefinition;
     private ReflectionBasedClassDefinition _multiMixinTargetClassDefinition;

@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class AnonymousRelationEndPointDefinitionTest : StandardMappingTest
+  public class AnonymousRelationEndPointDefinitionTest : MappingReflectionTestBase
   {
     private ClassDefinition _clientDefinition;
     private AnonymousRelationEndPointDefinition _definition;

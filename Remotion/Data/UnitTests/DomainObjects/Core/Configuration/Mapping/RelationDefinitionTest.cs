@@ -25,7 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationDefinitionTest : StandardMappingTest
+  public class RelationDefinitionTest : MappingReflectionTestBase
   {
     private ClassDefinition _orderClass;
     private ClassDefinition _customerClass;
@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _customerClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Customer)];
-      _orderClass = TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _customerToOrder = TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
+      _customerClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Customer)];
+      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
       _customerEndPoint = (VirtualRelationEndPointDefinition) _customerToOrder.EndPointDefinitions[0];
       _orderEndPoint = (RelationEndPointDefinition) _customerToOrder.EndPointDefinitions[1];
     }
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "and property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders'.")]
     public void GetMandatoryOppositeRelationEndPointDefinitionWithNotAssociatedRelationDefinitionID ()
     {
-      RelationDefinition orderToOrderItem = TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"];
+      RelationDefinition orderToOrderItem = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"];
 
       IRelationEndPointDefinition wrongEndPointDefinition =
           orderToOrderItem.GetMandatoryOppositeRelationEndPointDefinition (
@@ -136,8 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"];
 
-      Assert.IsFalse (relationDefinition.Contains (TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[0]));
-      Assert.IsFalse (relationDefinition.Contains (TestMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[1]));
+      Assert.IsFalse (relationDefinition.Contains (FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[0]));
+      Assert.IsFalse (relationDefinition.Contains (FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[1]));
 
       Assert.IsTrue (relationDefinition.Contains (MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[0]));
       Assert.IsTrue (relationDefinition.Contains (MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[1]));
