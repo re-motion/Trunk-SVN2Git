@@ -220,11 +220,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration."
         + "OrderTicket.Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationDefinition_NotInMapping ()
     {
-      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order");
       RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
       Assert.IsFalse (ReferenceEquals (relationDefinition, deserializedRelationDefinition));

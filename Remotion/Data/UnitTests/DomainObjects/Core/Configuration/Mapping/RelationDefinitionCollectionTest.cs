@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
+      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order"];
       _collection = new RelationDefinitionCollection ();
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void RelationDefinitionIndexer ()
     {
       _collection.Add (_relationDefinition);
-      Assert.AreSame (_relationDefinition, _collection["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.AreSame (_relationDefinition, _collection["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order"]);
     }
 
     [Test]
@@ -69,13 +69,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void ContainsRelationDefinitionIDTrue ()
     {
       _collection.Add (_relationDefinition);
-      Assert.IsTrue (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.IsTrue (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order"));
     }
 
     [Test]
     public void ContainsRelationDefinitionIDFalse ()
     {
-      Assert.IsFalse (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.IsFalse (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order"));
     }
 
     [Test]

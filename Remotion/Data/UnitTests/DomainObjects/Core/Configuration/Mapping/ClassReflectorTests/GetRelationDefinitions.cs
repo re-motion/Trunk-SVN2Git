@@ -21,7 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassReflectorTests
 {
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties'.",
+        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties'.",
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingClassDefinition ()
     {
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties'.",
+        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties'.",
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForBidirectionalRelation ()
     {
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties'.",
+        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties'.",
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForUnidirectionalRelation ()
     {
@@ -195,28 +195,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     private RelationDefinition CreateNoAttributeRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute", 
               false),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.NoAttribute",
+          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.NoAttribute",
               false, null));
     }
 
     private RelationDefinition CreateNotNullableRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable", 
               true),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.NotNullable",
+          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.NotNullable",
               true, null));
     }
 
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseUnidirectional",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseUnidirectional", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseUnidirectional",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseUnidirectional", 
               false),
           CreateAnonymousRelationEndPointDefinition());
     }
@@ -224,8 +224,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     private RelationDefinition CreateBasePrivateUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateUnidirectional",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateUnidirectional",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateUnidirectional",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateUnidirectional",
               false),
           CreateAnonymousRelationEndPointDefinition());
     }
@@ -233,68 +233,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     private RelationDefinition CreateUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional", false),
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional", false),
           CreateAnonymousRelationEndPointDefinition());
     }
 
     private RelationDefinition CreateBaseBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseBidirectionalOneToOne",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseBidirectionalOneToOne",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne", 
               false),
-          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne", 
+          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne", 
               false));
     }
 
     private RelationDefinition CreateBasePrivateBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateBidirectionalOneToOne",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToOne", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateBidirectionalOneToOne",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToOne", 
               false),
-          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToOne", 
+          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToOne", 
               false));
     }
 
     private RelationDefinition CreateBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToOne",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToOne", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToOne",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToOne", 
               false),
-          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToOne", 
+          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToOne", 
               false));
     }
 
     private RelationDefinition CreateBaseBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseBidirectionalOneToMany",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BaseBidirectionalOneToMany",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany", 
               false),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany",
+          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany",
               false, "The Sort Expression"));
     }
 
     private RelationDefinition CreateBasePrivateBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateBidirectionalOneToMany",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToMany",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BasePrivateBidirectionalOneToMany",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToMany",
               false),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToMany",
+          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BasePrivateBidirectionalOneToMany",
               false, "The Sort Expression"));
     }
 
     private RelationDefinition CreateBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToMany",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToMany", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToMany",
+          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.BidirectionalOneToMany", 
               false),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToMany",
+          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToMany",
               false, "The Sort Expression"));
     }
 

@@ -22,8 +22,8 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassReflectorTests
 {

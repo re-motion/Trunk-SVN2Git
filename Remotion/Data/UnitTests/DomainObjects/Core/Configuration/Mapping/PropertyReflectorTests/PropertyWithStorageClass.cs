@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("NoAttribute", actual.StorageProperty.Name);
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",
           actual.PropertyName);
       Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("Persistent", actual.StorageProperty.Name);
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage = "Only StorageClass.Persistent is supported.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute, "
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute, "
         + "property: None")]
     public void GetMetadata_WithStorageClassNone ()
     {

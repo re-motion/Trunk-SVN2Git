@@ -16,9 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -76,9 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void RelationDefinitionNotNull ()
     {
       RelationEndPointDefinition oppositeEndPoint = new RelationEndPointDefinition (
-          MappingConfiguration.Current.ClassDefinitions[typeof (Location)], "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", true);
+          MappingConfiguration.Current.ClassDefinitions[typeof (Location)], "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Location.Client", true);
 
-      RelationDefinition relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", _definition, oppositeEndPoint);
+      RelationDefinition relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Location.Client", _definition, oppositeEndPoint);
 
       Assert.IsNotNull (_definition.RelationDefinition);
     }

@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NoAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NoAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NullableFromAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NullableFromAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NotNullable",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NotNullable",
           actual.PropertyName);
       Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);

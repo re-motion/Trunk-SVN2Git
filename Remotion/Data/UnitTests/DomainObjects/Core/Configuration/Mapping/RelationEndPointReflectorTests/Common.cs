@@ -21,13 +21,13 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.RelationEndPointReflectorTests
 {
   [TestFixture]
-  public class Common: StandardMappingTest
+  public class Common : MappingReflectionTestBase
   {
     [Test]
     public void CreateRelationEndPointReflector()

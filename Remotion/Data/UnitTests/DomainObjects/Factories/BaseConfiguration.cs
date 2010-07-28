@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
 using System.Reflection;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Development;
@@ -25,9 +25,11 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -37,12 +39,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public abstract class BaseConfiguration
   {
-    public static AssemblyFinderTypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
+    public static ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
     {
       var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray());
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
-      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
+      var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
+      var mappingNamespaces = new[]
+                              {
+                                  mappingRootNamespace + ".TestDomain.Integration",
+                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping"
+                              };
+
+      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, mappingNamespaces);
+      return typeDiscoveryService;
     }
 
     private readonly StorageConfiguration _storageConfiguration;
@@ -61,8 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       _mappingLoaderConfiguration = new MappingLoaderConfiguration ();
       _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
-
-      _mappingConfiguration = new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (GetType ().Assembly)));
+       
+      var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
+      
+      _mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
     }
 

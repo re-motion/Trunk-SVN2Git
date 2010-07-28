@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       Assert.IsInstanceOfType (typeof (ReflectionBasedPropertyDefinition), actual);
       Assert.IsNotNull (actual);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreEqual ("Boolean", actual.StorageProperty.Name);
       Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreSame (typeof (bool), actual.PropertyType);

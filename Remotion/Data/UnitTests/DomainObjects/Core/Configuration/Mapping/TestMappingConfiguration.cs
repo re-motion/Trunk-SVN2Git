@@ -25,14 +25,14 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainObjectIDs;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -68,10 +68,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
       _storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection, storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute(), DatabaseTest.c_testDomainProviderID));
+          storageProviderDefinitionCollection, storageProviderDefinitionCollection[MappingReflectionTestBase.DefaultStorageProviderID]);
+      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute (), MappingReflectionTestBase.c_testDomainProviderID));
       _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (new StorageProviderStubAttribute(), DatabaseTest.c_unitTestStorageProviderStubID));
+          new StorageGroupElement (new StorageProviderStubAttribute (), MappingReflectionTestBase.c_unitTestStorageProviderStubID));
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (new TableInheritanceTestDomainAttribute(), TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
 
@@ -80,10 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       DomainObjectsConfiguration.SetCurrent (
           new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
 
-      //var mappingNamespace = GetType().Namespace;
-
-      var typeDiscoveryService = GetTypeDiscoveryService ();
-      //typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (typeDiscoveryService, mappingNamespace);
+      var typeDiscoveryService = GetTypeDiscoveryService();
 
       _mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
@@ -91,13 +88,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       _domainObjectIDs = new DomainObjectIDs();
     }
 
-    private ITypeDiscoveryService GetTypeDiscoveryService ()
+    public static ITypeDiscoveryService GetTypeDiscoveryService ()
     {
-      var rootAssemlbies = new[] { new RootAssembly (GetType ().Assembly, true) };
+      var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
+      var mappingNamespaces = new[]
+                              {
+                                  mappingRootNamespace + ".TestDomain.Integration",
+                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping",
+                              };
+
+      var rootAssemlbies = new[] { new RootAssembly (typeof (TestMappingConfiguration).Assembly, true) };
       var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemlbies);
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
-      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+      var typeDiscoveryService = (ITypeDiscoveryService) new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (typeDiscoveryService, mappingNamespaces);
+      return typeDiscoveryService;
     }
 
     public MappingConfiguration GetMappingConfiguration ()

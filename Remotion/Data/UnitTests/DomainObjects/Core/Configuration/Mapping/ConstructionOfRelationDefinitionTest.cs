@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   public class ConstructionOfRelationDefinitionTest : MappingReflectionTestBase
   {
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' cannot have two virtual end points.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer' cannot have two virtual end points.")]
     public void TwoVirtualRelationEndPointDefinitions ()
     {
       ClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);
@@ -36,28 +36,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       ClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
 
-      VirtualRelationEndPointDefinition endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", true, CardinalityType.One, typeof (Customer));
+      VirtualRelationEndPointDefinition endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer", true, CardinalityType.One, typeof (Customer));
 
-      new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", endPointDefinition1, endPointDefinition2);
+      new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer", endPointDefinition1, endPointDefinition2);
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson' cannot have two non-virtual end points.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson' cannot have two non-virtual end points.")]
     public void TwoRelationEndPointDefinitions ()
     {
       ReflectionBasedClassDefinition partnerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Partner", "Partner", "TestDomain", typeof (Partner), false);
       partnerDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create(partnerDefinition, typeof (Partner), "ContactPerson", "ContactPersonID", typeof (ObjectID)));
 
       RelationEndPointDefinition endPointDefinition1 = new RelationEndPointDefinition (
-          partnerDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", false);
+          partnerDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson", false);
 
       ReflectionBasedClassDefinition personDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "Person", "TestDomain", typeof (Person), false);
-      personDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(personDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany", "AssociatedPartnerCompanyID", typeof (ObjectID), StorageClass.Persistent));
+      personDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(personDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Person.AssociatedPartnerCompany", "AssociatedPartnerCompanyID", typeof (ObjectID), StorageClass.Persistent));
 
       RelationEndPointDefinition endPointDefinition2 = new RelationEndPointDefinition (
-          personDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany", false);
+          personDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Person.AssociatedPartnerCompany", false);
 
-      new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", endPointDefinition1, endPointDefinition2);
+      new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson", endPointDefinition1, endPointDefinition2);
     }
   }
 }

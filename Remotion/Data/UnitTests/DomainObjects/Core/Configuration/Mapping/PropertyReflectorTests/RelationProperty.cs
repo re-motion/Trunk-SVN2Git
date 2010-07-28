@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NoAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (ObjectID), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.NotNullable",
           actual.PropertyName);
       Assert.AreSame (typeof (ObjectID), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);

@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -46,19 +46,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
+      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer"];
 
       _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Customer", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+          "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Customer.Orders");
 
       _orderEndPoint = (RelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Order", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
+          "Order", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
     }
 
     [Test]
     public void InitializeWithPropertyType ()
     {
-      VirtualRelationEndPointDefinition endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(ClassDefinitionFactory.CreateOrderDefinition (), "VirtualEndPoint", true, CardinalityType.One, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem, Remotion.Data.UnitTests", null);
+      VirtualRelationEndPointDefinition endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(ClassDefinitionFactory.CreateOrderDefinition (), "VirtualEndPoint", true, CardinalityType.One, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem, Remotion.Data.UnitTests", null);
 
       Assert.IsTrue (endPoint.IsPropertyTypeResolved);
       Assert.AreSame (typeof (OrderItem), endPoint.PropertyType);

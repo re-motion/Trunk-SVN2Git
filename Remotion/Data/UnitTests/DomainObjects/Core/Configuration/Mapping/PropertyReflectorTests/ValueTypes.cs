@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreSame (typeof (bool), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithAllDataTypes.NaBooleanProperty", actual.PropertyName);
       Assert.AreSame (typeof (bool?), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithAllDataTypes.EnumProperty", actual.PropertyName);
       Assert.AreSame (typeof (ClassWithAllDataTypes.EnumType), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       PropertyDefinition actual = propertyReflector.GetMetadata ();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithAllDataTypes.ExtensibleEnumProperty", actual.PropertyName);
       Assert.AreSame (typeof (Color), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional", actual.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional", actual.PropertyName);
       Assert.AreSame (typeof (ObjectID), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);

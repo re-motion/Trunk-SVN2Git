@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void NewDataContainer ()
     {
-      DataContainer newDataContainer = CreateAndRegisterNewDataContainer(FakeMappingConfiguration.Current.ClassDefinitions["Computer"]);
+      DataContainer newDataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions["Computer"]);
 
       newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"] = "123";
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void AllDataTypes ()
     {
-      ClassDefinition classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
 
       DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void AllDataTypes_DefaultValues ()
     {
-      ClassDefinition classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
 
       DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ExistingObjectRelatesToNew ()
     {
-      ClassDefinition employeeClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Employee)];
+      ClassDefinition employeeClass = MappingConfiguration.Current.ClassDefinitions[typeof (Employee)];
       Employee newSupervisor = Employee.NewObject ();
       Employee existingSubordinate = Employee.GetObject (DomainObjectIDs.Employee1);
 
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (FakeMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (FakeMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (FakeMappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);

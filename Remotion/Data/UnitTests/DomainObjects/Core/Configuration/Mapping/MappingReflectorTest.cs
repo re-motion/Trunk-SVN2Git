@@ -22,24 +22,24 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class MappingReflectorTest: StandardMappingTest
+  public class MappingReflectorTest: MappingReflectionTestBase
   {
     [Test]
     public void GetResolveTypes()
     {
-      IMappingLoader mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly));
+      IMappingLoader mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
       Assert.IsTrue (mappingReflector.ResolveTypes);
     }
 
     [Test]
     public void GetClassDefinitions ()
     {
-      MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly));
+      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
 
       ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationDefinitions()
     {
-      MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly));
+      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
 
       ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
       RelationDefinitionCollection actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions);

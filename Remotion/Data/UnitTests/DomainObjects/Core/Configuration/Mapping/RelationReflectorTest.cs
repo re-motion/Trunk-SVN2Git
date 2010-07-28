@@ -21,7 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.ID, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional"));
     }
 
     [Test]
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithOneSideRelationPropertiesClassDefinition));
       Assert.That (oppositeEndPointDefinition.PropertyName, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToOne"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToOne"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithManySideRelationProperties)));
       Assert.That (oppositeEndPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var oppositeEndPointDefinition = (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithOneSideRelationPropertiesClassDefinition));
       Assert.That (oppositeEndPointDefinition.PropertyName, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToMany"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToMany"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithManySideRelationProperties>)));
       Assert.That (oppositeEndPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var oppositeEndPointDefinition = (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithBothEndPointsOnSameClassClassDefinition));
       Assert.That (oppositeEndPointDefinition.PropertyName, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBothEndPointsOnSameClass.Children"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBothEndPointsOnSameClass.Children"));
       Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithBothEndPointsOnSameClass>)));
       Assert.That (oppositeEndPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }

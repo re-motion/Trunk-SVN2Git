@@ -15,20 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class MappingConfigurationTest: StandardMappingTest
+  public class MappingConfigurationTest : MappingReflectionTestBase
   {
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
@@ -156,10 +155,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
+              FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
+              MappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"]));
     }
 
     [Test]
@@ -167,10 +166,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]));
+              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]));
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"]));
     }
 
     [Test]
@@ -178,20 +177,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].
+              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"].
                   EndPointDefinitions[0]));
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].
+              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"].
                   EndPointDefinitions[1]));
 
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
                   0]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].EndPointDefinitions[
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
                   1]));
     }
 
@@ -204,10 +203,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       orderTicketDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.Create(orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false));
 
-      VirtualRelationEndPointDefinition orderEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
+      VirtualRelationEndPointDefinition orderEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
       RelationEndPointDefinition orderTicketEndPointdefinition =
-          new RelationEndPointDefinition (orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", true);
+          new RelationEndPointDefinition (orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order", true);
 
       new RelationDefinition ("RelationIDNotInMapping", orderEndPointDefinition, orderTicketEndPointdefinition);
 

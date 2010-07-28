@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -33,13 +33,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
+      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer"];
 
       _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Customer", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+          "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Customer.Orders");
 
       _orderEndPoint = (RelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Order", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
+          "Order", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       RelationEndPointDefinition endPoint = new RelationEndPointDefinition (
           ClassDefinitionFactory.CreateOrderDefinitionWithResolvedCustomerProperty (), 
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer", 
           true);
 
       Assert.IsTrue (endPoint.IsPropertyTypeResolved);
@@ -64,17 +64,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void CorrespondsToForVirtualEndPoint ()
     {
-      Assert.IsTrue (_customerEndPoint.CorrespondsTo ("Customer", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+      Assert.IsTrue (_customerEndPoint.CorrespondsTo ("Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Customer.Orders"));
       Assert.IsFalse (_customerEndPoint.CorrespondsTo ("Customer", "NonExistingProperty"));
-      Assert.IsFalse (_customerEndPoint.CorrespondsTo ("OrderTicket", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+      Assert.IsFalse (_customerEndPoint.CorrespondsTo ("OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Customer.Orders"));
     }
 
     [Test]
     public void CorrespondsTo ()
     {
-      Assert.IsTrue (_orderEndPoint.CorrespondsTo ("Order", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+      Assert.IsTrue (_orderEndPoint.CorrespondsTo ("Order", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer"));
       Assert.IsFalse (_orderEndPoint.CorrespondsTo ("Order", "NonExistingProperty"));
-      Assert.IsFalse (_orderEndPoint.CorrespondsTo ("Partner", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+      Assert.IsFalse (_orderEndPoint.CorrespondsTo ("Partner", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer"));
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       RelationEndPointDefinition definition = new RelationEndPointDefinition (
           FakeMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)], 
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", 
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order", 
           true);
 
       Assert.IsNull (definition.RelationDefinition);

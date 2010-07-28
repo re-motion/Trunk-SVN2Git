@@ -21,12 +21,12 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.RelationEndPointReflectorTests
 {
   [TestFixture]
-  public class BaseOneSideRelationProperty: StandardMappingTest
+  public class BaseOneSideRelationProperty : MappingReflectionTestBase
   {
     private ReflectionBasedClassDefinition _classDefinition;
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
       VirtualRelationEndPointDefinition relationEndPointDefinition = (VirtualRelationEndPointDefinition) actual;
       Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToOne",
           relationEndPointDefinition.PropertyName);
       Assert.AreSame (typeof (ClassWithManySideRelationProperties), relationEndPointDefinition.PropertyType);
       Assert.AreEqual (CardinalityType.One, relationEndPointDefinition.Cardinality);
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
       VirtualRelationEndPointDefinition relationEndPointDefinition = (VirtualRelationEndPointDefinition) actual;
       Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationPropertiesNotInMapping.BaseBidirectionalOneToMany",
           relationEndPointDefinition.PropertyName);
       Assert.AreSame (typeof (ObjectList<ClassWithManySideRelationProperties>), relationEndPointDefinition.PropertyType);
       Assert.AreEqual (CardinalityType.Many, relationEndPointDefinition.Cardinality);

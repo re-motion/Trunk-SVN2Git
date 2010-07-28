@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
@@ -73,13 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping."
-        + "ReflectionBasedClassDefinition: Order' of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current"
-        + " mapping.\r\nParameter name: id")]
+        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ReflectionBasedClassDefinition: Order' "
+        + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
     public void ClassDefinitionNotInMapping ()
     {
-      ObjectID id = DomainObjectIDs.Order1;
-      MappingConfiguration.SetCurrent (null);
+      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
+      ObjectID id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
       DataContainer.CreateNew (id);
     }

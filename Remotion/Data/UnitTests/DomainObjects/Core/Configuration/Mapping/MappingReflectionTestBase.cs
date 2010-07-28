@@ -28,6 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string TestDomainProviderID = "TestDomain";
+    public const string c_testDomainProviderID = "TestDomain";
+    public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
     [SetUp]
     public virtual void SetUp ()

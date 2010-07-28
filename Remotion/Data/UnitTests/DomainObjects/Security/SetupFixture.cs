@@ -28,10 +28,8 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
-using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security
 {
@@ -47,11 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
-      var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (GetType().Assembly, true));
-      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
-      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
+      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly))));
     }
 
     private string GetFullPath (string fileName)

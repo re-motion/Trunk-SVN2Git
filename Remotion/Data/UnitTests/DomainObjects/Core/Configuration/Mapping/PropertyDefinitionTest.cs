@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-       "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber")]
+       "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber")]
     public void IntPropertyWithMaxLength ()
     {
       ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), 10);
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-       "IsNullable parameter can only be supplied for reference types but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber")]
+       "IsNullable parameter can only be supplied for reference types but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber")]
     public void CheckValueTypeCtors ()
     {
       ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), false);

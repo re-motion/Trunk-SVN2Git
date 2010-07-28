@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NoAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (byte[]), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBinaryProperties.NullableFromAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NullableFromAttribute",
           actual.PropertyName);
       Assert.AreSame (typeof (byte[]), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBinaryProperties.NotNullable",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NotNullable",
           actual.PropertyName);
       Assert.AreSame (typeof (byte[]), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBinaryProperties.MaximumLength",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.MaximumLength",
           actual.PropertyName);
       Assert.AreSame (typeof (byte[]), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       PropertyDefinition actual = propertyReflector.GetMetadata();
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithBinaryProperties.NotNullableAndMaximumLength",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithBinaryProperties.NotNullableAndMaximumLength",
           actual.PropertyName);
       Assert.AreSame (typeof (byte[]), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);

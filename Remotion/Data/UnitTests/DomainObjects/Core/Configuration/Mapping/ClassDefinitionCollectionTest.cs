@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       catch (ArgumentException e)
       {
         Assert.AreEqual (
-            "A ClassDefinition with Type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' is already part of this collection.\r\nParameter name: value",
+            "A ClassDefinition with Type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order' is already part of this collection.\r\nParameter name: value",
             e.Message);
 
         Assert.IsFalse (_collection.Contains ("OtherID"));
@@ -84,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' and "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' both have the same class ID 'Order'. Use the ClassIDAttribute to define "
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order' and "
+        + "'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Customer' both have the same class ID 'Order'. Use the ClassIDAttribute to define "
         + "unique IDs for these classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
         + "PublicKeyToken=.*' and 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
         + "PublicKeyToken=.*'.", MatchType = MessageMatch.Regex)]

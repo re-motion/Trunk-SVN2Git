@@ -16,25 +16,24 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class ConstructionOfRelationEndPointDefinitionTest: StandardMappingTest
+  public class ConstructionOfRelationEndPointDefinitionTest: MappingReflectionTestBase
   {
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "Relation definition error: Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name' of class 'Company' is of type "
+        "Relation definition error: Property 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Name' of class 'Company' is of type "
         + "'System.String', but non-virtual properties must be of type 'Remotion.Data.DomainObjects.ObjectID'.")]
     public void PropertyOfWrongType()
     {
       ClassDefinition companyDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
 
-      new RelationEndPointDefinition (companyDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name", false);
+      new RelationEndPointDefinition (companyDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Name", false);
     }
 
     [Test]

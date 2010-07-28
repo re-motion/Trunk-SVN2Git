@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Mixins;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "A persistence-related mixin was removed from the domain object type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order after the mapping information was built: "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order after the mapping information was built: "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinA.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixisMissing ()
     {
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "One or more persistence-related mixins were added to the domain object type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order after the mapping information was built: "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order after the mapping information was built: "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinB, "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsAdded ()
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "One or more persistence-related mixins were added to the domain object type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company after the mapping information was built: "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company after the mapping information was built: "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinB, "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()

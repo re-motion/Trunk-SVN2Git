@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       _clientClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
       _locationClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
 
-      RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Location.Client");
       _clientEndPoint = (AnonymousRelationEndPointDefinition) relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) relation.EndPointDefinitions[1];
     }
@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationDefinitions ()
     {
-      Assert.IsTrue (_locationClass.GetRelationDefinitions ().Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
-      Assert.IsFalse (_clientClass.GetRelationDefinitions ().Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"));
+      Assert.IsTrue (_locationClass.GetRelationDefinitions ().Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Location.Client"));
+      Assert.IsFalse (_clientClass.GetRelationDefinitions ().Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Location.Client"));
     }
 
     [Test]

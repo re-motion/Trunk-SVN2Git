@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "The persistence-relevant mixin "
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PersistentMixinFinderTest+PersistedGenericMixin`1 applied to class "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order has open generic type parameters. All type parameters of the mixin must be "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order has open generic type parameters. All type parameters of the mixin must be "
         + "specified when it is applied to a DomainObject.")]
     public void PersistenceRelevant_OpenGenericMixin ()
     {

@@ -20,12 +20,12 @@ using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
-  public class BaseTest: StandardMappingTest
+  public class BaseTest : MappingReflectionTestBase
   {
     protected PropertyReflector CreatePropertyReflector<T> (string property)
     {
