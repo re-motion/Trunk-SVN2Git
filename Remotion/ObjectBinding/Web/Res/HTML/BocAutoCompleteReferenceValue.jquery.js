@@ -491,7 +491,7 @@
         function hideResults() {
             if (config.mouseDownOnSelect)
                 return;
-return;
+
             var wasVisible = select.visible();
             select.hide();
             clearTimeout(timeout);
