@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [STAThread]
     public static void Main (string[] args)
     {
-      LogManager.Initialize();
+      // LogManager.Initialize();
 
       var setUpFixture = new SetUpFixture();
       setUpFixture.SetUp();
@@ -52,11 +52,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //RunSerializationTest();
 
-      RunHasRelationChangedTest();
-      RunCommitTest ();
+      //RunHasRelationChangedTest();
+      //RunCommitTest ();
 
       //BindableObjectWithSecurityTest();
       //BindableObjectWithoutSecurityTest();
+
+      LinqTest();
 
       setUpFixture.TearDown();
 
@@ -149,6 +151,21 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.DomainObject_GetProperty ();
       test.BusinessObject_SetProperty ();
       test.DomainObject_SetProperty ();
+      test.TearDown ();
+    }
+
+    private static void LinqTest ()
+    {
+      var test = new LinqTest();
+      test.SetUp ();
+      test.WithTinyResultSet ();
+      test.WithSmallResultSet ();
+      test.WithLargeResultSet ();
+      test.WithComplexQuery_Subqueries ();
+      test.WithComplexQuery_SubqueriesInSecondFromClauseAndMultiplyOrderByClauses ();
+      test.WithComplexQuery_JoinsAndSubquery ();
+      test.WithComplexQuery_CountInSubquery ();
+      test.WithComplexQuery_GroupBy();
       test.TearDown ();
     }
   }

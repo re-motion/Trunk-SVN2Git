@@ -23,12 +23,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   {
     public static void TimeAndOutput (long testRuns, string testName, Func<bool> operation)
     {
-      Console.WriteLine (string.Format("Executing {0}...", testName));
+      Console.WriteLine ("Executing {0}...", testName);
       var result = GetResult (testRuns, operation);
-// ReSharper disable PossibleLossOfFraction
-      double averageMilliSeconds = result.Milliseconds / testRuns;
-// ReSharper restore PossibleLossOfFraction
-      Console.WriteLine (string.Format("{0} (executed {1}x): Average duration: {2} ms", testName, testRuns, averageMilliSeconds.ToString ("n")));
+      double averageMilliSeconds = result.TotalMilliseconds / testRuns;
+      Console.WriteLine (string.Format ("{0} (executed {1}x): Average duration: {2} ms", testName, testRuns, averageMilliSeconds.ToString ("n")));
     }
 
     public static TimeSpan GetResult (long testRuns, Func<bool> operation)

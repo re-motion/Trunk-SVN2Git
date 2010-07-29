@@ -16,7 +16,11 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -27,31 +31,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class LinqPerformanceTestHelper<T>
   {
-    private readonly Func<IQueryable<T>> _queryGenerator;
-    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
-    private readonly ISqlPreparationStage _sqlPreparationStage;
-    private readonly IMappingResolutionStage _mappingResolutionStage;
-    private readonly ISqlGenerationStage _sqlGenerationStage;
-    private readonly IMappingResolutionContext _mappingResolutionContext;
+    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
 
-    public LinqPerformanceTestHelper (
-        Func<IQueryable<T>> queryGenerator,
-        ISqlPreparationStage sqlPreparationStage,
-        IMappingResolutionStage mappingResolutionStage,
-        ISqlGenerationStage sqlGenerationStage,
-        IMappingResolutionContext mappingResolutionContext)
+    private readonly Func<IQueryable<T>> _queryGenerator;
+
+    public LinqPerformanceTestHelper (Func<IQueryable<T>> queryGenerator)
     {
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
-      ArgumentUtility.CheckNotNull ("sqlPreparationStage", sqlPreparationStage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
-      ArgumentUtility.CheckNotNull ("sqlGenerationStage", sqlGenerationStage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionContext", mappingResolutionContext);
       
       _queryGenerator = queryGenerator;
-      _sqlPreparationStage = sqlPreparationStage;
-      _mappingResolutionStage = mappingResolutionStage;
-      _sqlGenerationStage = sqlGenerationStage;
-      _mappingResolutionContext = mappingResolutionContext;
     }
 
     public bool GenerateQueryModel ()
@@ -64,17 +54,25 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModelAndSQL ()
     {
+      var generator = new UniqueIdentifierGenerator ();
+      var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerRegistry, _resultOperatorHandlerRegistry, generator);
+      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver (), generator);
+      var sqlGenerationStage = new DefaultSqlGenerationStage ();
+      var mappingResolutionContext = new MappingResolutionContext ();
+
       var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry);
       var queryParser = new QueryParser (expressionTreeParser);
       var queryable = _queryGenerator();
       var queryModel = queryParser.GetParsedQuery (queryable.Expression);
 
-      var sqlStatement = _sqlPreparationStage.PrepareSqlStatement (queryModel, null);
-      var resolvedSqlStatement = _mappingResolutionStage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
+      var sqlStatement = sqlPreparationStage.PrepareSqlStatement (queryModel, null);
+      var resolvedSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);
 
       var commandBuilder = new SqlCommandBuilder();
-      _sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, resolvedSqlStatement);
-      return !string.IsNullOrEmpty(commandBuilder.GetCommand().CommandText);
+      sqlGenerationStage.GenerateTextForOuterSqlStatement (commandBuilder, resolvedSqlStatement);
+      var sqlCommandData = commandBuilder.GetCommand();
+
+      return !string.IsNullOrEmpty (sqlCommandData.CommandText);
     }
 
     public bool GenerateQueryModelAndSQLAndIQuery ()
@@ -83,12 +81,24 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       return QueryFactory.CreateQuery ("perftest", query) != null;
     }
 
-    public bool GenerateAndExecuteQuery ()
+    public bool GenerateAndExecuteQueryDBOnly ()
     {
       var query = _queryGenerator ();
-      return query.ToList ().Count > 100;
-    }  
+      var restoreQuery = QueryFactory.CreateQuery ("perftest", query);
 
+      using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
+      {
+        return manager.GetMandatory ("PerformanceTestDomain").ExecuteCollectionQuery (restoreQuery).Length > 100;
+      }
+    }
 
+    public bool GenerateAndExecuteQuery ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var query = _queryGenerator();
+        return query.ToList().Count > 100;
+      }
+    }
   }
 }
