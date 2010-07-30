@@ -33,7 +33,9 @@
       <sources failonempty="true">
         <include name="**/*.cs"/>
         <exclude name="bin/**" />
-        <exclude name="DomainObjects/Core/Configuration/Mapping/TestDomain/**" />
+        <exclude name="DomainObjects/Core/Configuration/Mapping/TestDomain/Empty/**" />
+        <exclude name="DomainObjects/Core/Configuration/Mapping/TestDomain/Errors/**" />
+        <exclude name="DomainObjects/Core/Configuration/Mapping/TestDomain/Simple/**" />
         <exclude name="DomainObjects/Core/Design/DelaySignAssembly/**" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />   
       </sources>
@@ -87,7 +89,9 @@
 
     <copy todir="${build.test.outputdir}" overwrite="true">
       <fileset>
-        <include name="DomainObjects/Core/Configuration/Mapping/TestDomain/**/*.cs" />
+        <include name="DomainObjects/Core/Configuration/Mapping/TestDomain/Empty/**/*.cs" />
+        <include name="DomainObjects/Core/Configuration/Mapping/TestDomain/Errors/**/*.cs" />
+        <include name="DomainObjects/Core/Configuration/Mapping/TestDomain/Simple/**/*.cs" />
         <include name="DomainObjects/Core/Design/DelaySignAssembly/**/*.cs" />
         <include name="DomainObjects/Core/Design/DelaySignAssembly/**/*.snk" />
       </fileset>
