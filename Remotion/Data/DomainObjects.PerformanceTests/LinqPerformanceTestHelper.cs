@@ -97,7 +97,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         var query = _queryGenerator();
-        return query.ToList().Count > 100;
+        var recordCount = query.ToList().Count;
+        return recordCount > 100;
       }
     }
   }

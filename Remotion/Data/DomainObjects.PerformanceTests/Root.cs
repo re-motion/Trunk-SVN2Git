@@ -164,7 +164,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.WithComplexQuery_Subqueries ();
       test.WithComplexQuery_SubqueriesInSecondFromClauseAndMultiplyOrderByClauses ();
       test.WithComplexQuery_JoinsAndSubquery ();
-      test.WithComplexQuery_CountInSubquery ();
       test.WithComplexQuery_GroupBy();
       test.TearDown ();
     }

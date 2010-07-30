@@ -120,20 +120,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     }
 
     [Test]
-    public void WithComplexQuery_CountInSubquery ()
-    {
-      var query = (from p in QueryFactory.CreateLinqQuery<Person> () where ((from sp in QueryFactory.CreateLinqQuery<Person> () select sp).Count()>0) select p);
-      Func<IQueryable<Person>> queryGenerator = () => (query);
-      var linqHelper = new LinqPerformanceTestHelper<Person> (queryGenerator);
-
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with count in subquery (QM)", linqHelper.GenerateQueryModel);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with count in subquery (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
-      PerformanceTestHelper.TimeAndOutput (10000, "Complex query with count in subquery (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Complex query with count in subquery (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Complex query with count in subquery (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
-    }
-
-    [Test]
     public void WithComplexQuery_GroupBy ()
     {
       var query = (from p in QueryFactory.CreateLinqQuery<Person> () group p by p.FirstName into gp from grp in gp select grp);
