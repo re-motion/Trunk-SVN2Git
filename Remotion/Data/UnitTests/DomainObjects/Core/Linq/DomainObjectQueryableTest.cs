@@ -27,6 +27,7 @@ using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, generator);
       _mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _sqlGenerationStage = new DefaultSqlGenerationStage();
-      _context = new SqlPreparationContext ();
+      _context = new SqlPreparationContext (new SqlStatementBuilder());
 
       _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _nodeTypeRegistry);
     }
