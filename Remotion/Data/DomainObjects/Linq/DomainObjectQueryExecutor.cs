@@ -27,14 +27,12 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Logging;
 using Remotion.Utilities;
 using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
@@ -45,8 +43,6 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (DomainObjectQueryExecutor));
-
     private readonly ClassDefinition _startingClassDefinition;
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
@@ -154,49 +150,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
-      var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
-      if (groupResultOperator != null)
-      {
-        if (fetchQueryModelBuilders.Any())
-        {
-          var message = "Cannot execute a query with a GroupBy clause that specifies fetch requests because GroupBy is simulated in-memory.";
-          throw new NotSupportedException (message);
-        }
-
-        return ExecuteCollectionWithGrouping<T> (queryModel, groupResultOperator);
-      }
-      else
-      {
-        IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Collection);
-        return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
-      }
-    }
-
-    private IEnumerable<T> ExecuteCollectionWithGrouping<T> (QueryModel queryModel, GroupResultOperator groupResultOperator)
-    {
-      if (s_log.IsWarnEnabled)
-      {
-        var message = string.Format (
-            "Executing a group-by operation in memory. This can lead to performance problems if the grouping involves properties that "
-            + "are loaded lazily. In such cases it can be better to execute a select query with respective Fetch hints on the database, and then "
-            + "group in memory via LINQ-to-Objects. Executed query: '{0}'.",
-            queryModel);
-        s_log.Warn (message);
-      }
-
-      var lastResultOperatorIndex = queryModel.ResultOperators.Count - 1;
-      if (queryModel.ResultOperators[lastResultOperatorIndex] != groupResultOperator)
-      {
-        var message = "Cannot execute a query with a GroupBy clause that contains other result operators after the GroupResultOperator because "
-                      + "GroupBy is simulated in-memory.";
-        throw new NotSupportedException (message);
-      }
-
-      queryModel.ResultOperators.RemoveAt (lastResultOperatorIndex);
-
-      var databaseResult = queryModel.Execute (this);
-      var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (databaseResult);
-      return outputData.GetTypedSequence<T>();
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Collection);
+      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
     }
 
     /// <summary>
@@ -383,6 +338,10 @@ namespace Remotion.Data.DomainObjects.Linq
           "This query provider does not support the given query ('{0}'). "
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
           sqlStatement);
+
+      if (sqlStatement.GroupByExpression != null)
+        message += " Execute GroupBy in memory.";
+      
       throw new NotSupportedException (message);
     }
 

@@ -346,6 +346,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), 
+      ExpectedMessage = "This query provider does not support the given query ('SELECT GROUPING (KEY: [t0] AS [key], "
+      +"ELEMENT: [t0] AS [element], AGGREGATIONS: () FROM [OrderView] [t0] GROUP BY [t0]'). "
+      +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects. Execute GroupBy in memory.")]
     public void LinqQueryWithGroupBy_CallsFilterQueryResult ()
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();

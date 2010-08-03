@@ -285,58 +285,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ExecuteCollection_ExecutesGroupByInMemory ()
-    {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer;
-      QueryModel model = ParseQuery (query.Expression);
-
-      var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model).ToArray();
-      Assert.That (computers.Length, Is.EqualTo (5));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Cannot execute a query with a GroupBy clause that specifies fetch requests "
-                          + "because GroupBy is simulated in-memory.")]
-    public void ExecuteCollection_WithGroupBy_WithFetchRequests ()
-    {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer;
-      QueryModel queryModel = ParseQuery (query.Expression);
-
-      var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
-      queryModel.ResultOperators.Add (new FetchOneRequest (relationMember));
-
-      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (queryModel);
-    }
-
-    [Test]
-    public void ExecuteCollection_WithGroupBy_WithOtherOperators_Before ()
-    {
-      var query = (from company1 in QueryFactory.CreateLinqQuery<Company>()
-                   from company2 in QueryFactory.CreateLinqQuery<Company>()
-                   where company1.ID == DomainObjectIDs.Partner1
-                   select company1).Distinct().Cast<Partner>().GroupBy (p => p, p => p.ContactPerson);
-      QueryModel model = ParseQuery (query.Expression);
-
-      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model).ToArray();
-      Assert.That (partners.Length, Is.EqualTo (1));
-      Assert.That (partners.First().Key.ID, Is.EqualTo (DomainObjectIDs.Partner1));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot execute a query with a GroupBy clause that contains other result "
-                                                                          +
-                                                                          "operators after the GroupResultOperator because GroupBy is simulated in-memory."
-        )]
-    public void ExecuteCollection_WithGroupBy_WithOtherOperators_After ()
-    {
-      var query = (from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer).Distinct();
-      QueryModel model = ParseQuery (query.Expression);
-
-      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model);
-    }
-
-    [Test]
     public void ExecuteScalar_WithParameters ()
     {
       var expression =
@@ -635,6 +583,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
           .Return (sqlStatement);
       executorMock.Replay();
+      executorMock.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This query provider does not support the given query ('SELECT [t0].[ID] FROM [Order] [t0] GROUP BY 1'). "+
+        "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects. Execute GroupBy in memory.")]
+    public void CreateQuery_GroupByInTopLevelQuery_ThrowsException ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer));
+      QueryModel queryModel = ParseQuery (expression);
+
+      var unresolvedTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "Order", "t0");
+      var sqlTable = new SqlTable (unresolvedTableInfo, JoinSemantics.Inner);
+      var sqlStatement = new SqlStatement (
+          new StreamedScalarValueInfo (typeof (string)),
+          new SqlColumnDefinitionExpression (typeof (Guid), "t0", "ID", true),
+          new[] { sqlTable }, null, Expression.Constant(1), new Ordering[] { }, null, false, null, null);
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (
+          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      executorMock
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
+          .Return (sqlStatement);
+      executorMock.Replay ();
       executorMock.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
