@@ -55,5 +55,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       Assert.That (domainBases.ToArray(), Is.Not.Empty);
     }
+
+    [Test]
+    public void MemberAccessOnCoalesceExpression ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>()
+                  where (oi.Product ?? oi.Order.Customer.Name).ToUpper() == "Blumentopf"
+                  select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem5);
+    }
+
+    [Test]
+    public void MemberAccessOnConditionalExpression ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where (oi.Product=="Blumentopf" ? oi.Product : oi.Order.Customer.Name).Length==10
+                  select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem5);
+    }
+
   }
 }
