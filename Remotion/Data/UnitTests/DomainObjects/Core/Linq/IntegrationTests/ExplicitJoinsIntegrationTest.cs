@@ -122,6 +122,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         select oi,
         DomainObjectIDs.OrderItem5);
     }
+
+    [Test]
+    [Ignore ("TODO 3066")]
+    public void ExplicitJoinWithInto_WithOrderBy ()
+    {
+      CheckQueryResult (
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          join i in QueryFactory.CreateLinqQuery<OrderItem> ().OrderBy(oi => oi.Product) on o equals i.Order into goi
+          from oi in goi
+          select oi,
+          DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem1);
+    }
     
   }
 }
