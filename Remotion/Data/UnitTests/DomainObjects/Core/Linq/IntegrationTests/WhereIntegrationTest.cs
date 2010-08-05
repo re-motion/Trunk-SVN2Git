@@ -93,6 +93,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithWhereConditionAndStartsWith_NonConstantValue ()
+    {
+      var computers =
+          from c in QueryFactory.CreateLinqQuery<Computer> ()
+          where c.SerialNumber.StartsWith (QueryFactory.CreateLinqQuery<Computer> ().Select(sc=>sc.SerialNumber.Substring(0,1)).First())
+          select c;
+
+      CheckQueryResult (computers, DomainObjectIDs.Computer2, DomainObjectIDs.Computer5);
+    }
+
+    [Test]
     public void QueryWithWhereConditionAndEndsWith ()
     {
       var computers =
@@ -104,12 +115,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithWhereConditionAndEndsWith_NonConstantValue ()
+    {
+      var computers =
+          from c in QueryFactory.CreateLinqQuery<Computer> ()
+          where c.SerialNumber.EndsWith (QueryFactory.CreateLinqQuery<Computer> ().Select (sc => sc.SerialNumber.Substring(1, 1)).First ())
+          select c;
+
+      CheckQueryResult (computers, DomainObjectIDs.Computer5, DomainObjectIDs.Computer2);
+    }
+
+    [Test]
     public void QueryWithContains_Like ()
     {
       var ceos = from c in QueryFactory.CreateLinqQuery<Ceo> ()
                  where c.Name.Contains ("Sepp Fischer")
                  select c;
       CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
+    }
+
+    [Test]
+    public void QueryWithContains_Like_NonConstantValue ()
+    {
+      var ceos = from c in QueryFactory.CreateLinqQuery<Computer> ()
+                 where c.SerialNumber.Contains (QueryFactory.CreateLinqQuery<Computer> ().Select (sc => sc.SerialNumber.Substring(1, 2)).First())
+                 select c;
+      CheckQueryResult (ceos, DomainObjectIDs.Computer5);
     }
 
     [Test]
