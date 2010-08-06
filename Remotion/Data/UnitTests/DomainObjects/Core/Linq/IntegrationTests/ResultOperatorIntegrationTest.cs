@@ -685,6 +685,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       Assert.That (query.Count (), Is.EqualTo (4));
     }
+
+    [Test]
+    [Ignore("TODO RM-3091")]
+    public void GroupBy_SubqueryUsedAsGroupByKey ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   group o by QueryFactory.CreateLinqQuery<OrderItem> ().Where (oi => oi != null).First ()).Select (g => g.Key);
+      Assert.That (query.Count(), Is.GreaterThan (0));
+    }
+
+    [Test]
+    [Ignore ("TODO RM-3092")]
+    public void GroupBy_WithConstantKey_GetsReplacedBySubquery ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Order>().GroupBy (c => 0).Select (c => c.Key);
+
+      Assert.That (query.Count (), Is.GreaterThan (0));
+    }
     
   }
 }
