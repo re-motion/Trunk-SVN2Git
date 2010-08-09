@@ -687,11 +687,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO RM-3091")]
     public void GroupBy_SubqueryUsedAsGroupByKey ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
-                   group o by QueryFactory.CreateLinqQuery<OrderItem> ().Where (oi => oi != null).First ()).Select (g => g.Key);
+                   group o by QueryFactory.CreateLinqQuery<OrderItem> ().Where (oi => oi != null).Select(soi=>soi.Product).First ()).Select (g => g.Key);
       Assert.That (query.Count(), Is.GreaterThan (0));
     }
 
