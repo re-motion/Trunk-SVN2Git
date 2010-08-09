@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
+using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 
@@ -72,6 +73,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected override void CrossAppDomainCallbackHandler ()
     {
+      if (_rdbmsToolsParameter.Verbose)
+        LogManager.InitializeConsole ();
+
       InitializeConfiguration();
 
       if ((_rdbmsToolsParameter.Mode & OperationMode.BuildSchema) != 0)
