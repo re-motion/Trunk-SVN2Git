@@ -16,13 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
-using Remotion.Mixins.Utilities;
 using Remotion.Security;
 using Remotion.Security.Configuration;
 using Rhino.Mocks;
@@ -115,7 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         {
           securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
         }
-        var property = securableObject.PropertyWithDefaultPermission;
+
+        Dev.Null = securableObject.PropertyWithDefaultPermission;
     }
 
     [Test]
@@ -134,7 +132,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         {
           securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
         }
-        var property = securableObject.PropertyWithCustomPermission;
+
+        Dev.Null = securableObject.PropertyWithCustomPermission;
       }
     }
     
@@ -191,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
       }
 
-      var property = ((ISecurableObjectMixin) securableObject).MixedPropertyWithDefaultPermission;
+      Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithDefaultPermission;
     }
 
     [Test]
@@ -210,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         securableObject = SecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
       }
 
-      var property = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
+      Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
     }
   }
 }
