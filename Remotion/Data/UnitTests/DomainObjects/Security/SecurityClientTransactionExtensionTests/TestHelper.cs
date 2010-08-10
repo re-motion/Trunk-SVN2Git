@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
   public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
 
-  public class SecurityClientTransactionExtensionTestHelper
+  public class TestHelper
   {
     // types
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
     // construction and disposing
 
-    public SecurityClientTransactionExtensionTestHelper ()
+    public TestHelper ()
     {
       _mocks = new MockRepository ();
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();

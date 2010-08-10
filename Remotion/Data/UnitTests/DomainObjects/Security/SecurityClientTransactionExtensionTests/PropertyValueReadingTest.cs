@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   [TestFixture]
   public class PropertyValueReadingTest
   {
-    private SecurityClientTransactionExtensionTestHelper _testHelper;
+    private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
     private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new SecurityClientTransactionExtensionTestHelper ();
+      _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _propertyInfo = typeof (SecurableObject).GetProperty ("StringProperty");

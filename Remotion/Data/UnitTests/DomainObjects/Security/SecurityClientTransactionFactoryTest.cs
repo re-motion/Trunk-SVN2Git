@@ -30,12 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
   [TestFixture]
   public class SecurityClientTransactionFactoryTest
   {
-    private SecurityClientTransactionExtensionTestHelper _testHelper;
+    private TestHelper _testHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new SecurityClientTransactionExtensionTestHelper ();
+      _testHelper = new TestHelper ();
     }
 
     [Test]

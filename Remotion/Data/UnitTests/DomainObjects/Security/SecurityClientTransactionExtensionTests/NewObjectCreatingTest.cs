@@ -26,13 +26,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   [TestFixture]
   public class NewObjectCreatingTest
   {
-    private SecurityClientTransactionExtensionTestHelper _testHelper;
+    private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
 
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new SecurityClientTransactionExtensionTestHelper ();
+      _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityConfiguration ();
