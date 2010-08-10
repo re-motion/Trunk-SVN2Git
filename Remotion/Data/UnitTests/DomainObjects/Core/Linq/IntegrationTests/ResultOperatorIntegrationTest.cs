@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     [ExpectedException (typeof (NotSupportedException), 
       ExpectedMessage = "This query provider does not support the given query ('SELECT GROUPING (KEY: [t1] AS [key], "
-        +"ELEMENT: [t0].[Product] AS element, AGGREGATIONS: () FROM [OrderItemView] [t0] LEFT JOIN [OrderView] [t1] ON [t0].[OrderID] = [t1].[ID] "
+        +"ELEMENT: [t0].[Product] AS element, AGGREGATIONS: ()) FROM [OrderItemView] [t0] LEFT JOIN [OrderView] [t1] ON [t0].[OrderID] = [t1].[ID] "
         +"WHERE (([t1].[OrderNo] = 1) || ([t1].[OrderNo] = 3)) GROUP BY [t1] ORDER BY [t1].[OrderNo] ASC'). "
         +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects. Execute GroupBy in memory.")]
     public void Query_WithGroupBy ()
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     [ExpectedException (typeof (NotSupportedException), 
       ExpectedMessage = "This query provider does not support the given query ('SELECT GROUPING (KEY: [t2] AS [key], "
-        +"ELEMENT: [t1].[Product] AS element, AGGREGATIONS: () FROM (SELECT TOP (2) new KeyValuePair`2(Key = [t1] AS [Key], "
+        +"ELEMENT: [t1].[Product] AS element, AGGREGATIONS: ()) FROM (SELECT TOP (2) new KeyValuePair`2(Key = [t1] AS [Key], "
         +"Value = [t2].[OrderNo] AS Value) FROM [OrderItemView] [t1] LEFT JOIN [OrderView] [t2] ON [t1].[OrderID] = [t2].[ID] "
         +"WHERE (([t2].[OrderNo] = 1) || ([t2].[OrderNo] = 3)) ORDER BY [t2].[OrderNo] ASC) [q0] GROUP BY [t2] ORDER BY [q0].[Value] ASC'). "+
         "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects. Execute GroupBy in memory.")]
