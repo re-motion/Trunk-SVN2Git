@@ -17,9 +17,10 @@
 using System;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Development;
@@ -28,8 +29,13 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
+using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security
 {
@@ -45,12 +51,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
-      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly))));
+      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (GetType().Assembly))));
     }
 
     private string GetFullPath (string fileName)
     {
       return Path.Combine (AppDomain.CurrentDomain.BaseDirectory, fileName);
+    }
+
+    private ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
+    {
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray ());
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
+      var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
+      var mappingNamespaces = new[]
+                              {
+                                  mappingRootNamespace + ".TestDomain.Integration",
+                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
+                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping"
+                              };
+
+      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, mappingNamespaces);
+      return typeDiscoveryService;
     }
   }
 }

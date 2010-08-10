@@ -58,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       SecurityConfiguration.Current.SecurityProvider = null;
       SecurityConfiguration.Current.PrincipalProvider = null;
     }
-
-
+    
     [Test]
     public void AccessGranted_PropertyWithDefaultPermission ()
     {
