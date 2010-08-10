@@ -43,8 +43,8 @@ namespace Remotion.Data.DomainObjects.Queries
     // customizers via IoC
     private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry = 
         new DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> (CreateNodeTypeRegistry);
-    private static readonly DoubleCheckedLockingContainer<MethodCallTransformerRegistry> s_methodCallTransformerRegistry = 
-        new DoubleCheckedLockingContainer<MethodCallTransformerRegistry> (CreateMethodCallTransformerRegistry);
+    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerRegistry> s_methodCallTransformerRegistry = 
+        new DoubleCheckedLockingContainer<IMethodCallTransformerRegistry> (CreateMethodCallTransformerRegistry);
     private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry = 
         new DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> (CreateResultOperatorHandlerRegistry);
 
@@ -270,16 +270,17 @@ namespace Remotion.Data.DomainObjects.Queries
       return nodeTypeRegistry;
     }
 
-    private static MethodCallTransformerRegistry CreateMethodCallTransformerRegistry ()
+    private static IMethodCallTransformerRegistry CreateMethodCallTransformerRegistry ()
     {
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
+      var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
       var customTransformers = customizers.SelectMany (c => c.GetCustomMethodCallTransformers());
       foreach (var customNodeType in customTransformers)
-        methodCallTransformerRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+        methodInfoBasedRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      return methodCallTransformerRegistry;
+      return new MethodCallTransformerRegistry (methodInfoBasedRegistry, nameBasedRegistry);
     }
 
     private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
