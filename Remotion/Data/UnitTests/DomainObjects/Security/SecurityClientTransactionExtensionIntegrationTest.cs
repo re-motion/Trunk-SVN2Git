@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
@@ -24,7 +23,7 @@ using Remotion.Security;
 using Remotion.Security.Configuration;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
+namespace Remotion.Data.UnitTests.DomainObjects.Security
 {
   [TestFixture]
   public class SecurityClientTransactionExtensionIntegrationTest

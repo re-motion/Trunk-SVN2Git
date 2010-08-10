@@ -603,7 +603,7 @@
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\PropertyValueReadingTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationChangingTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationReadingTest.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SecurityClientTransactionExtensionIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\TestHelper.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
