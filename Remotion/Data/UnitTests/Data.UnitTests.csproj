@@ -595,6 +595,7 @@
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinStub.cs" />
     <Compile Include="DomainObjects\Security\DomainObjectSecurityStrategyTest.cs" />
+    <Compile Include="DomainObjects\Security\ObjectBindingIntegrationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\NewObjectCreatingTest.cs" />
@@ -608,6 +609,7 @@
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Security\SetupFixture.cs" />
+    <Compile Include="DomainObjects\Security\TestDomain\BindableSecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\ISecurableObjectMixin.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\NonSecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />
