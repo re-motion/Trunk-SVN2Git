@@ -47,15 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
       var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
-      var mappingNamespaces = new[]
-                              {
-                                  mappingRootNamespace + ".TestDomain.Integration",
-                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping"
-                              };
+      var testMappingNamespace = mappingRootNamespace + ".TestDomain.Integration";
 
-      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, mappingNamespaces);
+      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, testMappingNamespace);
       return typeDiscoveryService;
     }
 

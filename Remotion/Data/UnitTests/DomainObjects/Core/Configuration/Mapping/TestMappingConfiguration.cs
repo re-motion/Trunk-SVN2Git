@@ -91,20 +91,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public static ITypeDiscoveryService GetTypeDiscoveryService ()
     {
       var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
-      var mappingNamespaces = new[]
-                              {
-                                  mappingRootNamespace + ".TestDomain.Integration",
-                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping",
-                              };
+      var testMappingNamespace = mappingRootNamespace + ".TestDomain.Integration";
 
       var rootAssemlbies = new[] { new RootAssembly (typeof (TestMappingConfiguration).Assembly, true) };
       var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemlbies);
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       var typeDiscoveryService = (ITypeDiscoveryService) new AssemblyFinderTypeDiscoveryService (assemblyFinder);
-      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (typeDiscoveryService, mappingNamespaces);
+      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (typeDiscoveryService, testMappingNamespace);
+
       return typeDiscoveryService;
     }
 
