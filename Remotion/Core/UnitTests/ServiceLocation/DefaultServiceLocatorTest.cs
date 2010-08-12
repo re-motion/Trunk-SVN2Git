@@ -18,12 +18,8 @@ using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Design;
 using Remotion.Implementation;
 using Remotion.ServiceLocation;
-using Remotion.UnitTests.Interfaces.Implementation;
-using Remotion.Utilities;
-using Rhino.Mocks;
 using System.Linq;
 
 namespace Remotion.UnitTests.ServiceLocation
