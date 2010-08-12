@@ -125,6 +125,7 @@
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestType.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeHidingProperties.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeWithInterfaces.cs" />
+    <Compile Include="Core\BindableObject\SecurityIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\StubEnumerationValueFilter.cs" />
     <Compile Include="Core\BusinessObjectExtensionMethodsTest.cs" />
     <Compile Include="Core\Globalization\ExtensibleEnumWithResources.Designer.cs">
@@ -152,10 +153,14 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
+    <Compile Include="Core\TestDomain\IMixinSecurableClass.cs" />
     <Compile Include="Core\TestDomain\MixinOverridingProperty.cs" />
+    <Compile Include="Core\TestDomain\MixinSecurableClassWithProperties.cs" />
     <Compile Include="Core\TestDomain\SampleAttribute.cs" />
+    <Compile Include="Core\TestDomain\SecurableClassWithProperties.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceTypeProperty.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceTypePropertyReflectorMixin.cs" />
+    <Compile Include="Core\TestDomain\TestAccessTypes.cs" />
     <Compile Include="Core\TestDomain\TestFlags.cs" />
     <Compile Include="Core\TestDomain\EnumerationValueFilter.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
@@ -436,6 +441,10 @@
     <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
