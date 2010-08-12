@@ -269,11 +269,8 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\AbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Ceo.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassDerivedFromSimpleDomainObject.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassNotDerivedFromDomainObject.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithAllDataTypes.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithEnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithGuidKey.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithInvalidRedirectedProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithInvalidRelation.cs" />
@@ -281,12 +278,10 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutClassIDColumn.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutIDColumn.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutRelatedClassIDColumn.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutRelatedClassIDColumnAndDerivation.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithoutTimestampColumn.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithRelatedClassIDColumnAndNoInheritance.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithSerializationCallbacks.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ClassWithValidRelations.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Client.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Color.cs" />
@@ -311,7 +306,6 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\DerivedDerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\DerivedMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\DerivedTargetClassForPersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\DOWithVirtualPropertiesAndMethods.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\HookedDomainObjectMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\IInterfaceAddedByMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\IMixinAddingPersistentProperties.cs" />
@@ -332,15 +326,10 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\RelationTargetForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\StubStoragePersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\StubStorageTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassAboveInheritanceRoot.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassForDerivedPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassReceivingTwoReferencesToDerivedClass.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassWithTwoUnidirectionalMixins.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassWithUnidirectionalMixin1.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassWithUnidirectionalMixin2.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Official.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Order.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\OrderCollection.cs" />
@@ -348,7 +337,6 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\OrderItemWithNewPropertyAccess.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\OrderTicket.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\OrderWithNewPropertyAccess.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\OrderWithNewPropertyAccessBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Partner.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Person.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
