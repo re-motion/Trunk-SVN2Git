@@ -318,8 +318,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LightColorExtensions.resx</DependentUpon>
     </Compile>
+    <Compile Include="ServiceLocation\DefaultServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\NullServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocatorTest.cs" />
+    <Compile Include="ServiceLocation\TestableDefaultServiceLocator.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
