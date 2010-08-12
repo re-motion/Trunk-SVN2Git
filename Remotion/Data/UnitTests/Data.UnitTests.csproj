@@ -598,6 +598,8 @@
     <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Security\SetupFixture.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\BindableSecurableObject.cs" />
+    <Compile Include="DomainObjects\Security\TestDomain\BindableSecurableObjectMixin.cs" />
+    <Compile Include="DomainObjects\Security\TestDomain\IBindableSecurableObjectMixin.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\ISecurableObjectMixin.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\NonSecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />

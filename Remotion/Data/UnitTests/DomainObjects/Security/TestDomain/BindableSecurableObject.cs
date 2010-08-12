@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.Reflection;
 using Remotion.Security;
@@ -27,6 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
   [BindableObject]
   [Instantiable]
   [DBTable]
+  [Uses (typeof (BindableSecurableObjectMixin))]
   public abstract class BindableSecurableObject : DomainObject, ISecurableObject, ISecurityContextFactory
   {
     public static BindableSecurableObject NewObject (ClientTransaction clientTransaction, IObjectSecurityStrategy securityStrategy)
