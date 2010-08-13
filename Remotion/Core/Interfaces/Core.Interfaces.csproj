@@ -62,6 +62,10 @@
     <DocumentationFile>bin\Release\Remotion.Interfaces.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -86,6 +90,7 @@
     <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />
     <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
+    <Compile Include="Implementation\ConcreteImplementationResolver.cs" />
     <Compile Include="Implementation\FrameworkVersion.cs" />
     <Compile Include="Implementation\FrameworkVersionNotFoundException.cs" />
     <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
@@ -140,6 +145,7 @@
     <Compile Include="Reflection\IConstructorLookupInfo.cs" />
     <Compile Include="Reflection\ParamList.generated.cs" />
     <Compile Include="Reflection\ParamList.template.cs" />
+    <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
     <Compile Include="StandardDelegates.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />

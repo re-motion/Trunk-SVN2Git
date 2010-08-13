@@ -15,23 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 using Remotion.ServiceLocation;
-using System.Linq;
 
 namespace Remotion.UnitTests.ServiceLocation
 {
   [TestFixture]
   public class DefaultServiceLocatorTest
   {
+    private IServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _serviceLocator = new DefaultServiceLocator();
+    }
 
     [Test]
     public void GetService_TypeWithoutConcreteImplementatioAttribute ()
     {
-      var result = ((IServiceProvider)DefaultServiceLocator.Instance).GetService (typeof (string));
+      var result = _serviceLocator.GetService (typeof (string));
 
       Assert.That (result, Is.Null);
     }
@@ -41,13 +48,13 @@ namespace Remotion.UnitTests.ServiceLocation
       ExpectedMessage = "The requested service does not have the ConcreteImplementationAttribute applied.")]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
-      DefaultServiceLocator.Instance.GetInstance (typeof (string));
+      _serviceLocator.GetInstance (typeof (string));
     }
 
     [Test]
     public void GetService_TypeWithConcreteImplementationAttribute ()
     {
-      var result = ((IServiceProvider) DefaultServiceLocator.Instance).GetService (typeof (ITestDefaultServiceLocatorAttributeType));
+      var result = _serviceLocator.GetService (typeof (ITestDefaultServiceLocatorAttributeType));
 
       Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
     }
@@ -55,7 +62,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstance_TypeWithConcreteImplementationAttribute ()
     {
-      var result = DefaultServiceLocator.Instance.GetInstance(typeof (ITestDefaultServiceLocatorAttributeType));
+      var result = _serviceLocator.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType));
 
       Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
     }
@@ -63,20 +70,20 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstance_GetInstancesFromCache ()
     {
-      var testableSerciceLocator = new TestableDefaultServiceLocator();
+      var testableSerciceLocator = new TestableDefaultServiceLocator ();
       testableSerciceLocator.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType));
 
-      Assert.That(testableSerciceLocator.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType)), Is.TypeOf(typeof(TestDefaultServiceLocatorAttributeType)));
+      Assert.That (testableSerciceLocator.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType)), Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
 
       Func<object> instanceCreator;
       Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestDefaultServiceLocatorAttributeType), out instanceCreator), Is.True);
-      Assert.That (((Func<object>) instanceCreator())(), Is.TypeOf (typeof(TestDefaultServiceLocatorAttributeType)));
+      Assert.That (((Func<object>) instanceCreator ()) (), Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
     }
 
     [Test]
     public void GetInstanceWithKeyParamete_KeyIsIgnored ()
     {
-      var result = DefaultServiceLocator.Instance.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType), "Test");
+      var result = _serviceLocator.GetInstance (typeof (ITestDefaultServiceLocatorAttributeType), "Test");
 
       Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
     }
@@ -84,35 +91,42 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetAllInstances ()
     {
-      var result = DefaultServiceLocator.Instance.GetAllInstances(typeof (ITestDefaultServiceLocatorAttributeType));
-
-      Assert.That (result.ToArray().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray()[0], Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
-    }
-
-    [Test]
-    public void GetAllInstanceWithGenericType ()
-    {
-      var result = DefaultServiceLocator.Instance.GetInstance<ITestDefaultServiceLocatorAttributeType>();
-
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
-    }
-
-    [Test]
-    public void GetAllInstanceWithGenericTypeAndKeyParameter_KeyIsIgnored ()
-    {
-      var result = DefaultServiceLocator.Instance.GetInstance<ITestDefaultServiceLocatorAttributeType> ("Test");
-
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
-    }
-
-    [Test]
-    public void GetAllInstancesWithGenericType ()
-    {
-      var result = DefaultServiceLocator.Instance.GetAllInstances<ITestDefaultServiceLocatorAttributeType>();
+      var result = _serviceLocator.GetAllInstances (typeof (ITestDefaultServiceLocatorAttributeType));
 
       Assert.That (result.ToArray ().Length, Is.EqualTo (1));
       Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+    }
+
+    [Test]
+    public void GetAllInstances_ConreteImplementationAttributeIsNotDefined ()
+    {
+      var result = _serviceLocator.GetAllInstances (typeof (IServiceLocator));
+
+      Assert.That (result.ToArray ().Length, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetInstanceWithGenericType ()
+    {
+      var result = _serviceLocator.GetInstance<ITestDefaultServiceLocatorAttributeType> ();
+
+      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+    }
+
+    [Test]
+    public void GetInstanceWithGenericTypeAndKeyParameter_KeyIsIgnored ()
+    {
+      var result = _serviceLocator.GetInstance<ITestDefaultServiceLocatorAttributeType> ("Test");
+
+      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+    }
+
+    [Test]
+    public void GetAllInstancesWithGenericType_ConcreteImplementationAttributeIsNotDefined ()
+    {
+      var result = _serviceLocator.GetAllInstances<IServiceLocator> ();
+
+      Assert.That (result.ToArray ().Length, Is.EqualTo (0));
     }
 
   }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
 {
@@ -34,27 +33,9 @@ namespace Remotion.Implementation
       get { return _typeNameTemplate; }
     }
 
-    public string GetTypeName()
-    {
-      string versioned = _typeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString());
-      return versioned.Replace ("<publicKeyToken>", GetPublicKeyTokenString());
-    }
-
-    private string GetPublicKeyTokenString ()
-    {
-      byte[] bytes = typeof (ConcreteImplementationAttribute).Assembly.GetName().GetPublicKeyToken();
-      return string.Format ("{0:x2}{1:x2}{2:x2}{3:x2}{4:x2}{5:x2}{6:x2}{7:x2}",
-          bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
-    }
-
-    public Type ResolveType ()
-    {
-      return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (), true);
-    }
-
     public object InstantiateType ()
     {
-      return Activator.CreateInstance (ResolveType());
+      return ConcreteImplementationResolver.InstantiateType (_typeNameTemplate);
     }
   }
 }

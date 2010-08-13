@@ -16,33 +16,23 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Implementation;
-using Remotion.Reflection;
 
 namespace Remotion.ServiceLocation
 {
   public class DefaultServiceLocator : IServiceLocator
   {
-    public static readonly DefaultServiceLocator Instance = new DefaultServiceLocator();
     protected readonly InterlockedCache<Type, Func<object>> Cache = new InterlockedCache<Type, Func<object>>();
 
-    protected DefaultServiceLocator ()
+    public DefaultServiceLocator ()
     {
     }
 
     object IServiceProvider.GetService (Type serviceType)
     {
-      try
-      {
-        return GetInstance (serviceType);
-      }
-      catch (Exception)
-      {
-        return null;
-      }
+      return GetInstanceOrNull (serviceType);
     }
 
     public object GetInstance (Type serviceType)
@@ -52,6 +42,9 @@ namespace Remotion.ServiceLocation
         return ((Func<object>) instanceCreator())();
 
       var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
+      if(concreteImplementationAttribute==null)
+        throw new ActivationException ("The requested service does not have the ConcreteImplementationAttribute applied.");
+
       var instance = concreteImplementationAttribute.InstantiateType();
 
       instanceCreator = () => Activator.CreateInstance (instance.GetType());
@@ -66,7 +59,11 @@ namespace Remotion.ServiceLocation
 
     public IEnumerable<object> GetAllInstances (Type serviceType)
     {
-      return new[] { GetInstance (serviceType) };
+      var instance = GetInstanceOrNull(serviceType);
+      if (instance != null)
+        return new[] { instance };
+      else
+        return new object[0];
     }
 
     public TService GetInstance<TService> ()
@@ -81,14 +78,34 @@ namespace Remotion.ServiceLocation
 
     public IEnumerable<TService> GetAllInstances<TService> ()
     {
-      return new[] { (TService) GetInstance (typeof (TService)) };
+      var instance = GetInstanceOrNull (typeof (TService));
+      if (instance != null)
+        return new[] { (TService) instance };
+      else
+        return new TService[0];
+    }
+
+    private object GetInstanceOrNull (Type serviceType)
+    {
+      Func<object> instanceCreator;
+      if (Cache.TryGetValue (serviceType, out instanceCreator))
+        return ((Func<object>) instanceCreator ()) ();
+
+      var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
+      if (concreteImplementationAttribute == null)
+        return null;
+
+      var instance = concreteImplementationAttribute.InstantiateType ();
+      instanceCreator = () => Activator.CreateInstance (instance.GetType ());
+      Cache.GetOrCreateValue (serviceType, t => () => instanceCreator);
+      return instance;
     }
 
     private ConcreteImplementationAttribute GetConreteImplementationAttribute (Type serviceType)
     {
       var attributes = serviceType.GetCustomAttributes (typeof (ConcreteImplementationAttribute), false);
       if (attributes.Length == 0)
-        throw new ActivationException ("The requested service does not have the ConcreteImplementationAttribute applied.");
+        return null;
       return (ConcreteImplementationAttribute) attributes[0];
     }
   }

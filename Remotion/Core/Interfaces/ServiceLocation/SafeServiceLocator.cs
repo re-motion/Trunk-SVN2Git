@@ -16,39 +16,42 @@
 // 
 using System;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator"/>, specifically the <see cref="ServiceLocator.Current"/>
+  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator.Current"/>, specifically the <see cref="ServiceLocator"/>
   /// property. 
   /// </summary>
   /// <remarks>
-  /// Accessing <see cref="ServiceLocator.Current"/> will always lead to a <see cref="NullReferenceException"/> if no service locator is 
-  /// configured. Using <see cref="SafeServiceLocator.Current"/> instead will catch the exception and set <see cref="ServiceLocator.Current"/>
-  /// to the <see cref="DefaultServiceLocator"/>, which is save for multi-valued operations, thos allowing the use of <see cref="IServiceLocator"/>
-  /// in scenarios where IoC provides optional features, e.g. extensions, listeners, etc.
+  /// Accessing <see cref="ServiceLocator"/> will always lead to a <see cref="Current"/> if no service locator is 
+  /// configured. Using <see cref="SafeServiceLocator"/> instead will catch the exception and set <see cref="ServiceLocator"/>
+  /// to the <see cref="ServiceLocator"/>, which is save for multi-valued operations, thos allowing the use of a concrete <see cref="IServiceLocator"/>
+  /// implementation in scenarios where IoC provides optional features, e.g. extensions, listeners, etc.
   /// </remarks>
   public static class SafeServiceLocator
   {
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
-    /// the <see cref="DefaultServiceLocator"/> will be returned.
+    /// an <see cref="IServiceLocator"/> will be returned.
     /// </summary>
     public static IServiceLocator Current
     {
       get
       {
+        const string typeName = "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>";
         try
         {
-          return ServiceLocator.Current ?? DefaultServiceLocator.Instance;
+          return ServiceLocator.Current ?? (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName);
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => DefaultServiceLocator.Instance);
-          return DefaultServiceLocator.Instance;
+          ServiceLocator.SetLocatorProvider (() => (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName));
+          return (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName);
         }
+        
       }
     }
   }

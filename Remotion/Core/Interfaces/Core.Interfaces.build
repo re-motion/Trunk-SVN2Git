@@ -45,12 +45,14 @@
         <include name="Logging/**/*.cs" />
         <include name="Mixins/**/*.cs" />
         <include name="Reflection/**/*.cs" />
+		<include name="ServiceLocation/**/*.cs" />
         <include name="Utilities/**/*.cs" />
 
         <include name="Properties/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
       <references failonempty="true">
+	    <include asis="true" name="${build.outputdir}/Microsoft.Practices.ServiceLocation.dll"/>
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Core.dll"/>
