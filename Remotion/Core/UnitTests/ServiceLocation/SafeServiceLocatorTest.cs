@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (null);
 
-      Assert.That (SafeServiceLocator.Current, Is.SameAs (NullServiceLocator.Instance));
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (DefaultServiceLocator.Instance));
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.ServiceLocation
       ServiceLocator.SetLocatorProvider (null);
 
       Dev.Null = SafeServiceLocator.Current;
-      Assert.That (ServiceLocator.Current, Is.SameAs (NullServiceLocator.Instance));
+      Assert.That (ServiceLocator.Current, Is.SameAs (DefaultServiceLocator.Instance));
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (() => null);
 
-      Assert.That (SafeServiceLocator.Current, Is.SameAs (NullServiceLocator.Instance));
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (DefaultServiceLocator.Instance));
     }
 
     [Test]

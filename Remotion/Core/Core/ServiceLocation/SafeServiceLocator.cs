@@ -26,7 +26,7 @@ namespace Remotion.ServiceLocation
   /// <remarks>
   /// Accessing <see cref="ServiceLocator.Current"/> will always lead to a <see cref="NullReferenceException"/> if no service locator is 
   /// configured. Using <see cref="SafeServiceLocator.Current"/> instead will catch the exception and set <see cref="ServiceLocator.Current"/>
-  /// to the <see cref="NullServiceLocator"/>, which is save for multi-valued operations, thos allowing the use of <see cref="IServiceLocator"/>
+  /// to the <see cref="DefaultServiceLocator"/>, which is save for multi-valued operations, thos allowing the use of <see cref="IServiceLocator"/>
   /// in scenarios where IoC provides optional features, e.g. extensions, listeners, etc.
   /// </remarks>
   public static class SafeServiceLocator
@@ -34,7 +34,7 @@ namespace Remotion.ServiceLocation
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
-    /// the <see cref="NullServiceLocator"/> will be returned.
+    /// the <see cref="DefaultServiceLocator"/> will be returned.
     /// </summary>
     public static IServiceLocator Current
     {
@@ -42,12 +42,12 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? NullServiceLocator.Instance;
+          return ServiceLocator.Current ?? DefaultServiceLocator.Instance;
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => NullServiceLocator.Instance);
-          return NullServiceLocator.Instance;
+          ServiceLocator.SetLocatorProvider (() => DefaultServiceLocator.Instance);
+          return DefaultServiceLocator.Instance;
         }
       }
     }
