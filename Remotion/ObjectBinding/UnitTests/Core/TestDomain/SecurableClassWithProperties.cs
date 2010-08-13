@@ -49,6 +49,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
       set { _accessibleProperty = value; }
     }
 
+    [DemandPropertyReadPermission (TestAccessTypes.First)]
+    public virtual string  PropertyToOverrideWithReadPermission
+    {
+      get { return _accessibleProperty; }
+      set { _accessibleProperty = value; }
+    }
+
+    [DemandPropertyWritePermission (TestAccessTypes.First)]
+    public virtual string PropertyToOverrideWithWritePermission
+    {
+      get { return _accessibleProperty; }
+      set { _accessibleProperty = value; }
+    }
 
     public IObjectSecurityStrategy GetSecurityStrategy ()
     {
