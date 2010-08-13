@@ -19,7 +19,8 @@ using Remotion.Implementation;
 
 namespace Remotion.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IAdapterRegistryImplementation
   {
     void SetAdapter (Type adapterType, IAdapter value);

@@ -37,18 +37,10 @@ namespace Remotion.ServiceLocation
 
     public object GetInstance (Type serviceType)
     {
-      Func<object> instanceCreator;
-      if (Cache.TryGetValue (serviceType, out instanceCreator))
-        return ((Func<object>) instanceCreator())();
-
-      var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
-      if(concreteImplementationAttribute==null)
+      var instance = GetInstanceOrNull (serviceType);
+      if(instance == null)
         throw new ActivationException ("The requested service does not have the ConcreteImplementationAttribute applied.");
 
-      var instance = concreteImplementationAttribute.InstantiateType();
-
-      instanceCreator = () => Activator.CreateInstance (instance.GetType());
-      Cache.GetOrCreateValue (serviceType, t => () => instanceCreator);
       return instance;
     }
 
@@ -89,15 +81,18 @@ namespace Remotion.ServiceLocation
     {
       Func<object> instanceCreator;
       if (Cache.TryGetValue (serviceType, out instanceCreator))
-        return ((Func<object>) instanceCreator ()) ();
+        return instanceCreator ();
 
       var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
       if (concreteImplementationAttribute == null)
         return null;
 
       var instance = concreteImplementationAttribute.InstantiateType ();
-      instanceCreator = () => Activator.CreateInstance (instance.GetType ());
-      Cache.GetOrCreateValue (serviceType, t => () => instanceCreator);
+      if (concreteImplementationAttribute.LifeTime == LifetimeKind.Instance)
+        Cache.GetOrCreateValue (serviceType, t => () => Activator.CreateInstance (instance.GetType ()));
+      else
+        Cache.GetOrCreateValue (serviceType, t => () => instance);
+     
       return instance;
     }
 

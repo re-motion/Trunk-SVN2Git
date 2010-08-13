@@ -19,7 +19,8 @@ using Remotion.Implementation;
 
 namespace Remotion.Mixins.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface ITypeFactoryImplementation
   {
     Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy);

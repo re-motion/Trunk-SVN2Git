@@ -22,6 +22,13 @@ namespace Remotion.Implementation
   public class ConcreteImplementationAttribute : Attribute
   {
     private readonly string _typeNameTemplate;
+    private LifetimeKind _lifeTime = LifetimeKind.Instance;
+
+    public LifetimeKind LifeTime
+    {
+      get { return _lifeTime; }
+      set { _lifeTime = value; }
+    }
 
     public ConcreteImplementationAttribute (string typeNameTemplate)
     {

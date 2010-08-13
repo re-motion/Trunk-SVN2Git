@@ -15,15 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Implementation;
 
-namespace Remotion.Mixins.BridgeInterfaces
+namespace Remotion.Implementation
 {
-  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.MixinImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
-  public interface IMixinImplementation
+  public enum LifetimeKind
   {
-    TMixin Get<TMixin> (object mixinTarget) where TMixin : class;
-    object Get (Type mixinType, object mixinTarget);
+    Singleton,
+    Instance
   }
 }

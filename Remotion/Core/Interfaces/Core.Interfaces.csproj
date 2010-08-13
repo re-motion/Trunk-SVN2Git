@@ -94,6 +94,7 @@
     <Compile Include="Implementation\FrameworkVersion.cs" />
     <Compile Include="Implementation\FrameworkVersionNotFoundException.cs" />
     <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
+    <Compile Include="Implementation\LifetimeKind.cs" />
     <Compile Include="Implementation\VersionDependentImplementationBridge.cs" />
     <Compile Include="Implementation\VersionDependentImplementationException.cs" />
     <Compile Include="INullObject.cs" />

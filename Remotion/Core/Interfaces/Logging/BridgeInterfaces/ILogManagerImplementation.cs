@@ -19,7 +19,8 @@ using Remotion.Implementation;
 
 namespace Remotion.Logging.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Logging.BridgeImplementations.LogManagerImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.Logging.BridgeImplementations.LogManagerImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface ILogManagerImplementation
   {
     /// <summary>

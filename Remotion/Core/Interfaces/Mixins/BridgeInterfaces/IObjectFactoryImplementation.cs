@@ -20,7 +20,8 @@ using Remotion.Reflection;
 
 namespace Remotion.Mixins.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.ObjectFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.ObjectFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IObjectFactoryImplementation
   {
     object CreateInstance (bool allowNonPublicConstructors, Type baseTypeOrInterfaceOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins);
