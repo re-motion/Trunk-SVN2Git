@@ -106,6 +106,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       set { _accessibleProperty = value; }
     }
 
+    [DemandPropertyReadPermission (TestAccessTypes.Second)]
+    public virtual string PropertyToOverride
+    {
+      get { return _accessibleProperty; }
+      set { _accessibleProperty = value; }
+    }
+
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       return SecurityContext.CreateStateless(GetPublicDomainObjectType());

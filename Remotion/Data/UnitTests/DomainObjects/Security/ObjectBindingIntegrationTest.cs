@@ -325,5 +325,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       Assert.That (property.IsAccessible (null, bindableSecurableObject), Is.True);
     }
 
+    //derived
+    [Test]
+    public void AccessGranted_DerivedReadOnlyProperty_IsReadonly ()
+    {
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
+
+      IBusinessObject bindableSecurableObject;
+      using (new SecurityFreeSection ())
+      {
+        bindableSecurableObject =
+            (IBusinessObject) DerivedBindableSecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
+      }
+      var property = bindableSecurableObject.BusinessObjectClass.GetPropertyDefinition ("PropertyToOverride");
+
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
+    }
+
+    [Test]
+    public void NoAccessGranted_DerivedReadOnlyProperty_IsNotAccessible ()
+    {
+      var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
+      var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
+
+      securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
+
+      IBusinessObject bindableSecurableObject;
+      using (new SecurityFreeSection ())
+      {
+        bindableSecurableObject =
+            (IBusinessObject) DerivedBindableSecurableObject.NewObject (_clientTransaction, new ObjectSecurityStrategy (securityContextFactoryStub));
+      }
+      var property = bindableSecurableObject.BusinessObjectClass.GetPropertyDefinition ("PropertyToOverride");
+
+      Assert.That (property.IsAccessible (null, bindableSecurableObject), Is.False);
+    }
+
   }
 }
