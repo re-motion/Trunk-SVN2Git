@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins;
 using Remotion.Security;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
   [BindableObject]
+  [Uses (typeof (MixinSecurableClassWithProperties))]
   public class SecurableClassWithProperties : ISecurableObject
   {
     private readonly IObjectSecurityStrategy _securityStrategy;
