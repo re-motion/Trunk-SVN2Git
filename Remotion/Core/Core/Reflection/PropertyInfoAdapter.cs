@@ -119,7 +119,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_propertyInfo);
+      return _propertyInfo.GetHashCode();
     }
 
   }

@@ -98,7 +98,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_methodInfo);
+      return _methodInfo.GetHashCode();
     }
   }
 }
