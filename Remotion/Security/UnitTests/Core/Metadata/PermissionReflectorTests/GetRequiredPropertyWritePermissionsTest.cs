@@ -50,7 +50,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsEnabled"));
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation);
 
-      Assert.AreEqual (requiredAccessTypes, _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation));
+      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation));
     }
 
     [Test]

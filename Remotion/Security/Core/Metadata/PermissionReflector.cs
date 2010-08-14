@@ -56,7 +56,7 @@ namespace Remotion.Security.Metadata
         return EqualityUtility.NotNullAndSameType (this, other)
                && _attributeType.Equals (other._attributeType)
                && _type.Equals (other._type)
-               && _memberInformation == other._memberInformation;
+               && _memberInformation.Equals (other._memberInformation);
       }
     }
 
