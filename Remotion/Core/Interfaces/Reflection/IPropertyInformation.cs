@@ -77,5 +77,17 @@ namespace Remotion.Reflection
     /// property.</exception>
     /// <exception cref="MethodAccessException">The accessor was private or protected and could not be executed.</exception>
     void SetValue (object instance, object value, object[] indexParameters);
+
+    /// <summary>
+    /// Gets the <see cref="MethodInfo"/> of the get method for the current <see cref="PropertyInfo"/>.
+    /// </summary>
+    /// <returns>The <see cref="MethodInfo"/> of the get method.</returns>
+    MethodInfo GetGetMethod ();
+
+    /// <summary>
+    /// Gets the <see cref="MethodInfo"/> of the set method for the current <see cref="PropertyInfo"/>.
+    /// </summary>
+    /// <returns>The <see cref="MethodInfo"/> of the set method.</returns>
+    MethodInfo GetSetMethod ();
   }
 }

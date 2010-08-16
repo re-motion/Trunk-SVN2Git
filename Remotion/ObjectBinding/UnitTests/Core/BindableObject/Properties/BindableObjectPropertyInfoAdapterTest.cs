@@ -604,6 +604,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
     }
 
+    [Test]
+    public void GetGetMethod ()
+    {
+      var getMethod = _implicitInterfaceDeclarationProperty.GetGetMethod();
+      var expectedMethod = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar");
+
+      Assert.That (getMethod, Is.Not.Null);
+      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+    }
+
+    [Test]
+    public void GetSetMethod ()
+    {
+      var setMethod = _implicitInterfaceDeclarationProperty.GetSetMethod ();
+      var expectedMethod = typeof (TestDomain.IInterfaceWithReferenceType<SimpleReferenceType>).GetMethod ("set_ImplicitInterfaceScalar");
+
+      Assert.That (setMethod, Is.Not.Null);
+      Assert.That (setMethod, Is.EqualTo (expectedMethod));
+    }
+
     private void AssertCanSet (BindableObjectPropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);

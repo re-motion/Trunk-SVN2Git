@@ -171,6 +171,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
+    public MethodInfo GetGetMethod ()
+    {
+      return _propertyInfo.GetGetMethod();
+    }
+
+    public MethodInfo GetSetMethod ()
+    {
+      return _propertyInfo.GetSetMethod();
+    }
+
     public override bool Equals (object obj)
     {
       var other = obj as BindableObjectPropertyInfoAdapter;

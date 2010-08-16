@@ -419,7 +419,29 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (overrideAdapter.GetOriginalDeclaringType (), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
       Assert.That (overrideAdapter.GetOriginalDeclaringType (), Is.EqualTo (typeof (ClassWithBaseMember)));
     }
-    
+
+    [Test]
+    public void GetGetMethod ()
+    {
+      var propertyInfoAdapter = new PropertyInfoAdapter (_property);
+      var getMethod = propertyInfoAdapter.GetGetMethod();
+      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NotVisibleAttributeScalar");
+
+      Assert.That (getMethod, Is.Not.Null);
+      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+    }
+
+    [Test]
+    public void GetSetMethod ()
+    {
+      var propertyInfoAdapter = new PropertyInfoAdapter (_property);
+      var setMethod = propertyInfoAdapter.GetSetMethod ();
+      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NotVisibleAttributeScalar");
+
+      Assert.That (setMethod, Is.Not.Null);
+      Assert.That (setMethod, Is.EqualTo (expectedMethod));
+    }
+
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);
