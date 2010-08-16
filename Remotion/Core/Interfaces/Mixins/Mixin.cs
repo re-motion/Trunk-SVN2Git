@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Diagnostics;
-using Remotion.Implementation;
 using Remotion.Mixins.BridgeInterfaces;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins
 {
@@ -40,7 +40,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static TMixin Get<TMixin> (object mixinTarget) where TMixin : class
     {
-      return VersionDependentImplementationBridge<IMixinImplementation>.Implementation.Get<TMixin> (mixinTarget);
+      return SafeServiceLocator.Current.GetInstance<IMixinImplementation>().Get<TMixin> (mixinTarget);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static object Get (Type mixinType, object mixinTarget)
     {
-      return VersionDependentImplementationBridge<IMixinImplementation>.Implementation.Get (mixinType, mixinTarget);
+      return SafeServiceLocator.Current.GetInstance<IMixinImplementation>().Get (mixinType, mixinTarget);
     }
   }
 

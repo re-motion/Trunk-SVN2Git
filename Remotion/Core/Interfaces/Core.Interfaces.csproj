@@ -95,8 +95,6 @@
     <Compile Include="Implementation\FrameworkVersionNotFoundException.cs" />
     <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
     <Compile Include="Implementation\LifetimeKind.cs" />
-    <Compile Include="Implementation\VersionDependentImplementationBridge.cs" />
-    <Compile Include="Implementation\VersionDependentImplementationException.cs" />
     <Compile Include="INullObject.cs" />
     <Compile Include="Logging\BridgeInterfaces\ILogManagerImplementation.cs" />
     <Compile Include="Logging\ILog.cs" />
@@ -138,13 +136,13 @@
     <Compile Include="Reflection\IMemberInformation.cs" />
     <Compile Include="Reflection\IMethodInformation.cs" />
     <Compile Include="Reflection\IPropertyInformation.cs" />
+    <Compile Include="Reflection\ParamList.generated.cs" />
     <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\ActionInvoker.generated.cs" />
     <Compile Include="Reflection\ActionInvoker.template.cs" />
     <Compile Include="Reflection\IConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\ParamList.generated.cs" />
     <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
     <Compile Include="StandardDelegates.cs" />

@@ -17,9 +17,9 @@
 using System;
 using System.Runtime.Remoting.Messaging;
 using Remotion.BridgeInterfaces;
-using Remotion.Implementation;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Context
 {
@@ -55,7 +55,7 @@ namespace Remotion.Context
           if (s_instance == null)
           {
             // set temporary context so that mixins can be used
-            IBootstrapStorageProvider bootstrapStorageProvider = VersionDependentImplementationBridge<IBootstrapStorageProvider>.Implementation;
+            IBootstrapStorageProvider bootstrapStorageProvider = SafeServiceLocator.Current.GetInstance < IBootstrapStorageProvider>();
             s_instance = bootstrapStorageProvider;
             
             // then determine the actual context to be used
@@ -97,7 +97,7 @@ namespace Remotion.Context
 #pragma warning disable 168
       object bootstrapperInstance = Instance;
 #pragma warning restore 168
-      return VersionDependentImplementationBridge<ICallContextStorageProvider>.Implementation;
+      return SafeServiceLocator.Current.GetInstance <ICallContextStorageProvider>();
     }
   }
 }

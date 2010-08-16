@@ -38,8 +38,12 @@ namespace Remotion.ServiceLocation
     public object GetInstance (Type serviceType)
     {
       var instance = GetInstanceOrNull (serviceType);
-      if(instance == null)
-        throw new ActivationException ("The requested service does not have the ConcreteImplementationAttribute applied.");
+      if (instance == null)
+      {
+        string message = string.Format ("Cannot get a version-dependent implementation of type '{0}': "+
+          "Expected 'ConcreteImplementationAttribute' could not be found.", serviceType.FullName);
+        throw new ActivationException (message);
+      }
 
       return instance;
     }

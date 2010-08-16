@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Implementation;
 using Remotion.Mixins.BridgeInterfaces;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins
 {
@@ -111,7 +111,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
-      return VersionDependentImplementationBridge<ITypeFactoryImplementation>.Implementation.GetConcreteType (targetOrConcreteType, generationPolicy);
+      return SafeServiceLocator.Current.GetInstance<ITypeFactoryImplementation>().GetConcreteType (targetOrConcreteType, generationPolicy);
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ namespace Remotion.Mixins
     /// <remarks>This method is useful when a mixin target instance is created via <see cref="FormatterServices.GetSafeUninitializedObject"/>.</remarks>
     public static void InitializeUnconstructedInstance (object mixinTarget)
     {
-      VersionDependentImplementationBridge<ITypeFactoryImplementation>.Implementation.InitializeUnconstructedInstance (mixinTarget);
+      SafeServiceLocator.Current.GetInstance<ITypeFactoryImplementation>().InitializeUnconstructedInstance (mixinTarget);
     }
   }
 }

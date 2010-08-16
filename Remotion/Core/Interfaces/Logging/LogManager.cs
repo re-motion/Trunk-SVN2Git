@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Implementation;
 using Remotion.Logging.BridgeInterfaces;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Logging
 {
@@ -35,7 +35,7 @@ namespace Remotion.Logging
     /// <returns>A logger for the <paramref name="name"/> specified.</returns>
     public static ILog GetLogger (string name)
     {
-      return VersionDependentImplementationBridge<ILogManagerImplementation>.Implementation.GetLogger (name);
+      return SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().GetLogger (name);
     }
 
     /// <summary>
@@ -45,16 +45,15 @@ namespace Remotion.Logging
     /// <returns>A logger for the fully qualified name of the <paramref name="type"/> specified.</returns>
     public static ILog GetLogger (Type type)
     {
-      return VersionDependentImplementationBridge<ILogManagerImplementation>.Implementation.GetLogger (type);
+      return SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().GetLogger(type);
     }
-
-
+    
     /// <summary>
     /// Initializes the current logging framework.
     /// </summary>
     public static void Initialize ()
     {
-      VersionDependentImplementationBridge<ILogManagerImplementation>.Implementation.Initialize ();
+      SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().Initialize ();
     }
 
     /// <summary>
@@ -62,7 +61,7 @@ namespace Remotion.Logging
     /// </summary>
     public static void InitializeConsole ()
     {
-      VersionDependentImplementationBridge<ILogManagerImplementation>.Implementation.InitializeConsole ();
+      SafeServiceLocator.Current.GetInstance<ILogManagerImplementation>().InitializeConsole ();
     }
   }
 }

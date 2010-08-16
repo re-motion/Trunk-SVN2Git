@@ -17,7 +17,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.BridgeInterfaces;
 using Remotion.Collections;
+using Remotion.Logging.BridgeImplementations;
+using Remotion.Logging.BridgeInterfaces;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -32,6 +35,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
       _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
+      _instances.Add (typeof (ILogManagerImplementation), new LogManagerImplementation());
+      _instances.Add (typeof (IAdapterRegistryImplementation), MockRepository.GenerateStub<IAdapterRegistryImplementation> ());
     }
 
     public void SetFactory<T> (T factory)

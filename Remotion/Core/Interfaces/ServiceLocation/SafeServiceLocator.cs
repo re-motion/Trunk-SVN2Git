@@ -32,6 +32,10 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
+    private static readonly IServiceLocator s_defaultServiceLocatorInstance =
+        (IServiceLocator) ConcreteImplementationResolver.InstantiateType (
+            "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>");
+
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
@@ -41,17 +45,15 @@ namespace Remotion.ServiceLocation
     {
       get
       {
-        const string typeName = "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>";
         try
         {
-          return ServiceLocator.Current ?? (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName);
+          return ServiceLocator.Current ?? s_defaultServiceLocatorInstance;
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName));
-          return (IServiceLocator) ConcreteImplementationResolver.InstantiateType (typeName);
+          ServiceLocator.SetLocatorProvider (() => s_defaultServiceLocatorInstance);
+          return s_defaultServiceLocatorInstance;
         }
-        
       }
     }
   }

@@ -45,46 +45,56 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (ActivationException),
-      ExpectedMessage = "The requested service does not have the ConcreteImplementationAttribute applied.")]
+      ExpectedMessage = "Cannot get a version-dependent implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': "+
+      "Expected 'ConcreteImplementationAttribute' could not be found.")]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
-      _serviceLocator.GetInstance (typeof (string));
+      _serviceLocator.GetInstance (typeof (IServiceLocator));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidCastException), 
+      ExpectedMessage = "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.ITestConcreteImplementationAttributeTypeWithoutImplementation'.")]
+    public void GetInstance_ServiceTypeWithoutConcreteImplementationType ()
+    {
+      _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithoutImplementation>();
     }
 
     [Test]
     public void GetService_TypeWithConcreteImplementationAttribute ()
     {
-      var result = _serviceLocator.GetService (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
+      var result = _serviceLocator.GetService (typeof (ITestInstanceConcreteImplementationAttributeType));
 
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
     public void GetInstance_TypeWithConcreteImplementationAttribute ()
     {
-      var result = _serviceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
+      var result = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.IsInstanceOfType (typeof (TestConcreteImplementationAttributeType), SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType> ());
     }
 
     [Test]
     public void GetInstance_GetInstancesFromCache ()
     {
       var testableSerciceLocator = new TestableDefaultServiceLocator ();
-      testableSerciceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
+      testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
-      Assert.That (testableSerciceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType)), Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
 
       Func<object> instanceCreator;
-      Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestInstanceDefaultServiceLocatorAttributeType), out instanceCreator), Is.True);
-      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
     public void GetInstance_InstanceLifeTime_ReturnsNotSameInstancesForAServiceType ()
     {
-      var instance1 = _serviceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
-      var instance2 = _serviceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
+      var instance1 = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
+      var instance2 = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
       Assert.That (instance1, Is.Not.SameAs (instance2));
     }
@@ -92,8 +102,8 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstance_SingletonLifeTime_ReturnsSameInstancesForAServiceType ()
     {
-      var instance1 = _serviceLocator.GetInstance (typeof (ITestSingletonInstanceDefaultServiceLocatorAttributeType));
-      var instance2 = _serviceLocator.GetInstance (typeof (ITestSingletonInstanceDefaultServiceLocatorAttributeType));
+      var instance1 = _serviceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType));
+      var instance2 = _serviceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType));
 
       Assert.That (instance1, Is.SameAs (instance2));
     }
@@ -101,18 +111,18 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstanceWithKeyParamete_KeyIsIgnored ()
     {
-      var result = _serviceLocator.GetInstance (typeof (ITestInstanceDefaultServiceLocatorAttributeType), "Test");
+      var result = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType), "Test");
 
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
     public void GetAllInstances ()
     {
-      var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceDefaultServiceLocatorAttributeType));
+      var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceConcreteImplementationAttributeType));
 
       Assert.That (result.ToArray ().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
@@ -126,17 +136,17 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstanceWithGenericType ()
     {
-      var result = _serviceLocator.GetInstance<ITestInstanceDefaultServiceLocatorAttributeType> ();
+      var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType> ();
 
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
     public void GetInstanceWithGenericTypeAndKeyParameter_KeyIsIgnored ()
     {
-      var result = _serviceLocator.GetInstance<ITestInstanceDefaultServiceLocatorAttributeType> ("Test");
+      var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType> ("Test");
 
-      Assert.That (result, Is.TypeOf (typeof (TestDefaultServiceLocatorAttributeType)));
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
@@ -149,23 +159,20 @@ namespace Remotion.UnitTests.ServiceLocation
 
   }
 
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDefaultServiceLocatorAttributeType, Remotion.UnitTests, Version = <version>", 
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>", 
     LifeTime = LifetimeKind.Instance)]
-  internal interface ITestInstanceDefaultServiceLocatorAttributeType
-  {
+  internal interface ITestInstanceConcreteImplementationAttributeType { }
 
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDefaultServiceLocatorAttributeType, Remotion.UnitTests, Version = <version>",
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
     LifeTime = LifetimeKind.Singleton)]
-  internal interface ITestSingletonInstanceDefaultServiceLocatorAttributeType
-  {
+  internal interface ITestSingletonConcreteImplementationAttributeType { }
 
-  }
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation { }
 
-  public class TestDefaultServiceLocatorAttributeType : ITestInstanceDefaultServiceLocatorAttributeType, ITestSingletonInstanceDefaultServiceLocatorAttributeType
+  public class TestConcreteImplementationAttributeType : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
   {
-    public TestDefaultServiceLocatorAttributeType ()
+    public TestConcreteImplementationAttributeType ()
     {
       
     } 

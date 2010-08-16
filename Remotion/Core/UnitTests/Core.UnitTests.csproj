@@ -563,7 +563,6 @@
     <Compile Include="Interfaces\Implementation\ConcreteImplementationAttributeTest.cs" />
     <Compile Include="Interfaces\Implementation\FrameworkVersionRetrieverTest.cs" />
     <Compile Include="Interfaces\Implementation\FrameworkVersionTest.cs" />
-    <Compile Include="Interfaces\Implementation\VersionDependentImplementationBridgeTest.cs" />
     <Compile Include="Logging\Log4NetLogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ConvertTest.cs" />

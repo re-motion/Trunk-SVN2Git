@@ -18,6 +18,7 @@ using System;
 using Remotion.BridgeInterfaces;
 using Remotion.Collections;
 using Remotion.Implementation;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Security
 {
@@ -31,8 +32,8 @@ namespace Remotion.Security
   [Serializable]
   public struct EnumWrapper : IEquatable<EnumWrapper>
   {
-    private static readonly ICache<Enum, EnumWrapper> s_enumWrapperCache =
-        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Enum, EnumWrapper>();
+    private static readonly ICache<Enum, EnumWrapper> s_enumWrapperCache = SafeServiceLocator.Current
+      .GetInstance<IInterlockedCacheFactoryImplementation>().CreateCache<Enum, EnumWrapper>();
 
     /// <summary>
     /// Gets an <see cref="EnumWrapper"/>, setting the wrapper's <see cref="Name"/> to a string of the format "valueName|typeName".

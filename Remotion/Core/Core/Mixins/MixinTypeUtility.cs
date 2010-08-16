@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Implementation;
 using Remotion.Mixins.BridgeInterfaces;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins
 {
@@ -35,7 +35,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsGeneratedConcreteMixedType (Type type)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsGeneratedConcreteMixedType (type);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation>().IsGeneratedConcreteMixedType (type);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsGeneratedByMixinEngine (Type type)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsGeneratedByMixinEngine (type);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().IsGeneratedByMixinEngine (type);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace Remotion.Mixins
     /// otherwise, a generated type containing all the mixins currently configured for <paramref name="targetOrConcreteType"/>.</returns>
     public static Type GetConcreteMixedType (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetConcreteMixedType (targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().GetConcreteMixedType (targetOrConcreteType);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace Remotion.Mixins
     /// given <paramref name="targetOrConcreteType"/> was generated.</returns>
     public static Type GetUnderlyingTargetType (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetUnderlyingTargetType (targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().GetUnderlyingTargetType (targetOrConcreteType);
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsAssignableFrom (Type baseOrInterface, Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsAssignableFrom (baseOrInterface, targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().IsAssignableFrom (baseOrInterface, targetOrConcreteType);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool HasMixins (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixins (targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().HasMixins (targetOrConcreteType);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ namespace Remotion.Mixins
     /// check should be broadened to include these properties, <see cref="GetAscribableMixinType"/> should be used.</remarks>
     public static bool HasMixin (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixin (targetOrConcreteType, mixinType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().HasMixin (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static Type GetAscribableMixinType (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetAscribableMixinType (targetOrConcreteType, mixinType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().GetAscribableMixinType (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool HasAscribableMixin (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasAscribableMixin (targetOrConcreteType, mixinType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().HasAscribableMixin (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static IEnumerable<Type> GetMixinTypes (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypes (targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().GetMixinTypes (targetOrConcreteType);
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static Type[] GetMixinTypesExact (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypesExact (targetOrConcreteType);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().GetMixinTypesExact (targetOrConcreteType);
     }
 
     /// <summary>
@@ -189,7 +189,7 @@ namespace Remotion.Mixins
     /// specified <paramref name="args"/>.</returns>
     public static object CreateInstance (Type type, params object[] args)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.CreateInstance (type, args);
+      return SafeServiceLocator.Current.GetInstance<IMixinTypeUtilityImplementation> ().CreateInstance (type, args);
     }
   }
 }

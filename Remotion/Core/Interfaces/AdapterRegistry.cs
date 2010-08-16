@@ -16,18 +16,19 @@
 // 
 using System;
 using Remotion.BridgeInterfaces;
-using Remotion.Implementation;
+using Remotion.ServiceLocation;
 
 namespace Remotion
 {
   /// <summary>Used to register <see cref="IAdapter"/> instances.</summary>
   /// <remarks>Used by those modules of the framework that do not have binary depedencies to another module to access information from this module.</remarks>
-  /// <seealso cref="T:Remotion.Security.ISecurityAdapter"/>
   public static class AdapterRegistry
   {
+    private static readonly IAdapterRegistryImplementation s_instance = SafeServiceLocator.Current.GetInstance<IAdapterRegistryImplementation>();
+
     public static IAdapterRegistryImplementation Instance
     {
-      get { return VersionDependentImplementationBridge<IAdapterRegistryImplementation>.Implementation; }
+      get { return s_instance; }
     }
   }
 }

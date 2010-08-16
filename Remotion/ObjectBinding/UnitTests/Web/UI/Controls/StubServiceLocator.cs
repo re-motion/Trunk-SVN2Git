@@ -17,7 +17,14 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.BridgeImplementations;
+using Remotion.BridgeInterfaces;
 using Remotion.Collections;
+using Remotion.Context;
+using Remotion.Logging.BridgeImplementations;
+using Remotion.Logging.BridgeInterfaces;
+using Remotion.Mixins.BridgeImplementations;
+using Remotion.Mixins.BridgeInterfaces;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
@@ -27,6 +34,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Reflection;
 using Remotion.Web;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
@@ -71,6 +79,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IClientScriptBehaviorFactory), new ClientScriptBehaviorFactory());
       _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
       _instances.Add (typeof (IResourceUrlFactory), new ResourceUrlFactory (ResourceTheme.ClassicBlue));
+
+      _instances.Add (typeof (IParamListCreateImplementation), new ParamListCreateImplementation());
+      _instances.Add (typeof (IObjectFactoryImplementation), new ObjectFactoryImplementation());
+      _instances.Add (typeof (ITypeFactoryImplementation), new TypeFactoryImplementation());
+      _instances.Add (typeof (ILogManagerImplementation), new LogManagerImplementation());
+      _instances.Add (typeof (IBootstrapStorageProvider), new BootstrapStorageProvider());
+      _instances.Add (typeof (ITypeDiscoveryServiceFactoryImplementation), new TypeDiscoveryServiceFactoryImplementation());
+      _instances.Add (typeof (IMixinTypeUtilityImplementation), new MixinTypeUtilityImplementation());
     }
 
     public void SetFactory<T> (T factory)

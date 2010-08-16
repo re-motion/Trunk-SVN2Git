@@ -41,6 +41,12 @@ namespace Remotion.UnitTests
     }
 
     [Test]
+    public void GetInstance_SameTwice ()
+    {
+      Assert.AreSame (AdapterRegistry.Instance, AdapterRegistry.Instance);
+    }
+
+    [Test]
     public void SetAndGetProvider ()
     {
       IAdapter exptectedAdapter = _mocks.StrictMock<IAdapter> ();

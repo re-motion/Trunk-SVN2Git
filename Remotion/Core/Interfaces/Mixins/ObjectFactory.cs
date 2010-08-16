@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Implementation;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins
 {
@@ -40,6 +40,7 @@ namespace Remotion.Mixins
   public static class ObjectFactory
   {
     #region Public construction
+
     /// <summary>
     /// Creates a mixed instance of the given type <typeparamref name="T"/> with a public constructor.
     /// </summary>
@@ -268,7 +269,8 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static object Create (Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
+    public static object Create (
+        Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
       return Create (false, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
     }
@@ -276,6 +278,7 @@ namespace Remotion.Mixins
     #endregion
 
     #region Nonpublic construction
+
     /// <summary>
     /// Creates a mixed instance of the given base type <typeparamref name="T"/>.
     /// </summary>
@@ -387,7 +390,8 @@ namespace Remotion.Mixins
     /// interface registered in the current mixin configuration. See also <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
-    public static T Create<T> (bool allowNonPublicConstructors, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
+    public static T Create<T> (
+        bool allowNonPublicConstructors, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
       return (T) Create (allowNonPublicConstructors, typeof (T), constructorParameters, generationPolicy, preparedMixins);
     }
@@ -449,9 +453,11 @@ namespace Remotion.Mixins
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
     /// </para>
     /// </remarks>
-    public static object Create (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins)
+    public static object Create (
+        bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins)
     {
-      return Create (allowNonPublicConstructors, targetOrConcreteType, constructorParameters, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
+      return Create (
+          allowNonPublicConstructors, targetOrConcreteType, constructorParameters, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
     }
 
     /// <summary>
@@ -513,11 +519,18 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static object Create (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
+    public static object Create (
+        bool allowNonPublicConstructors,
+        Type targetOrConcreteType,
+        ParamList constructorParameters,
+        GenerationPolicy generationPolicy,
+        params object[] preparedMixins)
     {
-      return VersionDependentImplementationBridge<IObjectFactoryImplementation>.Implementation
-          .CreateInstance (allowNonPublicConstructors, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
+      return SafeServiceLocator.Current
+          .GetInstance<IObjectFactoryImplementation>().CreateInstance (
+              allowNonPublicConstructors, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
     }
+
     #endregion
   }
 }
