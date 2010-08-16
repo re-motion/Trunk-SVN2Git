@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -234,9 +235,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping."
         + "TestDomain.Errors.ClassWithSameClassID' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors."
         + "OtherClassWithSameClassID' both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these "
-        + "classes. The assemblies involved are 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors, "
-        + "Version=0.0.0.0, Culture=neutral, PublicKeyToken=null' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain."
-        + "Errors, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'.")]
+        + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=d83bbd0d6301b415' "
+        + "and 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=d83bbd0d6301b415'.")]
     public void GetClassDefinition_ForClassesWithSameClassID ()
     {
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
@@ -340,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private static Type GetTypeFromDomainWithErrors (string typename)
     {
-      Type type = TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
+      var type = Assembly.GetExecutingAssembly().GetType (
           "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors." + typename,
           true,
           false);

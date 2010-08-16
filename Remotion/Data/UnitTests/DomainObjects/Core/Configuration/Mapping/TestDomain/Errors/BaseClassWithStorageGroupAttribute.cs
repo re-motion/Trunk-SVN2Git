@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors
 {

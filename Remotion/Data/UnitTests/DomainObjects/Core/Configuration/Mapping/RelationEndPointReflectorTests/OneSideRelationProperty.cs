@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.RelationEndPointReflectorTests
@@ -154,8 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
 
     private Type GetClassWithInvalidBidirectionalRelationLeftSide ()
     {
-      return TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide", true, false);
+      return typeof (ClassWithInvalidBidirectionalRelationLeftSide);
     }
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)

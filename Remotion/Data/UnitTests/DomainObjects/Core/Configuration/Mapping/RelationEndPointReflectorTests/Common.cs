@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Utilities;
 
@@ -52,8 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
     [Test]
     public void IsVirtualEndRelationEndpoint_WithCollectionPropertyAndWithoutAttribute ()
     {
-      Type type = TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-        "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation", true, false);
+      Type type = typeof(ClassWithInvalidUnidirectionalRelation);
 
       PropertyInfo propertyInfo = type.GetProperty ("LeftSide");
       RelationEndPointReflector relationEndPointReflector =
@@ -118,10 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
         + "property: Int32")]
     public void Initialize_WithPropertyInfoNotAssignableToTheClassDefinitionsType ()
     {
-      Type classType = TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.BaseClass", true, false);
-      Type declaringType = TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute", true, false);
+      Type classType = typeof (BaseClass);
+      Type declaringType = typeof (DerivedClassHavingAnOverriddenPropertyWithMappingAttribute);
       PropertyInfo propertyInfo = declaringType.GetProperty ("Int32");
 
       new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
@@ -129,8 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
 
     private Type GetClassWithInvalidProperties ()
     {
-      return TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidProperties", true, false);
+      return typeof (ClassWithInvalidProperties);
     }
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)

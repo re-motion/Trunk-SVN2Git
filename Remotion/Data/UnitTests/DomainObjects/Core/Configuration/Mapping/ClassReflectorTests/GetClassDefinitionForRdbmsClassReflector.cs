@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassReflectorTests
@@ -172,10 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
         + "property: Int32")]
     public void GetClassDefinition_ForDerivedClassHavingAnOverriddenPropertyWithMappingAttribute()
     {
-      Type derivedClass = TestDomainFactory.ConfigurationMappingTestDomainErrors.GetType (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute",
-          true,
-          false);
+      Type derivedClass = typeof (DerivedClassHavingAnOverriddenPropertyWithMappingAttribute);
       ClassReflector classReflector = new RdbmsClassReflector (derivedClass, Configuration.NameResolver);
 
       classReflector.GetClassDefinition (_classDefinitions);

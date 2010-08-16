@@ -15,5 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Collections;
+using System.ComponentModel.Design;
 
+namespace Remotion.Development.UnitTesting.Reflection.TypeDiscovery
+{
+  public class NullTypeDiscoveryService : ITypeDiscoveryService
+  {
+    public NullTypeDiscoveryService ()
+    {
+    }
+
+    public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
+    {
+      return new Type[0];
+    }
+  }
+}

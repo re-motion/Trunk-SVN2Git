@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="UnitTesting\ClassWithSerializationCallbacksBase.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryService.cs" />
+    <Compile Include="UnitTesting\Reflection\TypeDiscovery\NullTypeDiscoveryService.cs" />
     <Compile Include="UnitTesting\Sandboxing\PermissionSets.cs" />
     <Compile Include="UnitTesting\Sandboxing\SandboxTestRunner.cs" />
     <Compile Include="UnitTesting\Sandboxing\Sandbox.cs" />

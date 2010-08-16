@@ -194,7 +194,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionObjectMother.cs" />
@@ -253,19 +253,19 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointReflectorTests\GenericManySideRelationProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\RelationPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\PropertyFinderTest.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationRightSide.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\OtherClassWithInvalidBidirectionalRelationLeftSide.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\Derived2ClassWithStorageGroupAttribute.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\BaseClassWithStorageGroupAttribute.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\Derived1ClassWithStorageGroupAttribute.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithLegacyLoadConstructor.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\GenericClass.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSideNotInMapping.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidProperties.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithSameClassID.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationRightSide.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\OtherClassWithInvalidBidirectionalRelationLeftSide.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\Derived2ClassWithStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\BaseClassWithStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\Derived1ClassWithStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithLegacyLoadConstructor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\GenericClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSideNotInMapping.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidProperties.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithSameClassID.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\AbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Ceo.cs" />
@@ -525,7 +525,6 @@
     <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TypeProviderTest.cs" />
-    <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\CollectionSetterTest.cs" />
@@ -644,13 +643,11 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationReflectorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointReflectorTests\OneSideRelationProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointReflectorTests\ManySideRelationProperty.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\BaseClass.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\DerivedClassHavingAnOverriddenPropertyWithMappingAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\BaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\DerivedClassHavingAnOverriddenPropertyWithMappingAttribute.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Simple\ClassWithPropertyTypeInOtherAssembly.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\AssemblyInfo.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Simple\AssemblyInfo.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSide.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Empty\AssemblyInfo.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSide.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup2Attribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageConfigurationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup1Attribute.cs" />
@@ -692,13 +689,13 @@
     <Compile Include="DomainObjects\Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\DomainObjectMixinHookTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\PersistentMixinIntegrationTest.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStoragePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStorageTargetClassForPersistentMixin.cs" />
-    <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForDerivedPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithUnidirectionalMixin1.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingUnidirectionalRelation2.cs" />
@@ -775,7 +772,6 @@
     <Compile Include="DomainObjects\Core\Serialization\SerializationCallbackTest.cs" />
     <Compile Include="DomainObjects\StandardMappingTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\InterceptedPropertyIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomainFactory.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\TestDomain\Color.cs" />
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
@@ -1455,7 +1451,6 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
-    <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\PublicKey.snk" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.IList.cs" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />
@@ -1542,9 +1537,7 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  -->
   <Target Name="AfterBuild">
-    <Delete Files="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Directory)')" />
-    <Copy SourceFiles="@(TestDomain->'%(Fullpath)')" DestinationFiles="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
   </Target>
+  -->
 </Project>

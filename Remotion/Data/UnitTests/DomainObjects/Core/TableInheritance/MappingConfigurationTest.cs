@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
@@ -33,8 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
 
-      MappingConfiguration mappingConfiguration = 
-          new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (TestDomainFactory.ConfigurationMappingTestDomainEmpty)));
+      var nullTypeDiscoveryService = new NullTypeDiscoveryService();
+
+      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
       mappingConfiguration.ClassDefinitions.Add (personClass);
       mappingConfiguration.Validate ();
     }
@@ -44,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
 
-      MappingConfiguration mappingConfiguration = 
-          new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (TestDomainFactory.ConfigurationMappingTestDomainEmpty)));
+      var nullTypeDiscoveryService = new NullTypeDiscoveryService ();
+      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
       mappingConfiguration.ClassDefinitions.Add (personClass);
 
       try

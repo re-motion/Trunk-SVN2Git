@@ -66,17 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-      var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
-      var mappingNamespaces = new[]
-                              {
-                                  mappingRootNamespace + ".TestDomain.Integration",
-                                  mappingRootNamespace + ".TestDomain.Integration.InheritanceRootSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.ReflectionBasedMappingSample",
-                                  mappingRootNamespace + ".TestDomain.Integration.MixedMapping"
-                              };
-
-      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, mappingNamespaces);
-      return typeDiscoveryService;
+      return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist(
+          typeDiscoveryService, "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain");
     }
   }
 }
