@@ -431,10 +431,6 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\UnitTests\Core.UnitTests.csproj">
-      <Project>{C216DEC9-8820-4298-B10F-FB4131466B69}</Project>
-      <Name>Core.UnitTests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
