@@ -17,11 +17,10 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Factories
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   public class FakeMappingConfiguration
   {

@@ -208,6 +208,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeColumnDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MappingReflectionTestBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondRight.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
@@ -1040,9 +1041,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Factories\TestDataContainerFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Factories\FakeMappingConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectTest.cs">

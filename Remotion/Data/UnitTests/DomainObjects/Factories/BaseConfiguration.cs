@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -46,11 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-      var mappingRootNamespace = typeof (TestMappingConfiguration).Namespace;
-      var testMappingNamespace = mappingRootNamespace + ".TestDomain.Integration";
-
-      typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (typeDiscoveryService, testMappingNamespace);
-      return typeDiscoveryService;
+      return FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (
+          typeDiscoveryService,
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain",
+          "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain");
     }
 
     private readonly StorageConfiguration _storageConfiguration;

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainObjectIDs;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -38,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
       DomainObjectsConfiguration.SetCurrent (StandardConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
-      FakeMappingConfiguration.Reset();
     }
 
     public override void SetUp ()
