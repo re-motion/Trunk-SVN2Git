@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
@@ -23,16 +25,42 @@ namespace Remotion.UnitTests.Interfaces.Implementation
   [TestFixture]
   public class ConcreteImplementationAttributeTest
   {
+    private ConcreteImplementationAttribute _attribute;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _attribute = new ConcreteImplementationAttribute ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, "
+          + "Remotion.UnitTests, Version = <version>");
+    }
+
+    [Test]
+    public void ResolveType ()
+    {
+      FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
+      
+      var result = _attribute.ResolveType();
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.EqualTo(typeof (ConcreteImplementationAttributeTest)));
+    }
+
     [Test]
     public void InstantiateType ()
     {
-      FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
-      ConcreteImplementationAttribute attribute =
-          new ConcreteImplementationAttribute ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, "
-          + "Remotion.UnitTests, Version = <version>");
-      object instance = attribute.InstantiateType ();
+      var instance = _attribute.InstantiateType (typeof (ConcreteImplementationAttributeTest));
       Assert.IsNotNull (instance);
       Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
     }
+
+    [Test]
+    public void InstantiateType_WithArguments ()
+    {
+      var instance = _attribute.InstantiateType (typeof (StringBuilder), "test");
+      Assert.IsNotNull (instance);
+      Assert.That (instance, Is.TypeOf(typeof(StringBuilder)));
+      Assert.That (instance.ToString(), Is.EqualTo("test"));
+    }
+
   }
 }

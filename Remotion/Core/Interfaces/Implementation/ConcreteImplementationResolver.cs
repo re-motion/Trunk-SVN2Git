@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
@@ -26,9 +27,14 @@ namespace Remotion.Implementation
       return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (typeNameTemplate), true);
     }
 
-    public static object InstantiateType (string typeNameTemplate)
+    public static object InstantiateType (string typeNameTemplate, params IEnumerable[] args)
     {
-      return Activator.CreateInstance (ResolveType (typeNameTemplate));
+      return Activator.CreateInstance (ResolveType(typeNameTemplate), args);
+    }
+
+    public static object InstantiateType (Type type, params object[] args)
+    {
+      return Activator.CreateInstance (type, args);
     }
 
     public static string GetTypeName (string typeNameTemplate)

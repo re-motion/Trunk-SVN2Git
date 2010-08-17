@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.BridgeImplementations;
 using Remotion.Development.UnitTesting;
 using Remotion.Implementation;
@@ -70,13 +72,30 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     }
 
     [Test]
-    public void Instantiate ()
+    public void Instantiate_StringParameter ()
     {
       FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
       const string typeName = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
       object instance = ConcreteImplementationResolver.InstantiateType (typeName);
       Assert.IsNotNull (instance);
       Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
+    }
+
+    [Test]
+    public void Instantiate_TypeParameter ()
+    {
+      var instance = ConcreteImplementationResolver.InstantiateType (typeof (ConcreteImplementationAttributeTest));
+      Assert.IsNotNull (instance);
+      Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
+    }
+
+    [Test]
+    public void Instantiate_TypeParameterWithArguments ()
+    {
+      var instance = ConcreteImplementationResolver.InstantiateType (typeof (StringBuilder), "test");
+
+      Assert.That (instance, Is.TypeOf (typeof (StringBuilder)));
+      Assert.That (instance.ToString(), Is.EqualTo ("test"));
     }
 
     [Test]
@@ -98,7 +117,8 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "No parameterless constructor defined for this object.")]
+    [ExpectedException (typeof (MissingMethodException), 
+      ExpectedMessage = "Constructor on type 'Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationResolverTest+ClassWithoutDefaultConstructor' not found.")]
     public void Instantiate_WithoutDefaultConstructor ()
     {
       FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;

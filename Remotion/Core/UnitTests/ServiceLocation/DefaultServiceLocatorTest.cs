@@ -45,16 +45,18 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (ActivationException),
-      ExpectedMessage = "Cannot get a version-dependent implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': "+
-      "Expected 'ConcreteImplementationAttribute' could not be found.")]
+        ExpectedMessage = "Cannot get a version-dependent implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': " +
+                          "Expected 'ConcreteImplementationAttribute' could not be found.")]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
       _serviceLocator.GetInstance (typeof (IServiceLocator));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException), 
-      ExpectedMessage = "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.ITestConcreteImplementationAttributeTypeWithoutImplementation'.")]
+    [ExpectedException (typeof (InvalidCastException),
+        ExpectedMessage =
+            "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.ITestConcreteImplementationAttributeTypeWithoutImplementation'."
+        )]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationType ()
     {
       _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithoutImplementation>();
@@ -74,20 +76,23 @@ namespace Remotion.UnitTests.ServiceLocation
       var result = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
       Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-      Assert.IsInstanceOfType (typeof (TestConcreteImplementationAttributeType), SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType> ());
+      Assert.IsInstanceOfType (
+          typeof (TestConcreteImplementationAttributeType), SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType>());
     }
 
     [Test]
     public void GetInstance_GetInstancesFromCache ()
     {
-      var testableSerciceLocator = new TestableDefaultServiceLocator ();
+      var testableSerciceLocator = new TestableDefaultServiceLocator();
       testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
-      Assert.That (testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (
+          testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)),
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
 
       Func<object> instanceCreator;
       Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
-      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (instanceCreator(), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
@@ -121,8 +126,8 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceConcreteImplementationAttributeType));
 
-      Assert.That (result.ToArray ().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (result.ToArray().Length, Is.EqualTo (1));
+      Assert.That (result.ToArray()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
@@ -130,13 +135,13 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var result = _serviceLocator.GetAllInstances (typeof (IServiceLocator));
 
-      Assert.That (result.ToArray ().Length, Is.EqualTo (0));
+      Assert.That (result.ToArray().Length, Is.EqualTo (0));
     }
 
     [Test]
     public void GetInstanceWithGenericType ()
     {
-      var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType> ();
+      var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType>();
 
       Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
@@ -152,29 +157,101 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetAllInstancesWithGenericType_ConcreteImplementationAttributeIsNotDefined ()
     {
-      var result = _serviceLocator.GetAllInstances<IServiceLocator> ();
+      var result = _serviceLocator.GetAllInstances<IServiceLocator>();
 
-      Assert.That (result.ToArray ().Length, Is.EqualTo (0));
+      Assert.That (result.ToArray().Length, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetInstance_ConstructorInjection_OneParameter ()
+    {
+      var result = _serviceLocator.GetInstance<ITestConstructorInjectionWithOneParameter>();
+
+      Assert.That(result, Is.TypeOf(typeof(TestConstructorInjectionWithOneParameter)));
+      Assert.That (((TestConstructorInjectionWithOneParameter) result).Param, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    public void GetInstance_ConstructorInjection_ThreeParametersRecursive ()
+    {
+      var result = _serviceLocator.GetInstance<ITestConstructorInjectionWithThreeParameters> ();
+
+      Assert.That (result, Is.TypeOf (typeof (TestConstructorInjectionWithThreeParameters)));
+      Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param1, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
+      Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param2, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
+      Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param3, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), 
+      ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exact one public constructor and cannot be instantiated.")]
+    public void GetInstance_TypeHasNotExactOnePublicConstructor ()
+    {
+      _serviceLocator.GetInstance<ITestTypeWithNotExactOnePublicConstructor>();
     }
 
   }
 
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>", 
-    LifeTime = LifetimeKind.Instance)]
-  internal interface ITestInstanceConcreteImplementationAttributeType { }
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
+      LifeTime = LifetimeKind.Instance)]
+  internal interface ITestInstanceConcreteImplementationAttributeType
+  {
+  }
 
   [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
-    LifeTime = LifetimeKind.Singleton)]
+      LifeTime = LifetimeKind.Singleton)]
   internal interface ITestSingletonConcreteImplementationAttributeType { }
 
   [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")]
   internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation { }
 
-  public class TestConcreteImplementationAttributeType : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
+  public class TestConcreteImplementationAttributeType
+      : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
   {
     public TestConcreteImplementationAttributeType ()
     {
-      
-    } 
+    }
+  }
+
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameter, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestConstructorInjectionWithOneParameter { }
+
+  internal class TestConstructorInjectionWithOneParameter : ITestConstructorInjectionWithOneParameter
+  {
+    public readonly ITestSingletonConcreteImplementationAttributeType Param;
+
+    public TestConstructorInjectionWithOneParameter (ITestSingletonConcreteImplementationAttributeType param)
+    {
+      Param = param;
+    }
+  }
+
+   [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithThreeParameters, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestConstructorInjectionWithThreeParameters { }
+
+  internal class TestConstructorInjectionWithThreeParameters : ITestConstructorInjectionWithThreeParameters
+  {
+    public readonly ITestConstructorInjectionWithOneParameter Param1;
+    public readonly ITestConstructorInjectionWithOneParameter Param2;
+    public readonly ITestSingletonConcreteImplementationAttributeType Param3;
+    
+    public TestConstructorInjectionWithThreeParameters (
+        ITestConstructorInjectionWithOneParameter param1,
+        ITestConstructorInjectionWithOneParameter param2,
+        ITestSingletonConcreteImplementationAttributeType param3)
+    {
+      Param1 = param1;
+      Param2 = param2;
+      Param3 = param3;
+    }
+  }
+
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestTypeWithNotExactOnePublicConstructor, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestTypeWithNotExactOnePublicConstructor { }
+
+  internal class TestTypeWithNotExactOnePublicConstructor : ITestTypeWithNotExactOnePublicConstructor
+  {
+    public TestTypeWithNotExactOnePublicConstructor () { }
+    public TestTypeWithNotExactOnePublicConstructor (ITestSingletonConcreteImplementationAttributeType param) { }
   }
 }

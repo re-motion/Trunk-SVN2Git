@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 
 namespace Remotion.Implementation
 {
@@ -40,9 +41,14 @@ namespace Remotion.Implementation
       get { return _typeNameTemplate; }
     }
 
-    public object InstantiateType ()
+    public Type ResolveType ()
     {
-      return ConcreteImplementationResolver.InstantiateType (_typeNameTemplate);
+      return ConcreteImplementationResolver.ResolveType (_typeNameTemplate);
+    }
+
+    public object InstantiateType (Type type, params object[] args)
+    {
+      return ConcreteImplementationResolver.InstantiateType (type, args);
     }
   }
 }

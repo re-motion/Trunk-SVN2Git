@@ -15,10 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Implementation;
+using Remotion.Reflection;
 
 namespace Remotion.ServiceLocation
 {
@@ -40,8 +43,10 @@ namespace Remotion.ServiceLocation
       var instance = GetInstanceOrNull (serviceType);
       if (instance == null)
       {
-        string message = string.Format ("Cannot get a version-dependent implementation of type '{0}': "+
-          "Expected 'ConcreteImplementationAttribute' could not be found.", serviceType.FullName);
+        string message = string.Format (
+            "Cannot get a version-dependent implementation of type '{0}': " +
+            "Expected 'ConcreteImplementationAttribute' could not be found.",
+            serviceType.FullName);
         throw new ActivationException (message);
       }
 
@@ -55,7 +60,7 @@ namespace Remotion.ServiceLocation
 
     public IEnumerable<object> GetAllInstances (Type serviceType)
     {
-      var instance = GetInstanceOrNull(serviceType);
+      var instance = GetInstanceOrNull (serviceType);
       if (instance != null)
         return new[] { instance };
       else
@@ -85,18 +90,26 @@ namespace Remotion.ServiceLocation
     {
       Func<object> instanceCreator;
       if (Cache.TryGetValue (serviceType, out instanceCreator))
-        return instanceCreator ();
+        return instanceCreator();
 
       var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
       if (concreteImplementationAttribute == null)
         return null;
 
-      var instance = concreteImplementationAttribute.InstantiateType ();
+      var typeToInstantiate = concreteImplementationAttribute.ResolveType();
+      var publicConstructors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
+      if (publicConstructors.Length != 1)
+        throw new InvalidOperationException (string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
+
+      var constructorParameters = publicConstructors[0].GetParameters();
+      var args = constructorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray();
+
+      var instance = concreteImplementationAttribute.InstantiateType (typeToInstantiate, args);
       if (concreteImplementationAttribute.LifeTime == LifetimeKind.Instance)
-        Cache.GetOrCreateValue (serviceType, t => () => Activator.CreateInstance (instance.GetType ()));
+        Cache.GetOrCreateValue (serviceType, t => () => Activator.CreateInstance (instance.GetType (), args));
       else
         Cache.GetOrCreateValue (serviceType, t => () => instance);
-     
+
       return instance;
     }
 
