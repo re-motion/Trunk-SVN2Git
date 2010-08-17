@@ -232,11 +232,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping."
-        + "TestDomain.Errors.ClassWithSameClassID' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors."
-        + "OtherClassWithSameClassID' both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these "
-        + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' "
-        + "and 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b'.")]
     public void GetClassDefinition_ForClassesWithSameClassID ()
     {
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
@@ -246,7 +241,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
       var classReflector2 = new ClassReflector (type2, Configuration.NameResolver);
 
       classReflector1.GetClassDefinition (_classDefinitions);
-      classReflector2.GetClassDefinition (_classDefinitions);
+      try
+      {
+        classReflector2.GetClassDefinition (_classDefinitions);
+
+        Assert.Fail ("exception expected");
+      }
+      catch (MappingException ex)
+      {
+        var expectedMessage = string.Format(
+          "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping." 
+          + "TestDomain.Errors.ClassWithSameClassID' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors."
+          + "OtherClassWithSameClassID' both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these "
+          + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version={0}, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' "
+          + "and 'Remotion.Data.UnitTests, Version={0}, Culture=neutral, PublicKeyToken=fee00910d6e5f53b'.", 
+          GetType().Assembly.GetName().Version);
+
+        Assert.AreEqual (expectedMessage, ex.Message);
+      }
     }
 
     [Test]
