@@ -16,12 +16,15 @@
 // 
 using System;
 using System.Web;
+using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating renderers for <see cref="WebTab"/> items.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.WebTabStripRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IWebTabRendererFactory
   {
     IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab);

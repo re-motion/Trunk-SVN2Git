@@ -17,12 +17,15 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IListMenu"/> controls.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.ListMenuRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IListMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IListMenu control, IServiceLocator serviceLocator);

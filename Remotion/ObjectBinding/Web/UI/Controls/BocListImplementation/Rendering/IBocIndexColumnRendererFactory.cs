@@ -16,12 +16,15 @@
 // 
 using System;
 using System.Web;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating <see cref="IBocIndexColumnRenderer"/> renderers.
   /// </summary>
+  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocColumnRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IBocIndexColumnRendererFactory
   {
     IBocIndexColumnRenderer CreateRenderer (HttpContextBase context, IBocList list);

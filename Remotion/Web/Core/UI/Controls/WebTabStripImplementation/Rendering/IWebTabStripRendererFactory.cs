@@ -17,12 +17,15 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebTabStrip"/> controls.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.WebTabStripRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IWebTabStripRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator);

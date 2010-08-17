@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -24,6 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// Interface for factories creating <see cref="IBocColumnRenderer"/> renderers.
   /// </summary>
   /// <typeparam name="T">The type of column the created renderers can handle.</typeparam>
+  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocColumnRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {

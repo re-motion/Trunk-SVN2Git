@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
@@ -24,6 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
+  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocEnumValueRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IBocEnumValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control, IServiceLocator serviceLocator);
