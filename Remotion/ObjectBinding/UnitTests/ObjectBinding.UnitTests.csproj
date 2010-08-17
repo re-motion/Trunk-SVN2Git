@@ -310,7 +310,6 @@
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocSimpleColumnQuirksModeRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnDefinition.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnQuirksModeRenderer.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnQuirksModeRendererFactory.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubQuirksModeRenderer.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubRowQuirksModeRenderer.cs" />
@@ -341,10 +340,16 @@
     <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocListRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocStubColumnRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInUnboundListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListMock.cs" />

@@ -174,10 +174,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           .Return (MockRepository.GenerateStub<IBocSelectorColumnRenderer>());
       serviceLocatorMock.Expect (mock => mock.GetInstance<IBocSelectorColumnRendererFactory>()).Return (seclectorColumnRendererFactoryMock);
 
-      var simpleColumnRendererFactoryMock = MockRepository.GenerateMock<IBocColumnRendererFactory<BocSimpleColumnDefinition>>();
+      var simpleColumnRendererFactoryMock = MockRepository.GenerateMock<IBocSimpleColumnRendererFactory>();
       simpleColumnRendererFactoryMock.Expect (mock => mock.CreateRenderer (HttpContext, List, simpleColumnDefinition, serviceLocatorMock))
           .Return (MockRepository.GenerateStub<IBocColumnRenderer>());
-      serviceLocatorMock.Expect (mock => mock.GetInstance<IBocColumnRendererFactory<BocSimpleColumnDefinition>>()).Return (
+      serviceLocatorMock.Expect (mock => mock.GetInstance<IBocSimpleColumnRendererFactory>()).Return (
           simpleColumnRendererFactoryMock);
 
       mockRepository.ReplayAll();

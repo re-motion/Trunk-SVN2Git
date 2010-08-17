@@ -29,12 +29,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocColumnQuirksModeRendererFactory
       :
-          IBocColumnRendererFactory<BocSimpleColumnDefinition>,
-          IBocColumnRendererFactory<BocCompoundColumnDefinition>,
-          IBocColumnRendererFactory<BocCommandColumnDefinition>,
-          IBocColumnRendererFactory<BocCustomColumnDefinition>,
-          IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>,
-          IBocColumnRendererFactory<BocRowEditModeColumnDefinition>,
+          IBocSimpleColumnRendererFactory,
+          IBocCompoundColumnRendererFactory,
+          IBocCommandColumnRendererFactory,
+          IBocCustomColumnRendererFactory,
+          IBocDropDownMenuColumnRendererFactory,
+          IBocRowEditModeColumnRendererFactory,
           IBocIndexColumnRendererFactory,
           IBocSelectorColumnRendererFactory
   {

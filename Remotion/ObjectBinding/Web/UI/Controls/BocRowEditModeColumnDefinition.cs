@@ -199,7 +199,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocColumnRendererFactory<BocRowEditModeColumnDefinition>> ();
+      var columnRendererFactory = serviceLocator.GetInstance<IBocRowEditModeColumnRendererFactory> ();
 
       return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator);
     }

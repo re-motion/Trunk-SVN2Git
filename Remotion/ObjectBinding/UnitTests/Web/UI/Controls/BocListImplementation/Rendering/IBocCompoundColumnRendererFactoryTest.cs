@@ -15,21 +15,41 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
-using Remotion.Web.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class StubColumnRendererFactory : IBocStubColumnRendererFactory
+  [TestFixture]
+  public class IBocCompoundColumnRendererFactoryTest
   {
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator)
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new StubColumnRenderer (context, list, columnDefinition, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
+      _serviceLocator = new DefaultServiceLocator ();
+    }
+
+    [Test]
+    public void GetInstance_Once ()
+    {
+      var factory = _serviceLocator.GetInstance<IBocCompoundColumnRendererFactory> ();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (BocColumnRendererFactory)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IBocCommandColumnRendererFactory> ();
+      var factory2 = _serviceLocator.GetInstance<IBocCommandColumnRendererFactory> ();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

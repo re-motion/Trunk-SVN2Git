@@ -22,14 +22,12 @@ using Remotion.Implementation;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocColumnRenderer"/> renderers.
+  /// Interface for factory creating renderers for <see cref="IBocColumnRenderer"/> controls.
   /// </summary>
-  /// <typeparam name="T">The type of column the created renderers can handle.</typeparam>
   [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocColumnRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
     LifeTime = LifetimeKind.Singleton)]
-  public interface IBocColumnRendererFactory<T>
-      where T: BocColumnDefinition
+  public interface IBocCompoundColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, T columnDefinition, IServiceLocator serviceLocator);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator);
   }
 }

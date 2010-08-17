@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocColumnRendererFactory<BocCommandColumnDefinition>>();
+      var columnRendererFactory = serviceLocator.GetInstance<IBocCommandColumnRendererFactory>();
 
       return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator);
     }

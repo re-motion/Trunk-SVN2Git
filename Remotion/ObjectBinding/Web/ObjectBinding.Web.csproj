@@ -175,6 +175,12 @@
     <Compile Include="UI\Controls\BocBooleanValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererBase.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
@@ -342,7 +348,6 @@
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListRendererFactory.cs" />

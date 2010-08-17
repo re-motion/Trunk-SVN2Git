@@ -50,49 +50,49 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     [Test]
     public void CreateBocSimpleColumnRenderer ()
     {
-      BocSimpleColumnDefinition column = new BocSimpleColumnDefinition();
-      IBocColumnRendererFactory<BocSimpleColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      BocSimpleColumnDefinition column = new BocSimpleColumnDefinition ();
+      IBocSimpleColumnRendererFactory factory = new BocColumnRendererFactory ();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
     public void CreateBocCompoundColumnRenderer ()
     {
-      BocCompoundColumnDefinition column = new BocCompoundColumnDefinition();
-      IBocColumnRendererFactory<BocCompoundColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      BocCompoundColumnDefinition column = new BocCompoundColumnDefinition ();
+      IBocCompoundColumnRendererFactory factory = new BocColumnRendererFactory ();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
     public void CreateBocCommandColumnRenderer ()
     {
       BocCommandColumnDefinition column = new BocCommandColumnDefinition();
-      IBocColumnRendererFactory<BocCommandColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      IBocCommandColumnRendererFactory factory = new BocColumnRendererFactory();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
     public void CreateBocCustomColumnRenderer ()
     {
-      BocCustomColumnDefinition column = new BocCustomColumnDefinition();
-      IBocColumnRendererFactory<BocCustomColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      BocCustomColumnDefinition column = new BocCustomColumnDefinition ();
+      IBocCustomColumnRendererFactory factory = new BocColumnRendererFactory ();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
     public void CreateBocDropDownMenuColumnRenderer ()
     {
-      BocDropDownMenuColumnDefinition column = new BocDropDownMenuColumnDefinition();
-      IBocColumnRendererFactory<BocDropDownMenuColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      BocDropDownMenuColumnDefinition column = new BocDropDownMenuColumnDefinition ();
+      IBocDropDownMenuColumnRendererFactory factory = new BocColumnRendererFactory ();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
     public void CreateBocRowEditModeColumnRenderer ()
     {
-      BocRowEditModeColumnDefinition column = new BocRowEditModeColumnDefinition();
-      IBocColumnRendererFactory<BocRowEditModeColumnDefinition> factory = new BocColumnRendererFactory();
-      CreateRenderer (column, factory);
+      BocRowEditModeColumnDefinition column = new BocRowEditModeColumnDefinition ();
+      IBocRowEditModeColumnRendererFactory factory = new BocColumnRendererFactory ();
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
 
     [Test]
@@ -115,8 +115,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
       Assert.AreSame (List, ((BocSelectorColumnRenderer) renderer).List);
     }
 
-    private void CreateRenderer<T> (T column, IBocColumnRendererFactory<T> rendererFactory)
-        where T: BocColumnDefinition
+    private void CreateRenderer<T> (T column, Func<HttpContextBase, BocList, IServiceLocator, IBocColumnRenderer> bocColumnRenderer)
+        where T : BocColumnDefinition
     {
       column.ColumnTitle = "TestColumn1";
       List.FixedColumns.Add (column);
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
       var resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
       serviceLocatorStub.Stub (stub => stub.GetInstance<IResourceUrlFactory> ()).Return (resourceUrlFactory);
 
-      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, List, column, serviceLocatorStub);
+      IBocColumnRenderer renderer = bocColumnRenderer(HttpContext, List, serviceLocatorStub);
 
       Assert.IsInstanceOfType (typeof (BocColumnRendererBase<T>), renderer);
       Assert.AreSame (List, ((BocColumnRendererBase<T>) renderer).List);

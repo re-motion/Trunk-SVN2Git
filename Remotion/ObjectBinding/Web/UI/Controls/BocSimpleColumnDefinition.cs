@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocColumnRendererFactory<BocSimpleColumnDefinition>> ();
+      var columnRendererFactory = serviceLocator.GetInstance<IBocSimpleColumnRendererFactory> ();
 
       return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator);
     }

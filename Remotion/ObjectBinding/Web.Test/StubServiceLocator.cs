@@ -32,12 +32,12 @@ namespace OBWTest
     {
       _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory ());
 
-      _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCompoundColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCommandColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCustomColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocRowEditModeColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocCommandColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocColumnRendererFactory ());
       _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory ());
     }
