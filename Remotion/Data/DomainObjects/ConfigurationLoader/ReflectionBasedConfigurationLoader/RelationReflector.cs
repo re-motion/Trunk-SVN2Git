@@ -117,6 +117,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
       }
       else if (ClassDefinition.BaseClass == null && ClassDefinition.ClassType != PropertyInfo.DeclaringType)
+        //TODO RM-3153: change name to "ClassDefinition.ClassType->NameResolver.GetPropertyName (PropertyInfo)"
         return NameResolver.GetPropertyName (ClassDefinition.ClassType, PropertyInfo.Name);
       return NameResolver.GetPropertyName (PropertyInfo);
     }
