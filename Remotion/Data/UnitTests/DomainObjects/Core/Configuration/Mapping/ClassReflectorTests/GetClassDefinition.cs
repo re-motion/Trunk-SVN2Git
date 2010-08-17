@@ -235,8 +235,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping."
         + "TestDomain.Errors.ClassWithSameClassID' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors."
         + "OtherClassWithSameClassID' both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these "
-        + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=d83bbd0d6301b415' "
-        + "and 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=d83bbd0d6301b415'.")]
+        + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' "
+        + "and 'Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b'.")]
     public void GetClassDefinition_ForClassesWithSameClassID ()
     {
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
