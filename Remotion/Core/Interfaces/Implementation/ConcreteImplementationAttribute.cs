@@ -46,6 +46,7 @@ namespace Remotion.Implementation
       return ConcreteImplementationResolver.ResolveType (_typeNameTemplate);
     }
 
+    // TODO: Remove
     public object InstantiateType (Type type, params object[] args)
     {
       return ConcreteImplementationResolver.InstantiateType (type, args);

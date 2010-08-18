@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Implementation;
@@ -88,29 +88,48 @@ namespace Remotion.ServiceLocation
 
     private object GetInstanceOrNull (Type serviceType)
     {
-      Func<object> instanceCreator;
-      if (Cache.TryGetValue (serviceType, out instanceCreator))
-        return instanceCreator();
+      return Cache.GetOrCreateValue (serviceType, GetInstanceFactory) ();
+    }
+
+    private Func<object> GetInstanceFactory (Type serviceType)
+    {
+      Func<object> factory;
 
       var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
       if (concreteImplementationAttribute == null)
-        return null;
-
-      var typeToInstantiate = concreteImplementationAttribute.ResolveType();
-      var publicConstructors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
-      if (publicConstructors.Length != 1)
-        throw new InvalidOperationException (string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
-
-      var constructorParameters = publicConstructors[0].GetParameters();
-      var args = constructorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray();
-
-      var instance = concreteImplementationAttribute.InstantiateType (typeToInstantiate, args);
-      if (concreteImplementationAttribute.LifeTime == LifetimeKind.Instance)
-        Cache.GetOrCreateValue (serviceType, t => () => Activator.CreateInstance (instance.GetType (), args));
+        factory = () => null;
       else
-        Cache.GetOrCreateValue (serviceType, t => () => instance);
+      {
+        var typeToInstantiate = concreteImplementationAttribute.ResolveType();
+        var publicCtors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
+        if (publicCtors.Length != 1)
+          throw new InvalidOperationException (
+              string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
 
-      return instance;
+        var ctorInfo = publicCtors[0];
+        var ctorParameters = ctorInfo.GetParameters();
+
+        if (concreteImplementationAttribute.LifeTime == LifetimeKind.Instance)
+        {
+          if (ctorParameters.Length == 0)
+            factory = (Func<object>) new ConstructorLookupInfo (typeToInstantiate).GetDelegate (typeof (Func<object>));
+          else
+            factory = () =>
+            {
+              var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray();
+
+              // TODO: The goal is to have a delegate that calls: new MyType ((int) ctorArgs[0], (string) ctorArgs[1])
+              return ctorInfo.Invoke (ctorArgs);
+            };
+        }
+        else
+        {
+          var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray ();
+          var instance = Activator.CreateInstance (typeToInstantiate, ctorArgs);
+          factory = () => instance;
+        }
+      }
+      return factory;
     }
 
     private ConcreteImplementationAttribute GetConreteImplementationAttribute (Type serviceType)

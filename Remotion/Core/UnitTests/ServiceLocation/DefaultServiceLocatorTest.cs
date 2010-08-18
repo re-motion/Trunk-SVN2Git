@@ -183,6 +183,28 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void GetInstance_ConstructorInjection_InstanceLifeTime_ReturnsNotSameInstances_ForServiceParameter_WithInstanceLifetime ()
+    {
+      var instance1 = _serviceLocator.GetInstance (typeof (ITestConstructorInjectionWithOneParameterWithInstanceLifetime));
+      var instance2 = _serviceLocator.GetInstance (typeof (ITestConstructorInjectionWithOneParameterWithInstanceLifetime));
+
+      Assert.That (instance1, Is.Not.SameAs (instance2));
+      Assert.That (((TestConstructorInjectionWithOneParameterWithInstanceLifetime) instance1).Param, 
+          Is.Not.SameAs (((TestConstructorInjectionWithOneParameterWithInstanceLifetime) instance2).Param));
+    }
+
+    [Test]
+    public void GetInstance_ConstructorInjection_InstanceLifeTime_ReturnsNotSameInstances_ForServiceParameter_WithSingletonLifetime ()
+    {
+      var instance1 = _serviceLocator.GetInstance (typeof (ITestConstructorInjectionWithOneParameterWithSingletonLifetime));
+      var instance2 = _serviceLocator.GetInstance (typeof (ITestConstructorInjectionWithOneParameterWithSingletonLifetime));
+
+      Assert.That (instance1, Is.Not.SameAs (instance2));
+      Assert.That (((TestConstructorInjectionWithOneParameterWithSingletonLifetime) instance1).Param,
+          Is.SameAs (((TestConstructorInjectionWithOneParameterWithSingletonLifetime) instance2).Param));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), 
       ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exact one public constructor and cannot be instantiated.")]
     public void GetInstance_TypeHasNotExactOnePublicConstructor ()
@@ -191,6 +213,8 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
   }
+
+  // TODO: Move to TestDomain namesapce and to separate files
 
   [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
       LifeTime = LifetimeKind.Instance)]
@@ -221,6 +245,32 @@ namespace Remotion.UnitTests.ServiceLocation
     public readonly ITestSingletonConcreteImplementationAttributeType Param;
 
     public TestConstructorInjectionWithOneParameter (ITestSingletonConcreteImplementationAttributeType param)
+    {
+      Param = param;
+    }
+  }
+
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameterWithInstanceLifetime, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestConstructorInjectionWithOneParameterWithInstanceLifetime { }
+
+  internal class TestConstructorInjectionWithOneParameterWithInstanceLifetime : ITestConstructorInjectionWithOneParameterWithInstanceLifetime
+  {
+    public readonly ITestInstanceConcreteImplementationAttributeType Param;
+
+    public TestConstructorInjectionWithOneParameterWithInstanceLifetime (ITestInstanceConcreteImplementationAttributeType param)
+    {
+      Param = param;
+    }
+  }
+
+  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameterWithSingletonLifetime, Remotion.UnitTests, Version = <version>")]
+  internal interface ITestConstructorInjectionWithOneParameterWithSingletonLifetime { }
+
+  internal class TestConstructorInjectionWithOneParameterWithSingletonLifetime : ITestConstructorInjectionWithOneParameterWithSingletonLifetime
+  {
+    public readonly ITestSingletonConcreteImplementationAttributeType Param;
+
+    public TestConstructorInjectionWithOneParameterWithSingletonLifetime (ITestSingletonConcreteImplementationAttributeType param)
     {
       Param = param;
     }
