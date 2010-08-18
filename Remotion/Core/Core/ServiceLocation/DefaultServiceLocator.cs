@@ -119,7 +119,7 @@ namespace Remotion.ServiceLocation
       if (concreteImplementationAttribute == null)
         return () => null;
 
-      var typeToInstantiate = ConcreteImplementationResolver.ResolveType (concreteImplementationAttribute.TypeNameTemplate);
+      var typeToInstantiate = TypeNameTemplateResolver.ResolveToType (concreteImplementationAttribute.TypeNameTemplate);
       var lifetimeKind = concreteImplementationAttribute.LifeTime;
       return CreateInstanceFactory(typeToInstantiate, lifetimeKind);
     }

@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     public void GetTypeName ()
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
-      Assert.AreEqual ("Name, Version = 2.4.6.8", ConcreteImplementationResolver.ResolveTypeName ("Name, Version = <version>"));
+      Assert.AreEqual ("Name, Version = 2.4.6.8", TypeNameTemplateResolver.ResolveToTypeName ("Name, Version = <version>"));
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
       const string typeName = "Name, Version = <version>, PublicKeyToken = <publicKeyToken>";
-      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", ConcreteImplementationResolver.ResolveTypeName (typeName));
+      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", TypeNameTemplateResolver.ResolveToTypeName (typeName));
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
       const string typeName = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
-      Assert.AreSame (typeof (ConcreteImplementationAttributeTest), ConcreteImplementationResolver.ResolveType (typeName));
+      Assert.AreSame (typeof (ConcreteImplementationAttributeTest), TypeNameTemplateResolver.ResolveToType (typeName));
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     public void ResolveType_WithInvalidTypeName ()
     {
       FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
-      ConcreteImplementationResolver.ResolveType ("Badabing");
+      TypeNameTemplateResolver.ResolveToType ("Badabing");
     }
     
   }

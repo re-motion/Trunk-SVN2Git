@@ -90,7 +90,7 @@
     <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />
     <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
-    <Compile Include="Implementation\ConcreteImplementationResolver.cs" />
+    <Compile Include="Implementation\TypeNameTemplateResolver.cs" />
     <Compile Include="Implementation\FrameworkVersion.cs" />
     <Compile Include="Implementation\FrameworkVersionNotFoundException.cs" />
     <Compile Include="Implementation\FrameworkVersionRetriever.cs" />

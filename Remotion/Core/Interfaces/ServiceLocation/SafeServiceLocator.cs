@@ -44,13 +44,13 @@ namespace Remotion.ServiceLocation
         try
         {
           return ServiceLocator.Current ?? 
-            (IServiceLocator) Activator.CreateInstance (ConcreteImplementationResolver.ResolveType (
+            (IServiceLocator) Activator.CreateInstance (TypeNameTemplateResolver.ResolveToType (
                 "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
         }
         catch (NullReferenceException)
         {
           var locatorInstance = (IServiceLocator) Activator.CreateInstance (
-              ConcreteImplementationResolver.ResolveType (
+              TypeNameTemplateResolver.ResolveToType (
                   "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
           ServiceLocator.SetLocatorProvider (() => locatorInstance);
           return locatorInstance;

@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Implementation
 {
   /// <summary>
-  /// Holds the <see cref="Version"/> object used by <see cref="ConcreteImplementationResolver"/> to retrieve types from
+  /// Holds the <see cref="Version"/> object used by <see cref="TypeNameTemplateResolver"/> to retrieve types from
   /// the re-motion implementation assemblies.
   /// </summary>
   public static class FrameworkVersion

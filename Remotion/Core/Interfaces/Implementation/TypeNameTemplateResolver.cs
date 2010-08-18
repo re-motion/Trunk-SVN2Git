@@ -19,23 +19,20 @@ using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
 {
-  // TODO: Rename to TypeNameTemplateResolver 
   /// <summary>
   /// Provides functionality to resolve type name templates to actual types. Type name templates are assembly-qualified type names that contain
   /// "&lt;version&gt;" and "&lt;publicKeyToken&gt;" as placeholders for version and public key token. Those placeholders will be replaced with
   /// the <see cref="FrameworkVersion"/> and the public key token of the re-motion framework, then <see cref="ContextAwareTypeDiscoveryUtility"/> is
   /// used to resolve the type.
   /// </summary>
-  public static class ConcreteImplementationResolver
+  public static class TypeNameTemplateResolver
   {
-    // TODO: Rename to ResolveToType
-    public static Type ResolveType (string typeNameTemplate)
+    public static Type ResolveToType (string typeNameTemplate)
     {
-      return ContextAwareTypeDiscoveryUtility.GetType (ResolveTypeName (typeNameTemplate), true);
+      return ContextAwareTypeDiscoveryUtility.GetType (ResolveToTypeName (typeNameTemplate), true);
     }
 
-    // TODO: Rename to ResolveToTypeName
-    public static string ResolveTypeName (string typeNameTemplate)
+    public static string ResolveToTypeName (string typeNameTemplate)
     {
       string versioned = typeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString ());
       return versioned.Replace ("<publicKeyToken>", GetPublicKeyTokenString ());
@@ -43,7 +40,7 @@ namespace Remotion.Implementation
     
     private static string GetPublicKeyTokenString ()
     {
-      byte[] bytes = typeof (ConcreteImplementationResolver).Assembly.GetName ().GetPublicKeyToken ();
+      byte[] bytes = typeof (TypeNameTemplateResolver).Assembly.GetName ().GetPublicKeyToken ();
       return string.Format ("{0:x2}{1:x2}{2:x2}{3:x2}{4:x2}{5:x2}{6:x2}{7:x2}",
           bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
     }
