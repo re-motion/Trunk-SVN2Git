@@ -32,12 +32,6 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
-    // TODO Review: Move this initialization logic to the Current property because it should be executed as lazily as possible. Make sure it is only executed in the case where no locator can be found (either because there is a NullReferenceException or because ServiceLocator.Current returns null).
-    private static readonly IServiceLocator s_defaultServiceLocatorInstance =
-      (IServiceLocator)Activator.CreateInstance (
-        ConcreteImplementationResolver.ResolveType (
-          "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
-    
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
@@ -49,12 +43,17 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? s_defaultServiceLocatorInstance;
+          return ServiceLocator.Current ?? 
+            (IServiceLocator) Activator.CreateInstance (ConcreteImplementationResolver.ResolveType (
+                "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => s_defaultServiceLocatorInstance);
-          return s_defaultServiceLocatorInstance;
+          var locatorInstance = (IServiceLocator) Activator.CreateInstance (
+              ConcreteImplementationResolver.ResolveType (
+                  "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
+          ServiceLocator.SetLocatorProvider (() => locatorInstance);
+          return locatorInstance;
         }
       }
     }

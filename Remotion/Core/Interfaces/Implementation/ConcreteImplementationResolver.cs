@@ -29,11 +29,10 @@ namespace Remotion.Implementation
   {
     public static Type ResolveType (string typeNameTemplate)
     {
-      return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (typeNameTemplate), true);
+      return ContextAwareTypeDiscoveryUtility.GetType (ResolveTypeName (typeNameTemplate), true);
     }
 
-    // TODO: Rename to ResolveTypeName
-    public static string GetTypeName (string typeNameTemplate)
+    public static string ResolveTypeName (string typeNameTemplate)
     {
       string versioned = typeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString ());
       return versioned.Replace ("<publicKeyToken>", GetPublicKeyTokenString ());

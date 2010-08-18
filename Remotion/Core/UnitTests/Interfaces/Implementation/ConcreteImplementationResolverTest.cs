@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     public void GetTypeName ()
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
-      Assert.AreEqual ("Name, Version = 2.4.6.8", ConcreteImplementationResolver.GetTypeName ("Name, Version = <version>"));
+      Assert.AreEqual ("Name, Version = 2.4.6.8", ConcreteImplementationResolver.ResolveTypeName ("Name, Version = <version>"));
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
       const string typeName = "Name, Version = <version>, PublicKeyToken = <publicKeyToken>";
-      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", ConcreteImplementationResolver.GetTypeName (typeName));
+      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", ConcreteImplementationResolver.ResolveTypeName (typeName));
     }
 
     [Test]
