@@ -19,8 +19,8 @@ using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Implementation;
 using Remotion.ServiceLocation;
+using Remotion.UnitTests.ServiceLocation.TestDomain;
 
 namespace Remotion.UnitTests.ServiceLocation
 {
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     [ExpectedException (typeof (InvalidCastException),
         ExpectedMessage =
-            "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.ITestConcreteImplementationAttributeTypeWithoutImplementation'."
+            "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithoutImplementation'."
         )]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationType ()
     {
@@ -214,116 +214,6 @@ namespace Remotion.UnitTests.ServiceLocation
       _serviceLocator.GetInstance<ITestTypeWithNotExactOnePublicConstructor>();
     }
   }
-
-  // TODO: Move to TestDomain namesapce and to separate files
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
-      LifeTime = LifetimeKind.Instance)]
-  internal interface ITestInstanceConcreteImplementationAttributeType
-  {
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>",
-      LifeTime = LifetimeKind.Singleton)]
-  internal interface ITestSingletonConcreteImplementationAttributeType
-  {
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation
-  {
-  }
-
-  public class TestConcreteImplementationAttributeType
-      : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
-  {
-    public TestConcreteImplementationAttributeType ()
-    {
-    }
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameter, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestConstructorInjectionWithOneParameter
-  {
-  }
-
-  internal class TestConstructorInjectionWithOneParameter : ITestConstructorInjectionWithOneParameter
-  {
-    public readonly ITestSingletonConcreteImplementationAttributeType Param;
-
-    public TestConstructorInjectionWithOneParameter (ITestSingletonConcreteImplementationAttributeType param)
-    {
-      Param = param;
-    }
-  }
-
-  [ConcreteImplementation (
-      "Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameterWithInstanceLifetime, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestConstructorInjectionWithOneParameterWithInstanceLifetime
-  {
-  }
-
-  internal class TestConstructorInjectionWithOneParameterWithInstanceLifetime : ITestConstructorInjectionWithOneParameterWithInstanceLifetime
-  {
-    public readonly ITestInstanceConcreteImplementationAttributeType Param;
-
-    public TestConstructorInjectionWithOneParameterWithInstanceLifetime (ITestInstanceConcreteImplementationAttributeType param)
-    {
-      Param = param;
-    }
-  }
-
-  [ConcreteImplementation (
-      "Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithOneParameterWithSingletonLifetime, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestConstructorInjectionWithOneParameterWithSingletonLifetime
-  {
-  }
-
-  internal class TestConstructorInjectionWithOneParameterWithSingletonLifetime : ITestConstructorInjectionWithOneParameterWithSingletonLifetime
-  {
-    public readonly ITestSingletonConcreteImplementationAttributeType Param;
-
-    public TestConstructorInjectionWithOneParameterWithSingletonLifetime (ITestSingletonConcreteImplementationAttributeType param)
-    {
-      Param = param;
-    }
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestConstructorInjectionWithThreeParameters, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestConstructorInjectionWithThreeParameters
-  {
-  }
-
-  internal class TestConstructorInjectionWithThreeParameters : ITestConstructorInjectionWithThreeParameters
-  {
-    public readonly ITestConstructorInjectionWithOneParameter Param1;
-    public readonly ITestConstructorInjectionWithOneParameter Param2;
-    public readonly ITestSingletonConcreteImplementationAttributeType Param3;
-
-    public TestConstructorInjectionWithThreeParameters (
-        ITestConstructorInjectionWithOneParameter param1,
-        ITestConstructorInjectionWithOneParameter param2,
-        ITestSingletonConcreteImplementationAttributeType param3)
-    {
-      Param1 = param1;
-      Param2 = param2;
-      Param3 = param3;
-    }
-  }
-
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestTypeWithNotExactOnePublicConstructor, Remotion.UnitTests, Version = <version>")]
-  internal interface ITestTypeWithNotExactOnePublicConstructor
-  {
-  }
-
-  internal class TestTypeWithNotExactOnePublicConstructor : ITestTypeWithNotExactOnePublicConstructor
-  {
-    public TestTypeWithNotExactOnePublicConstructor ()
-    {
-    }
-
-    public TestTypeWithNotExactOnePublicConstructor (ITestSingletonConcreteImplementationAttributeType param)
-    {
-    }
-  }
+  
+  
 }
