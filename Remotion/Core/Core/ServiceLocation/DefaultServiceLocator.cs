@@ -22,6 +22,7 @@ using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Implementation;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
@@ -93,7 +94,7 @@ namespace Remotion.ServiceLocation
 
     private Func<object> CreateInstanceFactory (Type serviceType)
     {
-      var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
+      var concreteImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute>(serviceType, false);
       if (concreteImplementationAttribute == null)
         return () => null;
 
@@ -130,14 +131,6 @@ namespace Remotion.ServiceLocation
       
       var innerFactoryExpression = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
       return innerFactoryExpression.Compile ();
-    }
-
-    private ConcreteImplementationAttribute GetConreteImplementationAttribute (Type serviceType)
-    {
-      var attributes = serviceType.GetCustomAttributes (typeof (ConcreteImplementationAttribute), false);
-      if (attributes.Length == 0)
-        return null;
-      return (ConcreteImplementationAttribute) attributes[0];
     }
   }
 }
