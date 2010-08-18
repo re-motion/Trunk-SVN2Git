@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Implementation;
-using Remotion.Reflection;
 
 namespace Remotion.ServiceLocation
 {
@@ -88,48 +88,55 @@ namespace Remotion.ServiceLocation
 
     private object GetInstanceOrNull (Type serviceType)
     {
-      return Cache.GetOrCreateValue (serviceType, GetInstanceFactory) ();
+      return Cache.GetOrCreateValue (serviceType, CreateInstanceFactory) ();
     }
 
-    private Func<object> GetInstanceFactory (Type serviceType)
+    private Func<object> CreateInstanceFactory (Type serviceType)
     {
-      Func<object> factory;
-
       var concreteImplementationAttribute = GetConreteImplementationAttribute (serviceType);
       if (concreteImplementationAttribute == null)
-        factory = () => null;
-      else
+        return () => null;
+
+      var typeToInstantiate = concreteImplementationAttribute.ResolveType();
+      var publicCtors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
+      if (publicCtors.Length != 1)
       {
-        var typeToInstantiate = concreteImplementationAttribute.ResolveType();
-        var publicCtors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
-        if (publicCtors.Length != 1)
-          throw new InvalidOperationException (
-              string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
-
-        var ctorInfo = publicCtors[0];
-        var ctorParameters = ctorInfo.GetParameters();
-
-        if (concreteImplementationAttribute.LifeTime == LifetimeKind.Instance)
-        {
-          if (ctorParameters.Length == 0)
-            factory = (Func<object>) new ConstructorLookupInfo (typeToInstantiate).GetDelegate (typeof (Func<object>));
-          else
-            factory = () =>
-            {
-              var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray();
-
-              // TODO: The goal is to have a delegate that calls: new MyType ((int) ctorArgs[0], (string) ctorArgs[1])
-              return ctorInfo.Invoke (ctorArgs);
-            };
-        }
-        else
-        {
-          var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray ();
-          var instance = Activator.CreateInstance (typeToInstantiate, ctorArgs);
-          factory = () => instance;
-        }
+        throw new InvalidOperationException (
+            string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
       }
-      return factory;
+
+      var ctorInfo = publicCtors[0];
+      Func<object[], object> argumentDependentFactory = CreateArgumentDependentInstanceFactory (ctorInfo);
+
+      var ctorParameters = ctorInfo.GetParameters ();
+      Func<object> factory = () =>
+      {
+        var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray ();
+        return argumentDependentFactory (ctorArgs);
+      };
+
+      switch (concreteImplementationAttribute.LifeTime)
+      {
+        case LifetimeKind.Singleton:
+          var instance = factory();
+          return () => instance;
+
+        default:
+          return factory;
+      }
+    }
+
+    private Func<object[], object> CreateArgumentDependentInstanceFactory (ConstructorInfo ctorInfo)
+    {
+      var parameterExpression = Expression.Parameter (typeof (object[]), "args");
+      var parameterInfos = ctorInfo.GetParameters ();
+      var ctorArgExpressions = parameterInfos.Select (p => 
+          (Expression) Expression.Convert (
+              Expression.ArrayIndex (parameterExpression, Expression.Constant (p.Position)),
+              p.ParameterType));
+      
+      var innerFactoryExpression = Expression.Lambda<Func<object[], object>> (Expression.New (ctorInfo, ctorArgExpressions), parameterExpression);
+      return innerFactoryExpression.Compile ();
     }
 
     private ConcreteImplementationAttribute GetConreteImplementationAttribute (Type serviceType)

@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Utilities;
 
@@ -46,6 +48,40 @@ namespace Remotion.UnitTests.ServiceLocation
         {
           var instance = factory();
           acc ^= instance.GetHashCode();
+        }
+      }
+      Console.WriteLine (acc);
+    }
+
+    [Test]
+    public void MethodWrapper ()
+    {
+      var args = new object[]
+                 {
+                     new TestConstructorInjectionWithOneParameter (null),
+                     new TestConstructorInjectionWithOneParameter (null),
+                     new TestConcreteImplementationAttributeType()
+                 };
+
+      var ctorInfo = typeof (TestConstructorInjectionWithThreeParameters).GetConstructors ()[0];
+
+      var parameterExpression = Expression.Parameter (typeof (object[]), "args");
+      var ctorArgExpressions = ctorInfo.GetParameters ().Select (p => (Expression) 
+          Expression.Convert (
+              Expression.ArrayIndex (parameterExpression, Expression.Constant (p.Position)), 
+              p.ParameterType));
+      Expression<Func<object[], object>> innerFactoryExpression = Expression.Lambda<Func<object[], object>> (Expression.New (ctorInfo, ctorArgExpressions), parameterExpression);
+
+      Func<object[], object> innerFactory = innerFactoryExpression.Compile ();
+      Func<object> factory = () => innerFactory (args);
+
+      int acc = 0;
+      using (StopwatchScope.CreateScope ("Built factory: elapsed: {elapsed}"))
+      {
+        for (int i = 0; i < 1000000; ++i)
+        {
+          var instance = factory ();
+          acc ^= instance.GetHashCode ();
         }
       }
       Console.WriteLine (acc);
