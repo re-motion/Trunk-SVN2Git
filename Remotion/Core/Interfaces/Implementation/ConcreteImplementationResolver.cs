@@ -27,10 +27,10 @@ namespace Remotion.Implementation
       return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (typeNameTemplate), true);
     }
 
-    // TODO: Remove
+    // TODO: Remove (inline this in SafeServiceLocator)
     public static object InstantiateType (string typeNameTemplate, params IEnumerable[] args)
     {
-      return Activator.CreateInstance (ResolveType(typeNameTemplate), args);
+      return Activator.CreateInstance (ResolveType (typeNameTemplate), args);
     }
 
     // TODO: Remove

@@ -99,7 +99,13 @@ namespace Remotion.ServiceLocation
         return () => null;
 
       var typeToInstantiate = concreteImplementationAttribute.ResolveType();
-      var publicCtors = typeToInstantiate.GetConstructors().Where (ci => ci.IsPublic).ToArray();
+      var lifetimeKind = concreteImplementationAttribute.LifeTime;
+      return CreateInstanceFactory(typeToInstantiate, lifetimeKind);
+    }
+
+    private Func<object> CreateInstanceFactory (Type typeToInstantiate, LifetimeKind lifetimeKind)
+    {
+      var publicCtors = typeToInstantiate.GetConstructors ().Where (ci => ci.IsPublic).ToArray ();
       if (publicCtors.Length != 1)
       {
         throw new InvalidOperationException (
@@ -109,7 +115,7 @@ namespace Remotion.ServiceLocation
       var ctorInfo = publicCtors[0];
       Func<object> factory = CreateInstanceFactory (ctorInfo);
 
-      switch (concreteImplementationAttribute.LifeTime)
+      switch (lifetimeKind)
       {
         case LifetimeKind.Singleton:
           var instance = factory();

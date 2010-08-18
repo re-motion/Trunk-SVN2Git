@@ -25,6 +25,7 @@ namespace Remotion.Implementation
     private readonly string _typeNameTemplate;
     private LifetimeKind _lifeTime = LifetimeKind.Instance;
 
+    // TODO: Move below ctor
     public LifetimeKind LifeTime
     {
       get { return _lifeTime; }
@@ -41,6 +42,7 @@ namespace Remotion.Implementation
       get { return _typeNameTemplate; }
     }
 
+    // TODO: Remove (inline)
     public Type ResolveType ()
     {
       return ConcreteImplementationResolver.ResolveType (_typeNameTemplate);
