@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void MethodWrapper ()
+    public void LinqExpression ()
     {
       var args = new object[]
                  {
@@ -65,15 +65,10 @@ namespace Remotion.UnitTests.ServiceLocation
 
       var ctorInfo = typeof (TestConstructorInjectionWithThreeParameters).GetConstructors ()[0];
 
-      var parameterExpression = Expression.Parameter (typeof (object[]), "args");
-      var ctorArgExpressions = ctorInfo.GetParameters ().Select (p => (Expression) 
-          Expression.Convert (
-              Expression.ArrayIndex (parameterExpression, Expression.Constant (p.Position)), 
-              p.ParameterType));
-      Expression<Func<object[], object>> innerFactoryExpression = Expression.Lambda<Func<object[], object>> (Expression.New (ctorInfo, ctorArgExpressions), parameterExpression);
+      var ctorArgExpressions = ctorInfo.GetParameters().Select (p => (Expression) Expression.Constant (args[p.Position]));
+      Expression<Func<object>> factoryExpression = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
 
-      Func<object[], object> innerFactory = innerFactoryExpression.Compile ();
-      Func<object> factory = () => innerFactory (args);
+      Func<object> factory = factoryExpression.Compile ();
 
       int acc = 0;
       using (StopwatchScope.CreateScope ("Built factory: elapsed: {elapsed}"))

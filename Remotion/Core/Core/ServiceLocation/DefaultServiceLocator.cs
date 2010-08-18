@@ -106,14 +106,7 @@ namespace Remotion.ServiceLocation
       }
 
       var ctorInfo = publicCtors[0];
-      Func<object[], object> argumentDependentFactory = CreateArgumentDependentInstanceFactory (ctorInfo);
-
-      var ctorParameters = ctorInfo.GetParameters ();
-      Func<object> factory = () =>
-      {
-        var ctorArgs = ctorParameters.Select (constructorParameter => GetInstance (constructorParameter.ParameterType)).ToArray ();
-        return argumentDependentFactory (ctorArgs);
-      };
+      Func<object> factory = CreateInstanceFactory (ctorInfo);
 
       switch (concreteImplementationAttribute.LifeTime)
       {
@@ -126,16 +119,16 @@ namespace Remotion.ServiceLocation
       }
     }
 
-    private Func<object[], object> CreateArgumentDependentInstanceFactory (ConstructorInfo ctorInfo)
+    private Func<object> CreateInstanceFactory (ConstructorInfo ctorInfo)
     {
-      var parameterExpression = Expression.Parameter (typeof (object[]), "args");
+      var serviceLocator = Expression.Constant (this);
+      var getInstanceMethod = serviceLocator.Type.GetMethod ("GetInstance", Type.EmptyTypes);
+
       var parameterInfos = ctorInfo.GetParameters ();
-      var ctorArgExpressions = parameterInfos.Select (p => 
-          (Expression) Expression.Convert (
-              Expression.ArrayIndex (parameterExpression, Expression.Constant (p.Position)),
-              p.ParameterType));
+      var ctorArgExpressions = parameterInfos.Select (p => (Expression) 
+          Expression.Call (serviceLocator, getInstanceMethod.MakeGenericMethod (p.ParameterType)));
       
-      var innerFactoryExpression = Expression.Lambda<Func<object[], object>> (Expression.New (ctorInfo, ctorArgExpressions), parameterExpression);
+      var innerFactoryExpression = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
       return innerFactoryExpression.Compile ();
     }
 
