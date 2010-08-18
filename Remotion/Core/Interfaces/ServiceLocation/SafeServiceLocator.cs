@@ -32,6 +32,7 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
+    // TODO Review: Move this initialization logic to the Current property because it should be executed as lazily as possible. Make sure it is only executed in the case where no locator can be found (either because there is a NullReferenceException or because ServiceLocator.Current returns null).
     private static readonly IServiceLocator s_defaultServiceLocatorInstance =
       (IServiceLocator)Activator.CreateInstance (
         ConcreteImplementationResolver.ResolveType (
