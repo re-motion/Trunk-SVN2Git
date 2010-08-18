@@ -19,6 +19,7 @@ using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
 {
+  // TODO: Rename to TypeNameTemplateResolver 
   /// <summary>
   /// Provides functionality to resolve type name templates to actual types. Type name templates are assembly-qualified type names that contain
   /// "&lt;version&gt;" and "&lt;publicKeyToken&gt;" as placeholders for version and public key token. Those placeholders will be replaced with
@@ -27,11 +28,13 @@ namespace Remotion.Implementation
   /// </summary>
   public static class ConcreteImplementationResolver
   {
+    // TODO: Rename to ResolveToType
     public static Type ResolveType (string typeNameTemplate)
     {
       return ContextAwareTypeDiscoveryUtility.GetType (ResolveTypeName (typeNameTemplate), true);
     }
 
+    // TODO: Rename to ResolveToTypeName
     public static string ResolveTypeName (string typeNameTemplate)
     {
       string versioned = typeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString ());
