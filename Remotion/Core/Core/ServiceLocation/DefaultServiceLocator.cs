@@ -34,6 +34,25 @@ namespace Remotion.ServiceLocation
     {
     }
 
+    public void Register (Type serviceType, Func<object> instanceFactory)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
+
+      Func<object> factory = Cache.GetOrCreateValue(serviceType, t => instanceFactory);
+      if (factory != instanceFactory)
+        throw new InvalidOperationException ("Register cannot be called after GetInstance for a given service type.");
+    }
+
+    public void Register (Type serviceType, Type concreteImplementationType, LifetimeKind lifetime)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
+
+      var factory = CreateInstanceFactory (concreteImplementationType, lifetime);
+      Register (serviceType, factory);
+    }
+
     object IServiceProvider.GetService (Type serviceType)
     {
       return GetInstanceOrNull (serviceType);
@@ -89,6 +108,8 @@ namespace Remotion.ServiceLocation
 
     private object GetInstanceOrNull (Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       return Cache.GetOrCreateValue (serviceType, CreateInstanceFactory) ();
     }
 
