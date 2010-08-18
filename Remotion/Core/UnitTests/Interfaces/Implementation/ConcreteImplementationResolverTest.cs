@@ -15,11 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.BridgeImplementations;
-using Remotion.Development.UnitTesting;
 using Remotion.Implementation;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
@@ -70,61 +66,6 @@ namespace Remotion.UnitTests.Interfaces.Implementation
       FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
       ConcreteImplementationResolver.ResolveType ("Badabing");
     }
-
-    [Test]
-    public void Instantiate_StringParameter ()
-    {
-      FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
-      const string typeName = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
-      object instance = ConcreteImplementationResolver.InstantiateType (typeName);
-      Assert.IsNotNull (instance);
-      Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
-    }
-
-    [Test]
-    public void Instantiate_TypeParameter ()
-    {
-      var instance = ConcreteImplementationResolver.InstantiateType (typeof (ConcreteImplementationAttributeTest));
-      Assert.IsNotNull (instance);
-      Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
-    }
-
-    [Test]
-    public void Instantiate_TypeParameterWithArguments ()
-    {
-      var instance = ConcreteImplementationResolver.InstantiateType (typeof (StringBuilder), "test");
-
-      Assert.That (instance, Is.TypeOf (typeof (StringBuilder)));
-      Assert.That (instance.ToString(), Is.EqualTo ("test"));
-    }
-
-    [Test]
-    public void Instantiate_WithPublicKeyToken ()
-    {
-      FrameworkVersion.Value = typeof (AdapterRegistryImplementation).Assembly.GetName ().Version;
-      const string typeName = "Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>";
-      object instance = ConcreteImplementationResolver.InstantiateType (typeName);
-      Assert.IsNotNull (instance);
-      Assert.IsInstanceOfType (typeof (AdapterRegistryImplementation), instance);
-    }
-
-    public class ClassWithoutDefaultConstructor
-    {
-      public ClassWithoutDefaultConstructor (int i)
-      {
-        Dev.Null = i;
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (MissingMethodException), 
-      ExpectedMessage = "Constructor on type 'Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationResolverTest+ClassWithoutDefaultConstructor' not found.")]
-    public void Instantiate_WithoutDefaultConstructor ()
-    {
-      FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
-      const string typeName = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationResolverTest+ClassWithoutDefaultConstructor, "
-                              + "Remotion.UnitTests, Version = <version>";
-      ConcreteImplementationResolver.InstantiateType (typeName);
-    }
+    
   }
 }

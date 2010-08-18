@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Implementation
@@ -25,18 +24,6 @@ namespace Remotion.Implementation
     public static Type ResolveType (string typeNameTemplate)
     {
       return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (typeNameTemplate), true);
-    }
-
-    // TODO: Remove (inline this in SafeServiceLocator)
-    public static object InstantiateType (string typeNameTemplate, params IEnumerable[] args)
-    {
-      return Activator.CreateInstance (ResolveType (typeNameTemplate), args);
-    }
-
-    // TODO: Remove
-    public static object InstantiateType (Type type, params object[] args)
-    {
-      return Activator.CreateInstance (type, args);
     }
 
     public static string GetTypeName (string typeNameTemplate)

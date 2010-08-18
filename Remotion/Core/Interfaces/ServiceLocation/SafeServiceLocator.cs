@@ -33,9 +33,10 @@ namespace Remotion.ServiceLocation
   public static class SafeServiceLocator
   {
     private static readonly IServiceLocator s_defaultServiceLocatorInstance =
-        (IServiceLocator) ConcreteImplementationResolver.InstantiateType (
-            "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>");
-
+      (IServiceLocator)Activator.CreateInstance (
+        ConcreteImplementationResolver.ResolveType (
+          "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
+    
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 

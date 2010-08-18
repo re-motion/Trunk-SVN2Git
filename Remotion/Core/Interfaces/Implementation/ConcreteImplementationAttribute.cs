@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 
 namespace Remotion.Implementation
 {
@@ -24,13 +23,6 @@ namespace Remotion.Implementation
   {
     private readonly string _typeNameTemplate;
     private LifetimeKind _lifeTime = LifetimeKind.Instance;
-
-    // TODO: Move below ctor
-    public LifetimeKind LifeTime
-    {
-      get { return _lifeTime; }
-      set { _lifeTime = value; }
-    }
 
     public ConcreteImplementationAttribute (string typeNameTemplate)
     {
@@ -42,16 +34,11 @@ namespace Remotion.Implementation
       get { return _typeNameTemplate; }
     }
 
-    // TODO: Remove (inline)
-    public Type ResolveType ()
+    public LifetimeKind LifeTime
     {
-      return ConcreteImplementationResolver.ResolveType (_typeNameTemplate);
+      get { return _lifeTime; }
+      set { _lifeTime = value; }
     }
-
-    // TODO: Remove
-    public object InstantiateType (Type type, params object[] args)
-    {
-      return ConcreteImplementationResolver.InstantiateType (type, args);
-    }
+    
   }
 }

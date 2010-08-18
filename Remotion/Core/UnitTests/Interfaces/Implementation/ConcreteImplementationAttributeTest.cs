@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
@@ -26,41 +25,21 @@ namespace Remotion.UnitTests.Interfaces.Implementation
   public class ConcreteImplementationAttributeTest
   {
     private ConcreteImplementationAttribute _attribute;
+    private string _typeNameTemplate;
 
     [SetUp]
     public void SetUp ()
     {
-      _attribute = new ConcreteImplementationAttribute ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, "
-          + "Remotion.UnitTests, Version = <version>");
+      _typeNameTemplate = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
+      _attribute = new ConcreteImplementationAttribute (_typeNameTemplate);
+      _attribute.LifeTime = LifetimeKind.Singleton;
     }
 
     [Test]
-    public void ResolveType ()
+    public void Initialization ()
     {
-      FrameworkVersion.Value = typeof (ConcreteImplementationAttributeTest).Assembly.GetName ().Version;
-      
-      var result = _attribute.ResolveType();
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.EqualTo(typeof (ConcreteImplementationAttributeTest)));
+      Assert.That (_attribute.TypeNameTemplate, Is.SameAs (_typeNameTemplate));
+      Assert.That (_attribute.LifeTime, Is.EqualTo (LifetimeKind.Singleton));
     }
-
-    [Test]
-    public void InstantiateType ()
-    {
-      var instance = _attribute.InstantiateType (typeof (ConcreteImplementationAttributeTest));
-      Assert.IsNotNull (instance);
-      Assert.IsInstanceOfType (typeof (ConcreteImplementationAttributeTest), instance);
-    }
-
-    [Test]
-    public void InstantiateType_WithArguments ()
-    {
-      var instance = _attribute.InstantiateType (typeof (StringBuilder), "test");
-      Assert.IsNotNull (instance);
-      Assert.That (instance, Is.TypeOf(typeof(StringBuilder)));
-      Assert.That (instance.ToString(), Is.EqualTo("test"));
-    }
-
   }
 }
