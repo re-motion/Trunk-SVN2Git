@@ -30,7 +30,7 @@ namespace Remotion.ServiceLocation
       return new ServiceConfigurationEntry (serviceType, TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.LifeTime);
     }
 
-    protected ServiceConfigurationEntry (Type serviceType, Type implementationType, LifetimeKind lifeTimeKind)
+    public ServiceConfigurationEntry (Type serviceType, Type implementationType, LifetimeKind lifeTimeKind)
     {
       _serviceType = serviceType;
       _implementationType = implementationType;

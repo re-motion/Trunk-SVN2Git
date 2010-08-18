@@ -39,7 +39,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
 
-      Func<object> factory = Cache.GetOrCreateValue(serviceType, t => instanceFactory);
+      Func<object> factory = Cache.GetOrCreateValue (serviceType, t => instanceFactory);
       if (factory != instanceFactory)
         throw new InvalidOperationException ("Register cannot be called after GetInstance for a given service type.");
     }
@@ -49,8 +49,14 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
 
-      var factory = CreateInstanceFactory (concreteImplementationType, lifetime);
-      Register (serviceType, factory);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, concreteImplementationType, lifetime);
+      Register (serviceConfigurationEntry);
+    }
+
+    public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
+    {
+      var factory = CreateInstanceFactory (serviceConfigurationEntry);
+      Register (serviceConfigurationEntry.ServiceType, factory);
     }
 
     object IServiceProvider.GetService (Type serviceType)
@@ -110,33 +116,33 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
-      return Cache.GetOrCreateValue (serviceType, CreateInstanceFactory) ();
+      return Cache.GetOrCreateValue (serviceType, CreateInstanceFactory)();
     }
 
     private Func<object> CreateInstanceFactory (Type serviceType)
     {
-      var concreteImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute>(serviceType, false);
+      var concreteImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceType, false);
       if (concreteImplementationAttribute == null)
         return () => null;
 
-      var typeToInstantiate = TypeNameTemplateResolver.ResolveToType (concreteImplementationAttribute.TypeNameTemplate);
-      var lifetimeKind = concreteImplementationAttribute.LifeTime;
-      return CreateInstanceFactory(typeToInstantiate, lifetimeKind);
+      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (serviceType, concreteImplementationAttribute);
+      return CreateInstanceFactory (serviceConfigurationEntry);
     }
 
-    private Func<object> CreateInstanceFactory (Type typeToInstantiate, LifetimeKind lifetimeKind)
+    private Func<object> CreateInstanceFactory (ServiceConfigurationEntry serviceConfigurationEntry)
     {
-      var publicCtors = typeToInstantiate.GetConstructors ().Where (ci => ci.IsPublic).ToArray ();
+      var publicCtors = serviceConfigurationEntry.ImplementationType.GetConstructors().Where (ci => ci.IsPublic).ToArray();
       if (publicCtors.Length != 1)
       {
         throw new InvalidOperationException (
-            string.Format ("Type '{0}' has not exact one public constructor and cannot be instantiated.", typeToInstantiate.Name));
+            string.Format (
+                "Type '{0}' has not exact one public constructor and cannot be instantiated.", serviceConfigurationEntry.ImplementationType.Name));
       }
 
       var ctorInfo = publicCtors[0];
       Func<object> factory = CreateInstanceFactory (ctorInfo);
 
-      switch (lifetimeKind)
+      switch (serviceConfigurationEntry.LifeTimeKind)
       {
         case LifetimeKind.Singleton:
           var instance = factory();
@@ -152,12 +158,13 @@ namespace Remotion.ServiceLocation
       var serviceLocator = Expression.Constant (this);
       var getInstanceMethod = serviceLocator.Type.GetMethod ("GetInstance", Type.EmptyTypes);
 
-      var parameterInfos = ctorInfo.GetParameters ();
-      var ctorArgExpressions = parameterInfos.Select (p => (Expression) 
-          Expression.Call (serviceLocator, getInstanceMethod.MakeGenericMethod (p.ParameterType)));
-      
+      var parameterInfos = ctorInfo.GetParameters();
+      var ctorArgExpressions = parameterInfos.Select (
+          p => (Expression)
+               Expression.Call (serviceLocator, getInstanceMethod.MakeGenericMethod (p.ParameterType)));
+
       var innerFactoryExpression = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
-      return innerFactoryExpression.Compile ();
+      return innerFactoryExpression.Compile();
     }
   }
 }

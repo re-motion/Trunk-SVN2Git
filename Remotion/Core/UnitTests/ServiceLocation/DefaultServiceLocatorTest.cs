@@ -67,8 +67,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")
-    ]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
     public void RegisterServiceTypeWithConcreteImplementationOverload__ServiceAlreadyExists_ThrowsException ()
     {
       _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
@@ -83,6 +82,34 @@ namespace Remotion.UnitTests.ServiceLocation
 
       testableSerciceLocator.Register (
           typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+
+      Func<object> instanceCreator;
+      Assert.That (
+          testableSerciceLocator.Cache.TryGetValue (typeof (ITestSingletonConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (
+          testableSerciceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType)),
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
+    public void RegisterServiceConfigurationEntryOverload_ServiceAlreadyExists_ThrowsException ()
+    {
+      _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType> ();
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      _serviceLocator.Register (serviceConfigurationEntry);
+    }
+
+    [Test]
+    public void RegisterServiceConfigurationEntryOverload_ServiceAdded()
+    {
+      var testableSerciceLocator = new TestableDefaultServiceLocator ();
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+
+      testableSerciceLocator.Register (serviceConfigurationEntry);
 
       Func<object> instanceCreator;
       Assert.That (
