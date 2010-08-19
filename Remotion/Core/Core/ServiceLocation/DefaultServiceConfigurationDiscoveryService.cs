@@ -24,6 +24,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
+  /// <summary>
+  /// <see cref="DefaultServiceConfigurationDiscoveryService"/> scans types for the <see cref="ConcreteImplementationAttribute"/> and returns
+  /// the matching results as <see cref="ServiceConfigurationEntry"/> collection, which contains the service type with the 
+  /// concrete implementation type and it's life time.
+  /// </summary>
   public static class DefaultServiceConfigurationDiscoveryService
   {
     public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (ITypeDiscoveryService typeDiscoveryService)
