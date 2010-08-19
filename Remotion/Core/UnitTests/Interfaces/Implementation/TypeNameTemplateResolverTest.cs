@@ -21,7 +21,7 @@ using Remotion.Implementation;
 namespace Remotion.UnitTests.Interfaces.Implementation
 {
   [TestFixture]
-  public class ConcreteImplementationResolverTest
+  public class TypeNameTemplateResolverTest
   {
     [SetUp]
     public void SetUp ()

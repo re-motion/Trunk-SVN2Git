@@ -199,7 +199,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
-    <Compile Include="Interfaces\Implementation\ConcreteImplementationResolverTest.cs" />
+    <Compile Include="Interfaces\Implementation\TypeNameTemplateResolverTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
@@ -320,6 +320,7 @@
       <DependentUpon>LightColorExtensions.resx</DependentUpon>
     </Compile>
     <Compile Include="ServiceLocation\ActivationPerformanceTest.cs" />
+    <Compile Include="ServiceLocation\DefaultServiceConfigurationDiscoveryServiceTest.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntryTest.cs" />
