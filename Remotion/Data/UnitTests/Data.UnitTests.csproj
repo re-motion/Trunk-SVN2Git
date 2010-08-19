@@ -225,7 +225,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\ExtensibleEnumProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointDefinitionExtensionTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointDefinitionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />

@@ -23,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomai
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class RelationEndPointDefinitionExtensionTest : MappingReflectionTestBase
+  public class RelationEndPointDefinitionExtensionsTest : MappingReflectionTestBase
   {
     [Test]
     public void GetOppositeEndPointDefinition ()
@@ -34,6 +34,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       
       Assert.That (oppositeEndPointDefinition, 
           Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order")));
+    }
+
+    [Test]
+    public void GetMandatoryOppositeEndPointDefinition ()
+    {
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+
+      var oppositeEndPointDefinition = endPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+
+      Assert.That (oppositeEndPointDefinition,
+          Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order")));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+        "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order' has no association with "
+        + "class 'Order' and property 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer'.")]
+    public void GetMandatoryOppositeEndPointDefinition_Failure ()
+    {
+      var fakeEndPointDefinition = new RelationEndPointDefinition (DomainObjectIDs.Order1.ClassDefinition, typeof (Order).FullName + ".Customer", true);
+      fakeEndPointDefinition.SetRelationDefinition (DomainObjectIDs.Order1.ClassDefinition.GetRelationDefinition (typeof (Order).FullName + ".OrderItems"));
+
+      fakeEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
     }
 
     [Test]

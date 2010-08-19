@@ -75,6 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       domainBaseClass.MyRelationDefinitions.Add (clientToDomainBaseDefinition);
       clientClass.MyRelationDefinitions.Add (clientToDomainBaseDefinition);
 
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      organizationalUnitClass.SetReadOnly ();
+      clientClass.SetReadOnly ();
+
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
           Provider, domainBaseClass, domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);
 

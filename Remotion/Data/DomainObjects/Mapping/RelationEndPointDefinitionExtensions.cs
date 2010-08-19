@@ -30,6 +30,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
     }
 
+    public static IRelationEndPointDefinition GetMandatoryOppositeEndPointDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      return relationEndPointDefinition.RelationDefinition.GetMandatoryOppositeRelationEndPointDefinition (relationEndPointDefinition);
+    }
+
     public static ClassDefinition GetOppositeClassDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);

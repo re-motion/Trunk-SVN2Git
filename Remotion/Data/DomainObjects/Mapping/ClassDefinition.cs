@@ -17,9 +17,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 using System.Linq;
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<RelationDefinitionCollection> _cachedRelationDefinitions;
     [NonSerialized]
-    private readonly DoubleCheckedLockingContainer<ReadOnlyCollection<IRelationEndPointDefinition>> _cachedRelationEndPointDefinitions;
+    private readonly DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> _cachedRelationEndPointDefinitions;
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
@@ -80,7 +80,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
       _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
-      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyCollection<IRelationEndPointDefinition>> (FindAllRelationEndPointDefinitions);
+      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
+          FindAllRelationEndPointDefinitions);
       _cachedPropertyDefinitions = new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (FindAllPropertyDefinitions);
     }
 
@@ -172,12 +173,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IRelationEndPointDefinition relationEndPointDefinition = GetRelationEndPointDefinition (propertyName);
-      RelationDefinition relationDefinition = GetRelationDefinition (propertyName);
+      if (relationEndPointDefinition == null)
+        return null;
 
-      if (relationDefinition != null && relationEndPointDefinition != null)
-        return relationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
-
-      return null;
+      return relationEndPointDefinition.GetOppositeEndPointDefinition();
     }
 
     public IRelationEndPointDefinition GetMandatoryOppositeEndPointDefinition (string propertyName)
@@ -185,8 +184,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IRelationEndPointDefinition relationEndPointDefinition = GetMandatoryRelationEndPointDefinition (propertyName);
-      RelationDefinition relationDefinition = GetRelationDefinition (propertyName);
-      return relationDefinition.GetMandatoryOppositeRelationEndPointDefinition (relationEndPointDefinition);
+      return relationEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
     }
 
     public PropertyDefinitionCollection GetPropertyDefinitions()
@@ -203,11 +201,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _cachedRelationDefinitions.Value;
     }
 
-    public ReadOnlyCollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
+    public ICollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
     {
       CheckIsReadOnlyForCachedData ();
 
-      return _cachedRelationEndPointDefinitions.Value;
+      return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
     }
 
     public IRelationEndPointDefinition[] GetMyRelationEndPointDefinitions()
@@ -255,19 +253,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      RelationDefinition relationDefinition = GetRelationDefinition (propertyName);
-      if (relationDefinition == null)
+      var endPointDefinition = GetRelationEndPointDefinition (propertyName);
+      if (endPointDefinition == null)
         return null;
 
-      ClassDefinition oppositeClass = relationDefinition.GetOppositeClassDefinition (_id, propertyName);
-
-      if (oppositeClass != null)
-        return oppositeClass;
-
-      if (BaseClass != null)
-        return BaseClass.GetOppositeClassDefinition (propertyName);
-
-      return null;
+      return endPointDefinition.GetOppositeClassDefinition ();
     }
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (string propertyName)
@@ -284,17 +274,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      foreach (RelationDefinition relationDefinition in _relationDefinitions)
-      {
-        IRelationEndPointDefinition relationEndPointDefinition = relationDefinition.GetEndPointDefinition (_id, propertyName);
-        if (relationEndPointDefinition != null)
-          return relationEndPointDefinition;
-      }
+      CheckIsReadOnlyForCachedData ();
 
-      if (BaseClass != null)
-        return BaseClass.GetRelationEndPointDefinition (propertyName);
-
-      return null;
+      IRelationEndPointDefinition value;
+      _cachedRelationEndPointDefinitions.Value.TryGetValue (propertyName, out value);
+      return value;
     }
 
     public IRelationEndPointDefinition GetMandatoryRelationEndPointDefinition (string propertyName)
@@ -531,20 +515,14 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
 
-    private ReadOnlyCollection<IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()
+    private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()
     {
-      var relationEndPointDefinitions = new ArrayList ();
-
-      foreach (IRelationEndPointDefinition relationEndPointDefinition in GetMyRelationEndPointDefinitions ())
-        relationEndPointDefinitions.Add (relationEndPointDefinition);
+      IEnumerable<IRelationEndPointDefinition> relationEndPointDefinitions = GetMyRelationEndPointDefinitions();
 
       if (BaseClass != null)
-      {
-        foreach (IRelationEndPointDefinition baseRelationEndPointDefinition in BaseClass.GetRelationEndPointDefinitions ())
-          relationEndPointDefinitions.Add (baseRelationEndPointDefinition);
-      }
+        relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions ());
 
-      return Array.AsReadOnly ((IRelationEndPointDefinition[]) relationEndPointDefinitions.ToArray (typeof (IRelationEndPointDefinition)));
+      return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
     }
 
     private void CheckIsReadOnlyForCachedData ()

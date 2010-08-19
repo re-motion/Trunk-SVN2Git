@@ -58,7 +58,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       //BindableObjectWithSecurityTest();
       //BindableObjectWithoutSecurityTest();
 
-      LinqTest();
+      // LinqTest();
+
+      ClassDefinitionTest();
 
       setUpFixture.TearDown();
 
@@ -165,6 +167,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.WithComplexQuery_SubqueriesInSecondFromClauseAndMultiplyOrderByClauses ();
       test.WithComplexQuery_JoinsAndSubquery ();
       test.WithComplexQuery_GroupBy();
+      test.TearDown ();
+    }
+
+    private static void ClassDefinitionTest ()
+    {
+      var test = new ClassDefinitionTest();
+      test.SetUp ();
+      // test.GetOppositeClassDefinition ();
+      // test.GetMandatoryOppositeClassDefinition ();
+      test.GetOppositeEndPointDefinition ();
+      // test.GetMandatoryOppositeEndPointDefinition ();
       test.TearDown ();
     }
   }

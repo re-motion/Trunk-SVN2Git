@@ -740,7 +740,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var endPointDefinitions = fileSystemItemDefinition.GetRelationEndPointDefinitions();
 
-      Assert.AreEqual (1, endPointDefinitions.Count);
+      Assert.AreEqual (1, endPointDefinitions.Count());
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
     }
 
@@ -751,7 +751,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var endPointDefinitions = folderDefinition.GetRelationEndPointDefinitions();
 
-      Assert.AreEqual (2, endPointDefinitions.Count);
+      Assert.AreEqual (2, endPointDefinitions.Count());
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
     }
@@ -857,6 +857,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'Invalid'.")]
+    public void GetMandatoryOppositeEndPointDefinition_InvalidProperty ()
+    {
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
+
+      fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition ("Invalid");
+    }
+
+    [Test]
     public void GetOppositeEndPointDefinitionCompositeBaseClass ()
     {
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
@@ -865,6 +874,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           fileSystemItemDefinition.GetOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.IsNull (
           fileSystemItemDefinition.GetOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+    }
+
+    [Test]
+    public void GetOppositeEndPointDefinition_InvalidProperty ()
+    {
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
+
+      Assert.IsNull (fileSystemItemDefinition.GetOppositeEndPointDefinition ("Invalid"));
     }
 
     [Test]
