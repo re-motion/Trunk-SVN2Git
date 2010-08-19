@@ -28,8 +28,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
-    private IPropertyInformation _propertyInformation;
-    private PropertyInfo _propertyInfo;
     private IMethodInformation _methodInformation;
 
     [SetUp]
@@ -37,10 +35,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
       _securityClient = _testHelper.CreateSecurityClient ();
-      _propertyInformation = MockRepository.GenerateMock<IPropertyInformation> ();
-      _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (_methodInformation);
     }
 
     [Test]
@@ -50,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -63,7 +58,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -76,7 +71,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -89,7 +84,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -102,7 +97,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -115,7 +110,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -128,7 +123,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (new SecurableObject (null), _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -140,7 +135,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -154,7 +149,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();

@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Security.UnitTests.Core.SampleDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 {
@@ -28,17 +26,14 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
   {
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
-    private PropertyInfo _propertyInfo;
-    private IPropertyInformation _propertyInformation;
+    private NullMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
-      _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
-      _propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
-      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (new NullMethodInformation ());
+      _methodInformation = new NullMethodInformation ();
     }
 
     [Test]
@@ -57,7 +52,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -68,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+      bool hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -97,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInfo);
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -112,7 +107,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _propertyInformation);
+        hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -135,7 +130,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -146,7 +141,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _propertyInformation);
+      bool hasAccess = _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);

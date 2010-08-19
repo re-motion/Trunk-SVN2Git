@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, new PropertyInfoAdapter (propertyInfo)));
+        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, new MethodInfoAdapter (propertyInfo.GetGetMethod())));
       }
       finally
       {

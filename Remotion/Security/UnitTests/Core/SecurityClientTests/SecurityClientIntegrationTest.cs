@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
@@ -101,7 +100,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
           new FunctionalSecurityStrategy (),
           new ReflectionBasedMemberResolver ());
 
-      var methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new Type[]{typeof(SecurableObject)});
+      var methodInfo = typeof (SecurableObject).GetMethod ("IsValid", new[]{typeof(SecurableObject)});
 
       var hasMethodAccess = securityClient.HasStaticMethodAccess (typeof(SecurableObject), methodInfo);
 
@@ -141,9 +140,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       ISecurableObject securableObject = new SecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
-      var propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
-
-      var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, propertyInfo);
+      
+      var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, "IsVisible");
 
       Assert.That (hasMethodAccess, Is.True);
     }

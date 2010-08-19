@@ -96,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     }
 
     [Test]
-    [ExpectedException (typeof (PermissionDeniedException), 
-      ExpectedMessage = "Access to get-accessor of property 'PropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
+    [ExpectedException (typeof (PermissionDeniedException),
+      ExpectedMessage = "Access to method 'get_PropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_PropertyWithDefaultPermission ()
     {
         var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
     [Test]
     [ExpectedException (typeof (PermissionDeniedException),
-      ExpectedMessage = "Access to get-accessor of property 'PropertyWithCustomPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
+      ExpectedMessage = "Access to method 'get_PropertyWithCustomPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_PropertyWithCustomPermission ()
     {
       {
@@ -172,8 +172,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     }
     
     [Test]
-    [ExpectedException (typeof (PermissionDeniedException), 
-      ExpectedMessage = "Access to get-accessor of property 'MixedPropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
+    [ExpectedException (typeof (PermissionDeniedException),
+      ExpectedMessage = "Access to method 'get_MixedPropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithDefaultPermission ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
     [Test]
     [ExpectedException (typeof (PermissionDeniedException),
-      ExpectedMessage = "Access to get-accessor of property 'MixedPropertyWithCustomPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
+      ExpectedMessage = "Access to method 'get_MixedPropertyWithCustomPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]
     public void AccessDenied_MixedPropertyWithCustomPermission ()
     {
       var securityContextStub = MockRepository.GenerateStub<ISecurityContext> ();

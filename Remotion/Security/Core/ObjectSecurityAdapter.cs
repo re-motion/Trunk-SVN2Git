@@ -44,7 +44,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation);
+      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod());
     }
 
     public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)

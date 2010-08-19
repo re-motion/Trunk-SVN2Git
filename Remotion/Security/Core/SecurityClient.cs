@@ -259,38 +259,37 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType(), propertyName);
-      return HasPropertyReadAccess (securableObject, propertyInformation, principal);
+      return HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod(), principal);
     }
 
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, MethodInfo methodInfo)
     {
-      return HasPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+      return HasPropertyReadAccess (securableObject, methodInfo, _principalProvider.GetPrincipal ());
     }
 
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
-    {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo );
-      ArgumentUtility.CheckNotNull ("principal", principal);
-
-      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
-      return HasPropertyReadAccess (securableObject, propertyInformation, principal);
-    }
-
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
-    {
-      return HasPropertyReadAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
-    }
-
-    public bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, MethodInfo methodInfo, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo );
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      var methodInformation = propertyInformation.GetGetMethod();
-      return HasPropertyReadAccess (securableObject, methodInformation , principal);
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), methodInfo, MemberAffiliation.Instance);
+      return HasPropertyReadAccess (securableObject, methodInformation, principal);
     }
+
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation)
+    {
+      return HasPropertyReadAccess (securableObject, methodInformation, _principalProvider.GetPrincipal ());
+    }
+
+    //public bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
+    //{
+    //  ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+    //  ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
+    //  ArgumentUtility.CheckNotNull ("principal", principal);
+
+    //  return HasPropertyReadAccess (securableObject, methodInformation , principal);
+    //}
 
     //some procedure with HasPropertyWriteAccess only difference in GeneralAccessTypes.Edit
 
@@ -325,43 +324,43 @@ namespace Remotion.Security
       if (!HasPropertyReadAccess (securableObject, propertyName, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType ().FullName);
+            "Access to method '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType ().FullName);
       }
     }
 
-    public void CheckPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, MethodInfo methodInfo)
     {
-      CheckPropertyReadAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+      CheckPropertyReadAccess (securableObject, methodInfo, _principalProvider.GetPrincipal ());
     }
 
-    public void CheckPropertyReadAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, MethodInfo methodInfo, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyReadAccess (securableObject, propertyInfo, principal))
+      if (!HasPropertyReadAccess (securableObject, methodInfo, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyInfo.Name, securableObject.GetSecurableType ().FullName);
+            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", methodInfo.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 
-    public void CheckPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation)
     {
-      CheckPropertyReadAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal());
+      CheckPropertyReadAccess (securableObject, methodInformation, _principalProvider.GetPrincipal());
     }
 
-    public void CheckPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyReadAccess (securableObject, propertyInformation, principal))
+      if (!HasPropertyReadAccess (securableObject, methodInformation, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyInformation.Name, securableObject.GetSecurableType ().FullName);
+            "Access to method '{0}' on type '{1}' has been denied.", methodInformation.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 
