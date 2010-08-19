@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -187,11 +186,6 @@ namespace Remotion.Security.UnitTests.Core
     private void ExpectGetRequiredMethodPermissions (IMethodInformation methodInformation)
     {
       Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (new Enum[] { TestAccessTypes.First });
-    }
-
-    private void ExpectGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation)
-    {
-      Expect.Call (_mockPermissionProvider.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
     }
 
     private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)

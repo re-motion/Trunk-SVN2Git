@@ -54,11 +54,6 @@ namespace Remotion.Security.UnitTests.Core.Configuration
       throw new NotImplementedException();
     }
 
-    public Enum[] GetRequiredPropertyReadPermissions (Type type, IPropertyInformation propertyInformation)
-    {
-      throw new NotImplementedException();
-    }
-
     public Enum[] GetRequiredPropertyWritePermissions (Type type, string methodName)
     {
       throw new NotImplementedException();

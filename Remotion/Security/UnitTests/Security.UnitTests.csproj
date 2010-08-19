@@ -94,7 +94,6 @@
     <Compile Include="Core\Metadata\MemberResolverTests\GetPropertyInformationTest.cs" />
     <Compile Include="Core\Metadata\MemberResolverTests\GetStaticMethodInformationTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredMethodPermissionsTest.cs" />
-    <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyReadPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyWritePermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredStaticMethodPermissionsTest.cs" />
     <Compile Include="Core\MockConstraints\FunctionalSecurityContextFactoryConstraint.cs" />

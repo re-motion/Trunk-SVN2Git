@@ -178,32 +178,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnedAccessTypes);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
-    {
-      Expect
-         .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyInformation))
-         .WhenCalled (mi => CheckCurrentTransaction ())
-         .Return (returnedAccessTypes);
-    }
-
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnedAccessTypes)
     {
-      //Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnedAccessTypes);
       Expect.Call (
           _mockPermissionReflector.GetRequiredMethodPermissions (
           Arg<Type>.Matches (n => n == typeof (SecurableObject)),
           Arg<IMethodInformation>.Is.Anything))
           .Return (returnedAccessTypes);
-      
-      
-    }
-
-    public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (PropertyInfo propertyInfo, params Enum[] returnedAccessTypes)
-    {
-      Expect
-         .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), new PropertyInfoAdapter(propertyInfo)))
-         .WhenCalled (mi => CheckCurrentTransaction ())
-         .Return (returnedAccessTypes);
     }
 
     public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
