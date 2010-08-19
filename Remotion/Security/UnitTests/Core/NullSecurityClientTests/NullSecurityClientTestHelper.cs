@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Rhino.Mocks;
+using System.Reflection;
+using Remotion.Reflection;
+using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 {
@@ -40,7 +43,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _mocks = new MockRepository();
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
-
+      
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
     }
 

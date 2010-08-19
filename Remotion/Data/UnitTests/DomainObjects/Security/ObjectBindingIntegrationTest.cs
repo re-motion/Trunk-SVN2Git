@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
@@ -355,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 

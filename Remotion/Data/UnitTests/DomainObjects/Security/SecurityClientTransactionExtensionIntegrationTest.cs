@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
         var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
         securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-        _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
+        _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
         SecurableObject securableObject;
         using (new SecurityFreeSection ())
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       SecurableObject securableObject;
       using (new SecurityFreeSection ())
@@ -170,8 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
       Dev.Null = ((ISecurableObjectMixin) securableObject).MixedPropertyWithCustomPermission;
     }
-
-
+    
     [Test]
     [ExpectedException (typeof (PermissionDeniedException), 
       ExpectedMessage = "Access to get-accessor of property 'MixedPropertyWithDefaultPermission' on type 'Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject' has been denied.")]

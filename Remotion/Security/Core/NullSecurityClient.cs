@@ -66,10 +66,10 @@ namespace Remotion.Security
       return true;
     }
 
-    public override bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public override bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       return true;

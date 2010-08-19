@@ -30,14 +30,15 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private SecurityClient _securityClient;
     private PropertyInfo _propertyInfo;
     private IPropertyInformation _propertyInformation;
-
+    
     [SetUp]
     public void SetUp()
     {
-      _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity();
+      _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity ();
       _securityClient = _testHelper.CreateSecurityClient();
       _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
       _propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
+      _propertyInformation.Expect (mock => mock.GetGetMethod()).Return (new NullMethodInformation());
     }
 
     [Test]

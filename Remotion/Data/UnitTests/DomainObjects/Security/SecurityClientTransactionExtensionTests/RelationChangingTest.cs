@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     private IClientTransactionExtension _extension;
     private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp ()
@@ -41,6 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _propertyInfo = typeof (SecurableObject).GetProperty ("Parent");
+
+      _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (_methodInformation);
 
       _testHelper.SetupSecurityConfiguration ();
     }
@@ -189,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (childrenPropertyInfo, TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInfo, TestAccessTypes.Second);
@@ -216,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions (childrenPropertyInfo, TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInfo, TestAccessTypes.Second);

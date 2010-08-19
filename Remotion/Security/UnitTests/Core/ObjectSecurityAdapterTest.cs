@@ -45,6 +45,7 @@ namespace Remotion.Security.UnitTests.Core
     private IPermissionProvider _mockPermissionProvider;
     private IMemberResolver _mockMemberResolver;
     private IPropertyInformation _mockPropertyInformation;
+    private IMethodInformation _mockMethodInformation;
 
     // construction and disposing
 
@@ -67,6 +68,7 @@ namespace Remotion.Security.UnitTests.Core
       _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider> ();
       _mockMemberResolver = _mocks.StrictMock<IMemberResolver> ();
       _mockPropertyInformation = _mocks.StrictMock<IPropertyInformation>();
+      _mockMethodInformation = _mocks.StrictMock<IMethodInformation>();
       
       _userStub = _mocks.Stub < ISecurityPrincipal>();
       SetupResult.For (_userStub.User).Return ("user");
@@ -80,6 +82,7 @@ namespace Remotion.Security.UnitTests.Core
 
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
+
     }
 
     [TearDown]
@@ -91,8 +94,10 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessGranted ()
     {
-      ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
-      
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (mockMethodInformation);
+      ExpectGetRequiredMethodPermissions (mockMethodInformation);
+
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
@@ -105,7 +110,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccessor_AccessDenied ()
     {
-      ExpectGetRequiredPropertyReadPermissions (_mockPropertyInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (mockMethodInformation);
+      ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
@@ -175,6 +182,11 @@ namespace Remotion.Security.UnitTests.Core
     {
       AccessType[] accessTypes = new [] { AccessType.Get (TestAccessTypes.First) };
       Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
+    }
+
+    private void ExpectGetRequiredMethodPermissions (IMethodInformation methodInformation)
+    {
+      Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (new Enum[] { TestAccessTypes.First });
     }
 
     private void ExpectGetRequiredPropertyReadPermissions (IPropertyInformation propertyInformation)

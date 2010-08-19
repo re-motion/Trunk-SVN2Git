@@ -96,7 +96,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo)).Return (returnValue);
     }
-
+    
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnValue);
@@ -163,5 +163,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       return Array.ConvertAll (accessTypeEnums, new Converter<Enum, AccessType> (AccessType.Get));
     }
+
   }
 }

@@ -425,7 +425,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var propertyInfoAdapter = new PropertyInfoAdapter (_property);
       var getMethod = propertyInfoAdapter.GetGetMethod();
-      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NotVisibleAttributeScalar");
+      var expectedMethod = new MethodInfoAdapter(typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NotVisibleAttributeScalar"));
 
       Assert.That (getMethod, Is.Not.Null);
       Assert.That (getMethod, Is.EqualTo (expectedMethod));
@@ -436,7 +436,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var propertyInfoAdapter = new PropertyInfoAdapter (_property);
       var setMethod = propertyInfoAdapter.GetSetMethod ();
-      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NotVisibleAttributeScalar");
+      var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NotVisibleAttributeScalar"));
 
       Assert.That (setMethod, Is.Not.Null);
       Assert.That (setMethod, Is.EqualTo (expectedMethod));

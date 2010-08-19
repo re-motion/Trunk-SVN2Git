@@ -282,21 +282,33 @@ namespace Remotion.Security
       return HasPropertyReadAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
     }
 
-    public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public bool HasPropertyReadAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), propertyInformation);
+      var methodInformation = propertyInformation.GetGetMethod();
+      return HasPropertyReadAccess (securableObject, methodInformation , principal);
+    }
+
+    //some procedure with HasPropertyWriteAccess only difference in GeneralAccessTypes.Edit
+
+    public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
+    {
+      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
 
       if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
 
-      return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
+      return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName)

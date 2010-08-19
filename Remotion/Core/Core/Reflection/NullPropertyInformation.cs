@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -73,14 +72,14 @@ namespace Remotion.Reflection
     {
     }
 
-    public MethodInfo GetGetMethod ()
+    public IMethodInformation GetGetMethod ()
     {
-      return null;
+      return new NullMethodInformation();
     }
 
-    public MethodInfo GetSetMethod ()
+    public IMethodInformation GetSetMethod ()
     {
-      return null;
+      return new NullMethodInformation ();
     }
   }
 }

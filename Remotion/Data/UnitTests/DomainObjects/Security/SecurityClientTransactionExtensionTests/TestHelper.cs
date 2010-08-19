@@ -186,6 +186,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
          .Return (returnedAccessTypes);
     }
 
+    public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnedAccessTypes)
+    {
+      //Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnedAccessTypes);
+      Expect.Call (
+          _mockPermissionReflector.GetRequiredMethodPermissions (
+          Arg<Type>.Matches (n => n == typeof (SecurableObject)),
+          Arg<IMethodInformation>.Is.Anything))
+          .Return (returnedAccessTypes);
+      
+      
+    }
+
     public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (PropertyInfo propertyInfo, params Enum[] returnedAccessTypes)
     {
       Expect

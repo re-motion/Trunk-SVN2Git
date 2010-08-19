@@ -111,14 +111,14 @@ namespace Remotion.Reflection
       }
     }
 
-    public MethodInfo GetGetMethod ()
+    public IMethodInformation GetGetMethod ()
     {
-      return _propertyInfo.GetGetMethod();
+      return new MethodInfoAdapter (_propertyInfo.GetGetMethod());
     }
 
-    public MethodInfo GetSetMethod ()
+    public IMethodInformation GetSetMethod ()
     {
-      return _propertyInfo.GetSetMethod();
+      return new MethodInfoAdapter (_propertyInfo.GetSetMethod());
     }
 
     public override bool Equals (object obj)

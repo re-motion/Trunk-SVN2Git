@@ -79,15 +79,15 @@ namespace Remotion.Reflection
     void SetValue (object instance, object value, object[] indexParameters);
 
     /// <summary>
-    /// Gets the <see cref="MethodInfo"/> of the get method for the current <see cref="PropertyInfo"/>.
+    /// Get the <see cref="IMethodInformation"/> of the get method for the current <see cref="PropertyInfo"/>.
     /// </summary>
-    /// <returns>The <see cref="MethodInfo"/> of the get method.</returns>
-    MethodInfo GetGetMethod ();
+    /// <returns>A instance of <see cref="IMethodInformation"/> of the get method.</returns>
+    IMethodInformation GetGetMethod ();
 
     /// <summary>
-    /// Gets the <see cref="MethodInfo"/> of the set method for the current <see cref="PropertyInfo"/>.
+    /// Get the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
     /// </summary>
-    /// <returns>The <see cref="MethodInfo"/> of the set method.</returns>
-    MethodInfo GetSetMethod ();
+    /// <returns>The <see cref="IMethodInformation"/> of the set method.</returns>
+    IMethodInformation GetSetMethod ();
   }
 }

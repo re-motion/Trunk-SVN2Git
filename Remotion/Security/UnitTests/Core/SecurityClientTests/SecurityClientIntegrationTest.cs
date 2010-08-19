@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
@@ -40,7 +41,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _functionalSecurityStrategyStub = MockRepository.GenerateStub<IFunctionalSecurityStrategy> ();
       _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider> ();
       
-      _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub); //pStub
+      _principalProviderStub.Stub (stub => stub.GetPrincipal()).Return (_securityPrincipalStub); 
 
       _securityClient = new SecurityClient (
           _securityProviderStub, 
@@ -137,7 +138,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       var securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory> ();
 
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext ()).Return (securityContextStub);
-      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.Third) });
+      _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       ISecurableObject securableObject = new SecurableObject (new ObjectSecurityStrategy (securityContextFactoryStub));
       var propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
