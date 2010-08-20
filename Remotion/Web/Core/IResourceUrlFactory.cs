@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 using Remotion.Web.Factories;
 
 namespace Remotion.Web
@@ -23,6 +24,8 @@ namespace Remotion.Web
   /// Defines methods for creating objects that implement <see cref="IResourceUrl"/>.
   /// <seealso cref="ResourceUrlFactory"/>
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.Factories.ResourceUrlFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>", 
+    LifeTime = LifetimeKind.Singleton)]
   public interface IResourceUrlFactory
   {
     /// <summary>

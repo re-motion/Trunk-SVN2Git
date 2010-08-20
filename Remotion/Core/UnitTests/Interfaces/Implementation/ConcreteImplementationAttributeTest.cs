@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
+using Remotion.UnitTests.ServiceLocation.TestDomain;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
 {
@@ -40,6 +41,15 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       Assert.That (_attribute.TypeNameTemplate, Is.SameAs (_typeNameTemplate));
       Assert.That (_attribute.LifeTime, Is.EqualTo (LifetimeKind.Singleton));
+    }
+
+    [Test]
+    public void InitializationWithTyp ()
+    {
+      _attribute = new ConcreteImplementationAttribute (typeof (ConcreteImplementationAttributeTest));
+
+      Assert.That (_attribute.TypeNameTemplate, 
+        Is.EqualTo ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=null"));
     }
   }
 }

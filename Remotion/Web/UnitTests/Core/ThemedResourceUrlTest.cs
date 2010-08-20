@@ -26,7 +26,7 @@ namespace Remotion.Web.UnitTests.Core
     [Test]
     public void GetUrl ()
     {
-      var resourceUrl = new ThemedResourceUrl (typeof (ResourceUrlTest), ResourceType.Html, ResourceTheme.NovaBlue, "theRelativeUrl.js");
+      var resourceUrl = new ThemedResourceUrl (typeof (ResourceUrlTest), ResourceType.Html, new ResourceTheme.NovaBlue(), "theRelativeUrl.js");
 
       Assert.That (resourceUrl.GetUrl(), Is.EqualTo ("/res/Remotion.Web.UnitTests/Themes/NovaBlue/Html/theRelativeUrl.js"));
     }

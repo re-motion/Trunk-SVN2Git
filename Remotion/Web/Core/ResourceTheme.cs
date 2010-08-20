@@ -15,14 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Web
 {
+  [ConcreteImplementation (typeof (ResourceTheme.NovaBlue), LifeTime = LifetimeKind.Singleton)]
   public class ResourceTheme
   {
-    public static readonly ResourceTheme ClassicBlue = new ResourceTheme ("ClassicBlue");
-    public static readonly ResourceTheme NovaBlue = new ResourceTheme ("NovaBlue");
-    
+    public class NovaBlue : ResourceTheme
+    {
+      public NovaBlue ()
+        : base ("NovaBlue")
+      {
+      }
+    }
+
+    public class ClassicBlue : ResourceTheme
+    {
+      public ClassicBlue ()
+        : base ("ClassicBlue")
+      {
+      }
+    }
+
     private readonly string _name;
 
     public ResourceTheme (string name)

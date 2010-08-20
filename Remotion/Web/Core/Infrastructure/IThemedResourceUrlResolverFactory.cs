@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
   /// Defines a factory method for creating an object of type <see cref="IThemedResourceUrlResolver"/>.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.Infrastructure.Factories.ThemedResourceUrlResolverFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    LifeTime = LifetimeKind.Singleton)]
   public interface IThemedResourceUrlResolverFactory
   {
     IThemedResourceUrlResolver CreateResourceUrlResolver ();

@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderTitleCellNoSorting ()
     {
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (ResourceTheme.ClassicBlue), CssClassContainer.Instance);
+          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), CssClassContainer.Instance);
       renderer.RenderTitleCell (Html.Writer, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
         string iconAltText)
     {
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (ResourceTheme.ClassicBlue), CssClassContainer.Instance);
+          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), CssClassContainer.Instance);
       renderer.RenderTitleCell (Html.Writer, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();

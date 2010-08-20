@@ -574,7 +574,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
       var renderer = new BocAutoCompleteReferenceValueRenderer (
-          HttpContext, Control, new ResourceUrlFactory (ResourceTheme.ClassicBlue), () => TextBox);
+          HttpContext, Control, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), () => TextBox);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

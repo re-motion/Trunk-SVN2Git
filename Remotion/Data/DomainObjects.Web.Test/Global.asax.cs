@@ -15,17 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Web;
-using Autofac;
-using AutofacContrib.CommonServiceLocator;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
-using Remotion.Web;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
@@ -37,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     public Global ()
     {
@@ -49,19 +43,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
       Trace.WriteLine (mappingConfiguration.ClassDefinitions.Count);
 
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
-
-      var builder = new ContainerBuilder();
-
-      builder.RegisterAssemblyTypes (typeof (RendererBase<>).Assembly, typeof (BocRendererBase<>).Assembly)
-          .Where (t => t.Namespace.EndsWith (".Factories")).AsImplementedInterfaces().SingleInstance();
-
-      builder.RegisterInstance (ResourceTheme.NovaBlue).SingleInstance();
-
-      builder.Register (c => new ScriptUtility()).As<IScriptUtility>().InstancePerDependency();
-
-      var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
-      ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
     }
 
     protected void Session_Start (Object sender, EventArgs e)

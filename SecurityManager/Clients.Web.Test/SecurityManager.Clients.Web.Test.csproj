@@ -40,12 +40,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\prereq\Assemblies\Autofac\Autofac.dll</HintPath>
-    </Reference>
-    <Reference Include="AutofacContrib.CommonServiceLocator">
-      <HintPath>..\..\prereq\Assemblies\Autofac\AutofacContrib.CommonServiceLocator.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>

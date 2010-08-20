@@ -32,6 +32,14 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
+    static class NestedSafeServiceLocator
+    {
+      public static readonly IServiceLocator s_defaultServiceLocatorInstance =
+      (IServiceLocator) Activator.CreateInstance (
+        TypeNameTemplateResolver.ResolveToType (
+          "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
+    }
+    
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
@@ -43,17 +51,12 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? 
-            (IServiceLocator) Activator.CreateInstance (TypeNameTemplateResolver.ResolveToType (
-                "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
+          return ServiceLocator.Current ?? NestedSafeServiceLocator.s_defaultServiceLocatorInstance;
         }
         catch (NullReferenceException)
         {
-          var locatorInstance = (IServiceLocator) Activator.CreateInstance (
-              TypeNameTemplateResolver.ResolveToType (
-                  "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
-          ServiceLocator.SetLocatorProvider (() => locatorInstance);
-          return locatorInstance;
+          ServiceLocator.SetLocatorProvider (() => NestedSafeServiceLocator.s_defaultServiceLocatorInstance);
+          return NestedSafeServiceLocator.s_defaultServiceLocatorInstance;
         }
       }
     }

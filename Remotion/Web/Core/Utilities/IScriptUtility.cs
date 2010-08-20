@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -23,6 +24,8 @@ namespace Remotion.Web.Utilities
   /// <summary>
   /// Defines the API for registering various javascript-controlled features on the page.
   /// </summary>
+  [ConcreteImplementation ("Remotion.Web.Utilities.ScriptUtility, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>", 
+    LifeTime = LifetimeKind.Singleton)]
   public interface IScriptUtility
   {
     /// <summary>

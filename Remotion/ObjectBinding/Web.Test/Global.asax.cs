@@ -17,25 +17,27 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Web;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using CommonServiceLocator.WindsorAdapter;
+using Autofac;
+using AutofacContrib.CommonServiceLocator;
 using log4net;
 using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Implementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.Legacy.UI.Controls;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace OBWTest
@@ -66,8 +68,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      var resourceTheme = ResourceTheme.NovaBlue;
-      PreferQuirksModeRendering = false;
+      PreferQuirksModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -76,38 +77,33 @@ namespace OBWTest
       XmlReflectionBusinessObjectStorageProvider provider = new XmlReflectionBusinessObjectStorageProvider (objectPath);
       XmlReflectionBusinessObjectStorageProvider.SetCurrent (provider);
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IGetObjectService), provider);
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (
-          typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (
-          typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
-
-      IWindsorContainer container = new WindsorContainer();
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
+          .AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
+          .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
 
       if (PreferQuirksModeRendering)
       {
-        RegisterRendererFactories (container, typeof (QuirksModeRendererBase<>).Assembly);
-        RegisterRendererFactories (container, typeof (BocQuirksModeRendererBase<>).Assembly);
-      }
-      else
-      {
-        RegisterRendererFactories (container, typeof (RendererBase<>).Assembly);
-        RegisterRendererFactories (container, typeof (BocRendererBase<>).Assembly);
-        container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme).LifeStyle.Singleton);
-      }
-      container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
+        var builder = new ContainerBuilder();
 
-      var windoswServiceLocator = new WindsorServiceLocator (container);
-      ServiceLocator.SetLocatorProvider (() => windoswServiceLocator);
-    }
+        var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
+        var configuration = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService);
+        foreach (var entry in configuration)
+        {
+          if (entry.LifeTimeKind == LifetimeKind.Singleton)
+            builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerLifetimeScope();
+          else
+            builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency();
+        }
 
-    private void RegisterRendererFactories (IWindsorContainer container, Assembly assembly)
-    {
-      container.Register (
-          AllTypes.Pick()
-              .FromAssembly (assembly)
-              .If (t => t.Namespace.EndsWith (".Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces())
-              .Configure (c => c.Named (c.ServiceType.Name).LifeStyle.Singleton));
+        builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
+            .Where (t => t.Namespace.EndsWith (".Factories")).AsImplementedInterfaces().SingleInstance();
+
+        var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
+        ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
+
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRendererFactory>() is BocListQuirksModeRendererFactory);
+      }
     }
 
     protected void Session_Start (Object sender, EventArgs e)

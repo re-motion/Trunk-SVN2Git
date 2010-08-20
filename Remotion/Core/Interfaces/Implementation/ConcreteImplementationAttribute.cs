@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Implementation
 {
-  [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
+  [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public class ConcreteImplementationAttribute : Attribute
   {
     private readonly string _typeNameTemplate;
@@ -27,6 +27,13 @@ namespace Remotion.Implementation
     public ConcreteImplementationAttribute (string typeNameTemplate)
     {
       _typeNameTemplate = ArgumentUtility.CheckNotNull ("typeNameTemplate", typeNameTemplate);
+    }
+
+    public ConcreteImplementationAttribute (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _typeNameTemplate = type.AssemblyQualifiedName;
     }
 
     public string TypeNameTemplate

@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _instances.Add (typeof (IClientScriptBehaviorFactory), new ClientScriptBehaviorFactory());
       _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
-      _instances.Add (typeof (IResourceUrlFactory), new ResourceUrlFactory (ResourceTheme.ClassicBlue));
+      _instances.Add (typeof (IResourceUrlFactory), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
 
       _instances.Add (typeof (IParamListCreateImplementation), new ParamListCreateImplementation());
       _instances.Add (typeof (IObjectFactoryImplementation), new ObjectFactoryImplementation());
