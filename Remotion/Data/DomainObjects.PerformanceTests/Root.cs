@@ -59,8 +59,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       //BindableObjectWithoutSecurityTest();
 
       // LinqTest();
+      InstantiationTest ();
 
-      ClassDefinitionTest();
+      //ClassDefinitionTest();
 
       setUpFixture.TearDown();
 
@@ -167,6 +168,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       test.WithComplexQuery_SubqueriesInSecondFromClauseAndMultiplyOrderByClauses ();
       test.WithComplexQuery_JoinsAndSubquery ();
       test.WithComplexQuery_GroupBy();
+      test.TearDown ();
+    }
+
+    private static void InstantiationTest ()
+    {
+      var test = new InstantiationTest ();
+      test.SetUp ();
+      test.GetObjectReference();
       test.TearDown ();
     }
 

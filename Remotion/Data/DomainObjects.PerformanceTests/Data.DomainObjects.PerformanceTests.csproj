@@ -178,6 +178,7 @@
     <Compile Include="CommitTest.cs" />
     <Compile Include="ClassDefinitionTest.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
+    <Compile Include="InstantiationTest.cs" />
     <Compile Include="LinqPerformanceTestHelper.cs" />
     <Compile Include="LinqTest.cs" />
     <Compile Include="PerformanceTestHelper.cs" />
