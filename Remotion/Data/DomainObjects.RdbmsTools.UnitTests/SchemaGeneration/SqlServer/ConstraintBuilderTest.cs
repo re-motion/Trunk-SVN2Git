@@ -108,6 +108,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       firstClass.MyRelationDefinitions.Add (relationDefinition2);
       thirdClass.MyRelationDefinitions.Add (relationDefinition2);
 
+      firstClass.SetReadOnly ();
+      secondClass.SetReadOnly ();
+      thirdClass.SetReadOnly ();
+      
       _constraintBuilder.AddConstraint (firstClass);
 
       string expectedScript =
@@ -162,6 +166,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       derivedClass.MyRelationDefinitions.Add (relationDefinition1);
       otherClass.MyRelationDefinitions.Add (relationDefinition1);
+
+      baseClass.SetReadOnly ();
+      derivedClass.SetReadOnly ();
+      otherClass.SetReadOnly ();
 
       _constraintBuilder.AddConstraint (baseClass);
 
