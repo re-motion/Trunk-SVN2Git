@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -249,13 +248,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
       }
       catch (MappingException ex)
       {
-        var expectedMessage = string.Format(
-          "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping." 
-          + "TestDomain.Errors.ClassWithSameClassID' and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors."
-          + "OtherClassWithSameClassID' both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these "
-          + "classes. The assemblies involved are 'Remotion.Data.UnitTests, Version={0}, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' "
-          + "and 'Remotion.Data.UnitTests, Version={0}, Culture=neutral, PublicKeyToken=fee00910d6e5f53b'.", 
-          GetType().Assembly.GetName().Version);
+        var expectedMessage = string.Format (
+            "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithSameClassID' "
+            + "and 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.OtherClassWithSameClassID' "
+            + "both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these classes. "
+            + "The assemblies involved are '{0}' and '{1}'.",
+            GetType().Assembly.GetName().FullName,
+            GetType().Assembly.GetName().FullName);
 
         Assert.AreEqual (expectedMessage, ex.Message);
       }
