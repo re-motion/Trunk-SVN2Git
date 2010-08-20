@@ -59,6 +59,16 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
+    public void Test_PropertyWithoutAttributes ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsEnabled"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), propertyInformation.GetGetMethod());
+
+      Assert.IsNotNull (requiredAccessTypes);
+      Assert.IsEmpty (requiredAccessTypes);
+    }
+
+    [Test]
     public void Test_CacheForMethodWithoutAttributes ()
     {
       IMethodInformation methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetMethod ("Save"));
@@ -75,6 +85,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
       Assert.AreEqual (1, requiredAccessTypes.Length);
       Assert.Contains (GeneralAccessTypes.Edit, requiredAccessTypes);
+    }
+
+    [Test]
+    public void Test_CacheForPropertyWithoutAttributes ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsEnabled"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), propertyInformation.GetGetMethod());
+
+      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), propertyInformation.GetGetMethod()));
     }
 
     [Test]
@@ -95,6 +114,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
 
       Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation));
+    }
+
+    [Test]
+    public void Test_CacheForPropertyWithOneAttribute ()
+    {
+      IPropertyInformation propertyInformation = new PropertyInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible"));
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), propertyInformation.GetGetMethod());
+
+      Assert.AreSame (requiredAccessTypes, _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), propertyInformation.GetGetMethod()));
     }
 
     [Test]
