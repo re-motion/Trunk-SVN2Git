@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for factory creating renderers for <see cref="IBocColumnRenderer"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocColumnRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IBocDropDownMenuColumnRendererFactory
   {
     IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition, IServiceLocator serviceLocator);

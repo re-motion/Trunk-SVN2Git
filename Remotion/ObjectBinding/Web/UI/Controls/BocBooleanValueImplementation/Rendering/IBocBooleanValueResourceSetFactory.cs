@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using Remotion.Implementation;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -24,8 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Defines a factory method for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/>.
   /// </summary>
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocBooleanValueResourceSetFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocBooleanValueResourceSetFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueResourceSetFactory
   {
     BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory);

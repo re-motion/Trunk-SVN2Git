@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ISingleView"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.SingleViewRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(SingleViewRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface ISingleViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ISingleView control, IServiceLocator serviceLocator);

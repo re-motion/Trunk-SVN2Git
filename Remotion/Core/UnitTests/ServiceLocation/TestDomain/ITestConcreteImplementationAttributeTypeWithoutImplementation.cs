@@ -19,7 +19,7 @@ using Remotion.Implementation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")]
+  [ConcreteImplementation (typeof(TestConcreteImplementationAttributeType))]
   internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation
   {
   }

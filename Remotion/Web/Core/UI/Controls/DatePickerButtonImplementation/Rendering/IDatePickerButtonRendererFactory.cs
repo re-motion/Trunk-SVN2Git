@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IDatePickerButton"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.DatePickerButtonRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(DatePickerButtonRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IDatePickerButtonRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator);

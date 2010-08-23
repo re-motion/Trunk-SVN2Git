@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating renderers for <see cref="TabbedMenu"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.TabbedMenuRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(TabbedMenuRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface ITabbedMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control, IServiceLocator serviceLocator);

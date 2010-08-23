@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
@@ -25,8 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocTextValue"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocTextValueRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocTextValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IBocTextValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocTextValue control, IServiceLocator serviceLocator);

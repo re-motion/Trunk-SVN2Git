@@ -17,14 +17,14 @@
 using System;
 using System.Web;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating the client script behavior for an <see cref="IControl"/>.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.ClientScriptBehaviorFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ClientScriptBehaviorFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IClientScriptBehaviorFactory
   {
     IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control);

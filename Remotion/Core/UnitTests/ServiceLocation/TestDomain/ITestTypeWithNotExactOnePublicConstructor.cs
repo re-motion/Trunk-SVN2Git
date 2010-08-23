@@ -19,7 +19,7 @@ using Remotion.Implementation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDomain.TestTypeWithNotExactOnePublicConstructor, Remotion.UnitTests, Version = <version>")]
+  [ConcreteImplementation (typeof(TestTypeWithNotExactOnePublicConstructor))]
   internal interface ITestTypeWithNotExactOnePublicConstructor
   {
   }

@@ -20,11 +20,11 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocColumnRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IBocStubColumnRendererFactory
   {
     IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator);

@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
@@ -25,8 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocReferenceValue"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.Factories.BocReferenceValueRendererFactory, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocReferenceValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IBocReferenceValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control, IServiceLocator serviceLocator);

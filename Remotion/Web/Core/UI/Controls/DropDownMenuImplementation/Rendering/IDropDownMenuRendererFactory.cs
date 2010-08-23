@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IDropDownMenu"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.DropDownMenuRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(DropDownMenuRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface IDropDownMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator);

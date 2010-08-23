@@ -18,14 +18,14 @@ using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ITabbedMultiView"/> controls.
   /// </summary>
-  [ConcreteImplementation ("Remotion.Web.UI.Controls.Factories.TabbedMultiViewRendererFactory, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(TabbedMultiViewRendererFactory), LifeTime = LifetimeKind.Singleton)]
   public interface ITabbedMultiViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator);
