@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetServiceConfigurationEntries_ServiceHasNoConcreteImplementationAttributeDefined ()
     {
-      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetServiceConfigurationEntries (
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
           new[] { typeof (ICollection) });
 
       Assert.That (serviceConfigurationEntries.Count(), Is.EqualTo (0));
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetServiceConfigurationEntries_ServiceHasConcreteImplementationAttributeDefined ()
     {
-      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetServiceConfigurationEntries (
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
           new[] { typeof (ITestSingletonConcreteImplementationAttributeType) });
 
       Assert.That (serviceConfigurationEntries.Count(), Is.EqualTo (1));
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.ServiceLocation
     public void GetServiceConfigurationEntries_UnitTestAssembly ()
     {
       var serviceConfigurationEntries =
-          DefaultServiceConfigurationDiscoveryService.GetServiceConfigurationEntries (
+          DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
               new[] { Assembly.GetExecutingAssembly() });
 
       Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (8)); //ServiceLocation.TestDomain services

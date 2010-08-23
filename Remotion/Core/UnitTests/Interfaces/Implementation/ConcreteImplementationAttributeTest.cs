@@ -48,8 +48,9 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       _attribute = new ConcreteImplementationAttribute (typeof (ConcreteImplementationAttributeTest));
 
-      Assert.That (_attribute.TypeNameTemplate, 
-        Is.EqualTo ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=null"));
+      Assert.That (
+        _attribute.TypeNameTemplate.StartsWith ("Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests"), 
+        Is.True);
     }
   }
 }

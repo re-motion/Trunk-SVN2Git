@@ -35,10 +35,10 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
 
-      return GetServiceConfigurationEntries ((IEnumerable<Type>) typeDiscoveryService.GetTypes (null, false));
+      return GetDefaultConfiguration ((IEnumerable<Type>) typeDiscoveryService.GetTypes (null, false));
     }
 
-    public static IEnumerable<ServiceConfigurationEntry> GetServiceConfigurationEntries (IEnumerable<Type> types)
+    public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
@@ -52,11 +52,11 @@ namespace Remotion.ServiceLocation
                   customImplementationAttribute.LifeTime)).ToList();
     }
 
-    public static IEnumerable<ServiceConfigurationEntry> GetServiceConfigurationEntries (IEnumerable<Assembly> assemblies)
+    public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Assembly> assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
-      return assemblies.SelectMany (a => GetServiceConfigurationEntries (a.GetTypes()));
+      return assemblies.SelectMany (a => GetDefaultConfiguration (a.GetTypes()));
     }
   }
 }
