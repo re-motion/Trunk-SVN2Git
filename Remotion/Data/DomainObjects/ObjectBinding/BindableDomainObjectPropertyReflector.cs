@@ -60,10 +60,11 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         domainObjectsDesignModeHelper.InitializeConfiguration();
       }
 
-      // TODO: use GetMandatory
+      // TODO RM-3180: use GetMandatory
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[targetType];
       if (classDefinition != null)
       {
+        //TODO RM-3181: Change this to GetPropertyName (propertyInfo) once GetPropertyName accepts IPropertyInformation
         string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo.GetOriginalDeclaringType (), propertyInfo.Name);
         _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
         _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
