@@ -30,6 +30,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private SecurityClient _securityClient;
     private PropertyInfo _propertyInfo;
     private IPropertyInformation _propertyInformation;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp()
@@ -38,6 +39,8 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _securityClient = _testHelper.CreateSecurityClient();
       _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
       _propertyInformation = MockRepository.GenerateStub<IPropertyInformation>();
+      _methodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _propertyInformation.Expect (mock => mock.GetSetMethod()).Return (_methodInformation);
     }
 
     [Test]

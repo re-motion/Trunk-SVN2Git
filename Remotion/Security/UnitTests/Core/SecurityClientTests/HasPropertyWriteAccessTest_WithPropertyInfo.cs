@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
+using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
 
@@ -30,6 +31,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     private SecurityClient _securityClient;
     private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp ()
@@ -38,14 +40,16 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _securityClient = _testHelper.CreateSecurityClient ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation> ();
       _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
+      _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _propertyInformation.Expect (mock => mock.GetSetMethod ()).Return (_methodInformation);
+      
     }
 
     [Test]
     public void Test_AccessGranted ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.Second);
-
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.Second);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, true);
       _testHelper.ReplayAll ();
 
@@ -59,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessDenied ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.Second);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.Second);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, false);
       _testHelper.ReplayAll ();
 
@@ -73,7 +77,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       bool hasAccess;
@@ -90,7 +94,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, true);
       _testHelper.ReplayAll ();
 
@@ -104,7 +108,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessDenied_WithDefaultAccessType ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, false);
       _testHelper.ReplayAll ();
 
@@ -118,7 +122,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       bool hasAccess;
@@ -136,7 +140,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_WithSecurityStrategyIsNull ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, TestAccessTypes.First);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _propertyInfo);
@@ -146,11 +150,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.")]
+        ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
       _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
@@ -158,11 +162,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.")]
+        ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException_WithPropertyInfo ()
     {
       _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())

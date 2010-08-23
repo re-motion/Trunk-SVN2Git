@@ -258,8 +258,8 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType(), propertyName);
-      return HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod(), principal);
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), "get_" + propertyName, MemberAffiliation.Instance);
+      return HasPropertyReadAccess (securableObject, methodInformation, principal);
     }
 
     public bool HasPropertyReadAccess (ISecurableObject securableObject, MethodInfo methodInfo)
@@ -375,9 +375,9 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      
-      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyName);
-      return HasPropertyWriteAccess (securableObject, propertyInformation, principal);
+
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), "set_" + propertyName, MemberAffiliation.Instance);
+      return HasPropertyWriteAccess (securableObject, methodInformation, principal);
     }
 
     public bool HasPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
@@ -400,22 +400,39 @@ namespace Remotion.Security
       return HasPropertyWriteAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
     }
     
-    public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public bool HasPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    {
+      //ArgumentUtility.CheckNotNull ("securableObject", securableObject);
+      //ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      //ArgumentUtility.CheckNotNull ("principal", principal);
+
+      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
+      
+      //if (requiredAccessTypeEnums == null)
+      //  throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
+
+      //if (requiredAccessTypeEnums.Length == 0)
+      //  requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
+
+      //return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
+      return HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod(), principal);
+    }
+
+    public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
-      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), propertyInformation.GetGetMethod());
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
 
       if (requiredAccessTypeEnums == null)
-        throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
+        throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
 
-      return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
+      return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName)

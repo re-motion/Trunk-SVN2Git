@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
+using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
 
@@ -44,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
@@ -58,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_AccessDenied_ShouldThrowPermissionDeniedException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
@@ -71,7 +72,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
@@ -86,7 +87,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, true);
       _testHelper.ReplayAll ();
@@ -100,7 +101,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_AccessDenied_WithDefaultAccessType_ShouldThrowPermissionDeniedException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Read, false);
       _testHelper.ReplayAll ();
@@ -113,7 +114,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
@@ -129,7 +130,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
@@ -142,7 +143,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
@@ -155,7 +156,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation ("InstanceProperty", _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation ("get_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 

@@ -139,7 +139,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
-      ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (mockMethodInformation);
+      ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll ();
 
@@ -152,7 +154,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
-      ExpectGetRequiredPropertyWritePermissions (_mockPropertyInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (mockMethodInformation);
+      ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
