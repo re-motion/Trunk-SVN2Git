@@ -25,13 +25,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   [TestFixture]
   public class InstantiationTest : DatabaseTest
   {
-
-    public const int TestRepititions = 2000;
+    public const int TestRepititions = 100000;
 
     [Test]
     public void GetObjectReference ()
     {
-      Console.WriteLine ("Expected average duration of GetObjectReference on reference system: ~2,33 ms");
+      Console.WriteLine ("Expected average duration of GetObjectReference on reference system: ~22 µs");
 
       bool found = true;
       var stopwatch = new Stopwatch ();
@@ -46,9 +45,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       Console.WriteLine (found);
 
-      double averageMicroseconds = stopwatch.Elapsed.TotalMilliseconds / TestRepititions;
+      double averageMicroseconds = stopwatch.Elapsed.TotalMilliseconds * 1000.0 / TestRepititions;
       Console.WriteLine (
-          "GetObjectReference (executed {0}x): Average duration: {1} ms",
+          "GetObjectReference (executed {0}x): Average duration: {1} µs",
           TestRepititions,
           averageMicroseconds.ToString ("n"));
     }

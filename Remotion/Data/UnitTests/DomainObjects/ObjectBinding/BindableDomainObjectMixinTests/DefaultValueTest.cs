@@ -18,10 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.Reflection;
 
@@ -30,72 +27,83 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
   [TestFixture]
   public class DefaultValueTest : ObjectBindingBaseTest
   {
-    private Order _loadedOrder;
-    private Order _newOrder;
-    private IBusinessObject _loadedBusinessOrder;
+    private SampleBindableMixinDomainObject _loadedObject;
+    private SampleBindableMixinDomainObject _newObject;
+    private IBusinessObject _loadedBusinessObject;
     private IBusinessObject _newBusinessOrder;
+
+    private ClientTransactionScope _subTxScope;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (BindableDomainObjectMixin)).EnterScope())
-      {
-        _loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
-        _loadedBusinessOrder = (IBusinessObject) _loadedOrder;
 
-        _newOrder = Order.NewObject ();
-        _newBusinessOrder = (IBusinessObject) _newOrder;
-      }
+      var objectID = SampleBindableMixinDomainObject.NewObject ().ID;
+
+      var subTx = ClientTransactionMock.CreateSubTransaction ();
+      _subTxScope = subTx.EnterDiscardingScope ();
+
+      _loadedObject = SampleBindableMixinDomainObject.GetObject (objectID);
+      _loadedBusinessObject = (IBusinessObject) _loadedObject;
+
+      _newObject = SampleBindableMixinDomainObject.NewObject ();
+      _newBusinessOrder = (IBusinessObject) _newObject;
+    }
+
+    public override void TearDown ()
+    {
+      _subTxScope.Leave ();
+      base.TearDown ();
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfDefaultValue_OnExistingObject ()
     {
-      Assert.IsNotNull (_loadedBusinessOrder.GetProperty ("OrderNumber"));
-      Assert.AreEqual (_loadedOrder.OrderNumber, _loadedBusinessOrder.GetProperty ("OrderNumber"));
+      Assert.IsNotNull (_loadedBusinessObject.GetProperty ("Int32"));
+      Assert.AreEqual (_loadedObject.Int32, _loadedBusinessObject.GetProperty ("Int32"));
     }
 
     [Test]
     public void GetPropertyReturnsNullIfDefaultValue_OnNewObject ()
     {
-      Assert.IsNull (_newBusinessOrder.GetProperty ("OrderNumber"));
+      Assert.IsNull (_newBusinessOrder.GetProperty ("Int32"));
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfDefaultListValue_OnNewObject ()
     {
-      Assert.IsNotNull (_newBusinessOrder.GetProperty ("OrderItems"));
+      Assert.IsNotNull (_newBusinessOrder.GetProperty ("List"));
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfDefaultValue_OnNewObjectInSubtransaction ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsNotNull (_newBusinessOrder.GetProperty ("OrderNumber"));
-        Assert.AreEqual (_newOrder.OrderNumber, _newBusinessOrder.GetProperty ("OrderNumber"));
+        Assert.IsNotNull (_newBusinessOrder.GetProperty ("Int32"));
+        Assert.AreEqual (_newObject.Int32, _newBusinessOrder.GetProperty ("Int32"));
       }
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfNonDefaultValue_OnExistingObject ()
     {
-      _loadedOrder.OrderNumber = _loadedOrder.OrderNumber;
-      Assert.IsNotNull (_loadedBusinessOrder.GetProperty ("OrderNumber"));
+      _loadedObject.Int32 = _loadedObject.Int32;
+      Assert.IsNotNull (_loadedBusinessObject.GetProperty ("Int32"));
     }
 
     [Test]
     public void GetPropertyReturnsNonNullIfNonDefaultValue_OnNewObject ()
     {
-      _newOrder.OrderNumber = _newOrder.OrderNumber;
-      Assert.IsNotNull (_newBusinessOrder.GetProperty ("OrderNumber"));
+      _newObject.Int32 = _newObject.Int32;
+      Assert.IsNotNull (_newBusinessOrder.GetProperty ("Int32"));
     }
 
     [Test]
     public void GetPropertyDefaultForNonMappingProperties ()
     {
       var businessObject = (IBusinessObject)
-          LifetimeService.NewObject (ClientTransactionMock, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
+          LifetimeService.NewObject (ClientTransaction.Current, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
       Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
       Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
     }

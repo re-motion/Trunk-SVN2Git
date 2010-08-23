@@ -500,7 +500,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       persistenceStragegyMock.Replay ();
 
-      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy (persistenceStragegyMock);
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStragegyMock);
       ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
 
       persistenceStragegyMock.VerifyAllExpectations();
@@ -716,7 +716,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
       fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
-      var fakeSubTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy (fakePersistenceStrategy);
+      var fakeSubTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (fakePersistenceStrategy);
 
       Func<ClientTransaction, ClientTransaction> factoryMock = tx =>
       {
@@ -765,7 +765,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       mockRepository.ReplayAll ();
 
-      _transaction.CreateSubTransaction (tx => ClientTransactionObjectMother.Create (componentFactoryPartialMock));
+      _transaction.CreateSubTransaction (tx => ClientTransactionObjectMother.Create<ClientTransaction> (componentFactoryPartialMock));
       mockRepository.VerifyAll ();
     }
 
@@ -850,7 +850,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (new DataContainerCollection (dataContainers, false));
       persistenceStrategyStub.Replay ();
 
-      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy (persistenceStrategyStub);
+      var clientTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStrategyStub);
       return clientTransaction;
     }
   }

@@ -121,10 +121,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       // do nothing by default, implementations supporting mixins can add validation code checking that the current mixin configuration is compatible
       // with the mixin information stored in the class definition
-
-      // call parent validation, if parent class exists
-      if (_classDefinition.BaseClass != null)
-        _classDefinition.BaseClass.GetValidator ().ValidateCurrentMixinConfiguration ();
     }
 
     private static MappingException CreateMappingException (string message, params object[] args)

@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       var properties = bindableObjectClass.GetPropertyDefinitions();
 
       var propertiesByName = Array.ConvertAll (properties, property => property.Identifier);
-      Assert.That (propertiesByName, Is.EquivalentTo (new[] { "Name", "Int32" }));
+      Assert.That (propertiesByName, Is.EquivalentTo (new[] { "List", "Relation", "Name", "Int32" }));
     }
   }
 }

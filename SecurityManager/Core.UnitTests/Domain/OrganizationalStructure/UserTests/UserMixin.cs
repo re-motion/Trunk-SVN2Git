@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,22 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using Remotion.Mixins;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
 {
-  [DBTable]
-  public class DOWithVirtualPropertiesAndMethods : DomainObject
+  [Extends (typeof (User))]
+  [Serializable]
+  public class UserMixin : Mixin<User>, MixedUser.ITestInterface
   {
-    public virtual string Property
-    {
-      get { return CurrentProperty.GetValue<string>(); }
-      set { CurrentProperty.SetValue (value); }
-    }
-
-    public virtual string GetSomething ()
-    {
-      return "Something";
-    }
   }
 }

@@ -29,46 +29,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
   public class BehavioralMixinTest : ClientTransactionBaseTest
   {
     [Test]
-    public void NewDomainObjectsCanBeMixed ()
+    public void DomainObjectsCanBeMixed ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NullMixin)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        Assert.IsNotNull (Mixin.Get<NullMixin> (order));
-      }
-    }
-
-    [Test]
-    public void LoadedDomainObjectsCanBeMixed ()
-    {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NullMixin)).EnterScope())
-      {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.IsNotNull (Mixin.Get<NullMixin> (order));
-      }
+      var domainObject = TargetClassForBehavioralMixin.NewObject ();
+      Assert.IsNotNull (Mixin.Get<NullMixin> (domainObject));
     }
 
     [Test]
     public void MixinCanAddInterface ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinAddingInterface)).EnterScope())
-      {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.IsTrue (order is IInterfaceAddedByMixin);
-        Assert.AreEqual ("Hello, my ID is " + DomainObjectIDs.Order1, ((IInterfaceAddedByMixin) order).GetGreetings ());
-      }
+      var domainObject = TargetClassForBehavioralMixin.NewObject ();
+      Assert.IsTrue (domainObject is IInterfaceAddedByMixin);
+      Assert.AreEqual ("Hello, my ID is " + domainObject.ID, ((IInterfaceAddedByMixin) domainObject).GetGreetings ());
     }
 
     [Test]
     public void MixinCanOverrideVirtualPropertiesAndMethods ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (DOWithVirtualPropertiesAndMethods)).Clear().AddMixins (typeof (MixinOverridingPropertiesAndMethods)).EnterScope())
-      {
-        var instance = (DOWithVirtualPropertiesAndMethods) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualPropertiesAndMethods), ParamList.Empty);
-        instance.Property = "Text";
-        Assert.AreEqual ("Text-MixinSetter-MixinGetter", instance.Property);
-        Assert.AreEqual ("Something-MixinMethod", instance.GetSomething ());
-      }
+      var instance = TargetClassForBehavioralMixin.NewObject();
+      instance.Property = "Text";
+      Assert.AreEqual ("Text-MixinSetter-MixinGetter", instance.Property);
+      Assert.AreEqual ("Something-MixinMethod", instance.GetSomething ());
     }
 
     [DBTable]
@@ -83,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     }
 
     [Test]
-    public void NestedDomainObjectDomainObjectsCanBeMixed ()
+    public void NestedDomainObjects_CanBeMixed ()
     {
       DomainObject domainObject = NestedDomainObject.NewObject ();
       Assert.IsNotNull (Mixin.Get<NullMixin> (domainObject));

@@ -427,8 +427,11 @@
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\LegacyTestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForMixinWithState.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\HookedTargetClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForBehavioralMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderTest.cs" />
@@ -570,6 +573,7 @@
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectImplementationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectSearchAllServiceTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectQuerySearchServiceTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\SearchServiceTestHelper.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableNonDomainObjectReferencingDomainObject.cs" />
@@ -699,7 +703,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForDerivedPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithUnidirectionalMixin1.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingUnidirectionalRelation2.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DOWithVirtualPropertiesAndMethods.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\HookedDomainObjectMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IInterfaceAddedByMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingPersistentProperties.cs" />

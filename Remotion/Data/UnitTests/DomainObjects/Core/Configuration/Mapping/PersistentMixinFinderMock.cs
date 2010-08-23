@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins.Context;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -26,15 +26,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private readonly Type _classType;
     private readonly Type[] _persistentMixins;
 
-    public PersistentMixinFinderMock (Type classType, params Type[] persistentMixins)
+    private readonly ClassContext _mixinConfiguration;
+
+    public PersistentMixinFinderMock (Type classType, params Type[] persistentMixins) : this (classType, new ClassContext (classType, persistentMixins))
+    {
+    }
+
+    public PersistentMixinFinderMock (Type classType, ClassContext mixinConfiguration)
     {
       _classType = classType;
-      _persistentMixins = persistentMixins;
+      _persistentMixins = mixinConfiguration.Mixins.Select (m => m.MixinType).ToArray();
+
+      _mixinConfiguration = mixinConfiguration;
     }
 
     public ClassContext MixinConfiguration
     {
-      get { throw new System.NotImplementedException(); }
+      get { return _mixinConfiguration; }
     }
 
     public ClassContext ParentClassContext

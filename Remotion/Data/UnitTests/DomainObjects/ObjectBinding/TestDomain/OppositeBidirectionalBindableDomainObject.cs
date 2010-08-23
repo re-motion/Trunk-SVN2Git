@@ -47,5 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     public abstract SampleBindableDomainObject OppositeSampleObject { get; set; }
     [DBBidirectionalRelation ("RelatedObjectProperty2")]
     public abstract ObjectList<SampleBindableDomainObject> OppositeSampleObjects { get; set; }
+
+    [DBBidirectionalRelation ("List")]
+    public abstract SampleBindableMixinDomainObject OppositeSampleObjectWithMixin1 { get; set;  }
+    [DBBidirectionalRelation ("Relation")]
+    public abstract SampleBindableMixinDomainObject OppositeSampleObjectWithMixin2 { get; set; }
   }
 }

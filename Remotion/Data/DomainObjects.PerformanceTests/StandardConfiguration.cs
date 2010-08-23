@@ -50,8 +50,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (mappingConfiguration);
-
-      ServiceLocator.SetLocatorProvider (() => null);
     }
   }
 }

@@ -249,13 +249,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void RaiseReferenceInitializatingEvent_InvokesMixinHook ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
-      {
-        var order = _transaction.Execute (() => Order.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
-        var mixinInstance = Mixin.Get<HookedDomainObjectMixin> (order);
+      var domainObject = _transaction.Execute (() => HookedTargetClass.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
+      var mixinInstance = Mixin.Get<HookedDomainObjectMixin> (domainObject);
 
-        Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
-      }
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     [Test]
@@ -263,15 +260,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         "While the OnReferenceInitializing event is executing, this member cannot be used.")]
     public void RaiseReferenceInitializatingEvent_InvokesMixinHook_WhilePropertyAccessForbidden ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
-      {
-        var mixinInstance = new HookedDomainObjectMixin ();
-        mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((HookedDomainObjectMixin) sender).This.OrderNumber;
+      var mixinInstance = new HookedDomainObjectMixin ();
+      mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((HookedDomainObjectMixin) sender).This.Property;
 
-        using (new MixedObjectInstantiationScope (mixinInstance))
-        {
-          _transaction.Execute (() => Order.NewObject()); // indirect call of RaiseReferenceInitializatingEvent
-        }
+      using (new MixedObjectInstantiationScope (mixinInstance))
+      {
+        _transaction.Execute (() => HookedTargetClass.NewObject ()); // indirect call of RaiseReferenceInitializatingEvent
       }
     }
 

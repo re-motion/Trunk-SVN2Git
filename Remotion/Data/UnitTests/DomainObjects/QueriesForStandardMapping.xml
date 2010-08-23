@@ -143,4 +143,16 @@
     <collectionType>Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection, Remotion.Data.UnitTests</collectionType>
   </query>
 
+  <query id="FakeQuery" type="collection">
+    <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
+    <statement>SELECT "Dummy"</statement>
+    <collectionType>Remotion.Data.DomainObjects::DomainObjectCollection</collectionType>
+  </query>
+
+  <query id="OrderQueryWithDomainObjectCollectionType" type="collection">
+    <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
+    <statement>select * from [Order];</statement>
+    <collectionType>Remotion.Data.DomainObjects::DomainObjectCollection</collectionType>
+  </query>
+
 </queries>

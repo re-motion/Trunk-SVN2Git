@@ -17,13 +17,12 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   [NonIntroduced (typeof (IDomainObjectMixin))]
-  public class HookedDomainObjectMixin : Mixin<Order>, IDomainObjectMixin
+  public class HookedDomainObjectMixin : Mixin<HookedTargetClass>, IDomainObjectMixin
   {
     public event EventHandler InitializationHandler;
 
@@ -41,16 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       OnLoadedLoadMode = loadMode;
       ++OnLoadedCount;
       Assert.IsNotNull (This.ID);
-      ++This.OrderNumber;
-      Assert.IsNotNull (This.OrderItems);
+      ++This.Property;
     }
 
     public void OnDomainObjectCreated ()
     {
       OnCreatedCalled = true;
       Assert.IsNotNull (This.ID);
-      This.OrderNumber += 2;
-      Assert.IsNotNull (This.OrderItems);
+      This.Property += 2;
     }
 
     public void OnDomainObjectReferenceInitializing ()
@@ -62,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
         InitializationHandler (this, EventArgs.Empty);
     }
 
-    public new Order This 
+    public new HookedTargetClass This 
     { 
       get { return base.This; } 
     }

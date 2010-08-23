@@ -30,15 +30,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return mockRepository.StrictMock<ClientTransaction> (componentFactory);
     }
 
-    public static ClientTransaction CreateTransactionWithPersistenceStrategy (IPersistenceStrategy persistenceStrategy)
+    public static T CreateTransactionWithPersistenceStrategy<T> (IPersistenceStrategy persistenceStrategy) where T : ClientTransaction
     {
       var componentFactory = new TestComponentFactoryWithSpecificPersistenceStrategy (persistenceStrategy);
-      return Create (componentFactory);
+      return Create<T> (componentFactory);
     }
 
-    public static ClientTransaction Create (IClientTransactionComponentFactory componentFactory)
+    public static T Create<T> (IClientTransactionComponentFactory componentFactory) where T : ClientTransaction
     {
-      return (ClientTransaction) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransaction), componentFactory);
+      return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);
     }
   }
 }

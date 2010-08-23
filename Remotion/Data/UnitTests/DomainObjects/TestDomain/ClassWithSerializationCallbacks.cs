@@ -18,12 +18,14 @@ using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
   [DBTable]
   [Serializable]
   [Instantiable]
+  [Uses (typeof (MixinWithSerializationCallbacks))]
   public abstract class ClassWithSerializationCallbacks : DomainObject, IDeserializationCallback
   {
     private static ISerializationEventReceiver s_receiver;

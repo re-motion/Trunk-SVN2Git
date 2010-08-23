@@ -16,6 +16,8 @@
 // 
 using System;
 using Remotion.Collections;
+using Remotion.Mixins;
+using Remotion.Mixins.Context;
 using Remotion.Text;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -33,28 +35,19 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override void ValidateCurrentMixinConfiguration ()
     {
       base.ValidateCurrentMixinConfiguration ();
-      Set<Type> currentMixins = new Set<Type> (CreateNewPersistentMixinFinder().GetPersistentMixins ());
-      foreach (Type t in _classDefinition.PersistentMixins)
+
+      var currentMixinConfiguration = PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (_classDefinition.ClassType);
+      if (!Equals (currentMixinConfiguration, _classDefinition.PersistentMixinFinder.MixinConfiguration))
       {
-        if (!currentMixins.Contains (t))
-        {
-          string message = string.Format ("A persistence-related mixin was removed from the domain object type {0} after the mapping "
-            + "information was built: {1}.", _classDefinition.ClassType.FullName, t.FullName);
+          string message = string.Format (
+              "The mixin configuration for domain object type '{0}' was changed after the mapping information was built." + Environment.NewLine
+              + "Original configuration: {1}." + Environment.NewLine
+              + "Active configuration: {2}", 
+              _classDefinition.ClassType, 
+              _classDefinition.PersistentMixinFinder.MixinConfiguration,
+              currentMixinConfiguration);
           throw new MappingException (message);
         }
-        currentMixins.Remove (t);
-      }
-      if (currentMixins.Count > 0)
-      {
-        string message = string.Format ("One or more persistence-related mixins were added to the domain object type {0} after the mapping "
-            + "information was built: {1}.", _classDefinition.ClassType.FullName, SeparatedStringBuilder.Build (", ", currentMixins));
-        throw new MappingException (message);
-      }
-    }
-
-    public PersistentMixinFinder CreateNewPersistentMixinFinder ()
-    {
-      return new PersistentMixinFinder (_classDefinition.ClassType, _classDefinition.GetInheritanceRootClass() == _classDefinition);
     }
   }
 }

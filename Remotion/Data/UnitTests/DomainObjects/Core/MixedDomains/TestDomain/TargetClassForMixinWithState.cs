@@ -15,14 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.ObjectBinding;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class BindableNonDomainObjectReferencingDomainObject : BindableObjectBase
+  [DBTable]
+  [TestDomain]
+  [Uses (typeof (MixinWithState))]
+  [Serializable]
+  public class TargetClassForMixinWithState : DomainObject
   {
-    public SampleBindableDomainObject OppositeSampleObject { get; set; }
-    public SampleBindableMixinDomainObject OppositeSampleMixinObject { get; set; }
+    public static TargetClassForMixinWithState NewObject ()
+    {
+      return NewObject<TargetClassForMixinWithState> ();
+    }
   }
 }

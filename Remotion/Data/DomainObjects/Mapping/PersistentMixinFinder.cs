@@ -24,6 +24,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   public class PersistentMixinFinder : IPersistentMixinFinder
   {
+    public static ClassContext GetMixinConfigurationForDomainObjectType (Type type)
+    {
+      // For performance, use the ClassContextCollection rather than ActiveConfiguration.GetClassContext
+      // (The former checks whether type is a generated type, which we know isn't the case here.)
+      return Mixins.MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (type) ?? new ClassContext (type);
+    }
+
     public static bool IsPersistenceRelevant (Type mixinType)
     {
       return Utilities.ReflectionUtility.CanAscribe (mixinType, typeof (DomainObjectMixin<,>));
@@ -46,10 +53,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("type", type);
       Type = type;
       _includeInherited = includeInherited;
-      _mixinConfiguration = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type) ?? new ClassContext (type); // never null
+      
+      _mixinConfiguration = GetMixinConfigurationForDomainObjectType (type); // never null
        
       if (Type.BaseType != null)
-        _parentClassContext = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type.BaseType) ?? new ClassContext (type); // never null
+        _parentClassContext = GetMixinConfigurationForDomainObjectType (Type.BaseType); // never null
 
       if (IncludeInherited)
         _allParentClassContexts = GetParentClassContexts();

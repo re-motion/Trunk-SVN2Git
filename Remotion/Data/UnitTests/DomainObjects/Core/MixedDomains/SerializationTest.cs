@@ -31,86 +31,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void MixedTypesAreSerializable ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinAddingInterface)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        Assert.IsTrue (((object) order).GetType ().IsSerializable);
-      }
+      var instance = TargetClassForMixinWithState.NewObject ();
+      Assert.IsTrue (((object) instance).GetType ().IsSerializable);
     }
 
     [Test]
     public void MixedObjectsCanBeSerializedWithoutException ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinAddingInterface)).EnterScope())
-      {
-        Order order = Order.NewObject();
-        Serializer.Serialize (order);
-      }
+      var instance = TargetClassForMixinWithState.NewObject ();
+      Serializer.Serialize (instance);
     }
 
     [Test]
     public void MixedObjectsCanBeDeserializedWithoutException ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinAddingInterface)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        Serializer.SerializeAndDeserialize (order);
-      }
+      var instance = TargetClassForMixinWithState.NewObject ();
+      Serializer.SerializeAndDeserialize (instance);
     }
 
     [Test]
     public void DomainObjectStateIsRestored ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinAddingInterface)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        order.OrderNumber = 5;
-        order.OrderItems.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem4));
-        Tuple<ClientTransaction, Order> deserializedObjects =
-            Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
+      Order order = Order.NewObject ();
+      order.OrderNumber = 5;
+      order.OrderItems.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem4));
+      Tuple<ClientTransaction, Order> deserializedObjects =
+          Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
 
-        using (deserializedObjects.Item1.EnterDiscardingScope ())
-        {
-          Assert.AreEqual (5, deserializedObjects.Item2.OrderNumber);
-          Assert.IsTrue (deserializedObjects.Item2.OrderItems.Contains (DomainObjectIDs.OrderItem4));
-        }
+      using (deserializedObjects.Item1.EnterDiscardingScope ())
+      {
+        Assert.AreEqual (5, deserializedObjects.Item2.OrderNumber);
+        Assert.IsTrue (deserializedObjects.Item2.OrderItems.Contains (DomainObjectIDs.OrderItem4));
       }
     }
 
     [Test]
     public void MixinStateIsRestored ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinWithState)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        Mixin.Get<MixinWithState> (order).State = "Sto stas stat stamus statis stant";
-        Tuple<ClientTransaction, Order> deserializedObjects =
-            Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
+        var instance = TargetClassForMixinWithState.NewObject ();
+        Mixin.Get<MixinWithState> (instance).State = "Sto stas stat stamus statis stant";
+        var deserializedObjects = Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransactionScope.CurrentTransaction, instance));
 
-        Assert.AreNotSame (Mixin.Get<MixinWithState> (order), Mixin.Get<MixinWithState> (deserializedObjects.Item2));
+        Assert.AreNotSame (Mixin.Get<MixinWithState> (instance), Mixin.Get<MixinWithState> (deserializedObjects.Item2));
         Assert.AreEqual ("Sto stas stat stamus statis stant", Mixin.Get<MixinWithState> (deserializedObjects.Item2).State);
-      }
     }
 
     [Test]
     public void MixinConfigurationIsRestored ()
     {
-      byte[] serializedData;
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinWithState)).EnterScope())
-      {
-        Order order = Order.NewObject ();
-        Assert.IsNotNull (Mixin.Get<MixinWithState> (order));
-        serializedData = Serializer.Serialize (order);
-      }
+      var instance = TargetClassForMixinWithState.NewObject ();
+      Assert.IsNotNull (Mixin.Get<MixinWithState> (instance));
+      byte[] serializedData = Serializer.Serialize (instance);
 
-      Order deserializedOrder1 = (Order) Serializer.Deserialize (serializedData);
-      Assert.IsNotNull (Mixin.Get<MixinWithState> (deserializedOrder1));
+      var deserializedInstance1 = (TargetClassForMixinWithState) Serializer.Deserialize (serializedData);
+      Assert.IsNotNull (Mixin.Get<MixinWithState> (deserializedInstance1));
 
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NullMixin)).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass (typeof (TargetClassForMixinWithState)).AddMixins (typeof (NullMixin)).EnterScope())
       {
-        Order deserializedOrder2 = (Order) Serializer.Deserialize (serializedData);
-        Assert.IsNotNull (Mixin.Get<MixinWithState> (deserializedOrder2));
-        Assert.IsNull (Mixin.Get<NullMixin> (deserializedOrder2));
+        var deserializedInstance2 = (TargetClassForMixinWithState) Serializer.Deserialize (serializedData);
+
+        Assert.IsNotNull (Mixin.Get<MixinWithState> (deserializedInstance2));
+        Assert.IsNull (Mixin.Get<NullMixin> (deserializedInstance2));
       }
     }
   }

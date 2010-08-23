@@ -15,7 +15,6 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -29,19 +28,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     {
     }
 
-    public class TestMixin : Mixin<User>, ITestInterface
-    {
-    }
-
     [Test]
     public void MixedUserTest ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (User)).Clear().AddMixins (typeof (TestMixin)).EnterScope())
-      {
-        User user = CreateUser();
-        Assert.IsNotNull (Mixin.Get<TestMixin> (user));
-        Assert.IsTrue (user is ITestInterface);
-      }
+      User user = CreateUser();
+      Assert.IsNotNull (Mixin.Get<UserMixin> (user));
+      Assert.IsTrue (user is ITestInterface);
     }
   }
 }

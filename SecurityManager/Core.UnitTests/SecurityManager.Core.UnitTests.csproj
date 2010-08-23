@@ -212,6 +212,7 @@
     <Compile Include="Domain\OrganizationalStructure\UserTests\GetActiveSubstitutions.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\MixedUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\SecurableObjectImpelementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\UserTests\UserMixin.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\UserTestBase.cs" />
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixinTest.cs" />
     <Compile Include="Domain\DatabaseFixtures.cs" />

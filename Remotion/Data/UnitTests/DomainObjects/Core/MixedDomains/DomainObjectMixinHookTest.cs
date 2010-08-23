@@ -17,158 +17,178 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
   [TestFixture]
-  public class DomainObjectMixinHookTest : ClientTransactionBaseTest
+  public class DomainObjectMixinHookTest : StandardMappingTest
   {
+    private ObjectID _objectID;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _objectID = new ObjectID (typeof (HookedTargetClass), Guid.NewGuid ());
+    }
+
     [Test]
     public void OnDomainObjectLoaded ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope())
+      var tx = CreateTransactionWithStubbedLoading (_objectID);
+
+      var mixinInstance = new HookedDomainObjectMixin();
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+
+      using (new MixedObjectInstantiationScope (mixinInstance))
       {
-        HookedDomainObjectMixin mixinInstance = new HookedDomainObjectMixin ();
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-
-        using (new MixedObjectInstantiationScope (mixinInstance))
-        {
-          Order.GetObject (DomainObjectIDs.Order1);
-        }
-
-        Assert.IsTrue (mixinInstance.OnLoadedCalled);
-        Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+        LifetimeService.GetObject (tx, _objectID, false);
       }
+
+      Assert.IsTrue (mixinInstance.OnLoadedCalled);
+      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
     }
 
     [Test]
     public void OnDomainObjectLoadedAfterEnlist ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope())
+      var tx = CreateTransactionWithStubbedLoading (_objectID);
+
+      var mixinInstance = new HookedDomainObjectMixin();
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+
+      HookedTargetClass instance;
+      using (new MixedObjectInstantiationScope (mixinInstance))
       {
-        HookedDomainObjectMixin mixinInstance = new HookedDomainObjectMixin ();
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-
-        Order order;
-        using (new MixedObjectInstantiationScope (mixinInstance))
-        {
-          order = Order.GetObject (DomainObjectIDs.Order1);
-        }
-
-        mixinInstance.OnLoadedCalled = false;
-        mixinInstance.OnLoadedCount = 0;
-
-        ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-        newTransaction.EnlistDomainObject (order);
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-
-        using (newTransaction.EnterDiscardingScope ())
-        {
-          ++order.OrderNumber;
-        }
-
-        Assert.IsTrue (mixinInstance.OnLoadedCalled);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-        Assert.AreEqual (1, mixinInstance.OnLoadedCount);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+        instance = (HookedTargetClass) LifetimeService.GetObject (tx, _objectID, false);
       }
+
+      mixinInstance.OnLoadedCalled = false;
+      mixinInstance.OnLoadedCount = 0;
+
+      ClientTransaction newTransaction = CreateTransactionWithStubbedLoading (_objectID);
+      newTransaction.EnlistDomainObject (instance);
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+
+      using (newTransaction.EnterDiscardingScope())
+      {
+        ++instance.Property;
+      }
+
+      Assert.IsTrue (mixinInstance.OnLoadedCalled);
+      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
+      Assert.AreEqual (1, mixinInstance.OnLoadedCount);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
     }
 
     [Test]
     public void OnDomainObjectLoadedInSubTransaction ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope())
+      var tx = CreateTransactionWithStubbedLoading (_objectID);
+
+      var mixinInstance = new HookedDomainObjectMixin ();
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+
+      using (new MixedObjectInstantiationScope (mixinInstance))
       {
-        HookedDomainObjectMixin mixinInstance = new HookedDomainObjectMixin ();
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-
-        using (new MixedObjectInstantiationScope (mixinInstance))
-        {
-          using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
-          {
-            Order.GetObject (DomainObjectIDs.Order1);
-          }
-        }
-
-        Assert.IsTrue (mixinInstance.OnLoadedCalled);
-        Assert.AreEqual (2, mixinInstance.OnLoadedCount);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+        var subTx = tx.CreateSubTransaction ();
+        LifetimeService.GetObject (subTx, _objectID, false);
+        subTx.Discard ();
       }
+
+      Assert.IsTrue (mixinInstance.OnLoadedCalled);
+      Assert.AreEqual (2, mixinInstance.OnLoadedCount);
+      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
     }
 
     [Test]
     public void OnDomainObjectLoadedInParentAndSubTransaction ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope())
-      {
-        HookedDomainObjectMixin mixinInstance = new HookedDomainObjectMixin ();
+      var tx = CreateTransactionWithStubbedLoading (_objectID);
 
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      var mixinInstance = new HookedDomainObjectMixin ();
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+
+      using (new MixedObjectInstantiationScope (mixinInstance))
+      {
+        LifetimeService.GetObject (tx, _objectID, false);
+
+        Assert.IsTrue (mixinInstance.OnLoadedCalled);
+        Assert.AreEqual (1, mixinInstance.OnLoadedCount);
+        Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+        Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
-          Order.GetObject (DomainObjectIDs.Order1);
-          Assert.IsTrue (mixinInstance.OnLoadedCalled);
-          Assert.AreEqual (1, mixinInstance.OnLoadedCount);
-          Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
-          Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-          Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
-
-          using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
-          {
-            Order.GetObject (DomainObjectIDs.Order1);
-          }
+          var subTx = tx.CreateSubTransaction ();
+          LifetimeService.GetObject (subTx, _objectID, false);
+          subTx.Discard ();
         }
-
-        Assert.AreEqual (2, mixinInstance.OnLoadedCount);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-        Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
       }
+
+      Assert.AreEqual (2, mixinInstance.OnLoadedCount);
+      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializingCount);
     }
 
     [Test]
     public void OnDomainObjectCreated ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope())
+      var mixinInstance = new HookedDomainObjectMixin();
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsFalse (mixinInstance.OnCreatedCalled);
+      Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+
+      using (new MixedObjectInstantiationScope (mixinInstance))
       {
-        HookedDomainObjectMixin mixinInstance = new HookedDomainObjectMixin ();
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsFalse (mixinInstance.OnCreatedCalled);
-        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializingCalled);
-
-        using (new MixedObjectInstantiationScope (mixinInstance))
-        {
-          Order.NewObject ();
-        }
-
-        Assert.IsFalse (mixinInstance.OnLoadedCalled);
-        Assert.IsTrue (mixinInstance.OnCreatedCalled);
-        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+        var tx = ClientTransaction.CreateRootTransaction();
+        LifetimeService.NewObject (tx, typeof (HookedTargetClass), ParamList.Empty);
       }
+
+      Assert.IsFalse (mixinInstance.OnLoadedCalled);
+      Assert.IsTrue (mixinInstance.OnCreatedCalled);
+      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+    }
+
+    private ClientTransaction CreateTransactionWithStubbedLoading (ObjectID id)
+    {
+      return CreateTransactionWithStubbedLoading (DataContainer.CreateForExisting (id, null, pd => pd.DefaultValue));
+    }
+
+    private ClientTransaction CreateTransactionWithStubbedLoading (DataContainer loadableDataContainer)
+    {
+      var persistenceStrategyStub = MockRepository.GenerateStub<IPersistenceStrategy>();
+      persistenceStrategyStub.Stub (stub => stub.LoadDataContainer (loadableDataContainer.ID)).Return (loadableDataContainer);
+      return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStrategyStub);
     }
   }
 }
