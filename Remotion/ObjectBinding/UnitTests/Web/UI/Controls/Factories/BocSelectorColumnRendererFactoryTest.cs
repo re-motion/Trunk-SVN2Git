@@ -15,19 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Implementation;
+using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
 {
-  /// <summary>
-  /// Interface for factory creating renderers for <see cref="IBocColumnRenderer"/> controls.
-  /// </summary>
-  [ConcreteImplementation (typeof(BocRowEditModeColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
-  public interface IBocRowEditModeColumnRendererFactory
+  public class BocSelectorColumnRendererFactoryTest : BocColumnRendererFactoryBase
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    [Test]
+    public void CreateBocSelectorColumnRenderer ()
+    {
+      IBocSelectorColumnRendererFactory factory = new BocSelectorColumnRendererFactory ();
+      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (HttpContext, List);
+
+      Assert.IsInstanceOfType (typeof (BocSelectorColumnRenderer), renderer);
+      Assert.AreSame (List, ((BocSelectorColumnRenderer) renderer).List);
+    }
   }
 }

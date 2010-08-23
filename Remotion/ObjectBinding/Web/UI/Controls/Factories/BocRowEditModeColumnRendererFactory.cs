@@ -21,36 +21,20 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
-  /// <summary>
-  /// Responsible for creating the standard mode renderer for <see cref="IBocList"/> and its parts except columns.
-  /// </summary>
-  public class BocListRendererFactory : IBocListRendererFactory
+  public class BocRowEditModeColumnRendererFactory : IBocRowEditModeColumnRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocList control, IServiceLocator serviceLocator)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
-      var resourceUrlFactory = serviceLocator.GetInstance<IResourceUrlFactory>();
-
-      return new BocListRenderer (
-          context,
-          control,
-          resourceUrlFactory,
-          CssClassContainer.Instance,
-          new BocListTableBlockRenderer (
-              context,
-              control,
-              CssClassContainer.Instance,
-              new BocRowRenderer (context, control, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, CssClassContainer.Instance),
-          new BocListMenuBlockRenderer (context, control, CssClassContainer.Instance)
-          );
+      return new BocRowEditModeColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), CssClassContainer.Instance);
     }
   }
 }

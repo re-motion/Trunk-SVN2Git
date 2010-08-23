@@ -17,17 +17,24 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Utilities;
+using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
-  /// <summary>
-  /// Interface for factory creating renderers for <see cref="IBocColumnRenderer"/> controls.
-  /// </summary>
-  [ConcreteImplementation (typeof(BocRowEditModeColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
-  public interface IBocRowEditModeColumnRendererFactory
+  public class BocCompoundColumnRendererFactory : IBocCompoundColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocCompoundColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), CssClassContainer.Instance);
+    }
   }
 }
