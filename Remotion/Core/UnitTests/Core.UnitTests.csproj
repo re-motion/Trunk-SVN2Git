@@ -199,7 +199,14 @@
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\IBootstrapStorageProviderTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\ICallContextStorageProviderTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\IInterlockedCacheFactoryImplementationTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Interfaces\BridgeInterfaces\ITypeDiscoveryServiceFactoryImplementationTest.cs" />
     <Compile Include="Interfaces\Implementation\TypeNameTemplateResolverTest.cs" />
+    <Compile Include="Logging\ILogManagerImplementationTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
@@ -259,6 +266,10 @@
     <Compile Include="Mixins\Definitions\TestDomain\MemberFiltering\DerivedWithNewVirtualMembers.cs" />
     <Compile Include="Mixins\Definitions\Building\RequirementsAnalyzerTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
+    <Compile Include="Mixins\IMixinImplementationTest.cs" />
+    <Compile Include="Mixins\IMixinTypeUtilityImplementationTest.cs" />
+    <Compile Include="Mixins\IObjectFactoryImplementationTest.cs" />
+    <Compile Include="Mixins\ITypeFactoryImplementationTest.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixin.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAfterTargetBoundParameter.cs" />

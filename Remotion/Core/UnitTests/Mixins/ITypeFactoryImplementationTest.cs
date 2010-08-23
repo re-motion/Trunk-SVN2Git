@@ -17,37 +17,37 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Mixins.BridgeImplementations;
+using Remotion.Mixins.BridgeInterfaces;
 using Remotion.ServiceLocation;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplementation.Rendering
+namespace Remotion.UnitTests.Mixins
 {
   [TestFixture]
-  public class IBocBooleanValueRendererFactoryTest
+  public class ITypeFactoryImplementationTest
   {
     private DefaultServiceLocator _serviceLocator;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceLocator = new DefaultServiceLocator();
+      _serviceLocator = new DefaultServiceLocator ();
     }
 
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<ITypeFactoryImplementation> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocBooleanValueRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (TypeFactoryImplementation)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<ITypeFactoryImplementation> ();
+      var factory2 = _serviceLocator.GetInstance<ITypeFactoryImplementation> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }
