@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using IronPython.Runtime;
 using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;

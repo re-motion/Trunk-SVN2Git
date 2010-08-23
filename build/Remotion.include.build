@@ -198,7 +198,9 @@
         <include name="IronPython.Modules.dll" />
         <include name="Microsoft.Scripting.dll" />
         <include name="Microsoft.Scripting.Core.dll" />
-        <include name="Microsoft.Scripting.ExtensionAttribute.dll" />
+        <include name="Microsoft.Scripting.ExtensionAttribute.dll" />^
+	<include name="Microsoft.Scripting.Debugging.dll" />
+        <include name="Microsoft.Dynamic.dll" />
       </fileset>
     </copy>
 
