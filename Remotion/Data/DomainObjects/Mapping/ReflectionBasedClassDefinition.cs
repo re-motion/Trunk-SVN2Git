@@ -177,6 +177,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
     {
+      // TODO RM-3158: Add a cache using the property and definitionGetter as combined cache-key
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       var definition = definitionGetter (propertyIdentifier);
       if (definition != null)
@@ -185,9 +186,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       var currentClassDefinition = this;
       while (currentClassDefinition != null)
       {
-        var mixin = currentClassDefinition.PersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault ();
-        if (mixin != null)
-          return definitionGetter (MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name));
+        var mixinType = currentClassDefinition.PersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
+        if (mixinType != null)
+          // TODO RM-3157: Replace GetPropertyName (Type, string) with GetPropertyName (mixinType.GetProperty (property.Name, IncludeNonPublic=true))
+          return definitionGetter (MappingConfiguration.Current.NameResolver.GetPropertyName (mixinType, property.Name));
 
         currentClassDefinition = (ReflectionBasedClassDefinition) currentClassDefinition.BaseClass;
       }
