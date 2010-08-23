@@ -35,9 +35,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public string PropertyWithDefaultPermission { get; set; }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     public string PropertyWithReadPermission
     {
+      [DemandMethodPermission(TestAccessTypes.First)]
       get { return _readOnylProperty; }
       set { _readOnylProperty = value; }
     }
@@ -49,9 +49,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
       set { _accessibleProperty = value; }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     public virtual string  PropertyToOverrideWithReadPermission
     {
+      [DemandMethodPermission(TestAccessTypes.First)]
       get { return _accessibleProperty; }
       set { _accessibleProperty = value; }
     }

@@ -127,7 +127,6 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
       get { return true; }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.Third)]
     [DemandPropertyWritePermission (TestAccessTypes.Fourth)]
     public bool IsVisible
     {
@@ -135,18 +134,18 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
       set { Dev.Null = value; }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     [DemandPropertyWritePermission (TestAccessTypes.Second)]
     private object NonPublicProperty
     {
+      [DemandMethodPermission (TestAccessTypes.First)]
       get { return null; }
       set { Dev.Null = value; }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     [DemandPropertyWritePermission (TestAccessTypes.Second)]
     object IInterfaceWithProperty.InterfaceProperty
     {
+      [DemandMethodPermission (TestAccessTypes.First)]
       get { return null; }
       set { Dev.Null = value; }
     }

@@ -89,12 +89,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public abstract string PropertyWithDefaultPermission { get; set; }
     
-    [DemandPropertyReadPermission(TestAccessTypes.First)]
-    public abstract string PropertyWithCustomPermission { get; set; }
+    public abstract string PropertyWithCustomPermission { 
+      [DemandMethodPermission(TestAccessTypes.First)]
+      get; 
+      set; }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     public string PropertyIsReadOnly
     {
+      [DemandMethodPermission (TestAccessTypes.First)]
       get { return _readOnylProperty; }
       set { _readOnylProperty = value; }
     }
@@ -106,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       set { _accessibleProperty = value; }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.Second)]
     public virtual string PropertyToOverride
     {
+      [DemandMethodPermission (TestAccessTypes.Second)]
       get { return _accessibleProperty; }
       set { _accessibleProperty = value; }
     }

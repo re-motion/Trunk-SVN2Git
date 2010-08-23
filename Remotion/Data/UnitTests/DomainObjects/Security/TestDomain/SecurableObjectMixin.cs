@@ -28,9 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       set { Properties[typeof (SecurableObjectMixin), "MixedPropertyWithDefaultPermission"].SetValue (value); }
     }
 
-    [DemandPropertyReadPermission (TestAccessTypes.First)]
     public string MixedPropertyWithCustomPermission
     {
+      [DemandMethodPermission(TestAccessTypes.First)]
       get { return Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].GetValue<string> (); }
       set { Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].SetValue (value); }
     }

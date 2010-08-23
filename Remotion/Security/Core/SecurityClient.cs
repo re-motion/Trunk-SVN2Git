@@ -407,6 +407,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
+      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), propertyInformation.GetGetMethod());
 
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");

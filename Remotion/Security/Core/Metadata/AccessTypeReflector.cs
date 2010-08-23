@@ -106,7 +106,6 @@ namespace Remotion.Security.Metadata
       AddAccessTypesFromAttribute<DemandMethodPermissionAttribute> (memberInfos2, accessTypes, cache);
       
       var properties = GetProperties (type);
-      AddAccessTypesFromAttribute<DemandPropertyReadPermissionAttribute> (properties, accessTypes, cache);
       AddAccessTypesFromAttribute<DemandPropertyWritePermissionAttribute> (properties, accessTypes, cache);
     }
 
@@ -146,7 +145,7 @@ namespace Remotion.Security.Metadata
           MemberTypes.Property,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new[] { typeof (DemandPropertyReadPermissionAttribute), typeof (DemandPropertyWritePermissionAttribute) });
+          new[] { typeof (DemandPropertyWritePermissionAttribute) });
       return instanceProperties.Cast<PropertyInfo> ().Select (pi => (IMemberInformation) new PropertyInfoAdapter (pi));
     }
 

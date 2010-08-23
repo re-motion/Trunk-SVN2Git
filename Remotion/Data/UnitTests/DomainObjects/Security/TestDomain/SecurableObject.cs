@@ -83,9 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     public abstract ObjectList<SecurableObject> OtherChildren { get; }
 
     public abstract string PropertyWithDefaultPermission { get; set; }
-    
-    [DemandPropertyReadPermission(TestAccessTypes.First)]
-    public abstract string PropertyWithCustomPermission { get; set; }
+
+
+    public abstract string PropertyWithCustomPermission { [DemandMethodPermission (TestAccessTypes.First)]get; set; }
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
