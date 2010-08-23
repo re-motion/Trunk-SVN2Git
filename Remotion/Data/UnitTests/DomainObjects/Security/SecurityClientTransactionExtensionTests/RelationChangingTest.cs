@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Reflection;
 using Remotion.Security;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
@@ -31,20 +30,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
-    private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
-    private IMethodInformation _methodInformation;
+    private IMethodInformation _setMethodInformation;
 
     [SetUp]
     public void SetUp ()
     {
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
-      _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _propertyInfo = typeof (SecurableObject).GetProperty ("Parent");
 
-      _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (_methodInformation);
+      _setMethodInformation = new MethodInfoAdapter (_propertyInfo.GetSetMethod());
 
       _testHelper.SetupSecurityConfiguration ();
     }
@@ -193,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new MethodInfoAdapter (childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInfo, TestAccessTypes.Second);
@@ -220,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new MethodInfoAdapter (childrenPropertyInfo.GetGetMethod()), TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
         _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions (_propertyInfo, TestAccessTypes.Second);

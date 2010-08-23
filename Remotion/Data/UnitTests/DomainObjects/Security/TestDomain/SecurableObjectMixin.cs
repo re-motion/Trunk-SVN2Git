@@ -34,8 +34,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       get { return Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].GetValue<string> (); }
       set { Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].SetValue (value); }
     }
-
-
-
   }
 }

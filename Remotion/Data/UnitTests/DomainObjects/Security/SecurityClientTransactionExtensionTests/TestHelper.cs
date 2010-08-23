@@ -182,8 +182,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       Expect.Call (
           _mockPermissionReflector.GetRequiredMethodPermissions (
-          Arg<Type>.Matches (n => n == typeof (SecurableObject)),
-          Arg<IMethodInformation>.Is.Anything))
+              Arg.Is (typeof (SecurableObject)),
+              Arg<IMethodInformation>.Matches (mi => mi.Equals (methodInformation))))
+          .WhenCalled (mi => CheckCurrentTransaction())
           .Return (returnedAccessTypes);
     }
 
