@@ -66,6 +66,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       else
       {
         string propertyIdentifier = GetMappingPropertyIdentifier(property);
+        // TODO RM-3179: if GetMappingPropertyIdentifier is not null, the property must exist. A separate contains-check is not required.
         if (This.Properties.Contains (propertyIdentifier))
           return !This.Properties[propertyIdentifier].HasBeenTouched;
         else
@@ -73,8 +74,13 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       }
     }
 
+    // TODO RM-3179: Make non-virtual
     public virtual string GetMappingPropertyIdentifier (PropertyBase property)
     {
+      ArgumentUtility.CheckNotNull ("property", property);
+
+      // TODO RM-3179: Replace with ID.ClassDefinition.ResolveProperty (property.PropertyInfo)
+      // TODO RM-3179: return propertyDefinition.Name or null if no propertyDefinition was returned. 
       Type originalDeclaringType = property.PropertyInfo.GetOriginalDeclaringType();
       //var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
       var interfacePropertyInfo = ((BindableObjectPropertyInfoAdapter) property.PropertyInfo).InterfacePropertyInfo;
