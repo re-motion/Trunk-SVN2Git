@@ -26,14 +26,14 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
   {
     private NullSecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
-    private NullMethodInformation _methodInformation;
+    private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp()
     {
       _testHelper = NullSecurityClientTestHelper.CreateForStatefulSecurity();
       _securityClient = _testHelper.CreateSecurityClient();
-      _methodInformation = new NullMethodInformation ();
+      _methodInformation = new MethodInfoAdapter (typeof (SecurableObject).GetProperty ("IsVisible").GetGetMethod ());
     }
 
     [Test]
