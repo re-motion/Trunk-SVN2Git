@@ -58,7 +58,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -68,7 +68,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -106,7 +106,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -127,7 +127,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -137,7 +137,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }

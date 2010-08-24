@@ -48,12 +48,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.Second);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, true);
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       Assert.IsTrue (hasAccess);
       _testHelper.VerifyAll ();
@@ -62,12 +61,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessDenied ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.Second);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.Second, false);
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -76,14 +74,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -93,12 +90,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, true);
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -107,12 +103,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessDenied_WithDefaultAccessType ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, false);
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsFalse (hasAccess);
@@ -121,14 +116,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -139,11 +133,10 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _propertyInfo);
+      _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -157,7 +150,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
     }
 
     [Test]
@@ -171,7 +164,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();

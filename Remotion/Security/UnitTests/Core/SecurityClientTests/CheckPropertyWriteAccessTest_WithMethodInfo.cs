@@ -18,19 +18,21 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
+using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
   [TestFixture]
-  public class CheckPropertyWriteAccessTest_WithPropertyInfo
+  public class CheckPropertyWriteAccessTest_WithMethodInfo
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
     private IMethodInformation _methodInformation;
+    private MethodInfo _methodInfo;
 
     [SetUp]
     public void SetUp ()
@@ -41,17 +43,19 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
       _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
       _propertyInformation.Expect (mock => mock.GetSetMethod()).Return (_methodInformation);
+      _methodInfo = _propertyInfo.GetGetMethod ();
     }
 
     [Test]
     public void Test_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -60,12 +64,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_AccessDenied_ShouldThrowPermissionDeniedException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -73,13 +78,14 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
       }
 
       _testHelper.VerifyAll ();
@@ -88,12 +94,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessType ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -102,12 +109,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_AccessDenied_WithDefaultAccessType_ShouldThrowPermissionDeniedException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -115,13 +123,14 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [Test]
     public void Test_AccessGranted_WithDefaultAccessTypeAndWithinSecurityFreeSection ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
       }
 
       _testHelper.VerifyAll ();
@@ -131,11 +140,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -144,11 +154,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
 
       _testHelper.VerifyAll ();
     }
@@ -157,13 +168,14 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
+      _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
+      //_testHelper.ExpectMemberResolverGetPropertyInformation (_propertyInfo, _propertyInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInfo);
       }
 
       _testHelper.VerifyAll ();

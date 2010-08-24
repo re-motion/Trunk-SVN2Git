@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, new PropertyInfoAdapter(propertyInfo)));
+        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, new MethodInfoAdapter(propertyInfo.GetSetMethod())));
       }
       finally
       {

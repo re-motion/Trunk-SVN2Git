@@ -380,43 +380,30 @@ namespace Remotion.Security
       return HasPropertyWriteAccess (securableObject, methodInformation, principal);
     }
 
-    public bool HasPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    public bool HasPropertyWriteAccess (ISecurableObject securableObject, MethodInfo methodInfo)
     {
-      return HasPropertyWriteAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+      return HasPropertyWriteAccess (securableObject, methodInfo, _principalProvider.GetPrincipal ());
     }
     
-    public bool HasPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    public bool HasPropertyWriteAccess (ISecurableObject securableObject, MethodInfo methodInfo, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      var propertyInformation = _memberResolver.GetPropertyInformation (securableObject.GetSecurableType (), propertyInfo);
-      return HasPropertyWriteAccess (securableObject, propertyInformation, principal);
+      var methodInformation = _memberResolver.GetMethodInformation (securableObject.GetSecurableType (), methodInfo, MemberAffiliation.Instance);
+      return HasPropertyWriteAccess (securableObject, methodInformation, principal);
     }
 
-    public bool HasPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
+    public bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation)
     {
-      return HasPropertyWriteAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal ());
+      return HasPropertyWriteAccess (securableObject, methodInformation, _principalProvider.GetPrincipal ());
     }
     
-    public bool HasPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
-    {
-      //ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      //ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-      //ArgumentUtility.CheckNotNull ("principal", principal);
-
-      //Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyInformation);
-      
-      //if (requiredAccessTypeEnums == null)
-      //  throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
-
-      //if (requiredAccessTypeEnums.Length == 0)
-      //  requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
-
-      //return HasAccess (securableObject, propertyInformation, requiredAccessTypeEnums, principal);
-      return HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod(), principal);
-    }
+    //public bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
+    //{
+    //  return HasPropertyWriteAccess (securableObject, methodInformation.Ge, principal);
+    //}
 
     public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
@@ -453,39 +440,39 @@ namespace Remotion.Security
       }
     }
 
-    public void CheckPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo)
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, MethodInfo methodInfo)
     {
-      CheckPropertyWriteAccess (securableObject, propertyInfo, _principalProvider.GetPrincipal ());
+      CheckPropertyWriteAccess (securableObject, methodInfo, _principalProvider.GetPrincipal ());
     }
 
-    public void CheckPropertyWriteAccess (ISecurableObject securableObject, PropertyInfo propertyInfo, ISecurityPrincipal principal)
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, MethodInfo methodInfo, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyWriteAccess (securableObject, propertyInfo, principal))
+      if (!HasPropertyWriteAccess (securableObject, methodInfo, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyInfo.Name, securableObject.GetSecurableType ().FullName);
+            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", methodInfo.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 
-    public void CheckPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation)
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation)
     {
-      CheckPropertyWriteAccess (securableObject, propertyInformation, _principalProvider.GetPrincipal());
+      CheckPropertyWriteAccess (securableObject, methodInformation, _principalProvider.GetPrincipal ());
     }
 
-    public void CheckPropertyWriteAccess (ISecurableObject securableObject, IPropertyInformation propertyInformation, ISecurityPrincipal principal)
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyWriteAccess (securableObject, propertyInformation, principal))
+      if (!HasPropertyWriteAccess (securableObject, methodInformation, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyInformation.Name, securableObject.GetSecurableType ().FullName);
+            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", methodInformation.Name, securableObject.GetSecurableType ().FullName);
       }
     }
 

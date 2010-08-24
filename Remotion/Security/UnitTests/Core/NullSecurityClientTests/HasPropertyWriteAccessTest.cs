@@ -59,7 +59,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       Assert.IsTrue (hasAccess);
       _testHelper.VerifyAll ();
@@ -70,7 +70,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       Assert.IsTrue (hasAccess);
       _testHelper.VerifyAll ();
@@ -99,7 +99,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInfo);
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -114,7 +114,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       bool hasAccess;
       using (new SecurityFreeSection ())
       {
-        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+        hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -137,7 +137,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _propertyInfo);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);
@@ -148,7 +148,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      bool hasAccess = _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _propertyInformation);
+      bool hasAccess = _securityClient.HasPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
       Assert.IsTrue (hasAccess);

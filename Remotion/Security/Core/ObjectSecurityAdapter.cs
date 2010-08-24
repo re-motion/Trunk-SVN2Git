@@ -55,7 +55,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation);
+      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod());
     }
   }
 }

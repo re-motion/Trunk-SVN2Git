@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -66,7 +66,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -79,7 +79,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -92,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, true);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -105,7 +105,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectObjectSecurityStrategyHasAccess (GeneralAccessTypes.Edit, false);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -118,7 +118,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
@@ -131,7 +131,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (new SecurableObject (null), _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -143,7 +143,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
       _testHelper.ReplayAll ();
 
-      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+      _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
 
       _testHelper.VerifyAll ();
     }
@@ -157,7 +157,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
       using (new SecurityFreeSection ())
       {
-        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _propertyInformation);
+        _securityClient.CheckPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
 
       _testHelper.VerifyAll ();
