@@ -15,13 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Implementation
 {
   internal class ArgumentUtility
   {
-    public static T CheckNotNull<T> (string argumentName, T actualValue)
+    [AssertionMethod]
+    public static T CheckNotNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T actualValue)
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
@@ -29,7 +31,8 @@ namespace Remotion.Implementation
       return actualValue;
     }
 
-    public static string CheckNotNullOrEmpty (string argumentName, string actualValue)
+    [AssertionMethod]
+    public static string CheckNotNullOrEmpty (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
     {
       CheckNotNull (argumentName, actualValue);
       if (actualValue.Length == 0)

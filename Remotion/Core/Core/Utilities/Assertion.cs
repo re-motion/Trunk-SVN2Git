@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -67,86 +68,100 @@ namespace Remotion.Utilities
     private static readonly object[] s_emptyArguments = new object[0];
 
     [Conditional ("DEBUG")]
-    public static void DebugAssert (bool assertion, string message)
+    [AssertionMethod]
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
     {
       IsTrue (assertion, message);
     }
 
     [Conditional ("DEBUG")]
-    public static void DebugAssert (bool assertion, string message, params object[] arguments)
+    [AssertionMethod]
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);
     }
 
     [Conditional ("DEBUG")]
-    public static void DebugAssert (bool assertion)
+    [AssertionMethod]
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
     {
       IsTrue (assertion);
     }
 
     [Conditional ("TRACE")]
-    public static void TraceAssert (bool assertion, string message)
+    [AssertionMethod]
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
     {
       IsTrue (assertion, message);
     }
 
     [Conditional ("TRACE")]
-    public static void TraceAssert (bool assertion, string message, params object[] arguments)
+    [AssertionMethod]
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);
     }
 
     [Conditional ("TRACE")]
-    public static void TraceAssert (bool assertion)
+    [AssertionMethod]
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
     {
       IsTrue (assertion);
     }
 
-
-    public static void IsTrue (bool assertion, string message)
+    [AssertionMethod]
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
     {
       IsTrue (assertion, message, s_emptyArguments);
     }
 
-    public static void IsTrue (bool assertion, string message, params object[] arguments)
+    [AssertionMethod]
+    [StringFormatMethod("message")]
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
     {
       if (!assertion)
         throw new AssertionException (string.Format (message, arguments));
     }
 
-    public static void IsTrue (bool assertion)
+    [AssertionMethod]
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
     {
       IsTrue (assertion, c_msgIsFalse);
     }
-    
-    public static void IsFalse (bool expression, string message)
+
+    [AssertionMethod]
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression, string message)
     {
       IsFalse (expression, message, s_emptyArguments);
     }
 
-    public static void IsFalse (bool expression)
+    [AssertionMethod]
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression)
     {
       IsFalse (expression, c_msgIsTrue);
     }
 
-    public static void IsFalse (bool expression, string message, params object[] arguments)
+    [AssertionMethod]
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression, string message, params object[] arguments)
     {
       if (expression)
         throw new AssertionException (string.Format (message, arguments));
     }
 
-
-    public static T IsNotNull<T> (T obj, string message)
+    [AssertionMethod]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message)
     {
       return IsNotNull (obj, message, s_emptyArguments);
     }
 
-    public static T IsNotNull<T> (T obj)
+    [AssertionMethod]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj)
     {
       return IsNotNull (obj, c_msgIsNull);
     }
 
-    public static T IsNotNull<T> (T obj, string message, params object[] arguments)
+    [AssertionMethod]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message, params object[] arguments)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (obj == null)
@@ -156,18 +171,20 @@ namespace Remotion.Utilities
       return obj;
     }
 
-
-    public static void IsNull (object obj, string message)
+    [AssertionMethod]
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj, string message)
     {
       IsNull (obj, message, s_emptyArguments);
     }
 
-    public static void IsNull (object obj)
+    [AssertionMethod]
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj)
     {
       IsNull (obj, c_msgIsNotNull);
     }
 
-    public static void IsNull (object obj, string message, params object[] arguments)
+    [AssertionMethod]
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj, string message, params object[] arguments)
     {
       if (obj != null)
         throw new AssertionException (string.Format (message, arguments));

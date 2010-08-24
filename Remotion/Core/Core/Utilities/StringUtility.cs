@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using JetBrains.Annotations;
 using Remotion.Collections;
 
 namespace Remotion.Utilities
@@ -246,7 +247,8 @@ namespace Remotion.Utilities
       return str;
     }
 
-    public static bool IsNullOrEmpty (string str)
+    [AssertionMethod]
+    public static bool IsNullOrEmpty ([AssertionCondition (AssertionConditionType.IS_NULL)] string str)
     {
       if (str == null || str.Length == 0)
         return true;

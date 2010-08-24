@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -50,7 +51,8 @@ namespace Remotion.Utilities
   public static class ArgumentUtility
   {
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
-    public static T CheckNotNull<T> (string argumentName, T actualValue)
+    [AssertionMethod]
+    public static T CheckNotNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)]  T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
@@ -61,7 +63,8 @@ namespace Remotion.Utilities
     }
 
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
-    public static string CheckNotNullOrEmpty (string argumentName, string actualValue)
+    [AssertionMethod]
+    public static string CheckNotNullOrEmpty (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
     {
       CheckNotNull (argumentName, actualValue);
       if (actualValue.Length == 0)
@@ -70,7 +73,8 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
-    public static T CheckNotNullOrEmpty<T> (string argumentName, T enumerable)
+    [AssertionMethod]
+    public static T CheckNotNullOrEmpty<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
@@ -79,7 +83,8 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
-    public static T CheckNotNullOrItemsNull<T> (string argumentName, T enumerable)
+    [AssertionMethod]
+    public static T CheckNotNullOrItemsNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
@@ -95,7 +100,8 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
-    public static T CheckNotNullOrEmptyOrItemsNull<T> (string argumentName, T enumerable)
+    [AssertionMethod]
+    public static T CheckNotNullOrEmptyOrItemsNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNullOrItemsNull (argumentName, enumerable);
@@ -104,6 +110,7 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
+    [AssertionMethod]
     public static string CheckNotEmpty (string argumentName, string actualValue)
     {
       if (actualValue != null && actualValue.Length == 0)
@@ -112,6 +119,7 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
+    [AssertionMethod]
     public static T CheckNotEmpty<T> (string argumentName, T enumerable)
         where T: IEnumerable
     {
@@ -140,6 +148,7 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
+    [AssertionMethod]
     public static Guid CheckNotEmpty (string argumentName, Guid actualValue)
     {
       if (actualValue == Guid.Empty)

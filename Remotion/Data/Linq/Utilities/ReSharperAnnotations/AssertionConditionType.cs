@@ -15,30 +15,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
-namespace Remotion.Utilities
+namespace JetBrains.Annotations
 {
   /// <summary>
-  /// This exception is thrown if a list argument contains a null reference.
+  /// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues. 
+  /// Otherwise, execution is assumed to be halted
   /// </summary>
-  [Serializable]
-  public class ArgumentItemNullException : ArgumentException
+  public enum AssertionConditionType
   {
-    public ArgumentItemNullException (string argumentName, int index)
-        : base (FormatMessage (argumentName, index))
-    {
-    }
+    /// <summary>
+    /// Indicates that the marked parameter should be evaluated to true
+    /// </summary>
+    IS_TRUE = 0,
 
-    public ArgumentItemNullException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
+    /// <summary>
+    /// Indicates that the marked parameter should be evaluated to false
+    /// </summary>
+    IS_FALSE = 1,
 
-    private static string FormatMessage (string argumentName, int index)
-    {
-      return string.Format ("Item {0} of argument {1} is null.", index, argumentName);
-    }
+    /// <summary>
+    /// Indicates that the marked parameter should be evaluated to null value
+    /// </summary>
+    IS_NULL = 2,
+
+    /// <summary>
+    /// Indicates that the marked parameter should be evaluated to not null value
+    /// </summary>
+    IS_NOT_NULL = 3,
   }
 }

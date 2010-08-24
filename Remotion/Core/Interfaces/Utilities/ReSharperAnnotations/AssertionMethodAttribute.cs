@@ -15,30 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
-namespace Remotion.Utilities
+namespace JetBrains.Annotations
 {
   /// <summary>
-  /// This exception is thrown if a list argument contains a null reference.
+  /// Indicates that the marked method is assertion method, i.e. it halts control flow if one of the conditions is satisfied. 
+  /// To set the condition, mark one of the parameters with <see cref="AssertionConditionAttribute"/> attribute
   /// </summary>
-  [Serializable]
-  public class ArgumentItemNullException : ArgumentException
+  /// <seealso cref="AssertionConditionAttribute"/>
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+  internal sealed class AssertionMethodAttribute : Attribute
   {
-    public ArgumentItemNullException (string argumentName, int index)
-        : base (FormatMessage (argumentName, index))
-    {
-    }
-
-    public ArgumentItemNullException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    private static string FormatMessage (string argumentName, int index)
-    {
-      return string.Format ("Item {0} of argument {1} is null.", index, argumentName);
-    }
   }
 }

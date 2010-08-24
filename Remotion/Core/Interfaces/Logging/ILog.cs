@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Logging
 {
@@ -59,6 +60,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel" or @name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -66,6 +68,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel" or @name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, int eventID, string format, params object[] args);
 
     /// <summary>
@@ -73,6 +76,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, string format, params object[] args);
 
     /// <summary>
@@ -81,6 +85,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="logLevel" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void LogFormat (LogLevel logLevel, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -135,6 +140,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void DebugFormat (int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -142,12 +148,14 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void DebugFormat (int eventID, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the <see cref="LogLevel.Debug"/> level.
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void DebugFormat (string format, params object[] args);
 
     /// <summary>
@@ -156,6 +164,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void DebugFormat (Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -209,6 +218,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void InfoFormat (int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -216,12 +226,14 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void InfoFormat (int eventID, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the <see cref="LogLevel.Info"/> level.
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void InfoFormat (string format, params object[] args);
 
     /// <summary>
@@ -230,6 +242,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void InfoFormat (Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -283,6 +296,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void WarnFormat (int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -290,12 +304,14 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void WarnFormat (int eventID, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the <see cref="LogLevel.Warn"/> level.
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void WarnFormat (string format, params object[] args);
 
     /// <summary>
@@ -304,6 +320,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void WarnFormat (Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -357,6 +374,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void ErrorFormat (int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -364,12 +382,14 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void ErrorFormat (int eventID, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the <see cref="LogLevel.Error"/> level.
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void ErrorFormat (string format, params object[] args);
 
     /// <summary>
@@ -378,6 +398,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void ErrorFormat (Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -431,6 +452,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID" or @name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void FatalFormat (int eventID, Exception exceptionObject, string format, params object[] args);
 
     /// <summary>
@@ -438,12 +460,14 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="eventID"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void FatalFormat (int eventID, string format, params object[] args);
 
     /// <summary>
     /// Log a formatted string with the <see cref="LogLevel.Fatal"/> level.
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void FatalFormat (string format, params object[] args);
 
     /// <summary>
@@ -452,6 +476,7 @@ namespace Remotion.Logging
     /// </summary>
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/Log/param[@name="exceptionObject"]' />
     /// <include file='doc\include\Logging\ILog.xml' path='ILog/LogFormat/param[@name="format" or @name="args"]' />
+    [StringFormatMethod ("format")]
     void FatalFormat (Exception exceptionObject, string format, params object[] args);
 
     /// <summary>

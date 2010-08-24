@@ -153,6 +153,10 @@
     <Compile Include="Utilities\ArgumentTypeException.cs" />
     <Compile Include="Utilities\ArgumentItemDuplicateException.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionAttribute.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\AssertionConditionType.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\AssertionMethodAttribute.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\StringFormatMethodAttribute.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
