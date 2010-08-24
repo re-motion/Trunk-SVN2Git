@@ -166,6 +166,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
+      // TODO RM-3158: Add a cache using the property as cache key
       return ResolveDefinition<PropertyDefinition> (property, GetPropertyDefinition);
     }
 
@@ -173,13 +174,12 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
+      // TODO RM-3158: Add a cache using the property as cache key
       return ResolveDefinition<IRelationEndPointDefinition> (property, GetRelationEndPointDefinition);
     }
 
     private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
     {
-      // TODO RM-3158: Add a cache using the property and definitionGetter as combined cache-key
-
       // TODO: To make this work with explicit interface implementations, use this code:
       //if (property.DeclaringType.IsInterface)
       //{
