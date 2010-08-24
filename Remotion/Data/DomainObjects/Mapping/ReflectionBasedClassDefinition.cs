@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -178,6 +179,25 @@ namespace Remotion.Data.DomainObjects.Mapping
     private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
     {
       // TODO RM-3158: Add a cache using the property and definitionGetter as combined cache-key
+
+      // TODO: To make this work with explicit interface implementations, use this code:
+      //if (property.DeclaringType.IsInterface)
+      //{
+      //  if (property.DeclaringType.IsAssignableFrom (ClassType))
+      //    property = FindPropertyImplementationOnType (property, ClassType); // see Remotion.ObjectBinding.BindableObject.ReflectionBasedPropertyFinder.GetPropertyInfoOnInterface => extract to a separate class and reuse here
+      //  else
+      //  {
+      //    var allPersistentMixins = this.CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass).SelectMany (cd => cd.PersistentMixins);
+      //    var mixinType = allPersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault ();
+      //    if (mixinType == null)
+      //      return null;
+      //    property = FindPropertyImplementationOnType (property, mixinType);
+      //  }
+      //}
+
+      //string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      //return definitionGetter (propertyIdentifier);
+
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       var definition = definitionGetter (propertyIdentifier);
       if (definition != null)
