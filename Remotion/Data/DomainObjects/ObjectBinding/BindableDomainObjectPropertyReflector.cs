@@ -64,8 +64,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[targetType];
       if (classDefinition != null)
       {
-        //TODO RM-3181: Change this to GetPropertyName (propertyInfo) once GetPropertyName accepts IPropertyInformation
-        string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo.GetOriginalDeclaringType (), propertyInfo.Name);
+        string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
         _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
         _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
       }
