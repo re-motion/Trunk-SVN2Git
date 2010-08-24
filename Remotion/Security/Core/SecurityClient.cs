@@ -282,17 +282,6 @@ namespace Remotion.Security
       return HasPropertyReadAccess (securableObject, methodInformation, _principalProvider.GetPrincipal ());
     }
 
-    //public bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
-    //{
-    //  ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-    //  ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-    //  ArgumentUtility.CheckNotNull ("principal", principal);
-
-    //  return HasPropertyReadAccess (securableObject, methodInformation , principal);
-    //}
-
-    //some procedure with HasPropertyWriteAccess only difference in GeneralAccessTypes.Edit
-
     public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
@@ -400,11 +389,6 @@ namespace Remotion.Security
       return HasPropertyWriteAccess (securableObject, methodInformation, _principalProvider.GetPrincipal ());
     }
     
-    //public bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
-    //{
-    //  return HasPropertyWriteAccess (securableObject, methodInformation.Ge, principal);
-    //}
-
     public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, IMethodInformation methodInformation, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
