@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ExtensibleEnums;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -166,7 +167,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected virtual string GetPropertyName ()
     {
-      return _nameResolver.GetPropertyName (PropertyInfo);
+      return _nameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));
     }
 
     protected bool IsNullableFromAttribute ()

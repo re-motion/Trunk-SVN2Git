@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -49,21 +50,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetPropertyName ()
     {
-      string name = _resolver.GetPropertyName (_orderNumberProperty);
+      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_orderNumberProperty));
       Assert.That (name, Is.EqualTo (typeof (Order).FullName + ".OrderNumber"));
     }
 
     [Test]
     public void GetPropertyName_ForOverriddenProperty ()
     {
-      string name = _resolver.GetPropertyName (_overriddenProperty);
+      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_overriddenProperty));
       Assert.That (name, Is.EqualTo (typeof (ClassWithMixedProperties).FullName + ".Int32"));
     }
 
     [Test]
     public void GetPropertyName_ForPropertyInGenericType ()
     {
-      string name = _resolver.GetPropertyName (_propertyInGenericClass);
+      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_propertyInGenericClass));
       Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
     }
   }

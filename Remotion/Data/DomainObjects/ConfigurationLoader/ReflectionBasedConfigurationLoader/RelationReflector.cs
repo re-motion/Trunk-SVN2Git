@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -111,7 +112,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private string GetRelationID ()
     {
-      string propertyName = NameResolver.GetPropertyName (PropertyInfo);
+      string propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));
       if (IsMixedProperty || (ClassDefinition.BaseClass == null && ClassDefinition.ClassType != PropertyInfo.DeclaringType))
         return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
       else

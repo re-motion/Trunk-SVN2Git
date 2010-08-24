@@ -33,6 +33,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
@@ -302,7 +303,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message);
       }
 
-      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter(propertyInfo));
       try
       {
         return classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);

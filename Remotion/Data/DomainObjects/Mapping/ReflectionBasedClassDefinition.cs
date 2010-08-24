@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -198,7 +199,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       //string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       //return definitionGetter (propertyIdentifier);
 
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter(property));
       var definition = definitionGetter (propertyIdentifier);
       if (definition != null)
         return definition;

@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -29,15 +30,15 @@ namespace Remotion.Data.DomainObjects.Mapping
     private static readonly InterlockedCache<Tuple<Type, string>, string> s_propertyNameCache = new InterlockedCache<Tuple<Type, string>, string>();
 
     /// <summary>
-    /// Returns the mapping name for the given <paramref name="property"/>.
+    /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
     /// </summary>
-    /// <param name="property">The property whose mapping name should be retrieved.</param>
-    /// <returns>The name of the given <paramref name="property"/> as used internally by the mapping.</returns>
-    public string GetPropertyName (PropertyInfo property)
+    /// <param name="propertyInformation">The property whose mapping name should be retrieved.</param>
+    /// <returns>The name of the given <paramref name="propertyInformation"/> as used internally by the mapping.</returns>
+    public string GetPropertyName (IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
-      Type originalDeclaringType = Remotion.Utilities.ReflectionUtility.GetOriginalDeclaringType (property);
-      return GetPropertyName (originalDeclaringType, property.Name);
+      ArgumentUtility.CheckNotNull ("property", propertyInformation);
+      
+      return GetPropertyName (propertyInformation.GetOriginalDeclaringType(), propertyInformation.Name);
     }
 
     /// <summary>

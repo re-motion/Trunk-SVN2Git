@@ -15,18 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   public interface IMappingNameResolver
   {
     /// <summary>
-    /// Returns the mapping name for the given <paramref name="property"/>.
+    /// Returns the mapping name for the given <paramref name="propertyInformationInformation"/>.
     /// </summary>
-    /// <param name="property">The property whose mapping name should be retrieved.</param>
-    /// <returns>The name of the given <paramref name="property"/> as used internally by the mapping.</returns>
-    string GetPropertyName (PropertyInfo property);
+    /// <param name="propertyInformationInformation">The property whose mapping name should be retrieved.</param>
+    /// <returns>The name of the given <paramref name="propertyInformationInformation"/> as used internally by the mapping.</returns>
+    string GetPropertyName (IPropertyInformation propertyInformationInformation);
 
     /// <summary>
     /// Returns the mapping name for a property with the given <paramref name="shortPropertyName"/> on the <paramref name="originalDeclaringType"/>.
