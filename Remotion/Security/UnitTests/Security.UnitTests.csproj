@@ -145,7 +145,9 @@
     <Compile Include="Core\SampleDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodInformation.cs" />
+    <Compile Include="Core\SecurityClientTests\CheckPropertyReadAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckPropertyReadAccessTest_WithPropertyInformation.cs" />
+    <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckPropertyWriteAccessTest_WithPropertyInformation.cs" />
     <Compile Include="Core\SecurityClientTests\CheckStaticMethodAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckStaticMethodAccessTest_WithMethodInformation.cs" />
