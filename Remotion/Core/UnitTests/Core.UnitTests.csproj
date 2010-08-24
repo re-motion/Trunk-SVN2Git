@@ -209,6 +209,8 @@
     <Compile Include="Logging\ILogManagerImplementationTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
+    <Compile Include="Mixins\SampleTypes\GeneratedTypes\MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation.cs" />
+    <Compile Include="Mixins\SampleTypes\GeneratedTypes\ClassWithMixedMixin_Mixed_Generated.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />
@@ -266,6 +268,7 @@
     <Compile Include="Mixins\Definitions\TestDomain\MemberFiltering\DerivedWithNewVirtualMembers.cs" />
     <Compile Include="Mixins\Definitions\Building\RequirementsAnalyzerTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
+    <Compile Include="Mixins\ObjectFactoryPerformanceTest.cs" />
     <Compile Include="Mixins\IMixinImplementationTest.cs" />
     <Compile Include="Mixins\IMixinTypeUtilityImplementationTest.cs" />
     <Compile Include="Mixins\IObjectFactoryImplementationTest.cs" />
