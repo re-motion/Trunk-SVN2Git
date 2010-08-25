@@ -60,14 +60,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         domainObjectsDesignModeHelper.InitializeConfiguration();
       }
 
-      // TODO RM-3180: use GetMandatory
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[targetType];
-      if (classDefinition != null)
-      {
-        string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
-        _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
-        _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
-      }
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (targetType);
+      string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
+      _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
+      _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
     }
 
     protected override bool GetIsRequired ()
