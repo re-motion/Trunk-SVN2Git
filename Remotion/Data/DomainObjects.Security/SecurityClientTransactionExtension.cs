@@ -21,6 +21,7 @@ using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -175,7 +176,7 @@ namespace Remotion.Data.DomainObjects.Security
     {
       if (_isActive)
         return;
-      
+
       if (SecurityFreeSection.IsActive)
         return;
 
@@ -183,11 +184,12 @@ namespace Remotion.Data.DomainObjects.Security
       if (securableObject == null)
         return;
 
-      SecurityClient securityClient = GetSecurityClient ();
+      SecurityClient securityClient = GetSecurityClient();
       try
       {
         _isActive = true;
-        var methodInformation = new MethodInfoAdapter (propertyInfo.GetGetMethod (true));
+        var methodInformation = Maybe.ForValue (propertyInfo.GetGetMethod (true))
+                                    .Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)).ValueOrDefault() ?? new NullMethodInformation();
         clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, methodInformation));
       }
       finally
@@ -240,7 +242,8 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        var methodInformation = new MethodInfoAdapter(propertyInfo.GetSetMethod(true));
+        var methodInformation = Maybe.ForValue (propertyInfo.GetSetMethod (true))
+                                    .Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)).ValueOrDefault() ?? new NullMethodInformation();
         clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, methodInformation));
       }
       finally

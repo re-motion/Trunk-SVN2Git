@@ -118,6 +118,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
+    public void Test_AccessGranted_WithMissingAccessor ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Read, true);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".PropertyWithMissingGetAccessor"], ValueAccess.Current);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (PermissionDeniedException))]
+    public void Test_AccessDenied_WithMissingAccessor ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Read, false);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".PropertyWithMissingGetAccessor"], ValueAccess.Current);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithinSecurityFreeSection ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();

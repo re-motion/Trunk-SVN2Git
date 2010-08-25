@@ -90,6 +90,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     protected abstract SecurableObject NonPublicRelationPropertyWithCustomPermission { [DemandPermission (TestAccessTypes.First)] get; [DemandPermission (TestAccessTypes.Second)] set; }
 
+    public abstract string PropertyWithMissingGetAccessor { set; }
+
+    public abstract string PropertyWithMissingSetAccessor { get; }
+
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       return SecurityContext.CreateStateless(GetPublicDomainObjectType());
