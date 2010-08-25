@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     public abstract SecurableObject Parent { get; set; }
 
     [DBBidirectionalRelation ("Parent")]
-    public abstract ObjectList<SecurableObject> Children { get; set; }
+    public abstract ObjectList<SecurableObject> Children { get; }
 
     [DBBidirectionalRelation ("OtherChildren")]
     public abstract SecurableObject OtherParent { get; set; }

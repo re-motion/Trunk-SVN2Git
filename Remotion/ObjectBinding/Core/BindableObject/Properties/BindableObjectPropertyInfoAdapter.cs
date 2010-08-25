@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -173,12 +174,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IMethodInformation GetGetMethod ()
     {
-      return new MethodInfoAdapter(_propertyInfo.GetGetMethod(true));
+      return Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
 
     public IMethodInformation GetSetMethod ()
     {
-      return new MethodInfoAdapter(_propertyInfo.GetSetMethod(true));
+      return Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
     }
 
     public override bool Equals (object obj)

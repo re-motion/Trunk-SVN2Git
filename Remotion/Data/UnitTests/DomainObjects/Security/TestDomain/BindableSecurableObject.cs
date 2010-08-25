@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     private IObjectSecurityStrategy _securityStrategy;
     private string _readOnylProperty = string.Empty;
-    private string _accessibleProperty = string.Empty;
+    private string _propertyToOverride = string.Empty;
 
 
     protected BindableSecurableObject (IObjectSecurityStrategy securityStrategy)
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     public abstract BindableSecurableObject Parent { get; set; }
 
     [DBBidirectionalRelation ("Parent")]
-    public abstract ObjectList<BindableSecurableObject> Children { get; }
+    public abstract ObjectList<BindableSecurableObject> Children { get; /*no setter*/ }
 
     [DBBidirectionalRelation ("OtherChildren")]
     public abstract BindableSecurableObject OtherParent { get; set; }
@@ -89,28 +89,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public abstract string PropertyWithDefaultPermission { get; set; }
 
-    public abstract string PropertyWithCustomPermission { [DemandPermission (TestAccessTypes.First)]
-    get; set; }
-
-    public string PropertyIsReadOnly
-    {
-      [DemandPermission (TestAccessTypes.First)]
-      get { return _readOnylProperty; }
-      set { _readOnylProperty = value; }
+    public abstract string PropertyWithCustomPermission 
+    { 
+      [DemandPermission (TestAccessTypes.First)] get; 
+      [DemandPermission (TestAccessTypes.Second)] set; 
     }
 
-    public string PropertyIsAccessible
+    public string ReadOnlyProperty
     {
-      get { return _accessibleProperty; }
-      [DemandPermission (TestAccessTypes.Second)]
-      set { _accessibleProperty = value; }
+      get { return _readOnylProperty; }
     }
 
     public virtual string PropertyToOverride
     {
-      get { return _accessibleProperty; }
+      get { return _propertyToOverride; }
       [DemandPermission (TestAccessTypes.Second)]
-      set { _accessibleProperty = value; }
+      set { _propertyToOverride = value; }
     }
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()

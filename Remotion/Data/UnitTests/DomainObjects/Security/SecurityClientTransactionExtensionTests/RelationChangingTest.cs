@@ -213,11 +213,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       {
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
-        
-        var childrenPropertyInfo = typeof (SecurableObject).GetProperty ("Children");
-        var childrenSetMethodInformation = new MethodInfoAdapter (childrenPropertyInfo.GetSetMethod ());
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, TestAccessTypes.Second);
-        _testHelper.ExpectObjectSecurityStrategyHasAccess (newObject, TestAccessTypes.Second, true);
+
+        var childrenSetMethodInformation = new NullMethodInformation ();
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, GeneralAccessTypes.Edit);
+        _testHelper.ExpectObjectSecurityStrategyHasAccess (newObject, GeneralAccessTypes.Edit, true);
       }
       _testHelper.ReplayAll ();
 
@@ -238,10 +237,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
 
-        var childrenPropertyInfo = typeof (SecurableObject).GetProperty ("Children");
-        var childrenSetMethodInformation = new MethodInfoAdapter (childrenPropertyInfo.GetSetMethod ());
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, TestAccessTypes.Second);
-        _testHelper.ExpectObjectSecurityStrategyHasAccess (oldObject, TestAccessTypes.Second, true);
+        var childrenSetMethodInformation = new NullMethodInformation ();
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, GeneralAccessTypes.Edit);
+        _testHelper.ExpectObjectSecurityStrategyHasAccess (oldObject, GeneralAccessTypes.Edit, true);
       }
       _testHelper.ReplayAll ();
 
@@ -265,9 +263,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.Second);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (newObject, TestAccessTypes.Second, true);
 
-        var childrenSetMethodInformation = new MethodInfoAdapter (childrenPropertyInfo.GetSetMethod ());
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, TestAccessTypes.First);
-        _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+        var childrenSetMethodInformation = new NullMethodInformation();
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, GeneralAccessTypes.Edit);
+        _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Edit, true);
       }
       _testHelper.ReplayAll ();
 
@@ -293,9 +291,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
         _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.Second);
         _testHelper.ExpectObjectSecurityStrategyHasAccess (oldObject, TestAccessTypes.Second, true);
 
-        var childrenSetMethodInformation = new MethodInfoAdapter (childrenPropertyInfo.GetSetMethod ());
-        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, TestAccessTypes.First);
-        _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+        var childrenSetMethodInformation = new NullMethodInformation();
+        _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (childrenSetMethodInformation, GeneralAccessTypes.Edit);
+        _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Edit, true);
       }
       _testHelper.ReplayAll ();
 

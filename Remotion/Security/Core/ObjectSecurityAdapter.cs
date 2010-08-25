@@ -44,7 +44,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod());
+      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod() ?? new NullMethodInformation());
     }
 
     public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
@@ -55,7 +55,7 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod());
+      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod() ?? new NullMethodInformation());
     }
   }
 }
