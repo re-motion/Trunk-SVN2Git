@@ -86,6 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public abstract string PropertyWithCustomPermission { [DemandPermission (TestAccessTypes.First)]get; set; }
 
+    protected abstract string NonPublicPropertyWithCustomPermission { [DemandPermission (TestAccessTypes.First)] get;  [DemandPermission (TestAccessTypes.Second)] set; }
+
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       return SecurityContext.CreateStateless(GetPublicDomainObjectType());

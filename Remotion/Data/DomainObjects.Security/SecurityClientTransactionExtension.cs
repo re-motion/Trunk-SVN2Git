@@ -187,7 +187,8 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, new MethodInfoAdapter (propertyInfo.GetGetMethod())));
+        var methodInformation = new MethodInfoAdapter (propertyInfo.GetGetMethod (true));
+        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, methodInformation));
       }
       finally
       {
@@ -239,7 +240,8 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, new MethodInfoAdapter(propertyInfo.GetSetMethod())));
+        var methodInformation = new MethodInfoAdapter(propertyInfo.GetSetMethod(true));
+        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, methodInformation));
       }
       finally
       {

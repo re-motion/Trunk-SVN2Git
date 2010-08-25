@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Reflection;
 using Remotion.Security;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
@@ -32,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
-    private IPropertyInformation _propertyInformation;
     private PropertyInfo _propertyInfo;
     private IMethodInformation _setMethodInformation;
 
@@ -41,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
-      _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _propertyInfo = typeof (SecurableObject).GetProperty ("StringProperty");
       _setMethodInformation = new MethodInfoAdapter (_propertyInfo.GetSetMethod ());
       _testHelper.SetupSecurityConfiguration ();
@@ -80,6 +77,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ReplayAll ();
 
       _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], "old", "new");
+    }
+
+    [Test]
+    public void Test_AccessGranted_WithNonPublicAccessor ()
+    {
+      var propertyInfo =
+          typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
+      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], "old", "new");
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (PermissionDeniedException))]
+    public void Test_AccessDenied_WithNonPublicAccessor ()
+    {
+      var propertyInfo =
+          typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
+      var setMethodInformation = new MethodInfoAdapter (propertyInfo.GetSetMethod (true));
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], "old", "new");
     }
 
     [Test]

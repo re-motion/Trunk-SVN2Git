@@ -83,6 +83,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
+    public void Test_AccessGranted_WithNonPublicAccessor ()
+    {
+      var propertyInfo =
+          typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
+      var getMethodInformation = new MethodInfoAdapter (propertyInfo.GetGetMethod (true));
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (getMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (PermissionDeniedException))]
+    public void Test_AccessDenied_WithNonPublicAccessor ()
+    {
+      var propertyInfo =
+          typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
+      var getMethodInformation = new MethodInfoAdapter (propertyInfo.GetGetMethod (true));
+      SecurableObject securableObject = _testHelper.CreateSecurableObject ();
+      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (getMethodInformation, TestAccessTypes.First);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
+      _testHelper.ReplayAll ();
+
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithinSecurityFreeSection ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
