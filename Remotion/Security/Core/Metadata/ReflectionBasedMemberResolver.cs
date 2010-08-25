@@ -28,16 +28,16 @@ namespace Remotion.Security.Metadata
     private class CacheKey : IEquatable<CacheKey>
     {
       private readonly Type _type;
-      private readonly string _memberName;
+      private readonly string _methodName;
       private readonly BindingFlags _bindingFlags;
 
-      public CacheKey (Type type, string memberName, BindingFlags bindingFlags)
+      public CacheKey (Type type, string methodName, BindingFlags bindingFlags)
       {
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
-        Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
+        Assertion.DebugAssert (!string.IsNullOrEmpty (methodName), "Parameter 'methodName' is null or empty.");
 
         _type = type;
-        _memberName = memberName;
+        _methodName = methodName;
         _bindingFlags = bindingFlags;
       }
 
@@ -46,9 +46,9 @@ namespace Remotion.Security.Metadata
         get { return _type; }
       }
 
-      public string MemberName
+      public string MethodName
       {
-        get { return _memberName; }
+        get { return _methodName; }
       }
 
       public BindingFlags BindingFlags
@@ -58,14 +58,14 @@ namespace Remotion.Security.Metadata
 
       public override int GetHashCode ()
       {
-        return _type.GetHashCode () ^ _memberName[0];
+        return _type.GetHashCode () ^ _methodName[0];
       }
 
       public bool Equals (CacheKey other)
       {
         return EqualityUtility.NotNullAndSameType (this, other)
                && _type.Equals (other._type)
-               && string.Equals (_memberName, other._memberName)
+               && string.Equals (_methodName, other._methodName)
                && _bindingFlags == other._bindingFlags;
       }
     }
@@ -99,7 +99,7 @@ namespace Remotion.Security.Metadata
     private IMethodInformation GetMethodFromCache (Type type, string memberName, BindingFlags bindingFlags)
     {
       var cacheKey = new CacheKey (type, memberName, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetMethod (key.Type, key.MemberName, key.BindingFlags));
+      return s_cache.GetOrCreateValue (cacheKey, key => GetMethod (key.Type, key.MethodName, key.BindingFlags));
     }
 
     private IMethodInformation GetMethod (Type type, string methodName, BindingFlags bindingFlags)
