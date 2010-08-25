@@ -46,7 +46,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessGranted ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
@@ -60,7 +60,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_AccessDenied_ShouldThrowPermissionDeniedException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
 
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
@@ -72,7 +72,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_WithinSecurityFreeSection_AccessGranted ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, TestAccessTypes.First);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
@@ -89,7 +89,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInfo);
@@ -103,7 +103,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
@@ -115,11 +115,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
       _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInfo);
@@ -128,11 +128,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredStaticMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())

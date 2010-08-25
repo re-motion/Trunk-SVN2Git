@@ -80,14 +80,6 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
     }
 
-    public Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
-    }
-
     public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
     {
       var permissionAttribute = memberInformation.GetCustomAttribute<TAttribute>(true);
