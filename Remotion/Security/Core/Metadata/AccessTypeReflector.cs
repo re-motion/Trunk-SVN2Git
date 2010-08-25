@@ -95,58 +95,32 @@ namespace Remotion.Security.Metadata
     
     private void AddAccessTypes (Type type, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
     {
-      var instanceMethods = GetInstanceMethods (type); //IMemberInformation
+      var instanceMethods = GetInstanceMethods (type);
       var staticMethods = GetStaticMethods (type);
-      var constructors = GetConstructors (type);
 
-      var memberInfos2 = instanceMethods
-          .Concat (staticMethods)
-          .Concat (constructors);
+      var methodInformations = instanceMethods.Concat (staticMethods);
 
-      AddAccessTypesFromAttribute (memberInfos2, accessTypes, cache);
-      
-      var properties = GetProperties (type);
-      AddAccessTypesFromAttribute (properties, accessTypes, cache);
+      AddAccessTypesFromAttribute (methodInformations, accessTypes, cache);
     }
 
-    private IEnumerable<IMemberInformation> GetConstructors (Type type)
-    {
-      MemberInfo[] constructors = type.FindMembers (
-          MemberTypes.Constructor,
-          BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public,
-          FindSecuredMembersFilter,
-          null);
-      return constructors.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
-    }
-
-    private IEnumerable<IMemberInformation> GetStaticMethods (Type type)
+    private IEnumerable<IMethodInformation> GetStaticMethods (Type type)
     {
       MemberInfo[] staticMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
           FindSecuredMembersFilter,
           null);
-      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
+      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) new MethodInfoAdapter (mi));
     }
 
-    private IEnumerable<IMemberInformation> GetInstanceMethods (Type type)
+    private IEnumerable<IMethodInformation> GetInstanceMethods (Type type)
     {
       MemberInfo[] instanceMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
           null);
-      return instanceMethods.Cast<MethodInfo>().Select (mi => (IMemberInformation)new MethodInfoAdapter (mi));
-    }
-
-    private IEnumerable<IMemberInformation> GetProperties (Type type)
-    {
-      MemberInfo[] instanceProperties = type.FindMembers (
-          MemberTypes.Property,
-          BindingFlags.Instance | BindingFlags.Public,
-          FindSecuredMembersFilter,
-          null);
-      return instanceProperties.Cast<PropertyInfo> ().Select (pi => (IMemberInformation) new PropertyInfoAdapter (pi));
+      return instanceMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) new MethodInfoAdapter (mi));
     }
 
     private bool FindSecuredMembersFilter (MemberInfo member, object filterCriteria)
@@ -154,11 +128,11 @@ namespace Remotion.Security.Metadata
       return Attribute.IsDefined (member, typeof (DemandPermissionAttribute), true);
     }  
 
-    private void AddAccessTypesFromAttribute (IEnumerable<IMemberInformation> memberInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
+    private void AddAccessTypesFromAttribute (IEnumerable<IMethodInformation> methodInformations, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
     {
-      foreach (var memberInfo in memberInfos)
+      foreach (var methodInformation in methodInformations)
       {
-        Enum[] values = _permissionReflector.GetPermissions (memberInfo);
+        Enum[] values = _permissionReflector.GetPermissions (methodInformation);
         foreach (Enum value in values)
         {
           EnumValueInfo accessType = _enumerationReflector.GetValue (value, cache);

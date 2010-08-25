@@ -32,27 +32,27 @@ namespace Remotion.Security.Metadata
     private class CacheKey : IEquatable<CacheKey>
     {
       private readonly Type _type;
-      private readonly IMemberInformation _memberInformation;
+      private readonly IMethodInformation _methodInformation;
 
-      public CacheKey (Type type, IMemberInformation memberInformation)
+      public CacheKey (Type type, IMethodInformation methodInformation)
       {
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
-        Assertion.DebugAssert (memberInformation != null, "Parameter 'memberInformation' us null.");
+        Assertion.DebugAssert (methodInformation != null, "Parameter 'methodInformation' is null.");
         
         _type = type;
-        _memberInformation = memberInformation;
+        _methodInformation = methodInformation;
       }
 
       public override int GetHashCode ()
       {
-        return _memberInformation.GetHashCode();
+        return _methodInformation.GetHashCode();
       }
 
       public bool Equals (CacheKey other)
       {
         return EqualityUtility.NotNullAndSameType (this, other)
                && _type.Equals (other._type)
-               && _memberInformation.Equals (other._memberInformation);
+               && _methodInformation.Equals (other._methodInformation);
       }
     }
 
@@ -76,9 +76,9 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache (type, methodInformation);
     }
 
-    public Enum[] GetPermissions (IMemberInformation memberInformation)
+    public Enum[] GetPermissions (IMethodInformation methodInformation)
     {
-      var permissionAttribute = memberInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
+      var permissionAttribute = methodInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
 
       if (permissionAttribute == null)
         return new Enum[0];
@@ -93,10 +93,10 @@ namespace Remotion.Security.Metadata
       return permissions.ToArray ();
     }
 
-    private Enum[] GetPermissionsFromCache (Type type, IMemberInformation memberInformation)
+    private Enum[] GetPermissionsFromCache (Type type, IMethodInformation methodInformation)
     {
-      var cacheKey = new CacheKey (type, memberInformation);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (memberInformation));
+      var cacheKey = new CacheKey (type, methodInformation);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (methodInformation));
     }
   }
 }
