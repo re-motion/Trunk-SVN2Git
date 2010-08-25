@@ -99,17 +99,17 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Sve' could not be found.\r\nParameter name: memberName")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The method 'Sve' could not be found.\r\nParameter name: methodName")]
     public void Test_NotExistingMethod ()
     {
       _resolver.GetMethodInformation (typeof (SecurableObject), "Sve", MemberAffiliation.Instance);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-      "The DemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
-        + "A member 'Send' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
-        + "\r\nParameter name: memberName")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+      "The DemandPermissionAttribute must not be defined on methods overriden or redefined in derived classes. "
+        + "A method 'Send' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
+        + "\r\nParameter name: methodName")]
     public void Test_MethodDeclaredOnBaseAndDerivedClass ()
     {
       _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Send", MemberAffiliation.Instance);
@@ -117,9 +117,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-      "The DemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
-        + "A member 'Print' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
-        + "\r\nParameter name: memberName")]
+      "The DemandPermissionAttribute must not be defined on methods overriden or redefined in derived classes. "
+        + "A method 'Print' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
+        + "\r\nParameter name: methodName")]
     public void Test_OverriddenMethods ()
     {
       _resolver.GetMethodInformation (typeof (DerivedSecurableObject), "Print", MemberAffiliation.Instance);

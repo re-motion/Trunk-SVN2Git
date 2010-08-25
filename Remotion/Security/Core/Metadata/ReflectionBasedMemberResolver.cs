@@ -25,10 +25,6 @@ namespace Remotion.Security.Metadata
 {
   public class ReflectionBasedMemberResolver : IMemberResolver
   {
-    private const string c_memberNotFoundMessage = "The member '{0}' could not be found.";
-    private const string c_memberPermissionsOnlyInBaseClassMessage =
-        "The {2} must not be defined on members overriden or redefined in derived classes. A member '{0}' exists in class '{1}' and its base class.";
-
     private class CacheKey : IEquatable<CacheKey>
     {
       private readonly Type _type;
@@ -74,7 +70,7 @@ namespace Remotion.Security.Metadata
       }
     }
 
-    private static readonly ICache<CacheKey, IMemberInformation> s_cache = new InterlockedCache<CacheKey, IMemberInformation> ();
+    private static readonly ICache<CacheKey, IMethodInformation> s_cache = new InterlockedCache<CacheKey, IMethodInformation> ();
 
     public IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation)
     {
@@ -84,9 +80,9 @@ namespace Remotion.Security.Metadata
       switch (memberAffiliation)
       {
         case MemberAffiliation.Instance:
-          return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance, MemberTypes.Method);
+          return GetMethodFromCache (type, methodName, BindingFlags.Public | BindingFlags.Instance);
         case MemberAffiliation.Static:
-          return (IMethodInformation) GetMemberFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, MemberTypes.Method);
+          return GetMethodFromCache (type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         default:
           throw new ArgumentException ("Wrong parameter 'memberAffiliation' passed.");
       }
@@ -100,71 +96,49 @@ namespace Remotion.Security.Metadata
       return GetMethodInformation (type, methodInfo.Name, memberAffiliation);
     }
 
-    public IPropertyInformation GetPropertyInformation (Type type, string propertyName)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      return (IPropertyInformation) GetMemberFromCache (
-          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
-    }
-
-    public IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      return (IPropertyInformation) GetMemberFromCache (
-          type, propertyInfo.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, MemberTypes.Property);
-    }
-
-    private IMemberInformation GetMemberFromCache (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
+    private IMethodInformation GetMethodFromCache (Type type, string memberName, BindingFlags bindingFlags)
     {
       var cacheKey = new CacheKey (type, memberName, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetMember (key.Type, key.MemberName, key.BindingFlags, memberType));
+      return s_cache.GetOrCreateValue (cacheKey, key => GetMethod (key.Type, key.MemberName, key.BindingFlags));
     }
 
-    private IMemberInformation GetMember (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
+    private IMethodInformation GetMethod (Type type, string methodName, BindingFlags bindingFlags)
     {
-      string attributeName = typeof (DemandPermissionAttribute).Name;
-
-      if (!TypeHasMember (type, memberType, memberName, bindingFlags))
-        throw new ArgumentException (string.Format (c_memberNotFoundMessage, memberName), "memberName");
+      if (!TypeHasMember (type, methodName, bindingFlags))
+        throw new ArgumentException (string.Format ("The method '{0}' could not be found.", methodName), "methodName");
 
       var foundMembers = new List<MemberInfo> ();
       for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
-        foundMembers.AddRange (currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember, memberName));
+        foundMembers.AddRange (currentType.FindMembers (MemberTypes.Method, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMethod, methodName));
 
       if (foundMembers.Count == 0)
-      {
-        if (memberType == MemberTypes.Method)
-          return new NullMethodInformation();
-        return new NullPropertyInformation();
-      }
+        return new NullMethodInformation();
 
-      MemberInfo foundMember = foundMembers[0];
-      if (type.BaseType != null && foundMember.DeclaringType == type && TypeHasMember (type.BaseType, memberType, memberName, bindingFlags))
+      var foundMethodInfo = (MethodInfo) foundMembers[0];
+      if (type.BaseType != null && foundMethodInfo.DeclaringType == type && TypeHasMember (type.BaseType, methodName, bindingFlags))
       {
         throw new ArgumentException (
-            string.Format (c_memberPermissionsOnlyInBaseClassMessage, memberName, type.FullName, attributeName), "memberName");
+            string.Format (
+                "The DemandPermissionAttribute must not be defined on methods overriden or redefined in derived classes. "
+                + "A method '{0}' exists in class '{1}' and its base class.",
+                methodName,
+                type.FullName),
+            "methodName");
       }
 
-      if (memberType == MemberTypes.Method)
-        return new MethodInfoAdapter ((MethodInfo) foundMember);
-
-      return new PropertyInfoAdapter ((PropertyInfo) foundMember);
+      return new MethodInfoAdapter (foundMethodInfo);
     }
 
-    private bool TypeHasMember (Type type, MemberTypes memberType, string methodName, BindingFlags bindingFlags)
+    private bool TypeHasMember (Type type, string methodName, BindingFlags bindingFlags)
     {
-      MemberInfo[] existingMembers = type.GetMember (methodName, memberType, bindingFlags);
+      MemberInfo[] existingMembers = type.GetMember (methodName, MemberTypes.Method, bindingFlags);
       return existingMembers.Length > 0;
     }
 
-    private bool IsSecuredMember (MemberInfo member, object filterCriteria)
+    private bool IsSecuredMethod (MemberInfo memberInfo, object filterCriteria)
     {
       string memberName = (string) filterCriteria;
-      return member.Name == memberName && member.IsDefined (typeof (DemandPermissionAttribute), false);
+      return memberInfo.Name == memberName && memberInfo.IsDefined (typeof (DemandPermissionAttribute), false);
     }
 
     public bool IsNull

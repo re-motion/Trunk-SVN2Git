@@ -26,9 +26,6 @@ namespace Remotion.Security.Metadata
   public interface IMemberResolver : INullObject
   {
     IMethodInformation GetMethodInformation (Type type, string methodName, MemberAffiliation memberAffiliation);
-    IPropertyInformation GetPropertyInformation (Type type, string propertyName);
-
     IMethodInformation GetMethodInformation (Type type, MethodInfo methodInfo, MemberAffiliation memberAffiliation);
-    IPropertyInformation GetPropertyInformation (Type type, PropertyInfo propertyInfo);
   }
 }
