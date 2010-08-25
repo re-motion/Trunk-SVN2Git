@@ -62,5 +62,17 @@ namespace Remotion.Reflection
     {
       return null;
     }
+
+    public override bool Equals (object obj)
+    {
+      if (obj == null)
+        return false;
+      return obj.GetType() == GetType();
+    }
+
+    public override int GetHashCode ()
+    {
+      return 0;
+    }
   }
 }
