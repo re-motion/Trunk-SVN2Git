@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize_WithShortPropertyName ()
     {
-      var endPointID = new RelationEndPointID (_objectID, typeof (Order), "OrderTicket");
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_objectID, "OrderTicket");
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }

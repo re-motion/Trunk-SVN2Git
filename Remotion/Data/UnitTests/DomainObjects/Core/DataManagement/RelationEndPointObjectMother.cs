@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -80,7 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
-      return new RelationEndPointID (objectID, objectID.ClassDefinition.ClassType, shortPropertyName);
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (objectID.ClassDefinition.ClassType, shortPropertyName);
+      return new RelationEndPointID (objectID, propertyName);
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint_Customer1_Orders (params Order[] initialContents)
