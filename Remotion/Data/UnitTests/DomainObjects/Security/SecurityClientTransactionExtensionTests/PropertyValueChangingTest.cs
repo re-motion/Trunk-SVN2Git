@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], "old", "new");
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".NonPublicPropertyWithCustomPermission"], "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".NonPublicPropertyWithCustomPermission"], "old", "new");
     }
 
     [Test]
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], "old", "new");
+        _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], "old", "new");
       }
 
       _testHelper.VerifyAll ();
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], "old", "new");
 
       _testHelper.VerifyAll ();
     }

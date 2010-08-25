@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], ValueAccess.Current);
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".NonPublicPropertyWithCustomPermission"], ValueAccess.Current);
     }
 
     [Test]
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+        _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], ValueAccess.Current);
       }
 
       _testHelper.VerifyAll ();
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (_testHelper.Transaction, dataContainer, dataContainer.PropertyValues[typeof (SecurableObject).FullName + ".StringProperty"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
