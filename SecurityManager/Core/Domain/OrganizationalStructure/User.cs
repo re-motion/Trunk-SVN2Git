@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract string UserName { get; set; }
 
     [DBBidirectionalRelation ("User")]
-    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] set; }
+    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] protected set; }
 
     [Mandatory]
     public abstract Tenant Tenant { get; set; }
@@ -123,7 +123,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     //[DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignSubstitute)]
     [DBBidirectionalRelation ("SubstitutedUser")]
-    public abstract ObjectList<Substitution> SubstitutedBy { get; [DemandPermission (SecurityManagerAccessTypes.AssignSubstitute)]set; }
+    public abstract ObjectList<Substitution> SubstitutedBy { get; [DemandPermission (SecurityManagerAccessTypes.AssignSubstitute)] protected set; }
 
     public IList<Substitution> GetActiveSubstitutions ()
     {

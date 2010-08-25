@@ -158,7 +158,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
 
     [DBBidirectionalRelation ("Group")]
-    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] set; }
+    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] protected set; }
 
     protected override void OnDeleting (EventArgs args)
     {

@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -43,32 +44,36 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     public void Roles_PropertyWriteAccessGranted ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> (SecurityManagerAccessTypes.AssignRole);
+      var methodInformation = new MethodInfoAdapter (typeof (User).GetProperty ("Roles").GetSetMethod (true));
 
-      Assert.That (securityClient.HasPropertyWriteAccess (_user, "Roles"), Is.True);
+      Assert.That (securityClient.HasPropertyWriteAccess (_user, methodInformation), Is.True);
     }
 
     [Test]
     public void Roles_PropertyWriteAccessDenied ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User>();
+      var methodInformation = new MethodInfoAdapter (typeof (User).GetProperty ("Roles").GetSetMethod (true));
 
-      Assert.That (securityClient.HasPropertyWriteAccess (_user, "Roles"), Is.False);
+      Assert.That (securityClient.HasPropertyWriteAccess (_user, methodInformation), Is.False);
     }
 
     [Test]
     public void SubstitutedBy_PropertyWriteAccessGranted ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> (SecurityManagerAccessTypes.AssignSubstitute);
+      var methodInformation = new MethodInfoAdapter (typeof (User).GetProperty ("SubstitutedBy").GetSetMethod (true));
 
-      Assert.That (securityClient.HasPropertyWriteAccess (_user, "SubstitutedBy"), Is.True);
+      Assert.That (securityClient.HasPropertyWriteAccess (_user, methodInformation), Is.True);
     }
 
     [Test]
     public void SubstitutedBy_PropertyWriteAccessDenied ()
     {
       var securityClient = _securityTestHelper.CreatedStubbedSecurityClient<User> ();
+      var methodInformation = new MethodInfoAdapter (typeof (User).GetProperty ("SubstitutedBy").GetSetMethod (true));
 
-      Assert.That (securityClient.HasPropertyWriteAccess (_user, "SubstitutedBy"), Is.False);
+      Assert.That (securityClient.HasPropertyWriteAccess (_user, methodInformation), Is.False);
     }
   }
 }
