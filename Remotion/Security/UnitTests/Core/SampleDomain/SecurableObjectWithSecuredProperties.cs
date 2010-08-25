@@ -27,11 +27,11 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
 
   public class SecurableObjectWithSecuredProperties
   {
-    [DemandPropertyWritePermission (PropertyAccessTypes.WriteSecret)]
     public string SecretProperty
     {
-      [DemandMethodPermission (PropertyAccessTypes.ReadSecret)]
+      [DemandPermission (PropertyAccessTypes.ReadSecret)]
       get { return string.Empty; }
+      [DemandPermission (PropertyAccessTypes.WriteSecret)]
       set { }
     }
   }

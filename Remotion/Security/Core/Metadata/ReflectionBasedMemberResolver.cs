@@ -126,7 +126,7 @@ namespace Remotion.Security.Metadata
 
     private IMemberInformation GetMember (Type type, string memberName, BindingFlags bindingFlags, MemberTypes memberType)
     {
-      string attributeName = typeof (BaseDemandPermissionAttribute).Name;
+      string attributeName = typeof (DemandPermissionAttribute).Name;
 
       if (!TypeHasMember (type, memberType, memberName, bindingFlags))
         throw new ArgumentException (string.Format (c_memberNotFoundMessage, memberName), "memberName");
@@ -164,7 +164,7 @@ namespace Remotion.Security.Metadata
     private bool IsSecuredMember (MemberInfo member, object filterCriteria)
     {
       string memberName = (string) filterCriteria;
-      return member.Name == memberName && member.IsDefined (typeof (BaseDemandPermissionAttribute), false);
+      return member.Name == memberName && member.IsDefined (typeof (DemandPermissionAttribute), false);
     }
 
     public bool IsNull

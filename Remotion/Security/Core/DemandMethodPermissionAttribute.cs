@@ -18,8 +18,9 @@ using System;
 
 namespace Remotion.Security
 {
+  [Obsolete ("Use DemandPermissionAttribute instead. (Version 1.13.74)")]
   [AttributeUsage (AttributeTargets.Method, AllowMultiple=false)]
-  public class DemandMethodPermissionAttribute : BaseDemandPermissionAttribute
+  public class DemandMethodPermissionAttribute : DemandPermissionAttribute
   {
     public DemandMethodPermissionAttribute (object accessType1)
         : base (new object[] { accessType1 })

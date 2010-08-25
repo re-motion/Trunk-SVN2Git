@@ -22,12 +22,12 @@ using Remotion.Utilities;
 namespace Remotion.Security.UnitTests.Core
 {
   [TestFixture]
-  public class DemandMethodPermissionAttributeTest
+  public class DemandPermissionAttributeTest
   {
     [Test]
     public void AcceptValidAccessType ()
     {
-      DemandMethodPermissionAttribute methodPermissionAttribute = new DemandMethodPermissionAttribute (TestAccessTypes.Second);
+      var methodPermissionAttribute = new DemandPermissionAttribute (TestAccessTypes.Second);
       Assert.AreEqual (TestAccessTypes.Second, methodPermissionAttribute.GetAccessTypes()[0]);
     }
 
@@ -37,22 +37,20 @@ namespace Remotion.Security.UnitTests.Core
         + "Valid access types must have the Remotion.Security.AccessTypeAttribute applied.\r\nParameter name: accessType")]
     public void RejectAccessTypeWithoutAccessTypeAttribute ()
     {
-      DemandMethodPermissionAttribute methodPermissionAttribute = 
-          new DemandMethodPermissionAttribute (TestAccessTypesWithoutAccessTypeAttribute.First);
+      new DemandPermissionAttribute (TestAccessTypesWithoutAccessTypeAttribute.First);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentItemTypeException))]
     public void RejectOtherObjectTypes ()
     {
-      DemandMethodPermissionAttribute methodPermissionAttribute = new DemandMethodPermissionAttribute (new SimpleType());
+      new DemandPermissionAttribute (new SimpleType());
     }
 
     [Test]
     public void AcceptMultipleAccessTypes ()
     {
-      DemandMethodPermissionAttribute methodPermissionAttribute =
-          new DemandMethodPermissionAttribute (TestAccessTypes.Second, TestAccessTypes.Fourth);
+      var methodPermissionAttribute = new DemandPermissionAttribute (TestAccessTypes.Second, TestAccessTypes.Fourth);
 
       Assert.AreEqual (2, methodPermissionAttribute.GetAccessTypes().Length);
       Assert.Contains (TestAccessTypes.Second, methodPermissionAttribute.GetAccessTypes());

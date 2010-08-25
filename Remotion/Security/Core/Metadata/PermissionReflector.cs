@@ -31,17 +31,14 @@ namespace Remotion.Security.Metadata
   {
     private class CacheKey : IEquatable<CacheKey>
     {
-      private readonly Type _attributeType;
       private readonly Type _type;
       private readonly IMemberInformation _memberInformation;
 
-      public CacheKey (Type attributeType, Type type, IMemberInformation memberInformation)
+      public CacheKey (Type type, IMemberInformation memberInformation)
       {
-        Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
         Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
         Assertion.DebugAssert (memberInformation != null, "Parameter 'memberInformation' us null.");
         
-        _attributeType = attributeType;
         _type = type;
         _memberInformation = memberInformation;
       }
@@ -54,7 +51,6 @@ namespace Remotion.Security.Metadata
       public bool Equals (CacheKey other)
       {
         return EqualityUtility.NotNullAndSameType (this, other)
-               && _attributeType.Equals (other._attributeType)
                && _type.Equals (other._type)
                && _memberInformation.Equals (other._memberInformation);
       }
@@ -77,12 +73,12 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       
-      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
+      return GetPermissionsFromCache (type, methodInformation);
     }
 
-    public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
+    public Enum[] GetPermissions (IMemberInformation memberInformation)
     {
-      var permissionAttribute = memberInformation.GetCustomAttribute<TAttribute>(true);
+      var permissionAttribute = memberInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
 
       if (permissionAttribute == null)
         return new Enum[0];
@@ -97,11 +93,10 @@ namespace Remotion.Security.Metadata
       return permissions.ToArray ();
     }
 
-    private Enum[] GetPermissionsFromCache<TAttribute> (Type type, IMemberInformation memberInformation)
-        where TAttribute : BaseDemandPermissionAttribute
+    private Enum[] GetPermissionsFromCache (Type type, IMemberInformation memberInformation)
     {
-      var cacheKey = new CacheKey (typeof (TAttribute), type, memberInformation);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (memberInformation));
+      var cacheKey = new CacheKey (type, memberInformation);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions (memberInformation));
     }
   }
 }

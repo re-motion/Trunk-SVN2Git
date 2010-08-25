@@ -15,24 +15,42 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
   // TODO FS: Move to Security.Interfaces
-  public abstract class BaseDemandPermissionAttribute : Attribute
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
+  public class DemandPermissionAttribute : Attribute
   {
     private readonly Enum[] _accessTypes;
 
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    [Obsolete ("Do not use this constructor to initialize a new instance. It is required only for making the Attribute class CLS complient.", true)]
-    protected BaseDemandPermissionAttribute ()
+    public DemandPermissionAttribute (object accessType1)
+        : this (new [] { accessType1 })
     {
-      throw new NotSupportedException ("The default constructor is not supported by the BaseDemandPermissionAttribute. It is used only work around CLS compliancy issues of the C# compiler.");
     }
 
-    protected BaseDemandPermissionAttribute (object[] accessTypes)
+    public DemandPermissionAttribute (object accessType1, object accessType2)
+        : this (new [] { accessType1, accessType2 })
+    {
+    }
+
+    public DemandPermissionAttribute (object accessType1, object accessType2, object accessType3)
+        : this (new [] { accessType1, accessType2, accessType3 })
+    {
+    }
+
+    public DemandPermissionAttribute (object accessType1, object accessType2, object accessType3, object accessType4)
+        : this (new [] { accessType1, accessType2, accessType3, accessType4 })
+    {
+    }
+
+    public DemandPermissionAttribute (object accessType1, object accessType2, object accessType3, object accessType4, object accessType5)
+        : this (new [] { accessType1, accessType2, accessType3, accessType4, accessType5 })
+    {
+    }
+
+    private DemandPermissionAttribute (object[] accessTypes)
     {
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("accessTypes", accessTypes);
       ArgumentUtility.CheckItemsType ("accessTypes", accessTypes, typeof (Enum));

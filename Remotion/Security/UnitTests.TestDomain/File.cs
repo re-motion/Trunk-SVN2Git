@@ -49,7 +49,7 @@ namespace Remotion.Security.UnitTests.TestDomain
       set { _id = value; }
     }
 
-    [DemandMethodPermission (DomainAccessTypes.Journalize)]
+    [DemandPermission (DomainAccessTypes.Journalize)]
     public void Journalize ()
     {
     }

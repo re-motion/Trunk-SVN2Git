@@ -81,7 +81,7 @@
     <None Include="Security.build">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="BaseDemandPermissionAttribute.cs" />
+    <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />

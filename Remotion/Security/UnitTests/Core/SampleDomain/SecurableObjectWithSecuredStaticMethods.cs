@@ -20,17 +20,17 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
 {
   public class SecurableObjectWithSecuredStaticMethods : ISecurableObject
   {
-    [DemandMethodPermission (TestAccessTypes.First)]
+    [DemandPermission (TestAccessTypes.First)]
     public static void StaticMethod ()
     {
     }
 
-    [DemandMethodPermission (TestAccessTypes.Second)]
+    [DemandPermission (TestAccessTypes.Second)]
     public static void StaticMethod (string value)
     {
     }
 
-    [DemandMethodPermission (TestAccessTypes.Third)]
+    [DemandPermission (TestAccessTypes.Third)]
     public static void OtherStaticMethod (string value)
     {
     }

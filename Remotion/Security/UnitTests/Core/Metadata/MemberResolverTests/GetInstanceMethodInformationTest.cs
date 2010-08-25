@@ -107,7 +107,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-      "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
+      "The DemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
         + "A member 'Send' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
         + "\r\nParameter name: memberName")]
     public void Test_MethodDeclaredOnBaseAndDerivedClass ()
@@ -117,7 +117,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-      "The BaseDemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
+      "The DemandPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
         + "A member 'Print' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
         + "\r\nParameter name: memberName")]
     public void Test_OverriddenMethods ()

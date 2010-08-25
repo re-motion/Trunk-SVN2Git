@@ -18,8 +18,8 @@ using System;
 
 namespace Remotion.Security
 {
-  [AttributeUsage (AttributeTargets.Property, AllowMultiple=false)]
-  [Obsolete ("", true)]
+  [Obsolete ("Use DemandPermissionAttribute instead. (Version 1.13.74)", true)]
+  [AttributeUsage (AttributeTargets.Property, AllowMultiple = false)]
   public sealed class DemandPropertyReadPermissionAttribute : Attribute
   {
     public DemandPropertyReadPermissionAttribute (object accessType1)

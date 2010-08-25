@@ -91,13 +91,12 @@
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
     <Compile Include="Core\Metadata\MemberResolverTests\GetInstanceMethodInformationTest.cs" />
-    <Compile Include="Core\Metadata\MemberResolverTests\GetPropertyInformationTest.cs" />
     <Compile Include="Core\Metadata\MemberResolverTests\GetStaticMethodInformationTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTest.cs" />
     <Compile Include="Core\MockConstraints\FunctionalSecurityContextFactoryConstraint.cs" />
     <Compile Include="Core\NullGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\FunctionalSecurityStrategyTest.cs" />
-    <Compile Include="Core\DemandMethodPermissionAttributeTest.cs" />
+    <Compile Include="Core\DemandPermissionAttributeTest.cs" />
     <Compile Include="Core\Metadata\AccessTypes.cs" />
     <Compile Include="Core\Metadata\AssemblyReflectorTest.cs" />
     <Compile Include="Core\Metadata\ClassReflectorTest.cs" />
@@ -139,7 +138,6 @@
     <Compile Include="Core\NullSecurityClientTests\NullSecurityClientTestHelper.cs" />
     <Compile Include="Core\NullSecurityProviderTest.cs" />
     <Compile Include="Core\NullPrincipalProviderTest.cs" />
-    <Compile Include="Core\ReflectionBasedMemberResolverTest.cs" />
     <Compile Include="Core\SampleDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodInfo.cs" />
     <Compile Include="Core\SecurityClientTests\CheckMethodAccessTest_WithMethodInformation.cs" />

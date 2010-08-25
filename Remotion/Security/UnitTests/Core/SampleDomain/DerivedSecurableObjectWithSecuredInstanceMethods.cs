@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
     {
     }
 
-    [DemandMethodPermission (TestAccessTypes.Fourth)]
+    [DemandPermission (TestAccessTypes.Fourth)]
     public new void InstanceMethod ()
     {
     }

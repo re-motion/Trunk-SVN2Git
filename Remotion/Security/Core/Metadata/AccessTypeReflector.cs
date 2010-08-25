@@ -103,10 +103,10 @@ namespace Remotion.Security.Metadata
           .Concat (staticMethods)
           .Concat (constructors);
 
-      AddAccessTypesFromAttribute<DemandMethodPermissionAttribute> (memberInfos2, accessTypes, cache);
+      AddAccessTypesFromAttribute (memberInfos2, accessTypes, cache);
       
       var properties = GetProperties (type);
-      AddAccessTypesFromAttribute<DemandPropertyWritePermissionAttribute> (properties, accessTypes, cache);
+      AddAccessTypesFromAttribute (properties, accessTypes, cache);
     }
 
     private IEnumerable<IMemberInformation> GetConstructors (Type type)
@@ -115,7 +115,7 @@ namespace Remotion.Security.Metadata
           MemberTypes.Constructor,
           BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new[] { typeof (DemandMethodPermissionAttribute) });
+          null);
       return constructors.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
     }
 
@@ -125,7 +125,7 @@ namespace Remotion.Security.Metadata
           MemberTypes.Method,
           BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
           FindSecuredMembersFilter,
-          new[] { typeof (DemandMethodPermissionAttribute) });
+          null);
       return staticMethods.Cast<MethodInfo> ().Select (mi => (IMemberInformation) new MethodInfoAdapter (mi));
     }
 
@@ -135,7 +135,7 @@ namespace Remotion.Security.Metadata
           MemberTypes.Method,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new[] { typeof (DemandMethodPermissionAttribute) });
+          null);
       return instanceMethods.Cast<MethodInfo>().Select (mi => (IMemberInformation)new MethodInfoAdapter (mi));
     }
 
@@ -145,28 +145,20 @@ namespace Remotion.Security.Metadata
           MemberTypes.Property,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
-          new[] { typeof (DemandPropertyWritePermissionAttribute) });
+          null);
       return instanceProperties.Cast<PropertyInfo> ().Select (pi => (IMemberInformation) new PropertyInfoAdapter (pi));
     }
 
     private bool FindSecuredMembersFilter (MemberInfo member, object filterCriteria)
     {
-      Type[] requiredPermissionAttributes = (Type[]) filterCriteria;
-
-      foreach (Type requiredPermissionAttribute in requiredPermissionAttributes)
-      {
-        if (Attribute.IsDefined (member, requiredPermissionAttribute, true))
-          return true;
-      }
-
-      return false;
+      return Attribute.IsDefined (member, typeof (DemandPermissionAttribute), true);
     }  
 
-    private void AddAccessTypesFromAttribute<T> (IEnumerable<IMemberInformation> memberInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache) where T : BaseDemandPermissionAttribute
+    private void AddAccessTypesFromAttribute (IEnumerable<IMemberInformation> memberInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
     {
       foreach (var memberInfo in memberInfos)
       {
-        Enum[] values = _permissionReflector.GetPermissions<T> (memberInfo);
+        Enum[] values = _permissionReflector.GetPermissions (memberInfo);
         foreach (Enum value in values)
         {
           EnumValueInfo accessType = _enumerationReflector.GetValue (value, cache);
