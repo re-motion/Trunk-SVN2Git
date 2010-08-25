@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return NewObject<BindableSecurableObject>(ParamList.Create (securityStrategy));
+        return NewObject<BindableSecurableObject> (ParamList.Create (securityStrategy));
       }
     }
 
@@ -88,36 +88,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     public abstract ObjectList<BindableSecurableObject> OtherChildren { get; }
 
     public abstract string PropertyWithDefaultPermission { get; set; }
-    
-    public abstract string PropertyWithCustomPermission { 
-      [DemandMethodPermission(TestAccessTypes.First)]
-      get; 
-      set; }
+
+    public abstract string PropertyWithCustomPermission { [DemandPermission (TestAccessTypes.First)]
+    get; set; }
 
     public string PropertyIsReadOnly
     {
-      [DemandMethodPermission (TestAccessTypes.First)]
+      [DemandPermission (TestAccessTypes.First)]
       get { return _readOnylProperty; }
       set { _readOnylProperty = value; }
     }
 
-    [DemandPropertyWritePermission (TestAccessTypes.Second)]
     public string PropertyIsAccessible
     {
       get { return _accessibleProperty; }
+      [DemandPermission (TestAccessTypes.Second)]
       set { _accessibleProperty = value; }
     }
 
     public virtual string PropertyToOverride
     {
-      [DemandMethodPermission (TestAccessTypes.Second)]
       get { return _accessibleProperty; }
+      [DemandPermission (TestAccessTypes.Second)]
       set { _accessibleProperty = value; }
     }
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
-      return SecurityContext.CreateStateless(GetPublicDomainObjectType());
+      return SecurityContext.CreateStateless (GetPublicDomainObjectType());
     }
 
     public new void Delete ()

@@ -32,15 +32,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public string MixedPropertyWithReadPermission
     {
-      [DemandMethodPermission(TestAccessTypes.First)]
+      [DemandPermission(TestAccessTypes.First)]
       get { return Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithReadPermission"].GetValue<string> (); }
       set { Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithReadPermission"].SetValue (value); }
     }
 
-    [DemandPropertyWritePermission (TestAccessTypes.First)]
     public string MixedPropertyWithWritePermission
     {
       get { return Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithWritePermission"].GetValue<string> (); }
+      [DemandPermission (TestAccessTypes.First)]
       set { Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithWritePermission"].SetValue (value); }
     }
   }

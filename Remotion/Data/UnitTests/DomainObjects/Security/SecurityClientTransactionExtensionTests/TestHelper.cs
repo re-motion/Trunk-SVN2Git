@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
@@ -162,22 +161,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           .Return (returnValue);
     }
 
-    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation, params Enum[] returnedAccessTypes)
-    {
-      Expect
-          .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation))
-          .WhenCalled (mi => CheckCurrentTransaction ())
-          .Return (returnedAccessTypes);
-    }
-
-    public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (PropertyInfo propertyInfo, params Enum[] returnedAccessTypes)
-    {
-      Expect
-          .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), new PropertyInfoAdapter(propertyInfo)))
-          .WhenCalled (mi => CheckCurrentTransaction ())
-          .Return (returnedAccessTypes);
-    }
-
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnedAccessTypes)
     {
       Expect.Call (
@@ -186,20 +169,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
               Arg<IMethodInformation>.Matches (mi => mi.Equals (methodInformation))))
           .WhenCalled (mi => CheckCurrentTransaction())
           .Return (returnedAccessTypes);
-    }
-
-    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
-    {
-      Expect
-        .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName))
-        .Return (returnValue);
-    }
-
-    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
-    {
-      Expect
-        .Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo))
-        .Return (returnValue);
     }
 
     public void ExpectSecurityProviderGetAccess (SecurityContext context, params Enum[] returnedAccessTypes)

@@ -23,7 +23,10 @@ namespace Remotion.Security
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
   public class DemandPermissionAttribute : Attribute
   {
-    private readonly Enum[] _accessTypes;
+    // HACK: Cannot store an Enum[] because that causes CustomAttributeData to throw an undocumented and unexpected exception 
+    // (http://connect.microsoft.com/VisualStudio/feedback/details/296032/customattributedata-throws-when-attribute-has-a-public-enum-property)
+    // Probably fixed in .NET 4.0
+    private readonly object[] _accessTypes; 
 
     public DemandPermissionAttribute (object accessType1)
         : this (new [] { accessType1 })
@@ -65,7 +68,7 @@ namespace Remotion.Security
 
     public Enum[] GetAccessTypes ()
     {
-      return _accessTypes;
+      return (Enum[]) _accessTypes;
     }
 
     private Enum GetAccessType (object accessType)

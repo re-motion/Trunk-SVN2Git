@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public string MixedPropertyWithCustomPermission
     {
-      [DemandMethodPermission(TestAccessTypes.First)]
+      [DemandPermission(TestAccessTypes.First)]
       get { return Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].GetValue<string> (); }
       set { Properties[typeof (SecurableObjectMixin), "MixedPropertyWithCustomPermission"].SetValue (value); }
     }
