@@ -88,14 +88,6 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache<DemandMethodPermissionAttribute> (type, methodInformation);
     }
 
-    public Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-      
-      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (type, propertyInformation);
-    }
-
     public Enum[] GetPermissions<TAttribute> (IMemberInformation memberInformation) where TAttribute : BaseDemandPermissionAttribute
     {
       var permissionAttribute = memberInformation.GetCustomAttribute<TAttribute>(true);

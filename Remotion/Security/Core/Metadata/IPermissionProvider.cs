@@ -23,6 +23,5 @@ namespace Remotion.Security.Metadata
   {
     Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation);
     Enum[] GetRequiredStaticMethodPermissions (Type type, IMethodInformation methodInformation);
-    Enum[] GetRequiredPropertyWritePermissions (Type type, IPropertyInformation propertyInformation); //TODO: remove
   }
 }

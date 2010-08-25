@@ -191,10 +191,5 @@ namespace Remotion.Security.UnitTests.Core
     {
       Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (new Enum[] { TestAccessTypes.First });
     }
-
-    private void ExpectGetRequiredPropertyWritePermissions (IPropertyInformation propertyInformation)
-    {
-      Expect.Call (_mockPermissionProvider.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyInformation)).Return (new Enum[] { TestAccessTypes.First });
-    }
   }
 }
