@@ -94,6 +94,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public abstract string PropertyWithMissingSetAccessor { get; }
 
+    public abstract SecurableObject RelationPropertyWithMissingGetAccessor { set; }
+
+    public abstract SecurableObject RelationPropertyWithMissingSetAccessor { get; }
+
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       return SecurityContext.CreateStateless(GetPublicDomainObjectType());

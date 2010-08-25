@@ -123,6 +123,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
+    public void Test_AccessGranted_WithMissingAccessor ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Read, true);
+      _testHelper.ReplayAll();
+
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".RelationPropertyWithMissingGetAccessor");
+
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+
+      _testHelper.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (PermissionDeniedException))]
+    public void Test_AccessDenied_WithMissingAccessor ()
+    {
+      SecurableObject securableObject = _testHelper.CreateSecurableObject();
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Read, false);
+      _testHelper.ReplayAll();
+
+      var securableEndPointDefintion = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".RelationPropertyWithMissingGetAccessor");
+
+      _extension.RelationReading (_testHelper.Transaction, securableObject, securableEndPointDefintion, ValueAccess.Current);
+    }
+
+    [Test]
     public void Test_AccessGranted_WithinSecurityFreeSection ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
