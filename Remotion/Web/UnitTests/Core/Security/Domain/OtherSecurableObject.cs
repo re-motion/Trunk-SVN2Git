@@ -28,7 +28,7 @@ namespace Remotion.Web.UnitTests.Core.Security.Domain
       _securityStrategy = securityStrategy;
     }
 
-    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    [DemandPermission (GeneralAccessTypes.Read)]
     public void Show ()
     {
     }
