@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
@@ -35,7 +34,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
+      _testHelper = new SecurityClientTestHelper ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();

@@ -29,7 +29,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
+      _testHelper = new SecurityClientTestHelper ();
       _securityClient = _testHelper.CreateSecurityClient ();
     }
 

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Reflection;
-using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;
 
@@ -30,20 +28,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
     private IMethodInformation _methodInformation;
-    private PropertyInfo _propertyInfo;
-    private MethodInfo _getMethodInfo;
-    private IPropertyInformation _propertyInformation;
 
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
+      _testHelper = new SecurityClientTestHelper ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
-
-      _propertyInfo = typeof (SecurableObject).GetProperty ("IsVisible");
-      _getMethodInfo = _propertyInfo.GetGetMethod();
     }
 
     [Test]

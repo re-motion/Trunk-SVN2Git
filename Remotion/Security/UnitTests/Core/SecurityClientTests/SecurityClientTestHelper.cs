@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
@@ -26,21 +25,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
   public class SecurityClientTestHelper
   {
-    public static SecurityClientTestHelper CreateForStatelessSecurity ()
-    {
-      return new SecurityClientTestHelper (SecurityContext.CreateStateless (typeof (SecurableObject)));
-    }
-
-    public static SecurityClientTestHelper CreateForStatefulSecurity ()
-    {
-      SecurityContext context = SecurityContext.Create (
-          typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum>(), new Enum[0]);
-      return new SecurityClientTestHelper (context);
-    }
-
     private readonly MockRepository _mocks;
     private readonly ISecurityPrincipal _userStub;
-    private readonly SecurityContext _context;
     private readonly ISecurityProvider _mockSecurityProvider;
     private readonly IPermissionProvider _mockPermissionReflector;
     private readonly IObjectSecurityStrategy _mockObjectSecurityStrategy;
@@ -49,10 +35,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     private readonly IPrincipalProvider _stubPrincipalProvider;
     private readonly SecurableObject _securableObject;
 
-    private SecurityClientTestHelper (SecurityContext context)
+    public SecurityClientTestHelper ()
     {
-      _context = context;
-
       _mocks = new MockRepository();
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
       _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider>();
@@ -87,16 +71,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       Expect.Call (_mockMemberResolver.GetMethodInformation (typeof (SecurableObject), methodInfo, memberAffiliation)).Return (returnValue);
     }
 
-    public void ExpectMemberResolverGetPropertyInformation (string propertyName, IPropertyInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyName)).Return (returnValue);
-    }
-
-    public void ExpectMemberResolverGetPropertyInformation (PropertyInfo propertyInfo, IPropertyInformation returnValue)
-    {
-      Expect.Call (_mockMemberResolver.GetPropertyInformation (typeof (SecurableObject), propertyInfo)).Return (returnValue);
-    }
-    
     public void ExpectPermissionReflectorGetRequiredMethodPermissions (IMethodInformation methodInformation, params Enum[] returnValue)
     {
       Expect.Call (_mockPermissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (returnValue);
@@ -126,12 +100,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
           _mockFunctionalSecurityStrategy.HasAccess (
               typeof (SecurableObject), _mockSecurityProvider, _userStub, ConvertAccessTypeEnums (requiredAccessTypes)))
           .Return (returnValue);
-    }
-
-    public void ExpectSecurityProviderGetAccess (params Enum[] returnValue)
-    {
-      AccessType[] accessTypes = Array.ConvertAll (returnValue, new Converter<Enum, AccessType> (AccessType.Get));
-      Expect.Call (_mockSecurityProvider.GetAccess (_context, _userStub)).Return (accessTypes);
     }
 
     public void ReplayAll ()

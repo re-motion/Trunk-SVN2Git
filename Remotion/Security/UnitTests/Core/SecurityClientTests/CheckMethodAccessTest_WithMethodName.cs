@@ -33,7 +33,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity ();
+      _testHelper = new SecurityClientTestHelper ();
       _securityClient = _testHelper.CreateSecurityClient ();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
       _methodInformation.Expect (n => n.Name).Return ("InstanceMethod");

@@ -28,17 +28,14 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
   {
     private SecurityClientTestHelper _testHelper;
     private SecurityClient _securityClient;
-    private IPropertyInformation _propertyInformation;
     private IMethodInformation _methodInformation;
 
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = SecurityClientTestHelper.CreateForStatefulSecurity();
+      _testHelper = new SecurityClientTestHelper ();
       _securityClient = _testHelper.CreateSecurityClient();
-      _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (_methodInformation);
     }
 
     [Test]
