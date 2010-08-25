@@ -37,29 +37,29 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public string PropertyWithReadPermission
     {
-      [DemandMethodPermission(TestAccessTypes.First)]
+      [DemandPermission(TestAccessTypes.First)]
       get { return _readOnylProperty; }
       set { _readOnylProperty = value; }
     }
 
-    [DemandPropertyWritePermission (TestAccessTypes.Second)]
     public string PropertyWithWritePermission
     {
       get { return _accessibleProperty; }
+      [DemandPermission (TestAccessTypes.Second)]
       set { _accessibleProperty = value; }
     }
 
     public virtual string  PropertyToOverrideWithReadPermission
     {
-      [DemandMethodPermission(TestAccessTypes.First)]
+      [DemandPermission(TestAccessTypes.First)]
       get { return _accessibleProperty; }
       set { _accessibleProperty = value; }
     }
 
-    [DemandPropertyWritePermission (TestAccessTypes.First)]
     public virtual string PropertyToOverrideWithWritePermission
     {
       get { return _accessibleProperty; }
+      [DemandPermission (TestAccessTypes.First)]
       set { _accessibleProperty = value; }
     }
 
