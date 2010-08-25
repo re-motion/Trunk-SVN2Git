@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return result.ToArray().SingleOrDefault();
     }
 
-    [DemandMethodPermission (GeneralAccessTypes.Search)]
+    [DemandPermission (GeneralAccessTypes.Search)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Search ()
     {
@@ -117,7 +117,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <exception cref="PermissionDeniedException">
     /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
     /// </exception>
-    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Tenant> GetParents ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <exception cref="InvalidOperationException">
     /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
-    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Tenant> GetHierachy ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();

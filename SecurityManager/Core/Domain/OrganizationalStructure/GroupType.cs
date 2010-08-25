@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return result.ToObjectList();
     }
 
-    [DemandMethodPermission (GeneralAccessTypes.Search)]
+    [DemandPermission (GeneralAccessTypes.Search)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Search ()
     {

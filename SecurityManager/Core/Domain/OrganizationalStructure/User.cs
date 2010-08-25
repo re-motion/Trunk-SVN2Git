@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     //  return SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateUser ();
     //}
 
-    [DemandMethodPermission (GeneralAccessTypes.Search)]
+    [DemandPermission (GeneralAccessTypes.Search)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Search ()
     {
@@ -109,11 +109,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract string UserName { get; set; }
 
     [DBBidirectionalRelation ("User")]
-    public abstract ObjectList<Role> Roles 
-    {
-      get; 
-      [DemandMethodPermission (SecurityManagerAccessTypes.AssignRole)]set; 
-    }
+    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] set; }
 
     [Mandatory]
     public abstract Tenant Tenant { get; set; }
@@ -127,7 +123,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     //[DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignSubstitute)]
     [DBBidirectionalRelation ("SubstitutedUser")]
-    public abstract ObjectList<Substitution> SubstitutedBy { get; [DemandMethodPermission (SecurityManagerAccessTypes.AssignSubstitute)]set; }
+    public abstract ObjectList<Substitution> SubstitutedBy { get; [DemandPermission (SecurityManagerAccessTypes.AssignSubstitute)]set; }
 
     public IList<Substitution> GetActiveSubstitutions ()
     {

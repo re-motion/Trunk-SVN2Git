@@ -113,7 +113,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     //  return SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreateGroup ();
     //}
 
-    [DemandMethodPermission (GeneralAccessTypes.Search)]
+    [DemandPermission (GeneralAccessTypes.Search)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Search ()
     {
@@ -156,9 +156,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public abstract GroupType GroupType { get; set; }
 
-    [DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignRole)]
+
     [DBBidirectionalRelation ("Group")]
-    public abstract ObjectList<Role> Roles { get; }
+    public abstract ObjectList<Role> Roles { get; [DemandPermission (SecurityManagerAccessTypes.AssignRole)] set; }
 
     protected override void OnDeleting (EventArgs args)
     {
@@ -207,7 +207,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <exception cref="PermissionDeniedException">
     /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
     /// </exception>
-    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Group> GetParents ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
@@ -262,7 +262,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <exception cref="InvalidOperationException">
     /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
-    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    [DemandPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Group> GetHierachy ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();

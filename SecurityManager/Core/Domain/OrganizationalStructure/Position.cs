@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return result.ToObjectList ();
     }
 
-    [DemandMethodPermission (SecurityManagerAccessTypes.AssignRole)]
+    [DemandPermission (SecurityManagerAccessTypes.AssignRole)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Dummy_AssignRole ()
     {
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     //  return SecurityManagerConfiguration.Current.OrganizationalStructureFactory.CreatePosition ();
     //}
 
-    [DemandMethodPermission (GeneralAccessTypes.Search)]
+    [DemandPermission (GeneralAccessTypes.Search)]
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void Search ()
     {
