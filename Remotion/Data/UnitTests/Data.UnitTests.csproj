@@ -376,6 +376,10 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\Supplier.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\TestDomainAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\TestDomainBase.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\AboveInheritanceRootClassWithRelation.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\DerivedInheritanceRootClass1.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\DerivedInheritanceRootClass2.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\UnidirectionalRelationClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionDataTest.cs" />

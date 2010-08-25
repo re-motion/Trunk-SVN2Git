@@ -15,31 +15,58 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
-  public class MappingReflectorTest: MappingReflectionTestBase
+  public class MappingReflectorTest : MappingReflectionTestBase
   {
     [Test]
-    public void GetResolveTypes()
+    public void ProveThatRelationsAboveTheInheritanceRootAreSupported ()
     {
-      IMappingLoader mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
+          .Return (
+              new[]
+              {
+                  typeof (UnidirectionalRelationClass), typeof (AboveInheritanceRootClassWithRelation), typeof (DerivedInheritanceRootClass1),
+                  typeof (DerivedInheritanceRootClass2)
+              });
+      MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
+      var conf = new MappingConfiguration (reflector);
+      conf.Validate ();
+
+      Assert.That (conf.RelationDefinitions[0].ID, 
+        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1->"
+                   +"Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+      Assert.That (conf.RelationDefinitions[1].ID, 
+        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2->"
+                   +"Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+    }
+
+    [Test]
+    public void GetResolveTypes ()
+    {
+      IMappingLoader mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
       Assert.IsTrue (mappingReflector.ResolveTypes);
     }
 
     [Test]
     public void GetClassDefinitions ()
     {
-      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
       ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
 
@@ -50,9 +77,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void GetRelationDefinitions()
+    public void GetRelationDefinitions ()
     {
-      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
       ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
       RelationDefinitionCollection actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions);
@@ -64,19 +91,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void Get_WithDuplicateAssembly ()
     {
-      Assembly assembly = GetType ().Assembly;
+      Assembly assembly = GetType().Assembly;
       MappingReflector expectedMappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly));
-      ClassDefinitionCollection expectedClassDefinitions = expectedMappingReflector.GetClassDefinitions ();
+      ClassDefinitionCollection expectedClassDefinitions = expectedMappingReflector.GetClassDefinitions();
       RelationDefinitionCollection expectedRelationDefinitions = expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions);
-      
-      MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
-      ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions ();
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
+      MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
+      ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
+
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
 
       RelationDefinitionCollection actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions);
-      RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker ();
+      RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
   }
