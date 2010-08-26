@@ -17,11 +17,11 @@
 using System;
 using NUnit.Framework;
 using Remotion.Reflection;
-using Rhino.Mocks;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core
 {
@@ -57,61 +57,92 @@ namespace Remotion.Security.UnitTests.Core
     [SetUp]
     public void SetUp ()
     {
-      _securityAdapter = new ObjectSecurityAdapter ();
+      _securityAdapter = new ObjectSecurityAdapter();
 
-      _mocks = new MockRepository ();
+      _mocks = new MockRepository();
 
-      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
-      _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider> ();
-      _mockMemberResolver = _mocks.StrictMock<IMemberResolver> ();
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider>();
+      _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider>();
+      _mockMemberResolver = _mocks.StrictMock<IMemberResolver>();
       _mockPropertyInformation = _mocks.StrictMock<IPropertyInformation>();
       _mockMethodInformation = _mocks.StrictMock<IMethodInformation>();
-      
-      _userStub = _mocks.Stub < ISecurityPrincipal>();
-      SetupResult.For (_userStub.User).Return ("user");
-      SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (_userStub);
 
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      _userStub = _mocks.Stub<ISecurityPrincipal>();
+      SetupResult.For (_userStub.User).Return ("user");
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (_userStub);
+
+      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
       SecurityConfiguration.Current.PermissionProvider = _mockPermissionProvider;
       SecurityConfiguration.Current.MemberResolver = _mockMemberResolver;
 
-      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
-
     }
 
     [TearDown]
     public void TearDown ()
     {
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
     }
 
     [Test]
     public void HasAccessOnGetAccessor_AccessGranted ()
     {
       var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (mockMethodInformation);
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
 
       ExpectExpectObjectSecurityStrategyHasAccess (true);
-      _mocks.ReplayAll ();
+      _mocks.ReplayAll();
 
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
-      _mocks.VerifyAll ();
+      _mocks.VerifyAll();
       Assert.IsTrue (hasAccess);
     }
 
     [Test]
     public void HasAccessOnGetAccessor_AccessDenied ()
     {
-      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (mockMethodInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
+      ExpectExpectObjectSecurityStrategyHasAccess (false);
+      _mocks.ReplayAll();
+
+      bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
+
+      _mocks.VerifyAll();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void HasAccessOnGetAccessor_WithinSecurityFreeSeciton_AccessGranted ()
+    {
+      _mocks.ReplayAll();
+
+      bool hasAccess;
+      using (new SecurityFreeSection())
+      {
+        hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
+      }
+
+      _mocks.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void HasAccessOnGetAccesor_GetGetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
+    {
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (null);
+      Expect.Call (
+          _mockPermissionProvider.GetRequiredMethodPermissions (
+              Arg.Is (typeof (SecurableObject)), Arg<IMethodInformation>.Matches (mi => mi.GetType () == typeof (NullMethodInformation)))).Return (
+                  new Enum[] { TestAccessTypes.First });
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
@@ -122,41 +153,58 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void HasAccessOnGetAccessor_WithinSecurityFreeSeciton_AccessGranted ()
-    {
-      _mocks.ReplayAll ();
-
-      bool hasAccess;
-      using (new SecurityFreeSection ())
-      {
-        hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
-      }
-
-      _mocks.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
-    [Test]
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
-      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (mockMethodInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
-      _mocks.ReplayAll ();
+      _mocks.ReplayAll();
 
       bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
-      _mocks.VerifyAll ();
+      _mocks.VerifyAll();
       Assert.IsTrue (hasAccess);
     }
 
     [Test]
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
-      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (mockMethodInformation);
+      var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
+      ExpectExpectObjectSecurityStrategyHasAccess (false);
+      _mocks.ReplayAll();
+
+      bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
+
+      _mocks.VerifyAll();
+      Assert.IsFalse (hasAccess);
+    }
+
+    [Test]
+    public void HasAccessOnSetAccessor_WithinSecurityFreeSeciton_AccessGranted ()
+    {
+      _mocks.ReplayAll();
+
+      bool hasAccess;
+      using (new SecurityFreeSection())
+      {
+        hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
+      }
+
+      _mocks.VerifyAll();
+      Assert.IsTrue (hasAccess);
+    }
+
+    [Test]
+    public void HasAccessOnSetAccesor_GetSetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
+    {
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (null);
+      Expect.Call (
+          _mockPermissionProvider.GetRequiredMethodPermissions (
+              Arg.Is (typeof (SecurableObject)), Arg<IMethodInformation>.Matches (mi => mi.GetType () == typeof (NullMethodInformation)))).Return (
+                  new Enum[] { TestAccessTypes.First });
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll ();
 
@@ -165,31 +213,17 @@ namespace Remotion.Security.UnitTests.Core
       _mocks.VerifyAll ();
       Assert.IsFalse (hasAccess);
     }
-
-    [Test]
-    public void HasAccessOnSetAccessor_WithinSecurityFreeSeciton_AccessGranted ()
-    {
-      _mocks.ReplayAll ();
-
-      bool hasAccess;
-      using (new SecurityFreeSection ())
-      {
-        hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
-      }
-
-      _mocks.VerifyAll ();
-      Assert.IsTrue (hasAccess);
-    }
-
+    
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
-      AccessType[] accessTypes = new [] { AccessType.Get (TestAccessTypes.First) };
+      AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.First) };
       Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
     }
 
     private void ExpectGetRequiredMethodPermissions (IMethodInformation methodInformation)
     {
-      Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (new Enum[] { TestAccessTypes.First });
+      Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (
+          new Enum[] { TestAccessTypes.First });
     }
   }
 }
