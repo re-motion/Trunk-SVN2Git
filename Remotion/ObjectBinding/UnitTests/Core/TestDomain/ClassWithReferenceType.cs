@@ -25,6 +25,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     private T _explicitInterfaceScalar;
     private readonly T _readOnlyScalar = default (T);
 
+    protected string NonPublicProperty { get; set; }
+
     public ClassWithReferenceType ()
     {
     }
