@@ -297,6 +297,7 @@
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
     <Compile Include="Reflection\NullMethodInformationTest.cs" />
+    <Compile Include="Reflection\NullPropertyInformationTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTest.cs" />
     <Compile Include="Reflection\MemberInfoAdapterTestDomain\ClassWithBaseMember.cs" />
     <Compile Include="Reflection\MemberInfoAdapterTestDomain\ClassWithOverridingMember.cs" />

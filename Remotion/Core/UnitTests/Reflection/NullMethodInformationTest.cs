@@ -52,6 +52,11 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_nullMethodInformation.GetCustomAttribute<SynchronizationAttribute> (false), Is.Null);
       Assert.That (_nullMethodInformation.GetCustomAttribute<SynchronizationAttribute> (true), Is.Null);
+    }
+
+    [Test]
+    public void GetCustomAttributes ()
+    {
       Assert.That (_nullMethodInformation.GetCustomAttributes<SynchronizationAttribute[]> (false), Is.Empty);
       Assert.That (_nullMethodInformation.GetCustomAttributes<SynchronizationAttribute[]> (true), Is.Empty);
     }
