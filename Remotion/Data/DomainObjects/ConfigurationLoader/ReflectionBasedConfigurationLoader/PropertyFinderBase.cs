@@ -151,6 +151,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     public IList<PropertyInfo> FindPropertyInfosDeclaredOnThisType (ReflectionBasedClassDefinition classDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       MemberInfo[] memberInfos = _type.FindMembers (
           MemberTypes.Property,
           PropertyBindingFlags | BindingFlags.DeclaredOnly,
