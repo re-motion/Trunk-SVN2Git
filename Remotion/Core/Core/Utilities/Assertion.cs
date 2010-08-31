@@ -142,6 +142,7 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+    [StringFormatMethod ("message")]
     public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression, string message, params object[] arguments)
     {
       if (expression)
@@ -161,6 +162,7 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+    [StringFormatMethod ("message")]
     public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message, params object[] arguments)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -184,6 +186,7 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+    [StringFormatMethod("message")]
     public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj, string message, params object[] arguments)
     {
       if (obj != null)

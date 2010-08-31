@@ -23,7 +23,8 @@ namespace Remotion.Implementation
   internal class ArgumentUtility
   {
     [AssertionMethod]
-    public static T CheckNotNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T actualValue)
+    public static T CheckNotNull<T> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T actualValue)
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
@@ -32,7 +33,8 @@ namespace Remotion.Implementation
     }
 
     [AssertionMethod]
-    public static string CheckNotNullOrEmpty (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
+    public static string CheckNotNullOrEmpty (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
     {
       CheckNotNull (argumentName, actualValue);
       if (actualValue.Length == 0)

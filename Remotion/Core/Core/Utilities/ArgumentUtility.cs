@@ -52,7 +52,8 @@ namespace Remotion.Utilities
   {
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
-    public static T CheckNotNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)]  T actualValue)
+    public static T CheckNotNull<T> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
@@ -64,7 +65,8 @@ namespace Remotion.Utilities
 
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
-    public static string CheckNotNullOrEmpty (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
+    public static string CheckNotNullOrEmpty (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
     {
       CheckNotNull (argumentName, actualValue);
       if (actualValue.Length == 0)
@@ -74,7 +76,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static T CheckNotNullOrEmpty<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
+    public static T CheckNotNullOrEmpty<T> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
@@ -84,7 +87,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static T CheckNotNullOrItemsNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
+    public static T CheckNotNullOrItemsNull<T> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
@@ -101,7 +105,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static T CheckNotNullOrEmptyOrItemsNull<T> (string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
+    public static T CheckNotNullOrEmptyOrItemsNull<T> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
       CheckNotNullOrItemsNull (argumentName, enumerable);
@@ -111,7 +116,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static string CheckNotEmpty (string argumentName, string actualValue)
+    public static string CheckNotEmpty (
+        [InvokerParameterName] string argumentName, string actualValue)
     {
       if (actualValue != null && actualValue.Length == 0)
         throw new ArgumentEmptyException (argumentName);
@@ -120,7 +126,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static T CheckNotEmpty<T> (string argumentName, T enumerable)
+    public static T CheckNotEmpty<T> (
+        [InvokerParameterName] string argumentName, T enumerable)
         where T: IEnumerable
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -149,7 +156,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static Guid CheckNotEmpty (string argumentName, Guid actualValue)
+    public static Guid CheckNotEmpty (
+        [InvokerParameterName] string argumentName, Guid actualValue)
     {
       if (actualValue == Guid.Empty)
         throw new ArgumentEmptyException (argumentName);
@@ -157,7 +165,7 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
-    public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
+    public static void ThrowEnumArgumentOutOfRangeException ([InvokerParameterName] string argumentName, Enum actualValue)
     {
       string message = string.Format (
           "The value of argument {0} is not a valid value of the type {1}. Actual value was {2}.",
@@ -167,7 +175,8 @@ namespace Remotion.Utilities
       throw new ArgumentOutOfRangeException (argumentName, actualValue, message);
     }
 
-    public static object CheckNotNullAndType (string argumentName, object actualValue, Type expectedType)
+    public static object CheckNotNullAndType (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object actualValue, Type expectedType)
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
@@ -194,7 +203,8 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualValue"/> is an instance of another type.</exception>
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
-    public static TExpected CheckNotNullAndType<TExpected> (string argumentName, object actualValue)
+    public static TExpected CheckNotNullAndType<TExpected> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object actualValue)
         // where TExpected: struct
     {
       if (actualValue == null)
@@ -205,7 +215,7 @@ namespace Remotion.Utilities
       return (TExpected) actualValue;
     }
 
-    public static object CheckType (string argumentName, object actualValue, Type expectedType)
+    public static object CheckType ([InvokerParameterName] string argumentName, object actualValue, Type expectedType)
     {
       if (actualValue == null)
       {
@@ -230,7 +240,7 @@ namespace Remotion.Utilities
     ///   For non-nullable value types, you should use either <see cref="CheckNotNullAndType{TExpected}"/> or pass the type 
     ///   <see cref="Nullable{T}" /> instead.
     /// </remarks>
-    public static TExpected CheckType<TExpected> (string argumentName, object actualValue)
+    public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, object actualValue)
     {
       if (actualValue == null)
       {
@@ -254,7 +264,10 @@ namespace Remotion.Utilities
     /// <summary>Checks whether <paramref name="actualType"/> is not <see langword="null"/> and can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentNullException">The <paramref name="actualType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
-    public static Type CheckNotNullAndTypeIsAssignableFrom (string argumentName, Type actualType, Type expectedType)
+    public static Type CheckNotNullAndTypeIsAssignableFrom (
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type actualType,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       if (actualType == null)
         throw new ArgumentNullException (argumentName);
@@ -264,7 +277,8 @@ namespace Remotion.Utilities
     /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
     // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
-    public static Type CheckTypeIsAssignableFrom (string argumentName, Type actualType, Type expectedType)
+    public static Type CheckTypeIsAssignableFrom (
+        [InvokerParameterName] string argumentName, Type actualType, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckNotNull ("expectedType", expectedType);
       if (actualType != null)
@@ -281,7 +295,7 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether all items in <paramref name="collection"/> are of type <paramref name="itemType"/> or a null reference.</summary>
     /// <exception cref="ArgumentItemTypeException"> If at least one element is not of the specified type or a derived type. </exception>
-    public static T CheckItemsType<T> (string argumentName, T collection, Type itemType)
+    public static T CheckItemsType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
         where T: ICollection
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -303,7 +317,7 @@ namespace Remotion.Utilities
     /// <summary>Checks whether all items in <paramref name="collection"/> are of type <paramref name="itemType"/> and not null references.</summary>
     /// <exception cref="ArgumentItemTypeException"> If at least one element is not of the specified type or a derived type. </exception>
     /// <exception cref="ArgumentItemNullException"> If at least one element is a null reference. </exception>
-    public static T CheckItemsNotNullAndType<T> (string argumentName, T collection, Type itemType)
+    public static T CheckItemsNotNullAndType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
         where T: ICollection
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -328,7 +342,8 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentNullException"> If <paramref name="enumValue"/> is a null reference. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static Enum CheckValidEnumValue (string argumentName, Enum enumValue)
+    public static Enum CheckValidEnumValue (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Enum enumValue)
     {
       if (enumValue == null)
         throw new ArgumentNullException (argumentName);
@@ -346,7 +361,7 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException"> If <paramref name="enumValue"/> is not of the specified type. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static TEnum? CheckValidEnumValueAndType<TEnum> (string argumentName, object enumValue)
+    public static TEnum? CheckValidEnumValueAndType<TEnum> ([InvokerParameterName] string argumentName, object enumValue)
         where TEnum: struct
     {
       if (enumValue == null)
@@ -370,7 +385,8 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException"> If <paramref name="enumValue"/> is not of the specified type. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static TEnum CheckValidEnumValueAndTypeAndNotNull<TEnum> (string argumentName, object enumValue)
+    public static TEnum CheckValidEnumValueAndTypeAndNotNull<TEnum> (
+        [InvokerParameterName] string argumentName, [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object enumValue)
         where TEnum: struct
     {
       if (enumValue == null)

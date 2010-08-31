@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -32,7 +31,7 @@ namespace Remotion.Utilities
     private readonly Type _actualType;
 
     public ArgumentItemTypeException (string argumentName, int index, Type expectedType, Type actualType)
-        : base ( FormatMessage (argumentName, index, expectedType, actualType))
+        : base (FormatMessage (argumentName, index, expectedType, actualType))
     {
       _argumentName = argumentName;
       _index = index;
@@ -81,7 +80,8 @@ namespace Remotion.Utilities
 
     private static string FormatMessage (string argumentName, int index, Type expectedType, Type actualType)
     {
-      return string.Format ("Item {0} of argument {1} has the type {2} instead of {3}.", index, argumentName, actualType.FullName, expectedType.FullName);
+      return string.Format (
+          "Item {0} of argument {1} has the type {2} instead of {3}.", index, argumentName, actualType.FullName, expectedType.FullName);
     }
   }
 }

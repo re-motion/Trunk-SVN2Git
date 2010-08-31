@@ -21,7 +21,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using JetBrains.Annotations;
 using Remotion.Collections;
 
 namespace Remotion.Utilities
@@ -49,13 +48,14 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static readonly InterlockedCache<Type, MethodInfo> s_parseMethods = new InterlockedCache<Type, MethodInfo> ();
+    private static readonly InterlockedCache<Type, MethodInfo> s_parseMethods = new InterlockedCache<Type, MethodInfo>();
 
 
     public static string GetFileNameTimestamp (DateTime dt)
     {
       const string separator = "_";
-      return StringUtility.ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day }, separator) + "__" + StringUtility.ConcatWithSeparator (new[] { dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, separator);
+      return ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day }, separator) + "__"
+             + ConcatWithSeparator (new[] { dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, separator);
     }
 
     public static string GetFileNameTimestampNow ()
@@ -111,9 +111,13 @@ namespace Remotion.Utilities
     /// <param name="interpretSpecialCharacters"> If true, the escaping character can be followed by the letters
     ///   r, n or t (case sensitive) for line feeds, new lines or tab characters, respectively. Default is true. </param>
     public static ParsedItem[] ParseSeparatedList (
-        string value, 
-        char delimiter, char openingQuote, char closingQuote, char escapingChar, string whitespaceCharacters, 
-        bool interpretSpecialCharacters) 
+        string value,
+        char delimiter,
+        char openingQuote,
+        char closingQuote,
+        char escapingChar,
+        string whitespaceCharacters,
+        bool interpretSpecialCharacters)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
@@ -164,10 +168,8 @@ namespace Remotion.Utilities
               isQuoted = false;
             }
           }
-          else 
-          {
+          else
             current.Append (c);
-          }
         }
         else if (state == 2)
         {
@@ -181,7 +183,7 @@ namespace Remotion.Utilities
           {
             if ((i + 1) < len)
             {
-              char next = value[i+1];
+              char next = value[i + 1];
               if (next == escapingChar || next == openingQuote || next == closingQuote)
               {
                 current.Append (next);
@@ -193,28 +195,21 @@ namespace Remotion.Utilities
                 ++i;
               }
               else
-              {
                 current.Append ('\\');
-              }
             }
             else
-            {
               state = 1;
-            }
           }
-          else 
-          {
+          else
             current.Append (c);
-          }
         }
       }
 
       if (current.Length > 0)
-      {
         items.Add (new ParsedItem (current.ToString(), isQuoted));
-      }
       return (ParsedItem[]) items.ToArray();
     }
+
     // static members
 
     /// <summary>
@@ -247,8 +242,7 @@ namespace Remotion.Utilities
       return str;
     }
 
-    [AssertionMethod]
-    public static bool IsNullOrEmpty ([AssertionCondition (AssertionConditionType.IS_NULL)] string str)
+    public static bool IsNullOrEmpty (string str)
     {
       if (str == null || str.Length == 0)
         return true;
@@ -267,52 +261,52 @@ namespace Remotion.Utilities
     }
 
     public static string ConcatWithSeparator (IList list, string separator)
-	  {
-		  return ConcatWithSeparator (list, separator, null, null);
-	  }
+    {
+      return ConcatWithSeparator (list, separator, null, null);
+    }
 
-	  public static string ConcatWithSeparator (IList list, string separator, string format, IFormatProvider formatProvider)
-	  {
-		  if (list == null)
-			  throw new ArgumentNullException ("list");
+    public static string ConcatWithSeparator (IList list, string separator, string format, IFormatProvider formatProvider)
+    {
+      if (list == null)
+        throw new ArgumentNullException ("list");
 
       if (list.Count == 0)
-			  return string.Empty;
+        return string.Empty;
 
-		  StringBuilder sb = new StringBuilder ();
-		  for (int i = 0; i < list.Count; ++i)
-		  {
-			  if (i > 0)
-				  sb.Append (separator);
-  		  sb.Append (FormatScalarValue (list[i], formatProvider));
-		  }
-		  return sb.ToString();
-	  }
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < list.Count; ++i)
+      {
+        if (i > 0)
+          sb.Append (separator);
+        sb.Append (FormatScalarValue (list[i], formatProvider));
+      }
+      return sb.ToString();
+    }
 
-	  public static string ConcatWithSeparator (string[] strings, string separator)
-	  {
-		  if (strings == null)
-			  throw new ArgumentNullException ("strings");
-		  if (strings.Length == 0)
-			  return string.Empty;
+    public static string ConcatWithSeparator (string[] strings, string separator)
+    {
+      if (strings == null)
+        throw new ArgumentNullException ("strings");
+      if (strings.Length == 0)
+        return string.Empty;
 
-		  StringBuilder sb = new StringBuilder ();
-		  for (int i = 0; i < strings.Length; ++i)
-		  {
-			  if (i > 0)
-				  sb.Append (separator);
-			  sb.Append (strings[i]);
-		  }
-		  return sb.ToString();
-	  }
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < strings.Length; ++i)
+      {
+        if (i > 0)
+          sb.Append (separator);
+        sb.Append (strings[i]);
+      }
+      return sb.ToString();
+    }
 
-	  public static string Concat (Array array)
-	  {
-		  StringBuilder sb = new StringBuilder();
-		  for (int i = 0; i < array.Length; ++i)
-			  sb.Append (array.GetValue (i));
-		  return sb.ToString();
-	  }
+    public static string Concat (Array array)
+    {
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < array.Length; ++i)
+        sb.Append (array.GetValue (i));
+      return sb.ToString();
+    }
 
 
     public static string Format (object value, IFormatProvider formatProvider)
@@ -382,7 +376,7 @@ namespace Remotion.Utilities
       if (isNullableType && string.IsNullOrEmpty (value))
         return null;
       if (underlyingType.IsEnum)
-        return ParseEnumValue(underlyingType, value);
+        return ParseEnumValue (underlyingType, value);
       if (underlyingType == typeof (Guid))
         return new Guid (value);
       else
@@ -467,9 +461,9 @@ namespace Remotion.Utilities
       return parseMethod != null;
     }
 
-    private static MethodInfo GetParseMethod  (Type type, bool throwIfNotFound)
+    private static MethodInfo GetParseMethod (Type type, bool throwIfNotFound)
     {
-      var parseMethod = 
+      var parseMethod =
           s_parseMethods.GetOrCreateValue (type, key => GetParseMethodWithFormatProviderFromType (type) ?? GetParseMethodFromType (type));
       if (throwIfNotFound && parseMethod == null)
         throw new ParseException (string.Format ("Type does not have method 'public static {0} Parse (string s)'.", type.Name));
@@ -481,10 +475,10 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
       MethodInfo parseMethod = type.GetMethod (
-          "Parse", 
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy, 
-          null, 
-          new Type[] {typeof (string), typeof (IFormatProvider)}, 
+          "Parse",
+          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
+          null,
+          new Type[] { typeof (string), typeof (IFormatProvider) },
           null);
 
       if (parseMethod != null && type.IsAssignableFrom (parseMethod.ReturnType))
@@ -493,14 +487,14 @@ namespace Remotion.Utilities
         return null;
     }
 
-    private static MethodInfo GetParseMethodFromType  (Type type)
+    private static MethodInfo GetParseMethodFromType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       MethodInfo parseMethod = type.GetMethod (
-          "Parse", 
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy, 
-          null, 
-          new Type[] {typeof (string)}, 
+          "Parse",
+          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
+          null,
+          new Type[] { typeof (string) },
           null);
 
       if (parseMethod != null && type.IsAssignableFrom (parseMethod.ReturnType))
@@ -511,20 +505,20 @@ namespace Remotion.Utilities
   }
 
   [Serializable]
-  public class ParseException: Exception
+  public class ParseException : Exception
   {
     public ParseException (string message)
-      : base (message, null)
+        : base (message, null)
     {
     }
 
     public ParseException (string message, Exception innerException)
-      : base (message, innerException)
+        : base (message, innerException)
     {
     }
 
     public ParseException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
+        : base (info, context)
     {
     }
   }

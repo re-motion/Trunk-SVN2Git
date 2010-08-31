@@ -21,7 +21,7 @@ namespace Remotion.Security
 {
   internal class ArgumentUtility
   {
-    
+
     public static T CheckNotNull<T> (string argumentName, T actualValue)
     {
       if (actualValue == null)

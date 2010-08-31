@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -27,7 +26,7 @@ namespace Remotion.Utilities
   public class ArgumentEmptyException : ArgumentException
   {
     public ArgumentEmptyException (string paramName)
-      : base (FormatMessage (paramName), paramName)
+        : base (FormatMessage (paramName), paramName)
     {
     }
 

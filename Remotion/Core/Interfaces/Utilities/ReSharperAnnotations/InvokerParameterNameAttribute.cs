@@ -15,29 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
 
-namespace Remotion.Utilities
+namespace JetBrains.Annotations
 {
   /// <summary>
-  /// This exception is thrown if a list argument contains a null reference.
+  /// Indicates that the function argument should be string literal and match one  of the parameters of the caller function.
+  /// For example, <see cref="ArgumentNullException"/> has such parameter.
   /// </summary>
-  [Serializable]
-  public class ArgumentItemNullException : ArgumentException
+  [AttributeUsage (AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+  internal sealed class InvokerParameterNameAttribute : Attribute
   {
-    public ArgumentItemNullException (string argumentName, int index)
-        : base (FormatMessage (argumentName, index))
-    {
-    }
-
-    public ArgumentItemNullException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
-    private static string FormatMessage (string argumentName, int index)
-    {
-      return string.Format ("Item {0} of argument {1} is null.", index, argumentName);
-    }
   }
 }
