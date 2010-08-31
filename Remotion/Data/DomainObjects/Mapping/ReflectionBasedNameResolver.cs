@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     /// <returns>The name of the given <paramref name="propertyInformation"/> as used internally by the mapping.</returns>
     public string GetPropertyName (IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("property", propertyInformation);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       
       return GetPropertyName (propertyInformation.GetOriginalDeclaringType(), propertyInformation.Name);
     }
