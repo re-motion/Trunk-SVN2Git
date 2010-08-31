@@ -93,7 +93,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void Equals ()
+    public void TestEquals ()
     {
       var nullPropertyInformation2 = new NullPropertyInformation ();
 
@@ -102,7 +102,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GethashCode ()
+    public void TestGetHashCode ()
     {
       Assert.That (_nullPropertyInformation.GetHashCode (), Is.EqualTo (0));
     }

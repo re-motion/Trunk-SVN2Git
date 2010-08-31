@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void Equals ()
+    public void TestEquals ()
     {
       var nullMethodInformation2 = new NullMethodInformation();
 
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GethashCode ()
+    public void TestGetHashCode ()
     {
       Assert.That (_nullMethodInformation.GetHashCode(), Is.EqualTo (0));
     }
