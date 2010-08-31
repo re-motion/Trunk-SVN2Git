@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Text;
 
@@ -24,6 +23,34 @@ namespace Remotion.Mixins.Utilities
 {
   public class MixedTypeConstructorLookupInfo : ConstructorLookupInfo
   {
+    private sealed class CacheKey
+    {
+      private readonly bool _allowNonPublic;
+      private readonly Type _concreteType;
+      private readonly Type _delegateType;
+
+      public CacheKey (bool allowNonPublic, Type concreteType, Type delegateType)
+      {
+        _allowNonPublic = allowNonPublic;
+        _concreteType = concreteType;
+        _delegateType = delegateType;
+      }
+
+      public override bool Equals (object obj)
+      {
+        if (obj.GetType () != typeof (CacheKey))
+          return false;
+
+        var castOther = (CacheKey) obj;
+        return _allowNonPublic == castOther._allowNonPublic && _concreteType == castOther._concreteType && _delegateType == castOther._delegateType;
+      }
+
+      public override int GetHashCode ()
+      {
+        return _allowNonPublic.GetHashCode () ^ _concreteType.GetHashCode () ^ _delegateType.GetHashCode ();
+      }
+    }
+
     private const BindingFlags c_allowNonPublicBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
     private readonly Type _targetType;
@@ -34,6 +61,16 @@ namespace Remotion.Mixins.Utilities
     {
       _targetType = targetType;
       _allowNonPublic = allowNonPublic;
+    }
+
+    public Type TargetType
+    {
+      get { return _targetType; }
+    }
+
+    public bool AllowNonPublic
+    {
+      get { return _allowNonPublic; }
     }
 
     protected override ConstructorInfo GetConstructor (Type[] parameterTypes)
@@ -59,7 +96,7 @@ namespace Remotion.Mixins.Utilities
 
     protected override object GetCacheKey (Type delegateType)
     {
-      return Tuple.Create (_allowNonPublic, _targetType, base.GetCacheKey (delegateType));
+      return new CacheKey (_allowNonPublic, DefiningType, delegateType);
     }
   }
 }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Threading;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -56,12 +55,6 @@ namespace Remotion.UnitTests.Mixins
 
       ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
 
-      Console.WriteLine ("Pause...");
-
-      Thread.Sleep (10000);
-      
-      Console.WriteLine ("Resume");
-
       int acc = 0;
       var stopwatch = Stopwatch.StartNew ();
       for (int i = 0; i < iterations; ++i)
@@ -75,6 +68,13 @@ namespace Remotion.UnitTests.Mixins
 
       var elapsed = stopwatch.Elapsed;
       Console.WriteLine ("ObjectFactoryCreate_WithMixedMixin: {0} µs", elapsed.TotalMilliseconds * 1000.0 / iterations);
+    }
+
+    public static void Main ()
+    {
+      var test = new ObjectFactoryPerformanceTest ();
+      // test.New_WithMixedMixin();
+      test.ObjectFactoryCreate_WithMixedMixin ();
     }
   }
 }

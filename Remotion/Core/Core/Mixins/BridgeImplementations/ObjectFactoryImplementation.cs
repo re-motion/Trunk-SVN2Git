@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Mixins.BridgeInterfaces;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
@@ -52,13 +53,23 @@ namespace Remotion.Mixins.BridgeImplementations
       ArgumentUtility.CheckNotNull ("preparedMixins", preparedMixins);
 
       Type resolvedTargetType = ResolveType (baseTypeOrInterfaceOrConcreteType);
-      Type concreteType = TypeFactory.GetConcreteType (resolvedTargetType, generationPolicy);
 
-      if (!typeof (IMixinTarget).IsAssignableFrom (concreteType) && preparedMixins.Length > 0)
-        throw new ArgumentException (string.Format ("There is no mixin configuration for type {0}, so no mixin instances must be specified.",
-            baseTypeOrInterfaceOrConcreteType.FullName), "preparedMixins");
+      var classContext =
+          generationPolicy == GenerationPolicy.ForceGeneration
+              ? MixinConfiguration.ActiveConfiguration.GetContextForce (resolvedTargetType)
+              : MixinConfiguration.ActiveConfiguration.GetContext (resolvedTargetType);
 
-      var constructorLookupInfo = new MixedTypeConstructorLookupInfo (concreteType, resolvedTargetType, allowNonPublicConstructors);
+      IConstructorLookupInfo constructorLookupInfo;
+      if (classContext == null)
+      {
+        if (preparedMixins.Length > 0)
+          throw new ArgumentException (string.Format ("There is no mixin configuration for type {0}, so no mixin instances must be specified.",
+              baseTypeOrInterfaceOrConcreteType.FullName), "preparedMixins");
+
+        constructorLookupInfo = new MixedTypeConstructorLookupInfo (resolvedTargetType, resolvedTargetType, allowNonPublicConstructors);
+      }
+      else
+        constructorLookupInfo = ConcreteTypeBuilder.Current.GetConstructorLookupInfo (classContext, allowNonPublicConstructors);
 
       using (new MixedObjectInstantiationScope (preparedMixins))
       {

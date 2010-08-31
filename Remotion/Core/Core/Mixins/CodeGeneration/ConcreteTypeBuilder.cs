@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities.Singleton;
+using Remotion.Reflection;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Mixins.Context;
@@ -167,6 +168,27 @@ namespace Remotion.Mixins.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
       return Cache.GetOrCreateConcreteType (Scope, classContext, _typeNameProvider, _mixinTypeNameProvider);
+    }
+
+    /// <summary>
+    /// Gets an <see cref="IConstructorLookupInfo"/> object that can be used to construct the concrete mixed type for the given target class
+    /// configuration either from the cache or by generating it.
+    /// </summary>
+    /// <param name="classContext">The <see cref="ClassContext"/> holding the mixin configuration for the target class.</param>
+    /// <param name="allowNonPublic">If set to <see langword="true"/>, the result object supports calling non-public constructors. Otherwise,
+    /// only public constructors are allowed.</param>
+    /// <returns>
+    /// An <see cref="IConstructorLookupInfo"/> instance instantiating the same type <see cref="GetConcreteType"/> would have returned for the given
+    /// <paramref name="classContext"/>.
+    /// </returns>
+    /// <remarks>
+    /// This is mostly for internal reasons, users should use <see cref="ObjectFactory.Create(System.Type,Remotion.Reflection.ParamList,object[])"/> 
+    /// instead.
+    /// </remarks>
+    public IConstructorLookupInfo GetConstructorLookupInfo (ClassContext classContext, bool allowNonPublic)
+    {
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
+      return Cache.GetOrCreateConstructorLookupInfo (Scope, classContext, _typeNameProvider, _mixinTypeNameProvider, allowNonPublic);
     }
 
     /// <summary>

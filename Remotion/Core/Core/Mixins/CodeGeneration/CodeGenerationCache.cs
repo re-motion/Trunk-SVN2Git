@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Mixins.Context;
 
@@ -29,6 +31,30 @@ namespace Remotion.Mixins.CodeGeneration
   /// </summary>
   public class CodeGenerationCache
   {
+    private sealed class CtorLookupInfoKey
+    {
+      private readonly ClassContext _classContext;
+      private readonly bool _allowNonPublic;
+
+      public CtorLookupInfoKey (ClassContext classContext, bool allowNonPublic)
+      {
+        _classContext = classContext;
+        _allowNonPublic = allowNonPublic;
+      }
+
+      public override int GetHashCode ()
+      {
+        return _classContext.GetHashCode () ^ _allowNonPublic.GetHashCode ();
+      }
+
+      public override bool Equals (object obj)
+      {
+        var other = (CtorLookupInfoKey) obj;
+        return other._allowNonPublic == _allowNonPublic && other._classContext.Equals (_classContext);
+      }
+    }
+
+
     private static readonly ILog s_log = LogManager.GetLogger (typeof (CodeGenerationCache));
     
     private readonly object _lockObject = new object();
@@ -36,6 +62,8 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly Cache<ClassContext, Type> _typeCache = new Cache<ClassContext, Type> ();
     private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
         new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
+
+    private readonly InterlockedCache<CtorLookupInfoKey, IConstructorLookupInfo> _constructorLookupInfos = new InterlockedCache<CtorLookupInfoKey, IConstructorLookupInfo> ();
 
     public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
     {
@@ -81,6 +109,23 @@ namespace Remotion.Mixins.CodeGeneration
             mixinNameProvider);
 
         return generator.GetBuiltType();
+      }
+    }
+
+    public IConstructorLookupInfo GetOrCreateConstructorLookupInfo (
+    IModuleManager manager,
+    ClassContext classContext,
+    IConcreteMixedTypeNameProvider nameProvider,
+    IConcreteMixinTypeNameProvider mixinNameProvider,
+    bool allowNonPublic)
+    {
+      lock (_lockObject)
+      {
+        return _constructorLookupInfos.GetOrCreateValue (new CtorLookupInfoKey (classContext, allowNonPublic), cc =>
+        {
+          var concreteType = GetOrCreateConcreteType (manager, classContext, nameProvider, mixinNameProvider);
+          return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
+        });
       }
     }
 

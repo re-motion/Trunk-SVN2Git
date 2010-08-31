@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void ScopeInitializedOnDemand ()
     {
       Assert.IsFalse (MixedObjectInstantiationScope.HasCurrent);
-      Assert.IsNotNull (MixedObjectInstantiationScope.Current);
+      new MixedObjectInstantiationScope ();
       Assert.IsTrue (MixedObjectInstantiationScope.HasCurrent);
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void CurrentIsReset ()
     {
       Assert.IsFalse (MixedObjectInstantiationScope.HasCurrent);
-      Assert.IsNotNull (MixedObjectInstantiationScope.Current);
+      new MixedObjectInstantiationScope ();
       Assert.IsTrue (MixedObjectInstantiationScope.HasCurrent);
     }
 

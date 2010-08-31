@@ -91,6 +91,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
     [Test]
+    public void GetConstructorLookupInfo ()
+    {
+      var classContext = new ClassContext (typeof (BaseType1));
+      var info1 = _builder.GetConstructorLookupInfo (classContext, true);
+      var info2 = _builder.GetConstructorLookupInfo (classContext, true);
+
+      Assert.That (info1, Is.SameAs (info2));
+
+      var instance = ParamList.Empty.InvokeConstructor (info1);
+
+      var expectedType = _builder.GetConcreteType(classContext);
+      Assert.That (instance, Is.TypeOf (expectedType));
+    }
+
+    [Test]
     public void GetConcreteMixinType_GeneratedMixinTypesAreCached ()
     {
       var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));

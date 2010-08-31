@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using System.Reflection;
@@ -112,6 +113,80 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void GetOrCreateConstructorLookupInfo_Uncached ()
+    {
+      _moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+            Arg.Is (_cache),
+            Arg<TargetClassDefinition>.Matches (tcd => tcd.ConfigurationContext.Equals (_targetClassContext)),
+            Arg.Is (_mixedTypeNameProvider),
+            Arg.Is (_mixinTypeNameProvider)))
+          .Return (_typeGeneratorMock);
+      _typeGeneratorMock.Expect (mock => mock.GetBuiltType ()).Return (typeof (string));
+
+      _mockRepository.ReplayAll ();
+
+      var result = _cache.GetOrCreateConstructorLookupInfo (
+          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _mixinTypeNameProvider, true);
+      Assert.That (result, Is.TypeOf (typeof (MixedTypeConstructorLookupInfo)));
+      Assert.That (result.DefiningType, Is.SameAs (typeof (string)));
+      Assert.That (((MixedTypeConstructorLookupInfo) result).TargetType, Is.SameAs (_targetClassContext.Type));
+      Assert.That (((MixedTypeConstructorLookupInfo) result).AllowNonPublic, Is.True);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetOrCreateConstructorLookupInfo_Cached ()
+    {
+      _moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+            Arg.Is (_cache),
+            Arg<TargetClassDefinition>.Matches (tcd => tcd.ConfigurationContext.Equals (_targetClassContext)),
+            Arg.Is (_mixedTypeNameProvider),
+            Arg.Is (_mixinTypeNameProvider)))
+          .Return (_typeGeneratorMock).Repeat.Once ();
+      _typeGeneratorMock.Expect (mock => mock.GetBuiltType ()).Return (typeof (string)).Repeat.Once();
+
+      _mockRepository.ReplayAll ();
+
+      var result1 = _cache.GetOrCreateConstructorLookupInfo (
+          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _mixinTypeNameProvider, true);
+      var result2 = _cache.GetOrCreateConstructorLookupInfo (
+          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _mixinTypeNameProvider, true);
+
+      Assert.That (result2, Is.SameAs (result1));
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetOrCreateConstructorLookupInfo_Cached_KeyContainsAllowNonPublicFlag ()
+    {
+      _moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+            Arg.Is (_cache),
+            Arg<TargetClassDefinition>.Matches (tcd => tcd.ConfigurationContext.Equals (_targetClassContext)),
+            Arg.Is (_mixedTypeNameProvider),
+            Arg.Is (_mixinTypeNameProvider)))
+          .Return (_typeGeneratorMock).Repeat.Once ();
+      _typeGeneratorMock.Expect (mock => mock.GetBuiltType ()).Return (typeof (string)).Repeat.Once ();
+
+      _mockRepository.ReplayAll ();
+
+      var result1 = _cache.GetOrCreateConstructorLookupInfo (
+          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _mixinTypeNameProvider, true);
+      var result2 = _cache.GetOrCreateConstructorLookupInfo (
+          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _mixinTypeNameProvider, false);
+
+      Assert.That (result2, Is.Not.SameAs (result1));
+      Assert.That (((MixedTypeConstructorLookupInfo) result1).AllowNonPublic, Is.True);
+      Assert.That (((MixedTypeConstructorLookupInfo) result2).AllowNonPublic, Is.False);
+
+      _mockRepository.VerifyAll ();
     }
 
     [Test]

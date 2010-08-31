@@ -41,6 +41,11 @@ namespace Remotion.UnitTests.Mixins.Utilities
       {
         Dev.Null = s;
       }
+
+      public TargetTypeMock (Exception e)
+      {
+        throw e;
+      }
     }
 
     public class ConcreteTypeMock
@@ -54,11 +59,15 @@ namespace Remotion.UnitTests.Mixins.Utilities
         Assert.That (Scope.IsDisposed, Is.False);
       }
 
-      public ConcreteTypeMock (bool throwException)
+      public ConcreteTypeMock (bool dummy)
         : this ()
       {
-        if (throwException)
-          throw new InvalidOperationException ("This exception is thrown on purpose.");
+      }
+
+      public ConcreteTypeMock (Exception e)
+        : this ()
+      {
+        throw e;
       }
 
       public ConcreteTypeMock (int i) : this()
@@ -70,18 +79,21 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [Test]
     public void Initialization ()
     {
-      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (ConcreteTypeMock), false);
+      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), false);
       Assert.That (info.BindingFlags, Is.EqualTo (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       Assert.That (info.Binder, Is.Null);
       Assert.That (info.CallingConvention, Is.EqualTo (CallingConventions.Any));
       Assert.That (info.MemberName, Is.EqualTo (".ctor"));
       Assert.That (info.ParameterModifiers, Is.Null);
+      Assert.That (info.TargetType, Is.SameAs (typeof (TargetTypeMock)));
+      Assert.That (info.DefiningType, Is.SameAs (typeof (ConcreteTypeMock)));
+      Assert.That (info.AllowNonPublic, Is.False);
     }
 
     [Test]
     public void CreateDelegate ()
     {
-      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (ConcreteTypeMock), false);
+      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
       Func<ConcreteTypeMock> d = (Func<ConcreteTypeMock>) info.GetDelegate (typeof (Func<ConcreteTypeMock>));
       ConcreteTypeMock instance = d();
       Assert.That (instance, Is.Not.Null);
@@ -166,15 +178,16 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This exception is thrown on purpose.")]
     public void CreateDelegate_DelegatePropagatesException ()
     {
-      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (ConcreteTypeMock), false);
-      Func<bool, ConcreteTypeMock> d = (Func<bool, ConcreteTypeMock>) info.GetDelegate (typeof (Func<bool, ConcreteTypeMock>));
-      d (true);
+      var exception = new InvalidOperationException ("This exception is thrown on purpose.");
+      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), false);
+      Func<Exception, ConcreteTypeMock> d = (Func<Exception, ConcreteTypeMock>) info.GetDelegate (typeof (Func<Exception, ConcreteTypeMock>));
+      d (exception);
     }
 
     [Test]
     public void CreateDelegate_DelegateUsesScope ()
     {
-      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (ConcreteTypeMock), false);
+      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), false);
       Func<ConcreteTypeMock> d = (Func<ConcreteTypeMock>) info.GetDelegate (typeof (Func<ConcreteTypeMock>));
       object[] mixinInstances = new object[] {1, 2, "3"};
       ConcreteTypeMock instance;
@@ -188,7 +201,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [Test]
     public void CreateDelegate_DelegatePassesParameters ()
     {
-      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (ConcreteTypeMock), false);
+      MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
       Func<int, ConcreteTypeMock> d = (Func<int, ConcreteTypeMock>) info.GetDelegate (typeof (Func<int, ConcreteTypeMock>));
       ConcreteTypeMock instance = d (43);
       Assert.That (instance.CtorArg, Is.EqualTo (43));
