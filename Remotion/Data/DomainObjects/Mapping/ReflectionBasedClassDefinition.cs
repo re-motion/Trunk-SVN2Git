@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("property", property);
 
       // TODO RM-3158: Add a cache using the property as cache key
-      return ResolveDefinition<PropertyDefinition> (property, GetPropertyDefinition);
+      return ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (property, this, GetPropertyDefinition);
     }
 
     public override IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property)
@@ -177,56 +177,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("property", property);
 
       // TODO RM-3158: Add a cache using the property as cache key
-      return ResolveDefinition<IRelationEndPointDefinition> (property, GetRelationEndPointDefinition);
-    }
-
-    private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
-    {
-      if (property.DeclaringType.IsInterface)
-      {
-        Type implementingType = GetImplementingType(property);
-        if (implementingType == null)
-          return null;
-
-        property = FindPropertyImplementationOnType (property, implementingType);
-      }
-
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (property));
-      return definitionGetter (propertyIdentifier);
-    }
-
-    private Type GetImplementingType (PropertyInfo interfaceProperty)
-    {
-      Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
-
-      Type implementingType;
-      if (interfaceProperty.DeclaringType.IsAssignableFrom (ClassType))
-        implementingType = ClassType;
-      else
-      {
-        var allPersistentMixins = this.CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass).SelectMany (cd => cd.PersistentMixins);
-        implementingType = allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
-      }
-      return implementingType;
-    }
-
-    private PropertyInfo FindPropertyImplementationOnType (PropertyInfo interfaceProperty, Type implementationType)
-    {
-      Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
-      
-      var interfaceMap = implementationType.GetInterfaceMap (interfaceProperty.DeclaringType);
-      var interfaceAccessorMethod = interfaceProperty.GetGetMethod (false) ?? interfaceProperty.GetSetMethod (false);
-
-      var accessorIndex = interfaceMap.InterfaceMethods
-          .Select ((m, i) => new { Method = m, Index = i })
-          .Single (tuple => tuple.Method == interfaceAccessorMethod)
-          .Index;
-      var implementationMethod = interfaceMap.TargetMethods[accessorIndex];
-
-      var implementationProperty = implementationType
-          .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-          .Single (pi => (pi.GetGetMethod (true) ?? pi.GetSetMethod (true)) == implementationMethod);
-      return implementationProperty;
+      return ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (property, this, GetRelationEndPointDefinition);
     }
   }
 }
