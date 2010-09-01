@@ -309,6 +309,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\DerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\HookedDomainObjectMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\IInterfaceAddedByMixin.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\IInterfaceWithPropertiesAddedByMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\IMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\InheritanceRootInheritingPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinAddingInterface.cs" />
@@ -320,6 +321,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinAddingTwoReferencesToDerivedClass2.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinAddingUnidirectionalRelation1.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinAddingUnidirectionalRelation2.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinAddingInterfaceWithProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinOverridingPropertiesAndMethods.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinWithAccessToDomainObjectProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\MixinWithState.cs" />
@@ -328,6 +330,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\StubStoragePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassForMixinAddingInterfaceWithProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\MixedMapping\TargetClassReceivingTwoReferencesToDerivedClass.cs" />
@@ -360,6 +363,8 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClassWithManySideRelationProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClassWithOneSideRelationProperties.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithInterfaceWithMissingAccessors.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\IInterfaceWithPropertiesWithMissingAccessors.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -181,41 +182,51 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private T ResolveDefinition<T> (PropertyInfo property, Func<string, T> definitionGetter) where T : class
     {
-      // TODO: To make this work with explicit interface implementations, use this code:
-      //if (property.DeclaringType.IsInterface)
-      //{
-      //  if (property.DeclaringType.IsAssignableFrom (ClassType))
-      //    property = FindPropertyImplementationOnType (property, ClassType); // see Remotion.ObjectBinding.BindableObject.ReflectionBasedPropertyFinder.GetPropertyInfoOnInterface => extract to a separate class and reuse here
-      //  else
-      //  {
-      //    var allPersistentMixins = this.CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass).SelectMany (cd => cd.PersistentMixins);
-      //    var mixinType = allPersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault ();
-      //    if (mixinType == null)
-      //      return null;
-      //    property = FindPropertyImplementationOnType (property, mixinType);
-      //  }
-      //}
-
-      //string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
-      //return definitionGetter (propertyIdentifier);
-
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter(property));
-      var definition = definitionGetter (propertyIdentifier);
-      if (definition != null)
-        return definition;
-
-      var currentClassDefinition = this;
-      while (currentClassDefinition != null)
+      if (property.DeclaringType.IsInterface)
       {
-        var mixinType = currentClassDefinition.PersistentMixins.Where (m => property.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
-        if (mixinType != null)
-          // TODO RM-3157: Replace GetPropertyName (Type, string) with GetPropertyName (mixinType.GetProperty (property.Name, IncludeNonPublic=true))
-          return definitionGetter (MappingConfiguration.Current.NameResolver.GetPropertyName (mixinType, property.Name));
+        Type implementingType = GetImplementingType(property);
+        if (implementingType == null)
+          return null;
 
-        currentClassDefinition = (ReflectionBasedClassDefinition) currentClassDefinition.BaseClass;
+        property = FindPropertyImplementationOnType (property, implementingType);
       }
 
-      return null;
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (property));
+      return definitionGetter (propertyIdentifier);
+    }
+
+    private Type GetImplementingType (PropertyInfo interfaceProperty)
+    {
+      Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
+
+      Type implementingType;
+      if (interfaceProperty.DeclaringType.IsAssignableFrom (ClassType))
+        implementingType = ClassType;
+      else
+      {
+        var allPersistentMixins = this.CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass).SelectMany (cd => cd.PersistentMixins);
+        implementingType = allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
+      }
+      return implementingType;
+    }
+
+    private PropertyInfo FindPropertyImplementationOnType (PropertyInfo interfaceProperty, Type implementationType)
+    {
+      Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
+      
+      var interfaceMap = implementationType.GetInterfaceMap (interfaceProperty.DeclaringType);
+      var interfaceAccessorMethod = interfaceProperty.GetGetMethod (false) ?? interfaceProperty.GetSetMethod (false);
+
+      var accessorIndex = interfaceMap.InterfaceMethods
+          .Select ((m, i) => new { Method = m, Index = i })
+          .Single (tuple => tuple.Method == interfaceAccessorMethod)
+          .Index;
+      var implementationMethod = interfaceMap.TargetMethods[accessorIndex];
+
+      var implementationProperty = implementationType
+          .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+          .Single (pi => (pi.GetGetMethod (true) ?? pi.GetSetMethod (true)) == implementationMethod);
+      return implementationProperty;
     }
   }
 }

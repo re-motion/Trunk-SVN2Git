@@ -26,10 +26,10 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.MixedMapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.MixedMapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -40,8 +40,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     private ReflectionBasedClassDefinition _orderClass;
     private ReflectionBasedClassDefinition _distributorClass;
+    
     private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
     private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
+
+    private ReflectionBasedClassDefinition _classWithInterface;
+    private ReflectionBasedClassDefinition _classWithInterfaceWithMissingAccessors;
+    private ReflectionBasedClassDefinition _classWithMixinAddingInterface;
 
     public override void SetUp ()
     {
@@ -54,6 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+
+      _classWithInterface = CreateDefinitionForClassWithInterface();
+      _classWithInterfaceWithMissingAccessors = CreateDefinitionForClassWithInterfaceWithMissingAccessors();
+      _classWithMixinAddingInterface = CreateDefinitionForClassWithMixinAddingInterface();
     }
 
     [Test]
@@ -146,7 +155,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationDefinition ()
     {
-      RelationDefinition relation = _orderClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
+      RelationDefinition relation =
+          _orderClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
 
       Assert.IsNotNull (relation);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer", relation.ID);
@@ -155,7 +165,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetUndefinedRelationDefinition ()
     {
-      Assert.IsNull (_orderClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
+      Assert.IsNull (
+          _orderClass.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
     }
 
     [Test]
@@ -214,8 +226,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.AreEqual (5, relations.Count);
       Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Ceo.Company"]);
       Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"]);
-      Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor"]);
-      Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company"]);
+      Assert.IsNotNull (
+          relations[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor"]);
+      Assert.IsNotNull (
+          relations[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company"
+              ]);
       Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.IndustrialSector"]);
     }
 
@@ -229,15 +246,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationDefinitionWithInheritance ()
     {
-      Assert.IsNotNull (_distributorClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
-      Assert.IsNotNull (_distributorClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
+      Assert.IsNotNull (
+          _distributorClass.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
+      Assert.IsNotNull (
+          _distributorClass.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
     }
 
     [Test]
     public void GetRelatedClassDefinition ()
     {
-      Assert.IsNotNull (_distributorClass.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
-      Assert.IsNotNull (_distributorClass.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
+      Assert.IsNotNull (
+          _distributorClass.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
+      Assert.IsNotNull (
+          _distributorClass.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
     }
 
     [Test]
@@ -250,8 +275,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationEndPointDefinition ()
     {
-      Assert.IsNotNull (_distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
-      Assert.IsNotNull (_distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
+      Assert.IsNotNull (
+          _distributorClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo"));
+      Assert.IsNotNull (
+          _distributorClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
     }
 
     [Test]
@@ -265,9 +294,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointTrue ()
     {
       RelationDefinition orderToOrderItem =
-          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"];
+          FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderItem.Order"];
       IRelationEndPointDefinition endPointDefinition =
-          orderToOrderItem.GetEndPointDefinition ("Order", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderItems");
+          orderToOrderItem.GetEndPointDefinition (
+              "Order", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderItems");
 
       Assert.IsTrue (_orderClass.IsRelationEndPoint (endPointDefinition));
     }
@@ -276,9 +307,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointFalse ()
     {
       RelationDefinition partnerToPerson =
-          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"];
+          FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"];
       IRelationEndPointDefinition partnerEndPoint =
-          partnerToPerson.GetEndPointDefinition ("Partner", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
+          partnerToPerson.GetEndPointDefinition (
+              "Partner", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
 
       Assert.IsFalse (_orderClass.IsRelationEndPoint (partnerEndPoint));
     }
@@ -294,9 +327,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void IsRelationEndPointWithInheritance ()
     {
       RelationDefinition partnerToPerson =
-          FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"];
+          FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"];
       IRelationEndPointDefinition partnerEndPoint =
-          partnerToPerson.GetEndPointDefinition ("Partner", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
+          partnerToPerson.GetEndPointDefinition (
+              "Partner", "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
 
       Assert.IsTrue (_distributorClass.IsRelationEndPoint (partnerEndPoint));
     }
@@ -304,7 +339,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetPropertyDefinition ()
     {
-      Assert.IsNotNull (_orderClass.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
+      Assert.IsNotNull (
+          _orderClass.GetPropertyDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
     }
 
     [Test]
@@ -317,7 +354,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetInheritedPropertyDefinition ()
     {
-      Assert.IsNotNull (_distributorClass.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
+      Assert.IsNotNull (
+          _distributorClass.GetPropertyDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson"));
     }
 
     [Test]
@@ -520,9 +559,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetMandatoryOppositeEndPointDefinition ()
     {
       IRelationEndPointDefinition oppositeEndPointDefinition =
-          _orderClass.GetMandatoryOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderTicket");
+          _orderClass.GetMandatoryOppositeEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderTicket");
       Assert.IsNotNull (oppositeEndPointDefinition);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order", oppositeEndPointDefinition.PropertyName);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.OrderTicket.Order",
+          oppositeEndPointDefinition.PropertyName);
     }
 
     [Test]
@@ -578,13 +620,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var relationEndPointDefinitions = _orderClass.GetRelationEndPointDefinitions();
 
       IRelationEndPointDefinition customerEndPoint =
-          _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
+          _orderClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
       IRelationEndPointDefinition orderTicketEndPoint =
-          _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderTicket");
+          _orderClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderTicket");
       IRelationEndPointDefinition orderItemsEndPoint =
-          _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderItems");
+          _orderClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderItems");
       IRelationEndPointDefinition officialEndPoint =
-          _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Official");
+          _orderClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Official");
 
       Assert.That (
           relationEndPointDefinitions, Is.EquivalentTo (new[] { customerEndPoint, orderTicketEndPoint, orderItemsEndPoint, officialEndPoint }));
@@ -598,7 +644,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsNotNull (relationEndPointDefinitions);
       Assert.AreEqual (1, relationEndPointDefinitions.Length);
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn", relationEndPointDefinitions[0].PropertyName);
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn",
+          relationEndPointDefinitions[0].PropertyName);
     }
 
     [Test]
@@ -610,14 +657,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           _distributorClass.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn");
       IRelationEndPointDefinition contactPersonEndPoint =
-          _distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
+          _distributorClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Partner.ContactPerson");
       IRelationEndPointDefinition ceoEndPoint =
-          _distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo");
+          _distributorClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.Ceo");
       IRelationEndPointDefinition classWithoutRelatedClassIDColumnAndDerivationEndPoint =
           _distributorClass.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation");
       IRelationEndPointDefinition industrialSectorEndPoint =
-          _distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.IndustrialSector");
+          _distributorClass.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Company.IndustrialSector");
 
       Assert.IsNotNull (relationEndPointDefinitions);
       Assert.That (
@@ -671,7 +721,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       RelationDefinitionCollection clientRelations = clientDefinition.GetRelationDefinitions();
 
       Assert.AreEqual (1, clientRelations.Count);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient", clientRelations[0].ID);
+      Assert.AreEqual (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient", clientRelations[0].ID);
     }
 
     [Test]
@@ -680,7 +731,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
 
       RelationDefinition parentClient =
-          MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient"];
+          MappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient"];
       var clientAnonymousEndPointDefinition = (AnonymousRelationEndPointDefinition) parentClient.GetEndPointDefinition ("Client", null);
 
       Assert.IsFalse (clientDefinition.IsRelationEndPoint (clientAnonymousEndPointDefinition));
@@ -694,7 +746,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       IRelationEndPointDefinition[] endPointDefinitions = clientDefinition.GetMyRelationEndPointDefinitions();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Client.ParentClient"));
     }
 
     [Test]
@@ -705,7 +759,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       IRelationEndPointDefinition[] endPointDefinitions = fileSystemItemDefinition.GetMyRelationEndPointDefinitions();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions,
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
     }
 
     [Test]
@@ -714,9 +771,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
       IRelationEndPointDefinition folderEndPoint =
-          folderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems");
+          folderDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems");
       IRelationEndPointDefinition fileSystemItemEndPoint =
-          folderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder");
+          folderDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder");
 
       Assert.IsTrue (folderDefinition.IsMyRelationEndPoint (folderEndPoint));
       Assert.IsFalse (folderDefinition.IsMyRelationEndPoint (fileSystemItemEndPoint));
@@ -730,7 +789,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       IRelationEndPointDefinition[] endPointDefinitions = folderDefinition.GetMyRelationEndPointDefinitions();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -741,7 +802,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var endPointDefinitions = fileSystemItemDefinition.GetRelationEndPointDefinitions();
 
       Assert.AreEqual (1, endPointDefinitions.Count());
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions,
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
     }
 
     [Test]
@@ -752,8 +816,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var endPointDefinitions = folderDefinition.GetRelationEndPointDefinitions();
 
       Assert.AreEqual (2, endPointDefinitions.Count());
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
-      Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+      Assert.IsTrue (
+          Contains (
+              endPointDefinitions,
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
     }
 
     [Test]
@@ -765,7 +834,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.IsNotNull (relations);
       Assert.AreEqual (1, relations.Count);
-      Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"]);
+      Assert.IsNotNull (
+          relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"]);
     }
 
     [Test]
@@ -777,7 +847,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.IsNotNull (relations);
       Assert.AreEqual (1, relations.Count);
-      Assert.IsNotNull (relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"]);
+      Assert.IsNotNull (
+          relations["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"]);
     }
 
     [Test]
@@ -786,9 +857,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
       Assert.IsNotNull (
-          fileSystemItemDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+          fileSystemItemDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.IsNull (
-          fileSystemItemDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          fileSystemItemDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -797,8 +870,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
       Assert.IsNotNull (
-          folderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNotNull (folderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          folderDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsNotNull (
+          folderDefinition.GetRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -807,8 +883,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
       Assert.IsNotNull (
-          fileSystemItemDefinition.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNull (fileSystemItemDefinition.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          fileSystemItemDefinition.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsNull (
+          fileSystemItemDefinition.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -816,8 +895,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
-      Assert.IsNotNull (folderDefinition.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNotNull (folderDefinition.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+      Assert.IsNotNull (
+          folderDefinition.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsNotNull (
+          folderDefinition.GetRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -828,8 +911,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.AreSame (
           folderDefinition,
-          fileSystemItemDefinition.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNull (fileSystemItemDefinition.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          fileSystemItemDefinition.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+      Assert.IsNull (
+          fileSystemItemDefinition.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -840,10 +926,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.AreSame (
           folderDefinition,
-          folderDefinition.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+          folderDefinition.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.AreSame (
           fileSystemItemDefinition,
-          folderDefinition.GetOppositeClassDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          folderDefinition.GetOppositeClassDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -871,9 +959,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
       Assert.IsNotNull (
-          fileSystemItemDefinition.GetOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+          fileSystemItemDefinition.GetOppositeEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.IsNull (
-          fileSystemItemDefinition.GetOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          fileSystemItemDefinition.GetOppositeEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -890,9 +980,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
       Assert.IsNotNull (
-          folderDefinition.GetMandatoryOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
+          folderDefinition.GetMandatoryOppositeEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.IsNotNull (
-          folderDefinition.GetMandatoryOppositeEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
+          folderDefinition.GetMandatoryOppositeEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
     [Test]
@@ -928,7 +1020,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetMandatoryRelationDefinition ()
     {
-      RelationDefinition relation = _orderClass.GetMandatoryRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
+      RelationDefinition relation =
+          _orderClass.GetMandatoryRelationDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer");
 
       Assert.IsNotNull (relation);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.Customer", relation.ID);
@@ -944,7 +1038,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetMandatoryPropertyDefinition ()
     {
-      Assert.IsNotNull (_orderClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
+      Assert.IsNotNull (
+          _orderClass.GetMandatoryPropertyDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"));
     }
 
     [Test]
@@ -1000,7 +1096,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           _orderClass.Contains (
               ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
                   _orderClass, "PropertyName", "ColumnName")));
-      Assert.IsTrue (_orderClass.Contains (_orderClass["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"]));
+      Assert.IsTrue (
+          _orderClass.Contains (
+              _orderClass["Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.Order.OrderNumber"]));
     }
 
     [Test]
@@ -1094,7 +1192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           .Return (new[] { typeof (Base), typeof (Shadower) });
 
       MappingReflector mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
-      ClassDefinition classDefinition1 = mappingReflector.GetClassDefinitions ()[typeof (Shadower)];
+      ClassDefinition classDefinition1 = mappingReflector.GetClassDefinitions()[typeof (Shadower)];
       ClassDefinition classDefinition2 = classDefinition1.BaseClass;
 
       var propertyDefinition1 =
@@ -1221,14 +1319,132 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void ResolveProperty_MixinProperty ()
+    public void ResolveProperty_InterfaceImplementation_FromInterfaceProperty ()
     {
-      var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
+      var property = typeof (IInterfaceWithProperties).GetProperty ("ImplicitProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
+      var result = _classWithInterface.ResolveProperty (property);
 
-      var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
-          typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
+      var expected = _classWithInterface.GetMandatoryPropertyDefinition (typeof (ClassWithInterface).FullName + ".ImplicitProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_ExplicitInterfaceImplementation_FromInterfaceProperty ()
+    {
+      var property = typeof (IInterfaceWithProperties).GetProperty ("ExplicitManagedProperty");
+
+      var result = _classWithInterface.ResolveProperty (property);
+
+      var expected = _classWithInterface.GetMandatoryPropertyDefinition (
+          typeof (ClassWithInterface).FullName + "." + typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_InterfaceImplementation_FromImplementationProperty ()
+    {
+      var property = typeof (ClassWithInterface).GetProperty ("ImplicitProperty");
+
+      var result = _classWithInterface.ResolveProperty (property);
+
+      var expected = _classWithInterface.GetMandatoryPropertyDefinition (typeof (ClassWithInterface).FullName + ".ImplicitProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_InterfaceImplementation_FromInterfaceProperty_GetAccessorOnly ()
+    {
+      var property = typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithGetAccessor");
+
+      var result = _classWithInterfaceWithMissingAccessors.ResolveProperty (property);
+
+      var expected = _classWithInterfaceWithMissingAccessors.GetMandatoryPropertyDefinition (
+          typeof (ClassWithInterfaceWithMissingAccessors).FullName + ".PropertyWithGetAccessor");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_InterfaceImplementation_FromInterfaceProperty_SetAccessorOnly ()
+    {
+      var property = typeof (IInterfaceWithPropertiesWithMissingAccessors).GetProperty ("PropertyWithSetAccessor");
+
+      var result = _classWithInterfaceWithMissingAccessors.ResolveProperty (property);
+
+      var expected = _classWithInterfaceWithMissingAccessors.GetMandatoryPropertyDefinition (
+          typeof (ClassWithInterfaceWithMissingAccessors).FullName + ".PropertyWithSetAccessor");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_InterfaceImplementation_NotImplemented ()
+    {
+      var property = typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty");
+
+      var result = _classWithInterface.ResolveProperty (property); // does not implement this property
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void ResolveProperty_ExplicitInterfaceImplementation_FromImplementationProperty ()
+    {
+      var property = typeof (ClassWithInterface).GetProperty (
+          typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
+          BindingFlags.Instance | BindingFlags.NonPublic);
+
+      var result = _classWithInterface.ResolveProperty (property);
+
+      var expected = _classWithInterface.GetMandatoryPropertyDefinition (
+          typeof (ClassWithInterface).FullName + "." + typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_MixinProperty_FromInterfaceProperty ()
+    {
+      var property = typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ImplicitProperty");
+
+      var result = _classWithMixinAddingInterface.ResolveProperty (property);
+
+      var expected = _classWithMixinAddingInterface.GetMandatoryPropertyDefinition (typeof (MixinAddingInterfaceWithProperties).FullName + ".ImplicitProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_ExplicitMixinProperty_FromInterfaceProperty ()
+    {
+      var property = typeof (IInterfaceWithPropertiesAddedByMixin).GetProperty ("ExplicitManagedProperty");
+
+      var result = _classWithMixinAddingInterface.ResolveProperty (property);
+
+      var expected = _classWithMixinAddingInterface.GetMandatoryPropertyDefinition (
+          typeof (MixinAddingInterfaceWithProperties).FullName + "." + typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_MixinProperty_FromImplementationProperty ()
+    {
+      var property = typeof (MixinAddingInterfaceWithProperties).GetProperty ("ImplicitProperty");
+
+      var result = _classWithMixinAddingInterface.ResolveProperty (property);
+
+      var expected = _classWithMixinAddingInterface.GetMandatoryPropertyDefinition (typeof (MixinAddingInterfaceWithProperties).FullName + ".ImplicitProperty");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveProperty_ExplicitMixinProperty_FromImplementationProperty ()
+    {
+      var property = typeof (MixinAddingInterfaceWithProperties).GetProperty (
+          typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
+          BindingFlags.Instance | BindingFlags.NonPublic);
+
+      var result = _classWithMixinAddingInterface.ResolveProperty (property);
+
+      var expected = _classWithMixinAddingInterface.GetMandatoryPropertyDefinition (
+          typeof (MixinAddingInterfaceWithProperties).FullName + "." + typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty");
       Assert.That (result, Is.SameAs (expected));
     }
 
@@ -1310,6 +1526,82 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");
       Assert.That (result, Is.SameAs (expected));
+    }
+
+
+    private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterface ()
+    {
+      var classWithInterface = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
+      classWithInterface.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithInterface,
+              typeof (ClassWithInterface),
+              "ImplicitProperty",
+              "ImplicitProperty",
+              typeof (string),
+              false,
+              100));
+      classWithInterface.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithInterface,
+              typeof (ClassWithInterface),
+              typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
+              "ExplicitManagedProperty",
+              typeof (string),
+              false,
+              100));
+      return classWithInterface;
+    }
+
+    private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
+    {
+      var classWithInterfaceWithMissingAccessors =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
+      classWithInterfaceWithMissingAccessors.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithInterfaceWithMissingAccessors,
+              typeof (ClassWithInterfaceWithMissingAccessors),
+              "PropertyWithGetAccessor",
+              "PropertyWithGetAccessor",
+              typeof (string),
+              false,
+              100));
+      classWithInterfaceWithMissingAccessors.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithInterfaceWithMissingAccessors,
+              typeof (ClassWithInterfaceWithMissingAccessors),
+              "PropertyWithSetAccessor",
+              "PropertyWithSetAccessor",
+              typeof (string),
+              false,
+              100));
+      return classWithInterfaceWithMissingAccessors;
+    }
+
+    private ReflectionBasedClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
+    {
+      var classWithMixinAddingInterface =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
+      classWithMixinAddingInterface.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithMixinAddingInterface,
+              typeof (MixinAddingInterfaceWithProperties),
+              "ImplicitProperty",
+              "ImplicitProperty",
+              typeof (string),
+              false,
+              100));
+      classWithMixinAddingInterface.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithMixinAddingInterface,
+              typeof (MixinAddingInterfaceWithProperties),
+              typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
+              "ExplicitManagedProperty",
+              typeof (string),
+              false,
+              100));
+      return classWithMixinAddingInterface;
     }
   }
 }
