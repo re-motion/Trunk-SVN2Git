@@ -45,13 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
                   typeof (DerivedInheritanceRootClass2)
               });
       MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
-      var conf = new MappingConfiguration (reflector);
-      conf.Validate ();
+      var mappingConfiguration = new MappingConfiguration (reflector);
+      mappingConfiguration.Validate ();
 
-      Assert.That (conf.RelationDefinitions[0].ID, 
+      Assert.That (mappingConfiguration.RelationDefinitions[0].ID, 
         Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1->"
                    +"Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
-      Assert.That (conf.RelationDefinitions[1].ID, 
+      Assert.That (mappingConfiguration.RelationDefinitions[1].ID, 
         Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2->"
                    +"Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
     }
