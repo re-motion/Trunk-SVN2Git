@@ -15,56 +15,53 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   [TestFixture]
   public class ReflectionBasedNameResolverTest : MappingReflectionTestBase
   {
-    private PropertyInfo _orderNumberProperty;
-    private PropertyInfo _overriddenProperty;
-    private PropertyInfo _overriddenPropertyOnBase;
-    private PropertyInfo _propertyInGenericClass;
-    private PropertyInfo _propertyInOpenGenericClass;
     private ReflectionBasedNameResolver _resolver;
+    private IPropertyInformation _propertyInformationStub;
 
     public override void SetUp ()
     {
       base.SetUp();
       _resolver = new ReflectionBasedNameResolver();
-      _orderNumberProperty = typeof (Order).GetProperty ("OrderNumber");
-      _overriddenProperty = typeof (DerivedClassWithMixedProperties).GetProperty ("Int32");
-      _overriddenPropertyOnBase = typeof (ClassWithMixedProperties).GetProperty ("Int32");
-      _propertyInGenericClass = typeof (ClosedGenericClassWithManySideRelationProperties).GetProperty ("BaseUnidirectional");
-      _propertyInOpenGenericClass = typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).GetProperty ("BaseUnidirectional");
+      _propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
     }
 
     [Test]
     public void GetPropertyName ()
     {
-      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_orderNumberProperty));
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("OrderNumber");
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (Order));
+      string name = _resolver.GetPropertyName (_propertyInformationStub);
       Assert.That (name, Is.EqualTo (typeof (Order).FullName + ".OrderNumber"));
     }
 
     [Test]
     public void GetPropertyName_ForOverriddenProperty ()
     {
-      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_overriddenProperty));
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("Int32");
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (ClassWithMixedProperties));
+      string name = _resolver.GetPropertyName (_propertyInformationStub);
       Assert.That (name, Is.EqualTo (typeof (ClassWithMixedProperties).FullName + ".Int32"));
     }
 
     [Test]
     public void GetPropertyName_ForPropertyInGenericType ()
     {
-      string name = _resolver.GetPropertyName (new PropertyInfoAdapter(_propertyInGenericClass));
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("BaseUnidirectional");
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>));
+      string name = _resolver.GetPropertyName (_propertyInformationStub);
       Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
     }
   }
