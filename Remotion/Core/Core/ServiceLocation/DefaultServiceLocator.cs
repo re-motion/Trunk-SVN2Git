@@ -65,21 +65,17 @@ namespace Remotion.ServiceLocation
   public class DefaultServiceLocator : IServiceLocator
   {
     private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
-
-    // TODO Review 3107: Since this class is not really meant for being subclasses, the protected cache just for testing isn't really pretty. Check the review comments for the tests; then make this field private and remove the testable subclass.
-    protected readonly InterlockedCache<Type, Func<object>> Cache = new InterlockedCache<Type, Func<object>>();
-
-    // TODO Review 3107: Add argument checks for all public methods. (Although all of them use the same private method that has an argument check, we strive to have all exceptions thrown as early as possible.)
+    private readonly InterlockedCache<Type, Func<object>> Cache = new InterlockedCache<Type, Func<object>>();
 
     public object GetInstance (Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       var instance = GetInstanceOrNull (serviceType);
       if (instance == null)
       {
-        // TODO Review 3107: Change exception message: "Cannot get a concrete implementation of type '{0}': ..."
         string message = string.Format (
-            "Cannot get a version-dependent implementation of type '{0}': " +
-            "Expected 'ConcreteImplementationAttribute' could not be found.",
+            "Cannot get a concrete implementation of type '{0}': Expected 'ConcreteImplementationAttribute' could not be found.",
             serviceType.FullName);
         throw new ActivationException (message);
       }
@@ -89,11 +85,15 @@ namespace Remotion.ServiceLocation
 
     public object GetInstance (Type serviceType, string key)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       return GetInstance (serviceType);
     }
 
     public IEnumerable<object> GetAllInstances (Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       var instance = GetInstanceOrNull (serviceType);
       if (instance != null)
         return new[] { instance };
@@ -122,6 +122,8 @@ namespace Remotion.ServiceLocation
 
     object IServiceProvider.GetService (Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
       return GetInstanceOrNull (serviceType);
     }
 
@@ -132,8 +134,7 @@ namespace Remotion.ServiceLocation
 
       Func<object> factory = Cache.GetOrCreateValue (serviceType, t => instanceFactory);
       if (factory != instanceFactory)
-        // TODO Review 3107: Change exception message to include the service type (string.Format("Register cannot ... service type: {0}", serviceType))
-        throw new InvalidOperationException ("Register cannot be called after GetInstance for a given service type.");
+        throw new InvalidOperationException (string.Format ("Register cannot be called after GetInstance for service type: {0}", serviceType.Name));
     }
 
     public void Register (Type serviceType, Type concreteImplementationType, LifetimeKind lifetime)
@@ -147,14 +148,14 @@ namespace Remotion.ServiceLocation
 
     public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
     {
+      ArgumentUtility.CheckNotNull ("serviceConfigurationEntry", serviceConfigurationEntry);
+
       var factory = CreateInstanceFactory (serviceConfigurationEntry);
       Register (serviceConfigurationEntry.ServiceType, factory);
     }
 
     private object GetInstanceOrNull (Type serviceType)
     {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-
       return Cache.GetOrCreateValue (serviceType, CreateInstanceFactory)();
     }
 
