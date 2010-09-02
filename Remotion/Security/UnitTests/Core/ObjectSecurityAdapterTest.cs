@@ -138,18 +138,15 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccesor_GetGetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
     {
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod ()).Return (null);
-      Expect.Call (
-          _mockPermissionProvider.GetRequiredMethodPermissions (
-              Arg.Is (typeof (SecurableObject)), Arg<IMethodInformation>.Matches (mi => mi.GetType () == typeof (NullMethodInformation)))).Return (
-                  new Enum[] { TestAccessTypes.First });
-      ExpectExpectObjectSecurityStrategyHasAccess (false);
-      _mocks.ReplayAll ();
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (null);
+      ExpectGetRequiredMethodPermissions (new NullMethodInformation());
+      ExpectExpectObjectSecurityStrategyHasAccess (true);
+      _mocks.ReplayAll();
 
       bool hasAccess = _securityAdapter.HasAccessOnGetAccessor (_securableObject, _mockPropertyInformation);
 
-      _mocks.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      _mocks.VerifyAll();
+      Assert.IsTrue (hasAccess);
     }
 
     [Test]
@@ -200,20 +197,17 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccesor_GetSetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
     {
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod ()).Return (null);
-      Expect.Call (
-          _mockPermissionProvider.GetRequiredMethodPermissions (
-              Arg.Is (typeof (SecurableObject)), Arg<IMethodInformation>.Matches (mi => mi.GetType () == typeof (NullMethodInformation)))).Return (
-                  new Enum[] { TestAccessTypes.First });
-      ExpectExpectObjectSecurityStrategyHasAccess (false);
-      _mocks.ReplayAll ();
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (null);
+      ExpectGetRequiredMethodPermissions (new NullMethodInformation());
+      ExpectExpectObjectSecurityStrategyHasAccess (true);
+      _mocks.ReplayAll();
 
       bool hasAccess = _securityAdapter.HasAccessOnSetAccessor (_securableObject, _mockPropertyInformation);
 
-      _mocks.VerifyAll ();
-      Assert.IsFalse (hasAccess);
+      _mocks.VerifyAll();
+      Assert.IsTrue (hasAccess);
     }
-    
+
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
       AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.First) };
@@ -222,8 +216,8 @@ namespace Remotion.Security.UnitTests.Core
 
     private void ExpectGetRequiredMethodPermissions (IMethodInformation methodInformation)
     {
-      Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation)).Return (
-          new Enum[] { TestAccessTypes.First });
+      Expect.Call (_mockPermissionProvider.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation))
+          .Return (new Enum[] { TestAccessTypes.First });
     }
   }
 }
