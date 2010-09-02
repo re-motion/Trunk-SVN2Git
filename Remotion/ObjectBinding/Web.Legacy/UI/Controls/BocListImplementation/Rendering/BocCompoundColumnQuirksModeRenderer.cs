@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="Web.UI.Controls.BocListImplementation.Rendering.BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCompoundColumnQuirksModeRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, CssClassContainer cssClasses)
+    public BocCompoundColumnQuirksModeRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses)
         : base (context, list, columnDefinition, cssClasses)
     {
     }

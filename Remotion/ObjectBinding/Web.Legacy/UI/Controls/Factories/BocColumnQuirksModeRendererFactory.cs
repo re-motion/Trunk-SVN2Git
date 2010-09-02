@@ -21,7 +21,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
@@ -42,47 +41,47 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocSimpleColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocSimpleColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCompoundColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCompoundColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCommandColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCommandColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocCustomColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCustomColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCustomColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocDropDownMenuColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocDropDownMenuColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocRowEditModeColumnQuirksModeRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocRowEditModeColumnQuirksModeRenderer (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      return new BocIndexColumnQuirksModeRenderer (context, list, CssClassContainer.Instance);
+      return new BocIndexColumnQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance);
     }
 
     IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      return new BocSelectorColumnQuirksModeRenderer (context, list, CssClassContainer.Instance);
+      return new BocSelectorColumnQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance);
     }
   }
 }

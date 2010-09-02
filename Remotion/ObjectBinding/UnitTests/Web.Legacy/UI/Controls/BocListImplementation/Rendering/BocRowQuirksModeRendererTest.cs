@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -47,7 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderTitlesRow ()
     {
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -64,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -73,8 +72,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
       var thIndex = Html.GetAssertedChildElement (tr, "th", 0);
-      Html.AssertAttribute (thIndex, "class", CssClassContainer.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertAttribute (thIndex, "class", CssClassContainer.Instance.TitleCellIndex, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (thIndex, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (thIndex, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCellIndex, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       Html.GetAssertedChildElement (tr, "th", 1);
     }
@@ -85,7 +84,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
 
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -101,13 +100,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderDataRow ()
     {
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
 
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
-      Html.AssertAttribute (tr, "class", CssClassContainer.Instance.DataRow);
+      Html.AssertAttribute (tr, "class", BocListQuirksModeCssClassDefinition.Instance.DataRow);
 
       Html.GetAssertedChildElement (tr, "td", 0);
     }
@@ -117,13 +116,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.SelectorControlCheckedState.Add (0);
 
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
 
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
-      Html.AssertAttribute (tr, "class", CssClassContainer.Instance.DataRowSelected);
+      Html.AssertAttribute (tr, "class", BocListQuirksModeCssClassDefinition.Instance.DataRowSelected);
 
       Html.GetAssertedChildElement (tr, "td", 0);
     }
@@ -134,7 +133,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
-      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubServiceLocator ());
       renderer.RenderEmptyListDataRow (Html.Writer);
 
       var document = Html.GetResultDocument();

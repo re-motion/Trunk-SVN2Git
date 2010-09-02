@@ -22,7 +22,6 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -72,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubQuirksModeRenderer (), new StubQuirksModeRenderer (), new StubQuirksModeRenderer ());
+      var renderer = new BocListQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubQuirksModeRenderer (), new StubQuirksModeRenderer (), new StubQuirksModeRenderer ());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

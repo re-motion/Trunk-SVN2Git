@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -71,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowQuirksModeRenderer ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubRowQuirksModeRenderer ());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -84,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowQuirksModeRenderer ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubRowQuirksModeRenderer ());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

@@ -21,7 +21,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
@@ -36,14 +35,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
       return new BocListQuirksModeRenderer (
           context,
           list,
-          CssClassContainer.Instance,
+          BocListQuirksModeCssClassDefinition.Instance,
           new BocListTableBlockQuirksModeRenderer (
               context,
               list,
-              CssClassContainer.Instance,
-              new BocRowQuirksModeRenderer (context, list, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockQuirksModeRenderer (context, list, CssClassContainer.Instance),
-          new BocListMenuBlockQuirksModeRenderer (context, list, CssClassContainer.Instance)
+              BocListQuirksModeCssClassDefinition.Instance,
+              new BocRowQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance, serviceLocator)),
+          new BocListNavigationBlockQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance),
+          new BocListMenuBlockQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance)
           );
     }
   }

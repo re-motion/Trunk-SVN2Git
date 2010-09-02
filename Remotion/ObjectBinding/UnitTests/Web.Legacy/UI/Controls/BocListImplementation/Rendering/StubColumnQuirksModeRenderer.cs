@@ -20,14 +20,13 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using System.Web;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   public class StubColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<StubColumnDefinition>
   {
     public StubColumnQuirksModeRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
-        : base (context, list, columnDefinition, CssClassContainer.Instance)
+        : base (context, list, columnDefinition, BocListQuirksModeCssClassDefinition.Instance)
     {
     }
 

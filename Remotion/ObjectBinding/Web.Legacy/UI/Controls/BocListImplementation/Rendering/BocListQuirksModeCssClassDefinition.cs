@@ -22,12 +22,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
   /// </summary>
-  public class CssClassContainer
+  public class BocListQuirksModeCssClassDefinition
   {
-    private static readonly DoubleCheckedLockingContainer<CssClassContainer> s_instance =
-        new DoubleCheckedLockingContainer<CssClassContainer> (() => new CssClassContainer());
+    private static readonly DoubleCheckedLockingContainer<BocListQuirksModeCssClassDefinition> s_instance =
+        new DoubleCheckedLockingContainer<BocListQuirksModeCssClassDefinition> (() => new BocListQuirksModeCssClassDefinition());
 
-    public static CssClassContainer Instance
+    public static BocListQuirksModeCssClassDefinition Instance
     {
       get { return s_instance.Value; }
       set { s_instance.Value = value; }

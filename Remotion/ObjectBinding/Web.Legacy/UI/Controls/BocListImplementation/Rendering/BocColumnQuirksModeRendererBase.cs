@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
 
     private readonly TBocColumnDefinition _column;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListQuirksModeCssClassDefinition _cssClasses;
     private readonly int _columnIndex;
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
@@ -61,8 +61,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
     /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
+    /// <param name="cssClasses">The <see cref="BocListQuirksModeCssClassDefinition"/> containing the CSS classes to apply to the rendered elements.</param>
+    protected BocColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _columnIndex; }
     }
 
-    public CssClassContainer CssClasses
+    public BocListQuirksModeCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

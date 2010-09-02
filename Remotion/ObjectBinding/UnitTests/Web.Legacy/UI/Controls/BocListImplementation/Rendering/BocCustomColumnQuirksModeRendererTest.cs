@@ -27,7 +27,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -63,12 +62,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, CssClassContainer.Instance);
+          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
@@ -81,12 +80,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, CssClassContainer.Instance);
+          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
@@ -99,12 +98,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, CssClassContainer.Instance);
+          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
     }
   }
 }

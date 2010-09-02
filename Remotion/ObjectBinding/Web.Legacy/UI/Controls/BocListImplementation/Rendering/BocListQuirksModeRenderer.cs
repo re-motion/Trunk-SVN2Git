@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
     private readonly IBocListNavigationBlockRenderer _navigationBlockRenderer;
     private readonly IBocListTableBlockRenderer _tableBlockRenderer;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
     /// <summary>
     /// Initializes the renderer with the <see cref="BocList"/> to render and the <see cref="HtmlTextWriter"/> to render it to,
@@ -50,14 +50,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
     /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
-    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
+    /// <param name="cssClasses">The <see cref="BocListQuirksModeCssClassDefinition"/> containing the CSS classes to apply to the rendered elements.</param>
     /// <param name="tableBlockRenderer">The <see cref="IBocListTableBlockRenderer"/> responsible for rendering the table-part of the <see cref="BocList"/>.</param>
     /// <param name="navigationBlockRenderer">The <see cref="IBocListNavigationBlockRenderer"/> responsible for rendering the navigation-part of the <see cref="BocList"/>.</param>
     /// <param name="menuBlockRenderer">The <see cref="IBocListMenuBlockRenderer"/> responsible for rendering the menu-part of the <see cref="BocList"/>.</param>
     public BocListQuirksModeRenderer (
         HttpContextBase context,
         IBocList list,
-        CssClassContainer cssClasses,
+        BocListQuirksModeCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
@@ -100,7 +100,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private Action<HtmlTextWriter> RenderTopLevelColumnGroup { get; set; }
 
-    public CssClassContainer CssClasses
+    public BocListQuirksModeCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

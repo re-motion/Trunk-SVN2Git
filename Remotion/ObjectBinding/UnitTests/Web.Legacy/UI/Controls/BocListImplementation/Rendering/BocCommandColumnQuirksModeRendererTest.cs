@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -53,13 +52,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -71,13 +70,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -95,13 +94,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Icon.Width = new Unit (16, UnitType.Pixel);
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -117,16 +116,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
 
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
+      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
 
       Html.AssertTextNode (span, "TestCommand", 0);
     }

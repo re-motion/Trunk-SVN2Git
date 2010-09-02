@@ -21,7 +21,6 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -46,13 +45,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
+      Html.AssertAttribute (div, "class", BocListQuirksModeCssClassDefinition.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -85,13 +84,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
+      Html.AssertAttribute (div, "class", BocListQuirksModeCssClassDefinition.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -124,13 +123,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
+      Html.AssertAttribute (div, "class", BocListQuirksModeCssClassDefinition.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -163,13 +162,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
+      Html.AssertAttribute (div, "class", BocListQuirksModeCssClassDefinition.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 

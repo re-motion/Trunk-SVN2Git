@@ -25,7 +25,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using CssClassContainer = Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.CssClassContainer;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -85,13 +84,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderTitleCellNoSorting ()
     {
       IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, CssClassContainer.Instance);
+          HttpContext, List, (BocSimpleColumnDefinition) Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderTitleCell (Html.Writer, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
 
       var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", CssClassContainer.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (th, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       Assert.Less (0, th.ChildNodes.Count);
@@ -108,13 +107,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
         string iconAltText)
     {
       IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, CssClassContainer.Instance);
+          HttpContext, List, (BocSimpleColumnDefinition) Column, BocListQuirksModeCssClassDefinition.Instance);
       renderer.RenderTitleCell (Html.Writer, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();
 
       var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", CssClassContainer.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (th, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       Assert.Less (0, th.ChildNodes.Count);
@@ -122,7 +121,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0);
 
       var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1);
-      Html.AssertAttribute (sortOrderSpan, "class", CssClassContainer.Instance.SortingOrder, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (sortOrderSpan, "class", BocListQuirksModeCssClassDefinition.Instance.SortingOrder, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelperBase.AttributeValueCompareMode.Contains);
