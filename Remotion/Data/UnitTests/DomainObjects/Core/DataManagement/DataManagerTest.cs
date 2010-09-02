@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
 
-      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber");
+      var propertyName = ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber");
       _dataManager.DataContainerMap[order1.ID].PropertyValues[propertyName].Value = 100;
 
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Changed));

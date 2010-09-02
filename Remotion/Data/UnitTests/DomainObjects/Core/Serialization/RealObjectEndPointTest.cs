@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Computer.GetObject (DomainObjectIDs.Computer1);
       _endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          new RelationEndPointID (DomainObjectIDs.Computer1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"))];
+          new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"))];
     }
 
     [Test]

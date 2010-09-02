@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     public string GetPropertyName (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-      
-      return GetPropertyName (propertyInformation.GetOriginalDeclaringType(), propertyInformation.Name);
+
+      return ReflectionMappingHelper.GetPropertyName (propertyInformation.GetOriginalDeclaringType (), propertyInformation.Name);
     }
 
     /// <summary>
@@ -52,16 +52,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
 
       return s_propertyNameCache.GetOrCreateValue (
-          Tuple.Create (originalDeclaringType, shortPropertyName), 
-          key => GetPropertyNameInternal (key.Item1, key.Item2));
+          Tuple.Create (originalDeclaringType, shortPropertyName),
+          key => ReflectionMappingHelper.GetPropertyName (key.Item1, key.Item2));
     }
 
-    private string GetPropertyNameInternal (Type originalDeclaringType, string shortPropertyName)
-    {
-      if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
-        originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
-
-      return originalDeclaringType.FullName + "." + shortPropertyName;
-    }
+    
   }
 }

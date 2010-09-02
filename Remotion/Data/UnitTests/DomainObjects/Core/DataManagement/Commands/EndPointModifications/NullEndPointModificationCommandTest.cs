@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _mockRepository = new MockRepository ();
       _id = new RelationEndPointID (
           DomainObjectIDs.Computer1,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
+          ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
 
       _endPointMock = _mockRepository.StrictMock<IEndPoint> ();
 

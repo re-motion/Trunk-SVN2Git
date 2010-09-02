@@ -228,6 +228,7 @@
     <Compile Include="Mapping\ColumnDefinition.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
+    <Compile Include="Mapping\ReflectionMappingHelper.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
     <Compile Include="PropertyChangeEventArgs.cs" />

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [Test]
     public void Import_DeserializesData ()
     {
-      string orderNumberIdentifier = Configuration.NameResolver.GetPropertyName (typeof (Order), "OrderNumber");
+      string orderNumberIdentifier = ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber");
 
       DataContainer expectedContainer1 = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       DataContainer expectedContainer2 = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;

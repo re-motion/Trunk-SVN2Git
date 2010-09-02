@@ -1001,7 +1001,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private string GetStorageClassPropertyName (string shortName)
     {
-      return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
+      return ReflectionMappingHelper.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
     }
 
     private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)

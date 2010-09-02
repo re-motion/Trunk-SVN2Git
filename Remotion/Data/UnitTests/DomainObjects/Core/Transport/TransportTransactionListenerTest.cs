@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
       var source = (Computer) _transporter.GetTransportedObject(DomainObjectIDs.Computer1);
       _listener.PropertyValueChanging (ClientTransactionMock, source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+          source.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
       Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction().GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
       _listener.PropertyValueChanging (ClientTransactionMock, source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+          source.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 
     [Test]

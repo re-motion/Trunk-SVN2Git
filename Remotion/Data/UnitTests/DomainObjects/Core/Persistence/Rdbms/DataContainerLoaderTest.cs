@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.AreEqual (dataContainer.ClassDefinition.GetPropertyDefinitions().Count, dataContainer.PropertyValues.Count);
 
       Assert.AreEqual (
-          1, dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber")].Value);
+          1, dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber")].Value);
       Assert.AreEqual (
           DomainObjectIDs.Customer1,
-          dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "Customer")].Value);
+          dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Order), "Customer")].Value);
     }
 
     [Test]
@@ -109,10 +109,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.AreEqual (dataContainers[0].ClassDefinition.GetPropertyDefinitions().Count, dataContainers[0].PropertyValues.Count);
 
       Assert.AreEqual (
-          1, dataContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber")].Value);
+          1, dataContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber")].Value);
       Assert.AreEqual (
           DomainObjectIDs.Customer1,
-          dataContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "Customer")].Value);
+          dataContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Order), "Customer")].Value);
     }
 
     [Test]
@@ -250,10 +250,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.AreEqual (classDefinition.GetPropertyDefinitions().Count, sortedContainers[0].PropertyValues.Count);
       Assert.AreEqual (
-          1, sortedContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Position")].Value);
+          1, sortedContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Position")].Value);
       Assert.AreEqual (
           DomainObjectIDs.Order1,
-          sortedContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order")].Value);
+          sortedContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order")].Value);
     }
 
     [Test]
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.IsNotNull (classDefinition.GetEntityName());
 
       DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
-          classDefinition, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order"), DomainObjectIDs.Order1);
+          classDefinition, ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"), DomainObjectIDs.Order1);
       List<DataContainer> sortedContainers = GetSortedContainers (dataContainers.Cast<DataContainer>());
 
       Assert.AreEqual (2, sortedContainers.Count);
@@ -323,10 +323,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.AreEqual (classDefinition.GetPropertyDefinitions().Count, sortedContainers[0].PropertyValues.Count);
       Assert.AreEqual (
-          1, sortedContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Position")].Value);
+          1, sortedContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Position")].Value);
       Assert.AreEqual (
           DomainObjectIDs.Order1,
-          sortedContainers[0].PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order")].Value);
+          sortedContainers[0].PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order")].Value);
     }
 
     [Test]
@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
             loader.Provider.Connect();
 
             loader.LoadDataContainersByRelatedID (
-                classDefinition, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order"), DomainObjectIDs.Order1);
+                classDefinition, ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"), DomainObjectIDs.Order1);
           },
           delegate (RdbmsProvider provider)
           {
@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.IsNotNull (classDefinition.GetEntityName());
 
       var relatedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      var relationPropertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order");
+      var relationPropertyName = ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order");
       var relationPropertyDefinition = classDefinition.GetPropertyDefinition (relationPropertyName);
 
       IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
           classDefinition,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "EmployeeTransactionProperty"),
+          ReflectionMappingHelper.GetPropertyName (typeof (Computer), "EmployeeTransactionProperty"),
           DomainObjectIDs.Computer1);
 
       Assert.That (dataContainers, Is.Empty);
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         var domainObjectIDs = new DomainObjectIDs();
         DataContainerCollection dataContainers = loader.LoadDataContainersByRelatedID (
             classDefinition,
-            MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (DomainBase), "Client"),
+            ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),
             domainObjectIDs.Client);
 
         Assert.AreEqual (4, dataContainers.Count);
@@ -446,7 +446,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         var domainObjectIDs = new DomainObjectIDs();
         loader.LoadDataContainersByRelatedID (
             classDefinition,
-            MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (DomainBase), "Client"),
+            ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),
             domainObjectIDs.Client);
 
         _mockRepository.VerifyAll();

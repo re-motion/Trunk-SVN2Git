@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Employee, Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].Value, Is.Null);
+      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].Value, Is.Null);
     }
 
     [Test]
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Properties[typeof (Computer), "Employee"].GetOriginalValue<Employee> (), Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].OriginalValue, Is.Null);
+      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].OriginalValue, Is.Null);
     }
 
     [Test]

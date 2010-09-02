@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       byte[] binaryData = GetBinaryDataForChangedObject (
           DomainObjectIDs.ClassWithAllDataTypes1,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"),
+          ReflectionMappingHelper.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"),
           12);
       ModifyDatabase (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete());
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       byte[] binaryData = GetBinaryDataForChangedObject (
           DomainObjectIDs.ClassWithAllDataTypes1,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"),
+          ReflectionMappingHelper.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"),
           12);
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     public void ChangedBySource_PropertyValue ()
     {
       byte[] binaryData = GetBinaryDataForChangedObject (
-          DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber"), 2);
+          DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber"), 2);
 
       var imported = DomainObjectTransporterTestHelper.ImportObjects (binaryData);
 

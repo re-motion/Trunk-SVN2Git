@@ -65,8 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (dataContainer.Timestamp, deserializedDataContainer.Timestamp);
       Assert.AreSame (dataContainer.DomainObject, deserializedDataContainer.DomainObject);
       Assert.AreEqual (StateType.Changed, deserializedDataContainer.State);
-      Assert.AreEqual ("abc", deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")].Value);
-      Assert.AreEqual (employee.ID, deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].Value);
+      Assert.AreEqual ("abc", deserializedDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")].Value);
+      Assert.AreEqual (employee.ID, deserializedDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].Value);
     }
 
     [Test]

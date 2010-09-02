@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForComputer4);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.IsNull (item.TransportItem.Properties[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")]);
+      Assert.IsNull (item.TransportItem.Properties[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")]);
     }
 
     [Test]

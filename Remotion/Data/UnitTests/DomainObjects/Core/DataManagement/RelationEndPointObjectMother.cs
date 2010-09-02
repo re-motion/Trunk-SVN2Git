@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
-      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (objectID.ClassDefinition.ClassType, shortPropertyName);
+      var propertyName = ReflectionMappingHelper.GetPropertyName(objectID.ClassDefinition.ClassType, shortPropertyName);
       return new RelationEndPointID (objectID, propertyName);
     }
 

@@ -199,8 +199,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Assert.AreEqual (expectedTicketID, dataContainer.ID);
       Assert.AreEqual (expectedTimeStamp, dataContainer.Timestamp);
-      Assert.AreEqual (expectedFileName, dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderTicket), "FileName")].Value);
-      Assert.AreEqual (expectedRelatedOrderID, dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderTicket), "Order")].Value);
+      Assert.AreEqual (expectedFileName, dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderTicket), "FileName")].Value);
+      Assert.AreEqual (expectedRelatedOrderID, dataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (OrderTicket), "Order")].Value);
     }
   }
 }

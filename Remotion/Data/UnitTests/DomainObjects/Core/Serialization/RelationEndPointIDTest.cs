@@ -19,6 +19,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       base.SetUp();
 
-      _id = new RelationEndPointID (DomainObjectIDs.Computer1, Configuration.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
+      _id = new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
     }
 
     [Test]

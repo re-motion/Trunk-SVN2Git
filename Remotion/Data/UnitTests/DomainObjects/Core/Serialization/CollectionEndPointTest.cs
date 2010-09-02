@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       _endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          new RelationEndPointID (DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"))];
+          new RelationEndPointID (DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"))];
     }
 
     [Test]
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
       using (deserializedTuple.Item1.EnterDiscardingScope ())
       {
-        var propertyName = Configuration.NameResolver.GetPropertyName (typeof (IndustrialSector), "Companies");
+        var propertyName = ReflectionMappingHelper.GetPropertyName (typeof (IndustrialSector), "Companies");
         var endPointID = new RelationEndPointID (industrialSector.ID, propertyName);
         var endPoint = ((ClientTransactionMock)ClientTransaction.Current).DataManager.RelationEndPointMap[endPointID];
         Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedTuple.Item2.Companies), Is.SameAs (endPoint));
