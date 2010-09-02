@@ -16,19 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.FunctionalProgramming;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary><see cref="ClassDefinition"/> used when loading the mapping from the reflection meta data.</summary>
   [Serializable]
-  public class ReflectionBasedClassDefinition: ClassDefinition
+  public class ReflectionBasedClassDefinition : ClassDefinition
   {
     private static void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
     {
@@ -58,21 +55,31 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     [NonSerialized]
     private readonly bool _isAbstract;
+
     [NonSerialized]
     private readonly Type _classType;
+
     [NonSerialized]
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
     [NonSerialized]
     private readonly ReflectionBasedClassDefinition _baseClass;
+
     [NonSerialized]
     private ClassDefinitionCollection _derivedClasses;
 
-    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, IPersistentMixinFinder persistentMixinFinder)
+    public ReflectionBasedClassDefinition (
+        string id,
+        string entityName,
+        string storageProviderID,
+        Type classType,
+        bool isAbstract,
+        ReflectionBasedClassDefinition baseClass,
+        IPersistentMixinFinder persistentMixinFinder)
         : base (id, entityName, storageProviderID)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
-      ArgumentUtility.CheckNotNull ("persistentMixins", persistentMixinFinder);
+      ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
       if (!classType.IsSubclassOf (typeof (DomainObject)))
         throw CreateMappingException ("Type '{0}' of class '{1}' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.", classType, ID);
 

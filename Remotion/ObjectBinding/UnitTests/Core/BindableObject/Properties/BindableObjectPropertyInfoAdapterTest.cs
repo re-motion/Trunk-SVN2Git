@@ -625,8 +625,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     {
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
 
-      var getMethod = property.GetGetMethod(true);
+      var getMethod = ((MethodInfoAdapter) bindableObjectPropertyInfoAdapter.GetGetMethod()).MethodInfo;
 
       var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
       Assert.That (getMethod, Is.Not.Null);
@@ -636,10 +637,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     [Test]
     public void GetGetMethod_NonExistingGetter_ReturnsNull ()
     {
-      var propertyInfoMock = MockRepository.GenerateMock<PropertyInfo>();
-      propertyInfoMock.Expect (mock => mock.GetGetMethod (true)).Return (null);
-
-      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfoMock, null);
+      var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("PropertyWithNoGetter");
+      var adapter = new BindableObjectPropertyInfoAdapter (property);
 
       Assert.That (adapter.GetGetMethod(), Is.Null);
     }
@@ -659,8 +658,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     {
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
 
-      var getMethod = property.GetSetMethod (true);
+      var getMethod = ((MethodInfoAdapter) bindableObjectPropertyInfoAdapter.GetSetMethod ()).MethodInfo;
 
       var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
       Assert.That (getMethod, Is.Not.Null);
@@ -670,12 +670,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     [Test]
     public void GetSetMethod_NonExistingSetter_ReturnsNull ()
     {
-      var propertyInfoMock = MockRepository.GenerateMock<PropertyInfo>();
-      propertyInfoMock.Expect (mock => mock.GetSetMethod (true)).Return (null);
+      var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("PropertyWithNoSetter");
+      var adapter = new BindableObjectPropertyInfoAdapter (property);
 
-      var adapter = new BindableObjectPropertyInfoAdapter (propertyInfoMock, null);
-
-      Assert.That (adapter.GetSetMethod(), Is.Null);
+      Assert.That (adapter.GetSetMethod (), Is.Null);
     }
 
     private void AssertCanSet (BindableObjectPropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
