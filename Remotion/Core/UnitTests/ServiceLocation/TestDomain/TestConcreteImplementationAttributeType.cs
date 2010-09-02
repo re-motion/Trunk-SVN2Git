@@ -21,8 +21,5 @@ namespace Remotion.UnitTests.ServiceLocation.TestDomain
   public class TestConcreteImplementationAttributeType
       : ITestInstanceConcreteImplementationAttributeType, ITestSingletonConcreteImplementationAttributeType
   {
-    public TestConcreteImplementationAttributeType ()
-    {
-    }
   }
 }

@@ -21,8 +21,8 @@ using Remotion.Implementation;
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator.Current"/>, specifically the <see cref="ServiceLocator"/>
-  /// property. 
+  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator.Current"/>, specifically the 
+  /// <see cref="ServiceLocator.Current"/> property. 
   /// </summary>
   /// <remarks>
   /// Accessing <see cref="ServiceLocator"/> will always lead to a <see cref="Current"/> if no service locator is 

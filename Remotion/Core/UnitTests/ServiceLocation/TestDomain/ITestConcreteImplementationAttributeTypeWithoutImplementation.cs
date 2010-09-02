@@ -20,7 +20,7 @@ using Remotion.Implementation;
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
   [ConcreteImplementation (typeof(TestConcreteImplementationAttributeType))]
-  internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation
+  internal interface ITestConcreteImplementationAttributeTypeWithoutImplementation // TODO Review 3107: Rename to ITestConcreteImplementationAttributeTypeWithInvalidImplementation
   {
   }
 }

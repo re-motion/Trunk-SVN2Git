@@ -37,98 +37,6 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")
-    ]
-    public void RegisterServiceTypeWithInstanceTypeFactoryOverload_ServiceAlreadyExists ()
-    {
-      _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType>();
-      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), () => new object());
-    }
-
-    [Test]
-    public void RegisterServiceTypeWithInstanceTypeFactoryOverload_ServiceIsAdded ()
-    {
-      var testableSerciceLocator = new TestableDefaultServiceLocator();
-      Func<object> instanceFactory = () => new object();
-      testableSerciceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
-
-      Func<object> instanceCreator;
-      Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
-      Assert.That (instanceCreator, Is.SameAs (instanceFactory));
-      Assert.That (testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)), Is.TypeOf (typeof (object)));
-    }
-
-    [Test]
-    public void RegisterServiceTypeWithInstanceTypeFactoryOverload_SameServiceFactoryIsAddedTwice_NoExceptionIsThrown ()
-    {
-      Func<object> instanceFactory = () => new object();
-      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
-      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
-    public void RegisterServiceTypeWithConcreteImplementationOverload__ServiceAlreadyExists_ThrowsException ()
-    {
-      _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
-      _serviceLocator.Register (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-    }
-
-    [Test]
-    public void RegisterServiceTypeWithConcreteImplementationOverload_ServiceIsAdded ()
-    {
-      var testableSerciceLocator = new TestableDefaultServiceLocator();
-
-      testableSerciceLocator.Register (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-
-      Func<object> instanceCreator;
-      Assert.That (
-          testableSerciceLocator.Cache.TryGetValue (typeof (ITestSingletonConcreteImplementationAttributeType), out instanceCreator), Is.True);
-      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (
-          testableSerciceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType)),
-          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
-    public void RegisterServiceConfigurationEntryOverload_ServiceAlreadyExists_ThrowsException ()
-    {
-      _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType> ();
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-      _serviceLocator.Register (serviceConfigurationEntry);
-    }
-
-    [Test]
-    public void RegisterServiceConfigurationEntryOverload_ServiceAdded()
-    {
-      var testableSerciceLocator = new TestableDefaultServiceLocator ();
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-
-      testableSerciceLocator.Register (serviceConfigurationEntry);
-
-      Func<object> instanceCreator;
-      Assert.That (
-          testableSerciceLocator.Cache.TryGetValue (typeof (ITestSingletonConcreteImplementationAttributeType), out instanceCreator), Is.True);
-      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (
-          testableSerciceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType)),
-          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-    }
-
-    [Test]
-    public void GetService_TypeWithoutConcreteImplementatioAttribute ()
-    {
-      var result = ((IServiceLocator) _serviceLocator).GetService (typeof (string));
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
     [ExpectedException (typeof (ActivationException),
         ExpectedMessage = "Cannot get a version-dependent implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': " +
                           "Expected 'ConcreteImplementationAttribute' could not be found.")]
@@ -138,45 +46,29 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException),
-        ExpectedMessage =
-            "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' to type 'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithoutImplementation'."
-        )]
-    public void GetInstance_ServiceTypeWithoutConcreteImplementationType ()
-    {
-      _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithoutImplementation>();
-    }
-
-    [Test]
-    public void GetService_TypeWithConcreteImplementationAttribute ()
-    {
-      var result = ((IServiceLocator) _serviceLocator).GetService (typeof (ITestInstanceConcreteImplementationAttributeType));
-
-      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
-    }
-
-    [Test]
     public void GetInstance_TypeWithConcreteImplementationAttribute ()
     {
       var result = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
       Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      // TODO Review 3107: Use Assert.That (..., Is.InstanceOfType (...))
       Assert.IsInstanceOfType (
           typeof (TestConcreteImplementationAttributeType), SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType>());
     }
 
+    // TODO Review 3107: This test can probably be removed - the cache is pure optimization here (and therefore doesn't need to be tested). (For singleton lifetime, the cache's behavior is tested below anyway.)
     [Test]
     public void GetInstance_GetInstancesFromCache ()
     {
-      var testableSerciceLocator = new TestableDefaultServiceLocator();
-      testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
+      var testableServiceLocator = new TestableDefaultServiceLocator();
+      testableServiceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType));
 
       Assert.That (
-          testableSerciceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)),
+          testableServiceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)),
           Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
 
       Func<object> instanceCreator;
-      Assert.That (testableSerciceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (testableServiceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
       Assert.That (instanceCreator(), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
@@ -199,7 +91,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetInstanceWithKeyParamete_KeyIsIgnored ()
+    public void GetInstance_WithKeyParameter_KeyIsIgnored ()
     {
       var result = _serviceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType), "Test");
 
@@ -216,7 +108,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetAllInstances_ConreteImplementationAttributeIsNotDefined ()
+    public void GetAllInstances_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
       var result = _serviceLocator.GetAllInstances (typeof (IServiceLocator));
 
@@ -224,7 +116,16 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetInstanceWithGenericType ()
+    [ExpectedException (typeof (InvalidCastException), ExpectedMessage =
+        "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' to type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithoutImplementation'.")]
+    public void GetInstance_Generic_ServiceTypeWithoutConcreteImplementationAttribute () // TODO Review 3107: Rename to ..._WithIncompatibleImplementationType
+    {
+      _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithoutImplementation> ();
+    }
+
+    [Test]
+    public void GetInstance_Generic ()
     {
       var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType>();
 
@@ -232,7 +133,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetInstanceWithGenericTypeAndKeyParameter_KeyIsIgnored ()
+    public void GetInstance_Generic_WithKeyParameter_KeyIsIgnored ()
     {
       var result = _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType> ("Test");
 
@@ -240,13 +141,15 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetAllInstancesWithGenericType_ConcreteImplementationAttributeIsNotDefined ()
+    public void GetAllInstances_Generic_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
       var result = _serviceLocator.GetAllInstances<IServiceLocator>();
 
       Assert.That (result.ToArray().Length, Is.EqualTo (0));
     }
 
+    // TODO Review 3107: A test for GetAllInstances with a working service type seems to be missing
+    
     [Test]
     public void GetInstance_ConstructorInjection_OneParameter ()
     {
@@ -262,7 +165,10 @@ namespace Remotion.UnitTests.ServiceLocation
       var result = _serviceLocator.GetInstance<ITestConstructorInjectionWithThreeParameters>();
 
       Assert.That (result, Is.TypeOf (typeof (TestConstructorInjectionWithThreeParameters)));
+      
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param1, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
+      // TODO Review 3107: Also check the inner Param of result.Param1
+      
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param2, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param3, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
@@ -293,10 +199,119 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exact one public constructor and cannot be instantiated.")]
+        ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exactly one public constructor and cannot be instantiated.")]
     public void GetInstance_TypeHasNotExactOnePublicConstructor ()
     {
       _serviceLocator.GetInstance<ITestTypeWithNotExactOnePublicConstructor>();
+    }
+
+    [Test]
+    public void GetService_TypeWithConcreteImplementationAttribute ()
+    {
+      var result = ((IServiceLocator) _serviceLocator).GetService (typeof (ITestInstanceConcreteImplementationAttributeType));
+
+      Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    public void GetService_TypeWithoutConcreteImplementatioAttribute ()
+    {
+      var result = ((IServiceLocator) _serviceLocator).GetService (typeof (string));
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")
+    ]
+    public void Register_Factory_ServiceAlreadyExists ()
+    {
+      _serviceLocator.GetInstance<ITestInstanceConcreteImplementationAttributeType> ();
+      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), () => new object ());
+    }
+
+    [Test]
+    public void Register_Factory_ServiceIsAdded ()
+    {
+      var testableServiceLocator = new TestableDefaultServiceLocator ();
+      var instance = new object ();
+      Func<object> instanceFactory = () => instance;
+      
+      testableServiceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
+
+      // TODO Review 3107: The cache's contents doesn't really need to be tested. Remove this; instead, test that GetInstance returns exactly the same instance pushed into the factory.
+      Func<object> instanceCreator;
+      Assert.That (testableServiceLocator.Cache.TryGetValue (typeof (ITestInstanceConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (instanceCreator, Is.SameAs (instanceFactory));
+
+      Assert.That (testableServiceLocator.GetInstance (typeof (ITestInstanceConcreteImplementationAttributeType)), Is.TypeOf (typeof (object)));
+    }
+
+    [Test]
+    public void Register_Factory_SameServiceFactoryIsAddedTwice_NoExceptionIsThrown ()
+    {
+      Func<object> instanceFactory = () => new object ();
+      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
+      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
+    public void Register_ConcreteImplementation_ServiceAlreadyExists_ThrowsException ()
+    {
+      _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType> ();
+      _serviceLocator.Register (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+    }
+
+    // TODO Review 3107: For the future, try to name tests as below: MethodName_OverloadInfo_DescriptionOfTest (the test was previously called RegisterServiceTypeWithConcreteImplementationOverload_ServiceIsAdded, which is a little hard to read).
+    [Test]
+    public void Register_ConcreteImplementation_ServiceIsAdded ()
+    {
+      var testableServiceLocator = new TestableDefaultServiceLocator ();
+
+      testableServiceLocator.Register (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+
+      // TODO Review 3107: The cache's contents doesn't really need to be tested. Remove this; instead, test that GetInstance respects the Singleton lifetime (call GetInstance twice and compare the results).
+      Func<object> instanceCreator;
+      Assert.That (
+          testableServiceLocator.Cache.TryGetValue (typeof (ITestSingletonConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      
+      Assert.That (
+          testableServiceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType)),
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Register cannot be called after GetInstance for a given service type.")]
+    public void Register_ServiceConfigurationEntry_ServiceAlreadyExists_ThrowsException ()
+    {
+      _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType> ();
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      _serviceLocator.Register (serviceConfigurationEntry);
+    }
+
+    [Test]
+    public void Register_ServiceConfigurationEntry_ServiceAdded ()
+    {
+      var testableServiceLocator = new TestableDefaultServiceLocator ();
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+
+      testableServiceLocator.Register (serviceConfigurationEntry);
+
+      // TODO Review 3107: The cache's contents doesn't really need to be tested. Remove this; instead, test that GetInstance respects the Singleton lifetime (call GetInstance twice and compare the results).
+      Func<object> instanceCreator;
+      Assert.That (
+          testableServiceLocator.Cache.TryGetValue (typeof (ITestSingletonConcreteImplementationAttributeType), out instanceCreator), Is.True);
+      Assert.That (instanceCreator (), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+
+      Assert.That (
+          testableServiceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType)),
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
   }
 }

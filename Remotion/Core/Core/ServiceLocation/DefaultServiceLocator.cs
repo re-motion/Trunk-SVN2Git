@@ -26,49 +26,57 @@ using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
+  /// <summary>
+  /// Provides a default implementation of the <see cref="IServiceLocator"/> interface based on the <see cref="ConcreteImplementationAttribute"/>.
+  /// The <see cref="SafeServiceLocator"/> uses (and registers) an instance of this class unless an application registers its own service locator via 
+  /// <see cref="ServiceLocator.SetLocatorProvider"/>.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// This implementation of <see cref="IServiceLocator"/> uses the <see cref="ConcreteImplementationAttribute"/> to resolve implementations of
+  /// "service types" (usually interfaces or abstract classes). When the <see cref="DefaultServiceLocator"/> is asked to get an instance of a specific 
+  /// service type for the first time, that type is checked for a <see cref="ConcreteImplementationAttribute"/>, which is then inspected to determine 
+  /// the actual concrete type to be instantiated, its lifetime, and similar properties. An instance is then returned that fulfills the properties 
+  /// defined by the <see cref="ConcreteImplementationAttribute"/>. After the first resolution of a service type, the instance (or a factory, 
+  /// depending on the <see cref="LifetimeKind"/> associated with the type) is cached, so subsequent lookups for the same type are very fast.
+  /// </para>
+  /// <para>
+  /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="O:Register"/> methods that allow to registration of custom 
+  /// implementations or factories for service types even if those types do not have the <see cref="ConcreteImplementationAttribute"/> applied. 
+  /// Applications can use this to override the configuration defined by the <see cref="ConcreteImplementationAttribute"/> and to register 
+  /// implementations of service types that do not have the <see cref="ConcreteImplementationAttribute"/> applied. Custom implementations or factories
+  /// must be registered before an instance of the respective service type is retrieved for the first time.
+  /// </para>
+  /// <para>
+  /// In order to be instantiable by the <see cref="DefaultServiceLocator"/>, a concrete type indicated by the 
+  /// <see cref="ConcreteImplementationAttribute"/> must have exactly one public constructor. The constructor may have parameters, in which case
+  /// the <see cref="DefaultServiceLocator"/> will try to get an instance for each of the parameters using the same <see cref="IServiceLocator"/>
+  /// methods. If a parameter cannot be resolved (because the parameter type has no <see cref="ConcreteImplementationAttribute"/> applied and no
+  /// custom implementation or factory was manually registered), an exception is thrown. Dependency cycles are not detected and will lead to a 
+  /// <see cref="StackOverflowException"/> or infinite loop. Use the <see cref="Register(System.Type,System.Func{object})"/> method to manually 
+  /// register a factory for types that do not apply to these constructor rules.
+  /// </para>
+  /// <para>
+  /// In order to have a custom service locator use the same defaults as the <see cref="DefaultServiceLocator"/>, the 
+  /// <see cref="DefaultServiceConfigurationDiscoveryService"/> can be used to extract those defaults from a set of types.
+  /// </para>
+  /// </remarks>
+  /// <threadsafety static="true" instance="true" />
   public class DefaultServiceLocator : IServiceLocator
   {
+    private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
+
+    // TODO Review 3107: Since this class is not really meant for being subclasses, the protected cache just for testing isn't really pretty. Check the review comments for the tests; then make this field private and remove the testable subclass.
     protected readonly InterlockedCache<Type, Func<object>> Cache = new InterlockedCache<Type, Func<object>>();
 
-    public DefaultServiceLocator ()
-    {
-    }
-
-    public void Register (Type serviceType, Func<object> instanceFactory)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
-
-      Func<object> factory = Cache.GetOrCreateValue (serviceType, t => instanceFactory);
-      if (factory != instanceFactory)
-        throw new InvalidOperationException ("Register cannot be called after GetInstance for a given service type.");
-    }
-
-    public void Register (Type serviceType, Type concreteImplementationType, LifetimeKind lifetime)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
-
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, concreteImplementationType, lifetime);
-      Register (serviceConfigurationEntry);
-    }
-
-    public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
-    {
-      var factory = CreateInstanceFactory (serviceConfigurationEntry);
-      Register (serviceConfigurationEntry.ServiceType, factory);
-    }
-
-    object IServiceProvider.GetService (Type serviceType)
-    {
-      return GetInstanceOrNull (serviceType);
-    }
+    // TODO Review 3107: Add argument checks for all public methods. (Although all of them use the same private method that has an argument check, we strive to have all exceptions thrown as early as possible.)
 
     public object GetInstance (Type serviceType)
     {
       var instance = GetInstanceOrNull (serviceType);
       if (instance == null)
       {
+        // TODO Review 3107: Change exception message: "Cannot get a concrete implementation of type '{0}': ..."
         string message = string.Format (
             "Cannot get a version-dependent implementation of type '{0}': " +
             "Expected 'ConcreteImplementationAttribute' could not be found.",
@@ -100,7 +108,7 @@ namespace Remotion.ServiceLocation
 
     public TService GetInstance<TService> (string key)
     {
-      return (TService) GetInstance (typeof (TService));
+      return (TService) GetInstance (typeof (TService), key);
     }
 
     public IEnumerable<TService> GetAllInstances<TService> ()
@@ -110,6 +118,37 @@ namespace Remotion.ServiceLocation
         return new[] { (TService) instance };
       else
         return new TService[0];
+    }
+
+    object IServiceProvider.GetService (Type serviceType)
+    {
+      return GetInstanceOrNull (serviceType);
+    }
+
+    public void Register (Type serviceType, Func<object> instanceFactory)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
+
+      Func<object> factory = Cache.GetOrCreateValue (serviceType, t => instanceFactory);
+      if (factory != instanceFactory)
+        // TODO Review 3107: Change exception message to include the service type (string.Format("Register cannot ... service type: {0}", serviceType))
+        throw new InvalidOperationException ("Register cannot be called after GetInstance for a given service type.");
+    }
+
+    public void Register (Type serviceType, Type concreteImplementationType, LifetimeKind lifetime)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
+
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, concreteImplementationType, lifetime);
+      Register (serviceConfigurationEntry);
+    }
+
+    public void Register (ServiceConfigurationEntry serviceConfigurationEntry)
+    {
+      var factory = CreateInstanceFactory (serviceConfigurationEntry);
+      Register (serviceConfigurationEntry.ServiceType, factory);
     }
 
     private object GetInstanceOrNull (Type serviceType)
@@ -136,7 +175,7 @@ namespace Remotion.ServiceLocation
       {
         throw new InvalidOperationException (
             string.Format (
-                "Type '{0}' has not exact one public constructor and cannot be instantiated.", serviceConfigurationEntry.ImplementationType.Name));
+                "Type '{0}' has not exactly one public constructor and cannot be instantiated.", serviceConfigurationEntry.ImplementationType.Name));
       }
 
       var ctorInfo = publicCtors[0];
@@ -156,15 +195,13 @@ namespace Remotion.ServiceLocation
     private Func<object> CreateInstanceFactory (ConstructorInfo ctorInfo)
     {
       var serviceLocator = Expression.Constant (this);
-      var getInstanceMethod = serviceLocator.Type.GetMethod ("GetInstance", Type.EmptyTypes);
 
       var parameterInfos = ctorInfo.GetParameters();
-      var ctorArgExpressions = parameterInfos.Select (
-          p => (Expression)
-               Expression.Call (serviceLocator, getInstanceMethod.MakeGenericMethod (p.ParameterType)));
+      var ctorArgExpressions = 
+          parameterInfos.Select (p => (Expression) Expression.Call (serviceLocator, s_genericGetInstanceMethod.MakeGenericMethod (p.ParameterType)));
 
-      var innerFactoryExpression = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
-      return innerFactoryExpression.Compile();
+      var factoryLambda = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
+      return factoryLambda.Compile();
     }
   }
 }
