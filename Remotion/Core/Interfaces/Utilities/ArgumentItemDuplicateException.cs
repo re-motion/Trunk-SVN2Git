@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -25,7 +26,7 @@ namespace Remotion.Utilities
   [Serializable]
   public class ArgumentItemDuplicateException : ArgumentException
   {
-    public ArgumentItemDuplicateException (string argumentName, int index, object value)
+    public ArgumentItemDuplicateException ([InvokerParameterName] string argumentName, int index, object value)
         : base (FormatMessage (argumentName, index, value))
     {
     }

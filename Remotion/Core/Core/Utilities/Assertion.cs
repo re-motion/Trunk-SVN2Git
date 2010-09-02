@@ -76,6 +76,7 @@ namespace Remotion.Utilities
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
+    [StringFormatMethod("message")]
     public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);
@@ -97,6 +98,7 @@ namespace Remotion.Utilities
 
     [Conditional ("TRACE")]
     [AssertionMethod]
+    [StringFormatMethod ("message")]
     public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -25,7 +26,7 @@ namespace Remotion.Utilities
   [Serializable]
   public class ArgumentItemNullException : ArgumentException
   {
-    public ArgumentItemNullException (string argumentName, int index)
+    public ArgumentItemNullException ([InvokerParameterName] string argumentName, int index)
         : base (FormatMessage (argumentName, index))
     {
     }

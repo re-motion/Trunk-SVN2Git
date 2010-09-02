@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -30,7 +31,7 @@ namespace Remotion.Utilities
     private readonly Type _expectedType;
     private readonly Type _actualType;
 
-    public ArgumentItemTypeException (string argumentName, int index, Type expectedType, Type actualType)
+    public ArgumentItemTypeException ([InvokerParameterName] string argumentName, int index, Type expectedType, Type actualType)
         : base (FormatMessage (argumentName, index, expectedType, actualType))
     {
       _argumentName = argumentName;
