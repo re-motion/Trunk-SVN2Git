@@ -19,115 +19,188 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
-using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObjectMixinTests
 {
   [TestFixture]
   public class ObjectBindingToMappingTest : ObjectBindingBaseTest
   {
-    private BindableObjectClass _businessObjectClassWithProperties;
     private BindableDomainObjectWithProperties _classWithPropertiesInstance;
     private BindableDomainObjectMixin _classWithPropertiesMixin;
-
-    private BindableObjectClass _businessObjectClassWithMixedProperties;
     private BindableDomainObjectWithMixedPersistentProperties _classWithMixedPropertiesInstance;
-    private BindableDomainObjectMixin _classWithMixedPropertiesImplementation;
+    private IBusinessObject _classWithMixedPropertiesInstanceAsBusinessObject;
+    private IBusinessObjectClass _classWithMixedPropertiesInstanceAsBusinessObjectClass;
+    private IBusinessObject _classWithPropertiesMixinInstanceAsBusinessObject;
+    private IBusinessObjectClass _classWithPropertiesMixinInstanceAsBusinessObjectClass;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _businessObjectClassWithProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
       _classWithPropertiesInstance = BindableDomainObjectWithProperties.NewObject();
       _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin> (_classWithPropertiesInstance);
-
-      _businessObjectClassWithMixedProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithMixedPersistentProperties));
       _classWithMixedPropertiesInstance = BindableDomainObjectWithMixedPersistentProperties.NewObject();
-      _classWithMixedPropertiesImplementation =
-          (BindableDomainObjectImplementation)
-          PrivateInvoke.GetNonPublicField (_classWithMixedPropertiesInstance, typeof (BindableDomainObject), "_implementation");
+      
+      _classWithPropertiesMixinInstanceAsBusinessObject = _classWithPropertiesMixin;
+      _classWithPropertiesMixinInstanceAsBusinessObjectClass = _classWithPropertiesMixinInstanceAsBusinessObject.BusinessObjectClass;
+      
+      _classWithMixedPropertiesInstanceAsBusinessObject = _classWithMixedPropertiesInstance;
+      _classWithMixedPropertiesInstanceAsBusinessObjectClass = _classWithMixedPropertiesInstanceAsBusinessObject.BusinessObjectClass;
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_Standard ()
+    public void StandardProperty_DefaultValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty");
-      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties.RequiredStringProperty"));
-      Assert.That (_classWithPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringProperty");
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.Null);
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_Interface ()
+    public void StandardProperty_NonDefaultValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyInInterface");
-      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties.RequiredStringPropertyInInterface"));
-      Assert.That (_classWithPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringProperty");
+      string propertyValue = "test";
+      _classWithPropertiesInstance.RequiredStringProperty = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_ExplicitInterface ()
+    public void StandardProperty_NonDefaultValue_WithUnchangedValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
-      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties."
-              + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IBindableDomainObjectWithProperties."
-              + "RequiredStringPropertyExplicitInInterface"));
-      Assert.That (_classWithPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringProperty");
+      var propertyValue = _classWithPropertiesInstance.RequiredStringProperty;
+      _classWithPropertiesInstance.RequiredStringProperty = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_MixedPrivate ()
+    public void InterfaceProperty_DefaultValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PrivateMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PrivateMixedProperty"));
-      Assert.That (_classWithMixedPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyInInterface");
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.Null);
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_MixedPublic ()
+    public void InterfaceProperty_NonDefaultValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PublicMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PublicMixedProperty"));
-      Assert.That (_classWithMixedPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyInInterface");
+      string propertyValue = "test";
+      _classWithPropertiesInstance.RequiredStringPropertyInInterface = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
     }
 
     [Test]
-    public void GetMappingPropertyIdentifier_Mixed_ExplicitOnMixin ()
+    public void InterfaceProperty_NonDefaultValue_WithUnchangedValue ()
     {
-      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
-      Assert.That (
-          identifier,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties."
-              + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IMixinAddingPersistentProperties."
-              + "ExplicitMixedProperty"));
-      Assert.That (_classWithMixedPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyInInterface");
+      var propertyValue = _classWithPropertiesInstance.RequiredStringPropertyInInterface;
+      _classWithPropertiesInstance.RequiredStringPropertyInInterface = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
     }
 
-    private BindableObjectClass GetBindableObjectClass (Type type)
+    [Test]
+    public void ExplicitInterfaceProperty_DefaultValue ()
     {
-      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
-      return provider.GetBindableObjectClass (type);
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.Null);
     }
+
+    [Test]
+    public void ExplicitInterfaceProperty_NonDefaultValue ()
+    {
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
+      string propertyValue = "test";
+      ((IBindableDomainObjectWithProperties) _classWithPropertiesInstance).RequiredStringPropertyExplicitInInterface = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
+    }
+
+    [Test]
+    public void ExplicitInterfaceProperty_NonDefaultValue_WithUnchangedValue ()
+    {
+      IBusinessObjectProperty property = _classWithPropertiesMixinInstanceAsBusinessObjectClass.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
+      var propertyValue = ((IBindableDomainObjectWithProperties) _classWithPropertiesInstance).RequiredStringPropertyExplicitInInterface;
+      ((IBindableDomainObjectWithProperties) _classWithPropertiesInstance).RequiredStringPropertyExplicitInInterface = propertyValue;
+      Assert.That (_classWithPropertiesMixinInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (propertyValue));
+    }
+    
+    [Test]
+    public void MixedPublicProperty_DefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PublicMixedProperty");
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.Null);
+    }
+
+    [Test]
+    public void MixedPublicProperty_NonDefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PublicMixedProperty");
+      var dateTime = new DateTime (2008, 08, 01);
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PublicMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    }
+
+    [Test]
+    public void MixedPublicProperty_NonDefaultValue_WithUnchangedValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PublicMixedProperty");
+      var dateTime = ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PublicMixedProperty;
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PublicMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    }
+
+    [Test]
+    public void MixedPrivateProperty_DefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PrivateMixedProperty");
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.Null);
+    }
+
+    [Test]
+    public void MixedPrivateProperty_NonDefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PrivateMixedProperty");
+      var dateTime = new DateTime (2008, 08, 01);
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PrivateMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    }
+
+    [Test]
+    public void MixedPrivateProperty_NonDefaultValue_WithUnchangedValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PrivateMixedProperty");
+      var dateTime = ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PrivateMixedProperty;
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).PrivateMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    }
+
+    //TODO RM-3179: Tests with explicit mixed properties do not work (exception in BindableObjectPropertyInfoAdapter.GetValue)
+
+    //[Test]
+    //public void MixedExplicitProperty_DefaultValue ()
+    //{
+    //  IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
+    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.Null);
+    //}
+
+    //[Test]
+    //public void MixedExplicitProperty_NonDefaultValue ()
+    //{
+    //  IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
+    //  var dateTime = new DateTime (2008, 08, 01);
+    //  ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
+    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    //}
+
+    //[Test]
+    //public void MixedExplicitProperty_NonDefaultValue_WithUnchangedValue ()
+    //{
+    //  var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
+    //  //IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PrivateMixedProperty");
+    //  var dateTime = ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty;
+    //  ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
+    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (dateTime));
+    //}
+    
   }
 }

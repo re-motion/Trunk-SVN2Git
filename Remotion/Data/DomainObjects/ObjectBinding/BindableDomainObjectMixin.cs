@@ -15,14 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Mixins.CodeGeneration;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -65,20 +62,15 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return false;
       else
       {
-        var propertyDefinition = GetMappingProperty(property);
-        if (propertyDefinition!=null)
+        var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
+        var propertyDefinition =
+            This.ID.ClassDefinition.ResolveProperty (
+                bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo);
+        if (propertyDefinition != null)
           return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
         else
           return base.IsDefaultValue (property, nativeValue);
       }
-    }
-
-    public PropertyDefinition GetMappingProperty (PropertyBase property)
-    {
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
-      return This.ID.ClassDefinition.ResolveProperty (bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo);
     }
   }
 }
