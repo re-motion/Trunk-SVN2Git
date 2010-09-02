@@ -40,13 +40,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
     private readonly IBocListNavigationBlockRenderer _navigationBlockRenderer;
     private readonly IBocListTableBlockRenderer _tableBlockRenderer;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListCssClassDefinition _cssClasses;
 
     public BocListRenderer (
         HttpContextBase context,
         IBocList list,
         IResourceUrlFactory resourceUrlFactory,
-        CssClassContainer cssClasses,
+        BocListCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _tableBlockRenderer; }
     }
 
-    public CssClassContainer CssClasses
+    public BocListCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

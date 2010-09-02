@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      return new BocSelectorColumnRenderer (context, list, CssClassContainer.Instance);
+      return new BocSelectorColumnRenderer (context, list, BocListCssClassDefinition.Instance);
     }
   }
 }

@@ -51,14 +51,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderEditable ()
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -72,13 +72,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var save = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (save, "href", "#");

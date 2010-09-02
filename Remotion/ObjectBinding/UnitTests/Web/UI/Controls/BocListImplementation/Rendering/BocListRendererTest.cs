@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           HttpContext,
           List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
-          CssClassContainer.Instance,
+          BocListCssClassDefinition.Instance,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           HttpContext,
           List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
-          CssClassContainer.Instance,
+          BocListCssClassDefinition.Instance,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (div, "id", "MyList");
 
       var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
-      Html.AssertAttribute (menuBlock, "class", CssClassContainer.Instance.MenuBlock);
+      Html.AssertAttribute (menuBlock, "class", BocListCssClassDefinition.Instance.MenuBlock);
       Html.AssertStyleAttribute (menuBlock, "width", s_menuBlockWidth.ToString());
       Html.AssertStyleAttribute (menuBlock, "margin-left", s_menuBlockOffset.ToString());
       Html.GetAssertedChildElement (menuBlock, "menu", 0);
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           HttpContext,
           List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
-          CssClassContainer.Instance,
+          BocListCssClassDefinition.Instance,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (div, "id", "MyList");
 
       var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
-      Html.AssertAttribute (menuBlock, "class", CssClassContainer.Instance.MenuBlock);
+      Html.AssertAttribute (menuBlock, "class", BocListCssClassDefinition.Instance.MenuBlock);
       Html.GetAssertedChildElement (menuBlock, "menu", 0);
 
 
@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           HttpContext,
           List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
-          CssClassContainer.Instance,
+          BocListCssClassDefinition.Instance,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));

@@ -368,7 +368,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocSelectorColumnRenderer.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\Rendering\CssClassContainer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinition.cs" />
     <Compile Include="UI\Controls\BocListImplementation\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>

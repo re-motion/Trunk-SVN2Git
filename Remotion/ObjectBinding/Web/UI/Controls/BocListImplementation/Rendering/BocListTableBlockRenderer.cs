@@ -30,10 +30,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   {
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListCssClassDefinition _cssClasses;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IBocRowRenderer rowRenderer)
+    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IBocRowRenderer rowRenderer)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _list; }
     }
 
-    public CssClassContainer CssClasses
+    public BocListCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

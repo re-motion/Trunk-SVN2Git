@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListCssClassDefinition _cssClasses;
 
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render and an <see cref="HtmlTextWriter"/> to render to.
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+    public BocListMenuBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _list; }
     }
 
-    public CssClassContainer CssClasses
+    public BocListCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

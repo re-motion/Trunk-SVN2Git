@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       return new BocCompoundColumnRenderer (
-          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), CssClassContainer.Instance);
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), BocListCssClassDefinition.Instance);
     }
   }
 }

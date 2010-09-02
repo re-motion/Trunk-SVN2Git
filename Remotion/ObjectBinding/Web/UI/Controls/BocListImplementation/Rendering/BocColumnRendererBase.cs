@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private readonly TBocColumnDefinition _column;
     private readonly IResourceUrlFactory _resourceUrlFactory;
-    private readonly CssClassContainer _cssClasses;
+    private readonly BocListCssClassDefinition _cssClasses;
     private readonly int _columnIndex;
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         IBocList list,
         TBocColumnDefinition columnDefinition,
         IResourceUrlFactory resourceUrlFactory,
-        CssClassContainer cssClasses)
+        BocListCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _resourceUrlFactory; }
     }
 
-    public CssClassContainer CssClasses
+    public BocListCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
     }

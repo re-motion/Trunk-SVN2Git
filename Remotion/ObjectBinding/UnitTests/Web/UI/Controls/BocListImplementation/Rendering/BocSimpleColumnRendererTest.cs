@@ -49,16 +49,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderBasicCell ()
     {
       var renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
+      Html.AssertAttribute (span, "class", BocListCssClassDefinition.Instance.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
@@ -70,13 +70,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Command = new BocListItemCommand (CommandType.Href);
 
       var renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "");
@@ -90,16 +90,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderIconCell ()
     {
       var renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
+      Html.AssertAttribute (span, "class", BocListCssClassDefinition.Instance.Content);
 
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 1);
@@ -131,16 +131,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
       var renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
+      Html.AssertAttribute (span, "class", BocListCssClassDefinition.Instance.Content);
 
       var clickSpan = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");

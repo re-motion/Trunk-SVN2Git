@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         IBocList list,
         BocCompoundColumnDefinition columnDefinition,
         IResourceUrlFactory resourceUrlFactory,
-        CssClassContainer cssClasses)
+        BocListCssClassDefinition cssClasses)
         : base (context, list, columnDefinition, resourceUrlFactory, cssClasses)
     {
     }

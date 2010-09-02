@@ -42,14 +42,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
           context,
           control,
           resourceUrlFactory,
-          CssClassContainer.Instance,
+          BocListCssClassDefinition.Instance,
           new BocListTableBlockRenderer (
               context,
               control,
-              CssClassContainer.Instance,
-              new BocRowRenderer (context, control, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, CssClassContainer.Instance),
-          new BocListMenuBlockRenderer (context, control, CssClassContainer.Instance)
+              BocListCssClassDefinition.Instance,
+              new BocRowRenderer (context, control, BocListCssClassDefinition.Instance, serviceLocator)),
+          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, BocListCssClassDefinition.Instance),
+          new BocListMenuBlockRenderer (context, control, BocListCssClassDefinition.Instance)
           );
     }
   }

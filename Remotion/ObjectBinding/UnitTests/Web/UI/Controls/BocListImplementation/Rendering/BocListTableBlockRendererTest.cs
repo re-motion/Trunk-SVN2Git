@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowRenderer());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, BocListCssClassDefinition.Instance, new StubRowRenderer());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowRenderer());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, BocListCssClassDefinition.Instance, new StubRowRenderer());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
