@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
@@ -52,6 +53,12 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return new MappingException (string.Format (message, args));
     }
+
+    [NonSerialized]
+    private readonly InterlockedCache<PropertyInfo, PropertyDefinition> _propertyDefinitionCache = new InterlockedCache<PropertyInfo, PropertyDefinition> ();
+
+    [NonSerialized]
+    private readonly InterlockedCache<PropertyInfo, IRelationEndPointDefinition> _relationDefinitionCache = new InterlockedCache<PropertyInfo, IRelationEndPointDefinition> ();
 
     [NonSerialized]
     private readonly bool _isAbstract;
@@ -175,16 +182,18 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      // TODO RM-3158: Add a cache using the property as cache key
-      return ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (property, this, GetPropertyDefinition);
+      return _propertyDefinitionCache.GetOrCreateValue (
+          property, 
+          (prop) => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (prop, this, GetPropertyDefinition));
     }
 
     public override IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      // TODO RM-3158: Add a cache using the property as cache key
-      return ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (property, this, GetRelationEndPointDefinition);
+      return _relationDefinitionCache.GetOrCreateValue (
+          property, 
+          (prop) => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (prop, this, GetRelationEndPointDefinition));
     }
   }
 }

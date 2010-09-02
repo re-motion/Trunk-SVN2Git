@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -32,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private ReflectionBasedClassDefinition _domainBaseClass;
     private ReflectionBasedClassDefinition _personClass;
     private ReflectionBasedClassDefinition _customerClass;
-    private ReflectionBasedClassDefinition _addressClass;
     private ReflectionBasedClassDefinition _organizationalUnitClass;
 
     public override void SetUp ()
@@ -42,8 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
       _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, _domainBaseClass);
       _customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, _personClass);
-      _addressClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Address", "TableInheritance_Address", TableInheritanceTestDomainProviderID, typeof (Address), false);
-
+      
       _organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, _domainBaseClass);
     }
 
