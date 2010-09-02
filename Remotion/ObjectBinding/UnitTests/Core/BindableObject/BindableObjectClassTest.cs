@@ -168,7 +168,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
                                    ,
                                    CreateProperty (
                                        type,
-                                       "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar")
+                                       "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar"),
+                                  CreateProperty (type, "PropertyWithNoSetter"),
                                };
 
       var classReflector = new ClassReflector (type, _bindableObjectProvider, BindableObjectMetadataFactory.Create());

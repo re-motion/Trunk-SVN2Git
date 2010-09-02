@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ReflectionBasedNameResolver : IMappingNameResolver
   {
-    private static readonly InterlockedCache<Tuple<Type, string>, string> s_propertyNameCache = new InterlockedCache<Tuple<Type, string>, string>();
+    private static readonly InterlockedCache<IPropertyInformation, string> s_propertyNameCache = new InterlockedCache<IPropertyInformation, string>();
 
     /// <summary>
     /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
@@ -38,24 +38,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return ReflectionMappingHelper.GetPropertyName (propertyInformation.GetOriginalDeclaringType (), propertyInformation.Name);
-    }
-
-    /// <summary>
-    /// Returns the mapping name for a property with the given <paramref name="shortPropertyName"/> on the <paramref name="originalDeclaringType"/>.
-    /// </summary>
-    /// <param name="originalDeclaringType">The type on which the property was first declared.</param>
-    /// <param name="shortPropertyName">The short property name of the property.</param>
-    public string GetPropertyName (Type originalDeclaringType, string shortPropertyName)
-    {
-      ArgumentUtility.CheckNotNull ("originalDeclaringType", originalDeclaringType);
-      ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
-
       return s_propertyNameCache.GetOrCreateValue (
-          Tuple.Create (originalDeclaringType, shortPropertyName),
-          key => ReflectionMappingHelper.GetPropertyName (key.Item1, key.Item2));
+          propertyInformation, pi => ReflectionMappingHelper.GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
     }
-
-    
   }
 }

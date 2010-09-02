@@ -27,12 +27,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     /// <param name="propertyInformationInformation">The property whose mapping name should be retrieved.</param>
     /// <returns>The name of the given <paramref name="propertyInformationInformation"/> as used internally by the mapping.</returns>
     string GetPropertyName (IPropertyInformation propertyInformationInformation);
-
-    /// <summary>
-    /// Returns the mapping name for a property with the given <paramref name="shortPropertyName"/> on the <paramref name="originalDeclaringType"/>.
-    /// </summary>
-    /// <param name="originalDeclaringType">The type on which the property was first declared.</param>
-    /// <param name="shortPropertyName">The short property name of the property.</param>
-    string GetPropertyName (Type originalDeclaringType, string shortPropertyName);
   }
 }

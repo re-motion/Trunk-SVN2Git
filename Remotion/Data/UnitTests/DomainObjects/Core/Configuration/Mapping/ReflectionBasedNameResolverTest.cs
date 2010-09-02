@@ -46,23 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       string name = _resolver.GetPropertyName (_propertyInformationStub);
       Assert.That (name, Is.EqualTo (typeof (Order).FullName + ".OrderNumber"));
     }
-
-    [Test]
-    public void GetPropertyName_ForOverriddenProperty ()
-    {
-      _propertyInformationStub.Stub (stub => stub.Name).Return ("Int32");
-      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (ClassWithMixedProperties));
-      string name = _resolver.GetPropertyName (_propertyInformationStub);
-      Assert.That (name, Is.EqualTo (typeof (ClassWithMixedProperties).FullName + ".Int32"));
-    }
-
-    [Test]
-    public void GetPropertyName_ForPropertyInGenericType ()
-    {
-      _propertyInformationStub.Stub (stub => stub.Name).Return ("BaseUnidirectional");
-      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>));
-      string name = _resolver.GetPropertyName (_propertyInformationStub);
-      Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
-    }
+   
   }
 }
