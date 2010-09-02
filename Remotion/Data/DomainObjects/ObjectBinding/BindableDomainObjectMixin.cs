@@ -65,35 +65,20 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return false;
       else
       {
-        string propertyIdentifier = GetMappingPropertyIdentifier(property);
-        // TODO RM-3179: if GetMappingPropertyIdentifier is not null, the property must exist. A separate contains-check is not required.
-        if (This.Properties.Contains (propertyIdentifier))
-          return !This.Properties[propertyIdentifier].HasBeenTouched;
+        var propertyDefinition = GetMappingProperty(property);
+        if (propertyDefinition!=null)
+          return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
         else
           return base.IsDefaultValue (property, nativeValue);
       }
     }
 
-    // TODO RM-3179: Make non-virtual
-    public virtual string GetMappingPropertyIdentifier (PropertyBase property)
+    public PropertyDefinition GetMappingProperty (PropertyBase property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      // TODO RM-3179: Replace with ID.ClassDefinition.ResolveProperty (property.PropertyInfo)
-      // TODO RM-3179: return propertyDefinition.Name or null if no propertyDefinition was returned. 
-      Type originalDeclaringType = property.PropertyInfo.GetOriginalDeclaringType();
-      //var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
-      var interfacePropertyInfo = ((BindableObjectPropertyInfoAdapter) property.PropertyInfo).InterfacePropertyInfo;
-
-      if (interfacePropertyInfo != null && Mixins.MixinTypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
-      {
-        // this property was added by a mixin, get the correct mapping property name
-
-        var introducedMemberAttribute = property.PropertyInfo.GetCustomAttribute<IntroducedMemberAttribute> (true);
-        return MappingConfiguration.Current.NameResolver.GetPropertyName (introducedMemberAttribute.Mixin, introducedMemberAttribute.MixinMemberName);
-      }
-
-      return MappingConfiguration.Current.NameResolver.GetPropertyName (originalDeclaringType, property.PropertyInfo.Name);
+      var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
+      return This.ID.ClassDefinition.ResolveProperty (bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo);
     }
   }
 }

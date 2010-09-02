@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         property = FindPropertyImplementationOnType (property, implementingType);
       }
-
+      
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (property));
       return definitionGetter (propertyIdentifier);
     }

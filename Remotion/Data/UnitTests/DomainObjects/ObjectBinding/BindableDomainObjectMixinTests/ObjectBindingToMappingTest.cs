@@ -39,21 +39,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       _businessObjectClassWithProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
       _classWithPropertiesInstance = BindableDomainObjectWithProperties.NewObject();
-      _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin>  (_classWithPropertiesInstance);
+      _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin> (_classWithPropertiesInstance);
 
       _businessObjectClassWithMixedProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithMixedPersistentProperties));
-      _classWithMixedPropertiesInstance = BindableDomainObjectWithMixedPersistentProperties.NewObject ();
-      _classWithMixedPropertiesImplementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (_classWithMixedPropertiesInstance, typeof (BindableDomainObject), "_implementation");
+      _classWithMixedPropertiesInstance = BindableDomainObjectWithMixedPersistentProperties.NewObject();
+      _classWithMixedPropertiesImplementation =
+          (BindableDomainObjectImplementation)
+          PrivateInvoke.GetNonPublicField (_classWithMixedPropertiesInstance, typeof (BindableDomainObject), "_implementation");
     }
 
     [Test]
     public void GetMappingPropertyIdentifier_Standard ()
     {
       var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty");
-      string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties.RequiredStringProperty"));
@@ -64,10 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_Interface ()
     {
       var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyInInterface");
-      string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties.RequiredStringPropertyInInterface"));
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties.RequiredStringPropertyInInterface"));
       Assert.That (_classWithPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
     }
 
@@ -75,12 +78,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_ExplicitInterface ()
     {
       var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
-      string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithPropertiesMixin.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties."
-          + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IBindableDomainObjectWithProperties."
-          + "RequiredStringPropertyExplicitInInterface"));
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableDomainObjectWithProperties."
+              + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IBindableDomainObjectWithProperties."
+              + "RequiredStringPropertyExplicitInInterface"));
       Assert.That (_classWithPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
     }
 
@@ -88,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_MixedPrivate ()
     {
       var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PrivateMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PrivateMixedProperty"));
@@ -99,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_MixedPublic ()
     {
       var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PublicMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PublicMixedProperty"));
@@ -110,12 +114,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_Mixed_ExplicitOnMixin ()
     {
       var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
-      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingProperty (property).PropertyName;
       Assert.That (
           identifier,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties."
-          + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IMixinAddingPersistentProperties."
-          + "ExplicitMixedProperty"));
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties."
+              + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IMixinAddingPersistentProperties."
+              + "ExplicitMixedProperty"));
       Assert.That (_classWithMixedPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
     }
 
