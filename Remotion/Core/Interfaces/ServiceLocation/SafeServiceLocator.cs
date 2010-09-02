@@ -21,20 +21,30 @@ using Remotion.Implementation;
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator.Current"/>, specifically the 
-  /// <see cref="ServiceLocator.Current"/> property. 
+  /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator"/>, specifically the 
+  /// <see cref="ServiceLocator.Current"/> property. In contrast to <see cref="ServiceLocator"/>, <see cref="SafeServiceLocator"/> will never throw
+  /// a <see cref="NullReferenceException"/> but instead register an instance of the DefaultServiceLocatorClass if no custom service locator was
+  /// registered.
   /// </summary>
   /// <remarks>
-  /// Accessing <see cref="ServiceLocator"/> will always lead to a <see cref="Current"/> if no service locator is 
-  /// configured. Using <see cref="SafeServiceLocator"/> instead will catch the exception and set <see cref="ServiceLocator"/>
-  /// to the <see cref="ServiceLocator"/>, which is save for multi-valued operations, thos allowing the use of a concrete <see cref="IServiceLocator"/>
-  /// implementation in scenarios where IoC provides optional features, e.g. extensions, listeners, etc.
+  /// Accessing <see cref="ServiceLocator"/> will always lead to a <see cref="NullReferenceException"/> if no service locator is 
+  /// configured. Using <see cref="SafeServiceLocator"/> instead will catch the exception and register an instance of the DefaultServiceLocator class.
   /// </remarks>
   public static class SafeServiceLocator
   {
+    // This class is used to make the initialization of DefaultServiceLocator as lazy as possible. This enables one to reliably set the framework
+    // version via the FrameworkVersion class before the DefaultServiceLocator is resolved.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
     static class NestedSafeServiceLocator
     {
-      public static readonly IServiceLocator s_defaultServiceLocatorInstance =
+        // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit
+// ReSharper disable EmptyConstructor
+        static NestedSafeServiceLocator()
+        {
+        }
+// ReSharper restore EmptyConstructor
+
+      public static readonly IServiceLocator DefaultServiceLocatorInstance =
       (IServiceLocator) Activator.CreateInstance (
         TypeNameTemplateResolver.ResolveToType (
           "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
@@ -51,12 +61,12 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? NestedSafeServiceLocator.s_defaultServiceLocatorInstance;
+          return ServiceLocator.Current ?? NestedSafeServiceLocator.DefaultServiceLocatorInstance;
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => NestedSafeServiceLocator.s_defaultServiceLocatorInstance);
-          return NestedSafeServiceLocator.s_defaultServiceLocatorInstance;
+          ServiceLocator.SetLocatorProvider (() => NestedSafeServiceLocator.DefaultServiceLocatorInstance);
+          return NestedSafeServiceLocator.DefaultServiceLocatorInstance;
         }
       }
     }

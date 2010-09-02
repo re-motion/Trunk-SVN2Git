@@ -35,6 +35,12 @@ namespace Remotion.UnitTests.ServiceLocation
       _serviceLocatorProviderBackup = (ServiceLocatorProvider) PrivateInvoke.GetNonPublicStaticField (typeof (ServiceLocator), "currentProvider");
     }
 
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", _serviceLocatorProviderBackup);
+    }
+ 
     [Test]
     public void GetCurrent_WithLocatorProvider()
     {
@@ -77,11 +83,5 @@ namespace Remotion.UnitTests.ServiceLocation
       Dev.Null = SafeServiceLocator.Current;
       Assert.That (ServiceLocator.Current, Is.Null);
     }
-
-    [TestFixtureTearDown]
-    public void TestFixtureTearDown ()
-    {
-      PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", _serviceLocatorProviderBackup);
-    }
-  }
+ }
 }
