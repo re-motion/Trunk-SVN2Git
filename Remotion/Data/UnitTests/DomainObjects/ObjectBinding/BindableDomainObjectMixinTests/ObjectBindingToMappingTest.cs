@@ -175,10 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
     }
 
-    //TODO RM-3179: Tests with explicit mixed properties do not work (exception in BindableObjectPropertyInfoAdapter.GetValue)
-
     [Test]
-    [Ignore ("TODO RM-3179")]
     public void MixedExplicitProperty_DefaultValue ()
     {
       IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
@@ -186,7 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [Ignore ("TODO RM-3179")]
     public void MixedExplicitProperty_NonDefaultValue ()
     {
       IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
@@ -196,7 +192,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [Ignore ("TODO RM-3179")]
     public void MixedExplicitProperty_NonDefaultValue_WithUnchangedValue ()
     {
       var property = (PropertyBase) _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");

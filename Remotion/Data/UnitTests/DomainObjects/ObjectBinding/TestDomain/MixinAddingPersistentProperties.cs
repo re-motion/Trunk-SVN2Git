@@ -47,8 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     [StorageClass(StorageClass.Persistent)]
     DateTime IMixinAddingPersistentProperties.ExplicitMixedProperty
     {
-      get { return Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties) + ".PrivateMixedProperty"].GetValue<DateTime> (); }
-      set { Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties) +  ".PrivateMixedProperty"].SetValue (value); }
+      get { return Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties).FullName + ".ExplicitMixedProperty"].GetValue<DateTime> (); }
+      set { Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties).FullName + ".ExplicitMixedProperty"].SetValue (value); }
     }
   }
 }
