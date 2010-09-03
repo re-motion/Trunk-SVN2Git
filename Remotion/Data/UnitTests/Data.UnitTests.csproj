@@ -195,7 +195,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedPropertyResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionMappingHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionFactoryTest.cs" />
@@ -575,6 +574,7 @@
     <Compile Include="DomainObjects\Core\Tracing\TracingDbTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTestHelper.cs" />
+    <Compile Include="DomainObjects\Factories\ReflectionMappingHelper.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderTest.cs" />

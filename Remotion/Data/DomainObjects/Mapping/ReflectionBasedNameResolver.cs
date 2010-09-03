@@ -39,7 +39,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
       return s_propertyNameCache.GetOrCreateValue (
-          propertyInformation, pi => ReflectionMappingHelper.GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
+          propertyInformation, pi => GetPropertyName (pi.GetOriginalDeclaringType(), pi.Name));
+    }
+
+    private string GetPropertyName (Type type, string shortPropertyName)
+    {
+      if (type.IsGenericType && !type.IsGenericTypeDefinition)
+        type = type.GetGenericTypeDefinition ();
+
+      return type.FullName + "." + shortPropertyName;
     }
   }
 }

@@ -46,6 +46,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       string name = _resolver.GetPropertyName (_propertyInformationStub);
       Assert.That (name, Is.EqualTo (typeof (Order).FullName + ".OrderNumber"));
     }
+
+    [Test]
+    public void GetPropertyName_Twice_ReturnsSameResultFromCache ()
+    {
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (Order));
+
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("OrderNumber1");
+      string name1 = _resolver.GetPropertyName (_propertyInformationStub);
+
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("OrderNumber2");
+      string name2 = _resolver.GetPropertyName (_propertyInformationStub);
+
+      Assert.That (name1, Is.SameAs(name2));
+      Assert.That (name1, Is.EqualTo (typeof (Order).FullName+".OrderNumber1"));
+    }
+
+    [Test]
+    public void GetPropertyName_ForOverriddenProperty ()
+    {
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("Int32");
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (ClassWithMixedProperties));
+      string name = _resolver.GetPropertyName (_propertyInformationStub);
+      Assert.That (name, Is.EqualTo (typeof (ClassWithMixedProperties).FullName + ".Int32"));
+    }
+
+    [Test]
+    public void GetPropertyName_ForPropertyInGenericType ()
+    {
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("BaseUnidirectional");
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>));
+      string name = _resolver.GetPropertyName (_propertyInformationStub);
+      Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
+    }
    
   }
 }

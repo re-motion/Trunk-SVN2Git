@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Transport;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport

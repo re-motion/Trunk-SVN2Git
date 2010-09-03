@@ -16,16 +16,16 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.Mapping
+namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class ReflectionMappingHelper
   {
-    public static string GetPropertyName (Type originalDeclaringType, string shortPropertyName)
+    public static string GetPropertyName (Type type, string shortPropertyName)
     {
-      if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
-        originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
+      if (type.IsGenericType && !type.IsGenericTypeDefinition)
+        type = type.GetGenericTypeDefinition ();
 
-      return originalDeclaringType.FullName + "." + shortPropertyName;
+      return type.FullName + "." + shortPropertyName;
     }
   }
 }
