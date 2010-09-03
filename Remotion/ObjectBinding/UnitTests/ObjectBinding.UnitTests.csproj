@@ -302,6 +302,7 @@
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocIndexColumnQuirksModeRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListMenuBlockQuirksModeRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListNavigationBlockQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListQuirksModeCssClassDefinitionTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListQuirksModeRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListTableBlockQuirksModeRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocRowEditModeColumnQuirksModeRendererTest.cs" />

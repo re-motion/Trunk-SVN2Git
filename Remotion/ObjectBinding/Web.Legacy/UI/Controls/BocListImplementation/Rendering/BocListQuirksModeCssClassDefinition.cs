@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Web.UI.WebControls;
+using Remotion.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
@@ -22,6 +23,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
   /// </summary>
+  [ConcreteImplementation ("Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListQuirksModeCssClassDefinition, Remotion.ObjectBinding.Web.Legacy, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    Lifetime = LifetimeKind.Singleton)]
   public class BocListQuirksModeCssClassDefinition
   {
     private static readonly DoubleCheckedLockingContainer<BocListQuirksModeCssClassDefinition> s_instance =

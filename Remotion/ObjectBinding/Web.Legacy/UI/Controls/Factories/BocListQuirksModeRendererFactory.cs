@@ -20,6 +20,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
@@ -30,19 +31,28 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocListQuirksModeRendererFactory : IBocListRendererFactory
   {
+    private readonly BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
+    public BocListQuirksModeRendererFactory (BocListQuirksModeCssClassDefinition bocListQuirksModeCssClassDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("bocListQuirksModeCssClassDefinition", bocListQuirksModeCssClassDefinition);
+
+      _bocListQuirksModeCssClassDefinition = bocListQuirksModeCssClassDefinition;
+    }
+
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new BocListQuirksModeRenderer (
           context,
           list,
-          BocListQuirksModeCssClassDefinition.Instance,
+          _bocListQuirksModeCssClassDefinition,
           new BocListTableBlockQuirksModeRenderer (
               context,
               list,
-              BocListQuirksModeCssClassDefinition.Instance,
-              new BocRowQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance, serviceLocator)),
-          new BocListNavigationBlockQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance),
-          new BocListMenuBlockQuirksModeRenderer (context, list, BocListQuirksModeCssClassDefinition.Instance)
+              _bocListQuirksModeCssClassDefinition,
+              new BocRowQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition, serviceLocator)),
+          new BocListNavigationBlockQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition),
+          new BocListMenuBlockQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition)
           );
     }
   }
