@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     public void CreateBocRowEditModeColumnRenderer ()
     {
       BocRowEditModeColumnDefinition column = new BocRowEditModeColumnDefinition ();
-      IBocRowEditModeColumnRendererFactory factory = new BocRowEditModeColumnRendererFactory ();
+      IBocRowEditModeColumnRendererFactory factory = new BocRowEditModeColumnRendererFactory (new BocListCssClassDefinition());
       CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
   }

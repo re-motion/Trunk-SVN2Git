@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
@@ -30,16 +29,18 @@ namespace OBWTest
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory ());
+      var bocListCssClassDefinition = new BocListCssClassDefinition();
 
-      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory());
-      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory());
-      _instances.Add (typeof (IBocCommandColumnRendererFactory), new BocCommandColumnRendererFactory());
-      _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocCustomColumnRendererFactory());
-      _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory());
-      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory());
-      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocIndexColumnRendererFactory ());
-      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocSelectorColumnRendererFactory ());
+      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory (bocListCssClassDefinition));
+
+      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCommandColumnRendererFactory), new BocCommandColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocCustomColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocIndexColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocSelectorColumnRendererFactory (bocListCssClassDefinition));
     }
 
     protected override object DoGetInstance (Type serviceType, string key)

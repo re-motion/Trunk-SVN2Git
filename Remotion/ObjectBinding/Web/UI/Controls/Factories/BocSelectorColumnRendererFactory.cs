@@ -24,12 +24,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
   public class BocSelectorColumnRendererFactory : IBocSelectorColumnRendererFactory
   {
+    readonly BocListCssClassDefinition _bocListCssClassDefinition;
+
+    public BocSelectorColumnRendererFactory (BocListCssClassDefinition bocListCssClassDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("bocListCssClassDefinition", bocListCssClassDefinition);
+
+      _bocListCssClassDefinition = bocListCssClassDefinition;
+    }
+
     public IBocSelectorColumnRenderer CreateRenderer (HttpContextBase context, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      return new BocSelectorColumnRenderer (context, list, BocListCssClassDefinition.Instance);
+      return new BocSelectorColumnRenderer (context, list, _bocListCssClassDefinition);
     }
   }
 }

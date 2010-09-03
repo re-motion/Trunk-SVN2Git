@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     public void CreateBocSimpleColumnRenderer ()
     {
       BocSimpleColumnDefinition column = new BocSimpleColumnDefinition ();
-      IBocSimpleColumnRendererFactory factory = new BocSimpleColumnRendererFactory ();
+      IBocSimpleColumnRendererFactory factory = new BocSimpleColumnRendererFactory (new BocListCssClassDefinition());
       CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
     }
   }

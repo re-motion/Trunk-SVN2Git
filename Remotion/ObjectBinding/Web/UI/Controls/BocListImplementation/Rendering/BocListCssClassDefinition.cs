@@ -30,12 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private static readonly DoubleCheckedLockingContainer<BocListCssClassDefinition> s_instance =
         new DoubleCheckedLockingContainer<BocListCssClassDefinition> (() => new BocListCssClassDefinition());
 
-    public static BocListCssClassDefinition Instance
-    {
-      get { return s_instance.Value; }
-      set { s_instance.Value = value; }
-    }
-
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocTextValue</c>. </para>

@@ -26,6 +26,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
   public class BocCompoundColumnRendererFactory : IBocCompoundColumnRendererFactory
   {
+    private readonly BocListCssClassDefinition _bocListCssClassDefinition;
+
+    public BocCompoundColumnRendererFactory (BocListCssClassDefinition bocListCssClassDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("bocListCssClassDefinition", bocListCssClassDefinition);
+
+      _bocListCssClassDefinition = bocListCssClassDefinition;
+    }
+
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -34,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       return new BocCompoundColumnRenderer (
-          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), BocListCssClassDefinition.Instance);
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), _bocListCssClassDefinition);
     }
   }
 }

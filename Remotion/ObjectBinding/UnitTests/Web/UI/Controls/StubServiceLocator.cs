@@ -51,16 +51,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory(new BocListCssClassDefinition()));
+      var bocListCssClassDefinition = new BocListCssClassDefinition();
 
-      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory());
-      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory());
-      _instances.Add (typeof (IBocCommandColumnRendererFactory), new BocCommandColumnRendererFactory());
-      _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocCustomColumnRendererFactory());
-      _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory());
-      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory());
-      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocIndexColumnRendererFactory());
-      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocSelectorColumnRendererFactory());
+      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory (bocListCssClassDefinition));
+
+      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCommandColumnRendererFactory), new BocCommandColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocCustomColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocIndexColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocSelectorColumnRendererFactory (bocListCssClassDefinition));
 
       _instances.Add (typeof (IBocStubColumnRendererFactory), new StubColumnRendererFactory());
 

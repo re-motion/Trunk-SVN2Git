@@ -27,6 +27,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   [TestFixture]
   public class BocListNavigationBlockRendererTest : BocListRendererTestBase
   {
+    private BocListCssClassDefinition _bocListCssClassDefinition;
     private const string c_pageInfo = "current page: {0} (of {1})";
     private const string c_tripleBlank = HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace;
 
@@ -34,6 +35,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void SetUp ()
     {
       Initialize();
+
+      _bocListCssClassDefinition = new BocListCssClassDefinition();
 
       List.Stub (mock => mock.HasNavigator).Return (true);
       List.Stub (mock => mock.PageInfo).Return (c_pageInfo);
@@ -46,13 +49,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.PageCount).Return (1);
 
       var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), BocListCssClassDefinition.Instance);
+          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", BocListCssClassDefinition.Instance.Navigator);
+      Html.AssertAttribute (div, "class", _bocListCssClassDefinition.Navigator);
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 1) + c_tripleBlank, 0);
 
@@ -84,13 +87,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.PageCount).Return (2);
 
       var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), BocListCssClassDefinition.Instance);
+          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", BocListCssClassDefinition.Instance.Navigator);
+      Html.AssertAttribute (div, "class", _bocListCssClassDefinition.Navigator);
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 2) + c_tripleBlank, 0);
 
@@ -122,13 +125,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.PageCount).Return (2);
 
       var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), BocListCssClassDefinition.Instance);
+          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", BocListCssClassDefinition.Instance.Navigator);
+      Html.AssertAttribute (div, "class", _bocListCssClassDefinition.Navigator);
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 2, 2) + c_tripleBlank, 0);
 
@@ -160,13 +163,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.PageCount).Return (3);
 
       var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), BocListCssClassDefinition.Instance);
+          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", BocListCssClassDefinition.Instance.Navigator);
+      Html.AssertAttribute (div, "class", _bocListCssClassDefinition.Navigator);
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 2, 3) + c_tripleBlank, 0);
 

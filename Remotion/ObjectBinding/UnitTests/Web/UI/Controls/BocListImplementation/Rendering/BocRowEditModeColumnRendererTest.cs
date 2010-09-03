@@ -26,6 +26,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   [TestFixture]
   public class BocRowEditModeColumnRendererTest : ColumnRendererTestBase<BocRowEditModeColumnDefinition>
   {
+    private BocListCssClassDefinition _bocListCssClassDefinition;
+
     [SetUp]
     public override void SetUp ()
     {
@@ -45,20 +47,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.DataSource.Mode = DataSourceMode.Edit;
 
       List.OnPreRender();
+
+      _bocListCssClassDefinition = new BocListCssClassDefinition();
     }
 
     [Test]
     public void RenderEditable ()
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -72,13 +76,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), BocListCssClassDefinition.Instance);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellOdd);
 
       var save = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (save, "href", "#");

@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     [Test]
     public void CreateBocIndexColumnRenderer ()
     {
-      IBocIndexColumnRendererFactory factory = new BocIndexColumnRendererFactory ();
+      IBocIndexColumnRendererFactory factory = new BocIndexColumnRendererFactory (new BocListCssClassDefinition());
       IBocIndexColumnRenderer renderer = factory.CreateRenderer (HttpContext, List);
 
       Assert.IsInstanceOfType (typeof (BocIndexColumnRenderer), renderer);
