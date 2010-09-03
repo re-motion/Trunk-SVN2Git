@@ -132,7 +132,14 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (result.ToArray().Length, Is.EqualTo (0));
     }
 
-    // TODO Review 3107: A test for GetAllInstances with a working service type seems to be missing
+    [Test]
+    public void GetAllInstances_Generic_ServiceTypeWithConcreteImplementationAttribute ()
+    {
+      var result = _serviceLocator.GetAllInstances<ITestInstanceConcreteImplementationAttributeType> ();
+
+      Assert.That (result.ToArray ().Length, Is.EqualTo (1));
+      Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
 
     [Test]
     public void GetInstance_ConstructorInjection_OneParameter ()
@@ -151,9 +158,9 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (result, Is.TypeOf (typeof (TestConstructorInjectionWithThreeParameters)));
 
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param1, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
-      // TODO Review 3107: Also check the inner Param of result.Param1
-
+      Assert.That (((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param1).Param, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param2, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
+      Assert.That (((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param2).Param, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param3, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
