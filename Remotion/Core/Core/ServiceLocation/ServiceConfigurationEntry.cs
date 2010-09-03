@@ -27,7 +27,7 @@ namespace Remotion.ServiceLocation
 
     public static ServiceConfigurationEntry CreateFromAttribute (Type serviceType, ConcreteImplementationAttribute attribute)
     {
-      return new ServiceConfigurationEntry (serviceType, TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.LifeTime);
+      return new ServiceConfigurationEntry (serviceType, TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
     }
 
     public ServiceConfigurationEntry (Type serviceType, Type implementationType, LifetimeKind lifeTimeKind)

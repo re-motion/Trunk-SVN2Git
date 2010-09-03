@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebButton"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(WebButtonRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(WebButtonRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IWebButtonRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IWebButton control, IServiceLocator serviceLocator);

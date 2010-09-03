@@ -23,7 +23,7 @@ namespace Remotion.Web.Infrastructure
   /// <summary>
   /// Defines a factory method for creating an object of type <see cref="IThemedResourceUrlResolver"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(ThemedResourceUrlResolverFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ThemedResourceUrlResolverFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IThemedResourceUrlResolverFactory
   {
     IThemedResourceUrlResolver CreateResourceUrlResolver ();

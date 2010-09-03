@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       _attribute =
           new ConcreteImplementationAttribute (
-              "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>") { LifeTime = LifetimeKind.Singleton };
+              "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>") { Lifetime = LifetimeKind.Singleton };
     }
 
     [Test]

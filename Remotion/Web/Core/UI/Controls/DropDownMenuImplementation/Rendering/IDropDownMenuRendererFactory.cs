@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IDropDownMenu"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(DropDownMenuRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(DropDownMenuRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IDropDownMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator);

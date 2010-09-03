@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for factory creating renderers for <see cref="IBocList"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocListRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocListRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);

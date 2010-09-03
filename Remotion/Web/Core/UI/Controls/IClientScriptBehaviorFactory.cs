@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating the client script behavior for an <see cref="IControl"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(ClientScriptBehaviorFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ClientScriptBehaviorFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IClientScriptBehaviorFactory
   {
     IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control);

@@ -78,7 +78,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
         Assert.That (
             serviceConfigurationEntry.LifeTimeKind,
-            Is.EqualTo (AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceConfigurationEntry.ServiceType, false).LifeTime));
+            Is.EqualTo (AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceConfigurationEntry.ServiceType, false).Lifetime));
       }
     }
   }

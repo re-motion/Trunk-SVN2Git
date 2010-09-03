@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IDatePickerButton"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(DatePickerButtonRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(DatePickerButtonRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IDatePickerButtonRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator);

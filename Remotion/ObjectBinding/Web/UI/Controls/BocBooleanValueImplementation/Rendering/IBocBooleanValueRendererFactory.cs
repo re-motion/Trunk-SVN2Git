@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocBooleanValue"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocBooleanValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocBooleanValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control, IServiceLocator serviceLocator);

@@ -24,7 +24,7 @@ namespace Remotion.Web.Utilities
   /// <summary>
   /// Defines the API for registering various javascript-controlled features on the page.
   /// </summary>
-  [ConcreteImplementation (typeof(ScriptUtility), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ScriptUtility), Lifetime = LifetimeKind.Singleton)]
   public interface IScriptUtility
   {
     /// <summary>

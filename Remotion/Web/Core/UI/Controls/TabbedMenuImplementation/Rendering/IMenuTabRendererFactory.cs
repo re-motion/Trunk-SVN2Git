@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// <summary>
   /// Interface for factories creating renderers for <see cref="MenuTab"/> items.
   /// </summary>
-  [ConcreteImplementation (typeof(TabbedMenuRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(TabbedMenuRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IMenuTabRendererFactory
   {
     IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab);

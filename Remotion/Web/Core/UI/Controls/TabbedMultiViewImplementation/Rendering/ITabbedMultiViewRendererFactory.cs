@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ITabbedMultiView"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(TabbedMultiViewRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(TabbedMultiViewRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface ITabbedMultiViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator);

@@ -33,14 +33,14 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       _typeNameTemplate = "Remotion.UnitTests.Interfaces.Implementation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
       _attribute = new ConcreteImplementationAttribute (_typeNameTemplate);
-      _attribute.LifeTime = LifetimeKind.Singleton;
+      _attribute.Lifetime = LifetimeKind.Singleton;
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_attribute.TypeNameTemplate, Is.SameAs (_typeNameTemplate));
-      Assert.That (_attribute.LifeTime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (_attribute.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]

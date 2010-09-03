@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocTextValue"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocTextValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocTextValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocTextValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocTextValue control, IServiceLocator serviceLocator);

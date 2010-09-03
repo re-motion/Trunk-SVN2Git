@@ -18,9 +18,22 @@ using System;
 
 namespace Remotion.Implementation
 {
+  /// <summary>
+  /// Defines the lifetime of instances of a type managed by a service locator.
+  /// </summary>
   public enum LifetimeKind
   {
+    /// <summary>
+    /// One instance is created and then reused every time an instance of the type is requested. This is the most efficient 
+    /// <see cref="LifetimeKind"/>, and it should be used whenever possible. However, in cases where the service locator is used from multiple threads,
+    /// the <see cref="Singleton"/> lifetime kind requires the instantiated type to be safe for multi-threading. Use <see cref="Instance"/> when an
+    /// implementation is not thread-safe.
+    /// </summary>
     Singleton,
+    /// <summary>
+    /// A new instance is created every time an instance of the type is requested. This is the simplest <see cref="LifetimeKind"/> and works
+    /// well even in multi-threaded environments, but it might not be the most efficient one. Use <see cref="Singleton"/> for more efficiency.
+    /// </summary>
     Instance
   }
 }

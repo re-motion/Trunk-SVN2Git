@@ -24,7 +24,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  [ConcreteImplementation (typeof(BocSimpleColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocSimpleColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocStubColumnRendererFactory
   {
     IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator);

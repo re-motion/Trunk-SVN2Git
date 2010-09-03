@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ISingleView"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(SingleViewRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(SingleViewRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface ISingleViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ISingleView control, IServiceLocator serviceLocator);

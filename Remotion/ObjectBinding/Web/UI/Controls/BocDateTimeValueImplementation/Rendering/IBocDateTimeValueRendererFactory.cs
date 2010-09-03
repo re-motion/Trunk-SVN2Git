@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocDateTimeValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocDateTimeValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocDateTimeValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control, IServiceLocator serviceLocator);

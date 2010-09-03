@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for factory creating renderers for <see cref="IBocColumnRenderer"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocRowEditModeColumnRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocRowEditModeColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocRowEditModeColumnRendererFactory
   {
     IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator);

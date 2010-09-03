@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebTabStrip"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(WebTabStripRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(WebTabStripRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTabStripRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator);

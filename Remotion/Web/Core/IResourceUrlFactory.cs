@@ -24,7 +24,7 @@ namespace Remotion.Web
   /// Defines methods for creating objects that implement <see cref="IResourceUrl"/>.
   /// <seealso cref="ResourceUrlFactory"/>
   /// </summary>
-  [ConcreteImplementation (typeof(ResourceUrlFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ResourceUrlFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IResourceUrlFactory
   {
     /// <summary>

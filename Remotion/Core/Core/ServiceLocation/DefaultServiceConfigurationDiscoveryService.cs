@@ -49,7 +49,7 @@ namespace Remotion.ServiceLocation
                   new ServiceConfigurationEntry (
                   type,
                   TypeNameTemplateResolver.ResolveToType (customImplementationAttribute.TypeNameTemplate),
-                  customImplementationAttribute.LifeTime)).ToList();
+                  customImplementationAttribute.Lifetime)).ToList();
     }
 
     public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Assembly> assemblies)

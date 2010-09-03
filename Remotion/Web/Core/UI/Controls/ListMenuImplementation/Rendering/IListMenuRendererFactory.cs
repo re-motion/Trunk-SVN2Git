@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IListMenu"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(ListMenuRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(ListMenuRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IListMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IListMenu control, IServiceLocator serviceLocator);

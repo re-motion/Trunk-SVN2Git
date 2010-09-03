@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocEnumValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocEnumValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocEnumValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control, IServiceLocator serviceLocator);

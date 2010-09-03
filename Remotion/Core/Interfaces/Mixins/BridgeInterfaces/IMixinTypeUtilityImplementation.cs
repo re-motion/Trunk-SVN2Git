@@ -21,7 +21,7 @@ using Remotion.Implementation;
 namespace Remotion.Mixins.BridgeInterfaces
 {
   [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.MixinTypeUtilityImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
-    LifeTime = LifetimeKind.Singleton)]
+    Lifetime = LifetimeKind.Singleton)]
   public interface IMixinTypeUtilityImplementation
   {
     bool IsGeneratedConcreteMixedType (Type type);

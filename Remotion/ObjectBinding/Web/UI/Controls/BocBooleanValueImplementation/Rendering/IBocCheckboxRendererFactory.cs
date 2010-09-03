@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocCheckBox"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocCheckboxRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocCheckboxRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocCheckboxRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control, IServiceLocator serviceLocator);

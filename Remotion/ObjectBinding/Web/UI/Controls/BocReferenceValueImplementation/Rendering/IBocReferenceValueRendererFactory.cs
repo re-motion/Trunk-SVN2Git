@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocReferenceValue"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(BocReferenceValueRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(BocReferenceValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocReferenceValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control, IServiceLocator serviceLocator);

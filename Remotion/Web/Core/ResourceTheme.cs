@@ -19,7 +19,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Web
 {
-  [ConcreteImplementation (typeof (ResourceTheme.NovaBlue), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof (ResourceTheme.NovaBlue), Lifetime = LifetimeKind.Singleton)]
   public class ResourceTheme
   {
     public class NovaBlue : ResourceTheme

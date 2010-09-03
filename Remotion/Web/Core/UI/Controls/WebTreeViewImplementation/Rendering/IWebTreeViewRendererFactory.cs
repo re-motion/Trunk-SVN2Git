@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebTreeView"/> controls.
   /// </summary>
-  [ConcreteImplementation (typeof(WebTreeViewRendererFactory), LifeTime = LifetimeKind.Singleton)]
+  [ConcreteImplementation (typeof(WebTreeViewRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTreeViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control, IServiceLocator serviceLocator);
