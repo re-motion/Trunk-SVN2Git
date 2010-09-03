@@ -27,6 +27,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocRowEditModeColumnQuirksModeRendererTest : ColumnRendererTestBase<BocRowEditModeColumnDefinition>
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
     [SetUp]
     public override void SetUp ()
     {
@@ -46,20 +48,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.DataSource.Mode = DataSourceMode.Edit;
 
       List.OnPreRender();
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
     public void RenderEditable ()
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
-          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -73,13 +77,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
-          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var save = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (save, "href", "#");

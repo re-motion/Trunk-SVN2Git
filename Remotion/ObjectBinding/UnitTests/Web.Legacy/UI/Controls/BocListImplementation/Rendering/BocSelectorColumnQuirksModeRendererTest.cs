@@ -28,25 +28,29 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocSelectorColumnQuirksModeRendererTest : BocListRendererTestBase
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
     [SetUp]
     public void SetUp ()
     {
       Initialize();
 
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
     public void RenderTitleCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.RenderTitleCell (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCell);
+      Html.AssertAttribute (th, "class", _bocListQuirksModeCssClassDefinition.TitleCell);
 
       var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
@@ -59,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderDataCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, "checkboxControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
@@ -78,13 +82,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderTitleCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.RenderTitleCell (Html.Writer);
 
       var document = Html.GetResultDocument();
 
       var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", BocListQuirksModeCssClassDefinition.Instance.TitleCell);
+      Html.AssertAttribute (th, "class", _bocListQuirksModeCssClassDefinition.TitleCell);
 
       Html.AssertTextNode (th, HtmlHelper.WhiteSpace, 0);
     }
@@ -93,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderDataCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, "radioControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();

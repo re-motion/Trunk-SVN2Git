@@ -30,6 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocDropDownMenuColumnQuirksModeRendererTest : ColumnRendererTestBase<BocDropDownMenuColumnDefinition>
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
     private DropDownMenu Menu { get; set; }
 
     [SetUp]
@@ -49,6 +50,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Menu = MockRepository.GenerateMock<DropDownMenu> (List);
       Menu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
@@ -68,13 +71,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
               new Command()));
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var div = Html.GetAssertedChildElement (td, "div", 0);
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
@@ -88,13 +91,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       InitializeRowMenus();
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var div = Html.GetAssertedChildElement (td, "div", 0);
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
@@ -106,13 +109,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCellWithNullMenu ()
     {
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       Html.AssertChildElementCount (td, 0);
     }

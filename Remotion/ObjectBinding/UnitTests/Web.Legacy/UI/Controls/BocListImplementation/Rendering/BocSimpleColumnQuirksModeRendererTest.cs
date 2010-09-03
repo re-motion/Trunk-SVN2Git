@@ -32,6 +32,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocSimpleColumnQuirksModeRendererTest : ColumnRendererTestBase<BocSimpleColumnDefinition>
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
     [SetUp]
     public override void SetUp ()
     {
@@ -44,21 +46,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.FormatString = "{0}";
 
       base.SetUp();
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
@@ -69,13 +73,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "");
@@ -88,16 +92,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 1);
@@ -128,16 +132,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       var clickSpan = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");

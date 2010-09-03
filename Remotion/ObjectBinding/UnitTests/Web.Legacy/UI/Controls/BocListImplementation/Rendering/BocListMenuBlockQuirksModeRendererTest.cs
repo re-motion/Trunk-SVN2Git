@@ -30,10 +30,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocListMenuBlockQuirksModeRendererTest : BocListRendererTestBase
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
     [SetUp]
     public void SetUp ()
     {
       Initialize();
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
@@ -47,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown list"));
 
-      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -57,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertStyleAttribute (div, "margin-bottom", "5pt");
 
       var span = Html.GetAssertedChildElement (div, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.AvailableViewsListLabel);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.AvailableViewsListLabel);
       Html.AssertTextNode (span, "Views List Title", 0);
 
       Html.AssertTextNode (div, HtmlHelper.WhiteSpace + "mocked dropdown list", 1);
@@ -79,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
-      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.Render (Html.Writer);
 
       Assert.That (Html.GetDocumentText().StartsWith ("mocked dropdown menu"));
@@ -95,7 +99,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Unit menuBlockOffset = new Unit (3, UnitType.Pixel);
       List.Stub (mock => mock.MenuBlockItemOffset).Return (menuBlockOffset);
 
-      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance);
+      var renderer = new BocListMenuBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

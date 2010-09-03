@@ -28,6 +28,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocCompoundColumnQuirksModeRendererTest : ColumnRendererTestBase<BocCompoundColumnDefinition>
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+
     [SetUp]
     public override void SetUp ()
     {
@@ -41,6 +43,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       base.SetUp();
 
       Column.PropertyPathBindings.Add (new PropertyPathBinding ("DisplayName"));
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
@@ -48,16 +52,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, HtmlHelper.WhiteSpace, 0);
@@ -66,16 +70,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
@@ -87,13 +91,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, BocListQuirksModeCssClassDefinition.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", BocListQuirksModeCssClassDefinition.Instance.DataCellOdd);
+      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
 
       var cropSpan = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (cropSpan, "title", "referencedObject1");
@@ -103,7 +107,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertStyleAttribute (cropSpan, "white-space", "nowrap");
 
       var span = Html.GetAssertedChildElement (cropSpan, "span", 0);
-      Html.AssertAttribute (span, "class", BocListQuirksModeCssClassDefinition.Instance.Content);
+      Html.AssertAttribute (span, "class", _bocListQuirksModeCssClassDefinition.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);

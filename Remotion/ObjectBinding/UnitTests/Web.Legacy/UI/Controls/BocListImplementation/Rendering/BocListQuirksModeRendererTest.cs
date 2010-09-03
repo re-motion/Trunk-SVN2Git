@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   [TestFixture]
   public class BocListQuirksModeRendererTest : BocListRendererTestBase
   {
+    private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
     private StubServiceLocator ServiceLocator { get; set; }
 
     [SetUp]
@@ -38,6 +39,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Initialize();
 
       List.Stub (mock => mock.HasNavigator).Return (true);
+
+      _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
     [Test]
@@ -71,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListQuirksModeRenderer (HttpContext, List, BocListQuirksModeCssClassDefinition.Instance, new StubQuirksModeRenderer (), new StubQuirksModeRenderer (), new StubQuirksModeRenderer ());
+      var renderer = new BocListQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubQuirksModeRenderer (), new StubQuirksModeRenderer (), new StubQuirksModeRenderer ());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
