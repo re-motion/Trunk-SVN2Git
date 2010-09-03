@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObjectMixinTests
 {
@@ -176,31 +177,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
     //TODO RM-3179: Tests with explicit mixed properties do not work (exception in BindableObjectPropertyInfoAdapter.GetValue)
 
-    //[Test]
-    //public void MixedExplicitProperty_DefaultValue ()
-    //{
-    //  IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
-    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.Null);
-    //}
+    [Test]
+    [Ignore ("TODO RM-3179")]
+    public void MixedExplicitProperty_DefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.Null);
+    }
 
-    //[Test]
-    //public void MixedExplicitProperty_NonDefaultValue ()
-    //{
-    //  IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
-    //  var dateTime = new DateTime (2008, 08, 01);
-    //  ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
-    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
-    //}
+    [Test]
+    [Ignore ("TODO RM-3179")]
+    public void MixedExplicitProperty_NonDefaultValue ()
+    {
+      IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
+      var dateTime = new DateTime (2008, 08, 01);
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (mixedProperty), Is.EqualTo (dateTime));
+    }
 
-    //[Test]
-    //public void MixedExplicitProperty_NonDefaultValue_WithUnchangedValue ()
-    //{
-    //  var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
-    //  //IBusinessObjectProperty mixedProperty = _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("PrivateMixedProperty");
-    //  var dateTime = ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty;
-    //  ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
-    //  Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (dateTime));
-    //}
+    [Test]
+    [Ignore ("TODO RM-3179")]
+    public void MixedExplicitProperty_NonDefaultValue_WithUnchangedValue ()
+    {
+      var property = (PropertyBase) _classWithMixedPropertiesInstanceAsBusinessObjectClass.GetPropertyDefinition ("ExplicitMixedProperty");
+      var dateTime = ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty;
+      ((IMixinAddingPersistentProperties) _classWithMixedPropertiesInstance).ExplicitMixedProperty = dateTime;
+      Assert.That (_classWithMixedPropertiesInstanceAsBusinessObject.GetProperty (property), Is.EqualTo (dateTime));
+    }
     
   }
 }
