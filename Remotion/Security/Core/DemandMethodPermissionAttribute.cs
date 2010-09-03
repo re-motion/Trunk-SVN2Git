@@ -18,6 +18,7 @@ using System;
 
 namespace Remotion.Security
 {
+  // Make DemandPermissionAttribute sealed once this type is deleted.
   [Obsolete ("Use DemandPermissionAttribute instead. (Version 1.13.74)")]
   [AttributeUsage (AttributeTargets.Method, AllowMultiple=false)]
   public class DemandMethodPermissionAttribute : DemandPermissionAttribute
