@@ -292,7 +292,7 @@ namespace Remotion.ServiceLocation
       var ctorInfo = publicCtors[0];
       Func<object> factory = CreateInstanceFactory (ctorInfo);
 
-      switch (serviceConfigurationEntry.LifeTimeKind)
+      switch (serviceConfigurationEntry.Lifetime)
       {
         case LifetimeKind.Singleton:
           var instance = factory();

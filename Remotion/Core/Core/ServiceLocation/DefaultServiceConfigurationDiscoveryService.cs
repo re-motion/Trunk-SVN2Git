@@ -25,19 +25,48 @@ using Remotion.Utilities;
 namespace Remotion.ServiceLocation
 {
   /// <summary>
-  /// <see cref="DefaultServiceConfigurationDiscoveryService"/> scans types for the <see cref="ConcreteImplementationAttribute"/> and returns
-  /// the matching results as <see cref="ServiceConfigurationEntry"/> collection, which contains the service type with the 
-  /// concrete implementation type and it's life time.
+  /// Provides services for scanning a range of types for default service configuration settings, as they would be applied by 
+  /// <see cref="DefaultServiceLocator"/>. Use this class in order to configure a specific service locator with <see cref="DefaultServiceLocator"/>'s
+  /// defaults.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// <see cref="DefaultServiceConfigurationDiscoveryService"/> uses the same logic as <see cref="DefaultServiceLocator"/> in order to find the
+  /// default concrete implementation of service types configured via the <see cref="ConcreteImplementationAttribute"/>. See 
+  /// <see cref="DefaultServiceLocator"/> for more information about this.
+  /// </para>
+  /// <para>
+  /// Concrete implementations registered with a specific <see cref="DefaultServiceLocator"/> using its <see cref="O:DefaultServiceLocator.Register"/>
+  /// methods are not returned by this class.
+  /// </para>
+  /// </remarks>
   public static class DefaultServiceConfigurationDiscoveryService
   {
+    /// <summary>
+    /// Gets the default service configuration for the types returned by the given <see cref="ITypeDiscoveryService"/>.
+    /// </summary>
+    /// <param name="typeDiscoveryService">The type discovery service.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type returned by the <paramref name="typeDiscoveryService"/> that has the
+    /// <see cref="ConcreteImplementationAttribute"/> applied. Types without the attribute are ignored.</returns>
     public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (ITypeDiscoveryService typeDiscoveryService)
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
 
-      return GetDefaultConfiguration ((IEnumerable<Type>) typeDiscoveryService.GetTypes (null, false));
+      // TODO Review 3164: Previously, this implementation read like this:
+      // TODO Review 3164: return GetDefaultConfiguration ((IEnumerable<Type>) typeDiscoveryService.GetTypes (null, false));
+      // TODO Review 3164: This cast is not always valid. Write a test with a service that returns an ArrayList, this would have led to an 
+      // TODO Review 3164: InvalidCastException with the original implementation. The implementation below should work.
+
+      return GetDefaultConfiguration (typeDiscoveryService.GetTypes (null, false).Cast<Type>());
+      
     }
 
+    /// <summary>
+    /// Gets the default service configuration for the given types.
+    /// </summary>
+    /// <param name="types">The types to get the default service configuration for.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type that has the <see cref="ConcreteImplementationAttribute"/> applied. 
+    /// Types without the attribute are ignored.</returns>
     public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
@@ -49,9 +78,15 @@ namespace Remotion.ServiceLocation
                   new ServiceConfigurationEntry (
                   type,
                   TypeNameTemplateResolver.ResolveToType (customImplementationAttribute.TypeNameTemplate),
-                  customImplementationAttribute.Lifetime)).ToList();
+                  customImplementationAttribute.Lifetime)).ToList (); // TODO Review 3164: Do not convert to list; a streamed (pure IEnumerable<T>) result set is often desirable for performance
     }
 
+    /// <summary>
+    /// Gets the default service configuration for the types in the given assemblies.
+    /// </summary>
+    /// <param name="assemblies">The assemblies for whose types to get the default service configuration.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> for each type that has the <see cref="ConcreteImplementationAttribute"/> applied. 
+    /// Types without the attribute are ignored.</returns>
     public static IEnumerable<ServiceConfigurationEntry> GetDefaultConfiguration (IEnumerable<Assembly> assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);

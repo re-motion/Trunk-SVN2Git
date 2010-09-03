@@ -26,16 +26,6 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class ServiceConfigurationEntryTest
   {
-    private ConcreteImplementationAttribute _attribute;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _attribute =
-          new ConcreteImplementationAttribute (
-              "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>") { Lifetime = LifetimeKind.Singleton };
-    }
-
     [Test]
     public void Initialize ()
     {
@@ -44,18 +34,23 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
       Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.LifeTimeKind, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
     public void CreateFromAttribute ()
     {
-      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (
-          typeof (ITestSingletonConcreteImplementationAttributeType), _attribute);
+      var attribute = new ConcreteImplementationAttribute (
+          "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")
+                      { Lifetime = LifetimeKind.Singleton };
 
-      Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo(typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo(typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.LifeTimeKind, Is.EqualTo (LifetimeKind.Singleton));
+      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (
+          typeof (ITestSingletonConcreteImplementationAttributeType),
+          attribute);
+
+      Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
   }
 }

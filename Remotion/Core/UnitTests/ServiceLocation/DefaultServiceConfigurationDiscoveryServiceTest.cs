@@ -31,6 +31,9 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class DefaultServiceConfigurationDiscoveryServiceTest
   {
+    // TODO Review 3164: Rename the tests to match the method names
+    // TODO Review 3164: Reorder the tests to match the tested methods' order
+
     [Test]
     public void GetServiceConfigurationEntries_ServiceHasNoConcreteImplementationAttributeDefined ()
     {
@@ -50,15 +53,14 @@ namespace Remotion.UnitTests.ServiceLocation
       var resultEntry = serviceConfigurationEntries.ToArray()[0];
       Assert.That (resultEntry.ServiceType, Is.EqualTo(typeof (ITestSingletonConcreteImplementationAttributeType)));
       Assert.That (resultEntry.ImplementationType, Is.EqualTo(typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (resultEntry.LifeTimeKind, Is.EqualTo(LifetimeKind.Singleton));
+      Assert.That (resultEntry.Lifetime, Is.EqualTo(LifetimeKind.Singleton));
     }
 
     [Test]
     public void GetServiceConfigurationEntries_UnitTestAssembly ()
     {
-      var serviceConfigurationEntries =
-          DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
-              new[] { Assembly.GetExecutingAssembly() });
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
+          new[] { Assembly.GetExecutingAssembly() });
 
       Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (9)); //ServiceLocation.TestDomain services
     }
@@ -66,6 +68,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetDefaultConfiguration ()
     {
+      // TODO Review 3164: Rewrite to use a stub instead of the real service
       var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService);
 
@@ -77,7 +80,7 @@ namespace Remotion.UnitTests.ServiceLocation
           Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
 
         Assert.That (
-            serviceConfigurationEntry.LifeTimeKind,
+            serviceConfigurationEntry.Lifetime,
             Is.EqualTo (AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceConfigurationEntry.ServiceType, false).Lifetime));
       }
     }

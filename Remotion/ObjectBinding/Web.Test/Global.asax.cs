@@ -90,7 +90,7 @@ namespace OBWTest
         var configuration = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService);
         foreach (var entry in configuration)
         {
-          if (entry.LifeTimeKind == LifetimeKind.Singleton)
+          if (entry.Lifetime == LifetimeKind.Singleton)
             builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerLifetimeScope();
           else
             builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency();

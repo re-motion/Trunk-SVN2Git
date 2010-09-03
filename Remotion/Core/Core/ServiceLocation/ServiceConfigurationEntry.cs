@@ -19,37 +19,65 @@ using Remotion.Implementation;
 
 namespace Remotion.ServiceLocation
 {
+  /// <summary>
+  /// Holds the parameters used by <see cref="DefaultServiceLocator"/> for instantiating instances of service types. Use 
+  /// <see cref="DefaultServiceConfigurationDiscoveryService"/> to retrieve the <see cref="ServiceConfigurationEntry"/> data for a specific type.
+  /// </summary>
   public class ServiceConfigurationEntry
   {
     private readonly Type _serviceType;
     private readonly Type _implementationType;
-    private readonly LifetimeKind _lifeTimeKind;
+    private readonly LifetimeKind _lifetime;
 
+    /// <summary>
+    /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
+    /// </summary>
+    /// <param name="serviceType">The service type.</param>
+    /// <param name="attribute">The attribute holding information about the concrete implementation of the <paramref name="serviceType"/>.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attribute"/>.</returns>
     public static ServiceConfigurationEntry CreateFromAttribute (Type serviceType, ConcreteImplementationAttribute attribute)
     {
       return new ServiceConfigurationEntry (serviceType, TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
     }
 
-    public ServiceConfigurationEntry (Type serviceType, Type implementationType, LifetimeKind lifeTimeKind)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
+    /// </summary>
+    /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
+    /// <param name="implementationType">The concrete implementation of the <paramref name="serviceType"/>.</param>
+    /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
+    public ServiceConfigurationEntry (Type serviceType, Type implementationType, LifetimeKind lifetime)
     {
       _serviceType = serviceType;
       _implementationType = implementationType;
-      _lifeTimeKind = lifeTimeKind;
+      _lifetime = lifetime;
     }
 
+    /// <summary>
+    /// Gets the service type. This is a type for which instances are requested from a service locator.
+    /// </summary>
+    /// <value>The service type.</value>
     public Type ServiceType
     {
       get { return _serviceType; }
     }
 
+    /// <summary>
+    /// Gets the concrete implementation of the <see cref="ServiceType"/>.
+    /// </summary>
+    /// <value>The concrete implementation.</value>
     public Type ImplementationType
     {
       get { return _implementationType; }
     }
 
-    public LifetimeKind LifeTimeKind
+    /// <summary>
+    /// Gets the lifetime of the instances of <see cref="ImplementationType"/>.
+    /// </summary>
+    /// <value>The lifetime of the instances.</value>
+    public LifetimeKind Lifetime
     {
-      get { return _lifeTimeKind; }
+      get { return _lifetime; }
     }
   }
 }
