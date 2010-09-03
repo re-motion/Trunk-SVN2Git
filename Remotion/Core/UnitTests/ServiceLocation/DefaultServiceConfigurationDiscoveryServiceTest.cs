@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.ServiceLocation
           DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
               new[] { Assembly.GetExecutingAssembly() });
 
-      Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (8)); //ServiceLocation.TestDomain services
+      Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (9)); //ServiceLocation.TestDomain services
     }
     
     [Test]

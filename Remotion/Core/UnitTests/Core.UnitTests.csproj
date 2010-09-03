@@ -340,6 +340,7 @@
     <Compile Include="ServiceLocation\DefaultServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntryTest.cs" />
+    <Compile Include="ServiceLocation\TestDomain\ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestConcreteImplementationAttributeTypeWithInvalidImplementation.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestConstructorInjectionWithOneParameter.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestConstructorInjectionWithOneParameterWithInstanceLifetime.cs" />
@@ -349,6 +350,7 @@
     <Compile Include="ServiceLocation\TestDomain\ITestSingletonConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestTypeWithNotExactOnePublicConstructor.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeType.cs" />
+    <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeTypeThrowingExceptionInCtor.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameter.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithInstanceLifetime.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithSingletonLifetime.cs" />

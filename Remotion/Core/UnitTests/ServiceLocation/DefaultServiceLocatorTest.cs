@@ -37,9 +37,9 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (ActivationException),
-        ExpectedMessage = "Cannot get a concrete implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': " +
-                          "Expected 'ConcreteImplementationAttribute' could not be found.")]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage = 
+        "Cannot get a concrete implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': " +
+        "Expected 'ConcreteImplementationAttribute' could not be found.")]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
       _serviceLocator.GetInstance (typeof (IServiceLocator));
@@ -54,6 +54,13 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (
           SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType>(),
           Is.InstanceOfType (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage = "System.InvalidOperationException : This exception comes from the ctor.")]
+    public void GetInstance_ConstructorThrowingException ()
+    {
+      _serviceLocator.GetInstance (typeof (ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor));
     }
 
     [Test]
@@ -100,9 +107,10 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException), ExpectedMessage =
-        "Unable to cast object of type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' "+
-        "to type 'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'.")]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
+        "The implementation type does not implement the service interface. Unable to cast object of type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' to type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'.")]
     public void GetInstance_Generic_ServiceTypeWithWithIncompatibleImplementationType ()
     {
       _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithInvalidImplementation>();
@@ -189,9 +197,9 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
+    [ExpectedException (typeof (ActivationException),
         ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exactly one public constructor and cannot be instantiated.")]
-    public void GetInstance_TypeHasNotExactOnePublicConstructor ()
+    public void GetInstance_TypeHasNotExaclytOnePublicConstructor ()
     {
       _serviceLocator.GetInstance<ITestTypeWithNotExactOnePublicConstructor>();
     }
