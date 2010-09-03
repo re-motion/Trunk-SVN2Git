@@ -30,6 +30,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// </summary>
   public class BocListRendererFactory : IBocListRendererFactory
   {
+    private readonly BocListCssClassDefinition _bocListCssClassDefinition;
+
+    public BocListRendererFactory (BocListCssClassDefinition bocListCssClassDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("bocListCssClassDefinition", bocListCssClassDefinition);
+
+      _bocListCssClassDefinition = bocListCssClassDefinition;
+    }
+
     public IRenderer CreateRenderer (HttpContextBase context, IBocList control, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -42,14 +51,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
           context,
           control,
           resourceUrlFactory,
-          BocListCssClassDefinition.Instance,
+          _bocListCssClassDefinition,
           new BocListTableBlockRenderer (
               context,
               control,
-              BocListCssClassDefinition.Instance,
-              new BocRowRenderer (context, control, BocListCssClassDefinition.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, BocListCssClassDefinition.Instance),
-          new BocListMenuBlockRenderer (context, control, BocListCssClassDefinition.Instance)
+              _bocListCssClassDefinition,
+              new BocRowRenderer (context, control, _bocListCssClassDefinition, serviceLocator)),
+          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, _bocListCssClassDefinition),
+          new BocListMenuBlockRenderer (context, control, _bocListCssClassDefinition)
           );
     }
   }

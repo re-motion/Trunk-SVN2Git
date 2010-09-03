@@ -16,12 +16,15 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
   /// </summary>
+  [ConcreteImplementation ("Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListCssClassDefinition, Remotion.ObjectBinding.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>",
+    Lifetime = LifetimeKind.Singleton)]
   public class BocListCssClassDefinition
   {
     private static readonly DoubleCheckedLockingContainer<BocListCssClassDefinition> s_instance =

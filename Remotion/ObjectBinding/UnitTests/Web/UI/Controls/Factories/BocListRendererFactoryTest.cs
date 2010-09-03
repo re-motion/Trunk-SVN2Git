@@ -34,14 +34,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     public void SetUp ()
     {
       HttpContext = MockRepository.GenerateMock<HttpContextBase> ();
-
       List = new ObjectBinding.Web.UI.Controls.BocList();
     }
 
     [Test]
     public void CreateBocListRenderer ()
     {
-      IBocListRendererFactory factory = new BocListRendererFactory();
+      IBocListRendererFactory factory = new BocListRendererFactory(new BocListCssClassDefinition());
       IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);

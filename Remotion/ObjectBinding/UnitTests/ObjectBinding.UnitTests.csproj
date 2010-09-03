@@ -340,6 +340,7 @@
     <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactoryTest.cs" />

@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory());
+      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory(new BocListCssClassDefinition()));
 
       _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory());
       _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory());
