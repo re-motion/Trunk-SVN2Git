@@ -55,10 +55,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     [NonSerialized]
-    private readonly InterlockedCache<PropertyInfo, PropertyDefinition> _propertyDefinitionCache = new InterlockedCache<PropertyInfo, PropertyDefinition> ();
+    private readonly InterlockedCache<PropertyInfo, PropertyDefinition> _propertyDefinitionCache;
 
     [NonSerialized]
-    private readonly InterlockedCache<PropertyInfo, IRelationEndPointDefinition> _relationDefinitionCache = new InterlockedCache<PropertyInfo, IRelationEndPointDefinition> ();
+    private readonly InterlockedCache<PropertyInfo, IRelationEndPointDefinition> _relationDefinitionCache;
 
     [NonSerialized]
     private readonly bool _isAbstract;
@@ -95,6 +95,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _isAbstract = isAbstract;
 
       _derivedClasses = new ClassDefinitionCollection (new ClassDefinitionCollection (true), true);
+      _propertyDefinitionCache = new InterlockedCache<PropertyInfo, PropertyDefinition>();
+      _relationDefinitionCache = new InterlockedCache<PropertyInfo, IRelationEndPointDefinition>();
 
       if (baseClass != null)
       {
@@ -184,7 +186,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       return _propertyDefinitionCache.GetOrCreateValue (
           property, 
-          (prop) => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (prop, this, GetPropertyDefinition));
+          key => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (key, this, GetPropertyDefinition));
     }
 
     public override IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property)
@@ -193,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       return _relationDefinitionCache.GetOrCreateValue (
           property, 
-          (prop) => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (prop, this, GetRelationEndPointDefinition));
+          key => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (key, this, GetRelationEndPointDefinition));
     }
   }
 }
