@@ -1300,6 +1300,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void ResolveProperty_Twice_ReturnsSamePropertyDefinition ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+
+      var result1 = _orderClass.ResolveProperty (property);
+      var result2 = _orderClass.ResolveProperty (property);
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+
+    [Test]
     public void ResolveProperty_StorageClassNoneProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
@@ -1365,7 +1376,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (result, Is.Null);
     }
 
+    [Test]
+    public void ResolveRelationEndPoint_Twice_ReturnsSameRelationDefinition ()
+    {
+      var property = typeof (Order).GetProperty ("OrderItems");
 
+      var result1 = _orderClass.ResolveRelationEndPoint (property);
+      var result2 = _orderClass.ResolveRelationEndPoint (property);
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+    
     [Test]
     public void ResolveRelationEndPoint_MixinRelationProperty_VirtualEndPoint ()
     {
