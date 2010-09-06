@@ -24,6 +24,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   public interface IBocColumnRenderer
   {
+    BocColumnDefinition Column { get; }
+
     /// <summary>
     /// Renders a table header cell for a <see cref="BocColumnDefinition"/> including title and sorting controls.
     /// </summary>

@@ -38,9 +38,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void IsNull ()
+    public void Initialization ()
     {
       Assert.That (_nullColumnRenderer.IsNull, Is.True);
+      Assert.That (_nullColumnRenderer.Column, Is.Null);
     }
 
     [Test]

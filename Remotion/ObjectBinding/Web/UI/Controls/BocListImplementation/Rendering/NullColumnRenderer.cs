@@ -26,6 +26,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return true; }
     }
 
+    public BocColumnDefinition Column
+    {
+      get { return null;  }
+    }
+
     public void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
     {
       

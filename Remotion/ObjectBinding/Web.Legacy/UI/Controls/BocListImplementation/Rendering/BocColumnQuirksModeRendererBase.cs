@@ -86,6 +86,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _list; }
     }
 
+    BocColumnDefinition IBocColumnRenderer.Column
+    {
+      get { return _column; }
+    }
+
     public TBocColumnDefinition Column
     {
       get { return _column; }

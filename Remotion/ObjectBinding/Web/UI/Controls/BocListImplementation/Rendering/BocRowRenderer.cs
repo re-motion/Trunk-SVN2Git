@@ -43,8 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocIndexColumnRenderer _indexColumnRenderer;
     private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
-    private readonly ICache<BocColumnDefinition, IBocColumnRenderer> _columnRendererCache = new Cache<BocColumnDefinition, IBocColumnRenderer>();
-
+    
     public BocRowRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -119,19 +118,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      BocColumnDefinition[] renderColumns = List.GetColumns();
-      for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
+      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        BocColumnDefinition column = renderColumns[idxColumns];
-        if (!List.IsColumnVisible (column))
-          continue;
-
-        IBocColumnRenderer renderer = GetColumnRenderer (column);
+        IBocColumnRenderer columnRenderer = columnRenderers[idxColumns];
+        
         SortingDirection sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
 
-        renderer.RenderTitleCell (writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
+        columnRenderer.RenderTitleCell (writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
       }
     }
 
@@ -204,27 +200,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       return _indexColumnRenderer;
     }
 
-    /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
-    /// returns the cached renderer on subsequent calls with the same column.</summary>
-    private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
-    {
-      return _columnRendererCache.GetOrCreateValue (column, key => key.GetRenderer (ServiceLocator, Context, List));
-    }
-
     private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (BocColumnDefinition column in List.GetColumns())
+      foreach (IBocColumnRenderer columnRenderer in List.GetColumnRenderers())
       {
         bool showIcon = false;
-        if ((!firstValueColumnRendered) && column is BocValueColumnDefinition)
+        if ((!firstValueColumnRendered) && columnRenderer.Column is BocValueColumnDefinition)
         {
           firstValueColumnRendered = true;
           showIcon = List.EnableIcon;
         }
-
-        IBocColumnRenderer columnRenderer = GetColumnRenderer (column);
-
+        
         columnRenderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
       }
     }
