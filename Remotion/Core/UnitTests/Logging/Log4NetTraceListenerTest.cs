@@ -24,6 +24,7 @@ using log4net.Repository;
 using NUnit.Framework;
 using Remotion.Logging;
 using Rhino.Mocks;
+using LogManager = log4net.LogManager;
 
 namespace Remotion.UnitTests.Logging
 {
@@ -43,8 +44,8 @@ namespace Remotion.UnitTests.Logging
     {
       _memoryAppender = new MemoryAppender ();
       BasicConfigurator.Configure (_memoryAppender);
-      
-      _repository = LoggerManager.GetRepository (Assembly.GetCallingAssembly ());
+
+      _repository = LoggerManager.GetRepository (Assembly.GetExecutingAssembly());
       _repository.Threshold = Level.All;
 
       _listener = new Log4NetTraceListener ();
@@ -64,10 +65,9 @@ namespace Remotion.UnitTests.Logging
       _listener.Dispose ();
       _filterListener.Dispose ();
 
-      LoggerManager.Shutdown ();
+      LogManager.ResetConfiguration ();
     }
-
-
+    
     [Test]
     public void Test_ListenerName ()
     {

@@ -24,6 +24,7 @@ using log4net.Layout;
 using log4net.Util;
 using NUnit.Framework;
 using Remotion.Logging;
+using LogManager = log4net.LogManager;
 
 namespace Remotion.UnitTests.Logging.Log4NetLogTests
 {
@@ -66,7 +67,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       eventLogAppender.Layout = new PatternLayout ("%m\r\n\r\n");
       BasicConfigurator.Configure (eventLogAppender);
 
-      _logger = LoggerManager.GetLogger (Assembly.GetCallingAssembly(), "The Name");
+      _logger = LogManager.GetLogger ("The Name").Logger;
       _log = new Log4NetLog (_logger);
       _testEventLog.Clear ();
     }
@@ -74,7 +75,7 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
     [TearDown]
     public void TearDown ()
     {
-      LoggerManager.Shutdown();
+      LogManager.ResetConfiguration ();
       _testEventLog.Clear ();
     }
 

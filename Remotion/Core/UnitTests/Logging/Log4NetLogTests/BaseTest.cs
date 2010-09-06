@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using NUnit.Framework;
 using Remotion.Logging;
+using LogManager = log4net.LogManager;
 
 namespace Remotion.UnitTests.Logging.Log4NetLogTests
 {
@@ -35,14 +35,14 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
       _memoryAppender = new MemoryAppender ();
       BasicConfigurator.Configure (_memoryAppender);
 
-      _logger = LoggerManager.GetLogger (Assembly.GetCallingAssembly (), "The Name");
+      _logger = LogManager.GetLogger ("The Name").Logger;
       _log = new Log4NetLog (_logger);
     }
 
     [TearDown]
     public virtual void TearDown ()
     {
-      LoggerManager.Shutdown ();
+      LogManager.ResetConfiguration ();
     }
 
     protected ILog Log
