@@ -352,6 +352,7 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocStubColumnRendererFactory.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\NullColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInUnboundListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListMock.cs" />

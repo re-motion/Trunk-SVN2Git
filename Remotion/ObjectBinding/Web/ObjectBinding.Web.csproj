@@ -181,6 +181,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\NullColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererBase.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
