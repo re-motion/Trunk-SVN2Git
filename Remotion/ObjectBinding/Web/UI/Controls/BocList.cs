@@ -2111,6 +2111,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return EnsureColumnsGot();
     }
 
+    IBocColumnRenderer[] IBocList.GetColumnRenderers ()
+    {
+      var bocColumnRenderers = new List<IBocColumnRenderer>();
+      foreach (var column in EnsureColumnsGot())
+      {
+        if (IsColumnVisible (column))
+          bocColumnRenderers.Add (column.GetRenderer (ServiceLocator, Context, this));
+        else
+          bocColumnRenderers.Add (new NullColumnRenderer ());
+      }
+      return bocColumnRenderers.ToArray();
+    }
+
     /// <summary>
     ///   Compiles the <see cref="BocColumnDefinition"/> objects from the <see cref="FixedColumns"/>,
     ///   the <see cref="_allPropertyColumns"/> and the <see cref="SelectedView"/>
