@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using log4net;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
@@ -62,7 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public virtual void TearDown ()
     {
       _memoryAppender.Clear();
-      LoggerManager.Shutdown();
+      LogManager.ResetConfiguration ();
+      
+      Assert.That (LogManager.GetLogger (typeof (LoggingClientTransactionListener)).IsDebugEnabled, Is.False);
     }
 
     [Test]
