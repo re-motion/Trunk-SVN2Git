@@ -54,7 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DomainObjectQueryExecutor _computerExecutor;
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
-    private DomainObjectQueryExecutor _companyExecutor;
     private DefaultSqlPreparationStage _preparationStage;
     private DefaultMappingResolutionStage _resolutionStage;
     private DefaultSqlGenerationStage _generationStage;
@@ -78,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
-      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage);
 
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
     }
@@ -562,9 +560,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "This query provider does not support the given query ('SELECT [t0].[ID] FROM [Order] [t0]'). re-store only supports queries selecting a "
-        + "scalar value, a single DomainObject, or a collection of DomainObjects.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This query provider does not support the given query ('DomainObjectQueryable<Computer>'). re-store only supports queries selecting a scalar "
+        + "value, a single DomainObject, or a collection of DomainObjects.")]
     public void CreateQuery_ColumnInSelectProjection_ThrowsException ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() select computer));
@@ -588,8 +586,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This query provider does not support the given query ('SELECT [t0].[ID] FROM [Order] [t0] GROUP BY 1'). "+
-        "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects. Execute GroupBy in memory.")]
+        "This query provider does not support the given query ('DomainObjectQueryable<Computer>'). re-store only supports queries selecting a scalar "
+        + "value, a single DomainObject, or a collection of DomainObjects. GroupBy must be executed in memory, for example by issuing AsEnumerable() "
+        + "before performing the grouping operation.")]
     public void CreateQuery_GroupByInTopLevelQuery_ThrowsException ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer));
@@ -599,8 +598,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlTable = new SqlTable (unresolvedTableInfo, JoinSemantics.Inner);
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
-          new SqlColumnDefinitionExpression (typeof (Guid), "t0", "ID", true),
-          new[] { sqlTable }, null, Expression.Constant(1), new Ordering[] { }, null, false, null, null);
+          new SqlGroupingSelectExpression (Expression.Constant (1), Expression.Constant (2)),
+          new[] { sqlTable }, null, Expression.Constant (3), new Ordering[] { }, null, false, null, null);
 
       var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (
           _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);

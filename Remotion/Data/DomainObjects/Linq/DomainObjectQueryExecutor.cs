@@ -233,7 +233,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var sqlStatement = TransformAndResolveQueryModel (queryModel);
       if (queryType == QueryType.Collection)
-        CheckQueryReturnsDomainObject (sqlStatement);
+        CheckQueryReturnsDomainObject (sqlStatement, queryModel);
 
       return CreateSqlCommand (sqlStatement);
     }
@@ -327,21 +327,21 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     // TODO Review 2800: Write an integration test similar to the one in the bug report (i.e., with a Cast to an interface). The test should now work.
-    private void CheckQueryReturnsDomainObject (SqlStatement sqlStatement)
+    private void CheckQueryReturnsDomainObject (SqlStatement sqlStatement, QueryModel queryModel)
     {
       var expression = sqlStatement.SelectProjection;
       while (expression is UnaryExpression)
         expression = ((UnaryExpression) expression).Operand;
-      if(expression is SqlEntityExpression)
+      if (expression is SqlEntityExpression)
         return;
 
       string message = string.Format (
           "This query provider does not support the given query ('{0}'). "
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
-          sqlStatement);
+          queryModel);
 
-      if (sqlStatement.GroupByExpression != null)
-        message += " Execute GroupBy in memory.";
+      if (expression is SqlGroupingSelectExpression)
+        message += " GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping operation.";
       
       throw new NotSupportedException (message);
     }

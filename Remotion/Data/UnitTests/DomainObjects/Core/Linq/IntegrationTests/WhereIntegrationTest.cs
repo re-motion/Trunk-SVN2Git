@@ -342,34 +342,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This query provider does not support the given query ('SELECT 1 AS value "+
-      "FROM [OrderView] [t0] WHERE ([t0].[OrderNo] = 1)'). re-store only supports queries selecting a scalar value, a single DomainObject, "+
-      "or a collection of DomainObjects.")]
-    public void Query_WithUnsupportedType_Constant ()
-    {
-      var query =
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          where o.OrderNumber == 1
-          select 1;
-
-      query.ToArray ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage=
-        "This query provider does not support the given query ('SELECT [t0].[ID] AS value FROM [OrderView] [t0] WHERE ([t0].[OrderNo] = 1)'). "+
-        "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
-    public void Query_WithUnsupportedType_NonDomainObjectColumn ()
-    {
-      var query =
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          where o.OrderNumber == 1
-          select o.ID;
-
-      query.ToArray ();
-    }
-
-    [Test]
     public void QueryWithWhereOnForeignKey_RealSide ()
     {
       ObjectID id = DomainObjectIDs.Order1;

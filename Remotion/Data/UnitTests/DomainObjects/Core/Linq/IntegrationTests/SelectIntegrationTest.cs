@@ -76,5 +76,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.OrderItem5);
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This query provider does not support the given query ('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select 1'). "
+        + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
+    public void Query_WithUnsupportedType_Constant ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.OrderNumber == 1
+          select 1;
+
+      query.ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This query provider does not support the given query "
+        + "('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select [o].ID'). re-store only supports queries selecting a "
+        + "scalar value, a single DomainObject, or a collection of DomainObjects.")]
+    public void Query_WithUnsupportedType_NonDomainObjectColumn ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.OrderNumber == 1
+          select o.ID;
+
+      query.ToArray ();
+    }
+
   }
 }
