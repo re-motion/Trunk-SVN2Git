@@ -52,13 +52,7 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
 
-      // TODO Review 3164: Previously, this implementation read like this:
-      // TODO Review 3164: return GetDefaultConfiguration ((IEnumerable<Type>) typeDiscoveryService.GetTypes (null, false));
-      // TODO Review 3164: This cast is not always valid. Write a test with a service that returns an ArrayList, this would have led to an 
-      // TODO Review 3164: InvalidCastException with the original implementation. The implementation below should work.
-
       return GetDefaultConfiguration (typeDiscoveryService.GetTypes (null, false).Cast<Type>());
-      
     }
 
     /// <summary>
@@ -78,7 +72,7 @@ namespace Remotion.ServiceLocation
                   new ServiceConfigurationEntry (
                   type,
                   TypeNameTemplateResolver.ResolveToType (customImplementationAttribute.TypeNameTemplate),
-                  customImplementationAttribute.Lifetime)).ToList (); // TODO Review 3164: Do not convert to list; a streamed (pure IEnumerable<T>) result set is often desirable for performance
+                  customImplementationAttribute.Lifetime));
     }
 
     /// <summary>

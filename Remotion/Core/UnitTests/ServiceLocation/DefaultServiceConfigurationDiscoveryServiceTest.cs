@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -25,17 +26,49 @@ using Remotion.ServiceLocation;
 using System.Linq;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ServiceLocation
 {
   [TestFixture]
   public class DefaultServiceConfigurationDiscoveryServiceTest
   {
-    // TODO Review 3164: Rename the tests to match the method names
-    // TODO Review 3164: Reorder the tests to match the tested methods' order
+    [Test]
+    public void GetDefaultConfiguration ()
+    {
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Expect (stub => stub.GetTypes (null, false)).Return (
+          new[] { typeof (ITestSingletonConcreteImplementationAttributeType) });
+
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryServiceStub);
+
+      Assert.That (serviceConfigurationEntries, Is.Not.Null);
+      Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (1));
+      var serviceConfigurationEntry = serviceConfigurationEntries.First ();
+      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
+      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+    }
 
     [Test]
-    public void GetServiceConfigurationEntries_ServiceHasNoConcreteImplementationAttributeDefined ()
+    public void GetDefaultConfiguration_DiscoveryServiceReturnsArrayList ()
+    {
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Expect (stub => stub.GetTypes (null, false)).Return (
+          new ArrayList(new[] { typeof(ITestSingletonConcreteImplementationAttributeType)}));
+
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryServiceStub);
+
+      Assert.That (serviceConfigurationEntries, Is.Not.Null);
+      Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (1));
+      var serviceConfigurationEntry = serviceConfigurationEntries.First ();
+      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
+      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+    }
+
+    [Test]
+    public void GetDefaultConfiguration_ServiceHasNoConcreteImplementationAttributeDefined ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
           new[] { typeof (ICollection) });
@@ -44,7 +77,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetServiceConfigurationEntries_ServiceHasConcreteImplementationAttributeDefined ()
+    public void GetDefaultConfiguration_ServiceHasConcreteImplementationAttributeDefined ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
           new[] { typeof (ITestSingletonConcreteImplementationAttributeType) });
@@ -57,7 +90,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetServiceConfigurationEntries_UnitTestAssembly ()
+    public void GetDefaultConfiguration_UnitTestAssembly ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
           new[] { Assembly.GetExecutingAssembly() });
@@ -65,24 +98,5 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (9)); //ServiceLocation.TestDomain services
     }
     
-    [Test]
-    public void GetDefaultConfiguration ()
-    {
-      // TODO Review 3164: Rewrite to use a stub instead of the real service
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
-      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService);
-
-      Assert.That (serviceConfigurationEntries, Is.Not.Null);
-      Assert.That (serviceConfigurationEntries.Count (), Is.GreaterThan (0));
-      foreach (var serviceConfigurationEntry in serviceConfigurationEntries)
-      {
-        if (!serviceConfigurationEntry.ImplementationType.Name.StartsWith ("Test"))
-          Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
-
-        Assert.That (
-            serviceConfigurationEntry.Lifetime,
-            Is.EqualTo (AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceConfigurationEntry.ServiceType, false).Lifetime));
-      }
-    }
   }
 }
