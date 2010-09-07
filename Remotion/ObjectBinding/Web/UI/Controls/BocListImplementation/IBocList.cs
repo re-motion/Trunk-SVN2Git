@@ -21,7 +21,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
@@ -393,7 +392,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     void RenderBeginTag (HtmlTextWriter writer);
     void RenderEndTag (HtmlTextWriter writer);
     IResourceManager GetResourceManager ();
-    IBocColumnRenderer[] GetColumnRenderers ();
     bool IsColumnVisible (BocColumnDefinition columnDefinition);
     string GetListItemCommandArgument (int columnIndex, int originalRowIndex);
     BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);

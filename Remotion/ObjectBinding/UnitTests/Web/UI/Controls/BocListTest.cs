@@ -82,7 +82,7 @@ public class BocListTest: BocTest
   [Test]
   public void SetValueToList()
   {
-    IBusinessObject[] list = new IBusinessObject[] {(IBusinessObject) TypeWithString.Create()};
+    IBusinessObject[] list = new[] {(IBusinessObject) TypeWithString.Create()};
     _bocList.IsDirty = false;
     _bocList.Value = list;
     Assert.AreEqual (list, _bocList.Value);
@@ -102,7 +102,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadValueAndInterimTrueWithListAndDirty()
   {
-    _businessObject.ReferenceList = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    _businessObject.ReferenceList = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Property = _propertyReferenceList;
     _bocList.Value = null;
@@ -130,7 +130,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadValueAndInterimTrueWithListAndNotDirty()
   {
-    _businessObject.ReferenceList = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    _businessObject.ReferenceList = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Property = _propertyReferenceList;
     _bocList.Value = null;
@@ -158,7 +158,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadValueAndInterimFalseWithListAndDirty()
   {
-    _businessObject.ReferenceList = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    _businessObject.ReferenceList = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Property = _propertyReferenceList;
     _bocList.Value = null;
@@ -186,7 +186,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadUnboundValueAndInterimTrueWithListAndDirty()
   {
-    TypeWithReference[] value = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    TypeWithReference[] value = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Value = null;
     _bocList.IsDirty = true;
@@ -212,7 +212,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadUnboundValueAndInterimTrueWithListAndNotDirty()
   {
-    TypeWithReference[] value = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    TypeWithReference[] value = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Value = null;
     _bocList.IsDirty = false;
@@ -238,7 +238,7 @@ public class BocListTest: BocTest
   [Test]
   public void LoadUnboundValueAndInterimFalseWithListAndDirty()
   {
-    TypeWithReference[] value = new TypeWithReference[] {TypeWithReference.Create(), TypeWithReference.Create()};
+    TypeWithReference[] value = new[] {TypeWithReference.Create(), TypeWithReference.Create()};
     _bocList.DataSource = _dataSource;
     _bocList.Value = null;
     _bocList.IsDirty = true;

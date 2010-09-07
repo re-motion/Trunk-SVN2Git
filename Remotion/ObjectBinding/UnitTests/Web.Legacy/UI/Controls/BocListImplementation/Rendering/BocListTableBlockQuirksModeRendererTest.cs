@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -32,6 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocListTableBlockQuirksModeRendererTest : BocListRendererTestBase
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+    private IBocColumnRenderer[] _stubColumnRenderers;
 
     [SetUp]
     public void SetUp ()
@@ -79,7 +79,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer (), List.GetColumnRenderers ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
+          HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -92,7 +93,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer (), List.GetColumnRenderers ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
+          HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -122,11 +124,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
-      List.Stub (list => list.GetColumnRenderers()).Return (
-          List.FixedColumns.ToArray().Select ((cd, i) => cd.GetRenderer (new StubServiceLocator(), HttpContext, List, i)).ToArray());
-
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
+
+      _stubColumnRenderers = new IBocColumnRenderer[]
+                             {
+                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 0),
+                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 1),
+                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 2)
+                             };
     }
 
     private void InitializePopulatedList ()
@@ -142,7 +148,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                               new BocListRow (sortingProvider, 1, secondObject)
                           };
       int firstRow;
-      List.Stub (list => list.GetRowsToDisplay(out firstRow)).Return (rows);
+      List.Stub (list => list.GetRowsToDisplay (out firstRow)).Return (rows);
     }
   }
 }

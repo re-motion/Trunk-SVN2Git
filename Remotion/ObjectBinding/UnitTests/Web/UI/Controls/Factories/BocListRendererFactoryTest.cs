@@ -16,10 +16,13 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using System.Web;
+using Remotion.Web;
+using Remotion.Web.Factories;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
@@ -28,6 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
   [TestFixture]
   public class BocListRendererFactoryTest
   {
+    private IBocColumnRenderer[] _columnRenderers;
     private HttpContextBase HttpContext { get; set; }
     private ObjectBinding.Web.UI.Controls.BocList List { get; set; }
 
@@ -36,13 +40,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     {
       HttpContext = MockRepository.GenerateMock<HttpContextBase> ();
       List = new ObjectBinding.Web.UI.Controls.BocList();
+
+      _columnRenderers = new IBocColumnRenderer[] { new StubColumnRenderer (HttpContext, List, new StubColumnDefinition(), new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), 0) };
     }
 
     [Test]
     public void CreateBocListRenderer ()
     {
       IBocListRendererFactory factory = new BocListRendererFactory(new BocListCssClassDefinition());
-      IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator(), ((IBocList) List).GetColumnRenderers());
+      IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator(), _columnRenderers);
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
       Assert.AreSame (List, ((BocListRenderer) renderer).List);

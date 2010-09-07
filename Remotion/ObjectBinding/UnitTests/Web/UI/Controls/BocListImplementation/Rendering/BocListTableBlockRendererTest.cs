@@ -20,8 +20,9 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web;
+using Remotion.Web.Factories;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -29,6 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocListTableBlockRendererTest : BocListRendererTestBase
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private IBocColumnRenderer[] _stubColumnRenderers;
 
     [SetUp]
     public void SetUp ()
@@ -76,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, _bocListCssClassDefinition, new StubRowRenderer (), List.GetColumnRenderers ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, _bocListCssClassDefinition, new StubRowRenderer(), _stubColumnRenderers);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -89,7 +91,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, _bocListCssClassDefinition, new StubRowRenderer (), List.GetColumnRenderers ());
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (
+          HttpContext, List, _bocListCssClassDefinition, new StubRowRenderer(), _stubColumnRenderers);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -119,11 +122,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
-      List.Stub (list => list.GetColumnRenderers()).Return (
-          List.FixedColumns.ToArray().Select ((cd, i) => cd.GetRenderer (new StubServiceLocator(), HttpContext, List, i)).ToArray());
-
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
+
+      _stubColumnRenderers = new IBocColumnRenderer[]
+                             {
+                                 new StubColumnRenderer (HttpContext, List, new StubColumnDefinition(), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0),
+                                 new StubColumnRenderer (HttpContext, List, new StubColumnDefinition(), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 1),
+                                 new StubColumnRenderer (HttpContext, List, new StubColumnDefinition(), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 2)
+                             };
     }
 
     private void InitializePopulatedList ()
@@ -139,7 +146,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                               new BocListRow (sortingProvider, 1, secondObject)
                           };
       int firstRow;
-      List.Stub (list => list.GetRowsToDisplay(out firstRow)).Return (rows);
+      List.Stub (list => list.GetRowsToDisplay (out firstRow)).Return (rows);
     }
   }
 }

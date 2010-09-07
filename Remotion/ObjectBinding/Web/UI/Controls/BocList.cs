@@ -406,7 +406,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator, ((IBocList)this).GetColumnRenderers());
+      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator, GetColumnRenderers());
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -1159,7 +1159,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator, ((IBocList)this).GetColumnRenderers());
+      var renderer = factory.CreateRenderer (Context, this, ServiceLocator, GetColumnRenderers());
       renderer.Render (writer);
     }
 
@@ -2106,7 +2106,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return EnsureColumnsGot (false);
     }
 
-    IBocColumnRenderer[] IBocList.GetColumnRenderers ()
+    private IBocColumnRenderer[] GetColumnRenderers ()
     {
       var bocColumnRenderers = new List<IBocColumnRenderer>();
       int columnIndex = 0;
