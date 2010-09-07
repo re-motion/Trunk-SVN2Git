@@ -41,13 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           ClassDefinition classDefinitionOfResult,
           string sortExpression);
 
-      SqlCommandData CreateSqlCommand (QueryModel queryModel, QueryType queryType);
+      SqlCommandData CreateSqlCommand (QueryModel queryModel, bool queryType);
     }
 
     public bool CreateQueryCalled;
     public bool CreateQueryFromModelCalled;
     public bool CreateQueryFromModelWithClassDefinitionCalled;
-    public bool GetStatementCalled;
+    public bool CreateSqlCommandCalled;
 
     [OverrideTarget]
     public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
@@ -77,10 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public SqlCommandData CreateSqlCommand (QueryModel queryModel, QueryType queryType)
+    public SqlCommandData CreateSqlCommand (QueryModel queryModel, bool checkResultIsDomainObject)
     {
-      GetStatementCalled = true;
-      return Base.CreateSqlCommand (queryModel, queryType);
+      CreateSqlCommandCalled = true;
+      return Base.CreateSqlCommand (queryModel, checkResultIsDomainObject);
     }
   }
 }

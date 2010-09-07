@@ -29,6 +29,7 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -91,6 +92,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
+    }
+
+    [Test]
+    public void Executor_CanBeMixed ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      {
+        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _nodeTypeRegistry);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
+      }
     }
   }
 }

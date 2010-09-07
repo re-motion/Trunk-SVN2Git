@@ -203,7 +203,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      var command = CreateSqlCommand (queryModel, queryType);
+      var command = CreateSqlCommand (queryModel, queryType == QueryType.Collection); // check result for DomainObjects unless it's a scalar query
       
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
@@ -222,20 +222,46 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Creates a sql query from a given <see cref="QueryModel"/>.
+    /// Creates a SQL query from a given <see cref="QueryModel"/>.
     /// </summary>
-    /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated for.</param>
-    /// <param name="queryType">The <see cref="QueryType"/> of the sql query.</param>
-    /// <returns></returns>
-    public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel, QueryType queryType)
+    /// <param name="queryModel">
+    /// The <see cref="QueryModel"/> a sql query is generated for. The query must not contain any eager fetch result operators.
+    /// </param>
+    /// <param name="checkResultIsDomainObject">If <see langword="true" />, the method will check whether the query returns <see cref="DomainObject"/>
+    /// instances and throw an exception if yes. If <see langword="false" />, no such check will be made.</param>
+    /// <returns>A <see cref="SqlCommandData"/> instance containing the SQL text, parameters, and an in-memory projection for the given query model.</returns>
+    public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel, bool checkResultIsDomainObject)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      var sqlStatement = TransformAndResolveQueryModel (queryModel);
-      if (queryType == QueryType.Collection)
+      SqlStatement sqlStatement;
+      try
+      {
+        sqlStatement = TransformAndResolveQueryModel (queryModel);
+      }
+      catch (NotSupportedException ex)
+      {
+        var message = string.Format ("There was an error preparing or resolving query '{0}' for SQL generation. {1}", queryModel, ex.Message);
+        throw new NotSupportedException (message, ex);
+      }
+      catch (UnmappedItemException ex)
+      {
+        var message = string.Format ("Query '{0}' contains an unmapped item. {1}", queryModel, ex.Message);
+        throw new UnmappedItemException (message, ex);
+      }
+
+      if (checkResultIsDomainObject)
         CheckQueryReturnsDomainObject (sqlStatement, queryModel);
 
-      return CreateSqlCommand (sqlStatement);
+      try
+      {
+        return CreateSqlCommand (sqlStatement);
+      }
+      catch (NotSupportedException ex)
+      {
+        var message = string.Format ("There was an error generating SQL for the query '{0}'. {1}", queryModel, ex.Message);
+        throw new NotSupportedException (message, ex);
+      }
     }
 
     /// <summary>
@@ -373,7 +399,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, null);
+      SqlStatement sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, null);
       return _resolutionStage.ResolveSqlStatement (sqlStatement, _mappingResolutionContext);
     }
 
