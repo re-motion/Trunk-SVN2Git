@@ -180,6 +180,7 @@
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
+    <Compile Include="UI\Controls\IRenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
     <Compile Include="UI\Controls\StyleSheetBlock.cs" />
     <Compile Include="UI\Controls\StyleSheetElement.cs" />
