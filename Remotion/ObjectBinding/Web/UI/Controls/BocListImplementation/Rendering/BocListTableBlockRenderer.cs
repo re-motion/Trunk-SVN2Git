@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocList _list;
     private readonly BocListCssClassDefinition _cssClasses;
     private readonly IBocRowRenderer _rowRenderer;
+    private readonly IBocColumnRenderer[] _columnRenderers;
 
     public BocListTableBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IBocRowRenderer rowRenderer)
     {
@@ -44,6 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _list = list;
       _cssClasses = cssClasses;
       _rowRenderer = rowRenderer;
+      _columnRenderers = List.GetColumnRenderers ();
     }
 
     public HttpContextBase Context
@@ -257,8 +259,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup (HtmlTextWriter writer)
     {
-      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
-
       writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       bool isTextXml = false;
@@ -270,9 +270,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderSelectorColumnDeclaration (writer, isTextXml);
 
       //bool isFirstColumnUndefinedWidth = true;
-      for (int i = 0; i < columnRenderers.Length; i++)
+      for (int i = 0; i < _columnRenderers.Length; i++)
       {
-        IBocColumnRenderer renderer = columnRenderers[i];
+        IBocColumnRenderer renderer = _columnRenderers[i];
 
         if (!List.IsColumnVisible (renderer.Column))
           continue;
@@ -281,7 +281,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
 
       //  Design-mode and empty table
-      if (ControlHelper.IsDesignMode (List) && columnRenderers.Length == 0)
+      if (ControlHelper.IsDesignMode (List) && _columnRenderers.Length == 0)
       {
         for (int i = 0; i < BocRowRenderer.DesignModeDummyColumnCount; i++)
         {

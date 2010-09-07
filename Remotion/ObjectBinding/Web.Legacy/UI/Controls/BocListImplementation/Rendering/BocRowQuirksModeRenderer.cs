@@ -43,6 +43,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly IBocList _list;
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
     private readonly IServiceLocator _serviceLocator;
+    private readonly IBocColumnRenderer[] _columnRenderers;
 
     public BocRowQuirksModeRenderer (HttpContextBase context, IBocList list, BocListQuirksModeCssClassDefinition cssClasses, IServiceLocator serviceLocator)
     {
@@ -55,6 +56,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _list = list;
       _cssClasses = cssClasses;
       _serviceLocator = serviceLocator;
+      _columnRenderers = list.GetColumnRenderers();
     }
 
     public HttpContextBase Context
@@ -75,13 +77,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     public IServiceLocator ServiceLocator
     {
       get { return _serviceLocator; }
-    }
-
-    /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
-    /// returns the cached renderer on subsequent calls with the same column.</summary>
-    private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
-    {
-      return column.GetRenderer (ServiceLocator, Context, List);
     }
 
     public void RenderTitlesRow (HtmlTextWriter writer)
@@ -108,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       RenderTitleCells (writer, sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode (List) && List.GetColumnRenderers().Length == 0)
+      if (ControlHelper.IsDesignMode (List) && _columnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
@@ -123,10 +118,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      IBocColumnRenderer[] columnRenderers = _columnRenderers;
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        IBocColumnRenderer renderer = GetColumnRenderer (columnRenderers[idxColumns].Column);
+        IBocColumnRenderer renderer = columnRenderers[idxColumns];
         SortingDirection sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
@@ -139,7 +134,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      IBocColumnRenderer[] columnRenderers = _columnRenderers;
       int columnCount = 0;
 
       if (List.IsIndexEnabled)
@@ -207,7 +202,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (IBocColumnRenderer renderer in List.GetColumnRenderers())
+      foreach (IBocColumnRenderer renderer in _columnRenderers)
       {
         bool showIcon = false;
         if ((!firstValueColumnRendered) && renderer.Column is BocValueColumnDefinition)

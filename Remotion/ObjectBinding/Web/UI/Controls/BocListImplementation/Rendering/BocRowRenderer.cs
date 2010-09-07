@@ -43,7 +43,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocIndexColumnRenderer _indexColumnRenderer;
     private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
-    
+    private readonly IBocColumnRenderer[] _columnRenderers;
+
     public BocRowRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -57,6 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _serviceLocator = serviceLocator;
       _indexColumnRenderer = ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, List);
       _selectorColumnRenderer = ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, List);
+      _columnRenderers = list.GetColumnRenderers();
     }
 
     public HttpContextBase Context
@@ -103,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       RenderTitleCells (writer, sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode (List) && List.GetColumnRenderers().Length == 0)
+      if (ControlHelper.IsDesignMode (List) && _columnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
@@ -118,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      IBocColumnRenderer[] columnRenderers = _columnRenderers;
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
         IBocColumnRenderer columnRenderer = columnRenderers[idxColumns];
@@ -135,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      IBocColumnRenderer[] columnRenderers = _columnRenderers;
       int columnCount = 0;
 
       if (List.IsIndexEnabled)
@@ -203,7 +205,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (IBocColumnRenderer columnRenderer in List.GetColumnRenderers())
+      foreach (IBocColumnRenderer columnRenderer in _columnRenderers)
       {
         bool showIcon = false;
         if ((!firstValueColumnRendered) && columnRenderer.Column is BocValueColumnDefinition)
