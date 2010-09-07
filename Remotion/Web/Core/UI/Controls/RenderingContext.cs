@@ -18,12 +18,11 @@ using System;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.Web.UI.Controls
 {
   public class RenderingContext<TControl> : IRenderingContext
-    where TControl : IControl
+      where TControl: IControl
   {
     private readonly HttpContextBase _httpContext;
     private readonly HtmlTextWriter _writer;
@@ -42,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public HttpContextBase HttpContext
     {
-      get { return _httpContext;  }
+      get { return _httpContext; }
     }
 
     public HtmlTextWriter Writer
@@ -55,6 +54,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _control; }
     }
 
-    public TControl Control { get { return (TControl) _control; } }
+    public TControl Control
+    {
+      get { return (TControl) _control; }
+    }
   }
 }

@@ -404,7 +404,6 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererBase.cs" />
     <Compile Include="UI\Controls\BocRendererBase.cs" />
-    <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>
