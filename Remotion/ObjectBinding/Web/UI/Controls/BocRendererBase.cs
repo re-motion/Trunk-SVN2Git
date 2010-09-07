@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
@@ -46,31 +45,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary>
     /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
-    /// to the <paramref name="writer"/> so that they are rendered in the next begin tag.
+    /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
     /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
-    protected void AddAttributesToRender (HtmlTextWriter writer)
+    protected void AddAttributesToRender (RenderingContext<TControl> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       string backUpCssClass;
       string backUpAttributeCssClass;
-      OverrideCssClass (out backUpCssClass, out backUpAttributeCssClass);
+      OverrideCssClass (renderingContext, out backUpCssClass, out backUpAttributeCssClass);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (renderingContext);
 
-      RestoreClass (backUpCssClass, backUpAttributeCssClass);
+      RestoreClass (renderingContext, backUpCssClass, backUpAttributeCssClass);
 
-      AddAdditionalAttributes (writer);
+      AddAdditionalAttributes (renderingContext);
     }
 
     /// <summary>
     /// Called after all attributes have been added by <see cref="AddAttributesToRender"/>.
     /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
     /// </summary>
-    protected virtual void AddAdditionalAttributes (HtmlTextWriter writer)
+    protected virtual void AddAdditionalAttributes (RenderingContext<TControl> renderingContext)
     {
     }
 
@@ -101,26 +100,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "disabled"; }
     }
 
-    private void OverrideCssClass (out string backUpCssClass, out string backUpAttributeCssClass)
+    private void OverrideCssClass (RenderingContext<TControl> renderingContext, out string backUpCssClass, out string backUpAttributeCssClass)
     {
-      backUpCssClass = Control.CssClass;
+      backUpCssClass = renderingContext.Control.CssClass;
       bool hasCssClass = !string.IsNullOrEmpty (backUpCssClass);
       if (hasCssClass)
-        Control.CssClass += GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.CssClass += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
-      backUpAttributeCssClass = Control.Attributes["class"];
+      backUpAttributeCssClass = renderingContext.Control.Attributes["class"];
       bool hasClassAttribute = !string.IsNullOrEmpty (backUpAttributeCssClass);
       if (hasClassAttribute)
-        Control.Attributes["class"] += GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        Control.CssClass = CssClassBase + GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.CssClass = CssClassBase + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
     }
 
-    private void RestoreClass (string backUpCssClass, string backUpAttributeCssClass)
+    private void RestoreClass (RenderingContext<TControl> renderingContext, string backUpCssClass, string backUpAttributeCssClass)
     {
-      Control.CssClass = backUpCssClass;
-      Control.Attributes["class"] = backUpAttributeCssClass;
+      renderingContext.Control.CssClass = backUpCssClass;
+      renderingContext.Control.Attributes["class"] = backUpAttributeCssClass;
     }
 
     private string GetAdditionalCssClass (bool isReadOnly, bool isDisabled)

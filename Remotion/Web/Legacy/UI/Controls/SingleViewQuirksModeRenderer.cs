@@ -79,7 +79,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     protected void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ISingleView>(Context, writer, Control));
 
       if (Control.IsDesignMode)
       {

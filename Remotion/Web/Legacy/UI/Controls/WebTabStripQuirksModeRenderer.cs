@@ -77,7 +77,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<IWebTabStrip>(Context, writer, Control));
 
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);

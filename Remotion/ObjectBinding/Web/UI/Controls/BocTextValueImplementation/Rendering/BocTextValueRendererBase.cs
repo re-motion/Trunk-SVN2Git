@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -49,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer);
+      AddAttributesToRender (new RenderingContext<T>(Context, writer, Control));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);

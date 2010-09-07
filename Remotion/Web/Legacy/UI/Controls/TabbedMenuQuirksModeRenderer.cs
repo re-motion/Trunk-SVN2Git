@@ -102,7 +102,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ITabbedMenu>(Context, writer, Control));
 
       if (Control.IsDesignMode)
         writer.AddStyleAttribute ("width", "100%");

@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -72,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (new RenderingContext<IBocCheckBox>(Context, writer, Control), false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = Control.GetLabelUniqueID() };

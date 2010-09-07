@@ -47,38 +47,38 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
     /// <summary>
     /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
-    /// to the <paramref name="writer"/> so that they are rendered in the next begin tag.
+    /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>
     /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
     /// without changing the contents of the actual style.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
     /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
-    protected void AddAttributesToRender (HtmlTextWriter writer, bool overrideWidth)
+    protected void AddAttributesToRender (RenderingContext<TControl> renderingContext, bool overrideWidth)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       Unit backUpWidth;
       string backUpStyleWidth;
-      OverrideWidth (overrideWidth, "auto", out backUpWidth, out backUpStyleWidth);
+      OverrideWidth (renderingContext, overrideWidth, "auto", out backUpWidth, out backUpStyleWidth);
 
       string backUpCssClass;
       string backUpAttributeCssClass;
-      OverrideCssClass (out backUpCssClass, out backUpAttributeCssClass);
+      OverrideCssClass (renderingContext, out backUpCssClass, out backUpAttributeCssClass);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (renderingContext);
 
-      RestoreClass (backUpCssClass, backUpAttributeCssClass);
-      RestoreWidth (backUpStyleWidth, backUpWidth);
+      RestoreClass (renderingContext, backUpCssClass, backUpAttributeCssClass);
+      RestoreWidth (renderingContext, backUpStyleWidth, backUpWidth);
 
-      AddAdditionalAttributes (writer);
+      AddAdditionalAttributes (renderingContext);
     }
 
     /// <summary>
     /// Called after all attributes have been added by <see cref="AddAttributesToRender"/>.
     /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
     /// </summary>
-    protected virtual void AddAdditionalAttributes (HtmlTextWriter writer)
+    protected virtual void AddAdditionalAttributes (RenderingContext<TControl> renderingContext)
     {
     }
 
@@ -109,43 +109,43 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       get { return "disabled"; }
     }
 
-    private void OverrideWidth (bool overrideWidth, string newWidth, out Unit backUpWidth, out string backUpStyleWidth)
+    private void OverrideWidth (RenderingContext<TControl> renderingContext, bool overrideWidth, string newWidth, out Unit backUpWidth, out string backUpStyleWidth)
     {
-      backUpStyleWidth = Control.Style["width"];
-      backUpWidth = Control.Width;
+      backUpStyleWidth = renderingContext.Control.Style["width"];
+      backUpWidth = renderingContext.Control.Width;
       if( !overrideWidth )
         return;
 
-      Control.Style["width"] = newWidth;
-      Control.Width = Unit.Empty;
+      renderingContext.Control.Style["width"] = newWidth;
+      renderingContext.Control.Width = Unit.Empty;
     }
 
-    private void OverrideCssClass (out string backUpCssClass, out string backUpAttributeCssClass)
+    private void OverrideCssClass (RenderingContext<TControl> renderingContext, out string backUpCssClass, out string backUpAttributeCssClass)
     {
-      backUpCssClass = Control.CssClass;
+      backUpCssClass = renderingContext.Control.CssClass;
       bool hasCssClass = !string.IsNullOrEmpty (backUpCssClass);
       if (hasCssClass)
-        Control.CssClass += GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.CssClass += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
-      backUpAttributeCssClass = Control.Attributes["class"];
+      backUpAttributeCssClass = renderingContext.Control.Attributes["class"];
       bool hasClassAttribute = !string.IsNullOrEmpty (backUpAttributeCssClass);
       if (hasClassAttribute)
-        Control.Attributes["class"] += GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        Control.CssClass = CssClassBase + GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        renderingContext.Control.CssClass = CssClassBase + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
     }
 
-    private void RestoreWidth (string backUpStyleWidth, Unit backUpWidth)
+    private void RestoreWidth (RenderingContext<TControl> renderingContext, string backUpStyleWidth, Unit backUpWidth)
     {
-      Control.Style["width"] = backUpStyleWidth;
-      Control.Width = backUpWidth;
+      renderingContext.Control.Style["width"] = backUpStyleWidth;
+      renderingContext.Control.Width = backUpWidth;
     }
 
-    private void RestoreClass (string backUpCssClass, string backUpAttributeCssClass)
+    private void RestoreClass (RenderingContext<TControl> renderingContext, string backUpCssClass, string backUpAttributeCssClass)
     {
-      Control.CssClass = backUpCssClass;
-      Control.Attributes["class"] = backUpAttributeCssClass;
+      renderingContext.Control.CssClass = backUpCssClass;
+      renderingContext.Control.Attributes["class"] = backUpAttributeCssClass;
     }
 
     private string GetAdditionalCssClass (bool isReadOnly, bool isDisabled)

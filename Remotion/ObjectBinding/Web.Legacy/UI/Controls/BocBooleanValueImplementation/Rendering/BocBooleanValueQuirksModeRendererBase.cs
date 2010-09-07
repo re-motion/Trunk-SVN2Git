@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -38,17 +39,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
     }
 
-    protected override void AddAdditionalAttributes(HtmlTextWriter writer)
+    protected override void AddAdditionalAttributes(RenderingContext<T> renderingContext)
     {
-      base.AddAdditionalAttributes (writer);
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-      writer.AddStyleAttribute ("white-space", "nowrap");
-      if (!Control.IsReadOnly)
+      base.AddAdditionalAttributes (renderingContext);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
+      renderingContext.Writer.AddStyleAttribute ("white-space", "nowrap");
+      if (!renderingContext.Control.IsReadOnly)
       {
-        bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-        bool isLabelWidthEmpty = Control.LabelStyle.Width.IsEmpty;
+        bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
+        bool isLabelWidthEmpty = renderingContext.Control.LabelStyle.Width.IsEmpty;
         if (isLabelWidthEmpty && isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
       }
     }
   }

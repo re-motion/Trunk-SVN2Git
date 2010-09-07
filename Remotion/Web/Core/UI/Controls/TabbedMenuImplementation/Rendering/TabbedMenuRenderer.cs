@@ -94,7 +94,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ITabbedMenu>(Context, writer, Control));
 
       if (Control.IsDesignMode)
         writer.AddStyleAttribute ("width", "100%");

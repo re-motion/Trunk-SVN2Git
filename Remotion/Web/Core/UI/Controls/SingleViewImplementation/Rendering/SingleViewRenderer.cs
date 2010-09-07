@@ -58,7 +58,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   
       RegisterAdjustViewScript ();
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ISingleView>(Context, writer, Control));
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
       if (Control.IsDesignMode)

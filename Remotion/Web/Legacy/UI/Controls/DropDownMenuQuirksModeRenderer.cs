@@ -69,7 +69,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       RegisterEventHandlerScripts();
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<IDropDownMenu>(Context, writer, Control));
       writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 

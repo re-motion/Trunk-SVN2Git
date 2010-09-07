@@ -90,7 +90,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     protected void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ITabbedMultiView>(Context, writer, Control));
       if (Control.IsDesignMode)
       {
         writer.AddStyleAttribute ("width", "100%");

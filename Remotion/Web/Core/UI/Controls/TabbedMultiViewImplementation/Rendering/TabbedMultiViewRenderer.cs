@@ -78,7 +78,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<ITabbedMultiView>(Context, writer, Control));
       if (Control.IsDesignMode)
       {
         writer.AddStyleAttribute ("width", "100%");

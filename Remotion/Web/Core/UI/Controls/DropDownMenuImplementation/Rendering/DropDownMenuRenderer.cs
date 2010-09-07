@@ -126,7 +126,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 
     private void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender (writer);
+      AddStandardAttributesToRender (new RenderingContext<IDropDownMenu>(Context, writer, Control));
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 

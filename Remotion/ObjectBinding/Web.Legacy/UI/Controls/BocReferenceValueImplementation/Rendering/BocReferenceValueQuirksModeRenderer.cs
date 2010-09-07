@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (new RenderingContext<IBocReferenceValue>(Context, writer, Control), false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       DropDownList dropDownList = GetDropDownList();
@@ -154,12 +154,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       return icon;
     }
 
-    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
+    protected override void AddAdditionalAttributes (RenderingContext<IBocReferenceValue> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      base.AddAdditionalAttributes (writer);
-      writer.AddStyleAttribute ("display", "inline");
+      base.AddAdditionalAttributes (renderingContext);
+      renderingContext.Writer.AddStyleAttribute ("display", "inline");
     }
 
     public override string CssClassBase

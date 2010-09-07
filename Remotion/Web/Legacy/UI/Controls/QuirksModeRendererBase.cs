@@ -61,26 +61,26 @@ namespace Remotion.Web.Legacy.UI.Controls
       get { return _control; }
     }
 
-    protected void AddStandardAttributesToRender (HtmlTextWriter writer)
+    protected void AddStandardAttributesToRender (RenderingContext<TControl> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID);
 
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
+      if (!string.IsNullOrEmpty (renderingContext.Control.CssClass))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, renderingContext.Control.CssClass);
 
-      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
+      CssStyleCollection styles = renderingContext.Control.ControlStyle.GetStyleAttributes (renderingContext.Control);
       foreach (string style in styles.Keys)
       {
-        writer.AddStyleAttribute (style, styles[style]);
+        renderingContext.Writer.AddStyleAttribute (style, styles[style]);
       }
 
-      foreach (string attribute in Control.Attributes.Keys)
+      foreach (string attribute in renderingContext.Control.Attributes.Keys)
       {
-        string value = Control.Attributes[attribute];
+        string value = renderingContext.Control.Attributes[attribute];
         if (!string.IsNullOrEmpty (value))
-          writer.AddAttribute (attribute, value);
+          renderingContext.Writer.AddAttribute (attribute, value);
       }
     }
   }

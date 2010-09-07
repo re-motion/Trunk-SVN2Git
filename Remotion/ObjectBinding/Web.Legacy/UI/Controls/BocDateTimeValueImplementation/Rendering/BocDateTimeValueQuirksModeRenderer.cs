@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer, true);
+      AddAttributesToRender (new RenderingContext<IBocDateTimeValue>(Context, writer, Control), true);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (Control.IsReadOnly)
@@ -240,10 +240,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       return control.Height.IsEmpty && string.IsNullOrEmpty (control.Style["height"]);
     }
 
-    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
+    protected override void AddAdditionalAttributes (RenderingContext<IBocDateTimeValue> renderingContext)
     {
-      base.AddAdditionalAttributes (writer);
-      writer.AddStyleAttribute ("display", "inline");
+      base.AddAdditionalAttributes (renderingContext);
+      renderingContext.Writer.AddStyleAttribute ("display", "inline");
     }
 
     private bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)

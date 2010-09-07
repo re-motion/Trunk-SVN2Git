@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       
       RegisterBindScript();
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (new RenderingContext<IBocAutoCompleteReferenceValue>(Context, writer, Control), false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       TextBox textBox = GetTextbox();
@@ -235,10 +235,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       return icon;
     }
 
-    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
+    protected override void AddAdditionalAttributes (RenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      base.AddAdditionalAttributes(writer);
-      writer.AddStyleAttribute ("display", "inline");
+      base.AddAdditionalAttributes(renderingContext);
+      renderingContext.Writer.AddStyleAttribute ("display", "inline");
     }
 
     public override string CssClassBase

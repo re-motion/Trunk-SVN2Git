@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 using Remotion.Web;
 
@@ -170,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       RegisterInitializeGlobalsScript();
 
-      AddAttributesToRender (writer, false);
+      AddAttributesToRender (new RenderingContext<IBocList>(Context, writer, Control), false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       RenderContents (writer);
