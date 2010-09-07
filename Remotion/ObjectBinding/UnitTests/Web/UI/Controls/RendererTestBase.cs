@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [TestFixtureSetUp]
     public void TestFixtureSetUp ()
     {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
     }
 
     protected virtual void Initialize ()

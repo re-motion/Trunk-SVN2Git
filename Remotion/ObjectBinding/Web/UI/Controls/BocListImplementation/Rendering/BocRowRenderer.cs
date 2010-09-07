@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       RenderTitleCells (writer, sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode (List) && List.GetColumns().Length == 0)
+      if (ControlHelper.IsDesignMode (List) && List.GetColumnRenderers().Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      BocColumnDefinition[] renderColumns = List.GetColumns();
+      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
       int columnCount = 0;
 
       if (List.IsIndexEnabled)
@@ -144,10 +144,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (List.IsSelectionEnabled)
         columnCount++;
 
-      for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
+      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        BocColumnDefinition column = renderColumns[idxColumns];
-        if (List.IsColumnVisible (column))
+        IBocColumnRenderer columnRenderer = columnRenderers[idxColumns];
+        if (List.IsColumnVisible (columnRenderer.Column))
           columnCount++;
       }
 

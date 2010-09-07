@@ -257,7 +257,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup (HtmlTextWriter writer)
     {
-      BocColumnDefinition[] renderColumns = List.GetColumns();
+      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
 
       writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
@@ -270,18 +270,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderSelectorColumnDeclaration (writer, isTextXml);
 
       //bool isFirstColumnUndefinedWidth = true;
-      for (int i = 0; i < renderColumns.Length; i++)
+      for (int i = 0; i < columnRenderers.Length; i++)
       {
-        BocColumnDefinition column = renderColumns[i];
+        IBocColumnRenderer renderer = columnRenderers[i];
 
-        if (!List.IsColumnVisible (column))
+        if (!List.IsColumnVisible (renderer.Column))
           continue;
 
-        RenderDataColumnDeclaration (writer, isTextXml, column);
+        RenderDataColumnDeclaration (writer, isTextXml, renderer.Column);
       }
 
       //  Design-mode and empty table
-      if (ControlHelper.IsDesignMode (List) && renderColumns.Length == 0)
+      if (ControlHelper.IsDesignMode (List) && columnRenderers.Length == 0)
       {
         for (int i = 0; i < BocRowRenderer.DesignModeDummyColumnCount; i++)
         {

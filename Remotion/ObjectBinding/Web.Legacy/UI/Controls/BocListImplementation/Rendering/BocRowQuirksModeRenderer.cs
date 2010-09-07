@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       RenderTitleCells (writer, sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode (List) && List.GetColumns().Length == 0)
+      if (ControlHelper.IsDesignMode (List) && List.GetColumnRenderers().Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
@@ -123,14 +123,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      BocColumnDefinition[] renderColumns = List.GetColumns();
-      for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
+      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
+      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        BocColumnDefinition column = renderColumns[idxColumns];
-        if (!List.IsColumnVisible (column))
-          continue;
-
-        IBocColumnRenderer renderer = GetColumnRenderer (column);
+        IBocColumnRenderer renderer = GetColumnRenderer (columnRenderers[idxColumns].Column);
         SortingDirection sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
@@ -143,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      BocColumnDefinition[] renderColumns = List.GetColumns();
+      IBocColumnRenderer[] columnRenderers = List.GetColumnRenderers();
       int columnCount = 0;
 
       if (List.IsIndexEnabled)
@@ -152,9 +148,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (List.IsSelectionEnabled)
         columnCount++;
 
-      for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
+      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        BocColumnDefinition column = renderColumns[idxColumns];
+        BocColumnDefinition column = columnRenderers[idxColumns].Column;
         if (List.IsColumnVisible (column))
           columnCount++;
       }
@@ -211,18 +207,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (BocColumnDefinition column in List.GetColumns())
+      foreach (IBocColumnRenderer renderer in List.GetColumnRenderers())
       {
         bool showIcon = false;
-        if ((!firstValueColumnRendered) && column is BocValueColumnDefinition)
+        if ((!firstValueColumnRendered) && renderer.Column is BocValueColumnDefinition)
         {
           firstValueColumnRendered = true;
           showIcon = List.EnableIcon;
         }
 
-        IBocColumnRenderer columnRenderer = GetColumnRenderer (column);
-
-        columnRenderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
+        renderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
       }
     }
 

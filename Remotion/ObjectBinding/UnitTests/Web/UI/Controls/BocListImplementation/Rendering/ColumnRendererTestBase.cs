@@ -17,6 +17,7 @@
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -31,6 +32,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       List.FixedColumns.Add (Column);
       List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+      List.Stub (mock => mock.GetColumnRenderers()).Return (
+          List.FixedColumns.ToArray().Select (cd => cd.GetRenderer (new StubServiceLocator(), HttpContext, List)).ToArray());
       List.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
     }
   }

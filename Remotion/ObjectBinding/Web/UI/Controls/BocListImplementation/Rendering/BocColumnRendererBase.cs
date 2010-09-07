@@ -20,6 +20,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -69,7 +70,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _list = list;
       _column = columnDefinition;
       _resourceUrlFactory = resourceUrlFactory;
-      _columnIndex = Array.IndexOf (list.GetColumns(), columnDefinition);
+      _columnIndex = Array.IndexOf (list.GetColumns (), columnDefinition);
+      //TODO 3132: _columnIndex = list.GetColumnRenderers ().Where (r => r.Column == columnDefinition).Select ((renderer, index) => index).SingleOrDefault ();
+      
       _cssClasses = cssClasses;
     }
 

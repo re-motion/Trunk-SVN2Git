@@ -89,6 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBootstrapStorageProvider), new BootstrapStorageProvider());
       _instances.Add (typeof (ITypeDiscoveryServiceFactoryImplementation), new TypeDiscoveryServiceFactoryImplementation());
       _instances.Add (typeof (IMixinTypeUtilityImplementation), new MixinTypeUtilityImplementation());
+      _instances.Add (typeof (IAdapterRegistryImplementation), new AdapterRegistryImplementation());
     }
 
     public void SetFactory<T> (T factory)

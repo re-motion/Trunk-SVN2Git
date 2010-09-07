@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Render
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -40,8 +41,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       List.FixedColumns.Add (new StubColumnDefinition());
       List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+      List.Stub (mock => mock.GetColumnRenderers()).Return (
+          List.FixedColumns.ToArray().Select (cd => cd.GetRenderer (new StubServiceLocator(), HttpContext, List)).ToArray());
       List.Stub (mock => mock.AreDataRowsClickSensitive()).Return (true);
-
       List.Stub (mock => mock.SortingOrder).Return (new ArrayList { SortingDirection.Ascending });
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();

@@ -16,13 +16,9 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
 using System.Linq;
