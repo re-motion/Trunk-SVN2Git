@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       _bocListCssClassDefinition = bocListCssClassDefinition;
     }
 
-    public IRenderer CreateRenderer (HttpContextBase context, IBocList control, IServiceLocator serviceLocator)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList control, IServiceLocator serviceLocator, IBocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
               context,
               control,
               _bocListCssClassDefinition,
-              new BocRowRenderer (context, control, _bocListCssClassDefinition, serviceLocator)),
+              new BocRowRenderer (context, control, _bocListCssClassDefinition, serviceLocator, columnRenderers), columnRenderers),
           new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, _bocListCssClassDefinition),
           new BocListMenuBlockRenderer (context, control, _bocListCssClassDefinition)
           );

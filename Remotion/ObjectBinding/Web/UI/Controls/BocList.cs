@@ -406,7 +406,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator, ((IBocList)this).GetColumnRenderers());
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -1159,7 +1159,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
+      var renderer = factory.CreateRenderer (Context, this, ServiceLocator, ((IBocList)this).GetColumnRenderers());
       renderer.Render (writer);
     }
 

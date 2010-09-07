@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
       _bocListQuirksModeCssClassDefinition = bocListQuirksModeCssClassDefinition;
     }
 
-    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator, IBocColumnRenderer[] columnRenderers)
     {
       return new BocListQuirksModeRenderer (
           context,
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
               context,
               list,
               _bocListQuirksModeCssClassDefinition,
-              new BocRowQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition, serviceLocator)),
+              new BocRowQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition, serviceLocator, columnRenderers), columnRenderers),
           new BocListNavigationBlockQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition),
           new BocListMenuBlockQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition)
           );

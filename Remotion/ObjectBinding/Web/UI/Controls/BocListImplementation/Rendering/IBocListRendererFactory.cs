@@ -29,6 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof(BocListRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
+    IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator, IBocColumnRenderer[] columnRenderers);
   }
 }

@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
@@ -37,7 +37,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly IBocRowRenderer _rowRenderer;
     private readonly IBocColumnRenderer[] _columnRenderers;
 
-    public BocListTableBlockQuirksModeRenderer (HttpContextBase context, IBocList list, BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer)
+    public BocListTableBlockQuirksModeRenderer (
+        HttpContextBase context, IBocList list, BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, IBocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -48,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _list = list;
       _cssClasses = cssClasses;
       _rowRenderer = rowRenderer;
-      _columnRenderers = list.GetColumnRenderers();
+      _columnRenderers = columnRenderers;
     }
 
     public HttpContextBase Context
@@ -202,21 +203,21 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
           count = List.PageSize.Value;
         else if (List.Value != null)
           count = List.Value.Count;
-        
+
         bool hasClickSensitiveRows = List.IsSelectionEnabled && !List.EditModeController.IsRowEditModeActive && List.AreDataRowsClickSensitive();
 
         const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, $('#{5}')[0] );";
         string script = string.Format (
             scriptTemplate,
             List.ClientID,
-            List.GetSelectorControlClientId(null),
+            List.GetSelectorControlClientId (null),
             count,
             (int) List.Selection,
             hasClickSensitiveRows ? "true" : "false",
             List.ListMenu.ClientID);
 
         List.Page.ClientScript.RegisterStartupScriptBlock (
-            List, typeof (BocListTableBlockQuirksModeRenderer), typeof (Web.UI.Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+            List, typeof (BocListTableBlockQuirksModeRenderer), typeof (BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 

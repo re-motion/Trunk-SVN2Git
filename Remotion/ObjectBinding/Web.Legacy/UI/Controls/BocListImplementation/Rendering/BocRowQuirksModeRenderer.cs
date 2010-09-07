@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
@@ -45,7 +45,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocColumnRenderer[] _columnRenderers;
 
-    public BocRowQuirksModeRenderer (HttpContextBase context, IBocList list, BocListQuirksModeCssClassDefinition cssClasses, IServiceLocator serviceLocator)
+    public BocRowQuirksModeRenderer (
+        HttpContextBase context,
+        IBocList list,
+        BocListQuirksModeCssClassDefinition cssClasses,
+        IServiceLocator serviceLocator,
+        IBocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -56,7 +61,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _list = list;
       _cssClasses = cssClasses;
       _serviceLocator = serviceLocator;
-      _columnRenderers = list.GetColumnRenderers();
+      _columnRenderers = columnRenderers;
     }
 
     public HttpContextBase Context
@@ -166,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       writer.RenderEndTag();
     }
 
-    public void RenderDataRow (HtmlTextWriter writer,IBusinessObject businessObject,int rowIndex,int absoluteRowIndex,int originalRowIndex)
+    public void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
     {
       string selectorControlID = List.GetSelectorControlClientId (rowIndex);
       bool isChecked = (List.SelectorControlCheckedState.Contains (originalRowIndex));

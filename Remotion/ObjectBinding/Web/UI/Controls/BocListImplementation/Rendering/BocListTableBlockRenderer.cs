@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocRowRenderer _rowRenderer;
     private readonly IBocColumnRenderer[] _columnRenderers;
 
-    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IBocRowRenderer rowRenderer)
+    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, IBocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _list = list;
       _cssClasses = cssClasses;
       _rowRenderer = rowRenderer;
-      _columnRenderers = List.GetColumnRenderers ();
+      _columnRenderers = columnRenderers;
     }
 
     public HttpContextBase Context

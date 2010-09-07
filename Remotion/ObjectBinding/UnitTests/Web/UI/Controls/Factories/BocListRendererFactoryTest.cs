@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using System.Web;
@@ -41,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     public void CreateBocListRenderer ()
     {
       IBocListRendererFactory factory = new BocListRendererFactory(new BocListCssClassDefinition());
-      IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
+      IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator(), ((IBocList) List).GetColumnRenderers());
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
       Assert.AreSame (List, ((BocListRenderer) renderer).List);
