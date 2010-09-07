@@ -44,8 +44,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       Initialize();
 
-      List.Stub (mock => mock.GetColumns()).Return (new[] { Column });
-
       var editModeController = MockRepository.GenerateMock<IEditModeController>();
       editModeController.Stub (mock => mock.RenderTitleCellMarkers (Html.Writer, Column, 0)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write (string.Empty));

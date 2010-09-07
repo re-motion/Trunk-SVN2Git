@@ -122,7 +122,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
       List.FixedColumns.Add (new StubColumnDefinition());
-      List.Stub (list => list.GetColumns()).Return (List.FixedColumns.ToArray());
       List.Stub (list => list.GetColumnRenderers()).Return (
           List.FixedColumns.ToArray().Select ((cd, i) => cd.GetRenderer (new StubServiceLocator(), HttpContext, List, i)).ToArray());
 

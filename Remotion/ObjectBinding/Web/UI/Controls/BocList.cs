@@ -2106,11 +2106,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return EnsureColumnsGot (false);
     }
 
-    BocColumnDefinition[] IBocList.GetColumns ()
-    {
-      return EnsureColumnsGot();
-    }
-
     IBocColumnRenderer[] IBocList.GetColumnRenderers ()
     {
       var bocColumnRenderers = new List<IBocColumnRenderer>();

@@ -31,7 +31,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Initialize();
 
       List.FixedColumns.Add (Column);
-      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
       List.Stub (mock => mock.GetColumnRenderers()).Return (
           List.FixedColumns.ToArray().Select ((cd, i) => cd.GetRenderer (new StubServiceLocator(), HttpContext, List, i)).ToArray());
       List.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
