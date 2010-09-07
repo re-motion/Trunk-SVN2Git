@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
 
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
       var document = Html.GetResultDocument();
@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

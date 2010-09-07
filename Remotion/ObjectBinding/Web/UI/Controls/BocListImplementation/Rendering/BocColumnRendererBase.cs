@@ -58,7 +58,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         IBocList list,
         TBocColumnDefinition columnDefinition,
         IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses)
+        BocListCssClassDefinition cssClasses,
+        int columnIndex)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -70,9 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _list = list;
       _column = columnDefinition;
       _resourceUrlFactory = resourceUrlFactory;
-      _columnIndex = Array.IndexOf (list.GetColumns (), columnDefinition);
-      //TODO 3132: _columnIndex = list.GetColumnRenderers ().Where (r => r.Column == columnDefinition).Select ((renderer, index) => index).SingleOrDefault ();
-      
+      _columnIndex = columnIndex;
       _cssClasses = cssClasses;
     }
 

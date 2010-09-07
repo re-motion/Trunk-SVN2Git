@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               new Command()));
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       InitializeRowMenus();
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderCellWithNullMenu ()
     {
       IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

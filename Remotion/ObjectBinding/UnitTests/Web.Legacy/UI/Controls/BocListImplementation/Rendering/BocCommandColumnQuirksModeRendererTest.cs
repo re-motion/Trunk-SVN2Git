@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Icon.Width = new Unit (16, UnitType.Pixel);
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -120,7 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
 
-      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+      var renderer = new BocCommandColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

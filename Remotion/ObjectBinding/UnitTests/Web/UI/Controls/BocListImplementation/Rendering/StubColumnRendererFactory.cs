@@ -27,9 +27,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class StubColumnRendererFactory : IBocStubColumnRendererFactory
   {
     public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator)
+        HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex)
     {
-      return new StubColumnRenderer (context, list, columnDefinition, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+      return new StubColumnRenderer (context, list, columnDefinition, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), columnIndex);
     }
   }
 }

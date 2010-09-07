@@ -28,6 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof(BocRowEditModeColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocRowEditModeColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex);
   }
 }

@@ -25,9 +25,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 {
   public class StubColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex)
     {
-      return new StubColumnQuirksModeRenderer (context, list, this);
+      return new StubColumnQuirksModeRenderer (context, list, this, columnIndex);
     }
   }
 }

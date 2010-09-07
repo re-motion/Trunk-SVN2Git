@@ -62,7 +62,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
     /// <param name="cssClasses">The <see cref="BocListQuirksModeCssClassDefinition"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses)
+    /// <param name="columnIndex">The index of the column in the list row.</param>
+    protected BocColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -72,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _context = context;
       _list = list;
       _column = columnDefinition;
-      _columnIndex = Array.IndexOf (list.GetColumns(), columnDefinition);
+      _columnIndex = columnIndex;
       _cssClasses = cssClasses;
     }
 

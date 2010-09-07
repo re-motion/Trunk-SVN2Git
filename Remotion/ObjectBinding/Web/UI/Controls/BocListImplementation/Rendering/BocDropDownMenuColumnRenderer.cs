@@ -42,8 +42,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         IBocList list,
         BocDropDownMenuColumnDefinition column,
         IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses)
-        : base (context, list, column, resourceUrlFactory, cssClasses)
+        BocListCssClassDefinition cssClasses,
+        int columnIndex)
+        : base (context, list, column, resourceUrlFactory, cssClasses, columnIndex)
     {
     }
 

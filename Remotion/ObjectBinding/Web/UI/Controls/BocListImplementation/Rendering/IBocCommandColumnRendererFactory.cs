@@ -28,6 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof(BocCommandColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocCommandColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex);
   }
 }

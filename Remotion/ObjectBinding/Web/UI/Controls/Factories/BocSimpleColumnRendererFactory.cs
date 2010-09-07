@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       _bocListCssClassDefinition = bocListCssClassDefinition;
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, IServiceLocator serviceLocator)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       return new BocSimpleColumnRenderer (
-          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), _bocListCssClassDefinition);
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), _bocListCssClassDefinition, columnIndex);
     }
   }
 }

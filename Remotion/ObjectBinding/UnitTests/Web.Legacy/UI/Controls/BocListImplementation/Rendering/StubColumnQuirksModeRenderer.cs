@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 {
   public class StubColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<StubColumnDefinition>
   {
-    public StubColumnQuirksModeRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
-        : base (context, list, columnDefinition, new BocListQuirksModeCssClassDefinition())
+    public StubColumnQuirksModeRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, int columnIndex)
+        : base (context, list, columnDefinition, new BocListQuirksModeCssClassDefinition(), columnIndex)
     {
     }
 

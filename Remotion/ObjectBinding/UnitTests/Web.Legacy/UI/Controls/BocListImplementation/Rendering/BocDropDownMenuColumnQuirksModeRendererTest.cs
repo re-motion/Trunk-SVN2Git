@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
               new Command()));
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       InitializeRowMenus();
 
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCellWithNullMenu ()
     {
       IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition);
+          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
     {
       BocCustomColumnDefinition column = new BocCustomColumnDefinition ();
       IBocCustomColumnRendererFactory factory = new BocCustomColumnRendererFactory (new BocListCssClassDefinition());
-      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service));
+      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service, 0));
     }
   }
 }

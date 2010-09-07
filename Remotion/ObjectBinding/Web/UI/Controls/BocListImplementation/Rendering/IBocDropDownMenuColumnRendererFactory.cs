@@ -28,6 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof(BocDropDownMenuColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocDropDownMenuColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex);
   }
 }

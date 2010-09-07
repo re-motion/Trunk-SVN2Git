@@ -42,16 +42,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, IBocList list)
+    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, IBocList list, int columnIndex)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      return GetRendererInternal (serviceLocator, context, list);
+      return GetRendererInternal (serviceLocator, context, list, columnIndex);
     }
 
-    protected abstract IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list);
+    protected abstract IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex);
 
 
     public override string ToString ()

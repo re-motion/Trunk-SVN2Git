@@ -27,6 +27,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   [ConcreteImplementation (typeof(BocSimpleColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocStubColumnRendererFactory
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex);
   }
 }

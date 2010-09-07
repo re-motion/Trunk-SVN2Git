@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -23,7 +24,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSu
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -40,8 +40,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRendererFactory"/> should use a
     /// <see cref="BocRowRenderer"/> to obtain instances of this class.
     /// </remarks>
-    public BocSimpleColumnQuirksModeRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses)
-        : base (context, list, columnDefinition, cssClasses)
+    public BocSimpleColumnQuirksModeRenderer (
+        HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)
+        : base (context, list, columnDefinition, cssClasses, columnIndex)
     {
     }
 

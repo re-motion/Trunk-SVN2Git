@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderBasicCell ()
     {
       var renderer = new BocCommandColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderIconCell ()
     {
       var renderer = new BocCommandColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
       var renderer = new BocCommandColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
 
       var renderer = new BocCommandColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition, 0);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.FixedColumns.Add (new StubColumnDefinition());
       List.Stub (list => list.GetColumns()).Return (List.FixedColumns.ToArray());
       List.Stub (list => list.GetColumnRenderers()).Return (
-          List.FixedColumns.ToArray().Select (cd => cd.GetRenderer (new StubServiceLocator(), HttpContext, List)).ToArray());
+          List.FixedColumns.ToArray().Select ((cd, i) => cd.GetRenderer (new StubServiceLocator(), HttpContext, List, i)).ToArray());
 
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
