@@ -144,6 +144,7 @@ along with re-motion; if not, see http://www.gnu.org/licenses.
       <Abbreviation Text="DB" />
       <Abbreviation Text="ID" />
       <Abbreviation Text="UI" />
+      <Abbreviation Text="VB" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>
