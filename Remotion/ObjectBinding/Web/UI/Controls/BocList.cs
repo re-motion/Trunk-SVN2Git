@@ -2109,14 +2109,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private IBocColumnRenderer[] GetColumnRenderers ()
     {
       var bocColumnRenderers = new List<IBocColumnRenderer>();
-      int columnIndex = 0;
-      foreach (var column in EnsureColumnsGot())
+      BocColumnDefinition[] columns = EnsureColumnsGot();
+      for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
       {
+        var column = columns[columnIndex];
         if (IsColumnVisible (column))
           bocColumnRenderers.Add (column.GetRenderer (ServiceLocator, Context, this, columnIndex));
         else
           bocColumnRenderers.Add (new NullColumnRenderer ());
-        columnIndex++;
       }
       return bocColumnRenderers.ToArray();
     }
