@@ -22,7 +22,6 @@ using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -62,58 +61,65 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (new RenderingContext<IBocCheckBox>(Context, writer, Control));
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      Render (new BocCheckboxRenderingContext (Context, writer, Control));
+    }
 
-      Label labelControl = new Label { ID = Control.GetLabelUniqueID() };
-      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = Control.GetCheckboxUniqueID() };
-      Image imageControl = new Image { ID = Control.GetImageUniqueID() };
+    public void Render (BocCheckboxRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      string description = GetDescription();
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      if (Control.IsReadOnly)
+      Label labelControl = new Label { ID = renderingContext.Control.GetLabelUniqueID () };
+      HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = renderingContext.Control.GetCheckboxUniqueID () };
+      Image imageControl = new Image { ID = renderingContext.Control.GetImageUniqueID () };
+
+      string description = GetDescription (renderingContext);
+
+      if (renderingContext.Control.IsReadOnly)
       {
-        PrepareImage (imageControl, description);
-        PrepareLabel (description, labelControl);
+        PrepareImage (renderingContext, imageControl, description);
+        PrepareLabel (renderingContext, description, labelControl);
 
-        imageControl.RenderControl (writer);
-        labelControl.RenderControl (writer);
+        imageControl.RenderControl (renderingContext.Writer);
+        labelControl.RenderControl (renderingContext.Writer);
       }
       else
       {
-        bool hasClientScript = DetermineClientScriptLevel();
+        bool hasClientScript = DetermineClientScriptLevel (renderingContext);
         if (hasClientScript)
         {
-          PrepareScripts (checkBoxControl, labelControl);
+          PrepareScripts (renderingContext, checkBoxControl, labelControl);
         }
 
-        checkBoxControl.Checked = Control.Value.Value;
-        checkBoxControl.Disabled = !Control.Enabled;
+        checkBoxControl.Checked = renderingContext.Control.Value.Value;
+        checkBoxControl.Disabled = !renderingContext.Control.Enabled;
 
-        PrepareLabel (description, labelControl);
+        PrepareLabel (renderingContext, description, labelControl);
 
-        checkBoxControl.RenderControl (writer);
-        labelControl.RenderControl (writer);
+        checkBoxControl.RenderControl (renderingContext.Writer);
+        labelControl.RenderControl (renderingContext.Writer);
       }
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private bool DetermineClientScriptLevel ()
+    private bool DetermineClientScriptLevel (BocCheckboxRenderingContext renderingContext)
     {
-      return !Control.IsDesignMode;
+      return !renderingContext.Control.IsDesignMode;
     }
     
-    private void PrepareScripts (HtmlInputCheckBox checkBoxControl, Label labelControl)
+    private void PrepareScripts (BocCheckboxRenderingContext renderingContext, HtmlInputCheckBox checkBoxControl, Label labelControl)
     {
       string checkBoxScript;
       string labelScript;
 
-      if (Control.Enabled)
+      if (renderingContext.Control.Enabled)
       {
-        RegisterStartupScriptIfNeeded();
+        RegisterStartupScriptIfNeeded(renderingContext);
 
-        string script = GetScriptParameters();
+        string script = GetScriptParameters(renderingContext);
         checkBoxScript = "BocCheckBox_OnClick" + script;
         labelScript = "BocCheckBox_ToggleCheckboxValue" + script;
       }
@@ -126,69 +132,69 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       labelControl.Attributes.Add ("onclick", labelScript);
     }
 
-    private string GetScriptParameters ()
+    private string GetScriptParameters (BocCheckboxRenderingContext renderingContext)
     {
-      string label = Control.IsDescriptionEnabled ? "document.getElementById ('" + Control.LabelID + "')" : "null";
-      string checkBox = "document.getElementById ('" + Control.CheckboxID + "')";
+      string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.LabelID + "')" : "null";
+      string checkBox = "document.getElementById ('" + renderingContext.Control.CheckboxID + "')";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "
-                      + (string.IsNullOrEmpty (Control.TrueDescription) ? "null" : "'" + Control.TrueDescription + "'") + ", "
-                      + (string.IsNullOrEmpty (Control.FalseDescription) ? "null" : "'" + Control.FalseDescription + "'") + ");";
+                      + (string.IsNullOrEmpty (renderingContext.Control.TrueDescription) ? "null" : "'" + renderingContext.Control.TrueDescription + "'") + ", "
+                      + (string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? "null" : "'" + renderingContext.Control.FalseDescription + "'") + ");";
 
-      if (Control.IsAutoPostBackEnabled)
-        script += Control.Page.ClientScript.GetPostBackEventReference (Control, "") + ";";
+      if (renderingContext.Control.IsAutoPostBackEnabled)
+        script += renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, "") + ";";
       return script;
     }
 
-    private void RegisterStartupScriptIfNeeded ()
+    private void RegisterStartupScriptIfNeeded (BocCheckboxRenderingContext renderingContext)
     {
-      if (Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocCheckboxRenderer), s_startUpScriptKey))
+      if (renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocCheckboxRenderer), s_startUpScriptKey))
         return;
 
       string startupScript = string.Format (
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
-          Control.DefaultTrueDescription,
-          Control.DefaultFalseDescription);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof(BocCheckboxRenderer), s_startUpScriptKey, startupScript);
+          renderingContext.Control.DefaultTrueDescription,
+          renderingContext.Control.DefaultFalseDescription);
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocCheckboxRenderer), s_startUpScriptKey, startupScript);
     }
 
-    private void PrepareImage (Image imageControl, string description)
+    private void PrepareImage (BocCheckboxRenderingContext renderingContext, Image imageControl, string description)
     {
       var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
           typeof (BocCheckBox),
           ResourceType.Image,
-          Control.Value.Value ? c_trueIcon : c_falseIcon);
+          renderingContext.Control.Value.Value ? c_trueIcon : c_falseIcon);
 
       imageControl.ImageUrl = imageUrl.GetUrl();
       imageControl.AlternateText = StringUtility.NullToEmpty(description);
       imageControl.GenerateEmptyAlternateText = true;
     }
 
-    private void PrepareLabel (string description, Label labelControl)
+    private void PrepareLabel (BocCheckboxRenderingContext renderingContext, string description, Label labelControl)
     {
-      if (Control.IsDescriptionEnabled)
+      if (renderingContext.Control.IsDescriptionEnabled)
       {
         labelControl.Text = description;
         labelControl.Width = Unit.Empty;
         labelControl.Height = Unit.Empty;
-        labelControl.ApplyStyle (Control.LabelStyle);
+        labelControl.ApplyStyle (renderingContext.Control.LabelStyle);
       }
     }
 
-    private string GetDescription ()
+    private string GetDescription (BocCheckboxRenderingContext renderingContext)
     {
       string trueDescription = null;
       string falseDescription = null;
-      if (Control.IsDescriptionEnabled)
+      if (renderingContext.Control.IsDescriptionEnabled)
       {
-        string defaultTrueDescription = Control.DefaultTrueDescription;
-        string defaultFalseDescription = Control.DefaultFalseDescription;
+        string defaultTrueDescription = renderingContext.Control.DefaultTrueDescription;
+        string defaultFalseDescription = renderingContext.Control.DefaultFalseDescription;
 
-        trueDescription = (string.IsNullOrEmpty (Control.TrueDescription) ? defaultTrueDescription : Control.TrueDescription);
-        falseDescription = (string.IsNullOrEmpty (Control.FalseDescription) ? defaultFalseDescription : Control.FalseDescription);
+        trueDescription = (string.IsNullOrEmpty (renderingContext.Control.TrueDescription) ? defaultTrueDescription : renderingContext.Control.TrueDescription);
+        falseDescription = (string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? defaultFalseDescription : renderingContext.Control.FalseDescription);
       }
-      return Control.Value.Value ? trueDescription : falseDescription;
+      return renderingContext.Control.Value.Value ? trueDescription : falseDescription;
     }
 
     public override string CssClassBase

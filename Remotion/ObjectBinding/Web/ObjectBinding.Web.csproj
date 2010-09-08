@@ -175,6 +175,9 @@
     <Compile Include="UI\Controls\BocBooleanValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueBaseRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderingContext.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactory.cs" />
