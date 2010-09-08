@@ -175,6 +175,7 @@
     <Compile Include="UI\Controls\BocBooleanValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactory.cs" />

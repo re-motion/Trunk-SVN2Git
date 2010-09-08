@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      
+      Render (new BocReferenceValueRenderingContext (Context, writer, Control));
     }
 
     public void Render (BocReferenceValueRenderingContext renderingContext)

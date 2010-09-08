@@ -71,40 +71,47 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (new RenderingContext<IBocDateTimeValue>(Context, writer, Control));
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
-      if (Control.IsReadOnly)
-        RenderReadOnlyValue (writer);
-      else
-        RenderEditModeControls (writer);
-
-      writer.RenderEndTag();
+      Render (new BocDateTimeValueRenderingContext (Context, writer, Control));
     }
 
-    private void RenderEditModeControls (HtmlTextWriter writer)
+    public void Render (BocDateTimeValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      if (renderingContext.Control.IsReadOnly)
+        RenderReadOnlyValue (renderingContext);
+      else
+        RenderEditModeControls (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    private void RenderEditModeControls (BocDateTimeValueRenderingContext renderingContext)
     {
       var dateTextBox = _dateTextBox;
-      dateTextBox.ID = Control.DateTextboxID;
+      dateTextBox.ID = renderingContext.Control.DateTextboxID;
       dateTextBox.CssClass = CssClassDate;
-      Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
-      dateTextBox.Text = Control.DateString;
-      dateTextBox.Page = Control.Page.WrappedInstance;
+      Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, GetDateMaxLength ());
+      dateTextBox.Text = renderingContext.Control.DateString;
+      dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
       var timeTextBox = _timeTextBox;
-      timeTextBox.ID = Control.TimeTextboxID;
+      timeTextBox.ID = renderingContext.Control.TimeTextboxID;
       timeTextBox.CssClass = CssClassTime;
-      Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength());
-      timeTextBox.Text = Control.TimeString;
-      timeTextBox.Page = Control.Page.WrappedInstance;
+      Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, GetTimeMaxLength (renderingContext));
+      timeTextBox.Text = renderingContext.Control.TimeString;
+      timeTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
-      var datePickerButton = Control.DatePickerButton;
-      datePickerButton.AlternateText = Control.GetDatePickerText();
-      datePickerButton.IsDesignMode = Control.IsDesignMode;
+      var datePickerButton = renderingContext.Control.DatePickerButton;
+      datePickerButton.AlternateText = renderingContext.Control.GetDatePickerText ();
+      datePickerButton.IsDesignMode = renderingContext.Control.IsDesignMode;
 
       bool hasDateField = false;
       bool hasTimeField = false;
-      switch (Control.ActualValueType)
+      switch (renderingContext.Control.ActualValueType)
       {
         case BocDateTimeValueType.Date:
           hasDateField = true;
@@ -118,21 +125,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
       if (hasDateField)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper + " " + GetPositioningCssClass (DateTimeValuePart.Date));
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        dateTextBox.RenderControl (writer);
-        writer.RenderEndTag();
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper + " " + GetPositioningCssClass (renderingContext, DateTimeValuePart.Date));
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        dateTextBox.RenderControl (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag ();
 
-        datePickerButton.CssClass = GetPositioningCssClass (DateTimeValuePart.Picker);
-        datePickerButton.RenderControl (writer);
+        datePickerButton.CssClass = GetPositioningCssClass (renderingContext, DateTimeValuePart.Picker);
+        datePickerButton.RenderControl (renderingContext.Writer);
       }
 
       if (hasTimeField)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper + " " + GetPositioningCssClass (DateTimeValuePart.Time));
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        timeTextBox.RenderControl (writer);
-        writer.RenderEndTag();
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper + " " + GetPositioningCssClass (renderingContext, DateTimeValuePart.Time));
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        timeTextBox.RenderControl (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag ();
       }
     }
 
@@ -182,9 +189,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       get { return "bocDateTimeTime"; }
     }
 
-    public string GetPositioningCssClass (DateTimeValuePart part)
+    public string GetPositioningCssClass (BocDateTimeValueRenderingContext renderingContext, DateTimeValuePart part)
     {
-      return string.Format ("boc{0}{1}Hours{2}", part, Formatter.Is12HourTimeFormat() ? 12 : 24, Control.ShowSeconds ? "WithSeconds" : string.Empty);
+      return string.Format ("boc{0}{1}Hours{2}", part, Formatter.Is12HourTimeFormat () ? 12 : 24, renderingContext.Control.ShowSeconds ? "WithSeconds" : string.Empty);
     }
 
     private DateTimeFormatter Formatter
@@ -192,17 +199,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       get { return _formatter; }
     }
 
-    private void Initialize (TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)
+    private void Initialize (BocDateTimeValueRenderingContext renderingContext, TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)
     {
-      textBox.Enabled = Control.Enabled;
-      textBox.ReadOnly = !Control.Enabled;
+      textBox.Enabled = renderingContext.Control.Enabled;
+      textBox.ReadOnly = !renderingContext.Control.Enabled;
       textBox.Width = Unit.Empty;
       textBox.Height = Unit.Empty;
-      textBox.ApplyStyle (Control.CommonStyle);
-      Control.DateTimeTextBoxStyle.ApplyStyle (textBox);
+      textBox.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.DateTimeTextBoxStyle.ApplyStyle (textBox);
       textBoxStyle.ApplyStyle (textBox);
 
-      if (Control.ProvideMaxLength)
+      if (renderingContext.Control.ProvideMaxLength)
         textBox.MaxLength = maxLength;
     }
 
@@ -217,21 +224,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
     /// <summary> Calculates the maximum length for required for entering the time component. </summary>
     /// <returns> The length. </returns>
-    private int GetTimeMaxLength ()
+    private int GetTimeMaxLength (BocDateTimeValueRenderingContext renderingContext)
     {
       DateTime time = new DateTime (1, 1, 1, 23, 30, 30);
-      string maxTime = Control.ShowSeconds ? time.ToString ("T") : time.ToString ("t");
+      string maxTime = renderingContext.Control.ShowSeconds ? time.ToString ("T") : time.ToString ("t");
 
       return maxTime.Length;
     }
 
-    private void RenderReadOnlyValue (HtmlTextWriter writer)
+    private void RenderReadOnlyValue (BocDateTimeValueRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       Label label = new Label();
 
-      if (Control.IsDesignMode && !Control.Value.HasValue)
+      if (renderingContext.Control.IsDesignMode && !renderingContext.Control.Value.HasValue)
       {
         label.Text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
@@ -239,13 +246,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       }
       else
       {
-        if (Control.Value.HasValue)
+        if (renderingContext.Control.Value.HasValue)
         {
-          DateTime dateTime = Control.Value.Value;
+          DateTime dateTime = renderingContext.Control.Value.Value;
 
-          if (Control.ActualValueType == BocDateTimeValueType.DateTime)
-            label.Text = Formatter.FormatDateTimeValue (dateTime, Control.ShowSeconds);
-          else if (Control.ActualValueType == BocDateTimeValueType.Date)
+          if (renderingContext.Control.ActualValueType == BocDateTimeValueType.DateTime)
+            label.Text = Formatter.FormatDateTimeValue (dateTime, renderingContext.Control.ShowSeconds);
+          else if (renderingContext.Control.ActualValueType == BocDateTimeValueType.Date)
             label.Text = Formatter.FormatDateValue (dateTime);
           else
             label.Text = dateTime.ToString();
@@ -254,25 +261,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
       label.Height = Unit.Empty;
       label.Width = Unit.Empty;
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
       bool isLabelHeightEmpty = label.Height.IsEmpty && string.IsNullOrEmpty (label.Style["height"]);
       if (!isControlHeightEmpty && isLabelHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
+      bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
       bool isLabelWidthEmpty = label.Width.IsEmpty && string.IsNullOrEmpty (label.Style["width"]);
       if (!isControlWidthEmpty && isLabelWidthEmpty)
       {
-        if (!Control.Width.IsEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+        if (!renderingContext.Control.Width.IsEmpty)
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString ());
         else
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Style["width"]);
       }
 
-      label.RenderControl (writer);
+      label.RenderControl (renderingContext.Writer);
     }
   }
 }

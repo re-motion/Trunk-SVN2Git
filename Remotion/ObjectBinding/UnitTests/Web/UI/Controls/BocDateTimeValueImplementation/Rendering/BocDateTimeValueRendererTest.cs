@@ -42,6 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
     private SingleRowTextBoxStyle _timeStyle;
     private StubTextBox _dateTextBox;
     private StubTextBox _timeTextBox;
+    private BocDateTimeValueRenderingContext _renderingContext;
 
     [SetUp]
     public void SetUp ()
@@ -79,6 +80,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
       _dateTextBox = new StubTextBox();
       _timeTextBox = new StubTextBox();
+
+      _renderingContext = new BocDateTimeValueRenderingContext (HttpContext, Html.Writer, _control);
     }
 
     [Test]
@@ -117,7 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
     {
       var timeInputWrapper = container.GetAssertedChildElement ("span", 2);
       timeInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassTimeInputWrapper);
-      timeInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (BocDateTimeValueRenderer.DateTimeValuePart.Time));
+      timeInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Time));
       timeInputWrapper.AssertChildElementCount (0);
 
       timeInputWrapper.AssertTextNode ("TextBox", 0);
@@ -132,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
     {
       var dateInputWrapper = container.GetAssertedChildElement ("span", 0);
       dateInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassDateInputWrapper);
-      dateInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (BocDateTimeValueRenderer.DateTimeValuePart.Date));
+      dateInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (_renderingContext, BocDateTimeValueRenderer.DateTimeValuePart.Date));
       dateInputWrapper.AssertChildElementCount (0);
 
       dateInputWrapper.AssertTextNode ("TextBox", 0);
