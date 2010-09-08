@@ -18,6 +18,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -25,6 +28,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
+using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
 {
@@ -36,12 +40,27 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     private IAssemblyLoaderFilter _filterMock;
     private FilteringAssemblyLoader _loader;
 
+    private MemoryAppender _memoryAppender;
+
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
       _filterMock = _mockRepository.StrictMock<IAssemblyLoaderFilter>();
       _loader = new FilteringAssemblyLoader (_filterMock);
+
+      _memoryAppender = new MemoryAppender ();
+      BasicConfigurator.Configure (_memoryAppender);
+      Assert.That (LogManager.GetLogger (typeof (FilteringAssemblyLoader)).IsDebugEnabled, Is.True);
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      _memoryAppender.Clear ();
+      LogManager.ResetConfiguration ();
+
+      Assert.That (LogManager.GetLogger (typeof (FilteringAssemblyLoader)).IsDebugEnabled, Is.False); 
     }
 
     [Test]
@@ -124,6 +143,13 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       {
         Assembly loadedAssembly = _loader.TryLoadAssembly (path);
         Assert.That (loadedAssembly, Is.Null);
+        
+        CheckLog (
+            "INFO : The file 'Invalid.dll' triggered a BadImageFormatException and will be ignored. Possible causes for this are:" + Environment.NewLine
+            + "- The file is not a .NET assembly." + Environment.NewLine
+            + "- The file was built for a newer version of .NET." + Environment.NewLine
+            + "- The file was compiled for a different platform (x86, x64, etc.) than the platform this process is running on." + Environment.NewLine 
+            + "- The file is damaged.");
       }
       finally
       {
@@ -138,8 +164,15 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     public void TryLoadAssembly_WithFileLoadException ()
     {
       string program = Compile (
-          "Reflection\\TypeDiscovery\\TestAssemblies\\FileLoadExceptionConsoleApplication", "FileLoadExceptionConsoleApplication.exe", true, null);
-      string delaySignAssembly = Compile ("Reflection\\TypeDiscovery\\TestAssemblies\\DelaySignAssembly", "DelaySignAssembly.dll", false, "/delaysign+ /keyfile:Reflection\\TypeDiscovery\\TestAssemblies\\DelaySignAssembly\\PublicKey.snk");
+          "Reflection\\TypeDiscovery\\TestAssemblies\\FileLoadExceptionConsoleApplication",
+          "FileLoadExceptionConsoleApplication.exe",
+          true,
+          null);
+      string delaySignAssembly = Compile (
+          "Reflection\\TypeDiscovery\\TestAssemblies\\DelaySignAssembly",
+          "DelaySignAssembly.dll",
+          false,
+          "/delaysign+ /keyfile:Reflection\\TypeDiscovery\\TestAssemblies\\DelaySignAssembly\\PublicKey.snk");
 
       try
       {
@@ -155,6 +188,12 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
         // ReSharper restore PossibleNullReferenceException
         process.WaitForExit ();
         Assert.That (process.ExitCode, Is.EqualTo (0), output);
+
+        CheckLog (
+          output,
+            "WARN : The assembly 'DelaySignAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' (loaded in the context of "
+            + "'DelaySignAssembly.dll') triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not "
+            + "been completed?");
       }
       finally
       {
@@ -251,8 +290,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       }
       catch (AssemblyLoaderException ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("Assembly 'x' (loaded in the context of 'z') triggered a FileNotFoundException - maybe the assembly does not exist or a referenced " 
-                                             + "assembly is missing?\r\nFileNotFoundException message: xy"));
+        Assert.That (
+            ex.Message,
+            Is.EqualTo (
+                "The assembly 'x' (loaded in the context of 'z') triggered a FileNotFoundException - maybe the assembly does not exist or a referenced "
+                + "assembly is missing?\r\nFileNotFoundException message: xy"));
         Assert.That (ex.InnerException, Is.SameAs (fileNotFoundException));
       }
     }
@@ -268,8 +310,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       }
       catch (AssemblyLoaderException ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("Assembly 'x' (loaded in the context of 'z') triggered an unexpected exception of type System.IndexOutOfRangeException.\r\n"
-                                             + "Unexpected exception message: xy"));
+        Assert.That (
+            ex.Message,
+            Is.EqualTo (
+                "The assembly 'x' (loaded in the context of 'z') triggered an unexpected exception of type System.IndexOutOfRangeException.\r\n"
+                + "Unexpected exception message: xy"));
         Assert.That (ex.InnerException, Is.SameAs (unexpected));
       }
     }
@@ -285,7 +330,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       }
       catch (AssemblyLoaderException ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("Assembly 'x' triggered an unexpected exception of type System.IndexOutOfRangeException.\r\n"
+        Assert.That (ex.Message, Is.EqualTo ("The assembly 'x' triggered an unexpected exception of type System.IndexOutOfRangeException.\r\n"
                                              + "Unexpected exception message: xy"));
         Assert.That (ex.InnerException, Is.SameAs (unexpected));
       }
@@ -302,13 +347,33 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
 
     private string Compile (string sourceDirectory, string outputAssemblyName, bool generateExecutable, string compilerOptions)
     {
-      var compiler = new AssemblyCompiler (sourceDirectory, outputAssemblyName, typeof (FilteringAssemblyLoader).Assembly.Location);
+      var compiler = new AssemblyCompiler (
+          sourceDirectory,
+          outputAssemblyName,
+          typeof (FilteringAssemblyLoader).Assembly.Location,
+          typeof (Remotion.Logging.LogManager).Assembly.Location);
 
       compiler.CompilerParameters.GenerateExecutable = generateExecutable;
       compiler.CompilerParameters.CompilerOptions = compilerOptions;
       
       compiler.Compile();
       return compiler.OutputAssemblyPath;
+    }
+
+    private void CheckLog (string expectedLogMessage)
+    {
+      var loggingEvents = _memoryAppender.GetEvents ();
+      Assert.That (loggingEvents, Is.Not.Empty);
+      
+      var fullLog = loggingEvents
+          .Select (e => e.Level + " : " + e.RenderedMessage)
+          .Aggregate ((text, message) => text + Environment.NewLine + message);
+      CheckLog(fullLog, expectedLogMessage);
+    }
+
+    private void CheckLog (string fullLog, string expectedLogMessage)
+    {
+      Assert.That (fullLog, NUnit.Framework.SyntaxHelpers.Text.Contains (expectedLogMessage));
     }
   }
 }

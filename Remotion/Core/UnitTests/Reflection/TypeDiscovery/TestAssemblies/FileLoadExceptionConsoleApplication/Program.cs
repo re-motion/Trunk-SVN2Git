@@ -37,6 +37,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.TestAssemblies.FileLoadExc
 
     public static void Callback ()
     {
+      Remotion.Logging.LogManager.InitializeConsole ();
+
       string path = Environment.GetCommandLineArgs ()[1];
       FilteringAssemblyLoader loader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       try

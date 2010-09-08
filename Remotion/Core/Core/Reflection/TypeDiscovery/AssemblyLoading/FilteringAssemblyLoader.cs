@@ -101,26 +101,34 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       }
       catch (BadImageFormatException ex)
       {
-        s_log.InfoFormat (ex, "Assembly {0} triggered BadImageFormatException - it is probably no .NET assembly.", assemblyDescriptionText);
+        s_log.InfoFormat (
+            "The file {0} triggered a BadImageFormatException and will be ignored. Possible causes for this are:" + Environment.NewLine 
+            + "- The file is not a .NET assembly." + Environment.NewLine 
+            + "- The file was built for a newer version of .NET." + Environment.NewLine
+            + "- The file was compiled for a different platform (x86, x64, etc.) than the platform this process is running on." + Environment.NewLine
+            + "- The file is damaged.", 
+            assemblyDescriptionText);
+        s_log.DebugFormat (ex, "The file {0} triggered a BadImageFormatException.", assemblyDescriptionText);
+
         return default (T);
       }
       catch (FileLoadException ex)
       {
         s_log.WarnFormat (
             ex,
-            "Assembly {0} triggered FileLoadException - maybe the assembly is DelaySigned, but signing has not been completed?",
+            "The assembly {0} triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not been completed?",
             assemblyDescriptionText);
         return default (T);
       }
       catch (FileNotFoundException ex)
       {
-        string message = string.Format ("Assembly {0} triggered a FileNotFoundException - maybe the assembly does not exist or a referenced assembly "
+        string message = string.Format ("The assembly {0} triggered a FileNotFoundException - maybe the assembly does not exist or a referenced assembly "
                                         + "is missing?\r\nFileNotFoundException message: {1}", assemblyDescriptionText, ex.Message);
         throw new AssemblyLoaderException (message, ex);
       }
       catch (Exception ex)
       {
-        string message = string.Format ("Assembly {0} triggered an unexpected exception of type {1}.\r\nUnexpected exception message: {2}", 
+        string message = string.Format ("The assembly {0} triggered an unexpected exception of type {1}.\r\nUnexpected exception message: {2}", 
                                         assemblyDescriptionText, ex.GetType().FullName, ex.Message);
         throw new AssemblyLoaderException (message, ex);
       }
