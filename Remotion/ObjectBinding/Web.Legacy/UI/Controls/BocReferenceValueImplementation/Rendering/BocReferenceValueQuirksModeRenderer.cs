@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -79,53 +80,60 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (new RenderingContext<IBocReferenceValue>(Context, writer, Control), false);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      DropDownList dropDownList = GetDropDownList();
-      dropDownList.Page = Control.Page.WrappedInstance;
-      Label label = GetLabel();
-      Image icon = GetIcon();
-
-      if (EmbedInOptionsMenu)
-        RenderContentsWithIntegratedOptionsMenu (writer, dropDownList, label);
-      else
-        RenderContentsWithSeparateOptionsMenu (writer, dropDownList, label, icon);
-
-      writer.RenderEndTag();
+      
     }
 
-    private DropDownList GetDropDownList ()
+    public void Render (BocReferenceValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      AddAttributesToRender (renderingContext, false);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      DropDownList dropDownList = GetDropDownList (renderingContext);
+      dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
+      Label label = GetLabel (renderingContext);
+      Image icon = GetIcon (renderingContext);
+
+      if (IsEmbedInOptionsMenu(renderingContext))
+        RenderContentsWithIntegratedOptionsMenu (renderingContext, dropDownList, label);
+      else
+        RenderContentsWithSeparateOptionsMenu (renderingContext, dropDownList, label, icon);
+
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    private DropDownList GetDropDownList (BocReferenceValueRenderingContext renderingContext)
     {
       var dropDownList = _dropDownListFactoryMethod();
-      dropDownList.ID = Control.DropDownListUniqueID;
+      dropDownList.ID = renderingContext.Control.DropDownListUniqueID;
       dropDownList.EnableViewState = false;
-      Control.PopulateDropDownList (dropDownList);
+      renderingContext.Control.PopulateDropDownList (dropDownList);
 
-      dropDownList.Enabled = Control.Enabled;
+      dropDownList.Enabled = renderingContext.Control.Enabled;
       dropDownList.Height = Unit.Empty;
       dropDownList.Width = Unit.Empty;
-      dropDownList.ApplyStyle (Control.CommonStyle);
-      Control.DropDownListStyle.ApplyStyle (dropDownList);
+      dropDownList.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.DropDownListStyle.ApplyStyle (dropDownList);
 
       return dropDownList;
     }
 
-    private Label GetLabel ()
+    private Label GetLabel (BocReferenceValueRenderingContext renderingContext)
     {
-      var label = new Label { ID = Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
-      label.Text = HttpUtility.HtmlEncode (Control.GetLabelText());
+      var label = new Label { ID = renderingContext.Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
+      label.Text = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
       return label;
     }
 
-    private Image GetIcon ()
+    private Image GetIcon (BocReferenceValueRenderingContext renderingContext)
     {
-      var icon = new Image { EnableViewState = false, ID = Control.IconClientID, Visible = false };
-      if (Control.EnableIcon && Control.Property != null)
+      var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, Visible = false };
+      if (renderingContext.Control.EnableIcon && renderingContext.Control.Property != null)
       {
-        IconInfo iconInfo = Control.GetIcon ();
+        IconInfo iconInfo = renderingContext.Control.GetIcon ();
 
         if (iconInfo != null)
         {
@@ -137,14 +145,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
           icon.Style["vertical-align"] = "middle";
           icon.Style["border-style"] = "none";
 
-          if (Control.IsCommandEnabled (Control.IsReadOnly))
+          if (renderingContext.Control.IsCommandEnabled (renderingContext.Control.IsReadOnly))
           {
             if (string.IsNullOrEmpty (iconInfo.AlternateText))
             {
-              if (Control.Value == null)
+              if (renderingContext.Control.Value == null)
                 icon.AlternateText = String.Empty;
               else
-                icon.AlternateText = HttpUtility.HtmlEncode (Control.GetLabelText());
+                icon.AlternateText = HttpUtility.HtmlEncode (renderingContext.Control.GetLabelText ());
             }
             else
               icon.AlternateText = iconInfo.AlternateText;
@@ -174,14 +182,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       get { return "bocReferenceValueContent"; }
     }
 
-    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label, Image icon)
+    private void RenderContentsWithSeparateOptionsMenu (BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList, Label label, Image icon)
     {
-      bool isReadOnly = Control.IsReadOnly;
+      bool isReadOnly = renderingContext.Control.IsReadOnly;
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
       bool isDropDownListHeightEmpty = dropDownList.Height.IsEmpty
                                        && string.IsNullOrEmpty (dropDownList.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
+      bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
       bool isLabelWidthEmpty = label.Width.IsEmpty
                                && string.IsNullOrEmpty (label.Style["width"]);
       bool isDropDownListWidthEmpty = dropDownList.Width.IsEmpty
@@ -189,132 +197,134 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (isReadOnly)
       {
         if (isLabelWidthEmpty && !isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       }
       else
       {
         if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
         if (isDropDownListWidthEmpty)
         {
           if (isControlWidthEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+            renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
           else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+            renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         }
       }
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-      writer.AddStyleAttribute ("display", "inline");
-      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      renderingContext.Writer.AddStyleAttribute ("display", "inline");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
 
-      bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
+      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
       string argument = string.Empty;
       string postBackEvent = "";
-      if (!Control.IsDesignMode)
-        postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
+      if (!renderingContext.Control.IsDesignMode)
+        postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
-        RenderReadOnlyValue (writer, icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
+        RenderReadOnlyValue (renderingContext, icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
       else
       {
         if (icon.Visible)
-          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
-        RenderEditModeValue (writer, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty, isDropDownListWidthEmpty);
+          RenderSeparateIcon (renderingContext, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
+        RenderEditModeValue (renderingContext, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty, isDropDownListWidthEmpty);
       }
 
-      bool hasOptionsMenu = Control.HasOptionsMenu;
+      bool hasOptionsMenu = renderingContext.Control.HasOptionsMenu;
       if (hasOptionsMenu)
       {
-        writer.AddStyleAttribute ("padding-left", "0.3em");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+        renderingContext.Writer.AddStyleAttribute ("padding-left", "0.3em");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
         //writer.AddAttribute ("align", "right");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-        Control.OptionsMenu.Width = Control.OptionsMenuWidth;
-        Control.OptionsMenu.RenderControl (writer);
-        writer.RenderEndTag(); //  End td
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+        renderingContext.Control.OptionsMenu.Width = renderingContext.Control.OptionsMenuWidth;
+        renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag (); //  End td
       }
 
       //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
-      if (!Control.IsDesignMode && !isReadOnly && !hasOptionsMenu && !icon.Visible
-          && Context.Request.Browser.Browser == "Opera")
+      if (!renderingContext.Control.IsDesignMode && !isReadOnly && !hasOptionsMenu && !icon.Visible
+          && renderingContext.HttpContext.Request.Browser.Browser == "Opera")
       {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-        writer.Write ("&nbsp;");
-        writer.RenderEndTag(); // End td
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+        renderingContext.Writer.Write ("&nbsp;");
+        renderingContext.Writer.RenderEndTag (); // End td
       }
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label)
+    private void RenderContentsWithIntegratedOptionsMenu (BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList, Label label)
     {
-      bool isReadOnly = Control.IsReadOnly;
+      bool isReadOnly = renderingContext.Control.IsReadOnly;
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
       bool isDropDownListHeightEmpty = string.IsNullOrEmpty (dropDownList.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
+      bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
       bool isLabelWidthEmpty = string.IsNullOrEmpty (label.Style["width"]);
       bool isDropDownListWidthEmpty = string.IsNullOrEmpty (dropDownList.Style["width"]);
 
       if (isReadOnly)
       {
         if (isLabelWidthEmpty && !isControlWidthEmpty)
-          Control.OptionsMenu.Style["width"] = "100%";
+          renderingContext.Control.OptionsMenu.Style["width"] = "100%";
         else
-          Control.OptionsMenu.Style["width"] = "0%";
+          renderingContext.Control.OptionsMenu.Style["width"] = "0%";
       }
       else
       {
         if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          Control.OptionsMenu.Style["height"] = "100%";
+          renderingContext.Control.OptionsMenu.Style["height"] = "100%";
 
         if (isDropDownListWidthEmpty)
         {
           if (isControlWidthEmpty)
-            Control.OptionsMenu.Style["width"] = c_defaultControlWidth;
+            renderingContext.Control.OptionsMenu.Style["width"] = c_defaultControlWidth;
           else
-            Control.OptionsMenu.Style["width"] = "100%";
+            renderingContext.Control.OptionsMenu.Style["width"] = "100%";
         }
       }
 
-      Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
-      Control.OptionsMenu.RenderControl (writer);
-      Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
+      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
+      renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
+      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
     public void RenderOptionsMenuTitle (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      DropDownList dropDownList = GetDropDownList();
-      dropDownList.Page = Control.Page.WrappedInstance;
-      Image icon = GetIcon();
-      Label label = GetLabel();
-      bool isReadOnly = Control.IsReadOnly;
+      var renderingContext = new BocReferenceValueRenderingContext (Context, writer, Control);
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      DropDownList dropDownList = GetDropDownList (renderingContext);
+      dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
+      Image icon = GetIcon (renderingContext);
+      Label label = GetLabel (renderingContext);
+      bool isReadOnly = renderingContext.Control.IsReadOnly;
+
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
       bool isDropDownListHeightEmpty = string.IsNullOrEmpty (dropDownList.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
+      bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
       bool isDropDownListWidthEmpty = string.IsNullOrEmpty (dropDownList.Style["width"]);
 
-      bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
+      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
       string argument = string.Empty;
-      string postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
+      string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
       {
-        RenderReadOnlyValue (writer, icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        RenderReadOnlyValue (renderingContext, icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         if (!isControlWidthEmpty)
         {
           writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
@@ -325,84 +335,81 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       else
       {
         if (icon.Visible)
-          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+          RenderSeparateIcon (renderingContext, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-        RenderEditModeValue (writer, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty, isDropDownListWidthEmpty);
+        RenderEditModeValue (renderingContext, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty, isDropDownListWidthEmpty);
       }
     }
 
-    private void RenderSeparateIcon (HtmlTextWriter writer, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderSeparateIcon (BocReferenceValueRenderingContext renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-      writer.AddStyleAttribute ("padding-right", "0.3em");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+      renderingContext.Writer.AddStyleAttribute ("padding-right", "0.3em");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (isCommandEnabled)
       {
-        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
-        if (!string.IsNullOrEmpty (Control.Command.ToolTip))
-          icon.ToolTip = Control.Command.ToolTip;
+        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+        if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
+          icon.ToolTip = renderingContext.Control.Command.ToolTip;
       }
-      icon.RenderControl (writer);
+      icon.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
-        Control.Command.RenderEnd (writer);
+        renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
 
-      writer.RenderEndTag(); //  End td
+      renderingContext.Writer.RenderEndTag (); //  End td
     }
 
     private void RenderReadOnlyValue (
-        HtmlTextWriter writer, Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+        BocReferenceValueRenderingContext renderingContext, Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (isCommandEnabled)
-        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
+        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
       if (icon.Visible)
       {
-        icon.RenderControl (writer);
-        writer.Write ("&nbsp;");
+        icon.RenderControl (renderingContext.Writer);
+        renderingContext.Writer.Write ("&nbsp;");
       }
-      label.RenderControl (writer);
+      label.RenderControl (renderingContext.Writer);
       if (isCommandEnabled)
-        Control.Command.RenderEnd (writer);
+        renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
 
-      writer.RenderEndTag(); //  End td
+      renderingContext.Writer.RenderEndTag (); //  End td
     }
 
     private void RenderEditModeValue (
-        HtmlTextWriter writer, DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty, bool isDropDownListWidthEmpty)
+        BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty, bool isDropDownListWidthEmpty)
     {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
       if (isDropDownListWidthEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      dropDownList.RenderControl (writer);
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      dropDownList.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag(); //  End td
+      renderingContext.Writer.RenderEndTag (); //  End td
 
-      RenderEditModeValueExtension (writer);
+      RenderEditModeValueExtension (renderingContext);
     }
 
     /// <summary> Called after the edit mode value's cell is rendered. </summary>
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
-    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
+    protected virtual void RenderEditModeValueExtension (BocReferenceValueRenderingContext renderingContext)
     {
     }
 
-    private bool EmbedInOptionsMenu
+    private bool IsEmbedInOptionsMenu(BocReferenceValueRenderingContext renderingContext)
     {
-      get
-      {
-        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
-               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
-      }
+      return renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == true && renderingContext.Control.HasOptionsMenu
+               || renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == null && renderingContext.Control.IsReadOnly && renderingContext.Control.HasOptionsMenu;
     }
   }
 }
