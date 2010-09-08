@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -57,23 +58,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void MemberAccessOnCoalesceExpression ()
+    public void MethodCallOnCoalesceExpression ()
     {
       var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>()
-                  where (oi.Product ?? oi.Order.Customer.Name).ToUpper() == "Blumentopf"
+                  where (oi.Product ?? oi.Order.Customer.Name).ToUpper() == "BLUMENTOPF"
                   select oi;
 
       CheckQueryResult (query, DomainObjectIDs.OrderItem5);
     }
 
     [Test]
-    public void MemberAccessOnConditionalExpression ()
+    public void MethodCallOnConditionalExpression ()
     {
       var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
-                  where (oi.Product=="Blumentopf" ? oi.Product : oi.Order.Customer.Name).Length==10
+                  where (oi.Product == "Blumentopf" ? oi.Product : oi.Order.Customer.Name).ToUpper () == "BLUMENTOPF"
                   select oi;
 
       CheckQueryResult (query, DomainObjectIDs.OrderItem5);
+    }
+
+    [Test]
+    public void LogicalMemberAccessOnCoalesceExpression ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where (oi.Product ?? oi.Order.Customer.Name).Length == 10
+                  select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem5);
+    }
+
+    [Test]
+    public void LogicalMemberAccessOnConditionalExpression ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where (oi.Product == "Blumentopf" ? oi.Product : oi.Order.Customer.Name).Length == 10
+                  select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem5);
+    }
+
+    [Test]
+    public void ColumnMemberAccessOnCoalesceExpression ()
+    {
+      var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
+                  where (e.Computer ?? (DomainObject) e).ID == DomainObjectIDs.Employee2
+                  select e;
+
+      CheckQueryResult (query, DomainObjectIDs.Employee2);
+    }
+
+    [Test]
+    public void ColumnMemberAccessOnConditionalExpression ()
+    {
+      var query = from e in QueryFactory.CreateLinqQuery<Employee> ()
+                  where (e.Computer.ID == DomainObjectIDs.Computer1 ? e.Computer : (DomainObject) e).ID == DomainObjectIDs.Computer1
+                  select e;
+
+      CheckQueryResult (query, DomainObjectIDs.Employee3);
     }
 
     [Test]
