@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -42,6 +44,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       Control.TextBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      Render (new BocTextValueQuirksModeRenderingContext (Context, writer, Control));
     }
 
     protected override Label GetLabel ()

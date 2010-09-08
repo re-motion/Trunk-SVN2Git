@@ -82,7 +82,10 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListQuirksModeCssClassDefinition.cs" />
     <Compile Include="UI\Controls\BocQuirksModeRendererBase.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueQuirksModeRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueBaseQuirksModeRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRendererBase.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRenderingContext.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRenderer.cs" />

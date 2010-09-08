@@ -51,42 +51,42 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
     /// a textbox in edit mode.
     /// </summary>
-    public override void Render (HtmlTextWriter writer)
+    public void Render (BocTextValueBaseRenderingContext<T> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddAttributesToRender (new RenderingContext<T>(Context, writer, Control), true);
-      writer.RenderBeginTag ("span");
+      AddAttributesToRender (new RenderingContext<T> (renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control), true);
+      renderingContext.Writer.RenderBeginTag ("span");
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
 
-      string controlWidth = Control.Width.IsEmpty ? Control.Style["width"] : Control.Width.ToString();
+      string controlWidth = renderingContext.Control.Width.IsEmpty ? renderingContext.Control.Style["width"] : renderingContext.Control.Width.ToString ();
       bool isControlWidthEmpty = string.IsNullOrEmpty (controlWidth);
 
-      WebControl innerControl = Control.IsReadOnly ? (WebControl) GetLabel() : GetTextBox();
-      innerControl.Page = Control.Page.WrappedInstance;
+      WebControl innerControl = renderingContext.Control.IsReadOnly ? (WebControl) GetLabel () : GetTextBox ();
+      innerControl.Page = renderingContext.Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
       bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
 
       if (isInnerControlWidthEmpty)
       {
         if (isControlWidthEmpty)
         {
-          bool needsColumnCount = Control.TextBoxStyle.TextMode != TextBoxMode.MultiLine || Control.TextBoxStyle.Columns == null;
-          if (!Control.IsReadOnly && needsColumnCount)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
+          bool needsColumnCount = renderingContext.Control.TextBoxStyle.TextMode != TextBoxMode.MultiLine || renderingContext.Control.TextBoxStyle.Columns == null;
+          if (!renderingContext.Control.IsReadOnly && needsColumnCount)
+            renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
         }
         else
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
       }
-      innerControl.RenderControl (writer);
+      innerControl.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     /// <summary>
