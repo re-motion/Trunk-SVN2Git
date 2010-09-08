@@ -61,20 +61,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (new RenderingContext<IBocEnumValue>(Context, writer, Control));
-      var tag = Control.ListControlStyle.ControlType == ListControlType.RadioButtonList ? HtmlTextWriterTag.Div : HtmlTextWriterTag.Span;
-      writer.RenderBeginTag (tag);
+      Render (new BocEnumValueRenderingContext (Context, writer, Control));
+    }
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-      Label label = GetLabel();
-      ListControl listControl = GetListControl();
-      WebControl innerControl = Control.IsReadOnly ? (WebControl) label : listControl;
-      innerControl.Page = Control.Page.WrappedInstance;
+    public void Render (BocEnumValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      AddAttributesToRender (renderingContext);
+      var tag = renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList ? HtmlTextWriterTag.Div : HtmlTextWriterTag.Span;
+      renderingContext.Writer.RenderBeginTag (tag);
+
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
+      bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
+      Label label = GetLabel (renderingContext);
+      ListControl listControl = GetListControl (renderingContext);
+      WebControl innerControl = renderingContext.Control.IsReadOnly ? (WebControl) label : listControl;
+      innerControl.Page = renderingContext.Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
       bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
@@ -82,43 +89,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       {
         if (!isControlWidthEmpty)
         {
-          if (Control.IsReadOnly)
+          if (renderingContext.Control.IsReadOnly)
           {
-            if (!Control.Width.IsEmpty)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+            if (!renderingContext.Control.Width.IsEmpty)
+              renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString ());
             else
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
+              renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Style["width"]);
           }
         }
       }
 
-      innerControl.RenderControl (writer);
+      innerControl.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private ListControl GetListControl ()
+    private ListControl GetListControl (BocEnumValueRenderingContext renderingContext)
     {
-      ListControl listControl = Control.ListControlStyle.Create (false);
-      listControl.ID = Control.ListControlID;
-      listControl.Enabled = Control.Enabled;
+      ListControl listControl = renderingContext.Control.ListControlStyle.Create (false);
+      listControl.ID = renderingContext.Control.ListControlID;
+      listControl.Enabled = renderingContext.Control.Enabled;
 
       listControl.Width = Unit.Empty;
       listControl.Height = Unit.Empty;
-      listControl.ApplyStyle (Control.CommonStyle);
-      Control.ListControlStyle.ApplyStyle (listControl);
+      listControl.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.ListControlStyle.ApplyStyle (listControl);
 
-      bool needsNullValueItem = (Control.Value == null) && (Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
-      if (!Control.IsRequired || needsNullValueItem)
-        listControl.Items.Add (CreateNullItem());
+      bool needsNullValueItem = (renderingContext.Control.Value == null) && (renderingContext.Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
+      if (!renderingContext.Control.IsRequired || needsNullValueItem)
+        listControl.Items.Add (CreateNullItem(renderingContext));
 
-      IEnumerationValueInfo[] valueInfos = Control.GetEnabledValues();
+      IEnumerationValueInfo[] valueInfos = renderingContext.Control.GetEnabledValues ();
 
       for (int i = 0; i < valueInfos.Length; i++)
       {
         IEnumerationValueInfo valueInfo = valueInfos[i];
         ListItem item = new ListItem (valueInfo.DisplayName, valueInfo.Identifier);
-        if (valueInfo.Value.Equals (Control.Value))
+        if (valueInfo.Value.Equals (renderingContext.Control.Value))
           item.Selected = true;
 
         listControl.Items.Add (item);
@@ -129,27 +136,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
     /// <summary> Creates the <see cref="ListItem"/> symbolizing the undefined selection. </summary>
     /// <returns> A <see cref="ListItem"/>. </returns>
-    private ListItem CreateNullItem ()
+    private ListItem CreateNullItem (BocEnumValueRenderingContext renderingContext)
     {
-      ListItem emptyItem = new ListItem (Control.GetNullItemText(), Control.NullIdentifier);
-      if (Control.Value == null)
+      ListItem emptyItem = new ListItem (renderingContext.Control.GetNullItemText (), renderingContext.Control.NullIdentifier);
+      if (renderingContext.Control.Value == null)
+        if (renderingContext.Control.Value == null)
         emptyItem.Selected = true;
 
       return emptyItem;
     }
 
-    private Label GetLabel ()
+    private Label GetLabel (BocEnumValueRenderingContext renderingContext)
     {
-      Label label = new Label { ID = Control.LabelID };
+      Label label = new Label { ID = renderingContext.Control.LabelID };
       string text;
-      if (Control.IsDesignMode && Control.EnumerationValueInfo == null)
+      if (renderingContext.Control.IsDesignMode && renderingContext.Control.EnumerationValueInfo == null)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
         //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
       }
-      else if (Control.EnumerationValueInfo != null)
-        text = Control.EnumerationValueInfo.DisplayName;
+      else if (renderingContext.Control.EnumerationValueInfo != null)
+        text = renderingContext.Control.EnumerationValueInfo.DisplayName;
       else
         text = null;
 
@@ -157,8 +165,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
       return label;
     }
 
