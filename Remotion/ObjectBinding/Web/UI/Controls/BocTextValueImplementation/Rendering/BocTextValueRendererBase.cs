@@ -46,30 +46,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
     /// a textbox in edit mode.
     /// </summary>
-    public override void Render (HtmlTextWriter writer)
+    public void Render (BocTextValueBaseRenderingContext<T> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddAttributesToRender (new RenderingContext<T>(Context, writer, Control));
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      AddAttributesToRender (new RenderingContext<T> (renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control));
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
 
-      WebControl innerControl = Control.IsReadOnly ? (WebControl) GetLabel() : GetTextBox();
-      innerControl.Page = Control.Page.WrappedInstance;
+      WebControl innerControl = renderingContext.Control.IsReadOnly ? (WebControl) GetLabel () : GetTextBox ();
+      innerControl.Page = renderingContext.Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
 
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
-      innerControl.RenderControl (writer);
+      innerControl.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag ();
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     /// <summary>

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -34,6 +35,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
     }
 
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      Render (new BocTextValueRenderingContext(Context, writer, Control));
+    }
+
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
@@ -44,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
-
+    
     protected override Label GetLabel ()
     {
       Label label = new Label { Text = Control.Text };

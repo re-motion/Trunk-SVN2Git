@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -43,6 +44,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       string key = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
       var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocMultilineTextValueRenderer), ResourceType.Html, "BocMultilineTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      Render (new BocMultilineTextValueRenderingContext (Context, writer, Control));
     }
 
     protected override Label GetLabel ()

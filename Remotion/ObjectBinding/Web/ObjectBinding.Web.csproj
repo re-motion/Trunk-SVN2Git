@@ -184,6 +184,9 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\NullColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererBase.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueBaseRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderingContext.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocCheckbox.cs">
