@@ -53,13 +53,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       Render (new BocMultilineTextValueRenderingContext (Context, writer, Control));
     }
 
-    protected override Label GetLabel ()
+    protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocMultilineTextValue> renderingContext)
     {
       Label label = new Label();
-      label.ID = Control.GetTextBoxClientID();
+      label.ID = renderingContext.Control.GetTextBoxClientID();
       label.EnableViewState = false;
 
-      string[] lines = Control.Value;
+      string[] lines = renderingContext.Control.Value;
       string text = null;
       if (lines != null)
       {
@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
-      if (StringUtility.IsNullOrEmpty (text) && Control.IsDesignMode)
+      if (StringUtility.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
@@ -77,8 +77,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
       return label;
     }
 

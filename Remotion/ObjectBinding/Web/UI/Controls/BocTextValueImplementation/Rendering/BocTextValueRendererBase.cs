@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocTextValue"/> and <see cref="BocMultilineTextValue"/> controls, which is done
-  /// by a template method for which deriving classes have to supply the <see cref="GetLabel()"/> method.
+  /// by a template method for which deriving classes have to supply the <see cref="GetLabel"/> method.
   /// <seealso cref="BocTextValueRenderer"/>
   /// <seealso cref="BocMultilineTextValueRenderer"/>
   /// </summary>
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddAttributesToRender (new RenderingContext<T> (renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control));
+      AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
       bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
 
-      WebControl innerControl = renderingContext.Control.IsReadOnly ? (WebControl) GetLabel () : GetTextBox ();
+      WebControl innerControl = renderingContext.Control.IsReadOnly ? (WebControl) GetLabel (renderingContext) : GetTextBox (renderingContext);
       innerControl.Page = renderingContext.Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
@@ -76,17 +76,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// Creates a <see cref="TextBox"/> control to use for rendering the <see cref="BocTextValueBase"/> control in edit mode.
     /// </summary>
     /// <returns>A <see cref="TextBox"/> control with the all relevant properties set and all appropriate styles applied to it.</returns>
-    protected virtual TextBox GetTextBox ()
+    protected virtual TextBox GetTextBox (BocTextValueBaseRenderingContext<T> renderingContext)
     {
-      TextBox textBox = new TextBox { Text = Control.Text };
-      textBox.ID = Control.TextBoxID;
+      TextBox textBox = new TextBox { Text = renderingContext.Control.Text };
+      textBox.ID = renderingContext.Control.TextBoxID;
       textBox.EnableViewState = false;
-      textBox.Enabled = Control.Enabled;
-      textBox.ReadOnly = !Control.Enabled;
+      textBox.Enabled = renderingContext.Control.Enabled;
+      textBox.ReadOnly = !renderingContext.Control.Enabled;
       textBox.Width = Unit.Empty;
       textBox.Height = Unit.Empty;
-      textBox.ApplyStyle (Control.CommonStyle);
-      Control.TextBoxStyle.ApplyStyle (textBox);
+      textBox.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.TextBoxStyle.ApplyStyle (textBox);
 
       return textBox;
     }
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// Creates a <see cref="Label"/> control to use for rendering the <see cref="BocTextValueBase"/> control in read-only mode.
     /// </summary>
     /// <returns>A <see cref="Label"/> control with all relevant properties set and all appropriate styles applied to it.</returns>
-    protected abstract Label GetLabel ();
+    protected abstract Label GetLabel (BocTextValueBaseRenderingContext<T> renderingContext);
 
     private string CssClassContent
     {

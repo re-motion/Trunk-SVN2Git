@@ -52,27 +52,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
-    
-    protected override Label GetLabel ()
+
+    protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocTextValue> renderingContext)
     {
-      Label label = new Label { Text = Control.Text };
-      label.ID = Control.GetTextBoxClientID();
+      Label label = new Label { Text = renderingContext.Control.Text };
+      label.ID = renderingContext.Control.GetTextBoxClientID ();
       label.EnableViewState = false;
 
       string text;
-      if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (Control.Text))
+      if (renderingContext.Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine && !StringUtility.IsNullOrEmpty (renderingContext.Control.Text))
       {
         //  Allows for an optional \r
-        string temp = Control.Text.Replace ("\r", "");
+        string temp = renderingContext.Control.Text.Replace ("\r", "");
         string[] lines = temp.Split ('\n');
         for (int i = 0; i < lines.Length; i++)
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
       else
-        text = HttpUtility.HtmlEncode (Control.Text);
+        text = HttpUtility.HtmlEncode (renderingContext.Control.Text);
 
-      if (StringUtility.IsNullOrEmpty (text) && Control.IsDesignMode)
+      if (StringUtility.IsNullOrEmpty (text) && renderingContext.Control.IsDesignMode)
       {
         text = c_designModeEmptyLabelContents;
         //  Too long, can't resize in designer to less than the content's width
@@ -81,8 +81,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       label.Text = text;
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;
-      label.ApplyStyle (Control.CommonStyle);
-      label.ApplyStyle (Control.LabelStyle);
+      label.ApplyStyle (renderingContext.Control.CommonStyle);
+      label.ApplyStyle (renderingContext.Control.LabelStyle);
       return label;
     }
 

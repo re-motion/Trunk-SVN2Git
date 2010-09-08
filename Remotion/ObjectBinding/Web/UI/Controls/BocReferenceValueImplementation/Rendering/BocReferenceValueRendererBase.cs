@@ -178,7 +178,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private Image GetIcon (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
     {
-      var icon = new Image { EnableViewState = false, ID = Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
+      var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
       if (renderingContext.Control.EnableIcon && renderingContext.Control.Property != null)
       {
         IconInfo iconInfo = renderingContext.Control.GetIcon ();
