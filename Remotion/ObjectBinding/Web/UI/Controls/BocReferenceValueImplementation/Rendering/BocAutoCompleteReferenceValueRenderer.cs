@@ -24,7 +24,6 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -64,9 +63,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterBindScript();
+      var renderingContext = new BocAutoCompleteReferenceValueRenderingContext (Context, writer, Control);
 
-      base.Render (writer);
+      RegisterBindScript(renderingContext);
+      
+      Render (renderingContext);
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
@@ -108,69 +109,69 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           HtmlHeadAppender.Priority.Library);
     }
 
-    private void RegisterBindScript ()
+    private void RegisterBindScript (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      string key = Control.UniqueID + "_BindScript";
+      string key = renderingContext.Control.UniqueID + "_BindScript";
 
-      var dataSource = Maybe.ForValue (Control.DataSource);
+      var dataSource = Maybe.ForValue (renderingContext.Control.DataSource);
       string businessObjectClass =
           dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (
               dataSource.Select (ds => ds.BusinessObject).Select (o => o.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (""));
-      string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).ValueOrDefault ("");
+      string businessObjectProperty = Maybe.ForValue (renderingContext.Control.Property).Select (p => p.Identifier).ValueOrDefault ("");
       string businessObjectID =
           dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault ("");
 
       var script = new StringBuilder (1000);
       script.Append ("$(document).ready( function() { BocAutoCompleteReferenceValue.Bind(");
-      script.AppendFormat ("$('#{0}'), ", Control.TextBoxClientID);
-      script.AppendFormat ("$('#{0}'), ", Control.HiddenFieldClientID);
-      script.AppendFormat ("$('#{0}'),", Control.DropDownButtonClientID);
-      
-      script.AppendFormat ("'{0}', ", Control.ResolveClientUrl (StringUtility.NullToEmpty (Control.ServicePath)));
-      script.AppendFormat ("'{0}', ", StringUtility.NullToEmpty (Control.ServiceMethod));
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.TextBoxClientID);
+      script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
+      script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
 
-      script.AppendFormat ("{0}, ", Control.CompletionSetCount);
-      script.AppendFormat ("{0}, ", Control.DropDownDisplayDelay);
-      script.AppendFormat ("{0}, ", Control.DropDownRefreshDelay);
-      script.AppendFormat ("{0}, ", Control.SelectionUpdateDelay);
+      script.AppendFormat ("'{0}', ", renderingContext.Control.ResolveClientUrl (StringUtility.NullToEmpty (renderingContext.Control.ServicePath)));
+      script.AppendFormat ("'{0}', ", StringUtility.NullToEmpty (renderingContext.Control.ServiceMethod));
 
-      script.AppendFormat ("'{0}', ", Control.NullValueString);
+      script.AppendFormat ("{0}, ", renderingContext.Control.CompletionSetCount);
+      script.AppendFormat ("{0}, ", renderingContext.Control.DropDownDisplayDelay);
+      script.AppendFormat ("{0}, ", renderingContext.Control.DropDownRefreshDelay);
+      script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
+
+      script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
       script.AppendFormat ("'{0}', ", businessObjectClass);
       script.AppendFormat ("'{0}', ", businessObjectProperty);
       script.AppendFormat ("'{0}', ", businessObjectID);
-      script.AppendFormat ("'{0}'", Control.Args);
+      script.AppendFormat ("'{0}'", renderingContext.Control.Args);
       script.Append ("); } );");
-     
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString());
+
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (IBocAutoCompleteReferenceValue), key, script.ToString ());
     }
 
-    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      TextBox textBox = GetTextBox ();
-      RenderEditModeValue (writer, textBox);
+      TextBox textBox = GetTextBox ((BocAutoCompleteReferenceValueRenderingContext)renderingContext);
+      RenderEditModeValue ((BocAutoCompleteReferenceValueRenderingContext)renderingContext, textBox);
     }
 
-    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      TextBox textBox = GetTextBox ();
+      TextBox textBox = GetTextBox ((BocAutoCompleteReferenceValueRenderingContext) renderingContext);
       textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-      RenderEditModeValue (writer, textBox);
+      RenderEditModeValue ((BocAutoCompleteReferenceValueRenderingContext) renderingContext, textBox);
     }
 
-    private void RenderEditModeValue (HtmlTextWriter writer, TextBox textBox)
+    private void RenderEditModeValue (BocAutoCompleteReferenceValueRenderingContext renderingContext, TextBox textBox)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool autoPostBack = textBox.AutoPostBack;
       textBox.AutoPostBack = false;
-      textBox.RenderControl (writer);
+      textBox.RenderControl (renderingContext.Writer);
       textBox.AutoPostBack = autoPostBack;
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
 
-      RenderDropdownButton (writer);
+      RenderDropdownButton (renderingContext);
 
-      var hiddenField = GetHiddenField();
+      var hiddenField = GetHiddenField(renderingContext);
       if (autoPostBack)
       {
         PostBackOptions options = new PostBackOptions (textBox, string.Empty);
@@ -179,44 +180,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
             options.PerformValidation = true;
             options.ValidationGroup = textBox.ValidationGroup;
         }
-        if (Control.Page.Form != null)
+        if (renderingContext.Control.Page.Form != null)
             options.AutoPostBack = true;
-        var postBackEventReference = Control.Page.ClientScript.GetPostBackEventReference (options, true);
-        writer.AddAttribute (HtmlTextWriterAttribute.Onchange, postBackEventReference);
+        var postBackEventReference = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (options, true);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onchange, postBackEventReference);
       }
-      hiddenField.RenderControl (writer);
+      hiddenField.RenderControl (renderingContext.Writer);
     }
 
-    private void RenderDropdownButton (HtmlTextWriter writer)
+    private void RenderDropdownButton (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      IconInfo.Spacer.Render (writer, Control);
-      writer.RenderEndTag();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.DropDownButtonClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      IconInfo.Spacer.Render (renderingContext.Writer, Control);
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private HiddenField GetHiddenField ()
+    private HiddenField GetHiddenField (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       return new HiddenField
       {
-        ID = Control.HiddenFieldUniqueID,
-        Page = Control.Page.WrappedInstance,
+        ID = renderingContext.Control.HiddenFieldUniqueID,
+        Page = renderingContext.Control.Page.WrappedInstance,
         EnableViewState = true,
-        Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString        
+        Value = renderingContext.Control.BusinessObjectUniqueIdentifier ?? renderingContext.Control.NullValueString        
       };
     }
 
-    private TextBox GetTextBox ()
+    private TextBox GetTextBox (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       var textBox = _textBoxFactory();
-      textBox.ID = Control.TextBoxUniqueID;
-      textBox.Text = Control.GetLabelText();
-      textBox.Enabled = Control.Enabled;
+      textBox.ID = renderingContext.Control.TextBoxUniqueID;
+      textBox.Text = renderingContext.Control.GetLabelText ();
+      textBox.Enabled = renderingContext.Control.Enabled;
       textBox.EnableViewState = false;
-      textBox.Page = Control.Page.WrappedInstance;
-      textBox.ApplyStyle (Control.CommonStyle);
-      Control.TextBoxStyle.ApplyStyle (textBox);   
+      textBox.Page = renderingContext.Control.Page.WrappedInstance;
+      textBox.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.TextBoxStyle.ApplyStyle (textBox);   
       return textBox;
     }
 

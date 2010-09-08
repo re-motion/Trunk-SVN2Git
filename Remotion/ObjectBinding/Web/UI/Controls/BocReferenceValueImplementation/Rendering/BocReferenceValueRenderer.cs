@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      base.Render (writer);
+      Render (new BocReferenceValueRenderingContext(Context, writer, Control));
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
@@ -81,37 +81,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
-    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
     {
-      DropDownList dropDownList = GetDropDownList();
-      RenderEditModeValue (writer, dropDownList);
+      DropDownList dropDownList = GetDropDownList ((BocReferenceValueRenderingContext)renderingContext);
+      RenderEditModeValue ((BocReferenceValueRenderingContext)renderingContext, dropDownList);
     }
 
-    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (HtmlTextWriter writer)
+    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
     {
-      DropDownList dropDownList = GetDropDownList ();
+      DropDownList dropDownList = GetDropDownList ((BocReferenceValueRenderingContext)renderingContext);
       dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-      RenderEditModeValue (writer, dropDownList);
+      RenderEditModeValue ((BocReferenceValueRenderingContext)renderingContext, dropDownList);
     }
 
-    private void RenderEditModeValue (HtmlTextWriter writer, DropDownList dropDownList)
+    private void RenderEditModeValue (BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList)
     {
-      dropDownList.RenderControl (writer);
+      dropDownList.RenderControl (renderingContext.Writer);
     }
 
-    private DropDownList GetDropDownList ()
+    private DropDownList GetDropDownList (BocReferenceValueRenderingContext renderingContext)
     {
       var dropDownList = _dropDownListFactoryMethod ();
-      dropDownList.ID = Control.DropDownListUniqueID;
+      dropDownList.ID = renderingContext.Control.DropDownListUniqueID;
       dropDownList.EnableViewState = false;
-      dropDownList.Page = Control.Page.WrappedInstance;
-      Control.PopulateDropDownList (dropDownList);
+      dropDownList.Page = renderingContext.Control.Page.WrappedInstance;
+      renderingContext.Control.PopulateDropDownList (dropDownList);
 
-      dropDownList.Enabled = Control.Enabled;
+      dropDownList.Enabled = renderingContext.Control.Enabled;
       dropDownList.Height = Unit.Empty;
       dropDownList.Width = Unit.Empty;
-      dropDownList.ApplyStyle (Control.CommonStyle);
-      Control.DropDownListStyle.ApplyStyle (dropDownList);
+      dropDownList.ApplyStyle (renderingContext.Control.CommonStyle);
+      renderingContext.Control.DropDownListStyle.ApplyStyle (dropDownList);
 
       return dropDownList;
     }
