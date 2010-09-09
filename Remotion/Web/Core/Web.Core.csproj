@@ -183,6 +183,7 @@
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\IRenderingContext.cs" />
+    <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
     <Compile Include="UI\Controls\StyleSheetBlock.cs" />
