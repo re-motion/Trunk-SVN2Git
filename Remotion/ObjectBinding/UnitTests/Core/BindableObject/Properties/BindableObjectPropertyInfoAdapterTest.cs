@@ -543,13 +543,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
-    public void GetGetMethod_Public ()
+    public void GetGetMethod_Public_WithInterfaceProperty ()
     {
       var getMethod = _implicitInterfaceAdapter.GetGetMethod (false);
 
       Assert.That (getMethod, Is.Not.Null);
       Assert.That (getMethod.Name, Is.EqualTo ("get_ImplicitInterfaceScalar"));
-      // TODO 3199: Wrong, should be IInterfaceWithReferenceType
+      Assert.That (getMethod.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
+    public void GetGetMethod_Public_WithoutInterfaceProperty ()
+    {
+      var getMethod = _adapter.GetGetMethod (false);
+
+      Assert.That (getMethod, Is.Not.Null);
+      Assert.That (getMethod.Name, Is.EqualTo ("get_NotVisibleAttributeScalar"));
       Assert.That (getMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
 
@@ -591,13 +600,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
-    public void GetSetMethod_Public ()
+    public void GetSetMethod_Public_WithInterfaceProperty ()
     {
       var setMethod = _implicitInterfaceAdapter.GetSetMethod (false);
 
       Assert.That (setMethod, Is.Not.Null);
       Assert.That (setMethod.Name, Is.EqualTo ("set_ImplicitInterfaceScalar"));
-      // TODO 3199: Wrong, should be IInterfaceWithReferenceType
+      Assert.That (setMethod.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
+    public void GetSetMethod_Publis_WithoutInterfaceProperty ()
+    {
+      var setMethod = _adapter.GetSetMethod (false);
+
+      Assert.That (setMethod, Is.Not.Null);
+      Assert.That (setMethod.Name, Is.EqualTo ("set_NotVisibleAttributeScalar"));
       Assert.That (setMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
 

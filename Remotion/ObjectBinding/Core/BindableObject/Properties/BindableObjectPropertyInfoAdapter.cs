@@ -176,12 +176,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return _propertyInfo.GetGetMethod (nonPublic);
+      return ValuePropertyInfo.GetGetMethod (nonPublic);
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return _propertyInfo.GetSetMethod (nonPublic);
+      return ValuePropertyInfo.GetSetMethod (nonPublic);
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
