@@ -41,9 +41,14 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
       get { return _explicitInterfaceScalar; }
     }
 
-    public T ImplicitInterfaceScalar { get; set; }
+    T IInterfaceWithReferenceType<T>.ExplicitInterfaceWriteOnlyScalar
+    {
+      set { _explicitInterfaceScalar = value; }
+    }
 
-    public T ImplicitInterfaceReadOnlyScalar { get; set; }
+    public virtual T ImplicitInterfaceScalar { get; set; }
+
+    public virtual T ImplicitInterfaceReadOnlyScalar { get; set; }
 
     public T this [int i]
     {

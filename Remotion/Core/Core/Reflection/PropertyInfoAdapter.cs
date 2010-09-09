@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -132,5 +133,32 @@ namespace Remotion.Reflection
       return _propertyInfo.GetHashCode();
     }
 
+    public PropertyInfoAdapter FindInterfaceImplementation (Type implementationType)
+    {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
+      if (!DeclaringType.IsInterface)
+        throw new InvalidOperationException ("This property is not an interface property.");
+
+      if (implementationType.IsInterface)
+        throw new ArgumentException ("The implementationType parameter must not be an interface.", "implementationType");
+
+      if (!DeclaringType.IsAssignableFrom (implementationType))
+        return null;
+      
+      var interfaceMap = implementationType.GetInterfaceMap (DeclaringType);
+      var interfaceAccessorMethod = PropertyInfo.GetGetMethod (false) ?? PropertyInfo.GetSetMethod (false);
+
+      var accessorIndex = interfaceMap.InterfaceMethods
+          .Select ((m, i) => new { Method = m, Index = i })
+          .Single (tuple => tuple.Method == interfaceAccessorMethod)
+          .Index;
+      var implementationMethod = interfaceMap.TargetMethods[accessorIndex];
+
+      var implementationProperty = implementationType
+          .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+          .Single (pi => (pi.GetGetMethod (true) ?? pi.GetSetMethod (true)) == implementationMethod);
+      return new PropertyInfoAdapter(implementationProperty);
+    }
   }
 }

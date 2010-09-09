@@ -18,18 +18,19 @@ using System;
 
 namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
 {
-  public interface IInterfaceWithReferenceType<T>
-      where T : class
+  public class DerivedClassWithReferenceType<T> : ClassWithReferenceType<T>
+      where T: class
   {
-    T ExplicitInterfaceScalar { get; set; }
-    T ExplicitInterfaceReadOnlyScalar { get; }
-    T ExplicitInterfaceWriteOnlyScalar { set; }
-    T ImplicitInterfaceScalar { get; set; }
-    T ImplicitInterfaceReadOnlyScalar { get; }
-    T this[int i] { get; set; }
-    T this[int i, DateTime j] { get; set; }
-    T this[int i, DateTime j, string k] { get; set; }
-    T ExplicitInterfaceMethod (); 
-    T ImplicitInterfaceMethod ();
+    public override T ImplicitInterfaceScalar
+    {
+      get
+      {
+        return base.ImplicitInterfaceScalar;
+      }
+      set
+      {
+        base.ImplicitInterfaceScalar = value;
+      }
+    }
   }
 }

@@ -35,16 +35,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var propertyInfoAdapter = new PropertyInfoAdapter (property);
       if (property.DeclaringType.IsInterface)
       {
         Type implementingType = GetImplementingType(classDefinition, property);
         if (implementingType == null)
           return null;
 
-        property = FindPropertyImplementationOnType (property, implementingType);
+        propertyInfoAdapter = propertyInfoAdapter.FindInterfaceImplementation (implementingType);
       }
       
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (property));
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfoAdapter);
       return definitionGetter (propertyIdentifier);
     }
 
@@ -63,25 +64,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         implementingType = allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
       }
       return implementingType;
-    }
-
-    private static PropertyInfo FindPropertyImplementationOnType (PropertyInfo interfaceProperty, Type implementationType)
-    {
-      Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
-      
-      var interfaceMap = implementationType.GetInterfaceMap (interfaceProperty.DeclaringType);
-      var interfaceAccessorMethod = interfaceProperty.GetGetMethod (false) ?? interfaceProperty.GetSetMethod (false);
-
-      var accessorIndex = interfaceMap.InterfaceMethods
-          .Select ((m, i) => new { Method = m, Index = i })
-          .Single (tuple => tuple.Method == interfaceAccessorMethod)
-          .Index;
-      var implementationMethod = interfaceMap.TargetMethods[accessorIndex];
-
-      var implementationProperty = implementationType
-          .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-          .Single (pi => (pi.GetGetMethod (true) ?? pi.GetSetMethod (true)) == implementationMethod);
-      return implementationProperty;
     }
   }
 }
