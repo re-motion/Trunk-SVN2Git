@@ -22,6 +22,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Legacy.UI.Controls
@@ -65,160 +66,166 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterMenuItems();
+      Render (new DropDownMenuRenderingContext (Context, writer, Control));
+    }
 
-      RegisterEventHandlerScripts();
+    public void Render (DropDownMenuRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddStandardAttributesToRender (new RenderingContext<IDropDownMenu>(Context, writer, Control));
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      RegisterMenuItems ();
+
+      RegisterEventHandlerScripts (renderingContext);
+
+      AddStandardAttributesToRender (renderingContext);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Menu-Div filling the control's div is required to apply internal css attributes
       //  for position, width and height. This allows the Head and th popup-div to align themselves
-      writer.AddStyleAttribute ("position", "relative");
-      writer.AddAttribute ("id", Control.MenuHeadClientID);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Menu-Div
+      renderingContext.Writer.AddStyleAttribute ("position", "relative");
+      renderingContext.Writer.AddAttribute ("id", renderingContext.Control.MenuHeadClientID);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Menu-Div
 
-      RenderHead (writer);
+      RenderHead (renderingContext);
 
-      writer.RenderEndTag (); // End Menu-Div
-      writer.RenderEndTag (); // End outer div
+      renderingContext.Writer.RenderEndTag (); // End Menu-Div
+      renderingContext.Writer.RenderEndTag (); // End outer div
     }
 
-    private void RenderHead (HtmlTextWriter writer)
+    private void RenderHead (DropDownMenuRenderingContext renderingContext)
     {
       //  Head-Div is used to group the title and the button, providing a single point of reference
       //  for the popup-div.
-      writer.AddStyleAttribute ("position", "relative");
-      writer.AddAttribute ("id", Control.ClientID + "_HeadDiv");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
-      writer.AddAttribute ("OnMouseOver", "DropDownMenu_OnHeadMouseOver (this)");
-      writer.AddAttribute ("OnMouseOut", "DropDownMenu_OnHeadMouseOut (this)");
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Drop Down Head-Div
+      renderingContext.Writer.AddStyleAttribute ("position", "relative");
+      renderingContext.Writer.AddAttribute ("id", renderingContext.Control.ClientID + "_HeadDiv");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
+      renderingContext.Writer.AddAttribute ("OnMouseOver", "DropDownMenu_OnHeadMouseOver (this)");
+      renderingContext.Writer.AddAttribute ("OnMouseOut", "DropDownMenu_OnHeadMouseOut (this)");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Drop Down Head-Div
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      writer.AddStyleAttribute ("display", "inline");
-      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin Drop Down Button table
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      renderingContext.Writer.AddStyleAttribute ("display", "inline");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin Drop Down Button table
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      RenderHeadTitle (writer);
-      RenderHeadButton (writer);
+      RenderHeadTitle (renderingContext);
+      RenderHeadButton (renderingContext);
 
-      writer.RenderEndTag();
-      writer.RenderEndTag(); // End Drop Down Button table
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag (); // End Drop Down Button table
 
-      writer.RenderEndTag(); // End Drop Down Head-Div
+      renderingContext.Writer.RenderEndTag (); // End Drop Down Head-Div
     }
 
-    private void RenderHeadTitle (HtmlTextWriter writer)
+    private void RenderHeadTitle (DropDownMenuRenderingContext renderingContext)
     {
       bool hasHeadTitleContents = true;
-      if (Control.RenderHeadTitleMethod == null)
+      if (renderingContext.Control.RenderHeadTitleMethod == null)
       {
-        bool hasTitleText = !string.IsNullOrEmpty (Control.TitleText);
-        bool hasTitleIcon = Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url);
+        bool hasTitleText = !string.IsNullOrEmpty (renderingContext.Control.TitleText);
+        bool hasTitleIcon = renderingContext.Control.TitleIcon != null && !string.IsNullOrEmpty (renderingContext.Control.TitleIcon.Url);
         hasHeadTitleContents = hasTitleText || hasTitleIcon;
 
         if (hasHeadTitleContents)
         {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%"); //"100%");
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadTitle);
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%"); //"100%");
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadTitle);
+          renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
-          if (Control.Enabled)
-            writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin title tag
+          if (renderingContext.Control.Enabled)
+            renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin title tag
           else
           {
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Color, "GrayText");
-            writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin title tag
+            renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Color, "GrayText");
+            renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin title tag
           }
-          RenderIcon (writer, Control.TitleIcon);
-          writer.Write (Control.TitleText);
-          writer.RenderEndTag(); // End title tag
+          RenderIcon (renderingContext, renderingContext.Control.TitleIcon);
+          renderingContext.Writer.Write (renderingContext.Control.TitleText);
+          renderingContext.Writer.RenderEndTag (); // End title tag
 
-          writer.RenderEndTag(); // End td
+          renderingContext.Writer.RenderEndTag (); // End td
         }
       }
       else
-        Control.RenderHeadTitleMethod (writer);
+        renderingContext.Control.RenderHeadTitleMethod (renderingContext.Writer);
 
       if (hasHeadTitleContents)
       {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-        writer.AddStyleAttribute ("padding-right", "0.3em");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-        writer.RenderEndTag();
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+        renderingContext.Writer.AddStyleAttribute ("padding-right", "0.3em");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+        renderingContext.Writer.RenderEndTag ();
       }
     }
 
-    private void RenderIcon (HtmlTextWriter writer, IconInfo icon)
+    private void RenderIcon (DropDownMenuRenderingContext renderingContext, IconInfo icon)
     {
       if (icon == null || string.IsNullOrEmpty (icon.Url))
         return;
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, icon.Url);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, icon.Url);
       if (!icon.Width.IsEmpty && !icon.Height.IsEmpty)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString());
-        writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString());
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString ());
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString ());
       }
-      writer.AddStyleAttribute ("vertical-align", "middle");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      writer.AddStyleAttribute ("margin-right", "0.3em");
-      writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag();
+      renderingContext.Writer.AddStyleAttribute ("vertical-align", "middle");
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
+      renderingContext.Writer.AddStyleAttribute ("margin-right", "0.3em");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderHeadButton (HtmlTextWriter writer)
+    private void RenderHeadButton (DropDownMenuRenderingContext renderingContext)
     {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-      writer.AddStyleAttribute ("text-align", "center");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadButton);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+      renderingContext.Writer.AddStyleAttribute ("text-align", "center");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadButton);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1em");
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1em");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
 
-      writer.AddStyleAttribute ("vertical-align", "middle");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Image, c_dropDownIcon);
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
-      writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
-      writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag(); // End img
+      renderingContext.Writer.AddStyleAttribute ("vertical-align", "middle");
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
+      string url = ResourceUrlResolver.GetResourceUrl (renderingContext.Control, renderingContext.HttpContext, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Image, c_dropDownIcon);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      renderingContext.Writer.RenderEndTag (); // End img
 
-      writer.RenderEndTag(); // End anchor
+      renderingContext.Writer.RenderEndTag (); // End anchor
 
-      writer.RenderEndTag(); // End td
+      renderingContext.Writer.RenderEndTag (); // End td
     }
 
-    private void RegisterEventHandlerScripts ()
+    private void RegisterEventHandlerScripts (DropDownMenuRenderingContext renderingContext)
     {
       string key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Startup";
 
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
+      if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
+            renderingContext.Control, renderingContext.HttpContext, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
       }
 
-      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
+      if (renderingContext.Control.Enabled && renderingContext.Control.Visible && renderingContext.Control.Mode == MenuMode.DropDownMenu)
       {
-        key = Control.ClientID + "_ClickEventHandlerBindScript";
-        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
+        key = renderingContext.Control.ClientID + "_ClickEventHandlerBindScript";
+        if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
         {
-          string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
-          string menuIDReference = string.Format ("'{0}'", Control.ClientID);
-          string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
+          string elementReference = string.Format ("document.getElementById('{0}')", renderingContext.Control.MenuHeadClientID);
+          string menuIDReference = string.Format ("'{0}'", renderingContext.Control.ClientID);
+          string script = renderingContext.Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+          renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
         }
       }
     }
-
 
     private void RegisterMenuItems ()
     {
