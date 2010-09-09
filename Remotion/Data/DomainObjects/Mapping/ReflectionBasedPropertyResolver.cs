@@ -28,28 +28,28 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public static class ReflectionBasedPropertyResolver
   {
-    public static T ResolveDefinition<T> (PropertyInfo property, ReflectionBasedClassDefinition classDefinition, Func<string, T> definitionGetter) 
+    public static T ResolveDefinition<T> (IPropertyInformation propertyInformation, ReflectionBasedClassDefinition classDefinition, Func<string, T> definitionGetter) 
         where T : class
     {
-      ArgumentUtility.CheckNotNull ("property", property);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      IPropertyInformation propertyInfoAdapter = new PropertyInfoAdapter (property);
-      if (property.DeclaringType.IsInterface)
+      //TODO 3199: consider using propertyInformation.IsInterfaceProperty 
+      if (propertyInformation.DeclaringType.IsInterface)
       {
-        Type implementingType = GetImplementingType(classDefinition, property);
+        Type implementingType = GetImplementingType(classDefinition, propertyInformation);
         if (implementingType == null)
           return null;
 
-        propertyInfoAdapter = propertyInfoAdapter.FindInterfaceImplementation (implementingType);
+        propertyInformation = propertyInformation.FindInterfaceImplementation (implementingType);
       }
       
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfoAdapter);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInformation);
       return definitionGetter (propertyIdentifier);
     }
 
-    private static Type GetImplementingType (ReflectionBasedClassDefinition classDefinition, PropertyInfo interfaceProperty)
+    private static Type GetImplementingType (ReflectionBasedClassDefinition classDefinition, IPropertyInformation interfaceProperty)
     {
       Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
 

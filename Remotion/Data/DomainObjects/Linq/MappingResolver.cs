@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -66,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property != null)
       {
         property = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-        leftEndPointDefinition = classDefinition.ResolveRelationEndPoint (property);
+        leftEndPointDefinition = classDefinition.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
       }
 
       if (leftEndPointDefinition == null)
@@ -140,11 +141,12 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var endPointDefinition = classDefinition.ResolveRelationEndPoint (property);
+      var propertyInfoAdapter = new PropertyInfoAdapter (property);
+      var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
       if (endPointDefinition != null)
         return new SqlEntityRefMemberExpression (originatingEntity, property);
 
-      var propertyDefinition = classDefinition.ResolveProperty (property);
+      var propertyDefinition = classDefinition.ResolveProperty (propertyInfoAdapter);
       if (propertyDefinition == null)
       {
         string message = string.Format (

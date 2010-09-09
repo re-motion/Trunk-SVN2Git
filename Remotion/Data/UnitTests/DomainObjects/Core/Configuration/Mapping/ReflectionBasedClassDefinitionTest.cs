@@ -29,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTest
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -1293,7 +1294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result = _orderClass.ResolveProperty (property);
+      var result = _orderClass.ResolveProperty (new PropertyInfoAdapter(property));
 
       var expected = _orderClass.GetPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
       Assert.That (result, Is.SameAs (expected));
@@ -1304,8 +1305,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result1 = _orderClass.ResolveProperty (property);
-      var result2 = _orderClass.ResolveProperty (property);
+      var result1 = _orderClass.ResolveProperty (new PropertyInfoAdapter(property));
+      var result2 = _orderClass.ResolveProperty (new PropertyInfoAdapter(property));
 
       Assert.That (result1, Is.SameAs (result2));
     }
@@ -1315,7 +1316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
 
-      var result = _orderClass.ResolveProperty (property);
+      var result = _orderClass.ResolveProperty (new PropertyInfoAdapter(property));
 
       Assert.That (result, Is.Null);
     }
@@ -1325,7 +1326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
+      var result = _targetClassForPersistentMixinClass.ResolveProperty (new PropertyInfoAdapter(property));
 
       var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
@@ -1337,7 +1338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
 
-      var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (property);
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveProperty (new PropertyInfoAdapter(property));
 
       var expected = _targetClassForPersistentMixinClass.GetPropertyDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty");
@@ -1349,7 +1350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderTicket");
 
-      var result = _orderClass.ResolveRelationEndPoint (property);
+      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       Assert.That (result, Is.SameAs (expected));
@@ -1360,7 +1361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderItems");
 
-      var result = _orderClass.ResolveRelationEndPoint (property);
+      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       var expected = _orderClass.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       Assert.That (result, Is.SameAs (expected));
@@ -1371,7 +1372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
 
-      var result = _orderClass.ResolveRelationEndPoint (property);
+      var result = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       Assert.That (result, Is.Null);
     }
@@ -1381,8 +1382,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (Order).GetProperty ("OrderItems");
 
-      var result1 = _orderClass.ResolveRelationEndPoint (property);
-      var result2 = _orderClass.ResolveRelationEndPoint (property);
+      var result1 = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
+      var result2 = _orderClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       Assert.That (result1, Is.SameAs (result2));
     }
@@ -1392,7 +1393,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("VirtualRelationProperty");
 
-      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
+      var result = _targetClassForPersistentMixinClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty");
@@ -1404,7 +1405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
 
-      var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (property);
+      var result = _derivedTargetClassForPersistentMixinClass.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       var expected = _targetClassForPersistentMixinClass.GetRelationEndPointDefinition (
           typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");

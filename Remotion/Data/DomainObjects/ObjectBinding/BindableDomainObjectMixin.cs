@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -64,9 +65,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       else
       {
         var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
-        var propertyDefinition =
-            This.ID.ClassDefinition.ResolveProperty (
-                ((PropertyInfoAdapter) (bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo)).PropertyInfo);
+        var propertyInformation = bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo;
+        var propertyDefinition = This.ID.ClassDefinition.ResolveProperty (propertyInformation);
         if (propertyDefinition != null)
           return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
         else

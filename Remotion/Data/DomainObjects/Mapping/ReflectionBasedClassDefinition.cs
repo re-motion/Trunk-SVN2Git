@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -55,10 +55,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     [NonSerialized]
-    private readonly InterlockedCache<PropertyInfo, PropertyDefinition> _propertyDefinitionCache;
+    private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
 
     [NonSerialized]
-    private readonly InterlockedCache<PropertyInfo, IRelationEndPointDefinition> _relationDefinitionCache;
+    private readonly InterlockedCache<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
 
     [NonSerialized]
     private readonly bool _isAbstract;
@@ -95,8 +95,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _isAbstract = isAbstract;
 
       _derivedClasses = new ClassDefinitionCollection (new ClassDefinitionCollection (true), true);
-      _propertyDefinitionCache = new InterlockedCache<PropertyInfo, PropertyDefinition>();
-      _relationDefinitionCache = new InterlockedCache<PropertyInfo, IRelationEndPointDefinition>();
+      _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
+      _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
 
       if (baseClass != null)
       {
@@ -180,21 +180,21 @@ namespace Remotion.Data.DomainObjects.Mapping
       _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
     }
 
-    public override PropertyDefinition ResolveProperty (PropertyInfo property)
+    public override PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
       return _propertyDefinitionCache.GetOrCreateValue (
-          property, 
+          propertyInformation, 
           key => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (key, this, GetPropertyDefinition));
     }
 
-    public override IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property)
+    public override IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
       return _relationDefinitionCache.GetOrCreateValue (
-          property, 
+          propertyInformation, 
           key => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (key, this, GetRelationEndPointDefinition));
     }
   }

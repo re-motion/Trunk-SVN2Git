@@ -21,9 +21,9 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
-using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -361,8 +361,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract ClassDefinition BaseClass { get; }
     public abstract ClassDefinitionCollection DerivedClasses { get; }
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
-    public abstract PropertyDefinition ResolveProperty (PropertyInfo property);
-    public abstract IRelationEndPointDefinition ResolveRelationEndPoint (PropertyInfo property);
+    public abstract PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation);
+    public abstract IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation);
 
     public string StorageProviderID
     {
