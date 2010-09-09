@@ -58,65 +58,72 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterMenuItems();
-
-      RegisterEventHandlerScripts();
-
-      AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
-      RenderTitle (writer);
-
-      writer.RenderEndTag();
+      Render (new DropDownMenuRenderingContext (Context, writer, Control));
     }
 
-    private void RenderTitle (HtmlTextWriter writer)
+    public void Render (DropDownMenuRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterMenuItems (renderingContext);
+
+      RegisterEventHandlerScripts (renderingContext);
+
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      RenderTitle (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    private void RenderTitle (DropDownMenuRenderingContext renderingContext)
     {
       string cssClass = CssClassHead;
-      if (!Control.Enabled)
+      if (!renderingContext.Control.Enabled)
         cssClass += " " + CssClassDisabled;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      if (Control.RenderHeadTitleMethod != null)
-        Control.RenderHeadTitleMethod (writer);
+      if (renderingContext.Control.RenderHeadTitleMethod != null)
+        renderingContext.Control.RenderHeadTitleMethod (renderingContext.Writer);
       else
-        RenderDefaultTitle (writer);
+        RenderDefaultTitle (renderingContext);
 
-      RenderDropdownButton (writer);
+      RenderDropdownButton (renderingContext);
 
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderDefaultTitle (HtmlTextWriter writer)
+    private void RenderDefaultTitle (DropDownMenuRenderingContext renderingContext)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
-      writer.RenderBeginTag (HtmlTextWriterTag.A);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
-        Control.TitleIcon.Render (writer, Control);
+      if (renderingContext.Control.TitleIcon != null && !string.IsNullOrEmpty (renderingContext.Control.TitleIcon.Url))
+        renderingContext.Control.TitleIcon.Render (renderingContext.Writer, renderingContext.Control);
 
-      if (!string.IsNullOrEmpty (Control.TitleText))
+      if (!string.IsNullOrEmpty (renderingContext.Control.TitleText))
       {
-        writer.Write (Control.TitleText);
-        writer.Write (c_whiteSpace);
+        renderingContext.Writer.Write (renderingContext.Control.TitleText);
+        renderingContext.Writer.Write (c_whiteSpace);
       }
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderDropdownButton (HtmlTextWriter writer)
+    private void RenderDropdownButton (DropDownMenuRenderingContext renderingContext)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
       var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
-          typeof (DropDownMenuRenderer), ResourceType.Image, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
+          typeof (DropDownMenuRenderer), ResourceType.Image, renderingContext.Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl ()));
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      IconInfo.Spacer.Render (writer, Control);
+      IconInfo.Spacer.Render (renderingContext.Writer, renderingContext.Control);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     protected string CssClassDropDownButton
@@ -124,89 +131,89 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       get { return "DropDownMenuButton"; }
     }
 
-    private void AddAttributesToRender (HtmlTextWriter writer)
+    private void AddAttributesToRender (DropDownMenuRenderingContext renderingContext)
     {
-      AddStandardAttributesToRender (new RenderingContext<IDropDownMenu>(Context, writer, Control));
-      if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      AddStandardAttributesToRender (renderingContext);
+      if (string.IsNullOrEmpty (renderingContext.Control.CssClass) && string.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
-      if (Control.ControlStyle.Width.IsEmpty)
+      if (renderingContext.Control.ControlStyle.Width.IsEmpty)
       {
-        if (!Control.Width.IsEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+        if (!renderingContext.Control.Width.IsEmpty)
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString ());
       }
     }
 
-    private void RegisterEventHandlerScripts ()
+    private void RegisterEventHandlerScripts (DropDownMenuRenderingContext renderingContext)
     {
-      if (!Control.Enabled)
+      if (!renderingContext.Control.Enabled)
         return;
 
-      string key = Control.ClientID + "_KeyDownEventHandlerBindScript";
-      string getSelectionCount = (string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
+      string key = renderingContext.Control.ClientID + "_KeyDownEventHandlerBindScript";
+      string getSelectionCount = (string.IsNullOrEmpty (renderingContext.Control.GetSelectionCount) ? "null" : renderingContext.Control.GetSelectionCount);
       string script = string.Format (
           "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
-          Control.ClientID,
+          renderingContext.Control.ClientID,
           getSelectionCount);
 
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ClientScriptBehavior), key, script);
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ClientScriptBehavior), key, script);
 
-      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
+      if (renderingContext.Control.Enabled && renderingContext.Control.Visible && renderingContext.Control.Mode == MenuMode.DropDownMenu)
       {
-        key = Control.ClientID + "_ClickEventHandlerBindScript";
-        string elementReference = string.Format ("$('#{0}')", Control.ClientID);
-        string menuIDReference = string.Format ("'{0}'", Control.ClientID);
-        script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ClientScriptBehavior), key, script);
+        key = renderingContext.Control.ClientID + "_ClickEventHandlerBindScript";
+        string elementReference = string.Format ("$('#{0}')", renderingContext.Control.ClientID);
+        string menuIDReference = string.Format ("'{0}'", renderingContext.Control.ClientID);
+        script = renderingContext.Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ClientScriptBehavior), key, script);
       }
     }
 
-    private void RegisterMenuItems ()
+    private void RegisterMenuItems (DropDownMenuRenderingContext renderingContext)
     {
-      string key = Control.UniqueID;
-      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
+      string key = renderingContext.Control.UniqueID;
+      if (renderingContext.Control.Enabled && !renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
       {
         StringBuilder script = new StringBuilder ();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");
-        script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", Control.ClientID);
+        script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", renderingContext.Control.ClientID);
         bool isFirstItem = true;
 
         WebMenuItem[] menuItems;
-        if (Control.EnableGrouping)
-          menuItems = Control.MenuItems.GroupMenuItems (true);
+        if (renderingContext.Control.EnableGrouping)
+          menuItems = renderingContext.Control.MenuItems.GroupMenuItems (true);
         else
-          menuItems = Control.MenuItems.ToArray ();
+          menuItems = renderingContext.Control.MenuItems.ToArray ();
 
         string category = null;
         bool isCategoryVisible = false;
         for (int i = 0; i < menuItems.Length; i++)
         {
           WebMenuItem menuItem = menuItems[i];
-          if (Control.EnableGrouping && category != menuItem.Category)
+          if (renderingContext.Control.EnableGrouping && category != menuItem.Category)
           {
             category = menuItem.Category;
             isCategoryVisible = false;
           }
           if (!menuItem.EvaluateVisible ())
             continue;
-          if (Control.EnableGrouping && menuItem.IsSeparator && !isCategoryVisible)
+          if (renderingContext.Control.EnableGrouping && menuItem.IsSeparator && !isCategoryVisible)
             continue;
-          if (Control.EnableGrouping)
+          if (renderingContext.Control.EnableGrouping)
             isCategoryVisible = true;
           if (isFirstItem)
             isFirstItem = false;
           else
             script.AppendFormat (",\r\n");
-          AppendMenuItem (script, menuItem, Control.MenuItems.IndexOf (menuItem));
+          AppendMenuItem (renderingContext, script, menuItem, renderingContext.Control.MenuItems.IndexOf (menuItem));
         }
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script.ToString ());
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuRenderer), key, script.ToString ());
       }
     }
 
-    private void AppendMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
+    private void AppendMenuItem (DropDownMenuRenderingContext renderingContext, StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
     {
       string href = "null";
       string target = "null";
@@ -215,8 +222,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (menuItem.Command != null)
       {
         bool isActive = menuItem.Command.Show == CommandShow.Always
-                        || Control.IsReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
-                        || !Control.IsReadOnly && menuItem.Command.Show == CommandShow.EditMode;
+                        || renderingContext.Control.IsReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
+                        || !renderingContext.Control.IsReadOnly && menuItem.Command.Show == CommandShow.EditMode;
 
         isCommandEnabled = isActive && menuItem.Command.Type != CommandType.None;
         if (isCommandEnabled)
@@ -227,14 +234,14 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           {
             // Clientside script creates an anchor with href="#" and onclick=function
             string argument = menuItemIndex.ToString ();
-            href = Control.Page.ClientScript.GetPostBackClientHyperlink (Control, argument);
+            href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (Control, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            href = "'" +  Control.ResolveClientUrl (href) + "'";
+            href = "'" + renderingContext.Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
         }
@@ -243,8 +250,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
 
-      string icon = GetIconUrl (menuItem, showIcon);
-      string disabledIcon = GetDisabledIconUrl (menuItem, showIcon);
+      string icon = GetIconUrl (renderingContext, menuItem, showIcon);
+      string disabledIcon = GetDisabledIconUrl (renderingContext, menuItem, showIcon);
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
       bool isDisabled = !menuItem.EvaluateEnabled () || !isCommandEnabled;
@@ -261,25 +268,25 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           target);
     }
 
-    protected virtual string GetIconUrl (WebMenuItem menuItem, bool showIcon)
+    protected virtual string GetIconUrl (DropDownMenuRenderingContext renderingContext, WebMenuItem menuItem, bool showIcon)
     {
       string icon = "null";
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
         string url = menuItem.Icon.Url;
-        icon = "'" + Control.ResolveClientUrl (url) + "'";
+        icon = "'" + renderingContext.Control.ResolveClientUrl (url) + "'";
       }
       return icon;
     }
 
-    protected virtual string GetDisabledIconUrl (WebMenuItem menuItem, bool showIcon)
+    protected virtual string GetDisabledIconUrl (DropDownMenuRenderingContext renderingContext, WebMenuItem menuItem, bool showIcon)
     {
       string disabledIcon = "null";
       if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
       {
         string url = menuItem.DisabledIcon.Url;
-        disabledIcon = "'" + Control.ResolveClientUrl (url) + "'";
+        disabledIcon = "'" + renderingContext.Control.ResolveClientUrl (url) + "'";
       }
       return disabledIcon;
     }

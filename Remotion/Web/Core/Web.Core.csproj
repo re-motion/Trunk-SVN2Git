@@ -181,6 +181,7 @@
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
+    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\IRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
