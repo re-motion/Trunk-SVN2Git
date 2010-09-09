@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (times[2].Item1, Is.EqualTo ("end"));
       Assert.That (times[2].Item2, Is.GreaterThan (times[1].Item2 + TimeSpan.FromMilliseconds (5.0))); // total
       Assert.That (times[2].Item3, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
-      Assert.That (times[2].Item3, Is.LessThan (times[1].Item2));
+      Assert.That (times[2].Item3, Is.LessThan (times[2].Item2));
     }
 
     [Test]
