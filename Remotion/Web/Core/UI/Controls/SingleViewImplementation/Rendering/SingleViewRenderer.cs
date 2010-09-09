@@ -55,30 +55,37 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
-  
-      RegisterAdjustViewScript ();
 
-      AddStandardAttributesToRender (new RenderingContext<ISingleView>(Context, writer, Control));
-      if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-      if (Control.IsDesignMode)
+      Render (new SingleViewRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (SingleViewRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterAdjustViewScript (renderingContext);
+
+      AddStandardAttributesToRender (renderingContext);
+      if (string.IsNullOrEmpty (renderingContext.Control.CssClass) && string.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      if (renderingContext.Control.IsDesignMode)
       {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "75%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "75%");
       }
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + renderingContext.Control.WrapperClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.WrapperClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      RenderTopControls (writer);
-      RenderView (writer);
-      RenderBottomControls (writer);
-      
-      writer.RenderEndTag();
-      writer.RenderEndTag ();
+      RenderTopControls (renderingContext);
+      RenderView (renderingContext);
+      RenderBottomControls (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     public string CssClassWrapper
@@ -86,29 +93,29 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
       get { return "wrapper"; }
     }
 
-    protected virtual void RenderTopControls (HtmlTextWriter writer)
+    protected virtual void RenderTopControls (SingleViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Style style = Control.TopControlsStyle;
-      PlaceHolder placeHolder = Control.TopControl;
+      Style style = renderingContext.Control.TopControlsStyle;
+      PlaceHolder placeHolder = renderingContext.Control.TopControl;
       string cssClass = CssClassTopControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
+      RenderPlaceHolder (renderingContext, style, placeHolder, cssClass);
     }
 
-    protected virtual void RenderBottomControls (HtmlTextWriter writer)
+    protected virtual void RenderBottomControls (SingleViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Style style = Control.BottomControlsStyle;
-      PlaceHolder placeHolder = Control.BottomControl;
+      Style style = renderingContext.Control.BottomControlsStyle;
+      PlaceHolder placeHolder = renderingContext.Control.BottomControl;
       string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
+      RenderPlaceHolder (renderingContext, style, placeHolder, cssClass);
     }
 
-    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string defaultCssClass)
+    private void RenderPlaceHolder (SingleViewRenderingContext renderingContext, Style style, PlaceHolder placeHolder, string defaultCssClass)
     {
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + placeHolder.ClientID);
 
       string cssClass = defaultCssClass;
       if (!string.IsNullOrEmpty (style.CssClass))
@@ -119,53 +126,53 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 
       string backupCssClass = style.CssClass;
       style.CssClass = cssClass;
-      style.AddAttributesToRender (writer);
+      style.AddAttributesToRender (renderingContext.Writer);
       style.CssClass = backupCssClass;
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      placeHolder.RenderControl (writer);
+      placeHolder.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag ();
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderView (HtmlTextWriter writer)
+    private void RenderView (SingleViewRenderingContext renderingContext)
     {
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + renderingContext.Control.ViewClientID);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      Control.ViewStyle.AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ViewClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
+      renderingContext.Control.ViewStyle.AddAttributesToRender (renderingContext.Writer);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ViewContentClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Control.View.RenderControl (writer);
+      renderingContext.Control.View.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RegisterAdjustViewScript ()
+    private void RegisterAdjustViewScript (SingleViewRenderingContext renderingContext)
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
+      ScriptUtility.Instance.RegisterResizeOnElement (renderingContext.Control, string.Format ("'#{0}'", renderingContext.Control.ClientID), "ViewLayout.AdjustSingleView");
 
       Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
+          renderingContext.Control,
           typeof (SingleViewRenderer),
           Guid.NewGuid ().ToString (),
-          string.Format ("ViewLayout.AdjustSingleView ($('#{0}'));", Control.ClientID));
+          string.Format ("ViewLayout.AdjustSingleView ($('#{0}'));", renderingContext.Control.ClientID));
     }
 
     #region protected virtual string CssClass...

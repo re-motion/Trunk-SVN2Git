@@ -185,6 +185,7 @@
     <Compile Include="UI\Controls\IRenderingContext.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
+    <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
     <Compile Include="UI\Controls\StyleSheetBlock.cs" />
     <Compile Include="UI\Controls\StyleSheetElement.cs" />
