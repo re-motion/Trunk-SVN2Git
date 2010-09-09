@@ -44,7 +44,8 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod() ?? new NullMethodInformation());
+      // TODO 3199: Check with MK whether to use true or false
+      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod (true) ?? new NullMethodInformation());
     }
 
     public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
@@ -55,7 +56,8 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod() ?? new NullMethodInformation());
+      // TODO 3199: Check with MK whether to use true or false
+      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod (true) ?? new NullMethodInformation ());
     }
   }
 }

@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
@@ -65,7 +66,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
         var propertyDefinition =
             This.ID.ClassDefinition.ResolveProperty (
-                bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo);
+                ((PropertyInfoAdapter) (bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo)).PropertyInfo);
         if (propertyDefinition != null)
           return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
         else

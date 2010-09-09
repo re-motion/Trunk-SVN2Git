@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetGetMethod ()
     {
-      var result = _nullPropertyInformation.GetGetMethod();
+      var result = _nullPropertyInformation.GetGetMethod (false);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NullMethodInformation)));
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetSetMethod ()
     {
-      var result = _nullPropertyInformation.GetSetMethod ();
+      var result = _nullPropertyInformation.GetSetMethod (false);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NullMethodInformation)));

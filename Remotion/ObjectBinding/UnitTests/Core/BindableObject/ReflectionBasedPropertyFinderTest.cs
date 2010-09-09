@@ -118,7 +118,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == "InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (ITestInterface).GetProperty ("InterfaceProperty")));
+      Assert.That (
+          interfaceProperty.InterfacePropertyInfo, 
+          Is.EqualTo (new PropertyInfoAdapter (typeof (ITestInterface).GetProperty ("InterfaceProperty"))));
     }
 
     [Test]
@@ -128,7 +130,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == typeof (IExplicitTestInterface).FullName + ".InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
+      Assert.That (
+          interfaceProperty.InterfacePropertyInfo, 
+          Is.EqualTo (new PropertyInfoAdapter (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty"))));
     }
 
     [Test]
@@ -143,8 +147,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     private IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> properties)
     {
-      foreach (BindableObjectPropertyInfoAdapter adapter in properties)
-        yield return adapter.PropertyInfo;
+      return from BindableObjectPropertyInfoAdapter adapter in properties 
+             select ((PropertyInfoAdapter) adapter.PropertyInfo).PropertyInfo;
     }
   }
 }

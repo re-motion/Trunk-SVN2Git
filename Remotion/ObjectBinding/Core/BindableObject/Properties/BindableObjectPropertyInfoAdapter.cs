@@ -28,11 +28,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   /// </summary>
   public class BindableObjectPropertyInfoAdapter : IPropertyInformation
   {
-    private readonly PropertyInfo _propertyInfo;
-    private readonly PropertyInfo _interfacePropertyInfo;
-    private Type _type;
+    private readonly IPropertyInformation _propertyInfo;
+    private readonly IPropertyInformation _interfacePropertyInfo;
     private readonly Delegate _getter;
     private readonly Delegate _setter;
+
+    private Type _type;
 
     public BindableObjectPropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
@@ -40,27 +41,27 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (interfacePropertyInfo != null && !interfacePropertyInfo.DeclaringType.IsInterface)
         throw new ArgumentException ("Parameter must be a property declared on an interface.", "interfacePropertyInfo");
 
-      _propertyInfo = propertyInfo;
-      _interfacePropertyInfo = interfacePropertyInfo;
+      _propertyInfo = new PropertyInfoAdapter(propertyInfo);
+      _interfacePropertyInfo = Maybe.ForValue (interfacePropertyInfo).Select (pi => new PropertyInfoAdapter(pi)).ValueOrDefault();
 
-      _getter = CreateGetterDelegate();
-      _setter = CreateSetterDelegate();
+      var valuePropertyInfo = interfacePropertyInfo ?? propertyInfo;
+      _getter = CreateGetterDelegate (valuePropertyInfo.GetGetMethod (true));
+      _setter = CreateSetterDelegate (valuePropertyInfo.GetSetMethod (true));
     }
-
 
     public BindableObjectPropertyInfoAdapter (PropertyInfo propertyInfo)
         : this (propertyInfo, null)
     {
     }
 
-    public PropertyInfo PropertyInfo
+    public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
     }
 
-    private PropertyInfo ValuePropertyInfo
+    public IPropertyInformation InterfacePropertyInfo
     {
-      get { return InterfacePropertyInfo ?? PropertyInfo; }
+      get { return _interfacePropertyInfo; }
     }
 
     public Type PropertyType
@@ -78,36 +79,37 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _propertyInfo.DeclaringType; }
     }
 
-    public PropertyInfo InterfacePropertyInfo
+    private IPropertyInformation ValuePropertyInfo
     {
-      get { return _interfacePropertyInfo; }
+      get { return InterfacePropertyInfo ?? PropertyInfo; }
     }
 
     public Type GetOriginalDeclaringType ()
     {
+      // TODO: Not thread-safe! Discuss with MK (and rename to _cachedOriginalDeclaringType)
       if (_type == null)
-        _type = ReflectionUtility.GetOriginalDeclaringType (_propertyInfo);
+        _type = _propertyInfo.GetOriginalDeclaringType();
       return _type;
     }
 
     public bool CanBeSetFromOutside
     {
-      get { return ValuePropertyInfo.GetSetMethod (false) != null; }
+      get { return ValuePropertyInfo.GetSetMethod(false) != null; }
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
     {
-      return AttributeUtility.GetCustomAttribute<T> (_propertyInfo, inherited);
+      return _propertyInfo.GetCustomAttribute<T> (inherited);
     }
 
     public T[] GetCustomAttributes<T> (bool inherited) where T: class
     {
-      return AttributeUtility.GetCustomAttributes<T> (_propertyInfo, inherited);
+      return _propertyInfo.GetCustomAttributes<T> (inherited);
     }
 
     public bool IsDefined<T> (bool inherited) where T: class
     {
-      return AttributeUtility.IsDefined<T> (_propertyInfo, inherited);
+      return _propertyInfo.IsDefined<T> (inherited);
     }
 
     public object GetValue (object instance, object[] indexParameters)
@@ -172,21 +174,21 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
-    public IMethodInformation GetGetMethod ()
+    public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
+      return _propertyInfo.GetGetMethod (nonPublic);
     }
 
-    public IMethodInformation GetSetMethod ()
+    public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
+      return _propertyInfo.GetSetMethod (nonPublic);
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
-      return new PropertyInfoAdapter (ValuePropertyInfo).FindInterfaceImplementation (implementationType);
+      return ValuePropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
     public override bool Equals (object obj)
@@ -200,9 +202,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return EqualityUtility.GetRotatedHashCode (_propertyInfo, _interfacePropertyInfo);
     }
 
-    private Delegate CreateGetterDelegate ()
+    private Delegate CreateGetterDelegate (MethodInfo getMethod)
     {
-      var getMethod = ValuePropertyInfo.GetGetMethod (true);
       if (getMethod == null)
         return null;
 
@@ -219,9 +220,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
     }
 
-    private Delegate CreateSetterDelegate ()
+    private Delegate CreateSetterDelegate (MethodInfo setMethod)
     {
-      var setMethod = ValuePropertyInfo.GetSetMethod (true);
       if (setMethod == null)
         return null;
 

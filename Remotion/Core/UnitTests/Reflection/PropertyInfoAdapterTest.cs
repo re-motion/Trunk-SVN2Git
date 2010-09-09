@@ -421,10 +421,9 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetGetMethod ()
+    public void GetGetMethod_PublicProperty ()
     {
-      var propertyInfoAdapter = new PropertyInfoAdapter (_property);
-      var getMethod = propertyInfoAdapter.GetGetMethod();
+      var getMethod = _adapter.GetGetMethod (false);
       var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NotVisibleAttributeScalar"));
 
       Assert.That (getMethod, Is.Not.Null);
@@ -432,14 +431,75 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetSetMethod ()
+    public void GetGetMethod_PrivateProperty_NonPublicFalse ()
     {
-      var propertyInfoAdapter = new PropertyInfoAdapter (_property);
-      var setMethod = propertyInfoAdapter.GetSetMethod();
+      var getMethod = _explicitInterfaceAdapter.GetGetMethod (false);
+
+      Assert.That (getMethod, Is.Null);
+    }
+
+    [Test]
+    public void GetGetMethod_PrivateProperty_NonPublicTrue ()
+    {
+      var getMethod = _explicitInterfaceAdapter.GetGetMethod (true);
+
+      var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
+          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar", 
+          BindingFlags.Instance | BindingFlags.NonPublic));
+
+      Assert.That (getMethod, Is.Not.Null);
+      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+    }
+
+    [Test]
+    public void GetGetMethod_NonExistingMethod ()
+    {
+      var adapter = new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceWriteOnlyScalar"));
+
+      var getMethod = adapter.GetGetMethod (false);
+
+      Assert.That (getMethod, Is.Null);
+    }
+
+    [Test]
+    public void GetSetMethod_PublicProperty ()
+    {
+      var setMethod = _adapter.GetSetMethod (false);
+      
       var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NotVisibleAttributeScalar"));
+      Assert.That (setMethod, Is.Not.Null);
+      Assert.That (setMethod, Is.EqualTo (expectedMethod));
+    }
+
+    [Test]
+    public void GetSetMethod_PrivateProperty_NonPublicFalse ()
+    {
+      var setMethod = _explicitInterfaceAdapter.GetSetMethod (false);
+
+      Assert.That (setMethod, Is.Null);
+    }
+
+    [Test]
+    public void GetSetMethod_PrivateProperty_NonPublicTrue ()
+    {
+      var setMethod = _explicitInterfaceAdapter.GetSetMethod (true);
+
+      var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
+          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.set_ExplicitInterfaceScalar",
+          BindingFlags.Instance | BindingFlags.NonPublic));
 
       Assert.That (setMethod, Is.Not.Null);
       Assert.That (setMethod, Is.EqualTo (expectedMethod));
+    }
+
+    [Test]
+    public void GetSetMethod_NonExistingMethod ()
+    {
+      var adapter = new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceReadOnlyScalar"));
+
+      var setMethod = adapter.GetSetMethod (false);
+
+      Assert.That (setMethod, Is.Null);
     }
 
     [Test]

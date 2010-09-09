@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -63,6 +64,7 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
+      // TODO: Not thread-safe! Discuss with MK (and rename to _cachedOriginalDeclaringType)
       if (_type == null)
         _type = ReflectionUtility.GetOriginalDeclaringType (_propertyInfo);
       return _type;
@@ -112,14 +114,14 @@ namespace Remotion.Reflection
       }
     }
 
-    public IMethodInformation GetGetMethod ()
+    public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return new MethodInfoAdapter (_propertyInfo.GetGetMethod());
+      return Maybe.ForValue (_propertyInfo.GetGetMethod (nonPublic)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
 
-    public IMethodInformation GetSetMethod ()
+    public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return new MethodInfoAdapter (_propertyInfo.GetSetMethod());
+      return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
     }
 
     public override bool Equals (object obj)

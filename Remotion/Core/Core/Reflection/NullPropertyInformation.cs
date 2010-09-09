@@ -72,12 +72,12 @@ namespace Remotion.Reflection
     {
     }
 
-    public IMethodInformation GetGetMethod ()
+    public IMethodInformation GetGetMethod (bool nonPublic)
     {
       return new NullMethodInformation();
     }
 
-    public IMethodInformation GetSetMethod ()
+    public IMethodInformation GetSetMethod (bool nonPublic)
     {
       return new NullMethodInformation ();
     }

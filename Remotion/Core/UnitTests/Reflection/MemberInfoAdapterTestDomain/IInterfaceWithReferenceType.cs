@@ -26,6 +26,7 @@ namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
     T ExplicitInterfaceWriteOnlyScalar { set; }
     T ImplicitInterfaceScalar { get; set; }
     T ImplicitInterfaceReadOnlyScalar { get; }
+    T ImplicitInterfaceWriteOnlyScalar { set; }
     T this[int i] { get; set; }
     T this[int i, DateTime j] { get; set; }
     T this[int i, DateTime j, string k] { get; set; }

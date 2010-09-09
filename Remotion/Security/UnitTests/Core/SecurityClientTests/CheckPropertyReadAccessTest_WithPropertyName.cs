@@ -38,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _securityClient = _testHelper.CreateSecurityClient ();
       _propertyInformation = MockRepository.GenerateMock<IPropertyInformation>();
       _methodInformation = MockRepository.GenerateMock<IMethodInformation> ();
-      _propertyInformation.Expect (mock => mock.GetGetMethod ()).Return (_methodInformation);
+      _propertyInformation.Expect (mock => mock.GetGetMethod (true)).Return (_methodInformation);
     }
 
     [Test]

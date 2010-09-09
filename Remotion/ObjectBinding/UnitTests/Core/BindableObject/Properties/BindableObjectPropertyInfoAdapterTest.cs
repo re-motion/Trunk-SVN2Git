@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -59,22 +58,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
           BindingFlags.Public | BindingFlags.Instance);
       _implicitInterfaceAdapter = new BindableObjectPropertyInfoAdapter (
           _implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty);
-    }
-
-    [Test]
-    public void PropertyInfo ()
-    {
-      Assert.That (_adapter.PropertyInfo, Is.SameAs (_property));
-      Assert.That (_implicitInterfaceAdapter.PropertyInfo, Is.SameAs (_implicitInterfaceImplementationProperty));
-      Assert.That (_explicitInterfaceAdapter.PropertyInfo, Is.SameAs (_explicitInterfaceImplementationProperty));
-    }
-
-    [Test]
-    public void InterfacePropertyInfo ()
-    {
-      Assert.That (_adapter.InterfacePropertyInfo, Is.Null);
-      Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
-      Assert.That (_explicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_explicitInterfaceDeclarationProperty));
     }
 
     [Test]
@@ -541,8 +524,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
     }
 
-    
-
     [Test]
     public void GetOriginalDeclaringType ()
     {
@@ -562,41 +543,40 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
-    public void DeclaringInterfaceType_NonNull_ExplicitInterface ()
+    public void GetGetMethod_Public ()
     {
-      Assert.That (_explicitInterfaceAdapter.InterfacePropertyInfo, Is.Not.Null);
-      Assert.That (_explicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_explicitInterfaceDeclarationProperty));
-    }
-
-    [Test]
-    public void DeclaringInterfaceType_NonNull_ImplicitInterface ()
-    {
-      Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.Not.Null);
-      Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
-    }
-
-    [Test]
-    public void GetGetMethod ()
-    {
-      var getMethod = _implicitInterfaceDeclarationProperty.GetGetMethod();
-      var expectedMethod = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar");
+      var getMethod = _implicitInterfaceAdapter.GetGetMethod (false);
 
       Assert.That (getMethod, Is.Not.Null);
-      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+      Assert.That (getMethod.Name, Is.EqualTo ("get_ImplicitInterfaceScalar"));
+      // TODO 3199: Wrong, should be IInterfaceWithReferenceType
+      Assert.That (getMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
 
     [Test]
-    public void GetGetMethod_NonPublicGetter ()
+    public void GetGetMethod_Private_NonPublicTrue ()
     {
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
       var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
 
-      var getMethod = ((MethodInfoAdapter) bindableObjectPropertyInfoAdapter.GetGetMethod()).MethodInfo;
+      var getMethod = bindableObjectPropertyInfoAdapter.GetGetMethod (true);
 
-      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
       Assert.That (getMethod, Is.Not.Null);
-      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+      Assert.That (getMethod.Name, Is.EqualTo ("get_NonPublicProperty"));
+      Assert.That (getMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
+    public void GetGetMethod_Private_NonPublicFalse ()
+    {
+      var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
+
+      var getMethod = bindableObjectPropertyInfoAdapter.GetGetMethod (false);
+
+      Assert.That (getMethod, Is.Null);
     }
 
     [Test]
@@ -605,31 +585,47 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("PropertyWithNoGetter");
       var adapter = new BindableObjectPropertyInfoAdapter (property);
 
-      Assert.That (adapter.GetGetMethod(), Is.Null);
+      var getMethod = adapter.GetGetMethod (true);
+
+      Assert.That (getMethod, Is.Null);
     }
 
     [Test]
-    public void GetSetMethod ()
+    public void GetSetMethod_Public ()
     {
-      var setMethod = _implicitInterfaceDeclarationProperty.GetSetMethod();
-      var expectedMethod = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetMethod ("set_ImplicitInterfaceScalar");
+      var setMethod = _implicitInterfaceAdapter.GetSetMethod (false);
 
       Assert.That (setMethod, Is.Not.Null);
-      Assert.That (setMethod, Is.EqualTo (expectedMethod));
+      Assert.That (setMethod.Name, Is.EqualTo ("set_ImplicitInterfaceScalar"));
+      // TODO 3199: Wrong, should be IInterfaceWithReferenceType
+      Assert.That (setMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
 
     [Test]
-    public void GetSetMethod_NonPublicSetter ()
+    public void GetSetMethod_Private_NonPublicTrue ()
     {
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
       var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
 
-      var getMethod = ((MethodInfoAdapter) bindableObjectPropertyInfoAdapter.GetSetMethod ()).MethodInfo;
+      var setMethod = bindableObjectPropertyInfoAdapter.GetSetMethod (true);
 
-      var expectedMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("set_NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
-      Assert.That (getMethod, Is.Not.Null);
-      Assert.That (getMethod, Is.EqualTo (expectedMethod));
+      Assert.That (setMethod, Is.Not.Null);
+      Assert.That (setMethod.Name, Is.EqualTo ("set_NonPublicProperty"));
+      Assert.That (setMethod.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
+
+    }
+
+    [Test]
+    public void GetSetMethod_Prviate_NonPublicFalse ()
+    {
+      var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "NonPublicProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var bindableObjectPropertyInfoAdapter = new BindableObjectPropertyInfoAdapter (property);
+
+      var setMethod = bindableObjectPropertyInfoAdapter.GetSetMethod (false);
+      
+      Assert.That (setMethod, Is.Null);
     }
 
     [Test]
@@ -638,7 +634,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       var property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("PropertyWithNoSetter");
       var adapter = new BindableObjectPropertyInfoAdapter (property);
 
-      Assert.That (adapter.GetSetMethod (), Is.Null);
+      var setMethod = adapter.GetSetMethod (true);
+
+      Assert.That (setMethod, Is.Null);
     }
 
     [Test]

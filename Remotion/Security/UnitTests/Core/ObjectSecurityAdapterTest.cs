@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccessOnGetAccessor_AccessGranted ()
     {
       var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (mockMethodInformation);
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod (true)).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
 
       ExpectExpectObjectSecurityStrategyHasAccess (true);
@@ -109,7 +109,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccessOnGetAccessor_AccessDenied ()
     {
       var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (mockMethodInformation);
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod (true)).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll();
@@ -138,7 +138,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnGetAccesor_GetGetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
     {
-      _mockPropertyInformation.Expect (mock => mock.GetGetMethod()).Return (null);
+      _mockPropertyInformation.Expect (mock => mock.GetGetMethod (true)).Return (null);
       ExpectGetRequiredMethodPermissions (new NullMethodInformation());
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll();
@@ -153,7 +153,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccessOnSetAccessor_AccessGranted ()
     {
       var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (mockMethodInformation);
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod (true)).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll();
@@ -168,7 +168,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccessOnSetAccessor_AccessDenied ()
     {
       var mockMethodInformation = MockRepository.GenerateMock<IMethodInformation>();
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (mockMethodInformation);
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod (true)).Return (mockMethodInformation);
       ExpectGetRequiredMethodPermissions (mockMethodInformation);
       ExpectExpectObjectSecurityStrategyHasAccess (false);
       _mocks.ReplayAll();
@@ -197,7 +197,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccessOnSetAccesor_GetSetMethodReturnsNull_NullMethodInformationInstanceIsUsed ()
     {
-      _mockPropertyInformation.Expect (mock => mock.GetSetMethod()).Return (null);
+      _mockPropertyInformation.Expect (mock => mock.GetSetMethod (true)).Return (null);
       ExpectGetRequiredMethodPermissions (new NullMethodInformation());
       ExpectExpectObjectSecurityStrategyHasAccess (true);
       _mocks.ReplayAll();
