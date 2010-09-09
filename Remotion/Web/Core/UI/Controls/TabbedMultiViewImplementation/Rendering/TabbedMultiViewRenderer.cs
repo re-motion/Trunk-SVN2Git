@@ -55,107 +55,114 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterAdjustViewScript ();
-      
-      AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      RenderTopControls (writer);
-      RenderTabStrip (writer);
-      RenderActiveView (writer);
-      RenderBottomControls (writer);
-
-      writer.RenderEndTag();
-      writer.RenderEndTag ();
+      Render (new TabbedMultiViewRenderingContext (Context, writer, Control));
     }
 
-    protected void AddAttributesToRender (HtmlTextWriter writer)
+    public void Render (TabbedMultiViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddStandardAttributesToRender (new RenderingContext<ITabbedMultiView>(Context, writer, Control));
-      if (Control.IsDesignMode)
+      RegisterAdjustViewScript (renderingContext);
+
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + renderingContext.Control.WrapperClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.WrapperClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      RenderTopControls (renderingContext);
+      RenderTabStrip (renderingContext);
+      RenderActiveView (renderingContext);
+      RenderBottomControls (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    protected void AddAttributesToRender (TabbedMultiViewRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      AddStandardAttributesToRender (renderingContext);
+      if (renderingContext.Control.IsDesignMode)
       {
-        writer.AddStyleAttribute ("width", "100%");
-        writer.AddStyleAttribute ("height", "75%");
+        renderingContext.Writer.AddStyleAttribute ("width", "100%");
+        renderingContext.Writer.AddStyleAttribute ("height", "75%");
       }
-      if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      if (string.IsNullOrEmpty (renderingContext.Control.CssClass) && string.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-    protected virtual void RenderTabStrip (HtmlTextWriter writer)
+    protected virtual void RenderTabStrip (TabbedMultiViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Control.TabStrip.CssClass = CssClassTabStrip;
-      Control.TabStrip.RenderControl (writer);
+      renderingContext.Control.TabStrip.CssClass = CssClassTabStrip;
+      renderingContext.Control.TabStrip.RenderControl (renderingContext.Writer);
     }
 
-    protected virtual void RenderActiveView (HtmlTextWriter writer)
+    protected virtual void RenderActiveView (TabbedMultiViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ActiveViewClientID);
-      
-      if (Control.IsDesignMode)
-        writer.AddStyleAttribute ("border", "solid 1px black");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + renderingContext.Control.ActiveViewClientID);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
-      Control.ActiveViewStyle.AddAttributesToRender (writer);
-      if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      if (renderingContext.Control.IsDesignMode)
+        renderingContext.Writer.AddStyleAttribute ("border", "solid 1px black");
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ActiveViewClientID);
+      renderingContext.Control.ActiveViewStyle.AddAttributesToRender (renderingContext.Writer);
+      if (string.IsNullOrEmpty (renderingContext.Control.ActiveViewStyle.CssClass))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ActiveViewContentClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      var view = Control.GetActiveView();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      var view = renderingContext.Control.GetActiveView ();
       if (view != null)
       {
         for (int i = 0; i < view.Controls.Count; i++)
         {
           Control control = view.Controls[i];
-          control.RenderControl (writer);
+          control.RenderControl (renderingContext.Writer);
         }
       }
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    protected virtual void RenderTopControls (HtmlTextWriter writer)
+    protected virtual void RenderTopControls (TabbedMultiViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Style style = Control.TopControlsStyle;
-      PlaceHolder placeHolder = Control.TopControl;
+      Style style = renderingContext.Control.TopControlsStyle;
+      PlaceHolder placeHolder = renderingContext.Control.TopControl;
       string cssClass = CssClassTopControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
+      RenderPlaceHolder (renderingContext, style, placeHolder, cssClass);
     }
 
-    protected virtual void RenderBottomControls (HtmlTextWriter writer)
+    protected virtual void RenderBottomControls (TabbedMultiViewRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Style style = Control.BottomControlsStyle;
-      PlaceHolder placeHolder = Control.BottomControl;
+      Style style = renderingContext.Control.BottomControlsStyle;
+      PlaceHolder placeHolder = renderingContext.Control.BottomControl;
       string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
+      RenderPlaceHolder (renderingContext, style, placeHolder, cssClass);
     }
 
-    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string defaultCssClass)
+    private void RenderPlaceHolder (TabbedMultiViewRenderingContext renderingContext, Style style, PlaceHolder placeHolder, string defaultCssClass)
     {
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + placeHolder.ClientID);
       
       string cssClass = defaultCssClass;
       if (!string.IsNullOrEmpty (style.CssClass))
@@ -166,30 +173,30 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 
       string backupCssClass = style.CssClass;
       style.CssClass = cssClass;
-      style.AddAttributesToRender (writer);
+      style.AddAttributesToRender (renderingContext.Writer);
       style.CssClass = backupCssClass;
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      placeHolder.RenderControl (writer);
+      placeHolder.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RegisterAdjustViewScript ()
+    private void RegisterAdjustViewScript (TabbedMultiViewRenderingContext renderingContext)
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
+      ScriptUtility.Instance.RegisterResizeOnElement (renderingContext.Control, string.Format ("'#{0}'", renderingContext.Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
 
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+          renderingContext.Control,
           typeof (TabbedMultiViewRenderer),
           Guid.NewGuid ().ToString (),
-          string.Format ("ViewLayout.AdjustTabbedMultiView ($('#{0}'));", Control.ClientID));
+          string.Format ("ViewLayout.AdjustTabbedMultiView ($('#{0}'));", renderingContext.Control.ClientID));
     }
 
     #region protected virtual string CssClass...
