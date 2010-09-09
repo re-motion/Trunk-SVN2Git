@@ -20,7 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
-using Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain;
+using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Reflection
       _adapter = new PropertyInfoAdapter (_property);
 
       _explicitInterfaceImplementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceAdapter = new PropertyInfoAdapter (_explicitInterfaceImplementationProperty);
 
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_explicitInterfaceAdapter.Name, Is.EqualTo (_explicitInterfaceImplementationProperty.Name));
       Assert.That (
           _explicitInterfaceAdapter.Name,
-          Is.EqualTo ("Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
+          Is.EqualTo ("Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
     }
 
     [Test]
@@ -444,7 +444,7 @@ namespace Remotion.UnitTests.Reflection
       var getMethod = _explicitInterfaceAdapter.GetGetMethod (true);
 
       var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar", 
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar", 
           BindingFlags.Instance | BindingFlags.NonPublic));
 
       Assert.That (getMethod, Is.Not.Null);
@@ -485,7 +485,7 @@ namespace Remotion.UnitTests.Reflection
       var setMethod = _explicitInterfaceAdapter.GetSetMethod (true);
 
       var expectedMethod = new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.set_ExplicitInterfaceScalar",
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.set_ExplicitInterfaceScalar",
           BindingFlags.Instance | BindingFlags.NonPublic));
 
       Assert.That (setMethod, Is.Not.Null);
@@ -518,7 +518,7 @@ namespace Remotion.UnitTests.Reflection
       var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
 
       var expectedProperty = typeof (ClassWithReferenceType<object>).GetProperty (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar", 
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar", 
           BindingFlags.Instance | BindingFlags.NonPublic);
       Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (expectedProperty));
     }
@@ -530,7 +530,7 @@ namespace Remotion.UnitTests.Reflection
       var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
 
       var expectedProperty = typeof (ClassWithReferenceType<object>).GetProperty (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
           BindingFlags.Instance | BindingFlags.NonPublic);
       Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (expectedProperty));
     }
@@ -542,7 +542,7 @@ namespace Remotion.UnitTests.Reflection
       var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
 
       var expectedProperty = typeof (ClassWithReferenceType<object>).GetProperty (
-          "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceWriteOnlyScalar",
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceWriteOnlyScalar",
           BindingFlags.Instance | BindingFlags.NonPublic);
       Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (expectedProperty));
     }

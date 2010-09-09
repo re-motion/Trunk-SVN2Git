@@ -16,21 +16,9 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
 {
-  public class DerivedClassWithReferenceType<T> : ClassWithReferenceType<T>
-      where T: class
+  public class SampleAttribute : Attribute
   {
-    public override T ImplicitInterfaceScalar
-    {
-      get
-      {
-        return base.ImplicitInterfaceScalar;
-      }
-      set
-      {
-        base.ImplicitInterfaceScalar = value;
-      }
-    }
   }
 }

@@ -20,7 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
-using Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain;
+using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection
@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Reflection
       _adapter = new MethodInfoAdapter (_method);
 
       _explicitInterfaceImplementationMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
-        "Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod", 
+        "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod", 
         BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceAdapter = new MethodInfoAdapter (_explicitInterfaceImplementationMethod);
 

@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
 {
-  public class SampleAttribute : Attribute
+  public class ClassWithBaseMember
   {
+    public virtual int BaseProperty { get { return 0; } }
+
+    public virtual void BaseMethod ()
+    {
+      //do nothing
+    }
   }
 }

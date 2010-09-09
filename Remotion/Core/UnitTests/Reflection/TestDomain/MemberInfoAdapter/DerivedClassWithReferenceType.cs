@@ -14,15 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.UnitTests.Reflection.MemberInfoAdapterTestDomain
+namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
 {
-  public class ClassWithBaseMember
+  public class DerivedClassWithReferenceType<T> : ClassWithReferenceType<T>
+      where T: class
   {
-    public virtual int BaseProperty { get { return 0; } }
-
-    public virtual void BaseMethod ()
+    public override T ImplicitInterfaceScalar
     {
-      //do nothing
+      get
+      {
+        return base.ImplicitInterfaceScalar;
+      }
+      set
+      {
+        base.ImplicitInterfaceScalar = value;
+      }
     }
   }
 }
