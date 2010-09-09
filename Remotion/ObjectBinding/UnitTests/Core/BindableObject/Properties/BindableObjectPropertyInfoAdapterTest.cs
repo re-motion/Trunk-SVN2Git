@@ -649,6 +649,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
+    public void FindInterfaceImplementation_WithoutInterfaceProperty_MainPropertyInfoDeclaredByInterface ()
+    {
+      var property = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar");
+      var adapter = new BindableObjectPropertyInfoAdapter (property, null);
+
+      var result = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<SimpleReferenceType>));
+
+      Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
+      Assert.That (result.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
     public void FindInterfaceImplementation_WithInterfaceProperty ()
     {
       var result = _implicitInterfaceAdapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<SimpleReferenceType>));
