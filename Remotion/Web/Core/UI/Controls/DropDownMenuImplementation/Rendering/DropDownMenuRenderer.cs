@@ -234,7 +234,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           {
             // Clientside script creates an anchor with href="#" and onclick=function
             string argument = menuItemIndex.ToString ();
-            href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (Control, argument);
+            href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
           }

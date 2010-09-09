@@ -73,7 +73,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      RegisterMenuItems ();
+      RegisterMenuItems (renderingContext);
 
       RegisterEventHandlerScripts (renderingContext);
 
@@ -227,52 +227,52 @@ namespace Remotion.Web.Legacy.UI.Controls
       }
     }
 
-    private void RegisterMenuItems ()
+    private void RegisterMenuItems (DropDownMenuRenderingContext renderingContext)
     {
-      string key = Control.UniqueID;
-      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
+      string key = renderingContext.Control.UniqueID;
+      if (renderingContext.Control.Enabled && !renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
         StringBuilder script = new StringBuilder ();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");
-        script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", Control.ClientID);
+        script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", renderingContext.Control.ClientID);
         bool isFirstItem = true;
 
         WebMenuItem[] menuItems;
-        if (Control.EnableGrouping)
-          menuItems = Control.MenuItems.GroupMenuItems (true);
+        if (renderingContext.Control.EnableGrouping)
+          menuItems = renderingContext.Control.MenuItems.GroupMenuItems (true);
         else
-          menuItems = Control.MenuItems.ToArray ();
+          menuItems = renderingContext.Control.MenuItems.ToArray ();
 
         string category = null;
         bool isCategoryVisible = false;
         for (int i = 0; i < menuItems.Length; i++)
         {
           WebMenuItem menuItem = menuItems[i];
-          if (Control.EnableGrouping && category != menuItem.Category)
+          if (renderingContext.Control.EnableGrouping && category != menuItem.Category)
           {
             category = menuItem.Category;
             isCategoryVisible = false;
           }
           if (!menuItem.EvaluateVisible ())
             continue;
-          if (Control.EnableGrouping && menuItem.IsSeparator && !isCategoryVisible)
+          if (renderingContext.Control.EnableGrouping && menuItem.IsSeparator && !isCategoryVisible)
             continue;
-          if (Control.EnableGrouping)
+          if (renderingContext.Control.EnableGrouping)
             isCategoryVisible = true;
           if (isFirstItem)
             isFirstItem = false;
           else
             script.AppendFormat (",\r\n");
-          AppendMenuItem (script, menuItem, Control.MenuItems.IndexOf (menuItem));
+          AppendMenuItem (renderingContext, script, menuItem, renderingContext.Control.MenuItems.IndexOf (menuItem));
         }
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script.ToString ());
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuQuirksModeRenderer), key, script.ToString ());
       }
     }
 
-    private void AppendMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
+    private void AppendMenuItem (DropDownMenuRenderingContext renderingContext, StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
     {
       string href = "null";
       string target = "null";
@@ -281,8 +281,8 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (menuItem.Command != null)
       {
         bool isActive = menuItem.Command.Show == CommandShow.Always
-                        || Control.IsReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
-                        || !Control.IsReadOnly && menuItem.Command.Show == CommandShow.EditMode;
+                        || renderingContext.Control.IsReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
+                        || !renderingContext.Control.IsReadOnly && menuItem.Command.Show == CommandShow.EditMode;
 
         isCommandEnabled = isActive && menuItem.Command.Type != CommandType.None;
         if (isCommandEnabled)
@@ -293,14 +293,14 @@ namespace Remotion.Web.Legacy.UI.Controls
           {
             // Clientside script creates an anchor with href="#" and onclick=function
             string argument = menuItemIndex.ToString ();
-            href = Control.Page.ClientScript.GetPostBackClientHyperlink (Control, argument);
+            href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            href = "'" + Control.ResolveClientUrl (href) + "'";
+            href = "'" + renderingContext.Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
         }
@@ -309,8 +309,8 @@ namespace Remotion.Web.Legacy.UI.Controls
       bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
 
-      string icon = GetIconUrl (menuItem, showIcon);
-      string disabledIcon = GetDisabledIconUrl (menuItem, showIcon);
+      string icon = GetIconUrl (renderingContext, menuItem, showIcon);
+      string disabledIcon = GetDisabledIconUrl (renderingContext, menuItem, showIcon);
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
       bool isDisabled = !menuItem.EvaluateEnabled () || !isCommandEnabled;
@@ -327,25 +327,25 @@ namespace Remotion.Web.Legacy.UI.Controls
           target);
     }
 
-    protected virtual string GetIconUrl (WebMenuItem menuItem, bool showIcon)
+    protected virtual string GetIconUrl (DropDownMenuRenderingContext renderingContext, WebMenuItem menuItem, bool showIcon)
     {
       string icon = "null";
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
         string url = menuItem.Icon.Url;
-        icon = "'" + Control.ResolveClientUrl (url) + "'";
+        icon = "'" + renderingContext.Control.ResolveClientUrl (url) + "'";
       }
       return icon;
     }
 
-    protected virtual string GetDisabledIconUrl (WebMenuItem menuItem, bool showIcon)
+    protected virtual string GetDisabledIconUrl (DropDownMenuRenderingContext renderingContext, WebMenuItem menuItem, bool showIcon)
     {
       string disabledIcon = "null";
       if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
       {
         string url = menuItem.DisabledIcon.Url;
-        disabledIcon = "'" + Control.ResolveClientUrl (url) + "'";
+        disabledIcon = "'" + renderingContext.Control.ResolveClientUrl (url) + "'";
       }
       return disabledIcon;
     }
