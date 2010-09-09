@@ -82,6 +82,11 @@ namespace Remotion.Reflection
       return new NullMethodInformation ();
     }
 
+    public IPropertyInformation FindInterfaceImplementation (Type implementationType)
+    {
+      throw new InvalidOperationException("FindInterfaceImplementation can only be called on inteface properties.");
+    }
+
     public override bool Equals (object obj)
     {
       if (obj == null)

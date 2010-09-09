@@ -182,6 +182,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
     }
 
+    public IPropertyInformation FindInterfaceImplementation (Type implementationType)
+    {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
+      return new PropertyInfoAdapter (ValuePropertyInfo).FindInterfaceImplementation (implementationType);
+    }
+
     public override bool Equals (object obj)
     {
       var other = obj as BindableObjectPropertyInfoAdapter;

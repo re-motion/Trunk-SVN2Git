@@ -107,5 +107,12 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_nullPropertyInformation.GetHashCode (), Is.EqualTo (0));
     }
 
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "FindInterfaceImplementation can only be called on inteface properties.")]
+    public void FindInterfaceImplementation ()
+    {
+       _nullPropertyInformation.FindInterfaceImplementation (typeof (object));
+    }
+
   }
 }

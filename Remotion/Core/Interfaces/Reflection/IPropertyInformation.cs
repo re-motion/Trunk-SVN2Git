@@ -89,5 +89,17 @@ namespace Remotion.Reflection
     /// </summary>
     /// <returns>The <see cref="IMethodInformation"/> of the set method.</returns>
     IMethodInformation GetSetMethod ();
+
+    /// <summary>
+    /// Finds the implementation <see cref="IPropertyInformation"/> corresponding to this <see cref="IPropertyInformation"/> on the given 
+    /// <see cref="Type"/>. This <see cref="IPropertyInformation"/> object must denote an interface property.
+    /// </summary>
+    /// <param name="implementationType">The type to search for an implementation of this <see cref="IPropertyInformation"/> on.</param>
+    /// <returns>An instance of <see cref="IPropertyInformation"/> describing the property implementing this interface 
+    /// <see cref="IPropertyInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
+    /// <paramref name="implementationType"/> does not implement the interface.</returns>
+    /// <exception cref="ArgumentException"><paramref name="implementationType"/> is itself in interface.</exception>
+    /// <exception cref="InvalidOperationException">This <see cref="IPropertyInformation"/> does not describe an interface property.</exception>
+    IPropertyInformation FindInterfaceImplementation (Type implementationType);
   }
 }

@@ -541,42 +541,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
     }
 
-    [Test]
-    public void Equals_ChecksPropertyInfo ()
-    {
-      Assert.That (
-          _implicitInterfaceAdapter,
-          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
-      Assert.AreNotEqual (
-          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty),
-          _implicitInterfaceAdapter);
-    }
-
-    [Test]
-    public void Equals_ChecksValuePropertyInfo ()
-    {
-      Assert.That (
-          _implicitInterfaceAdapter,
-          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
-      Assert.AreNotEqual (
-          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty),
-          _implicitInterfaceAdapter);
-    }
-
-    [Test]
-    public void GetHashCode_UsesPropertyInfo ()
-    {
-      Assert.That (
-          _implicitInterfaceAdapter.GetHashCode(),
-          Is.EqualTo (
-              new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode()));
-      Assert.AreNotEqual (
-          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode(),
-          _implicitInterfaceAdapter.GetHashCode());
-      Assert.AreNotEqual (
-          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode(),
-          _implicitInterfaceAdapter.GetHashCode());
-    }
+    
 
     [Test]
     public void GetOriginalDeclaringType ()
@@ -674,6 +639,59 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
       var adapter = new BindableObjectPropertyInfoAdapter (property);
 
       Assert.That (adapter.GetSetMethod (), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This property is not an interface property.")]
+    public void FindInterfaceImplementation_WithoutInterfaceProperty ()
+    {
+      _adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<SimpleReferenceType>));
+    }
+
+    [Test]
+    public void FindInterfaceImplementation_WithInterfaceProperty ()
+    {
+      var result = _implicitInterfaceAdapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<SimpleReferenceType>));
+
+      Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
+      Assert.That (result.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
+    public void Equals_ChecksPropertyInfo ()
+    {
+      Assert.That (
+          _implicitInterfaceAdapter,
+          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
+      Assert.AreNotEqual (
+          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty),
+          _implicitInterfaceAdapter);
+    }
+
+    [Test]
+    public void Equals_ChecksValuePropertyInfo ()
+    {
+      Assert.That (
+          _implicitInterfaceAdapter,
+          Is.EqualTo (new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
+      Assert.AreNotEqual (
+          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty),
+          _implicitInterfaceAdapter);
+    }
+
+    [Test]
+    public void GetHashCode_UsesPropertyInfo ()
+    {
+      Assert.That (
+          _implicitInterfaceAdapter.GetHashCode (),
+          Is.EqualTo (
+              new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode ()));
+      Assert.AreNotEqual (
+          new BindableObjectPropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode (),
+          _implicitInterfaceAdapter.GetHashCode ());
+      Assert.AreNotEqual (
+          new BindableObjectPropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode (),
+          _implicitInterfaceAdapter.GetHashCode ());
     }
 
     private void AssertCanSet (BindableObjectPropertyInfoAdapter adapter, object instance, SimpleReferenceType value)

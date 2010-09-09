@@ -133,7 +133,7 @@ namespace Remotion.Reflection
       return _propertyInfo.GetHashCode();
     }
 
-    public PropertyInfoAdapter FindInterfaceImplementation (Type implementationType)
+    public IPropertyInformation FindInterfaceImplementation (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 

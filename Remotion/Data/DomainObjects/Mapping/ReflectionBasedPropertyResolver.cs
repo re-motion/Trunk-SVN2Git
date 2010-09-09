@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var propertyInfoAdapter = new PropertyInfoAdapter (property);
+      IPropertyInformation propertyInfoAdapter = new PropertyInfoAdapter (property);
       if (property.DeclaringType.IsInterface)
       {
         Type implementingType = GetImplementingType(classDefinition, property);
