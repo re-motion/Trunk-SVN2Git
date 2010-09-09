@@ -46,60 +46,67 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
-      Control.MainMenuTabStrip.CssClass = CssClassMainMenu;
-      Control.MainMenuTabStrip.Width = Unit.Percentage (100);
-      Control.MainMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag(); // End main menu cell
-
-      writer.RenderEndTag(); // End main menu row
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
-      if (!Control.SubMenuBackgroundColor.IsEmpty)
-      {
-        string backGroundColor = ColorTranslator.ToHtml (Control.SubMenuBackgroundColor);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
-      Control.SubMenuTabStrip.Style["width"] = "auto";
-      Control.SubMenuTabStrip.CssClass = CssClassSubMenu;
-      Control.SubMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag(); // End sub menu cell
-
-      Control.StatusStyle.AddAttributesToRender (writer);
-      if (string.IsNullOrEmpty (Control.StatusStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
-
-      if (string.IsNullOrEmpty (Control.StatusText))
-        writer.Write ("&nbsp;");
-      else
-        writer.Write (Control.StatusText); // Do not HTML encode
-
-      writer.RenderEndTag(); // End status cell
-      writer.RenderEndTag(); // End sub menu row
-      writer.RenderEndTag(); // End table
+      Render (new TabbedMenuRenderingContext (Context, writer, Control));
     }
 
-    protected void AddAttributesToRender (HtmlTextWriter writer)
+    public void Render (TabbedMenuRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddStandardAttributesToRender (new RenderingContext<ITabbedMenu>(Context, writer, Control));
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      if (Control.IsDesignMode)
-        writer.AddStyleAttribute ("width", "100%");
-      if (StringUtility.IsNullOrEmpty (Control.CssClass) && StringUtility.IsNullOrEmpty (Control.Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
+
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
+      renderingContext.Control.MainMenuTabStrip.CssClass = CssClassMainMenu;
+      renderingContext.Control.MainMenuTabStrip.Width = Unit.Percentage (100);
+      renderingContext.Control.MainMenuTabStrip.RenderControl (renderingContext.Writer);
+      renderingContext.Writer.RenderEndTag (); // End main menu cell
+
+      renderingContext.Writer.RenderEndTag (); // End main menu row
+
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
+
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
+      if (!renderingContext.Control.SubMenuBackgroundColor.IsEmpty)
+      {
+        string backGroundColor = ColorTranslator.ToHtml (renderingContext.Control.SubMenuBackgroundColor);
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
+      }
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
+      renderingContext.Control.SubMenuTabStrip.Style["width"] = "auto";
+      renderingContext.Control.SubMenuTabStrip.CssClass = CssClassSubMenu;
+      renderingContext.Control.SubMenuTabStrip.RenderControl (renderingContext.Writer);
+      renderingContext.Writer.RenderEndTag (); // End sub menu cell
+
+      renderingContext.Control.StatusStyle.AddAttributesToRender (renderingContext.Writer);
+      if (string.IsNullOrEmpty (renderingContext.Control.StatusStyle.CssClass))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
+
+      if (string.IsNullOrEmpty (renderingContext.Control.StatusText))
+        renderingContext.Writer.Write ("&nbsp;");
+      else
+        renderingContext.Writer.Write (renderingContext.Control.StatusText); // Do not HTML encode
+
+      renderingContext.Writer.RenderEndTag (); // End status cell
+      renderingContext.Writer.RenderEndTag (); // End sub menu row
+      renderingContext.Writer.RenderEndTag (); // End table
+    }
+
+    protected void AddAttributesToRender (TabbedMenuRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      AddStandardAttributesToRender (renderingContext);
+
+      if (renderingContext.Control.IsDesignMode)
+        renderingContext.Writer.AddStyleAttribute ("width", "100%");
+      if (StringUtility.IsNullOrEmpty (renderingContext.Control.CssClass) && StringUtility.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
     #region protected virtual string CssClass...
