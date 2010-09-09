@@ -16,30 +16,16 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
-  public abstract class DatePickerPageRendererBase : IDatePickerPageRenderer
-  {
-    private readonly HttpContextBase _context;
-    private readonly DatePickerPage _page;
+  public class DatePickerButtonRenderingContext : RenderingContext<IDatePickerButton>
 
-    protected DatePickerPageRendererBase (HttpContextBase context, DatePickerPage page)
+{
+    public DatePickerButtonRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+        : base(httpContext, writer, control)
     {
-      _context = context;
-      _page = page;
     }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public DatePickerPage Page
-    {
-      get { return _page; }
-    }
-
-    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
-  }
+}
 }

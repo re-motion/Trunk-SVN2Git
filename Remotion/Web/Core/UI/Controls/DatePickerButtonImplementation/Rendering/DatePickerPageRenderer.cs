@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 

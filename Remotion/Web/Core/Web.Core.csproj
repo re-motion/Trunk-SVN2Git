@@ -180,6 +180,7 @@
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
+    <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\IRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
@@ -194,7 +195,6 @@
     <Compile Include="Infrastructure\IThemedResourceUrlResolver.cs" />
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />
     <Compile Include="UI\Controls\MenuMode.cs" />
-    <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerPageRendererBase.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerPageRenderer.cs" />

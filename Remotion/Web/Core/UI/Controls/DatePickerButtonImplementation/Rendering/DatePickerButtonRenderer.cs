@@ -58,33 +58,40 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      Render (new DatePickerButtonRenderingContext (Context, writer, Control));
+    }
 
-      string cssClass = string.IsNullOrEmpty (Control.CssClass) ? CssClassBase : Control.CssClass;
-      if (!Control.Enabled)
+    public void Render (DatePickerButtonRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID);
+
+      string cssClass = string.IsNullOrEmpty (renderingContext.Control.CssClass) ? CssClassBase : renderingContext.Control.CssClass;
+      if (!renderingContext.Control.Enabled)
         cssClass += " " + CssClassDisabled;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
       // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
 
-      string script = GetClickScript (true);
+      string script = GetClickScript (renderingContext, true);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
 
-      if (!Control.Enabled)
-        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+      if (!renderingContext.Control.Enabled)
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
-      writer.RenderBeginTag (HtmlTextWriterTag.A);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      var imageUrl = GetResolvedImageUrl();
+      var imageUrl = GetResolvedImageUrl ();
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl.GetUrl());
-      writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
-      writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl.GetUrl ());
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (renderingContext.Control.AlternateText));
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      renderingContext.Writer.RenderEndTag ();
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     public IResourceUrl GetDatePickerUrl ()
@@ -97,15 +104,15 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       return ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerButtonRenderer), ResourceType.Image, c_datePickerIcon);
     }
 
-    private string GetClickScript (bool hasClientScript)
+    private string GetClickScript (DatePickerButtonRenderingContext renderingContext, bool hasClientScript)
     {
       string script;
-      if (hasClientScript && Control.Enabled)
+      if (hasClientScript && renderingContext.Control.Enabled)
       {
         const string pickerActionButton = "this";
 
-        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace ('$', '_') + "')";
-        string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
+        string pickerActionContainer = "document.getElementById ('" + renderingContext.Control.ContainerControlID.Replace ('$', '_') + "')";
+        string pickerActionTarget = "document.getElementById ('" + renderingContext.Control.TargetControlID.Replace ('$', '_') + "')";
 
         string pickerUrl = "'" + GetDatePickerUrl().GetUrl() + "'";
 
