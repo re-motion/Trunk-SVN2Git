@@ -365,6 +365,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClassWithManySideRelationProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClassWithOneSideRelationProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithInterfaceWithMissingAccessors.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassDerivedFromClassWithInterface.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\IInterfaceWithPropertiesWithMissingAccessors.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />

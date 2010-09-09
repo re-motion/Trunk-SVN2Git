@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
 
     private ReflectionBasedClassDefinition _classWithInterface;
+    private ReflectionBasedClassDefinition _classDerivedFromClassWithInterface;
     private ReflectionBasedClassDefinition _classWithInterfaceWithMissingAccessors;
     private ReflectionBasedClassDefinition _classWithMixinAddingInterface;
 
@@ -50,6 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
 
       _classWithInterface = CreateDefinitionForClassWithInterface();
+      _classDerivedFromClassWithInterface = CreateDefinitionForClassDerivedFromClassWithInterface(_classWithInterface);
       _classWithInterfaceWithMissingAccessors = CreateDefinitionForClassWithInterfaceWithMissingAccessors();
       _classWithMixinAddingInterface = CreateDefinitionForClassWithMixinAddingInterface();
     }
@@ -98,6 +100,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var expected = _classWithInterface.GetMandatoryPropertyDefinition (
           typeof (ClassWithInterface).FullName + "." + typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty");
       Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveDefinition_ExplicitInterfaceImplementation_FromInterfaceProperty_FromDerivedClass()
+    {
+      var property = new PropertyInfoAdapter (typeof(IInterfaceWithProperties).GetProperty("ExplicitManagedProperty"));
+
+      var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition>(
+          property, _classDerivedFromClassWithInterface, _classDerivedFromClassWithInterface.GetPropertyDefinition);
+
+      var expected = _classDerivedFromClassWithInterface.GetMandatoryPropertyDefinition(
+          typeof(ClassWithInterface).FullName + "." + typeof(IInterfaceWithProperties).FullName + ".ExplicitManagedProperty");
+      Assert.That(result, Is.SameAs(expected));
     }
 
     [Test]
@@ -255,6 +270,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
               false,
               100));
       return classWithInterface;
+    }
+
+    private ReflectionBasedClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ReflectionBasedClassDefinition baseClassDefinition)
+    {
+      Type type = typeof (ClassDerivedFromClassWithInterface);
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, "TestDomain", type, false, baseClassDefinition);
     }
 
     private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()

@@ -524,6 +524,18 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void FindInterfaceImplementation_InterfaceProperty_ExplicitImplementation_OnBaseClass ()
+    {
+      var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ExplicitInterfaceScalar"));
+      var implementation = adapter.FindInterfaceImplementation (typeof (DerivedClassWithReferenceType<object>));
+
+      var expectedProperty = typeof (ClassWithReferenceType<object>).GetProperty (
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          BindingFlags.Instance | BindingFlags.NonPublic);
+      Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (expectedProperty));
+    }
+
+    [Test]
     public void FindInterfaceImplementation_InterfaceProperty_ExplicitImplementation_GetterOnly ()
     {
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ExplicitInterfaceReadOnlyScalar"));
@@ -553,7 +565,7 @@ namespace Remotion.UnitTests.Reflection
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceReadOnlyScalar"));
       var implementation = adapter.FindInterfaceImplementation (typeof (DerivedClassWithReferenceType<object>));
 
-      Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (typeof (DerivedClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceReadOnlyScalar")));
+      Assert.That (((PropertyInfoAdapter) implementation).PropertyInfo, Is.EqualTo (typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceReadOnlyScalar")));
     }
 
     [Test]
@@ -593,7 +605,6 @@ namespace Remotion.UnitTests.Reflection
 
       adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
     }
-
 
 
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
