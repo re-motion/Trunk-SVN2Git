@@ -47,6 +47,11 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 
     public override void Render (HtmlTextWriter writer)
     {
+      Render (new WebButtonRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (WebButtonRenderingContext renderingContext)
+    {
       throw new NotSupportedException ("The WebButton does not support customized rendering.");
     }
   }
