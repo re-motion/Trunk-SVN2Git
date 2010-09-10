@@ -22,7 +22,6 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -140,63 +139,70 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterInitializeGlobalsScript();
-
-      AddAttributesToRender (new RenderingContext<IBocList>(Context, writer, Control));
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      RenderContents (writer);
-
-      writer.RenderEndTag ();
+      Render (new BocListRenderingContext (Context, writer, Control));
     }
 
-    protected virtual void RenderContents (HtmlTextWriter writer)
+    public void Render (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterInitializeGlobalsScript (renderingContext);
+
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      RenderContents (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    protected virtual void RenderContents (BocListRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       //  Menu Block
       if (List.HasMenuBlock)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
 
         if (!List.MenuBlockWidth.IsEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, List.MenuBlockWidth.ToString ());
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, List.MenuBlockWidth.ToString ());
 
         if (!List.MenuBlockOffset.IsEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, List.MenuBlockOffset.ToString ());
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, List.MenuBlockOffset.ToString ());
 
-        writer.RenderBeginTag (HtmlTextWriterTag.Div);
-        MenuBlockRenderer.Render (writer);
-        writer.RenderEndTag ();
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        MenuBlockRenderer.Render (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag ();
       }
 
       //  Table Block
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (List.HasMenuBlock, List.HasNavigator));
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (List.HasMenuBlock, List.HasNavigator));
       if (List.HasMenuBlock && !List.MenuBlockWidth.IsEmpty)
-        writer.AddStyleAttribute ("right", List.MenuBlockWidth.ToString());
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        renderingContext.Writer.AddStyleAttribute ("right", List.MenuBlockWidth.ToString ());
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      TableBlockRenderer.Render (writer);
+      TableBlockRenderer.Render (renderingContext.Writer);
 
       if (List.HasNavigator)
-        NavigationBlockRenderer.Render (writer);
+        NavigationBlockRenderer.Render (renderingContext.Writer);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RegisterInitializeGlobalsScript ()
+    private void RegisterInitializeGlobalsScript (BocListRenderingContext renderingContext)
     {
-      if (!Control.HasClientScript)
+      if (!renderingContext.Control.HasClientScript)
         return;
 
       string startUpScriptKey = typeof (BocListRenderer).FullName + "_Startup";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListRenderer), startUpScriptKey))
+      if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListRenderer), startUpScriptKey))
       {
         string script = string.Format (
             "BocList_InitializeGlobals ('{0}', '{1}');",
             CssClasses.DataRow,
             CssClasses.DataRowSelected);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocListRenderer), startUpScriptKey, script);
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocListRenderer), startUpScriptKey, script);
       }
     }
   }
