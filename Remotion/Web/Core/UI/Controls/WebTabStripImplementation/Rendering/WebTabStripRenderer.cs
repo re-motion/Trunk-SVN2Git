@@ -48,75 +48,82 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Render (new WebTabStripRenderingContext (Context, writer, Control));
+    }
 
-      var visibleTabs = Control.GetVisibleTabs();
+    public void Render (WebTabStripRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      RenderBeginTabsPane (writer);
+      AddAttributesToRender (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      var visibleTabs = renderingContext.Control.GetVisibleTabs ();
+
+      RenderBeginTabsPane (renderingContext);
       for (int i = 0; i < visibleTabs.Count; i++)
       {
         bool isLast = i == (visibleTabs.Count - 1);
         var tab = visibleTabs[i];
-        RenderTab (writer, tab, isLast);
+        RenderTab (renderingContext, tab, isLast);
       }
-      RenderEndTabsPane (writer);
-      RenderClearingPane (writer);
-      writer.RenderEndTag();
+      RenderEndTabsPane (renderingContext);
+      RenderClearingPane (renderingContext);
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    protected void AddAttributesToRender (HtmlTextWriter writer)
+    protected void AddAttributesToRender (WebTabStripRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      AddStandardAttributesToRender (new RenderingContext<IWebTabStrip>(Context, writer, Control));
+      AddStandardAttributesToRender (renderingContext);
 
-      if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      if (string.IsNullOrEmpty (renderingContext.Control.CssClass) && string.IsNullOrEmpty (renderingContext.Control.Attributes["class"]))
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-    private void RenderBeginTabsPane (HtmlTextWriter writer)
+    private void RenderBeginTabsPane (WebTabStripRenderingContext renderingContext)
     {
-      bool isEmpty = Control.Tabs.Count == 0;
+      bool isEmpty = renderingContext.Control.Tabs.Count == 0;
 
       string cssClass = CssClassTabsPane;
       if (isEmpty)
         cssClass += " " + CssClassTabsPaneEmpty;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
 
-      if (Control.IsDesignMode)
+      if (renderingContext.Control.IsDesignMode)
       {
-        writer.AddStyleAttribute ("list-style", "none");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.AddStyleAttribute ("display", "inline");
+        renderingContext.Writer.AddStyleAttribute ("list-style", "none");
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+        renderingContext.Writer.AddStyleAttribute ("display", "inline");
       }
-      writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin List
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin List
     }
 
-    private void RenderEndTabsPane (HtmlTextWriter writer)
+    private void RenderEndTabsPane (WebTabStripRenderingContext renderingContext)
     {
-      writer.RenderEndTag(); // End List
-      writer.RenderEndTag(); // End Div
+      renderingContext.Writer.RenderEndTag (); // End List
+      renderingContext.Writer.RenderEndTag (); // End Div
     }
 
-    private void RenderClearingPane (HtmlTextWriter writer)
+    private void RenderClearingPane (WebTabStripRenderingContext renderingContext)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassClearingPane);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      writer.RenderEndTag ();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassClearingPane);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderTab (HtmlTextWriter writer, IWebTab tab, bool isLast)
+    private void RenderTab (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (Context, Control);
+      var tabRenderer = tab.GetRenderer (renderingContext.HttpContext, renderingContext.Control);
 
-      bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
-      WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;
-      tabRenderer.Render (writer, isEnabled, isLast, style);
+      bool isEnabled = !tab.IsSelected || renderingContext.Control.EnableSelectedTab;
+      WebTabStyle style = tab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
+      tabRenderer.Render (renderingContext.Writer, isEnabled, isLast, style);
 
-      writer.WriteLine ();
+      renderingContext.Writer.WriteLine ();
     }
 
     #region public virtual string CssClass...
