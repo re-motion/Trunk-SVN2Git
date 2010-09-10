@@ -40,6 +40,11 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 
     public override void Render (HtmlTextWriter writer)
     {
+      Render (new WebTreeViewRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (WebTreeViewRenderingContext renderingContext)
+    {
       throw new NotSupportedException ("The WebTreeView does not support customized rendering.");
     }
   }
