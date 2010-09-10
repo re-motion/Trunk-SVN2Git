@@ -350,17 +350,44 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)
     {
-      return SeparatedStringBuilder.Build (", ", objectIDs);
+      return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (objectIDs, 10, GetObjectIDString));
+    }
+
+    private string GetObjectIDString (ObjectID id)
+    {
+      return id != null ? id.ToString() : "<null>";
     }
 
     private string GetDomainObjectsString (IEnumerable<DomainObject> domainObjects)
     {
-      return SeparatedStringBuilder.Build (", ", domainObjects.Select (obj => GetDomainObjectString (obj)));
+      return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (domainObjects, 10, GetDomainObjectString));
     }
 
     private string GetDomainObjectString (DomainObject domainObject)
     {
-      return domainObject != null ? domainObject.ID.ToString() : "<null>";
+      return GetObjectIDString (domainObject != null ? domainObject.ID : null);
+    }
+
+    private IEnumerable<string> ConvertToStringAndCount<T> (IEnumerable<T> sequence, int maximumCount, Func<T, string> converter)
+    {
+      using (var enumerator = sequence.GetEnumerator ())
+      {
+        int i = 0;
+        while ( i < maximumCount && enumerator.MoveNext())
+        {
+          ++i;
+          yield return converter (enumerator.Current);
+        }
+        if (i == maximumCount)
+        {
+          i = 0;
+          while (enumerator.MoveNext ())
+          {
+            ++i;
+          }
+          yield return "+" + i;
+        }
+      }
     }
 
     bool INullObject.IsNull

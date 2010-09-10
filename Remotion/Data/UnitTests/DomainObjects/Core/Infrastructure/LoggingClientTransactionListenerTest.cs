@@ -26,10 +26,13 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
+using Remotion.Text;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -41,6 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private ClientTransactionMock _clientTransaction;
     private LoggingClientTransactionListener _listener;
     private Client _domainObject;
+    private Client _domainObject2;
+    private Client _domainObject3;
     private DataContainer _dataContainer;
     private PropertyValue _propertyValue;
 
@@ -57,6 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _domainObject = DomainObjectMother.CreateObjectInTransaction<Client> (_clientTransaction);
       _dataContainer = _domainObject.GetInternalDataContainerForTransaction (_clientTransaction);
       _propertyValue = _dataContainer.PropertyValues[0];
+
+      _domainObject2 = DomainObjectMother.CreateObjectInTransaction<Client> (_clientTransaction);
+      _domainObject3 = DomainObjectMother.CreateObjectInTransaction<Client> (_clientTransaction);
     }
 
     [TearDown]
@@ -254,6 +262,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                   _domainObject.ID,
                   ValueAccess.Current,
                   _domainObject.ID)));
+    }
+
+    [Test]
+    public void RelationRead_Collection ()
+    {
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      relationEndPointDefinition.Stub (n => n.PropertyName).Return ("Items");
+
+      var values = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection(new[] { _domainObject2, _domainObject3 }, null));
+      _listener.RelationRead (_clientTransaction, _domainObject, relationEndPointDefinition, values, ValueAccess.Current);
+      var loggingEvents = GetLoggingEvents ();
+
+      Assert.That (
+          loggingEvents.Last ().RenderedMessage,
+          Is.EqualTo (
+              string.Format (
+                  "{0} RelationRead: {1} ({2}, {3}): {4}, {5}",
+                  _clientTransaction.ID,
+                  relationEndPointDefinition.PropertyName,
+                  ValueAccess.Current,
+                  _domainObject.ID,
+                  _domainObject2.ID,
+                  _domainObject3.ID)));
+    }
+
+    [Test]
+    public void RelationRead_LongCollection ()
+    {
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      relationEndPointDefinition.Stub (n => n.PropertyName).Return ("Items");
+
+      var values = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection (
+          Enumerable.Range (0, 100).Select (i => LifetimeService.NewObject (_clientTransaction, typeof (Client), ParamList.Empty)), 
+          null));
+      _listener.RelationRead (_clientTransaction, _domainObject, relationEndPointDefinition, values, ValueAccess.Current);
+      var loggingEvents = GetLoggingEvents ();
+
+      Assert.That (
+          loggingEvents.Last ().RenderedMessage,
+          Is.EqualTo (
+              string.Format (
+                  "{0} RelationRead: {1} ({2}, {3}): {4}, +90",
+                  _clientTransaction.ID,
+                  relationEndPointDefinition.PropertyName,
+                  ValueAccess.Current,
+                  _domainObject.ID,
+                  SeparatedStringBuilder.Build (", ", values.Take (10)))));
     }
 
     [Test]
