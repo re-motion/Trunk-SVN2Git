@@ -19,10 +19,10 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.Linq.Utilities;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -42,31 +42,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.IsTrue (orderEventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsTrue (orderTicketEventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.AreSame (orderTicket, orderEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.AreSame (order, orderTicketEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.AreSame (
+          orderTicket, orderEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      Assert.AreSame (
+          order, orderTicketEventReceiver.GetChangingRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
       Assert.IsTrue (orderEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.IsTrue (orderTicketEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreSame (null, orderEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.AreSame (null, orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.AreSame (
+          null, orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
     }
 
     [Test]
     [Ignore ("TODO: Should throw with a sensible message - see COMMONS-731")]
-    public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneOne()
+    public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneOne ()
     {
-      SetDatabaseModifyable ();
+      SetDatabaseModifyable();
 
-      Employee employee = Employee.NewObject ();
-      ClientTransactionMock.Commit ();
+      Employee employee = Employee.NewObject();
+      ClientTransactionMock.Commit();
       Computer computer;
 
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         ClientTransaction.Current.EnlistDomainObject (employee);
-        computer = Computer.NewObject ();
+        computer = Computer.NewObject();
         computer.Employee = employee;
-        ClientTransaction.Current.Commit ();
+        ClientTransaction.Current.Commit();
       }
 
       ClientTransaction.Current.EnlistDomainObject (computer);
@@ -78,33 +81,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Ignore ("TODO: Should throw with a sensible message - see COMMONS-731")]
     public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneMany ()
     {
-      SetDatabaseModifyable ();
+      SetDatabaseModifyable();
 
       // setup new IndustrialSector object in database
       IndustrialSector industrialSector = CreateNewIndustrialSector();
-      ClientTransactionMock.Commit ();
-      
+      ClientTransactionMock.Commit();
+
       // in parallel transaction, add a Company to the IndustrialSector
-      ObjectID newCompanyID = AddNewCompanyInDatabase(industrialSector);
+      ObjectID newCompanyID = AddNewCompanyInDatabase (industrialSector);
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
       Company newCompany = Company.GetObject (newCompanyID); // TODO 731 (re-motion 2.1): This should throw an exception.
 
       // this prints true/false => the bidirectional relation is inconsistent
-      Console.WriteLine ("{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})", 
-          newCompany, newCompany.IndustrialSector, newCompany.IndustrialSector == industrialSector);
-      Console.WriteLine ("{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})", 
-          industrialSector, industrialSector.Companies.Count, industrialSector.Companies.ContainsObject (industrialSector));
+      Console.WriteLine (
+          "{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
+          newCompany,
+          newCompany.IndustrialSector,
+          newCompany.IndustrialSector == industrialSector);
+      Console.WriteLine (
+          "{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
+          industrialSector,
+          industrialSector.Companies.Count,
+          industrialSector.Companies.ContainsObject (industrialSector));
     }
 
     [Test]
     [Ignore ("TODO: Should throw with a sensible message - see COMMONS-921")]
     public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneMany_ProblemDetectedInAdd ()
     {
-      SetDatabaseModifyable ();
+      SetDatabaseModifyable();
 
       // setup new IndustrialSector object in database
-      IndustrialSector industrialSector = CreateNewIndustrialSector ();
-      ClientTransactionMock.Commit ();
+      IndustrialSector industrialSector = CreateNewIndustrialSector();
+      ClientTransactionMock.Commit();
 
       // in parallel transaction, add a Company to the IndustrialSector
       ObjectID newCompanyID = AddNewCompanyInDatabase (industrialSector);
@@ -112,82 +121,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Company newCompany = Company.GetObject (newCompanyID); // TODO 731 (re-motion 2.1): This should throw an exception.
 
       industrialSector.Companies.Add (newCompany); // TODO 921: Throw here
-      Console.WriteLine ("{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
-          newCompany, newCompany.IndustrialSector, newCompany.IndustrialSector == industrialSector);
-      Console.WriteLine ("{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
-          industrialSector, industrialSector.Companies.Count, industrialSector.Companies.ContainsObject (industrialSector));
+      Console.WriteLine (
+          "{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
+          newCompany,
+          newCompany.IndustrialSector,
+          newCompany.IndustrialSector == industrialSector);
+      Console.WriteLine (
+          "{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
+          industrialSector,
+          industrialSector.Companies.Count,
+          industrialSector.Companies.ContainsObject (industrialSector));
     }
 
     [Test]
     public void Relation_WithMoreThan2100Objects ()
     {
-      SetDatabaseModifyable ();
-      
-      var transaction = ClientTransaction.CreateRootTransaction();
-      var orderInOtherTx = DomainObjectMother.GetObjectInTransaction<Order> (transaction, DomainObjectIDs.Order1);
-      var orderItemsInOtherTx = transaction.Execute (() => Enumerable.Range (0, 4000).Select (i =>
-      {
-        var orderItem = OrderItem.NewObject();
-        orderInOtherTx.OrderItems.Add (orderItem);
-        return orderItem;
-      }).ToArray());
+      SetDatabaseModifyable();
 
-      transaction.Commit ();
+      var insertedIDs = Enumerable.Range (0, 4000).Select (x => Guid.NewGuid()).ToArray();
+      var insertStatements = insertedIDs.Select (
+          id => string.Format (
+              "insert into [OrderItem] (ID, ClassID, OrderID, [Position], [Product]) values ('{0}', 'OrderItem', '{1}', 1, 'Test2100')",
+              id,
+              DomainObjectIDs.Order1.Value));
 
-      var orderInThisTx = Order.GetObject (orderInOtherTx.ID);
-      var orderItems = orderInThisTx.OrderItems;
+      var script = SeparatedStringBuilder.Build (Environment.NewLine, insertStatements);
+      DatabaseAgent.ExecuteCommand (script);
+
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
 
       Assert.That (orderItems.Count, Is.EqualTo (4002));
-      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem1), Is.True);
-      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem2), Is.True);
-      foreach (var orderItemInOtherTx in orderItemsInOtherTx)
-        Assert.That (orderItems.Contains (orderItemInOtherTx.ID), Is.True);
+
+      var loadedIDs = orderItems.Select (oi => (Guid) oi.ID.Value);
+      var expectedIDs = insertedIDs.Concat (new[] { (Guid) DomainObjectIDs.OrderItem1.Value, (Guid) DomainObjectIDs.OrderItem2.Value });
+      Assert.That (loadedIDs.SetEquals (expectedIDs), Is.True);
     }
 
     [Test]
     public void Relation_WithMoreThan2100Objects_WithTableInheritance ()
     {
-      SetDatabaseModifyable ();
+      SetDatabaseModifyable();
 
-      var transaction = ClientTransaction.CreateRootTransaction ();
-      var folderInOtherTx = DomainObjectMother.CreateObjectInTransaction<TableInheritance.TestDomain.Folder> (transaction);
-      transaction.Execute (() => folderInOtherTx.CreatedAt = new DateTime(2010, 01, 01));
-      var filesInOtherTx = transaction.Execute(() => Enumerable.Range (0, 4000).Select (i =>
-      {
-        var file = TableInheritance.TestDomain.File.NewObject();
-        file.CreatedAt = new DateTime (2010, 01, 01);
-        folderInOtherTx.FileSystemItems.Add (file);
-        return file;
-      }).ToArray());
+      var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
 
-      transaction.Commit ();
+      var insertedIDs = Enumerable.Range (0, 4000).Select (x => Guid.NewGuid ()).ToArray ();
+      var insertStatements = insertedIDs.Select (
+          id => string.Format (
+              "insert into [TableInheritance_File] (ID, ClassID, [Name], [ParentFolderID], [ParentFolderIDClassID], [Size], [FileCreatedAt]) "
+              + "values ('{0}', 'TI_File', 'Test', '{1}', 'TI_Folder', 42, '2006/02/03')",
+              id,
+              domainObjectIDs.Folder1.Value));
 
-      var folderInThisTx = TableInheritance.TestDomain.Folder.GetObject (folderInOtherTx.ID);
-      var fileSystemItems = folderInThisTx.FileSystemItems;
+      var script = SeparatedStringBuilder.Build (Environment.NewLine, insertStatements);
+      DatabaseAgent.ExecuteCommand (script);
 
-      Assert.That (fileSystemItems.Count, Is.EqualTo (4000));
-      foreach (var fileInOtherTx in filesInOtherTx)
-        Assert.That (fileSystemItems.Contains (fileInOtherTx.ID), Is.True);
+      var folder = TableInheritance.TestDomain.Folder.GetObject (domainObjectIDs.Folder1);
+      var fileSystemItems = folder.FileSystemItems;
+
+      Assert.That (fileSystemItems.Count, Is.EqualTo (4001));
+      var loadedIDs = fileSystemItems.Select (oi => (Guid) oi.ID.Value);
+      var expectedIDs = insertedIDs.Concat (new[] { (Guid) domainObjectIDs.File1.Value });
+      Assert.That (loadedIDs.SetEquals (expectedIDs), Is.True);
     }
 
     private IndustrialSector CreateNewIndustrialSector ()
     {
-      IndustrialSector industrialSector = IndustrialSector.NewObject ();
-      Company oldCompany = Company.NewObject ();
-      oldCompany.Ceo = Ceo.NewObject ();
+      IndustrialSector industrialSector = IndustrialSector.NewObject();
+      Company oldCompany = Company.NewObject();
+      oldCompany.Ceo = Ceo.NewObject();
       industrialSector.Companies.Add (oldCompany);
       return industrialSector;
     }
 
     private ObjectID AddNewCompanyInDatabase (IndustrialSector industrialSector)
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         var industrialSectorInTx = IndustrialSector.GetObject (industrialSector.ID);
-        Company newCompany = Company.NewObject ();
-        newCompany.Ceo = Ceo.NewObject ();
+        Company newCompany = Company.NewObject();
+        newCompany.Ceo = Ceo.NewObject();
         industrialSectorInTx.Companies.Add (newCompany);
-        ClientTransaction.Current.Commit ();
+        ClientTransaction.Current.Commit();
         return newCompany.ID;
       }
     }
