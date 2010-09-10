@@ -20,6 +20,7 @@ using System.Web.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
+using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
@@ -46,6 +47,11 @@ namespace Remotion.Web.Legacy.UI.Controls
     }
 
     public override void Render (HtmlTextWriter writer)
+    {
+      Render (new WebTreeViewRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (WebTreeViewRenderingContext renderingContext)
     {
       throw new NotSupportedException ("The WebTreeView does not support customized rendering.");
     }
