@@ -21,6 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
+using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
@@ -57,6 +58,11 @@ namespace Remotion.Web.Legacy.UI.Controls
     }
 
     public override void Render (HtmlTextWriter writer)
+    {
+      Render (new WebButtonRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (WebButtonRenderingContext renderingContext)
     {
       throw new NotSupportedException ("The WebButton does not support customized rendering.");
     }
