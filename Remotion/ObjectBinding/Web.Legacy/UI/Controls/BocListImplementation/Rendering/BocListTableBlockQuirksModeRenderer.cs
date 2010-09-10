@@ -262,7 +262,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       {
         BocColumnDefinition column = columnRenderers[i].Column;
 
-        if (!List.IsColumnVisible (column))
+        if (column==null || !List.IsColumnVisible (column))
           continue;
 
         RenderDataColumnDeclaration (writer, isTextXml, column);
