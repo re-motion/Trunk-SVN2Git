@@ -169,53 +169,60 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterInitializeGlobalsScript();
-
-      AddAttributesToRender (new RenderingContext<IBocList>(Context, writer, Control), false);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      RenderContents (writer);
-
-      writer.RenderEndTag ();
+      Render (new BocListRenderingContext (Context, writer, Control));
     }
 
-    protected virtual void RenderContents (HtmlTextWriter writer)
+    public void Render (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterInitializeGlobalsScript (renderingContext);
+
+      AddAttributesToRender (renderingContext, false);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      RenderContents (renderingContext);
+
+      renderingContext.Writer.RenderEndTag ();
+    }
+
+    protected virtual void RenderContents (BocListRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       //  Render list block / menu block
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      RenderTopLevelColumnGroup (writer);
+      RenderTopLevelColumnGroup (renderingContext.Writer);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       //  List Block
-      writer.AddStyleAttribute ("vertical-align", "top");
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      renderingContext.Writer.AddStyleAttribute ("vertical-align", "top");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-      TableBlockRenderer.Render (writer);
+      TableBlockRenderer.Render (renderingContext.Writer);
 
       if (List.HasNavigator)
-        NavigationBlockRenderer.Render (writer);
+        NavigationBlockRenderer.Render (renderingContext.Writer);
 
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
 
       if (List.HasMenuBlock)
       {
         //  Menu Block
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
-        writer.AddStyleAttribute ("vertical-align", "top");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        MenuBlockRenderer.Render (writer);
-        writer.RenderEndTag ();
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
+        renderingContext.Writer.AddStyleAttribute ("vertical-align", "top");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+        MenuBlockRenderer.Render (renderingContext.Writer);
+        renderingContext.Writer.RenderEndTag ();
       }
 
-      writer.RenderEndTag (); //  TR
-      writer.RenderEndTag (); //  Table
+      renderingContext.Writer.RenderEndTag (); //  TR
+      renderingContext.Writer.RenderEndTag (); //  Table
     }
 
     private void RenderTopLevelColumnGroupForLegacyBrowser (HtmlTextWriter writer)
@@ -277,19 +284,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       writer.RenderEndTag ();
     }
 
-    private void RegisterInitializeGlobalsScript ()
+    private void RegisterInitializeGlobalsScript (BocListRenderingContext renderingContext)
     {
-      if (!Control.HasClientScript)
+      if (!renderingContext.Control.HasClientScript)
         return;
 
       string startUpScriptKey = typeof (IBocList).FullName + "_Startup";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListQuirksModeRenderer), startUpScriptKey))
+      if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListQuirksModeRenderer), startUpScriptKey))
       {
         string script = string.Format (
             "BocList_InitializeGlobals ('{0}', '{1}');",
             CssClasses.DataRow,
             CssClasses.DataRowSelected);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocListQuirksModeRenderer), startUpScriptKey, script);
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocListQuirksModeRenderer), startUpScriptKey, script);
       }
     }
   }
