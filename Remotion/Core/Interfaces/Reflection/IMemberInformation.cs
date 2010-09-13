@@ -76,5 +76,15 @@ namespace Remotion.Reflection
     /// True if a custom attribute of the specified type is defined on the member; otherwise, false.
     /// </returns>
     bool IsDefined<T> (bool inherited) where T : class;
+
+    /// <summary>
+    /// Finds the implementation <see cref="IMemberInformation"/> corresponding to this <see cref="IMemberInformation"/> on the given 
+    /// <see cref="Type"/>. This <see cref="IMemberInformation"/> object must denote an interface property.
+    /// </summary>
+    /// <param name="implementationType">The type to search for an implementation of this <see cref="IMemberInformation"/> on.</param>
+    /// <returns>An instance of <see cref="IMemberInformation"/> describing the member implementing this interface 
+    /// <see cref="IMemberInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
+    /// <paramref name="implementationType"/> does not implement the interface.</returns>
+    IMemberInformation FindInterfaceImplementation (Type implementationType);
   }
 }

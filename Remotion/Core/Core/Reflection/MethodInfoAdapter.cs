@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -82,6 +83,30 @@ namespace Remotion.Reflection
       {
         throw ex.InnerException;
       }
+    }
+
+    public IMethodInformation FindInterfaceImplementation (Type implementationType)
+    {
+      if (!DeclaringType.IsInterface)
+        throw new InvalidOperationException ("This method is not an interface method.");
+
+      if (implementationType.IsInterface)
+        throw new ArgumentException ("The implementationType parameter must not be an interface.", "implementationType");
+
+      if (!DeclaringType.IsAssignableFrom (implementationType))
+        return null;
+
+      var interfaceMap = implementationType.GetInterfaceMap (DeclaringType);
+      var methodIndex = interfaceMap.InterfaceMethods
+          .Select ((m, i) => new { Method = m, Index = i })
+          .Single (tuple => tuple.Method == _methodInfo)
+          .Index;
+      return new MethodInfoAdapter(interfaceMap.TargetMethods[methodIndex]);
+    }
+
+    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
+    {
+      return FindInterfaceImplementation (implementationType);
     }
 
     public bool IsDefined<T> (bool inherited) where T: class

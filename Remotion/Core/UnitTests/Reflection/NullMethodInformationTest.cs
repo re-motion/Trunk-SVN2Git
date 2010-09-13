@@ -75,6 +75,13 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void FindInterfaceImplementation ()
+    {
+      _nullMethodInformation.FindInterfaceImplementation (typeof (object));
+    }
+
+    [Test]
     public void TestEquals ()
     {
       var nullMethodInformation2 = new NullMethodInformation();

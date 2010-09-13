@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Reflection
     private MethodInfo _method;
     private MethodInfo _explicitInterfaceImplementationMethod;
     private MethodInfo _implicitInterfaceImplementationMethod;
-    
+
     private MethodInfoAdapter _adapter;
     private MethodInfoAdapter _explicitInterfaceAdapter;
     private MethodInfoAdapter _implicitInterfaceAdapter;
@@ -44,14 +44,13 @@ namespace Remotion.UnitTests.Reflection
       _adapter = new MethodInfoAdapter (_method);
 
       _explicitInterfaceImplementationMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
-        "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod", 
-        BindingFlags.NonPublic | BindingFlags.Instance);
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod",
+          BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceAdapter = new MethodInfoAdapter (_explicitInterfaceImplementationMethod);
 
       _implicitInterfaceImplementationMethod = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod (
-        "ImplicitInterfaceMethod", BindingFlags.Public | BindingFlags.Instance);
+          "ImplicitInterfaceMethod", BindingFlags.Public | BindingFlags.Instance);
       _implicitInterfaceAdapter = new MethodInfoAdapter (_implicitInterfaceImplementationMethod);
-
     }
 
     [Test]
@@ -97,8 +96,9 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetCustomAttributes ()
     {
-      Assert.That (_adapter.GetCustomAttributes<SampleAttribute> (true),
-        Is.EqualTo (AttributeUtility.GetCustomAttributes<SampleAttribute> (_method, false)));
+      Assert.That (
+          _adapter.GetCustomAttributes<SampleAttribute> (true),
+          Is.EqualTo (AttributeUtility.GetCustomAttributes<SampleAttribute> (_method, false)));
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_adapter.MethodInfo, Is.SameAs (_method));
     }
-    
+
     [Test]
     public void Equals ()
     {
@@ -145,14 +145,69 @@ namespace Remotion.UnitTests.Reflection
     {
       var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       var adapter = new MethodInfoAdapter (methodInfo);
-      var result = adapter.Invoke (new ClassWithBaseMember (),new object[]{});
+      var result = adapter.Invoke (new ClassWithBaseMember(), new object[] { });
 
       Assert.That (result, Is.EqualTo (null));
     }
 
-    
+    [Test]
+    public void FindInterfaceImplementation_ImplicitImplementation ()
+    {
+      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
+      var adapter = new MethodInfoAdapter (methodInfo);
 
-    
+      var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
+
+      Assert.That (
+          ((MethodInfoAdapter) implementation).MethodInfo,
+          Is.EqualTo (typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod()));
+    }
+
+    [Test]
+    public void FindInterfaceImplementation_ExplicitImplementation ()
+    {
+      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ExplicitInterfaceScalar").GetGetMethod (true);
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
+
+      var expectedPropertyGetter = typeof (ClassWithReferenceType<object>).GetProperty (
+          "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(true);
+      Assert.That (((MethodInfoAdapter) implementation).MethodInfo, Is.EqualTo(expectedPropertyGetter));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
+    public void FindInterfaceImplementation_NonInterfaceMethod ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The implementationType parameter must not be an interface.\r\nParameter name: implementationType")]
+    public void FindInterfaceImplementation_ImplementationIsInterface ()
+    {
+      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      adapter.FindInterfaceImplementation (typeof (IInterfaceWithReferenceType<object>));
+    }
+
+    [Test]
+    public void FindInterfaceImplementation_ImplementationIsNotAssignableToTheInterface ()
+    {
+      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod ();
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindInterfaceImplementation (typeof(object));
+
+      Assert.That (result, Is.Null);
+    }
+
   }
-
 }

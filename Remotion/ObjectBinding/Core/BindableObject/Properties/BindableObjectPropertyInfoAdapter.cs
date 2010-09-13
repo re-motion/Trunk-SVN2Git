@@ -189,6 +189,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return ValuePropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
+    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
+    {
+      return FindInterfaceImplementation (implementationType);
+    }
+
     public override bool Equals (object obj)
     {
       var other = obj as BindableObjectPropertyInfoAdapter;

@@ -658,7 +658,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This property is not an interface property.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
     public void FindInterfaceImplementation_WithoutInterfaceProperty ()
     {
       _adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<SimpleReferenceType>));

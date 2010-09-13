@@ -36,5 +36,15 @@ namespace Remotion.Reflection
     /// <param name="parameters">An argument list for the invoked method.</param>
     /// <returns>An object containing the return value of the invoked method.</returns>
     object Invoke (object instance, object[] parameters);
+
+    /// <summary>
+    /// Finds the implementation <see cref="IMethodInformation"/> corresponding to this <see cref="IMethodInformation"/> on the given 
+    /// <see cref="Type"/>. This <see cref="IMethodInformation"/> object must denote an interface property.
+    /// </summary>
+    /// <param name="implementationType">The type to search for an implementation of this <see cref="IMethodInformation"/> on.</param>
+    /// <returns>An instance of <see cref="IMethodInformation"/> describing the method implementing this interface 
+    /// <see cref="IMethodInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
+    /// <paramref name="implementationType"/> does not implement the interface.</returns>
+    new IMethodInformation FindInterfaceImplementation (Type implementationType);
   }
 }

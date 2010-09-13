@@ -138,35 +138,27 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
-      if (!DeclaringType.IsInterface)
-        throw new InvalidOperationException ("This property is not an interface property.");
-
-      if (implementationType.IsInterface)
-        throw new ArgumentException ("The implementationType parameter must not be an interface.", "implementationType");
-
-      if (!DeclaringType.IsAssignableFrom (implementationType))
+      var interfaceAccessorMethod = GetGetMethod (false) ?? GetSetMethod (false);
+      var implementationMethod = interfaceAccessorMethod.FindInterfaceImplementation(implementationType);
+      if (implementationMethod == null)
         return null;
       
-      var interfaceMap = implementationType.GetInterfaceMap (DeclaringType);
-      var interfaceAccessorMethod = PropertyInfo.GetGetMethod (false) ?? PropertyInfo.GetSetMethod (false);
-
-      var accessorIndex = interfaceMap.InterfaceMethods
-          .Select ((m, i) => new { Method = m, Index = i })
-          .Single (tuple => tuple.Method == interfaceAccessorMethod)
-          .Index;
-      var implementationMethod = interfaceMap.TargetMethods[accessorIndex];
-
       // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
       var implementationProperty = 
           implementationType.CreateSequence (t => t.BaseType)
           .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
-          .SingleOrDefault (pi => IsAccessorMatch (implementationMethod, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
+          .SingleOrDefault (pi => IsAccessorMatch (((MethodInfoAdapter) implementationMethod).MethodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
 
       Assertion.IsNotNull (
           implementationProperty, 
           "We assume that property acessor '" + implementationMethod + "' must be found on '" + implementationType + "'.");
 
       return new PropertyInfoAdapter(implementationProperty);
+    }
+
+    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
+    {
+      return FindInterfaceImplementation (implementationType);
     }
 
     private bool IsAccessorMatch (MethodInfo accessor1, MethodInfo accessor2)

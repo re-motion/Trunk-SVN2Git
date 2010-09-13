@@ -598,15 +598,14 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This property is not an interface property.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
     public void FindInterfaceImplementation_NonInterfaceProperty ()
     {
       var adapter = new PropertyInfoAdapter (typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));
 
       adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
     }
-
-
+    
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);

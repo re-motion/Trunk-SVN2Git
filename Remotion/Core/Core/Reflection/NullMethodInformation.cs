@@ -63,6 +63,16 @@ namespace Remotion.Reflection
       return null;
     }
 
+    public IMethodInformation FindInterfaceImplementation (Type implementationType)
+    {
+      throw new InvalidOperationException();
+    }
+
+    IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
+    {
+      return FindInterfaceImplementation (implementationType);
+    }
+
     public override bool Equals (object obj)
     {
       if (obj == null)
