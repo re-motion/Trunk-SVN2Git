@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   public class TabbedMultiViewRenderingContext : RenderingContext<ITabbedMultiView>
   {
-    public TabbedMultiViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public TabbedMultiViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ITabbedMultiView control)
         : base(httpContext, writer, control)
     {
     }

@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   public class DropDownMenuRenderingContext : RenderingContext<IDropDownMenu>
   {
-    public DropDownMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public DropDownMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IDropDownMenu control)
         : base(httpContext, writer, control)
     {
     }

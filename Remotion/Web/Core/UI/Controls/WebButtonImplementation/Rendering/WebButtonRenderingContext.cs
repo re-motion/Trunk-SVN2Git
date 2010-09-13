@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
   public class WebButtonRenderingContext : RenderingContext<IWebButton>
   {
-    public WebButtonRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public WebButtonRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebButton control)
         : base(httpContext, writer, control)
     {
     }

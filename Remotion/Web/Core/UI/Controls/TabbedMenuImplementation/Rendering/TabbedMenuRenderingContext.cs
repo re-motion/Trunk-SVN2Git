@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   public class TabbedMenuRenderingContext : RenderingContext<ITabbedMenu>
   {
-    public TabbedMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public TabbedMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ITabbedMenu control)
         : base(httpContext, writer, control)
     {
     }

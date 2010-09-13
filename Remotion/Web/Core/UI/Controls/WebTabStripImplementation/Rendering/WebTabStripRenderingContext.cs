@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   public class WebTabStripRenderingContext : RenderingContext<IWebTabStrip>
   {
-    public WebTabStripRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public WebTabStripRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTabStrip control)
         : base(httpContext, writer, control)
     {
     }

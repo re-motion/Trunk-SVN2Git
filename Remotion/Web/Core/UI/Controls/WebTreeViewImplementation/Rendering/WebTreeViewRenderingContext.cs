@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
   public class WebTreeViewRenderingContext : RenderingContext<IWebTreeView>
   {
-    public WebTreeViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public WebTreeViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTreeView control)
         : base(httpContext, writer, control)
     {
     }

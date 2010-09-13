@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
   public class SingleViewRenderingContext : RenderingContext<ISingleView>
   {
-    public SingleViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public SingleViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ISingleView control)
         : base(httpContext, writer, control)
     {
     }

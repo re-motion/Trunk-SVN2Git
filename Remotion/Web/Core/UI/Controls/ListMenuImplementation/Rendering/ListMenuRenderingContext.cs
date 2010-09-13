@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
   public class ListMenuRenderingContext : RenderingContext<IListMenu>
   {
-    public ListMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public ListMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IListMenu control)
         : base(httpContext, writer, control)
     {
     }
