@@ -44,7 +44,6 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      // TODO 3199: Check with MK whether to use true or false
       return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod (true) ?? new NullMethodInformation());
     }
 
@@ -56,7 +55,6 @@ namespace Remotion.Security
         return true;
 
       SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      // TODO 3199: Check with MK whether to use true or false
       return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod (true) ?? new NullMethodInformation ());
     }
   }

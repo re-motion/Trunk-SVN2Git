@@ -35,7 +35,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      //TODO 3199: consider using propertyInformation.IsInterfaceProperty 
       if (propertyInformation.DeclaringType.IsInterface)
       {
         Type implementingType = GetImplementingType(classDefinition, propertyInformation);
