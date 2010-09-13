@@ -32,9 +32,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly IPropertyInformation _interfacePropertyInfo;
     private readonly Delegate _getter;
     private readonly Delegate _setter;
-
-    private Type _type;
-
+    private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    
     public BindableObjectPropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -86,10 +85,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public Type GetOriginalDeclaringType ()
     {
-      // TODO: Not thread-safe! Discuss with MK (and rename to _cachedOriginalDeclaringType)
-      if (_type == null)
-        _type = _propertyInfo.GetOriginalDeclaringType();
-      return _type;
+      if (_cachedOriginalDeclaringType == null)
+        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (_propertyInfo.GetOriginalDeclaringType);
+      return _cachedOriginalDeclaringType.Value;
     }
 
     public bool CanBeSetFromOutside

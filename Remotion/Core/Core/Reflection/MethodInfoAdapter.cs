@@ -26,8 +26,8 @@ namespace Remotion.Reflection
   public class MethodInfoAdapter : IMethodInformation
   {
     private readonly MethodInfo _methodInfo;
-    private Type _type;
-
+    private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    
     public MethodInfoAdapter (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
@@ -57,9 +57,9 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
-      if (_type == null)
-        _type = ReflectionUtility.GetOriginalDeclaringType (_methodInfo);
-      return _type;
+      if (_cachedOriginalDeclaringType == null)
+        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type>(() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
+      return _cachedOriginalDeclaringType.Value;
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class

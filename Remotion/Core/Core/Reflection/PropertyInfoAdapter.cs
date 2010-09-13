@@ -28,7 +28,7 @@ namespace Remotion.Reflection
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;
-    private Type _type;
+    private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
     
     public PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
@@ -64,10 +64,9 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
-      // TODO: Not thread-safe! Discuss with MK (and rename to _cachedOriginalDeclaringType)
-      if (_type == null)
-        _type = ReflectionUtility.GetOriginalDeclaringType (_propertyInfo);
-      return _type;
+      if (_cachedOriginalDeclaringType == null)
+        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_propertyInfo));
+      return _cachedOriginalDeclaringType.Value;
     }
 
     public bool CanBeSetFromOutside
