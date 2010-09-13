@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
-  public class BocEnumValueRenderingContext : RenderingContext<IBocEnumValue>
+  public class BocEnumValueRenderingContext : BocRenderingContext<IBocEnumValue>
   {
-    public BocEnumValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocEnumValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocEnumValue control)
         : base(httpContext, writer, control)
     {
     }

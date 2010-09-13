@@ -53,6 +53,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       Render (new BocMultilineTextValueRenderingContext (Context, writer, Control));
     }
 
+    public void Render (BocMultilineTextValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      base.Render (renderingContext);
+    }
+
     protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocMultilineTextValue> renderingContext)
     {
       Label label = new Label();

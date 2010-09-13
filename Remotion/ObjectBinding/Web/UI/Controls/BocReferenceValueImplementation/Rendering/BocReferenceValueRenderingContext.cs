@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class BocReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocReferenceValue>
   {
-    public BocReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocReferenceValue control)
         : base (httpContext, writer, control)
     {
     }

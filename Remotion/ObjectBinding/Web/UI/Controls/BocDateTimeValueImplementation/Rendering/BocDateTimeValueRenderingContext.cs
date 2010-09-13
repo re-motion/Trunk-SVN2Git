@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
-  public class BocDateTimeValueRenderingContext : RenderingContext<IBocDateTimeValue>
+  public class BocDateTimeValueRenderingContext : BocRenderingContext<IBocDateTimeValue>
   {
-    public BocDateTimeValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocDateTimeValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocDateTimeValue control)
         : base(httpContext, writer, control)
     {
     }

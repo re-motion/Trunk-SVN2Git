@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   public class BocBooleanValueRenderingContext : BocBooleanValueBaseRenderingContext<IBocBooleanValue>
   {
-    public BocBooleanValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocBooleanValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocBooleanValue control)
         : base(httpContext, writer, control)
     {
     }

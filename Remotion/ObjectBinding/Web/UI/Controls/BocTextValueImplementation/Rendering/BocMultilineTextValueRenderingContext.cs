@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   public class BocMultilineTextValueRenderingContext : BocTextValueBaseRenderingContext<IBocMultilineTextValue>
   {
-    public BocMultilineTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocMultilineTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocMultilineTextValue control)
         : base(httpContext, writer, control)
     {
     }

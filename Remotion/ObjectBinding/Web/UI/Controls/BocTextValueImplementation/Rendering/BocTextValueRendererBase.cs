@@ -45,8 +45,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// <summary>
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
     /// a textbox in edit mode.
-    /// </summary>
-    public void Render (BocTextValueBaseRenderingContext<T> renderingContext)
+    /// </summary>    
+    protected void Render (BocTextValueBaseRenderingContext<T> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 

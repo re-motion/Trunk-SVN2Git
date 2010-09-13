@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   public class BocCheckboxRenderingContext : BocBooleanValueBaseRenderingContext<IBocCheckBox>
   {
-    public BocCheckboxRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocCheckboxRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocCheckBox control)
         : base(httpContext, writer, control)
     {
     }

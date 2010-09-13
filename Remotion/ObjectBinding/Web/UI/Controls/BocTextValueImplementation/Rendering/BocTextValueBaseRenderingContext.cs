@@ -21,10 +21,14 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
-  public class BocTextValueBaseRenderingContext<TControl> : RenderingContext<TControl>
-    where TControl : IControl
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocTextValue"/> or <see cref="BocMultilineTextValue"/>.
+  /// </summary>
+  /// <typeparam name="TControl">The concrete control or corresponding interface that will be rendered.</typeparam>
+  public class BocTextValueBaseRenderingContext<TControl> : BocRenderingContext<TControl>
+    where TControl : IBocTextValueBase
   {
-    public BocTextValueBaseRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocTextValueBaseRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocTextValueBase control)
         : base(httpContext, writer, control)
     {
     }

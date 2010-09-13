@@ -17,13 +17,15 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocTextValue"/>.
+  /// </summary>
   public class BocTextValueRenderingContext : BocTextValueBaseRenderingContext<IBocTextValue>
   {
-    public BocTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocTextValue control)
         : base(httpContext, writer, control)
     {
     }

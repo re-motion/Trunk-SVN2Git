@@ -17,13 +17,12 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class BocAutoCompleteReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue>
   {
-    public BocAutoCompleteReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IStyledControl control)
+    public BocAutoCompleteReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
         : base(httpContext, writer, control)
     {
     }

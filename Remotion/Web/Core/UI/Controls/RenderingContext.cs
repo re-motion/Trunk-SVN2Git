@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls
 {
   public class RenderingContext<TControl> : IRenderingContext
-      where TControl: IControl
+      where TControl : IStyledControl
   {
     private readonly HttpContextBase _httpContext;
     private readonly HtmlTextWriter _writer;
