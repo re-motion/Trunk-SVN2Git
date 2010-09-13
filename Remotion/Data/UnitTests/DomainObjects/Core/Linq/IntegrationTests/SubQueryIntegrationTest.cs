@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -199,6 +200,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckOrderedQueryResult (
           query,
           DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void MemberAccess_OnSubQuery_WithEntities ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select (from oi in o.OrderItems orderby oi.ID select oi).First ().Product).Single ();
+      Assert.That (query, Is.EqualTo ("CPU Fan"));
+    }
+
+    [Test]
+    public void MemberAccess_OnSubQuery_WithColumns ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
+                   where o.OrderNumber == 1
+                   select (from oi in o.OrderItems orderby oi.ID select oi.Product).First ().Length).Single();
+      Assert.That (query, Is.EqualTo (7));
     }
   }
 }
