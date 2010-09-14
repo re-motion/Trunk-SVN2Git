@@ -49,24 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (orders, DomainObjectIDs.Order1);
     }
 
-    // test should show how own methods are registered and custom sql code is generated
-    // MethodExtension defines extension method "ExtendString"
-    // MethodExtendString generates sql code for this method
-    [Test]
-    [Ignore ("TODO 2612")]
-    public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
-    {
-      //QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
-      //    typeof (MethodExtensions).GetMethod ("ExtendString", new[] { typeof (string)}), new MethodExtendString ());
-
-      //var computers =
-      //    from c in QueryFactory.CreateLinqQuery<Computer>()
-      //    where c.Employee.Name.ExtendString () == "Trillian"
-      //    select c;
-      //CheckQueryResult (computers, DomainObjectIDs.Computer2);
-      Assert.Fail();
-    }
-
     [Test]
     public void Query_WithCastOnResultSet ()
     {
@@ -264,24 +246,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
            select o).Distinct();
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This query provider does not support the given query ('from OrderItem oi in DomainObjectQueryable<OrderItem> "
-        + "where (([oi].Order.OrderNumber = 1) || ([oi].Order.OrderNumber = 3)) "
-        + "orderby [oi].Order.OrderNumber asc "
-        + "select [oi] => GroupBy([oi].Order, [oi].Product)'). re-store only supports queries selecting a scalar value, a single DomainObject, or a "
-        + "collection of DomainObjects. GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping "
-        + "operation.")]
-    public void Query_WithGroupBy ()
-    {
-      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>()
-                  where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
-                  orderby oi.Order.OrderNumber
-                  group oi.Product by oi.Order;
-
-      query.ToArray();
     }
 
     [Test]
@@ -572,6 +536,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This query provider does not support the given query ('from OrderItem oi in DomainObjectQueryable<OrderItem> "
+        + "where (([oi].Order.OrderNumber = 1) || ([oi].Order.OrderNumber = 3)) "
+        + "orderby [oi].Order.OrderNumber asc "
+        + "select [oi] => GroupBy([oi].Order, [oi].Product)'). re-store only supports queries selecting a scalar value, a single DomainObject, or a "
+        + "collection of DomainObjects. GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping "
+        + "operation.")]
+    public void GroupBy_AtTopLevel ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
+                  orderby oi.Order.OrderNumber
+                  group oi.Product by oi.Order;
+
+      query.ToArray ();
+    }
+
+    [Test]
     public void GroupBy_NonEntityKey ()
     {
       var query = from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -583,8 +565,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4, DomainObjectIDs.Customer5);
     }
 
+    
     [Test]
-    public void GroupBy_SelectKey_Nesting ()
+    [Ignore ("TODO 3302: Support for full column lists required in order to group by entity")]
+    public void GroupBy_EntityKey ()
+    {
+      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
+                   group o by o.Customer into ordersByCustomer
+                   select ordersByCustomer.Key;
+
+      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
+
+      var query2 =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          group o by o.OrderTicket into ordersByOrderTicket
+          where ordersByOrderTicket.Key != null
+          select ordersByOrderTicket.Key.FileName;
+
+      Assert.That (query2.Count (), Is.EqualTo (5));
+
+      var query3 = from r in QueryFactory.CreateLinqQuery<Order> ()
+                   from c in r.OrderItems
+                   group c.ID by r
+                     into cooksByRestaurant
+                     from cook in cooksByRestaurant
+                     select new { cooksByRestaurant.Key.DeliveryDate, CookID = cook };
+      Assert.That (query3.Count (), Is.GreaterThan (0));
+    }
+
+
+    [Test]
+    public void GroupBy_AccessKey_Nesting ()
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -631,33 +642,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3302: Support for full column lists required in order to group by entity")]
-    public void GroupBy_EntityKey ()
-    {
-      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
-                   group o by o.Customer into ordersByCustomer
-                   select ordersByCustomer.Key;
-
-      CheckQueryResult (query1, DomainObjectIDs.Customer1, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
-
-      var query2 =
-          from o in QueryFactory.CreateLinqQuery<Order> ()
-          group o by o.OrderTicket into ordersByOrderTicket
-          where ordersByOrderTicket.Key != null
-          select ordersByOrderTicket.Key.FileName;
-
-      Assert.That (query2.Count (), Is.EqualTo (5));
-
-      var query3 = from r in QueryFactory.CreateLinqQuery<Order> ()
-                   from c in r.OrderItems
-                   group c.ID by r
-                     into cooksByRestaurant
-                     from cook in cooksByRestaurant
-                     select new { cooksByRestaurant.Key.DeliveryDate, CookID = cook };
-      Assert.That (query3.Count (), Is.GreaterThan (0));
-    }
-
-    [Test]
     public void GroupBy_ResultSelector ()
     {
       var query = QueryFactory.CreateLinqQuery<Order> ().GroupBy (o => o.Customer.ID, (key, group) => key);
@@ -666,19 +650,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void GroupBy_SubqueryUsedAsGroupByKey ()
+    public void GroupBy_WithSubqueryKey ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
-                   group o by QueryFactory.CreateLinqQuery<OrderItem> ().Where (oi => oi != null).Select(soi=>soi.Product).First ()).Select (g => g.Key);
-      Assert.That (query.Count(), Is.GreaterThan (0));
+                   group o by QueryFactory.CreateLinqQuery<OrderItem> ().Where (oi => oi.Order == o).Select(oi => oi.Product).Count()).Select (g => g.Key);
+      Assert.That (query.Count(), Is.EqualTo (3));
     }
 
     [Test]
-    public void GroupBy_WithConstantKey_GetsReplacedBySubquery ()
+    public void GroupBy_WithConstantKey ()
     {
-      var query = QueryFactory.CreateLinqQuery<Order>().GroupBy (c => 0).Select (c => c.Key);
+      var query = QueryFactory.CreateLinqQuery<Order>().GroupBy (o => 0).Select (c => c.Key);
 
-      Assert.That (query.Count (), Is.GreaterThan (0));
+      Assert.That (query.Count (), Is.EqualTo (1));
     }
     
   }
