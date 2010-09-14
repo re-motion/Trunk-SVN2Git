@@ -167,6 +167,11 @@ namespace Remotion.Reflection
       return FindInterfaceImplementation (implementationType);
     }
 
+    IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
+    {
+      return FindInterfaceDeclaration ();
+    }
+
     private bool IsAccessorMatch (MethodInfo accessor1, MethodInfo accessor2)
     {
       // Equals won't work here because our algorithm manually iterates over the base type hierarchy, so accessor2.ReflectedType will be the exact

@@ -111,6 +111,6 @@ namespace Remotion.Reflection
     /// implementation property. 
     /// </summary>
     /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property or null if no corresponding property declaration was found.</returns>
-    IPropertyInformation FindInterfaceDeclaration ();
+    new IPropertyInformation FindInterfaceDeclaration ();
   }
 }

@@ -60,6 +60,6 @@ namespace Remotion.Reflection
     /// implementation method. 
     /// </summary>
     /// <returns>Returns the <see cref="IMethodInformation"/> of the declared property accessor or null if no corresponding accesor was found.</returns>
-    IMethodInformation FindInterfaceDeclaration ();
+    new IMethodInformation FindInterfaceDeclaration ();
   }
 }

@@ -86,5 +86,12 @@ namespace Remotion.Reflection
     /// <see cref="IMemberInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
     IMemberInformation FindInterfaceImplementation (Type implementationType);
+
+    /// <summary>
+    /// Finds the member declaration for the <see cref="IMemberInformation"/>. This <see cref="IMemberInformation"/> object must denote an 
+    /// implementation member. 
+    /// </summary>
+    /// <returns>Returns the <see cref="IMemberInformation"/> of the declared member or null if no corresponding member declaration was found.</returns>
+    IMemberInformation FindInterfaceDeclaration ();
   }
 }

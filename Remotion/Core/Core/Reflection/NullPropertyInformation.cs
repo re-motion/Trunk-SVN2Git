@@ -97,6 +97,11 @@ namespace Remotion.Reflection
       return FindInterfaceImplementation (implementationType);
     }
 
+    IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
+    {
+      return FindInterfaceDeclaration ();
+    }
+
     public override bool Equals (object obj)
     {
       if (obj == null)
