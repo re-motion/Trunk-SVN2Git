@@ -29,7 +29,7 @@ namespace Remotion.Reflection
   {
     private readonly MethodInfo _methodInfo;
     private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
-    
+
     public MethodInfoAdapter (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
@@ -54,13 +54,13 @@ namespace Remotion.Reflection
 
     public Type DeclaringType
     {
-      get { return _methodInfo.DeclaringType; } 
+      get { return _methodInfo.DeclaringType; }
     }
 
     public Type GetOriginalDeclaringType ()
     {
       if (_cachedOriginalDeclaringType == null)
-        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type>(() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
+        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
       return _cachedOriginalDeclaringType.Value;
     }
 
@@ -102,15 +102,29 @@ namespace Remotion.Reflection
           .Select ((m, i) => new { Method = m, Index = i })
           .Single (tuple => tuple.Method == _methodInfo)
           .Index;
-      return new MethodInfoAdapter(interfaceMap.TargetMethods[methodIndex]);
+      return new MethodInfoAdapter (interfaceMap.TargetMethods[methodIndex]);
+    }
+
+    public IMethodInformation FindInterfaceDeclaration ()
+    {
+      if (DeclaringType.IsInterface)
+        throw new InvalidOperationException ("This method is not an implementation method.");
+
+      var resultMethodInfo =
+          (from ifc in DeclaringType.GetInterfaces()
+           let map = DeclaringType.GetInterfaceMap (ifc)
+           from index in Enumerable.Range (0, map.TargetMethods.Length)
+           where IsAccessorMatch(map.TargetMethods[index], _methodInfo)
+           select map.InterfaceMethods[index]).FirstOrDefault();
+      return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
 
     public PropertyInfo FindDeclaringProperty (Type implementationType)
     {
       // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
       return implementationType.CreateSequence (t => t.BaseType)
-            .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
-            .SingleOrDefault (pi => IsAccessorMatch (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
+          .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
+          .SingleOrDefault (pi => IsAccessorMatch (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

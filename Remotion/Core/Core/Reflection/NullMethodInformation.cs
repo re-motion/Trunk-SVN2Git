@@ -74,6 +74,11 @@ namespace Remotion.Reflection
       return null;
     }
 
+    public IMethodInformation FindInterfaceDeclaration ()
+    {
+      return null;
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

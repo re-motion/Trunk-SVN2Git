@@ -82,6 +82,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void FindInterfaceDeclaration ()
+    {
+      Assert.That (_nullMethodInformation.FindInterfaceDeclaration(), Is.Null);
+    }
+
+    [Test]
     public void FindDeclaringProperty ()
     {
       Assert.That (_nullMethodInformation.FindDeclaringProperty (typeof (object)), Is.Null);
