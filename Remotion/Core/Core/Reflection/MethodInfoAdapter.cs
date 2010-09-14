@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -104,6 +105,14 @@ namespace Remotion.Reflection
       return new MethodInfoAdapter(interfaceMap.TargetMethods[methodIndex]);
     }
 
+    public PropertyInfo FindDeclaringProperty (Type implementationType)
+    {
+      // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
+      return implementationType.CreateSequence (t => t.BaseType)
+            .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
+            .SingleOrDefault (pi => IsAccessorMatch (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);
@@ -124,6 +133,14 @@ namespace Remotion.Reflection
     public override int GetHashCode ()
     {
       return _methodInfo.GetHashCode();
+    }
+
+    private bool IsAccessorMatch (MethodInfo accessor1, MethodInfo accessor2)
+    {
+      // Equals won't work here because our algorithm manually iterates over the base type hierarchy, so accessor2.ReflectedType will be the exact
+      // declaring type whereas GetInterfaceMap gets all the accessors from the original type, so accessor1.ReflectedType will be the original type.
+      // Therefore, we compare declaring type and metadata token, which is unique per method overload.
+      return accessor1.DeclaringType == accessor2.DeclaringType && accessor1.MetadataToken == accessor2.MetadataToken;
     }
   }
 }

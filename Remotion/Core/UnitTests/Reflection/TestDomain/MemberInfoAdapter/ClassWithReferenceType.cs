@@ -105,5 +105,12 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
     public T ReadOnlyAttributeScalar { get; set; }
 
     public T[] Array { get; set; }
+
+    private T PrivateProperty { get; set; } 
+
+    private T PrivateImplicitInterfaceScalarAccesor
+    {
+      get { return ImplicitInterfaceScalar; }
+    }
   }
 }

@@ -143,12 +143,8 @@ namespace Remotion.Reflection
       if (implementationMethod == null)
         return null;
       
-      // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
-      var implementationProperty = 
-          implementationType.CreateSequence (t => t.BaseType)
-          .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
-          .SingleOrDefault (pi => IsAccessorMatch (((MethodInfoAdapter) implementationMethod).MethodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
-
+      var implementationProperty = implementationMethod.FindDeclaringProperty (implementationType);
+      
       Assertion.IsNotNull (
           implementationProperty, 
           "We assume that property acessor '" + implementationMethod + "' must be found on '" + implementationType + "'.");

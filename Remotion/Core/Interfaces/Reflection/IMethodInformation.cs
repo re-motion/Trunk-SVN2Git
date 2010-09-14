@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -46,5 +47,12 @@ namespace Remotion.Reflection
     /// <see cref="IMethodInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
     new IMethodInformation FindInterfaceImplementation (Type implementationType);
+
+    /// <summary>
+    /// Finds the property declaration corresponding to this <see cref="IMethodInformation"/> on the given <see cref="Type"/> and it's base types.
+    /// </summary>
+    /// <param name="implementationType">The type to search for the property declaration.</param>
+    /// <returns>Returns the <see cref="PropertyInfo"/> of the declared property or null if no corresponding property was found.</returns>
+    PropertyInfo FindDeclaringProperty (Type implementationType);
   }
 }

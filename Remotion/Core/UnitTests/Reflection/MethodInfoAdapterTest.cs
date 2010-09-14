@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -173,8 +174,8 @@ namespace Remotion.UnitTests.Reflection
 
       var expectedPropertyGetter = typeof (ClassWithReferenceType<object>).GetProperty (
           "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
-          BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod(true);
-      Assert.That (((MethodInfoAdapter) implementation).MethodInfo, Is.EqualTo(expectedPropertyGetter));
+          BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod (true);
+      Assert.That (((MethodInfoAdapter) implementation).MethodInfo, Is.EqualTo (expectedPropertyGetter));
     }
 
     [Test]
@@ -201,13 +202,75 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void FindInterfaceImplementation_ImplementationIsNotAssignableToTheInterface ()
     {
-      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod ();
+      var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
       var adapter = new MethodInfoAdapter (methodInfo);
 
-      var result = adapter.FindInterfaceImplementation (typeof(object));
+      var result = adapter.FindInterfaceImplementation (typeof (object));
 
       Assert.That (result, Is.Null);
     }
 
+    [Test]
+    public void FindDeclaringType_PublicPropertyAccesor ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+
+      Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
+    }
+
+    [Test]
+    public void FindDeclaringType_PrivatePropertyAccesor ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic)
+          .GetGetMethod (true);
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+
+      Assert.That (result.Name, Is.EqualTo ("PrivateProperty"));
+    }
+
+    [Test]
+    public void FindDeclaringType_PrivatePropertyAccesorOfPublicProperty ()
+    {
+      var methodInfo =
+          typeof (ClassWithReferenceType<object>).GetProperty (
+              "PrivateImplicitInterfaceScalarAccesor", BindingFlags.Instance | BindingFlags.NonPublic).GetGetMethod (true);
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+
+      Assert.That (result.Name, Is.EqualTo ("PrivateImplicitInterfaceScalarAccesor"));
+    }
+
+    [Test]
+    public void FindDeclaringType_ExplicitlyImplementedInterfacePropertyAccessorInBaseType ()
+    {
+      var methodInfo =
+          typeof (DerivedClassWithReferenceType<object>).GetInterfaceMap (typeof (IInterfaceWithReferenceType<object>)).TargetMethods.Where (
+              m => m.Name == "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar").
+              Single();
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty (typeof (DerivedClassWithReferenceType<object>));
+
+      Assert.That (
+          result.Name,
+          Is.EqualTo ("Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
+    }
+
+    [Test]
+    public void FindDeclaringType_NoPropertyCanBeFound ()
+    {
+      var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty (typeof (DerivedClassWithReferenceType<object>));
+
+      Assert.That (result, Is.Null);
+    }
   }
 }

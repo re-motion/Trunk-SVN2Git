@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -66,6 +67,11 @@ namespace Remotion.Reflection
     public IMethodInformation FindInterfaceImplementation (Type implementationType)
     {
       throw new InvalidOperationException();
+    }
+
+    public PropertyInfo FindDeclaringProperty (Type implementationType)
+    {
+      return null;
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
