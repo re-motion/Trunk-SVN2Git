@@ -114,5 +114,11 @@ namespace Remotion.UnitTests.Reflection
        _nullPropertyInformation.FindInterfaceImplementation (typeof (object));
     }
 
+    [Test]
+    public void FindInterfaceDeclaration ()
+    {
+      Assert.That (_nullPropertyInformation.FindInterfaceDeclaration(), Is.Null);
+    }
+
   }
 }

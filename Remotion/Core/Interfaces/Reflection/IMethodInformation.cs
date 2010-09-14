@@ -52,14 +52,14 @@ namespace Remotion.Reflection
     /// Finds the property declaration corresponding to this <see cref="IMethodInformation"/> on the given <see cref="Type"/> and it's base types.
     /// </summary>
     /// <param name="implementationType">The type to search for the property declaration.</param>
-    /// <returns>Returns the <see cref="PropertyInfo"/> of the declared property or null if no corresponding property was found.</returns>
+    /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property or null if no corresponding property was found.</returns>
     IPropertyInformation FindDeclaringProperty (Type implementationType);
 
     /// <summary>
     /// Finds the interface declaration for the <see cref="IMethodInformation"/>. This <see cref="IMethodInformation"/> object must denote an 
     /// implementation method. 
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Returns the <see cref="IMethodInformation"/> of the declared property accessor or null if no corresponding accesor was found.</returns>
     IMethodInformation FindInterfaceDeclaration ();
   }
 }

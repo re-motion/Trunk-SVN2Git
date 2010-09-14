@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -683,6 +684,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
 
       Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
       Assert.That (result.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
+    }
+
+    [Test]
+    public void FindInterfaceDeclaration_InterfacePropertyIsSet ()
+    {
+      var result = _explicitInterfaceAdapter.FindInterfaceDeclaration ();
+      
+      Assert.That (((PropertyInfoAdapter) result).PropertyInfo, Is.SameAs (_explicitInterfaceDeclarationProperty));
+    }
+
+    [Test]
+    public void FindInterfaceDeclaration_InterfacePropertyIsNotSet ()
+    {
+      var adapter =
+          new BindableObjectPropertyInfoAdapter (
+              typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar"));
+
+      var result = adapter.FindInterfaceDeclaration ();
+
+      Assert.That (result.Name, Is.EqualTo("ImplicitInterfaceScalar"));
+      Assert.That (result.DeclaringType, Is.SameAs (typeof (IInterfaceWithReferenceType<SimpleReferenceType>)));
     }
 
     [Test]

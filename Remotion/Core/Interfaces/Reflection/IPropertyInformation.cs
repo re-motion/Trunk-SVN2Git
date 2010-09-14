@@ -105,5 +105,12 @@ namespace Remotion.Reflection
     /// <exception cref="ArgumentException"><paramref name="implementationType"/> is itself in interface.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="IPropertyInformation"/> does not describe an interface property.</exception>
     new IPropertyInformation FindInterfaceImplementation (Type implementationType);
+
+    /// <summary>
+    /// Finds the property declaration for the <see cref="IPropertyInformation"/>. This <see cref="IPropertyInformation"/> object must denote an 
+    /// implementation property. 
+    /// </summary>
+    /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property or null if no corresponding property declaration was found.</returns>
+    IPropertyInformation FindInterfaceDeclaration ();
   }
 }

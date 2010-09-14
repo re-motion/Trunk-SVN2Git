@@ -189,6 +189,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return ValuePropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
+    public IPropertyInformation FindInterfaceDeclaration ()
+    {
+      if (_interfacePropertyInfo != null)
+        return _interfacePropertyInfo;
+
+      return _propertyInfo.FindInterfaceDeclaration();
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

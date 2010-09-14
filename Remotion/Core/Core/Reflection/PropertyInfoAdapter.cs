@@ -152,6 +152,16 @@ namespace Remotion.Reflection
       return implementationProperty;
     }
 
+    public IPropertyInformation FindInterfaceDeclaration ()
+    {
+      var accessorMethod = GetGetMethod (true) ?? GetSetMethod (true);
+      var interfaceAccessorMethod = accessorMethod.FindInterfaceDeclaration ();
+      if (interfaceAccessorMethod == null)
+        return null;
+
+      return interfaceAccessorMethod.FindDeclaringProperty (interfaceAccessorMethod.DeclaringType);
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

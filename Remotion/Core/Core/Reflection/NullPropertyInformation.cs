@@ -87,6 +87,11 @@ namespace Remotion.Reflection
       throw new InvalidOperationException("FindInterfaceImplementation can only be called on inteface properties.");
     }
 
+    public IPropertyInformation FindInterfaceDeclaration ()
+    {
+      return null;
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);
