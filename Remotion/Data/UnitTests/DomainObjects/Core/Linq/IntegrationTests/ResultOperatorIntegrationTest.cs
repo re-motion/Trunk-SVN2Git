@@ -631,7 +631,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2990: Support for full column lists required in order to group by entity")]
+    [Ignore ("TODO 3302: Support for full column lists required in order to group by entity")]
     public void GroupBy_EntityKey ()
     {
       var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
