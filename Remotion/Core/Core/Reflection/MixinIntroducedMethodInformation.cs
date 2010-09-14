@@ -72,6 +72,21 @@ namespace Remotion.Reflection
       return _mixinMethodInfo.FindInterfaceDeclaration();
     }
 
+    public T GetFastInvoker<T> () where T: class
+    {
+      if (!typeof (T).IsSubclassOf (typeof (Delegate)))
+        throw new InvalidOperationException (typeof (T).Name + " is not a delegate type.");
+
+      return GetFastInvoker (typeof (T)) as T;
+    }
+
+    public Delegate GetFastInvoker (Type delegateType)
+    {
+      var methodInterfaceDeclaration = FindInterfaceDeclaration();
+
+      return methodInterfaceDeclaration.GetFastInvoker (delegateType);
+    }
+
     public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
       return _mixinMethodInfo.FindDeclaringProperty (implementationType);

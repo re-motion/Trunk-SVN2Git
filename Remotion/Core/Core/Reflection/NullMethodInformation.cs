@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -45,7 +46,7 @@ namespace Remotion.Reflection
 
     public T[] GetCustomAttributes<T> (bool inherited) where T: class
     {
-      return new T[] {};
+      return new T[] { };
     }
 
     public bool IsDefined<T> (bool inherited) where T: class
@@ -78,6 +79,21 @@ namespace Remotion.Reflection
       return null;
     }
 
+    public T GetFastInvoker<T> () where T: class
+    {
+      if (!typeof (T).IsSubclassOf (typeof (Delegate)))
+        throw new InvalidOperationException (typeof (T).Name + " is not a delegate type.");
+
+      return GetFastInvoker (typeof (T)) as T;
+    }
+
+    public Delegate GetFastInvoker (Type delegateType)
+    {
+      return
+          DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (
+              typeof (NullMethodInformation).GetMethod ("GetNull", BindingFlags.Instance | BindingFlags.NonPublic), delegateType);
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);
@@ -85,7 +101,7 @@ namespace Remotion.Reflection
 
     IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
     {
-      return FindInterfaceDeclaration ();
+      return FindInterfaceDeclaration();
     }
 
     public override bool Equals (object obj)
@@ -98,6 +114,11 @@ namespace Remotion.Reflection
     public override int GetHashCode ()
     {
       return 0;
+    }
+
+    private object GetNull ()
+    {
+      return null;
     }
   }
 }

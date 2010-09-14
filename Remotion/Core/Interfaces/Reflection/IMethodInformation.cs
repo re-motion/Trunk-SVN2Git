@@ -61,5 +61,9 @@ namespace Remotion.Reflection
     /// </summary>
     /// <returns>Returns the <see cref="IMethodInformation"/> of the declared property accessor or null if no corresponding accesor was found.</returns>
     new IMethodInformation FindInterfaceDeclaration ();
+
+    T GetFastInvoker<T> () where T: class;
+
+    Delegate GetFastInvoker (Type delegateType);
   }
 }

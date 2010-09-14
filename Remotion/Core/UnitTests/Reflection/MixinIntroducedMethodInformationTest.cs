@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
+using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection
@@ -130,6 +131,30 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (result, Is.EqualTo ("Test"));
     }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
+    public void GetFastInvoker_TypeIsNoDelegateType ()
+    {
+      _mixinIntroducedMethodInformation.GetFastInvoker<object> ();
+    }
+
+    [Test]
+    public void GetFastInvoker ()
+    {
+      var methodInformationMock = MockRepository.GenerateStrictMock<IMethodInformation>();
+      _mixinMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration ()).Return (methodInformationMock);
+      var fakeResult = new object ();
+      
+      methodInformationMock
+          .Expect (mock => mock.GetFastInvoker (typeof (Func<object>)))
+          .Return ((Func<object>)(() => fakeResult));
+
+      var invoker = _mixinIntroducedMethodInformation.GetFastInvoker<Func<object>>();
+
+      Assert.That (invoker(), Is.SameAs (fakeResult));
+    }
+    
 
   }
 }

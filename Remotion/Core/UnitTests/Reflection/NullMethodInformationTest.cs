@@ -108,5 +108,20 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_nullMethodInformation.GetHashCode(), Is.EqualTo (0));
     }
 
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
+    public void GetFastInvoker_TypeIsNoDelegateType ()
+    {
+      _nullMethodInformation.GetFastInvoker<object>();
+    }
+
+    [Test]
+    public void GetFastInvoker ()
+    {
+      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
+
+      Assert.That (invoker(_nullMethodInformation), Is.Null);
+    }
+
   }
 }
