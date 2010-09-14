@@ -220,6 +220,8 @@
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparer.cs" />
+    <Compile Include="Reflection\MixinIntroducedMethodInformation.cs" />
+    <Compile Include="Reflection\MixinIntroducedPropertyInformation.cs" />
     <Compile Include="Reflection\NullMethodInformation.cs" />
     <Compile Include="Reflection\NullPropertyInformation.cs" />
     <Compile Include="Reflection\PropertyInfoAdapter.cs" />
