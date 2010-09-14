@@ -53,7 +53,7 @@ namespace Remotion.Reflection
     /// </summary>
     /// <param name="implementationType">The type to search for the property declaration.</param>
     /// <returns>Returns the <see cref="PropertyInfo"/> of the declared property or null if no corresponding property was found.</returns>
-    PropertyInfo FindDeclaringProperty (Type implementationType);
+    IPropertyInformation FindDeclaringProperty (Type implementationType);
 
     /// <summary>
     /// Finds the interface declaration for the <see cref="IMethodInformation"/>. This <see cref="IMethodInformation"/> object must denote an 

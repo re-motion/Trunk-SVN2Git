@@ -69,7 +69,7 @@ namespace Remotion.Reflection
       throw new InvalidOperationException();
     }
 
-    public PropertyInfo FindDeclaringProperty (Type implementationType)
+    public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
       return null;
     }

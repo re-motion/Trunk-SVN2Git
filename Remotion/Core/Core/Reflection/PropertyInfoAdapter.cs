@@ -149,7 +149,7 @@ namespace Remotion.Reflection
           implementationProperty, 
           "We assume that property acessor '" + implementationMethod + "' must be found on '" + implementationType + "'.");
 
-      return new PropertyInfoAdapter(implementationProperty);
+      return implementationProperty;
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

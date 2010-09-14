@@ -119,12 +119,13 @@ namespace Remotion.Reflection
       return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
 
-    public PropertyInfo FindDeclaringProperty (Type implementationType)
+    public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
       // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
-      return implementationType.CreateSequence (t => t.BaseType)
+      var propertyInfo = implementationType.CreateSequence (t => t.BaseType)
           .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
           .SingleOrDefault (pi => IsAccessorMatch (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
+      return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
