@@ -64,9 +64,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return false;
       else
       {
-        var bindableObjectPropertyInfoAdapter = (BindableObjectPropertyInfoAdapter) property.PropertyInfo;
-        var propertyInformation = bindableObjectPropertyInfoAdapter.InterfacePropertyInfo ?? bindableObjectPropertyInfoAdapter.PropertyInfo;
-        var propertyDefinition = This.ID.ClassDefinition.ResolveProperty (propertyInformation);
+        var propertyDefinition = This.ID.ClassDefinition.ResolveProperty (property.PropertyInfo);
         if (propertyDefinition != null)
           return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
         else

@@ -18,7 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -56,21 +58,34 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public IEnumerable<IPropertyInformation> GetPropertyInfos ()
     {
-      PropertyInfoCollection propertyInfos = new PropertyInfoCollection ();
+      var propertyNames = new HashSet<string>();
       
       foreach (Type currentType in GetInheritanceHierarchy ())
       {
         foreach (PropertyInfo propertyInfo in currentType.FindMembers (MemberTypes.Property,
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, PropertyFilter, null))
         {
-          if (!propertyInfos.Contains (propertyInfo.Name))
+          if (!propertyNames.Contains (propertyInfo.Name))
           {
-            PropertyInfo interfacePropertyInfo = GetPropertyInfoOnInterface (propertyInfo);
-            propertyInfos.Add (new BindableObjectPropertyInfoAdapter (propertyInfo, interfacePropertyInfo));
+            var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
+            if (introducedMemberAttributes.Length > 0)
+            {
+              var introducedMemberAttribute = introducedMemberAttributes[0] as IntroducedMemberAttribute;
+              var interfaceProperty = new PropertyInfoAdapter (
+                  introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
+              var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
+
+              yield return new BindableObjectMixinIntroducedPropertyInformation (mixinProperty, currentType, propertyInfo);
+            }
+            else
+            {
+              yield return new PropertyInfoAdapter (propertyInfo);
+            }
+
+            propertyNames.Add (propertyInfo.Name);
           }
         }
       }
-      return propertyInfos;
     }
 
     private PropertyInfo GetPropertyInfoOnInterface (PropertyInfo propertyInfo)

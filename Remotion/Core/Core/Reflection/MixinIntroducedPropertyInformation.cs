@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -99,12 +100,12 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return new MixinIntroducedMethodInformation (_mixinPropertyInfo.GetGetMethod (nonPublic));
+      return Maybe.ForValue (_mixinPropertyInfo.GetGetMethod (nonPublic)).Select (mi => new MixinIntroducedMethodInformation (mi)).ValueOrDefault ();
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return new MixinIntroducedMethodInformation (_mixinPropertyInfo.GetSetMethod (nonPublic));
+      return Maybe.ForValue (_mixinPropertyInfo.GetSetMethod (nonPublic)).Select (mi => new MixinIntroducedMethodInformation(mi)).ValueOrDefault ();
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

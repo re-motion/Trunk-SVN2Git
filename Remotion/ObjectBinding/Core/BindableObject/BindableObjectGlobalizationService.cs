@@ -64,8 +64,12 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      IResourceManager resourceManager = GetResourceManagerFromCache (propertyInfo.DeclaringType);
-      string resourceID = "property:" + propertyInfo.Name;
+      var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
+      var type = mixinIntroducedPropertyInformation!=null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
+
+      IResourceManager resourceManager = GetResourceManagerFromCache (type);
+      var propertyName = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty.Name : propertyInfo.Name;
+      string resourceID = "property:" + propertyName;
       if (!resourceManager.ContainsResource (resourceID))
         return propertyInfo.Name;
       return resourceManager.GetString (resourceID);

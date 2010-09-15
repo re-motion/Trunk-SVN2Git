@@ -187,6 +187,7 @@
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\ImplementedInterfaceRequiredMethodDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IntroducedInterfaceRequiredMethodDefinitionCollector.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IRequiredMethodDefinitionCollector.cs" />
+    <Compile Include="Reflection\BindableObjectMixinIntroducedPropertyInformation.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />

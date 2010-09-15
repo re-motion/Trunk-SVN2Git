@@ -135,6 +135,16 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetGetMethod_ReturnsNull ()
+    {
+      _propertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (null);
+
+      var result = _mixinIntroducedPropertyInformation.GetGetMethod (false);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     public void GetSetMethod ()
     {
       var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
@@ -144,6 +154,16 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (result, Is.TypeOf (typeof (MixinIntroducedMethodInformation)));
       Assert.That (result.Name, Is.EqualTo ("ToString"));
+    }
+
+    [Test]
+    public void GetSetMethod_ReturnsNull ()
+    {
+      _propertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (null);
+
+      var result = _mixinIntroducedPropertyInformation.GetSetMethod (false);
+
+      Assert.That (result, Is.Null);
     }
 
     [Test]

@@ -15,21 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
-using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.Reflection;
 
-namespace Remotion.ObjectBinding.BindableObject
+namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  public class PropertyInfoCollection : KeyedCollection<string, IPropertyInformation>
+  public interface IPropertyFinderMixinAddingPropertyBase
   {
-    public PropertyInfoCollection ()
-    {
-    }
+    string ExplicitMixedPropertyBase { get; set; }
+  }
 
-    protected override string GetKeyForItem (IPropertyInformation item)
+  [Serializable]
+  public class PropertyFinderMixinAddingPropertyBase : IPropertyFinderMixinAddingPropertyBase
+  {
+    private string _explicitMixedPropertyBase;
+
+    string IPropertyFinderMixinAddingPropertyBase.ExplicitMixedPropertyBase
     {
-      return item.Name;
+      get { return _explicitMixedPropertyBase; }
+      set { _explicitMixedPropertyBase = value; }
     }
   }
 }
