@@ -15,12 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObjectMixinTests
 {
@@ -106,6 +112,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
           LifetimeService.NewObject (ClientTransaction.Current, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
       Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
       Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
+    }
+
+    [Test]
+    [Ignore ("TODO 3287")] 
+    public void GetProperty () //TODO 3287: rename test
+    {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof(bool));
+      propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (new MethodInfoAdapter(typeof(object).GetMethod("ToString")));
+
+      var booleanProperty = CreateProperty (propertyInformationStub);
+
+      var result = _newBusinessOrder.GetProperty (booleanProperty);
+    }
+
+    private BooleanProperty CreateProperty (IPropertyInformation propertyInformation)
+    {
+      var businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      return new BooleanProperty (GetPropertyParameters (propertyInformation, businessObjectProvider));
+    }
+
+    private BindableObjectProvider CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ()
+    {
+      return new BindableObjectProvider (BindableObjectMetadataFactory.Create (), MockRepository.GenerateStub<IBusinessObjectServiceFactory> ());
+    }
+
+    private PropertyBase.Parameters GetPropertyParameters (IPropertyInformation property, BindableObjectProvider provider)
+    {
+      PropertyReflector reflector = PropertyReflector.Create (property, provider);
+      return (PropertyBase.Parameters) PrivateInvoke.InvokeNonPublicMethod (
+                                           reflector, typeof (PropertyReflector), "CreateParameters", GetUnderlyingType (reflector));
+    }
+
+    private Type GetUnderlyingType (PropertyReflector reflector)
+    {
+      return (Type) PrivateInvoke.InvokeNonPublicMethod (reflector, typeof (PropertyReflector), "GetUnderlyingType");
     }
   }
 }
