@@ -112,5 +112,7 @@ namespace Remotion.Reflection
     /// </summary>
     /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property or null if no corresponding property declaration was found.</returns>
     new IPropertyInformation FindInterfaceDeclaration ();
+
+    ParameterInfo[] GetIndexParameters ();
   }
 }

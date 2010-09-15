@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
@@ -160,6 +161,14 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
       Assert.That (_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs (value));
+    }
+
+    [Test]
+    public void GetIndexParameters ()
+    {
+      _propertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return(new ParameterInfo[0]);
+
+      Assert.That (_mixinIntroducedPropertyInformation.GetIndexParameters().Length, Is.EqualTo(0));
     }
   }
 }

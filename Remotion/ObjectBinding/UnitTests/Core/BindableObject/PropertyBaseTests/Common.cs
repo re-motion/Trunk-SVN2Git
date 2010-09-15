@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
       BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProvider);
-      _mockRepository = new MockRepository ();
+      _mockRepository = new MockRepository();
     }
 
     [Test]
@@ -107,6 +107,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
+    public void Initialize_IndexedProperty ()
+    {
+      IPropertyInformation propertyInfo =
+          new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true));
+
+      Assert.That (propertyBase.ValueGetter, Is.Null);
+      Assert.That (propertyBase.ValueSetter, Is.Null);
+    }
+
+    [Test]
     public void ValueSetter_ValueGetter ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
@@ -121,8 +141,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   true,
                   true));
 
-      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      var propertyValue = new SimpleReferenceType ();
+      var instance = new ClassWithReferenceType<SimpleReferenceType>();
+      var propertyValue = new SimpleReferenceType();
       propertyBase.ValueSetter (instance, propertyValue);
       Assert.That (instance.Scalar, Is.SameAs (propertyValue));
       Assert.That (propertyBase.ValueGetter (instance), Is.SameAs (propertyValue));
@@ -253,15 +273,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       property.SetReflectedClass (bindableObjectClass);
 
       Assert.That (property.ReflectedClass, Is.SameAs (bindableObjectClass));
-      Assert.That (((IBusinessObjectProperty)property).ReflectedClass, Is.SameAs (bindableObjectClass));
+      Assert.That (((IBusinessObjectProperty) property).ReflectedClass, Is.SameAs (bindableObjectClass));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The BusinessObjectProvider of property 'String' does not match the BusinessObjectProvider of class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'."
-        + "\r\nParameter name: reflectedClass")]
+            "The BusinessObjectProvider of property 'String' does not match the BusinessObjectProvider of class "
+            + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'."
+            + "\r\nParameter name: reflectedClass")]
     public void SetReflectedClass_FromDifferentProviders ()
     {
       BindableObjectProvider provider = new BindableObjectProvider();
@@ -287,9 +307,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "The ReflectedClass of a property cannot be changed after it was assigned."
-        + "\r\nClass 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'"
-        + "\r\nProperty 'String'")]
+            "The ReflectedClass of a property cannot be changed after it was assigned."
+            + "\r\nClass 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'"
+            + "\r\nProperty 'String'")]
     public void SetReflectedClass_Twice ()
     {
       Type type = typeof (SimpleBusinessObjectClass);
@@ -315,7 +335,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "Accessing the ReflectedClass of a property is invalid until the property has been associated with a class.\r\nProperty 'String'")]
+            "Accessing the ReflectedClass of a property is invalid until the property has been associated with a class.\r\nProperty 'String'")]
     public void GetReflectedClass_WithoutBusinessObjectClass ()
     {
       PropertyBase property = new StubPropertyBase (

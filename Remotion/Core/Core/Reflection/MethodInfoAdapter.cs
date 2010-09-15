@@ -143,6 +143,11 @@ namespace Remotion.Reflection
       return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
     }
 
+    public ParameterInfo[] GetParameters ()
+    {
+      return _methodInfo.GetParameters();
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

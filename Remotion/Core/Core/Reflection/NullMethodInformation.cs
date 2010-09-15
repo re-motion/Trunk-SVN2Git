@@ -94,6 +94,11 @@ namespace Remotion.Reflection
               typeof (NullMethodInformation).GetMethod ("GetNull", BindingFlags.Instance | BindingFlags.NonPublic), delegateType);
     }
 
+    public ParameterInfo[] GetParameters ()
+    {
+      return new ParameterInfo[0];
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

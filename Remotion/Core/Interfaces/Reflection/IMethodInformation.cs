@@ -65,5 +65,7 @@ namespace Remotion.Reflection
     T GetFastInvoker<T> () where T: class;
 
     Delegate GetFastInvoker (Type delegateType);
+
+    ParameterInfo[] GetParameters ();
   }
 }

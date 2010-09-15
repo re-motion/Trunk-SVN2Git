@@ -90,6 +90,10 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
     {
     }
 
+    public void TestMethodWithParameters (int a, int b)
+    {
+    }
+
     public T ReadOnlyScalar
     {
       get { return _readOnlyScalar; }
@@ -112,5 +116,6 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
     {
       get { return ImplicitInterfaceScalar; }
     }
+   
   }
 }

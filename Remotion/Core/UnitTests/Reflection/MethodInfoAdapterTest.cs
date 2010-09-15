@@ -376,5 +376,20 @@ namespace Remotion.UnitTests.Reflection
       var adapter = new MethodInfoAdapter (methodInfo);
       adapter.GetFastInvoker<object> ();
     }
+
+    [Test]
+    public void GetParameters_MethodWithoutParameters ()
+    {
+      Assert.That (_adapter.GetParameters().Length, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetParameters_MethodWithParameters ()
+    {
+      var method = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethodWithParameters");
+       var adapter = new MethodInfoAdapter (method);
+
+       Assert.That (adapter.GetParameters ().Length, Is.EqualTo (2));
+    }
   }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 
 namespace Remotion.Reflection
 {
@@ -90,6 +91,11 @@ namespace Remotion.Reflection
     public IPropertyInformation FindInterfaceDeclaration ()
     {
       return null;
+    }
+
+    public ParameterInfo[] GetIndexParameters ()
+    {
+      return new ParameterInfo[0];
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

@@ -79,8 +79,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
       _isNullable = GetNullability();
-      _valueGetter = Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => mi.GetFastInvoker<Func<object, object>> ()).ValueOrDefault ();
-      _valueSetter = Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault ();
+      _valueGetter =
+          Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Where (mi => mi.GetParameters().Length == 0).Select (
+              mi => mi.GetFastInvoker<Func<object, object>>()).ValueOrDefault();
+      _valueSetter =
+          Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Where (mi => mi.GetParameters().Length == 1).Select (
+              mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault();
     }
 
     /// <summary> Gets a flag indicating whether this property contains multiple values. </summary>

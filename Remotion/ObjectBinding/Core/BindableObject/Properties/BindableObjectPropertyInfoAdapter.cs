@@ -197,6 +197,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return _propertyInfo.FindInterfaceDeclaration();
     }
 
+    public ParameterInfo[] GetIndexParameters ()
+    {
+      return _propertyInfo.GetIndexParameters();
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

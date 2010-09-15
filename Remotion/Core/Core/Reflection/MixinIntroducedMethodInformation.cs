@@ -87,6 +87,11 @@ namespace Remotion.Reflection
       return methodInterfaceDeclaration.GetFastInvoker (delegateType);
     }
 
+    public ParameterInfo[] GetParameters ()
+    {
+      return _mixinMethodInfo.GetParameters();
+    }
+
     public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
       return _mixinMethodInfo.FindDeclaringProperty (implementationType);

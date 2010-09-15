@@ -673,6 +673,22 @@ namespace Remotion.UnitTests.Reflection
       adapter.FindInterfaceDeclaration ();
     }
 
+    [Test]
+    public void GetIndexParameters_IndexedProperty ()
+    {
+      var adapter = new PropertyInfoAdapter(typeof (ClassWithReferenceType<object>).GetProperty ("Item", new[] { typeof (int) }));
+
+      Assert.That (adapter.GetIndexParameters().Length, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void GetIndexParameters_NoIndexedProperty ()
+    {
+      var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));
+
+      Assert.That (adapter.GetIndexParameters ().Length, Is.EqualTo (0));
+    }
+
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);

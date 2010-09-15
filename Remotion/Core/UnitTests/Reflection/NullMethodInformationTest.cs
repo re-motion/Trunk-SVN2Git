@@ -94,6 +94,27 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
+    public void GetFastInvoker_TypeIsNoDelegateType ()
+    {
+      _nullMethodInformation.GetFastInvoker<object> ();
+    }
+
+    [Test]
+    public void GetFastInvoker ()
+    {
+      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
+
+      Assert.That (invoker (_nullMethodInformation), Is.Null);
+    }
+
+    [Test]
+    public void GetParameters ()
+    {
+      Assert.That (_nullMethodInformation.GetParameters().Length, Is.EqualTo (0));
+    }
+
+    [Test]
     public void TestEquals ()
     {
       var nullMethodInformation2 = new NullMethodInformation();
@@ -106,21 +127,6 @@ namespace Remotion.UnitTests.Reflection
     public void TestGetHashCode ()
     {
       Assert.That (_nullMethodInformation.GetHashCode(), Is.EqualTo (0));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
-    public void GetFastInvoker_TypeIsNoDelegateType ()
-    {
-      _nullMethodInformation.GetFastInvoker<object>();
-    }
-
-    [Test]
-    public void GetFastInvoker ()
-    {
-      var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
-
-      Assert.That (invoker(_nullMethodInformation), Is.Null);
     }
 
   }

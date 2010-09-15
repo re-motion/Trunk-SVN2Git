@@ -708,6 +708,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.Properties
     }
 
     [Test]
+    public void GetIndexParameters ()
+    {
+      Assert.That (_adapter.GetIndexParameters().Length, Is.EqualTo (_property.GetIndexParameters().Length));
+    }
+
+    [Test]
     public void Equals_ChecksPropertyInfo ()
     {
       Assert.That (

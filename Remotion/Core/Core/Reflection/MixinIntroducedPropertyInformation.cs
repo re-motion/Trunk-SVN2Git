@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -69,6 +69,11 @@ namespace Remotion.Reflection
     public IPropertyInformation FindInterfaceDeclaration ()
     {
       return _mixinPropertyInfo.FindInterfaceDeclaration();
+    }
+
+    public ParameterInfo[] GetIndexParameters ()
+    {
+      return _mixinPropertyInfo.GetIndexParameters();
     }
 
     public Type PropertyType

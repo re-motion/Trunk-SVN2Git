@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -127,6 +126,11 @@ namespace Remotion.Reflection
     {
       var other = obj as PropertyInfoAdapter;
       return other != null && _propertyInfo.Equals (other._propertyInfo);
+    }
+
+    public ParameterInfo[] GetIndexParameters ()
+    {
+      return _propertyInfo.GetIndexParameters();
     }
 
     public override int GetHashCode ()

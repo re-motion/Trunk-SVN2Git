@@ -52,6 +52,9 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
+      if (propertyBase.ValueGetter == null)
+        throw new InvalidOperationException ("Either the property has no getter or it is an indexed property.");
+
       object nativeValue = propertyBase.ValueGetter (This);
       
       if (!propertyBase.IsList && IsDefaultValue (propertyBase, nativeValue))
@@ -86,6 +89,9 @@ namespace Remotion.ObjectBinding.BindableObject
     public void SetProperty (IBusinessObjectProperty property, object value)
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
+
+      if (propertyBase.ValueSetter == null)
+        throw new InvalidOperationException ("Either the property has no setter or it is an indexed property.");
 
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 

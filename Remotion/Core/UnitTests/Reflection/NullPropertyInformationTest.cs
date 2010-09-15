@@ -93,6 +93,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetIndexParameters ()
+    {
+      Assert.That (_nullPropertyInformation.GetIndexParameters().Length, Is.EqualTo (0));
+    }
+
+    [Test]
     public void TestEquals ()
     {
       var nullPropertyInformation2 = new NullPropertyInformation ();
