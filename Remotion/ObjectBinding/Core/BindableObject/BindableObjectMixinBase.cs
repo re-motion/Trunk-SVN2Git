@@ -52,8 +52,8 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
-      object nativeValue = propertyBase.PropertyInfo.GetValue (This, null);
-
+      object nativeValue = propertyBase.ValueGetter (This);
+      
       if (!propertyBase.IsList && IsDefaultValue (propertyBase, nativeValue))
         return null;
       else
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 
-      propertyBase.PropertyInfo.SetValue (This, nativeValue, null);
+      propertyBase.ValueSetter (This, nativeValue);
     }
 
     /// <summary> 
