@@ -64,6 +64,68 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       Assert.That (propertyBase.IsReadOnly (null), Is.True);
       Assert.That (propertyBase.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
       Assert.That (((IBusinessObjectProperty) propertyBase).BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
+      Assert.That (propertyBase.ValueGetter, Is.Not.Null);
+      Assert.That (propertyBase.ValueSetter, Is.Not.Null);
+    }
+
+    [Test]
+    public void Initialize_ReadOnlyProperty ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PropertyWithNoSetter");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true));
+
+      Assert.That (propertyBase.ValueGetter, Is.Not.Null);
+      Assert.That (propertyBase.ValueSetter, Is.Null);
+    }
+
+    [Test]
+    public void Initialize_WriteOnlyProperty ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PropertyWithNoGetter");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true));
+
+      Assert.That (propertyBase.ValueGetter, Is.Null);
+      Assert.That (propertyBase.ValueSetter, Is.Not.Null);
+    }
+
+    [Test]
+    public void ValueSetter_ValueGetter ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true));
+
+      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
+      var propertyValue = new SimpleReferenceType ();
+      propertyBase.ValueSetter (instance, propertyValue);
+      Assert.That (instance.Scalar, Is.SameAs (propertyValue));
+      Assert.That (propertyBase.ValueGetter (instance), Is.SameAs (propertyValue));
     }
 
     [Test]

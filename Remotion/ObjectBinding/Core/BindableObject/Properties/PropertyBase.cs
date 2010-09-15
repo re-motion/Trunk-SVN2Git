@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -66,6 +67,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly bool _isReadOnly;
     private readonly bool _isNullable;
     private BindableObjectClass _reflectedClass;
+    private readonly Func<object, object> _valueGetter = null;
+    private readonly Action<object, object> _valueSetter = null;
 
     protected PropertyBase (Parameters parameters)
     {
@@ -76,6 +79,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
       _isNullable = GetNullability();
+      _valueGetter = Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => mi.GetFastInvoker<Func<object, object>> ()).ValueOrDefault ();
+      _valueSetter = Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault ();
     }
 
     /// <summary> Gets a flag indicating whether this property contains multiple values. </summary>
@@ -147,6 +152,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public bool IsRequired
     {
       get { return _isRequired; }
+    }
+
+    public Func<object, object> ValueGetter
+    {
+      get { return _valueGetter; }
+    }
+
+    public Action<object, object> ValueSetter
+    {
+      get { return _valueSetter; }
     }
 
     /// <summary> Indicates whether this property can be accessed by the user. </summary>
