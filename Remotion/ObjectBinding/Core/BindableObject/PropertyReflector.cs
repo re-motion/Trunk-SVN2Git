@@ -176,10 +176,22 @@ namespace Remotion.ObjectBinding.BindableObject
       return typeof (IList).IsAssignableFrom (_propertyInfo.PropertyType);
     }
 
+    protected virtual IDefaultValueStrategy GetDefaultValueStrategy ()
+    {
+      return new BindableObjectDefaultValueStrategy();
+    }
+
     private PropertyBase.Parameters CreateParameters (Type underlyingType)
     {
       return new PropertyBase.Parameters (
-          _businessObjectProvider, _propertyInfo, underlyingType, GetConcreteType (underlyingType), GetListInfo(), GetIsRequired(), GetIsReadOnly());
+          _businessObjectProvider,
+          _propertyInfo,
+          underlyingType,
+          GetConcreteType (underlyingType),
+          GetListInfo(),
+          GetIsRequired(),
+          GetIsReadOnly(),
+          GetDefaultValueStrategy());
     }
 
     private Type GetItemTypeFromAttribute ()

@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly IListInfo ListInfo;
       public readonly bool IsRequired;
       public readonly bool IsReadOnly;
+      public IDefaultValueStrategy DefaultValueStrategy;
 
       public Parameters (
           BindableObjectProvider businessObjectProvider,
@@ -42,7 +43,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           Type concreteType,
           IListInfo listInfo,
           bool isRequired,
-          bool isReadOnly)
+          bool isReadOnly,
+          IDefaultValueStrategy defaultValueStrategy)
       {
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -56,6 +58,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         ListInfo = listInfo;
         IsRequired = isRequired;
         IsReadOnly = isReadOnly;
+        DefaultValueStrategy = defaultValueStrategy;
       }
     }
 
@@ -67,6 +70,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly bool _isReadOnly;
     private readonly bool _isNullable;
     private BindableObjectClass _reflectedClass;
+    private readonly IDefaultValueStrategy _defaultValueStrategy;
     private readonly Func<object, object> _valueGetter = null;
     private readonly Action<object, object> _valueSetter = null;
 
@@ -78,6 +82,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _listInfo = parameters.ListInfo;
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
+      _defaultValueStrategy = parameters.DefaultValueStrategy;
       _isNullable = GetNullability();
       _valueGetter =
           Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Where (mi => mi.GetParameters().Length == 0).Select (
@@ -184,6 +189,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         return true;
 
       return objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
+    }
+
+    public bool IsDefaultValue (IBusinessObject obj)
+    {
+      ArgumentUtility.CheckNotNull ("obj", obj);
+
+      return _defaultValueStrategy.IsDefaultValue (obj, this);
     }
 
     /// <summary> Indicates whether this property can be modified by the user. </summary>

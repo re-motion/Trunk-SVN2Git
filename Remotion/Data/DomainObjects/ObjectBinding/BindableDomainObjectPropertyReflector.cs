@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -82,6 +81,11 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return _propertyDefinition.MaxLength;
       else
         return base.GetMaxLength();
+    }
+
+    protected override IDefaultValueStrategy GetDefaultValueStrategy ()
+    {
+      return new BindableDomainObjectDefaultValueStrategy();
     }
   }
 }

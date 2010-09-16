@@ -56,23 +56,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
 
       _securableExplicitInterfaceProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
               "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
       
       _nonSecurablePropertyReadOnly = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, new BindableObjectDefaultValueStrategy ()));
       
       _nonSecurableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
     }
 
     public override void TearDown ()

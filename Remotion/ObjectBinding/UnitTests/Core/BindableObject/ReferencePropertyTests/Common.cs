@@ -68,7 +68,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           typeof (ClassWithAllDataTypes),
           null,
           false,
-          false);
+          false,
+          new BindableObjectDefaultValueStrategy ());
       new ReferenceProperty (parameters);
     }
 
@@ -86,7 +87,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           typeof (SimpleBusinessObjectClass),
           null,
           false,
-          false);
+          false,
+          new BindableObjectDefaultValueStrategy ());
       new ReferenceProperty (parameters);
     }
 
