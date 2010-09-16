@@ -23,13 +23,14 @@ namespace Remotion.Reflection
   public class MixinIntroducedMethodInformation : IMethodInformation
   {
     private readonly IMethodInformation _mixinMethodInfo;
-    private DoubleCheckedLockingContainer<IMethodInformation> methodInterfaceDeclarationCache;
+    private readonly DoubleCheckedLockingContainer<IMethodInformation> _methodInterfaceDeclarationCache;
 
     public MixinIntroducedMethodInformation (IMethodInformation mixinMethodInfo)
     {
       ArgumentUtility.CheckNotNull ("mixinMethodInfo", mixinMethodInfo);
 
       _mixinMethodInfo = mixinMethodInfo;
+      _methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation> (FindInterfaceDeclaration);
     }
 
     public string Name
@@ -64,6 +65,8 @@ namespace Remotion.Reflection
 
     public IMethodInformation FindInterfaceImplementation (Type implementationType)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
       return _mixinMethodInfo.FindInterfaceImplementation (implementationType);
     }
 
@@ -82,6 +85,8 @@ namespace Remotion.Reflection
 
     public Delegate GetFastInvoker (Type delegateType)
     {
+      ArgumentUtility.CheckNotNull ("delegateType", delegateType);
+
       var methodInterfaceDeclaration = FindInterfaceDeclaration();
 
       return methodInterfaceDeclaration.GetFastInvoker (delegateType);
@@ -94,6 +99,8 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
       return _mixinMethodInfo.FindDeclaringProperty (implementationType);
     }
 
@@ -104,14 +111,10 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      // TODO Review: Fix usages of DoubleCheckedLockingContainer
-      if (methodInterfaceDeclarationCache == null)
-        methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation>(FindInterfaceDeclaration);
-
       // TODO Review: Do not catch the TargetInvocationException here, the implementation IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
       try
       {
-        return methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
+        return _methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
       }
       catch (TargetInvocationException ex)
       {

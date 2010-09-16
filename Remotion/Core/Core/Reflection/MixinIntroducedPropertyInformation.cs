@@ -64,6 +64,8 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
       return _mixinPropertyInfo.FindInterfaceImplementation (implementationType);
     }
 

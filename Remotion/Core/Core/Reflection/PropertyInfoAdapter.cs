@@ -27,13 +27,14 @@ namespace Remotion.Reflection
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;
-    private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
     
     public PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       _propertyInfo = propertyInfo;
+      _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_propertyInfo));
     }
 
     public PropertyInfo PropertyInfo
@@ -63,8 +64,6 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
-      if (_cachedOriginalDeclaringType == null)
-        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_propertyInfo));
       return _cachedOriginalDeclaringType.Value;
     }
 
@@ -175,13 +174,6 @@ namespace Remotion.Reflection
     {
       return FindInterfaceDeclaration ();
     }
-
-    private bool IsAccessorMatch (MethodInfo accessor1, MethodInfo accessor2)
-    {
-      // Equals won't work here because our algorithm manually iterates over the base type hierarchy, so accessor2.ReflectedType will be the exact
-      // declaring type whereas GetInterfaceMap gets all the accessors from the original type, so accessor1.ReflectedType will be the original type.
-      // Therefore, we compare declaring type and metadata token, which is unique per method overload.
-      return accessor1.DeclaringType == accessor2.DeclaringType && accessor1.MetadataToken == accessor2.MetadataToken;
-    }
+ 
   }
 }

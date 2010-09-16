@@ -28,13 +28,14 @@ namespace Remotion.Reflection
   public class MethodInfoAdapter : IMethodInformation
   {
     private readonly MethodInfo _methodInfo;
-    private DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
+    private readonly DoubleCheckedLockingContainer<Type> _cachedOriginalDeclaringType;
 
     public MethodInfoAdapter (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
       _methodInfo = methodInfo;
+      _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
     }
 
     public MethodInfo MethodInfo
@@ -59,8 +60,6 @@ namespace Remotion.Reflection
 
     public Type GetOriginalDeclaringType ()
     {
-      if (_cachedOriginalDeclaringType == null)
-        _cachedOriginalDeclaringType = new DoubleCheckedLockingContainer<Type> (() => ReflectionUtility.GetOriginalDeclaringType (_methodInfo));
       return _cachedOriginalDeclaringType.Value;
     }
 
@@ -88,6 +87,8 @@ namespace Remotion.Reflection
 
     public IMethodInformation FindInterfaceImplementation (Type implementationType)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
       if (!DeclaringType.IsInterface)
         throw new InvalidOperationException ("This method is not an interface method.");
 
@@ -136,6 +137,8 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
+
       // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
       var propertyInfo = implementationType.CreateSequence (t => t.BaseType)
           .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
