@@ -20,7 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  public class DefaultValueStrategy : IDefaultValueStrategy
+  public class BindableObjectDefaultValueStrategy : IDefaultValueStrategy
   {
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {

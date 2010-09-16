@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
   [TestFixture]
-  public class DefaultValueStrategyTest : TestBase
+  public class BindableObjectDefaultValueStrategyTest : TestBase
   {
     [Test]
     public void IsDefaultValue ()
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
       var property = CreateProperty (propertyInformationStub);
-      var strategy = new DefaultValueStrategy();
+      var strategy = new BindableObjectDefaultValueStrategy();
 
       Assert.That (strategy.IsDefaultValue (businessObjectStub, property), Is.False);
     }

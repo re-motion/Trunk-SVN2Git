@@ -154,7 +154,7 @@
     <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactory.cs" />
     <Compile Include="BindableObjectWithIdentityBase.cs" />
-    <Compile Include="BindableObject\DefaultValueStrategy.cs" />
+    <Compile Include="BindableObject\BindableObjectDefaultValueStrategy.cs" />
     <Compile Include="BindableObject\DisabledIdentifiersEnumerationFilter.cs" />
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
