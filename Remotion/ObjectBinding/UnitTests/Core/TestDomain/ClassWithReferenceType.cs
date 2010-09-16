@@ -48,21 +48,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public T ImplicitInterfaceReadOnlyScalar { get; set; }
 
-    [ObjectBinding (Visible = false)]
     public T this[int i]
     {
       get { return Scalar; }
       set { Scalar = value; }
     }
 
-    [ObjectBinding (Visible = false)]
     public T this[int i, DateTime j]
     {
       get { return Scalar; }
       set { Scalar = value; }
     }
 
-    [ObjectBinding (Visible = false)]
     public T this[int i, DateTime j, string k]
     {
       get { return Scalar; }

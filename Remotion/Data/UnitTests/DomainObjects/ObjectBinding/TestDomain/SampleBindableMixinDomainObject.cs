@@ -39,6 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     public abstract string Name { get; set; }
     public abstract int Int32 { get; set; }
 
+    public string WriteOnlyProperty
+    {
+      set { Name = value; }
+    }
+
     [DBBidirectionalRelation ("OppositeSampleObjectWithMixin1")]
     public abstract ObjectList<OppositeBidirectionalBindableDomainObject> List { get; }
 

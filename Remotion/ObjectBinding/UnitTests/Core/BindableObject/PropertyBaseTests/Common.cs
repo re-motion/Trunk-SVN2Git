@@ -110,12 +110,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Indexed properties are not valid at this point.")]
     public void Initialize_IndexedProperty ()
     {
       IPropertyInformation propertyInfo =
           new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
-      PropertyBase propertyBase =
-          new StubPropertyBase (
+      new StubPropertyBase (
               new PropertyBase.Parameters (
                   _bindableObjectProvider,
                   propertyInfo,
@@ -125,17 +125,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   true,
                   true,
                   new BindableObjectDefaultValueStrategy ()));
-
-      Assert.That (propertyBase.ValueGetter, Is.Null);
-      Assert.That (propertyBase.ValueSetter, Is.Null);
     }
 
     [Test]
     public void GetDefaultValueStrategy ()
     {
       var businessObject = MockRepository.GenerateStub<IBusinessObject>();
-      IPropertyInformation propertyInfo =
-          new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }));
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
       PropertyBase propertyBase =
           new StubPropertyBase (
               new PropertyBase.Parameters (

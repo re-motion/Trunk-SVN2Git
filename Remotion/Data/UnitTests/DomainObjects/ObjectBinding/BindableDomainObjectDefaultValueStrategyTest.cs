@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -82,6 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
+      propertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
       propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (bool));
       var property = CreateProperty (propertyInformationStub);
@@ -90,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
       Assert.That (result, Is.False);
     }
-
+    
     private PropertyBase GetProperty (IBusinessObject instance)
     {
       return (PropertyBase) instance.BusinessObjectClass.GetPropertyDefinition ("Name");

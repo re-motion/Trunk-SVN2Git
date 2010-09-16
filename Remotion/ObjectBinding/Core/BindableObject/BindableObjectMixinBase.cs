@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
       
       if (propertyBase.ValueGetter == null)
-        throw new InvalidOperationException ("Either the property has no getter or it is an indexed property.");
+        throw new InvalidOperationException (string.Format ("Property has no getter."));
 
       object nativeValue = propertyBase.ValueGetter (This);
       
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
       if (propertyBase.ValueSetter == null)
-        throw new InvalidOperationException ("Either the property has no setter or it is an indexed property.");
+        throw new InvalidOperationException (string.Format ("Property has no setter."));
 
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 

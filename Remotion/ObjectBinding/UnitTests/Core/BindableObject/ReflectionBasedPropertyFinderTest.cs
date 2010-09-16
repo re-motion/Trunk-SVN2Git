@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPropertyFinderTestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
@@ -60,6 +59,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
                       typeof (TestTypeHidingProperties).GetProperty ("PublicInstanceProperty"),
                       typeof (TestTypeHidingProperties).GetProperty ("BasePublicInstanceProperty")
                   }));
+    }
+
+    [Test]
+    public void IgnoresPropertiesWithOjectBindingVisibleFalseAttribute ()
+    {
+      var finder = new ReflectionBasedPropertyFinder (typeof (ClassWithReferenceType<object>));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
+
+      Assert.That (properties.Where (p => p.Name == "NotVisibleAttributeScalar").Count (), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void IgnoresIndexedProperties ()
+    {
+      var finder = new ReflectionBasedPropertyFinder (typeof (ClassWithReferenceType<object>));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
+
+      Assert.That (properties.Where (p => p.Name=="Item").Count(), Is.EqualTo (0));
     }
 
     [Test]

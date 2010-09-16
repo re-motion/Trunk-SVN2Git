@@ -88,23 +88,6 @@ namespace Remotion.ObjectBinding.BindableObject
       }
     }
 
-    private PropertyInfo GetPropertyInfoOnInterface (PropertyInfo propertyInfo)
-    {
-      MethodInfo accessor = propertyInfo.GetGetMethod (true);
-      MethodInfo accessorOnInterface = _interfaceMethodImplementations[accessor].FirstOrDefault ();
-      if (accessorOnInterface != null)
-      {
-        PropertyInfo propertyOnInterface = 
-            (from p in accessorOnInterface.DeclaringType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            let getter = p.GetGetMethod (true)
-            where getter != null && getter.Equals (accessorOnInterface)
-            select p).Single();
-        return propertyOnInterface;
-      }
-      else
-        return null;
-    }
-
     private IEnumerable<Type> GetInheritanceHierarchy ()
     {
       for (Type currentType = _concreteType; currentType != null; currentType = currentType.BaseType)
@@ -118,6 +101,9 @@ namespace Remotion.ObjectBinding.BindableObject
         return false;
 
       PropertyInfo propertyInfo = (PropertyInfo) memberInfo;
+
+      if (propertyInfo.GetIndexParameters ().Length > 0)
+        return false;
 
       // property can be an explicit interface implementation or property must have a public getter
       if (IsNonInfrastructurePublicProperty (propertyInfo))

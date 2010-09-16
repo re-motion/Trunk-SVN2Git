@@ -76,6 +76,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     protected PropertyBase (Parameters parameters)
     {
+      if (parameters.PropertyInfo.GetIndexParameters ().Length > 0)
+        throw new InvalidOperationException ("Indexed properties are not valid at this point.");
+
       _businessObjectProvider = parameters.BusinessObjectProvider;
       _propertyInfo = parameters.PropertyInfo;
       _underlyingType = parameters.UnderlyingType;
@@ -84,12 +87,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _isReadOnly = parameters.IsReadOnly;
       _defaultValueStrategy = parameters.DefaultValueStrategy;
       _isNullable = GetNullability();
-      _valueGetter =
-          Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Where (mi => mi.GetParameters().Length == 0).Select (
-              mi => mi.GetFastInvoker<Func<object, object>>()).ValueOrDefault();
-      _valueSetter =
-          Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Where (mi => mi.GetParameters().Length == 1).Select (
-              mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault();
+      _valueGetter = Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => mi.GetFastInvoker<Func<object, object>>()).ValueOrDefault();
+      _valueSetter = Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault();
     }
 
     /// <summary> Gets a flag indicating whether this property contains multiple values. </summary>

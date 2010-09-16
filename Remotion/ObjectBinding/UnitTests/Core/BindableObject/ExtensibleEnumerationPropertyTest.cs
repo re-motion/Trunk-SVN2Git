@@ -133,6 +133,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var propertyInfoStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInfoStub.Stub (stub => stub.PropertyType).Return (typeof (ExtensibleEnumWithResources));
+      propertyInfoStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInfoStub
           .Stub (stub => stub.GetCustomAttribute<DisableExtensibleEnumValuesAttribute> (true))
           .Return (new DisableExtensibleEnumValuesAttribute (ExtensibleEnumWithResources.Values.Value1().ID));
@@ -220,7 +221,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var propertyStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyStub.Stub (stub => stub.PropertyType).Return (propertyType);
-
+      propertyStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      
       var parameters = GetPropertyParameters (propertyStub, _businessObjectProvider);
       return new ExtensibleEnumerationProperty (parameters);
     }
@@ -232,6 +234,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       var propertyInfoStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInfoStub.Stub (stub => stub.PropertyType).Return (typeof (ExtensibleEnumWithResources));
+      propertyInfoStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInfoStub
           .Stub (stub => stub.GetCustomAttribute<DisableExtensibleEnumValuesAttribute> (true))
           .Return (attribute);

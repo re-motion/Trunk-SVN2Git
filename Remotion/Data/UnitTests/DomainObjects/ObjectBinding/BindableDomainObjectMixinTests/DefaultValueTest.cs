@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -118,6 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
+      propertyInformationStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
       propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (object));
       propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (new MethodInfoAdapter (typeof (object).GetMethod ("ToString")));
@@ -130,13 +132,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Either the property has no getter or it is an indexed property.")]
-    public void IndexProperty_Getter ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no getter.")]
+    public void PropertyWithNoGetter ()
     {
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
-      propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (object).GetMethod ("Equals", new[] { typeof (object), typeof (object) })));
+      propertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
+      propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (null);
 
       var booleanProperty = CreateProperty (propertyInformationStub);
 
@@ -144,13 +146,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Either the property has no setter or it is an indexed property.")]
-    public void IndexProperty_Setter ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no setter.")]
+    public void PropertyWithNoSetter ()
     {
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
-      propertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (object).GetMethod ("Equals", new[] { typeof (object), typeof (object) })));
+      propertyInformationStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      propertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
 
       var booleanProperty = CreateProperty (propertyInformationStub);
 
