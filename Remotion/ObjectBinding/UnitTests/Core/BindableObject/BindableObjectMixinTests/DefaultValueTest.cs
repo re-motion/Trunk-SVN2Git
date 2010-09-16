@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -49,26 +50,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void GetProperty_ReturnsNull_WhenDefaultValueTrue ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (BindableObjectMixin)).AddMixins (typeof (DefaultValueTrueMixin)).EnterScope())
-      {
-        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
-        IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
+      ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
+      IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
-        Assert.IsNull (instanceAsIBusinessObject.GetProperty ("Scalar"));
-      }
+      Assert.That(instanceAsIBusinessObject.GetProperty ("Scalar"), Is.EqualTo(0));
     }
 
     [Test]
     public void GetProperty_ReturnsNonNull_WhenDefaultValueTrueOnList ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (BindableObjectMixin)).AddMixins (typeof (DefaultValueTrueMixin)).EnterScope())
-      {
-        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
-        IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
+      ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
+      IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
-        Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("List"));
-        Assert.AreEqual (instance.List, instanceAsIBusinessObject.GetProperty ("List"));
-      }
+      Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("List"));
+      Assert.AreEqual (instance.List, instanceAsIBusinessObject.GetProperty ("List"));
     }
   }
 }

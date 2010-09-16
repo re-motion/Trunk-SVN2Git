@@ -51,32 +51,18 @@ namespace Remotion.ObjectBinding.BindableObject
     public object GetProperty (IBusinessObjectProperty property)
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
-
+      
       if (propertyBase.ValueGetter == null)
         throw new InvalidOperationException ("Either the property has no getter or it is an indexed property.");
 
       object nativeValue = propertyBase.ValueGetter (This);
       
-      if (!propertyBase.IsList && IsDefaultValue (propertyBase, nativeValue))
+      if (!propertyBase.IsList && propertyBase.IsDefaultValue(((IBusinessObject) This)))
         return null;
       else
         return propertyBase.ConvertFromNativePropertyType (nativeValue);
     }
-
-    /// <summary>
-    /// Determines whether the given <paramref name="property"/>, whose current value is <paramref name="nativeValue"/>, still has its default value.
-    /// </summary>
-    /// <param name="property">The property to be checked.</param>
-    /// <param name="nativeValue">The property's current value in its native form.</param>
-    /// <returns>
-    /// True if the <paramref name="property"/> still has its default value; otherwise, false.
-    /// </returns>
-    /// <remarks>The default implementation always returns false.</remarks>
-    protected virtual bool IsDefaultValue (PropertyBase property, object nativeValue)
-    {
-      return false;
-    }
-
+    
     /// <overloads> Sets the value accessed through the specified property. </overloads>
     /// <summary> Sets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     /// <param name="property"> 

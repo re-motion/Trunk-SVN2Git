@@ -55,21 +55,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
       get { return This.ID.ToString(); }
     }
-
-    protected override bool IsDefaultValue (PropertyBase property, object nativeValue)
-    {
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      if (This.State != StateType.New)
-        return false;
-      else
-      {
-        var propertyDefinition = This.ID.ClassDefinition.ResolveProperty (property.PropertyInfo);
-        if (propertyDefinition != null)
-          return !This.Properties[propertyDefinition.PropertyName].HasBeenTouched;
-        else
-          return base.IsDefaultValue (property, nativeValue);
-      }
-    }
+    
   }
 }
