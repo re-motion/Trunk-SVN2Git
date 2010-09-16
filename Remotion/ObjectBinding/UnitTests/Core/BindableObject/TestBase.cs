@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
@@ -48,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
       Assert.IsNotNull (propertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
-      return new BindableObjectPropertyInfoAdapter (propertyInfo);
+      return new PropertyInfoAdapter (propertyInfo);
     }
 
     protected IPropertyInformation GetPropertyInfo (Type type, Type interfaceType, string propertyName)
@@ -63,8 +64,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         propertyInfo = type.GetProperty (explicitName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
         Assert.IsNotNull (propertyInfo, "Property '{0}' (or '{1}') was not found on type '{2}'.", propertyName, explicitName, type);
       }
+      
+      var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
+      if (introducedMemberAttributes.Length > 0)
+      {
+        var introducedMemberAttribute = introducedMemberAttributes[0] as IntroducedMemberAttribute;
+        var interfaceProperty = new PropertyInfoAdapter (
+            introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
+        var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
 
-      return new BindableObjectPropertyInfoAdapter (propertyInfo, interfacePropertyInfo);
+        return new BindableObjectMixinIntroducedPropertyInformation (mixinProperty, type, propertyInfo);
+      }
+      else
+      {
+        return new PropertyInfoAdapter (propertyInfo);
+      }
     }
 
     protected Type GetUnderlyingType (PropertyReflector reflector)

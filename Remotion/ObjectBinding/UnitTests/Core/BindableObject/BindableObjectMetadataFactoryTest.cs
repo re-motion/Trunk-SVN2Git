@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
         PropertyInfo propertyInfo = typeof (TestClass).GetProperty ("Property");
-        IPropertyInformation property = new BindableObjectPropertyInfoAdapter (propertyInfo);
+        IPropertyInformation property = new PropertyInfoAdapter (propertyInfo);
         PropertyReflector propertyReflector =
             BindableObjectMetadataFactory.Create().CreatePropertyReflector (typeof (TestClass), property, new BindableObjectProvider());
         Assert.AreSame (typeof (PropertyReflector), propertyReflector.GetType());

@@ -160,7 +160,6 @@
     <Compile Include="BindableObject\NullEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\Properties\EnumValueFilterProvider.cs" />
     <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />
-    <Compile Include="BindableObject\Properties\BindableObjectPropertyInfoAdapter.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
     <Compile Include="DefaultSearchArguments.cs" />
     <Compile Include="IBusinessObjectProviderWithIdentity.cs" />

@@ -96,7 +96,6 @@
     <Compile Include="Core\BindableObject\EnumValueFilterProviderTest.cs" />
     <Compile Include="Core\BindableObject\ExtensibleEnumerationPropertyTest.cs" />
     <Compile Include="Core\BindableObject\NullEnumerationValueFilterTest.cs" />
-    <Compile Include="Core\BindableObject\Properties\BindableObjectPropertyInfoAdapterTest.cs" />
     <Compile Include="Core\BindableObject\PropertyCollectionTest.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\BaseTestType.cs" />

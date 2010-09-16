@@ -190,9 +190,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value5 }));
     }
 
-    private BindableObjectPropertyInfoAdapter GetPropertyInformation (string name)
+    private IPropertyInformation GetPropertyInformation (string name)
     {
-      return new BindableObjectPropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
+      return new PropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
     }
   }
 }

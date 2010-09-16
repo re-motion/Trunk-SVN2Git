@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void InterfaceProperties_PropertyWithoutGetter ()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (BindableObjectPropertyInfoAdapter) (from p in propertyInfos
+      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
                                                      where p.Name == "NonGetterInterfaceProperty"
                                                      select p).SingleOrDefault ();
       Assert.That (interfaceProperty, Is.Null);

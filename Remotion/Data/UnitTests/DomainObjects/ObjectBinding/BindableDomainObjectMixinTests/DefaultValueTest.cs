@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
@@ -113,16 +114,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
-    [Ignore ("TODO 3287")]
-    public void GetProperty () //TODO 3287: rename test
+    public void GetProperty_CustomIPropertyInformationImplementation ()
     {
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
+      propertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
+      propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType()).Return (typeof (object));
       propertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (new MethodInfoAdapter (typeof (object).GetMethod ("ToString")));
 
       var booleanProperty = CreateProperty (propertyInformationStub);
 
       var result = _newBusinessOrder.GetProperty (booleanProperty);
+
+      Assert.That (result.ToString ().StartsWith ("SampleBindableMixinDomainObject"), Is.True);
     }
 
     [Test]
