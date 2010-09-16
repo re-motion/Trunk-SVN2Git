@@ -104,9 +104,11 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
+      // TODO Review: Fix usages of DoubleCheckedLockingContainer
       if (methodInterfaceDeclarationCache == null)
         methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation>(FindInterfaceDeclaration);
 
+      // TODO Review: Do not catch the TargetInvocationException here, the implementation IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
       try
       {
         return methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
