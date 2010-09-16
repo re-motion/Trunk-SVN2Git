@@ -52,10 +52,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
       
-      if (propertyBase.ValueGetter == null)
-        throw new InvalidOperationException (string.Format ("Property has no getter."));
-
-      object nativeValue = propertyBase.ValueGetter (This);
+      object nativeValue = propertyBase.GetValue ((IBusinessObject)This);
       
       if (!propertyBase.IsList && propertyBase.IsDefaultValue(((IBusinessObject) This)))
         return null;
@@ -75,13 +72,10 @@ namespace Remotion.ObjectBinding.BindableObject
     public void SetProperty (IBusinessObjectProperty property, object value)
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
-
-      if (propertyBase.ValueSetter == null)
-        throw new InvalidOperationException (string.Format ("Property has no setter."));
-
+      
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 
-      propertyBase.ValueSetter (This, nativeValue);
+      propertyBase.SetValue((IBusinessObject)This, nativeValue);
     }
 
     /// <summary> 

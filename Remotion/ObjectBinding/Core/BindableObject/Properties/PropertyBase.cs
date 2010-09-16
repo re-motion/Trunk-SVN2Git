@@ -162,16 +162,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _isRequired; }
     }
 
-    public Func<object, object> ValueGetter
-    {
-      get { return _valueGetter; }
-    }
-
-    public Action<object, object> ValueSetter
-    {
-      get { return _valueSetter; }
-    }
-
     /// <summary> Indicates whether this property can be accessed by the user. </summary>
     /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> of the <paramref name="obj"/>. </param>
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
@@ -188,6 +178,26 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         return true;
 
       return objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
+    }
+
+    public object GetValue (IBusinessObject obj)
+    {
+      ArgumentUtility.CheckNotNull ("obj", obj);
+
+      if (_valueGetter == null)
+        throw new InvalidOperationException (string.Format ("Property has no getter."));
+
+      return _valueGetter (obj);
+    }
+
+    public void SetValue (IBusinessObject obj, object value)
+    {
+      ArgumentUtility.CheckNotNull ("obj", obj);
+
+      if (_valueSetter == null)
+        throw new InvalidOperationException (string.Format ("Property has no setter."));
+
+      _valueSetter (obj, value);
     }
 
     public bool IsDefaultValue (IBusinessObject obj)

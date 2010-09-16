@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -65,48 +67,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       Assert.That (propertyBase.IsReadOnly (null), Is.True);
       Assert.That (propertyBase.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
       Assert.That (((IBusinessObjectProperty) propertyBase).BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
-      Assert.That (propertyBase.ValueGetter, Is.Not.Null);
-      Assert.That (propertyBase.ValueSetter, Is.Not.Null);
-    }
-
-    [Test]
-    public void Initialize_ReadOnlyProperty ()
-    {
-      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PropertyWithNoSetter");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy ()));
-
-      Assert.That (propertyBase.ValueGetter, Is.Not.Null);
-      Assert.That (propertyBase.ValueSetter, Is.Null);
-    }
-
-    [Test]
-    public void Initialize_WriteOnlyProperty ()
-    {
-      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PropertyWithNoGetter");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy ()));
-
-      Assert.That (propertyBase.ValueGetter, Is.Null);
-      Assert.That (propertyBase.ValueSetter, Is.Not.Null);
     }
 
     [Test]
@@ -128,6 +88,104 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
+    public void GetValue ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy ()));
+
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      var value = new SimpleReferenceType ();
+      instance.Scalar = value;
+
+      Assert.That (propertyBase.GetValue(((IBusinessObject) instance)), Is.SameAs (value));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no getter.")]
+    public void GetValue_NoGetter ()
+    {
+      IPropertyInformation propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
+      propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy ()));
+
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      propertyBase.GetValue (((IBusinessObject) instance));
+    }
+
+    [Test]
+    public void SetValue ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy()));
+      
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      var value = new SimpleReferenceType();
+      propertyBase.SetValue ((IBusinessObject)instance, value);
+
+      Assert.That (instance.Scalar, Is.SameAs(value));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no setter.")]
+    public void GetValue_NoSetter ()
+    {
+      IPropertyInformation propertyInfo = MockRepository.GenerateStub<IPropertyInformation> ();
+      propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
+      propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
+      propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy ()));
+
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      propertyBase.SetValue (((IBusinessObject) instance), new object());
+    }
+
+    [Test]
     public void GetDefaultValueStrategy ()
     {
       var businessObject = MockRepository.GenerateStub<IBusinessObject>();
@@ -145,29 +203,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
                   new BindableObjectDefaultValueStrategy ()));
 
       Assert.That (propertyBase.IsDefaultValue (businessObject), Is.False);
-    }
-
-    [Test]
-    public void ValueSetter_ValueGetter ()
-    {
-      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
-      PropertyBase propertyBase =
-          new StubPropertyBase (
-              new PropertyBase.Parameters (
-                  _bindableObjectProvider,
-                  propertyInfo,
-                  propertyInfo.PropertyType,
-                  propertyInfo.PropertyType,
-                  null,
-                  true,
-                  true,
-                  new BindableObjectDefaultValueStrategy ()));
-
-      var instance = new ClassWithReferenceType<SimpleReferenceType>();
-      var propertyValue = new SimpleReferenceType();
-      propertyBase.ValueSetter (instance, propertyValue);
-      Assert.That (instance.Scalar, Is.SameAs (propertyValue));
-      Assert.That (propertyBase.ValueGetter (instance), Is.SameAs (propertyValue));
     }
 
     [Test]
