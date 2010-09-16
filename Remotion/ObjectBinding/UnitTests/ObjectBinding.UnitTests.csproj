@@ -91,6 +91,7 @@
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\CompositeEnumerationValueFilterTest.cs" />
+    <Compile Include="Core\BindableObject\DefaultValueStrategyTest.cs" />
     <Compile Include="Core\BindableObject\DisabledIdentifiersEnumerationFilterTest.cs" />
     <Compile Include="Core\BindableObject\DisableExtensibleEnumValuesAttributeTest.cs" />
     <Compile Include="Core\BindableObject\EnumValueFilterProviderTest.cs" />
