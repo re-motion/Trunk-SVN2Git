@@ -68,8 +68,24 @@ namespace Remotion.Reflection
     /// interface declaration.</exception>
     new IMethodInformation FindInterfaceDeclaration ();
 
+    /// <summary>
+    /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The delegate type. The number of parameters and the fact whether or not a return type is present must match the signature of the method. The
+    /// types need not match exactly; the values will be converted at run-time. 
+    /// </typeparam>
+    /// <returns>A delegate of type <typeparamref name="T"/> invoking the method described by this <see cref="IMethodInformation"/>.</returns>
     T GetFastInvoker<T> () where T: class;
 
+    /// <summary>
+    /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.
+    /// </summary>
+    /// <param name="delegateType">
+    /// The delegate type. The number of parameters and the fact whether or not a return type is present must match the signature of the method. The
+    /// types need not match exactly; the values will be converted at run-time. 
+    /// </param>
+    /// <returns>A delegate of type <paremref name="delegateType"/> invoking the method described by this <see cref="IMethodInformation"/>.</returns>
     Delegate GetFastInvoker (Type delegateType);
 
     ParameterInfo[] GetParameters ();

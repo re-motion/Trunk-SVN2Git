@@ -133,7 +133,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "'System.Object' is not a delegate type.")]
     public void GetFastInvoker_TypeIsNoDelegateType ()
     {
       _mixinIntroducedMethodInformation.GetFastInvoker<object> ();

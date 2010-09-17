@@ -105,7 +105,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
 
-      Assert.That (invoker (_nullMethodInformation), Is.Null);
+      Assert.That (invoker (new object()), Is.Null);
     }
 
     [Test]

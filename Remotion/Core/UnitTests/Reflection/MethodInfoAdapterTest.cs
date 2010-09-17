@@ -383,7 +383,6 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>>();
 
-      Assert.That (result.GetType().IsSubclassOf (typeof (Delegate)));
       Assert.That (result (instance), Is.EqualTo ("Test"));
     }
 
@@ -399,7 +398,6 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>>();
 
-      Assert.That (result.GetType().IsSubclassOf (typeof (Delegate)));
       Assert.That (result (instance), Is.EqualTo ("Test"));
     }
 
@@ -415,12 +413,15 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>> ();
 
+      // TODO Review 3285: Check exact type (Func<...>)
       Assert.That (result.GetType ().IsSubclassOf (typeof (Delegate)));
       Assert.That (result (instance), Is.EqualTo ("Test"));
     }
 
+    // TODO Review 3285: Add one test for a void method, using Action<...>
+
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "'System.Object' is not a delegate type.")]
     public void GetFastInvoker_NoDelegateType ()
     {
       var methodInfo =
