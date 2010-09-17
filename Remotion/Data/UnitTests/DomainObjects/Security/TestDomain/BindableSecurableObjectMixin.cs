@@ -43,5 +43,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       [DemandPermission (TestAccessTypes.First)]
       set { Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithWritePermission"].SetValue (value); }
     }
+
+    public string DefaultPermissionMixedProperty { get; set; }
+
+    public string CustomPermissionMixedProperty
+    {
+      [DemandPermission (TestAccessTypes.First)]
+      get;
+      [DemandPermission (TestAccessTypes.Second)]
+      set;
+    }
   }
 }

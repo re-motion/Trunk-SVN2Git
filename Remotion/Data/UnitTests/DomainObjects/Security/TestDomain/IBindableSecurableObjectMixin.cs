@@ -23,5 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     string MixedPropertyWithDefaultPermission { get; set; }
     string MixedPropertyWithReadPermission { get; set; }
     string MixedPropertyWithWritePermission { get; set; }
+    string DefaultPermissionMixedProperty { get; set; }
+    string CustomPermissionMixedProperty { get; set; }
   }
 }
