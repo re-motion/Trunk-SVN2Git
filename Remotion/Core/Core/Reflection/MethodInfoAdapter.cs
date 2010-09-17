@@ -75,14 +75,9 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      try
-      {
-        return _methodInfo.Invoke (instance, parameters);
-      }
-      catch (TargetInvocationException ex)
-      {
-        throw ex.InnerException;
-      }
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      return _methodInfo.Invoke (instance, parameters);
     }
 
     public IMethodInformation FindInterfaceImplementation (Type implementationType)

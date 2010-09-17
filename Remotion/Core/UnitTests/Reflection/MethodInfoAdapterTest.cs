@@ -152,6 +152,17 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    [ExpectedException (typeof (TargetException), ExpectedMessage = "Object does not match target type.")]
+    public void Invoke_WrongInstanceForMethod_GetExceptionFromReflectionApi()
+    {
+      var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
+      var adapter = new MethodInfoAdapter (methodInfo);
+      var result = adapter.Invoke ("Test", new object[0]);
+
+      Assert.That (result, Is.EqualTo (null));
+    }
+
+    [Test]
     public void FindInterfaceImplementation_ImplicitImplementation ()
     {
       var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();

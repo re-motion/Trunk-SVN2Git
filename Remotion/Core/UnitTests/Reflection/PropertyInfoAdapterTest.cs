@@ -249,20 +249,6 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (ApplicationException), ExpectedMessage = "TestException")]
-    public void GetValue_WithIndexerProperty_ThreeParameters_UnwrapsTargetInvocationException ()
-    {
-      var instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
-      instanceMock.Expect (mock => mock[10, new DateTime (2000, 1, 1), "foo"]).Throw (new ApplicationException ("TestException"));
-
-      var interfaceDeclarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>)
-          .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceDeclarationProperty);
-
-      _implicitInterfaceAdapter.GetValue (instanceMock, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
-    }
-
-    [Test]
     public void SetValue_ExplicitInterface_Integration ()
     {
       IInterfaceWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType>();
@@ -370,21 +356,6 @@ namespace Remotion.UnitTests.Reflection
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
       instanceMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ApplicationException), ExpectedMessage = "TestException")]
-    public void SetValue_WithIndexerProperty_WithThreeParameters_UnwrapsTargetInvocationException ()
-    {
-      var scalar = new SimpleReferenceType();
-      var instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
-      instanceMock.Expect (mock => mock[10, new DateTime (2000, 1, 1), "foo"] = scalar).Throw (new ApplicationException ("TestException"));
-
-      var interfaceDeclarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>)
-          .GetProperty ("Item", new[] { typeof (int), typeof (DateTime), typeof (string) });
-      _implicitInterfaceAdapter = new PropertyInfoAdapter (interfaceDeclarationProperty);
-
-      _implicitInterfaceAdapter.SetValue (instanceMock, scalar, new object[] { 10, new DateTime (2000, 1, 1), "foo" });
     }
 
     [Test]

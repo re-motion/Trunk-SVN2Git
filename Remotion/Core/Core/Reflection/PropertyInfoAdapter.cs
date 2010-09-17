@@ -89,26 +89,16 @@ namespace Remotion.Reflection
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      try
-      {
-        return ValuePropertyInfo.GetValue (instance, indexParameters);
-      }
-      catch (TargetInvocationException ex)
-      {
-        throw ex.InnerException;
-      }
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      return ValuePropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      try
-      {
-        ValuePropertyInfo.SetValue (instance, value, indexParameters);
-      }
-      catch (TargetInvocationException ex)
-      {
-        throw ex.InnerException;
-      }
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      ValuePropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
