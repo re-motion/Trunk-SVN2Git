@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void AddSupportedType ()
+    public void IsTypeSupported_AddedType ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void AddSupportedBaseType_BaseClass ()
+    public void IsTypeSupported_Added_BaseClass ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
       Assert.That (_typeProvider.IsTypeSupported (typeof (ReflectionBasedClassDefinition)), Is.False);
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void AddSupportedBaseType_Interface ()
+    public void IsTypeSupported_Added_Interface ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (IRelationEndPointDefinition)), Is.False);
       Assert.That (_typeProvider.IsTypeSupported (typeof (RelationEndPointDefinition)), Is.False);
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void Initialization_StandardTypes ()
+    public void IsTypeSupported_StandardTypes ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (bool)), Is.True);
       Assert.That (_typeProvider.IsTypeSupported (typeof (byte)), Is.True);
@@ -99,6 +99,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       Assert.That (_typeProvider.IsTypeSupported (typeof (char[])), Is.False);
       Assert.That (_typeProvider.IsTypeSupported (typeof (DomainObject)), Is.False);
       Assert.That (_typeProvider.IsTypeSupported (typeof (DomainObjectCollection)), Is.False);
+    }
+
+    [Test]
+    public void IsTypeSupported_Nullables ()
+    {
+      Assert.That (_typeProvider.IsTypeSupported (typeof (bool?)), Is.True);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (byte?)), Is.True);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (DateTime?)), Is.True);
     }
   }
 }

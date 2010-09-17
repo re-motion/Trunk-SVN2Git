@@ -51,8 +51,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return _supportedTypes.Contains (type) 
-          || _supportedBaseTypes.Any (t => t != type && t.IsAssignableFrom (type));
+      var underylingType = Nullable.GetUnderlyingType (type) ?? type;
+
+      return _supportedTypes.Contains (underylingType)
+          || _supportedBaseTypes.Any (t => t != underylingType && t.IsAssignableFrom (underylingType));
     }
 
     public void AddSupportedType (Type type)

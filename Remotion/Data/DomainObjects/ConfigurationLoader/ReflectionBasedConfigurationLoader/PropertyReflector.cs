@@ -59,19 +59,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (StorageClass == StorageClass.Persistent)
       {
-        Type nativePropertyType = GetNativePropertyType();
+        Type nativePropertyType = IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType;
 
         if (!IsTypeSupportedByStorageProvider (nativePropertyType))
           throw CreateMappingException (null, PropertyInfo, "The property type {0} is not supported.", nativePropertyType);
       }
-    }
-
-    private Type GetNativePropertyType()
-    {
-      if (IsRelationProperty())
-        return typeof (ObjectID);
-
-      return Nullable.GetUnderlyingType (PropertyInfo.PropertyType) ?? PropertyInfo.PropertyType;
     }
 
     private bool IsTypeSupportedByStorageProvider (Type type)

@@ -133,10 +133,11 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var spdef = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderID);
+      var providerDefinition = 
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderID);
 
-      var type = Nullable.GetUnderlyingType (typeof (T)) ?? typeof (T);
-      if (spdef.TypeProvider.IsTypeSupported (type))
+      // Natively supported types can be executed as scalar queries
+      if (providerDefinition.TypeProvider.IsTypeSupported (typeof (T)))
         return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);
