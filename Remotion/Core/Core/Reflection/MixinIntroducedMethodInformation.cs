@@ -20,6 +20,17 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Represents a mixin method that is introduced to its target classes.
+  /// </summary>
+  /// <remarks>
+  /// This is mainly just a wrapper around a <see cref="IMethodInformation"/>
+  /// describing the method as it is implemented on the mixin type itself. The <see cref="Invoke"/> and <see cref="GetFastInvoker"/> methods, however,
+  /// always call the method via its interface declaration. (Every member introduced by a mixin is declared by an interface implemented by the mixin.)
+  /// This means that a <see cref="MixinIntroducedMethodInformation"/> can invoke the method both via the mixin instance and via an instance of the
+  /// target class.
+  /// </remarks>
+  /// <seealso cref="MixinIntroducedPropertyInformation"/>
   public class MixinIntroducedMethodInformation : IMethodInformation
   {
     private readonly IMethodInformation _mixinMethodInfo;
@@ -111,7 +122,7 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      // TODO Review: Do not catch the TargetInvocationException here, the implementation IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
+      // TODO Review 3279: Do not catch the TargetInvocationException here, the inner IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
       try
       {
         // TODO Review 3282: Move the cache access to FindInterfaceDeclaration (change the cache to go to _mixinMethodInfo.FindInterfaceDeclaration() to avoid an infinite loop); use FindInterfaceDeclaration here.

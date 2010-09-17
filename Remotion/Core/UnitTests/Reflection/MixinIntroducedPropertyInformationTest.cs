@@ -131,6 +131,7 @@ namespace Remotion.UnitTests.Reflection
       var result = _mixinIntroducedPropertyInformation.GetGetMethod (false);
 
       Assert.That (result, Is.TypeOf (typeof (MixinIntroducedMethodInformation)));
+      // TODO Review 3279: Check inner MethodInfo of result - should be methodInfoAdapter
       Assert.That (result.Name, Is.EqualTo ("ToString"));
     }
 
@@ -154,6 +155,7 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (result, Is.TypeOf (typeof (MixinIntroducedMethodInformation)));
       Assert.That (result.Name, Is.EqualTo ("ToString"));
+      // TODO Review 3279: Check inner MethodInfo of result - should be methodInfoAdapter
     }
 
     [Test]
@@ -177,18 +179,23 @@ namespace Remotion.UnitTests.Reflection
 
       var instance = new ClassWithReferenceType<SimpleReferenceType> ();
       var value = new SimpleReferenceType ();
+      
       _mixinIntroducedPropertyInformation.SetValue (instance, value, null);
-
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
-      Assert.That (_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs (value));
+      
+      var result = _mixinIntroducedPropertyInformation.GetValue (instance, null);
+      Assert.That (result, Is.SameAs (value));
     }
 
+    // TODO Review 3279: Also check SetValue with an indexed property
+    
     [Test]
     public void GetIndexParameters ()
     {
-      _propertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return(new ParameterInfo[0]);
+      var objToReturn = new ParameterInfo[0];
+      _propertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return(objToReturn);
 
-      Assert.That (_mixinIntroducedPropertyInformation.GetIndexParameters().Length, Is.EqualTo(0));
+      Assert.That (_mixinIntroducedPropertyInformation.GetIndexParameters(), Is.SameAs (objToReturn));
     }
   }
 }

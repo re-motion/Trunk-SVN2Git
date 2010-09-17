@@ -19,7 +19,6 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
-using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection
@@ -143,15 +142,18 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetFastInvoker ()
     {
-      var methodInformationMock = MockRepository.GenerateStrictMock<IMethodInformation>();
-      _mixinMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration ()).Return (methodInformationMock);
       var fakeResult = new object ();
-      
+      var methodInformationMock = MockRepository.GenerateStrictMock<IMethodInformation> ();
       methodInformationMock
           .Expect (mock => mock.GetFastInvoker (typeof (Func<object>)))
-          .Return ((Func<object>)(() => fakeResult));
-
+          .Return ((Func<object>) (() => fakeResult));
+      methodInformationMock.Replay ();
+      
+      _mixinMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration ()).Return (methodInformationMock);
+      
       var invoker = _mixinIntroducedMethodInformation.GetFastInvoker<Func<object>>();
+
+      methodInformationMock.VerifyAllExpectations ();
 
       Assert.That (invoker(), Is.SameAs (fakeResult));
     }
@@ -159,9 +161,10 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetParameters ()
     {
-      _mixinMethodInformationStub.Stub (stub => stub.GetParameters()).Return (new ParameterInfo[0]);
+      var objToReturn = new ParameterInfo[0];
+      _mixinMethodInformationStub.Stub (stub => stub.GetParameters()).Return (objToReturn);
 
-      Assert.That (_mixinIntroducedMethodInformation.GetParameters().Length, Is.EqualTo (0));
+      Assert.That (_mixinIntroducedMethodInformation.GetParameters(), Is.SameAs (objToReturn));
     }
   }
 }

@@ -21,6 +21,17 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Represents a mixin property that is introduced to its target classes.
+  /// </summary>
+  /// <remarks>
+  /// This is mainly just a wrapper around a <see cref="IPropertyInformation"/>
+  /// describing the property as it is implemented on the mixin type itself. The <see cref="GetGetMethod"/> and <see cref="GetSetMethod"/> methods, 
+  /// however, return instances of <see cref="MixinIntroducedMethodInformation"/>. This means that a <see cref="MixinIntroducedPropertyInformation"/>'s
+  /// getter and setter can be used to get and set the value both via the mixin instance and via an instance of the target class. 
+  /// <see cref="GetValue"/> and <see cref="SetValue"/> also work this way.
+  /// </remarks>
+  /// <seealso cref="MixinIntroducedMethodInformation"/>
   public class MixinIntroducedPropertyInformation : IPropertyInformation
   {
     private readonly IPropertyInformation _mixinPropertyInfo;
@@ -97,7 +108,7 @@ namespace Remotion.Reflection
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       var parameters = indexParameters!=null ? ArrayUtility.Combine (indexParameters, value) : new[] { value };
-      GetSetMethod (true).Invoke(instance, parameters);
+      GetSetMethod (true).Invoke (instance, parameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
