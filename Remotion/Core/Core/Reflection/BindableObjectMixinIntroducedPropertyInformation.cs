@@ -20,7 +20,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
-  // Note that this class is only temporay, used as long as BindableObjectGlobalizationService requires the concrete type in order to work correctly
+  // Note that this class is only temporay, used as long as BindableObjectGlobalizationService requires the concrete type and property in order to 
+  // work correctly
 
   public class BindableObjectMixinIntroducedPropertyInformation : MixinIntroducedPropertyInformation
   {
