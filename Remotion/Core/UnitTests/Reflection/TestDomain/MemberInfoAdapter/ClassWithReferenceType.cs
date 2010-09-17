@@ -112,6 +112,7 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
 
     private T PrivateProperty { get; set; } 
 
+    // TODO Review 3281: From a reflection point of view, this is the same as PrivateProperty; remove it.
     private T PrivateImplicitInterfaceScalarAccesor
     {
       get { return ImplicitInterfaceScalar; }

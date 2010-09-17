@@ -110,7 +110,7 @@ namespace Remotion.Reflection
           (from ifc in DeclaringType.GetInterfaces()
            let map = DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where IsAccessorMatch(map.TargetMethods[index], _methodInfo)
+           where AreEqualMethodsWithoutReflectedType(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
       return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
@@ -130,14 +130,19 @@ namespace Remotion.Reflection
       return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (_methodInfo, delegateType);
     }
 
+    // TODO Review 3281: The implementationType parameter doesn't make sense for this API - we want to find the property declaring this method as an 
+    // accessor. The property can only be on the same class as the method or a base class. Use the DeclaringType instead, and remove the parameter.
     public IPropertyInformation FindDeclaringProperty (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
-      // Note: We scan the hierarchy ourselves because private (eg. explicit) property implementations in base types are ignored by GetProperties
+      // Note: We scan the hierarchy ourselves because private (eg., explicit) property implementations in base types are ignored by GetProperties
+      // We use AreEqualMethodsWithoutReflectedType because our algorithm manually iterates over the base type hierarchy, so the accesor's
+      // ReflectedType will be the declaring type, whereas _methodInfo might have a different ReflectedType.
+      // AreEqualMethodsWithoutReflectedType can't deal with closed generic methods, but property accessors aren't generic anyway.
       var propertyInfo = implementationType.CreateSequence (t => t.BaseType)
           .SelectMany (t => t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly))
-          .SingleOrDefault (pi => IsAccessorMatch (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
+          .SingleOrDefault (pi => AreEqualMethodsWithoutReflectedType (_methodInfo, (pi.GetGetMethod (true) ?? pi.GetSetMethod (true))));
       return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
     }
 
@@ -173,12 +178,12 @@ namespace Remotion.Reflection
       return _methodInfo.GetHashCode();
     }
 
-    private bool IsAccessorMatch (MethodInfo accessor1, MethodInfo accessor2)
+    // Implements an equality check for MethodInfos that have different ReflectedTypes (ie, one where MethodInfo.Equals woudn't work).
+    // Cannot currently deal with closed generic methods.
+    private bool AreEqualMethodsWithoutReflectedType (MethodInfo one, MethodInfo two)
     {
-      // Equals won't work here because our algorithm manually iterates over the base type hierarchy, so accessor2.ReflectedType will be the exact
-      // declaring type whereas GetInterfaceMap gets all the accessors from the original type, so accessor1.ReflectedType will be the original type.
-      // Therefore, we compare declaring type and metadata token, which is unique per method overload.
-      return accessor1.DeclaringType == accessor2.DeclaringType && accessor1.MetadataToken == accessor2.MetadataToken;
+      // We compare declaring type and metadata token, which is unique per method overload (as long as no generic type parameters are involved).
+      return one.DeclaringType == two.DeclaringType && one.MetadataToken == two.MetadataToken;
     }
   }
 }

@@ -268,8 +268,10 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.Null);
     }
 
+    // TODO Review 3281: In the following tests, also check the declaring type of the property. Make a utility method: CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
+
     [Test]
-    public void FindDeclaringType_PublicPropertyAccesor ()
+    public void FindDeclaringProperty_PublicPropertyAccesor ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod();
       var adapter = new MethodInfoAdapter (methodInfo);
@@ -280,7 +282,7 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void FindDeclaringType_PrivatePropertyAccesor ()
+    public void FindDeclaringProperty_PrivatePropertyAccesor ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic)
           .GetGetMethod (true);
@@ -291,8 +293,9 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result.Name, Is.EqualTo ("PrivateProperty"));
     }
 
+    // TODO Review 3281: This test should check with the private accessor of a public property, eg., public Property { get; private set; }
     [Test]
-    public void FindDeclaringType_PrivatePropertyAccesorOfPublicProperty ()
+    public void FindDeclaringProperty_PrivatePropertyAccesorOfPublicProperty ()
     {
       var methodInfo =
           typeof (ClassWithReferenceType<object>).GetProperty (
@@ -305,23 +308,32 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void FindDeclaringType_ExplicitlyImplementedInterfacePropertyAccessorInBaseType ()
+    public void FindDeclaringProperty_ExplicitlyImplementedInterfacePropertyAccessorInBaseType ()
     {
       var methodInfo =
-          typeof (DerivedClassWithReferenceType<object>).GetInterfaceMap (typeof (IInterfaceWithReferenceType<object>)).TargetMethods.Where (
-              m => m.Name == "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar").
-              Single();
+          typeof (DerivedClassWithReferenceType<object>)
+            .GetInterfaceMap (typeof (IInterfaceWithReferenceType<object>)).TargetMethods
+            .Where (
+                m => m.Name == "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar")
+            .Single();
       var adapter = new MethodInfoAdapter (methodInfo);
+
+      // We have a private property whose declaring type is different from the reflected type. It is not possible to get such a method via ordinary 
+      // Reflection; only via GetInterfaceMap.
+      Assert.That (methodInfo.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<object>)));
+      Assert.That (methodInfo.ReflectedType, Is.SameAs (typeof (DerivedClassWithReferenceType<object>)));
+      Assert.That (methodInfo.IsPrivate, Is.True);
 
       var result = adapter.FindDeclaringProperty (typeof (DerivedClassWithReferenceType<object>));
 
+      // TODO Review 3281: Also check that the property's declaring type is the base type, not the derived type
       Assert.That (
           result.Name,
           Is.EqualTo ("Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
     }
 
     [Test]
-    public void FindDeclaringType_NoPropertyCanBeFound ()
+    public void FindDeclaringProperty_NoPropertyCanBeFound ()
     {
       var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       var adapter = new MethodInfoAdapter (methodInfo);
