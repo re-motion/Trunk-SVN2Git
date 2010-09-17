@@ -90,10 +90,13 @@ namespace Remotion.Reflection
     IMemberInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>
-    /// Finds the member declaration for the <see cref="IMemberInformation"/>. This <see cref="IMemberInformation"/> object must denote an 
-    /// implementation member. 
+    /// Finds the interface declaration for this <see cref="IMemberInformation"/>, returning <see langword="null" /> if this 
+    /// <see cref="IMemberInformation"/> is not an implementation of an interface member.
     /// </summary>
-    /// <returns>Returns the <see cref="IMemberInformation"/> of the declared member or null if no corresponding member declaration was found.</returns>
+    /// <returns>An <see cref="IMemberInformation"/> for the interface member this <see cref="IMemberInformation"/> implements, or 
+    /// <see langword="null" /> if this <see cref="IMemberInformation"/> is not an implementation of an interface member.</returns>
+    /// <exception cref="InvalidOperationException">This <see cref="IMemberInformation"/> is itself an interface member, so it cannot have an 
+    /// interface declaration.</exception>
     IMemberInformation FindInterfaceDeclaration ();
   }
 }
