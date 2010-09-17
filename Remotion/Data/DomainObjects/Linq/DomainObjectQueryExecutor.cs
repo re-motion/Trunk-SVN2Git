@@ -20,6 +20,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -103,6 +104,15 @@ namespace Remotion.Data.DomainObjects.Linq
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
+
+      if (scalarValue == DBNull.Value)
+        return (T) (object) null;
+
+      if (scalarValue is T)
+        return (T) scalarValue;
+
+      // If we can't cast, there's still the chance that we can convert. This is especially needed for booleans, which will be integers when coming 
+      // from the database.
       return (T) Convert.ChangeType (scalarValue, typeof (T));
     }
 
@@ -123,7 +133,10 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      if (!typeof (DomainObject).IsAssignableFrom (typeof (T)))
+      var spdef = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderID);
+
+      var type = Nullable.GetUnderlyingType (typeof (T)) ?? typeof (T);
+      if (spdef.TypeProvider.IsTypeSupported (type))
         return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);

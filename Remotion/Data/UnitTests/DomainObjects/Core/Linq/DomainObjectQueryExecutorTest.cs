@@ -108,6 +108,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ExecuteScalar_NullableResult_NonNullableValue ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order> ().Count ());
+      QueryModel model = ParseQuery (expression);
+
+      var count = _orderExecutor.ExecuteScalar<int?> (model);
+      Assert.That (count, Is.EqualTo (6));
+    }
+
+    [Test]
+    public void ExecuteScalar_NullableResult_NullValue ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order> ().Select (x => (int?) null).First());
+      QueryModel model = ParseQuery (expression);
+
+      var count = _orderExecutor.ExecuteScalar<int?> (model);
+      Assert.That (count, Is.Null);
+    }
+
+    [Test]
     public void ExecuteScalar_WithFetches ()
     {
       var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order>().Count());
@@ -158,13 +178,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ExecuteSingle_CanHandleNonDomainObjects ()
+    public void ExecuteSingle_CanHandleScalarPrimitives ()
     {
       var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order>().Max (o => o.OrderNumber));
       QueryModel model = ParseQuery (expression);
 
       var result = _orderExecutor.ExecuteSingle<int> (model, true);
       Assert.That (result, Is.EqualTo (6));
+    }
+
+    [Test]
+    public void ExecuteSingle_CanHandleScalarStrings ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Customer> ().Max (o => o.Name));
+      QueryModel model = ParseQuery (expression);
+
+      var result = _orderExecutor.ExecuteSingle<string> (model, true);
+      Assert.That (result, Is.EqualTo ("Kunde 4"));
+    }
+
+    [Test]
+    public void ExecuteSingle_CanHandleScalarDateTimes ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order> ().Max (o => o.DeliveryDate));
+      QueryModel model = ParseQuery (expression);
+
+      var result = _orderExecutor.ExecuteSingle<DateTime> (model, true);
+      Assert.That (result, Is.EqualTo (new DateTime (2006, 3, 1)));
+    }
+
+    [Test]
+    public void ExecuteSingle_CanHandleScalarNullables ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order> ().Max (o => (int?) o.OrderNumber));
+      QueryModel model = ParseQuery (expression);
+
+      var result = _orderExecutor.ExecuteSingle<int?> (model, true);
+      Assert.That (result, Is.EqualTo (6));
+    }
+
+    [Test]
+    public void ExecuteSingle_CanHandleInterfaceDomainObjects ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from o in QueryFactory.CreateLinqQuery<Order> () orderby o.OrderNumber select (IOrder) o).First ());
+      QueryModel model = ParseQuery (expression);
+
+      var result = _orderExecutor.ExecuteSingle<IOrder> (model, true);
+      Assert.That (result, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
     [Test]
