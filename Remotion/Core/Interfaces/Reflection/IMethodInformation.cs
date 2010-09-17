@@ -59,10 +59,13 @@ namespace Remotion.Reflection
     IPropertyInformation FindDeclaringProperty (Type implementationType);
 
     /// <summary>
-    /// Finds the interface declaration for the <see cref="IMethodInformation"/>. This <see cref="IMethodInformation"/> object must denote an 
-    /// implementation method. 
+    /// Finds the interface declaration for this <see cref="IMethodInformation"/>, returning <see langword="null" /> if this 
+    /// <see cref="IMethodInformation"/> is not an implementation of an interface member.
     /// </summary>
-    /// <returns>Returns the <see cref="IMethodInformation"/> of the declared property accessor or null if no corresponding accesor was found.</returns>
+    /// <returns>An <see cref="IMethodInformation"/> for the interface member this <see cref="IMethodInformation"/> implements, or 
+    /// <see langword="null" /> if this <see cref="IMethodInformation"/> is not an implementation of an interface member.</returns>
+    /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> is itself an interface member, so it cannot have an 
+    /// interface declaration.</exception>
     new IMethodInformation FindInterfaceDeclaration ();
 
     T GetFastInvoker<T> () where T: class;

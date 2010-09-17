@@ -107,10 +107,13 @@ namespace Remotion.Reflection
     new IPropertyInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>
-    /// Finds the property declaration for the <see cref="IPropertyInformation"/>. This <see cref="IPropertyInformation"/> object must denote an 
-    /// implementation property. 
+    /// Finds the interface declaration for this <see cref="IPropertyInformation"/>, returning <see langword="null" /> if this 
+    /// <see cref="IPropertyInformation"/> is not an implementation of an interface member.
     /// </summary>
-    /// <returns>Returns the <see cref="IPropertyInformation"/> of the declared property or null if no corresponding property declaration was found.</returns>
+    /// <returns>An <see cref="IPropertyInformation"/> for the interface member this <see cref="IPropertyInformation"/> implements, or 
+    /// <see langword="null" /> if this <see cref="IPropertyInformation"/> is not an implementation of an interface member.</returns>
+    /// <exception cref="InvalidOperationException">This <see cref="IPropertyInformation"/> is itself an interface member, so it cannot have an 
+    /// interface declaration.</exception>
     new IPropertyInformation FindInterfaceDeclaration ();
 
     ParameterInfo[] GetIndexParameters ();

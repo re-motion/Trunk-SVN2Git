@@ -114,6 +114,7 @@ namespace Remotion.Reflection
       // TODO Review: Do not catch the TargetInvocationException here, the implementation IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
       try
       {
+        // TODO Review 3282: Move the cache access to FindInterfaceDeclaration (change the cache to go to _mixinMethodInfo.FindInterfaceDeclaration() to avoid an infinite loop); use FindInterfaceDeclaration here.
         return _methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
       }
       catch (TargetInvocationException ex)

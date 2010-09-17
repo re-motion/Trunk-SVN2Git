@@ -104,13 +104,13 @@ namespace Remotion.Reflection
     public IMethodInformation FindInterfaceDeclaration ()
     {
       if (DeclaringType.IsInterface)
-        throw new InvalidOperationException ("This method is not an implementation method.");
+        throw new InvalidOperationException ("This method is itself an interface member, so it cannot have an interface declaration.");
 
       var resultMethodInfo =
           (from ifc in DeclaringType.GetInterfaces()
            let map = DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where AreEqualMethodsWithoutReflectedType(map.TargetMethods[index], _methodInfo)
+           where AreEqualMethodsWithoutReflectedType (map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
       return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }

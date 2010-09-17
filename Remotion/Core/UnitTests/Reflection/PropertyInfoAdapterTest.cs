@@ -568,7 +568,7 @@ namespace Remotion.UnitTests.Reflection
       adapter.FindInterfaceImplementation (typeof (IInterfaceWithReferenceType<object>));
     }
 
-    // TODO Review 3280: Check DeclaringType.IsInterface in PropertyInfoAdapter and throw an InvalidOperationException saying that "This property is not an interface property." - or - change the exception message in MethodInfoAdapter to say "This member is not an interface member."
+    // TODO Review 3280: Check DeclaringType.IsInterface in PropertyInfoAdapter and throw an InvalidOperationException saying that "This property is not an interface property."
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
     public void FindInterfaceImplementation_NonInterfaceProperty ()
@@ -636,8 +636,10 @@ namespace Remotion.UnitTests.Reflection
       Assert.That(adapter.FindInterfaceDeclaration (), Is.Null);
     }
 
+    // TODO Review 3282: Check DeclaringType.IsInterface in PropertyInfoAdapter and throw an InvalidOperationException saying that "This property is itself an interface member, so it cannot have an interface declaration."
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an implementation method.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This method is itself an interface member, so it cannot have an interface declaration.")]
     public void FindInterfaceDeclaration_InterfaceProperty ()
     {
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));
