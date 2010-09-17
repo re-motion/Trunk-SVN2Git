@@ -132,7 +132,7 @@ namespace Remotion.Reflection
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
       var interfaceAccessorMethod = GetGetMethod (false) ?? GetSetMethod (false);
-      var implementationMethod = interfaceAccessorMethod.FindInterfaceImplementation(implementationType);
+      var implementationMethod = interfaceAccessorMethod.FindInterfaceImplementation (implementationType);
       if (implementationMethod == null)
         return null;
       

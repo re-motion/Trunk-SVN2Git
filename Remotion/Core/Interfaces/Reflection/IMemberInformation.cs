@@ -79,12 +79,14 @@ namespace Remotion.Reflection
 
     /// <summary>
     /// Finds the implementation <see cref="IMemberInformation"/> corresponding to this <see cref="IMemberInformation"/> on the given 
-    /// <see cref="Type"/>. This <see cref="IMemberInformation"/> object must denote an interface property.
+    /// <see cref="Type"/>. This <see cref="IMemberInformation"/> object must denote an interface member.
     /// </summary>
     /// <param name="implementationType">The type to search for an implementation of this <see cref="IMemberInformation"/> on.</param>
     /// <returns>An instance of <see cref="IMemberInformation"/> describing the member implementing this interface 
     /// <see cref="IMemberInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
+    /// <exception cref="ArgumentException">The <paramref name="implementationType"/> is itself an interface.</exception>
+    /// <exception cref="InvalidOperationException">This <see cref="IMemberInformation"/> does not describe an interface member.</exception>
     IMemberInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>

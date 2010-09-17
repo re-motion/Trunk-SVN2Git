@@ -40,12 +40,14 @@ namespace Remotion.Reflection
 
     /// <summary>
     /// Finds the implementation <see cref="IMethodInformation"/> corresponding to this <see cref="IMethodInformation"/> on the given 
-    /// <see cref="Type"/>. This <see cref="IMethodInformation"/> object must denote an interface property.
+    /// <see cref="Type"/>. This <see cref="IMethodInformation"/> object must denote an interface method.
     /// </summary>
     /// <param name="implementationType">The type to search for an implementation of this <see cref="IMethodInformation"/> on.</param>
     /// <returns>An instance of <see cref="IMethodInformation"/> describing the method implementing this interface 
     /// <see cref="IMethodInformation"/> on <paramref name="implementationType"/>, or <see langword="null" /> if the 
     /// <paramref name="implementationType"/> does not implement the interface.</returns>
+    /// <exception cref="ArgumentException">The <paramref name="implementationType"/> is itself an interface.</exception>
+    /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> does not describe an interface method.</exception>
     new IMethodInformation FindInterfaceImplementation (Type implementationType);
 
     /// <summary>

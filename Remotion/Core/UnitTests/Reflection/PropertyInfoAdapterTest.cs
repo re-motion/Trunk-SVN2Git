@@ -568,6 +568,7 @@ namespace Remotion.UnitTests.Reflection
       adapter.FindInterfaceImplementation (typeof (IInterfaceWithReferenceType<object>));
     }
 
+    // TODO Review 3280: Check DeclaringType.IsInterface in PropertyInfoAdapter and throw an InvalidOperationException saying that "This property is not an interface property." - or - change the exception message in MethodInfoAdapter to say "This member is not an interface member."
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
     public void FindInterfaceImplementation_NonInterfaceProperty ()

@@ -95,8 +95,8 @@ namespace Remotion.Reflection
 
       var interfaceMap = implementationType.GetInterfaceMap (DeclaringType);
       var methodIndex = interfaceMap.InterfaceMethods
-          .Select ((m, i) => new { Method = m, Index = i })
-          .Single (tuple => tuple.Method == _methodInfo)
+          .Select ((m, i) => new { InterfaceMethod = m, Index = i })
+          .First (tuple => tuple.InterfaceMethod.Equals (_methodInfo)) // actually Single, but we can stop at the first matching method
           .Index;
       return new MethodInfoAdapter (interfaceMap.TargetMethods[methodIndex]);
     }
