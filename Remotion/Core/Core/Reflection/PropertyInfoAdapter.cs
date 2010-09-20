@@ -131,6 +131,9 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
+      if (!DeclaringType.IsInterface)
+        throw new InvalidOperationException ("This property is not an interface property.");
+
       var interfaceAccessorMethod = GetGetMethod (false) ?? GetSetMethod (false);
       var implementationMethod = interfaceAccessorMethod.FindInterfaceImplementation (implementationType);
       if (implementationMethod == null)
