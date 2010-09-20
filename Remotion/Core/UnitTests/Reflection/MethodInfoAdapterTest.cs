@@ -421,17 +421,6 @@ namespace Remotion.UnitTests.Reflection
     // TODO Review 3285: Add one test for a void method, using Action<...>
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "'System.Object' is not a delegate type.")]
-    public void GetFastInvoker_NoDelegateType ()
-    {
-      var methodInfo =
-          typeof (ClassWithReferenceType<string>).GetMethod (
-              "get_PrivateImplicitInterfaceScalarAccesor", BindingFlags.Instance | BindingFlags.NonPublic);
-      var adapter = new MethodInfoAdapter (methodInfo);
-      adapter.GetFastInvoker<object> ();
-    }
-
-    [Test]
     public void GetParameters_MethodWithoutParameters ()
     {
       Assert.That (_adapter.GetParameters().Length, Is.EqualTo (0));

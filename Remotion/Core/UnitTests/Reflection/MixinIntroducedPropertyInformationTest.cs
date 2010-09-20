@@ -131,7 +131,6 @@ namespace Remotion.UnitTests.Reflection
       var result = _mixinIntroducedPropertyInformation.GetGetMethod (false);
 
       Assert.That (result, Is.TypeOf (typeof (MixinIntroducedMethodInformation)));
-      // TODO Review 3279: Check inner MethodInfo of result - should be methodInfoAdapter
       Assert.That (result.Name, Is.EqualTo ("ToString"));
     }
 
@@ -155,7 +154,6 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (result, Is.TypeOf (typeof (MixinIntroducedMethodInformation)));
       Assert.That (result.Name, Is.EqualTo ("ToString"));
-      // TODO Review 3279: Check inner MethodInfo of result - should be methodInfoAdapter
     }
 
     [Test]
@@ -187,7 +185,19 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.SameAs (value));
     }
 
-    // TODO Review 3279: Also check SetValue with an indexed property
+    [Test]
+    public void SetValue_WithIndexedProperty ()
+    {
+      var propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item",new[]{typeof(int)});
+      var setMethodInfoAdapter = new MethodInfoAdapter (propertyInfo.GetSetMethod ());
+      _propertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (setMethodInfoAdapter);
+
+      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
+      var value = new SimpleReferenceType ();
+
+      _mixinIntroducedPropertyInformation.SetValue (instance, value, new object[] { 0 });
+      Assert.That (instance[0], Is.SameAs (value));
+    }
     
     [Test]
     public void GetIndexParameters ()

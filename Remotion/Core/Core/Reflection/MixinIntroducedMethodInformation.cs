@@ -88,10 +88,6 @@ namespace Remotion.Reflection
 
     public T GetFastInvoker<T> () where T: class
     {
-      // TODO Review 3285: This check can probably be removed; the called GetFastInvoker performs it anyway. (If you want to keep it, change it to throw an ArgumentException instead.)
-      if (!typeof (T).IsSubclassOf (typeof (Delegate)))
-        throw new InvalidOperationException ("'" + typeof (T) + "' is not a delegate type.");
-
       return GetFastInvoker (typeof (T)) as T; // TODO Review 3285: Use an ordinary cast
     }
 
@@ -122,16 +118,8 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      // TODO Review 3279: Do not catch the TargetInvocationException here, the inner IMethodInformation is responsible for this. Add a test showing that if the inner Invoke throws a TargetInvocationException, that exception is bubbled to the outside.
-      try
-      {
-        // TODO Review 3282: Move the cache access to FindInterfaceDeclaration (change the cache to go to _mixinMethodInfo.FindInterfaceDeclaration() to avoid an infinite loop); use FindInterfaceDeclaration here.
-        return _methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
-      }
-      catch (TargetInvocationException ex)
-      {
-        throw ex.InnerException;
-      }
+      // TODO Review 3282: Move the cache access to FindInterfaceDeclaration (change the cache to go to _mixinMethodInfo.FindInterfaceDeclaration() to avoid an infinite loop); use FindInterfaceDeclaration here.
+      return _methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

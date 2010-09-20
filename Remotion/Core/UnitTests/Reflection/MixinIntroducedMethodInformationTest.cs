@@ -133,10 +133,15 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "'System.Object' is not a delegate type.")]
-    public void GetFastInvoker_TypeIsNoDelegateType ()
+    [ExpectedException(typeof(TargetParameterCountException), ExpectedMessage = "Parameter count mismatch.")]
+    public void Invoke_Invalid_CatchExpectionFromReflectionApi ()
     {
-      _mixinIntroducedMethodInformation.GetFastInvoker<object> ();
+      var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
+      _mixinMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration ()).Return (methodInfoAdapter);
+
+      var result = _mixinIntroducedMethodInformation.Invoke ("Test", new object[] { "test" });
+
+      Assert.That (result, Is.EqualTo ("Test"));
     }
 
     [Test]

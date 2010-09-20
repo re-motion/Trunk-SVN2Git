@@ -117,10 +117,6 @@ namespace Remotion.Reflection
 
     public T GetFastInvoker<T> () where T: class
     {
-      // TODO Review 3285: This check can probably be removed; the called GetFastInvoker performs it anyway. (If you want to keep it, change it to throw an ArgumentException instead.)
-      if (!typeof (T).IsSubclassOf (typeof (Delegate)))
-        throw new InvalidOperationException ("'" + typeof (T) + "' is not a delegate type.");
-      
       return GetFastInvoker (typeof (T)) as T; // TODO Review 3285: Use an ordinary cast, not as - we know the cast must succeed, so we don't need a safe cast.
     }
 
