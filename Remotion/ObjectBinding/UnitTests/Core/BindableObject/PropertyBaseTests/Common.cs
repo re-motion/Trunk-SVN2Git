@@ -185,6 +185,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       propertyBase.SetValue (((IBusinessObject) instance), new object());
     }
 
+    // TODO Review 3286: Please also add a test for GetValue/SetValue with private accessors (proving that "true" is passed to the GetGetMethod()/GetSetMethod() call)
+
     [Test]
     public void GetDefaultValueStrategy ()
     {

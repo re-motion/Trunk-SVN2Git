@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
       
-      object nativeValue = propertyBase.GetValue ((IBusinessObject)This);
+      object nativeValue = propertyBase.GetValue ((IBusinessObject) This);
       
       if (!propertyBase.IsList && propertyBase.IsDefaultValue(((IBusinessObject) This)))
         return null;

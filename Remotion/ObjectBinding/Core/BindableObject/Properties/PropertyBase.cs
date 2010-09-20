@@ -185,7 +185,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       ArgumentUtility.CheckNotNull ("obj", obj);
 
       if (_valueGetter == null)
-        throw new InvalidOperationException (string.Format ("Property has no getter."));
+        throw new InvalidOperationException ("Property has no getter.");
 
       return _valueGetter (obj);
     }
@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       ArgumentUtility.CheckNotNull ("obj", obj);
 
       if (_valueSetter == null)
-        throw new InvalidOperationException (string.Format ("Property has no setter."));
+        throw new InvalidOperationException ("Property has no setter.");
 
       _valueSetter (obj, value);
     }
