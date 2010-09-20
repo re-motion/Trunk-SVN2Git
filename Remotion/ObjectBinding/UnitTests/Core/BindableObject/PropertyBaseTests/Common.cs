@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
@@ -115,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no getter.")]
     public void GetValue_NoGetter ()
     {
-      IPropertyInformation propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
+      var propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
       propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
@@ -164,7 +163,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no setter.")]
     public void GetValue_NoSetter ()
     {
-      IPropertyInformation propertyInfo = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInfo = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInfo.Stub (stub => stub.PropertyType).Return (typeof (bool));
       propertyInfo.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
       propertyInfo.Stub (stub => stub.GetSetMethod (true)).Return (null);
@@ -259,7 +258,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false,
               new BindableObjectDefaultValueStrategy ()));
-      SimpleReferenceType expected = new SimpleReferenceType();
+      var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertFromNativePropertyType (expected), Is.SameAs (expected));
     }
@@ -277,7 +276,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false,
               new BindableObjectDefaultValueStrategy ()));
-      SimpleReferenceType expected = new SimpleReferenceType();
+      var expected = new SimpleReferenceType();
 
       Assert.That (property.ConvertToNativePropertyType (expected), Is.SameAs (expected));
     }
@@ -289,7 +288,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
               _bindableObjectProvider, propertyInfo, typeof (string), typeof (string), null, false, false, new BindableObjectDefaultValueStrategy ()));
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
+      var mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
       Expect.Call (mockGlobalizationService.GetPropertyDisplayName (propertyInfo)).Return ("MockString");
@@ -321,9 +320,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void SetAndGetReflectedClass ()
     {
-      Type type = typeof (SimpleBusinessObjectClass);
-      ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
               _bindableObjectProvider,
@@ -349,10 +346,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
             + "\r\nParameter name: reflectedClass")]
     public void SetReflectedClass_FromDifferentProviders ()
     {
-      BindableObjectProvider provider = new BindableObjectProvider();
-      Type type = typeof (SimpleBusinessObjectClass);
-      ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
+      var provider = new BindableObjectProvider();
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -378,9 +373,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
             + "\r\nProperty 'String'")]
     public void SetReflectedClass_Twice ()
     {
-      Type type = typeof (SimpleBusinessObjectClass);
-      ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -394,9 +387,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               new BindableObjectDefaultValueStrategy ()));
 
       property.SetReflectedClass (bindableObjectClass);
-      Type type1 = typeof (ClassWithIdentity);
-      ArgumentUtility.CheckNotNull ("type", type1);
-      property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (type1));
+      property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity)));
     }
 
     [Test]
