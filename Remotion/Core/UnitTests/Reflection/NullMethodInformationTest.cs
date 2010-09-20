@@ -94,18 +94,11 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Object is not a delegate type.")]
-    public void GetFastInvoker_TypeIsNoDelegateType ()
-    {
-      _nullMethodInformation.GetFastInvoker<object> ();
-    }
-
-    [Test]
     public void GetFastInvoker ()
     {
       var invoker = _nullMethodInformation.GetFastInvoker<Func<object, object>> ();
 
-      Assert.That (invoker (new object()), Is.Null);
+      Assert.That (invoker (typeof(Func<object>)), Is.Null);
     }
 
     [Test]

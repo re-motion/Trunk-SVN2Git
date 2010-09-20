@@ -117,7 +117,7 @@ namespace Remotion.Reflection
 
     public T GetFastInvoker<T> () where T: class
     {
-      return GetFastInvoker (typeof (T)) as T; // TODO Review 3285: Use an ordinary cast, not as - we know the cast must succeed, so we don't need a safe cast.
+      return (T) (object) GetFastInvoker (typeof (T));
     }
 
     public Delegate GetFastInvoker (Type delegateType)

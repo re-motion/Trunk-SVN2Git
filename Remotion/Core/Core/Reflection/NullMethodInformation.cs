@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
@@ -81,16 +82,13 @@ namespace Remotion.Reflection
 
     public T GetFastInvoker<T> () where T: class
     {
-      // TODO Review 3285: This check can probably be removed; the called GetFastInvoker performs it anyway. (If you want to keep it, change it to throw an ArgumentException instead.)
-      if (!typeof (T).IsSubclassOf (typeof (Delegate)))
-        throw new InvalidOperationException (typeof (T).Name + " is not a delegate type.");
-
-      return GetFastInvoker (typeof (T)) as T; // TODO Review 3285: Use ordinary cast.
+      return (T)(object)GetFastInvoker (typeof (T));
     }
 
     public Delegate GetFastInvoker (Type delegateType)
     {
-      // TODO Review 3285: Argument check (not null and assignable)
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("delegateType", delegateType, typeof(Delegate));
+      
       var methodInfo = typeof (NullMethodInformation).GetMethod ("GetNull", BindingFlags.Static | BindingFlags.NonPublic);
       return DynamicMethodBasedMethodCallerFactory.CreateMethodCallerDelegate (methodInfo, delegateType);
     }

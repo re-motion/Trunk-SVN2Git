@@ -425,8 +425,7 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>> ();
 
-      // TODO Review 3285: Check exact type (Func<...>)
-      Assert.That (result.GetType ().IsSubclassOf (typeof (Delegate)));
+      Assert.That (result.GetType (), Is.EqualTo(typeof (Func<ClassWithReferenceType<string>, string>)));
       Assert.That (result (instance), Is.EqualTo ("Test"));
     }
 
@@ -442,13 +441,9 @@ namespace Remotion.UnitTests.Reflection
 
       result (instance, "Test");
       Assert.That(PrivateInvoke.GetNonPublicProperty (instance, "PrivateProperty"), Is.EqualTo("Test"));
-
-      // TODO Review 3285: Check exact type (Func<...>)
-      //Assert.That (result.GetType ().IsSubclassOf (typeof (Delegate)));
+      Assert.That (result.GetType (), Is.EqualTo(typeof (Action<ClassWithReferenceType<string>, string>)));
     }
-
-    // TODO Review 3285: Add one test for a void method, using Action<...>
-
+    
     [Test]
     public void GetParameters_MethodWithoutParameters ()
     {
