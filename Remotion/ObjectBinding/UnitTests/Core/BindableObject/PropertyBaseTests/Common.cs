@@ -111,6 +111,30 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
+    public void GetValue_WithPrivatAccessor ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PrivateProperty");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy ()));
+
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      var value = new SimpleReferenceType ();
+      PrivateInvoke.SetNonPublicProperty (instance, "PrivateProperty", value);
+
+      Assert.That (propertyBase.GetValue (((IBusinessObject) instance)), Is.SameAs (value));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no getter.")]
     public void GetValue_NoGetter ()
     {
@@ -160,6 +184,30 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
+    public void SetValue_PrivateAccessor ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "PrivateProperty");
+      PropertyBase propertyBase =
+          new StubPropertyBase (
+              new PropertyBase.Parameters (
+                  _bindableObjectProvider,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
+                  null,
+                  true,
+                  true,
+                  new BindableObjectDefaultValueStrategy ()));
+
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+
+      var value = new SimpleReferenceType ();
+      propertyBase.SetValue ((IBusinessObject) instance, value);
+
+      Assert.That (PrivateInvoke.GetNonPublicProperty(instance, "PrivateProperty"), Is.SameAs (value));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property has no setter.")]
     public void GetValue_NoSetter ()
     {
@@ -183,8 +231,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 
       propertyBase.SetValue (((IBusinessObject) instance), new object());
     }
-
-    // TODO Review 3286: Please also add a test for GetValue/SetValue with private accessors (proving that "true" is passed to the GetGetMethod()/GetSetMethod() call)
 
     [Test]
     public void GetDefaultValueStrategy ()

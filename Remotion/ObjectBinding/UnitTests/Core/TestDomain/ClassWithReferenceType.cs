@@ -86,5 +86,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public T PropertyWithNoSetter { get { return _explicitInterfaceScalar; } }
     public T PropertyWithNoGetter { set { _explicitInterfaceScalar = value; } }
 
+    private T PrivateProperty { get; set; }
   }
 }
