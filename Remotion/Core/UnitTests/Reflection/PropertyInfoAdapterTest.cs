@@ -635,10 +635,9 @@ namespace Remotion.UnitTests.Reflection
       Assert.That(adapter.FindInterfaceDeclaration (), Is.Null);
     }
 
-    // TODO Review 3282: Check DeclaringType.IsInterface in PropertyInfoAdapter and throw an InvalidOperationException saying that "This property is itself an interface member, so it cannot have an interface declaration."
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "This method is itself an interface member, so it cannot have an interface declaration.")]
+        "This property is itself an interface member, so it cannot have an interface declaration.")]
     public void FindInterfaceDeclaration_InterfaceProperty ()
     {
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));

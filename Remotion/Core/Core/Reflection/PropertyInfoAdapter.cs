@@ -150,6 +150,9 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindInterfaceDeclaration ()
     {
+      if (DeclaringType.IsInterface)
+        throw new InvalidOperationException ("This property is itself an interface member, so it cannot have an interface declaration.");
+
       var accessorMethod = GetGetMethod (true) ?? GetSetMethod (true);
       var interfaceAccessorMethod = accessorMethod.FindInterfaceDeclaration ();
       if (interfaceAccessorMethod == null)

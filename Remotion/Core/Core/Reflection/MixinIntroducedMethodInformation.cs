@@ -41,7 +41,7 @@ namespace Remotion.Reflection
       ArgumentUtility.CheckNotNull ("mixinMethodInfo", mixinMethodInfo);
 
       _mixinMethodInfo = mixinMethodInfo;
-      _methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation> (FindInterfaceDeclaration);
+      _methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation> (_mixinMethodInfo.FindInterfaceDeclaration);
     }
 
     public string Name
@@ -83,7 +83,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation FindInterfaceDeclaration ()
     {
-      return _mixinMethodInfo.FindInterfaceDeclaration();
+      return _methodInterfaceDeclarationCache.Value;
     }
 
     public T GetFastInvoker<T> () where T: class
@@ -116,8 +116,7 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      // TODO Review 3282: Move the cache access to FindInterfaceDeclaration (change the cache to go to _mixinMethodInfo.FindInterfaceDeclaration() to avoid an infinite loop); use FindInterfaceDeclaration here.
-      return _methodInterfaceDeclarationCache.Value.Invoke (instance, parameters);
+      return FindInterfaceDeclaration().Invoke (instance, parameters);
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
