@@ -146,5 +146,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       query.ToArray ();
     }
 
+    [Test]
+    public void Trim ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>() where oi.Product.Trim()=="CPU Fan" select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    public void Insert ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Product.Insert(1, "Test") == "TestCPU Fan" select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
   }
 }
