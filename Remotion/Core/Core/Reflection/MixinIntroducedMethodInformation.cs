@@ -104,11 +104,9 @@ namespace Remotion.Reflection
       return _mixinMethodInfo.GetParameters();
     }
 
-    public IPropertyInformation FindDeclaringProperty (Type implementationType)
+    public IPropertyInformation FindDeclaringProperty ()
     {
-      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
-
-      return _mixinMethodInfo.FindDeclaringProperty (implementationType);
+      return _mixinMethodInfo.FindDeclaringProperty ();
     }
 
     public Type ReturnType

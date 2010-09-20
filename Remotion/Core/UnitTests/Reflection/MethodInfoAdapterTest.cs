@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
@@ -299,42 +300,59 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.Null);
     }
 
-    // TODO Review 3281: In the following tests, also check the declaring type of the property. Make a utility method: CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
-
     [Test]
-    public void FindDeclaringProperty_PublicPropertyAccesor ()
+    public void FindDeclaringProperty_PublicPropertyAccesor_Get ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = new MethodInfoAdapter (methodInfo);
 
-      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+      var result = adapter.FindDeclaringProperty ();
 
-      Assert.That (result.Name, Is.EqualTo ("ImplicitInterfaceScalar"));
+      CheckProperty (typeof (ClassWithReferenceType<object>), "ImplicitInterfaceScalar", result);
     }
 
     [Test]
-    public void FindDeclaringProperty_PrivatePropertyAccesor ()
+    public void FindDeclaringProperty_PublicPropertyAccesor_Set ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceScalar");
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty ();
+
+      CheckProperty (typeof (ClassWithReferenceType<object>), "ImplicitInterfaceScalar", result);
+    }
+
+    [Test]
+    public void FindDeclaringProperty_PrivatePropertyAccesor_Get ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
       var adapter = new MethodInfoAdapter (methodInfo);
 
-      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+      var result = adapter.FindDeclaringProperty ();
 
-      Assert.That (result.Name, Is.EqualTo ("PrivateProperty"));
+      CheckProperty (typeof (ClassWithReferenceType<object>), "PrivateProperty", result);
     }
 
-    // TODO Review 3281: This test should check with the private accessor of a public property, eg., public Property { get; private set; }
+    [Test]
+    public void FindDeclaringProperty_PrivatePropertyAccesor_Set ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("set_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
+      var adapter = new MethodInfoAdapter (methodInfo);
+
+      var result = adapter.FindDeclaringProperty ();
+
+      CheckProperty (typeof (ClassWithReferenceType<object>), "PrivateProperty", result);
+    }
+
     [Test]
     public void FindDeclaringProperty_PrivatePropertyAccesorOfPublicProperty ()
     {
-      var methodInfo =
-          typeof (ClassWithReferenceType<object>).GetMethod (
-              "get_PrivateImplicitInterfaceScalarAccesor", BindingFlags.Instance | BindingFlags.NonPublic);
+      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod("set_ReadOnlyNonPublicSetterScalar",BindingFlags.Instance|BindingFlags.NonPublic);
       var adapter = new MethodInfoAdapter (methodInfo);
 
-      var result = adapter.FindDeclaringProperty (typeof (ClassWithReferenceType<object>));
+      var result = adapter.FindDeclaringProperty ();
 
-      Assert.That (result.Name, Is.EqualTo ("PrivateImplicitInterfaceScalarAccesor"));
+      CheckProperty (typeof (ClassWithReferenceType<object>), "ReadOnlyNonPublicSetterScalar", result);
     }
 
     [Test]
@@ -354,12 +372,10 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (methodInfo.ReflectedType, Is.SameAs (typeof (DerivedClassWithReferenceType<object>)));
       Assert.That (methodInfo.IsPrivate, Is.True);
 
-      var result = adapter.FindDeclaringProperty (typeof (DerivedClassWithReferenceType<object>));
+      var result = adapter.FindDeclaringProperty ();
 
-      // TODO Review 3281: Also check that the property's declaring type is the base type, not the derived type
-      Assert.That (
-          result.Name,
-          Is.EqualTo ("Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
+      CheckProperty (typeof (ClassWithReferenceType<object>), 
+        "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar", result);
     }
 
     [Test]
@@ -368,7 +384,7 @@ namespace Remotion.UnitTests.Reflection
       var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       var adapter = new MethodInfoAdapter (methodInfo);
 
-      var result = adapter.FindDeclaringProperty (typeof (DerivedClassWithReferenceType<object>));
+      var result = adapter.FindDeclaringProperty ();
 
       Assert.That (result, Is.Null);
     }
@@ -389,12 +405,10 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetFastInvoker_PrivateMethod ()
     {
-      var methodInfo =
-          typeof (ClassWithReferenceType<string>).GetMethod (
-              "get_PrivateImplicitInterfaceScalarAccesor", BindingFlags.Instance | BindingFlags.NonPublic);
+      var methodInfo = typeof (ClassWithReferenceType<string>).GetMethod ("get_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
       var adapter = new MethodInfoAdapter (methodInfo);
       var instance = new ClassWithReferenceType<string>();
-      instance.ImplicitInterfaceScalar = "Test";
+      PrivateInvoke.SetNonPublicProperty (instance, "PrivateProperty", "Test");
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>>();
 
@@ -402,20 +416,35 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetFastInvoker_DerivedClassPrivateMethod ()
+    public void GetFastInvoker_DerivedClassPrivateMethod_Get ()
     {
-      var methodInfo =
-          typeof (ClassWithReferenceType<string>).GetMethod (
-              "get_PrivateImplicitInterfaceScalarAccesor", BindingFlags.Instance | BindingFlags.NonPublic);
+      var methodInfo = typeof (ClassWithReferenceType<string>).GetMethod ("get_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
       var adapter = new MethodInfoAdapter (methodInfo);
       var instance = new DerivedClassWithReferenceType<string> ();
-      instance.ImplicitInterfaceScalar = "Test";
+      PrivateInvoke.SetNonPublicProperty (instance, "PrivateProperty", "Test");
 
       var result = adapter.GetFastInvoker<Func<ClassWithReferenceType<string>, string>> ();
 
       // TODO Review 3285: Check exact type (Func<...>)
       Assert.That (result.GetType ().IsSubclassOf (typeof (Delegate)));
       Assert.That (result (instance), Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void GetFastInvoker_DerivedClassPrivateMethod_Set ()
+    {
+      var methodInfo = typeof (ClassWithReferenceType<string>).GetMethod ("set_PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
+      var adapter = new MethodInfoAdapter (methodInfo);
+      var instance = new DerivedClassWithReferenceType<string> ();
+      instance.ImplicitInterfaceScalar = "Test";
+
+      var result = adapter.GetFastInvoker<Action<ClassWithReferenceType<string>, string>> ();
+
+      result (instance, "Test");
+      Assert.That(PrivateInvoke.GetNonPublicProperty (instance, "PrivateProperty"), Is.EqualTo("Test"));
+
+      // TODO Review 3285: Check exact type (Func<...>)
+      //Assert.That (result.GetType ().IsSubclassOf (typeof (Delegate)));
     }
 
     // TODO Review 3285: Add one test for a void method, using Action<...>
@@ -433,6 +462,12 @@ namespace Remotion.UnitTests.Reflection
        var adapter = new MethodInfoAdapter (method);
 
        Assert.That (adapter.GetParameters ().Length, Is.EqualTo (2));
+    }
+
+    void CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
+    {
+      Assert.That (actualProperty.Name, Is.EqualTo(expectedName));
+      Assert.That (actualProperty.DeclaringType, Is.SameAs (expectedDeclaringType));
     }
   }
 }

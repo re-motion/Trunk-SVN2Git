@@ -108,9 +108,9 @@ namespace Remotion.UnitTests.Reflection
     public void FindDeclaringProperty ()
     {
       var propertyInfoAdapter = new PropertyInfoAdapter (typeof (string).GetProperty ("Length"));
-      _mixinMethodInformationStub.Stub (stub => stub.FindDeclaringProperty (typeof (string))).Return (propertyInfoAdapter);
+      _mixinMethodInformationStub.Stub (stub => stub.FindDeclaringProperty ()).Return (propertyInfoAdapter);
 
-      Assert.That (_mixinIntroducedMethodInformation.FindDeclaringProperty (typeof (string)), Is.SameAs (propertyInfoAdapter));
+      Assert.That (_mixinIntroducedMethodInformation.FindDeclaringProperty (), Is.SameAs (propertyInfoAdapter));
     }
 
     [Test]

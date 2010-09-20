@@ -139,7 +139,7 @@ namespace Remotion.Reflection
       if (implementationMethod == null)
         return null;
       
-      var implementationProperty = implementationMethod.FindDeclaringProperty (implementationType);
+      var implementationProperty = implementationMethod.FindDeclaringProperty ();
       
       Assertion.IsNotNull (
           implementationProperty, 
@@ -155,7 +155,7 @@ namespace Remotion.Reflection
       if (interfaceAccessorMethod == null)
         return null;
 
-      return interfaceAccessorMethod.FindDeclaringProperty (interfaceAccessorMethod.DeclaringType);
+      return interfaceAccessorMethod.FindDeclaringProperty ();
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

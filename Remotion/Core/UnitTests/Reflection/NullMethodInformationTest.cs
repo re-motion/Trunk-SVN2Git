@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void FindDeclaringProperty ()
     {
-      Assert.That (_nullMethodInformation.FindDeclaringProperty (typeof (object)), Is.Null);
+      Assert.That (_nullMethodInformation.FindDeclaringProperty (), Is.Null);
     }
 
     [Test]
