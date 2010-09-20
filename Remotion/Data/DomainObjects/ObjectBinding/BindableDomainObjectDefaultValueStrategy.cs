@@ -22,6 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
+  /// <summary>
+  /// Implements <see cref="IDefaultValueStrategy"/> for <see cref="DomainObject"/> instances. A <see cref="DomainObject"/> property is defined
+  /// to have its default value set if it is a new object and the property has not been touched yet.
+  /// </summary>
   public class BindableDomainObjectDefaultValueStrategy : IDefaultValueStrategy
   {
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)

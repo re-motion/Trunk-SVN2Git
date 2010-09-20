@@ -158,7 +158,6 @@
     <Compile Include="Core\TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />
     <Compile Include="Core\TestDomain\MixinOverridingProperty.cs" />
     <Compile Include="Core\TestDomain\MixinSecurableClassWithProperties.cs" />
-    <Compile Include="Core\TestDomain\PropertyFinderMixinAddingProperty.cs" />
     <Compile Include="Core\TestDomain\SampleAttribute.cs" />
     <Compile Include="Core\TestDomain\SecurableClassWithProperties.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceTypeProperty.cs" />

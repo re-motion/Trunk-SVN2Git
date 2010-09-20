@@ -22,10 +22,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   {
     string MixedProperty { get; set; }
     string MixedReadOnlyProperty { get; }
+    string ExplicitMixedProperty { get; set; }
   }
 
   [Serializable]
-  public class MixinAddingProperty : IMixinAddingProperty
+  public class MixinAddingProperty : BaseOfMixinAddingProperty, IMixinAddingProperty
   {
     private string _mixedProperty;
 
@@ -38,6 +39,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     public string MixedReadOnlyProperty
     {
       get { return _mixedProperty; }
+    }
+
+    string IMixinAddingProperty.ExplicitMixedProperty
+    {
+      get { return _mixedProperty; }
+      set { _mixedProperty = value; }
     }
   }
 }

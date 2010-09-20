@@ -18,17 +18,17 @@ using System;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  public interface IPropertyFinderMixinAddingPropertyBase
+  public interface IBaseOfMixinAddingProperty
   {
     string ExplicitMixedPropertyBase { get; set; }
   }
 
   [Serializable]
-  public class PropertyFinderMixinAddingPropertyBase : IPropertyFinderMixinAddingPropertyBase
+  public class BaseOfMixinAddingProperty : IBaseOfMixinAddingProperty
   {
     private string _explicitMixedPropertyBase;
 
-    string IPropertyFinderMixinAddingPropertyBase.ExplicitMixedPropertyBase
+    string IBaseOfMixinAddingProperty.ExplicitMixedPropertyBase
     {
       get { return _explicitMixedPropertyBase; }
       set { _explicitMixedPropertyBase = value; }

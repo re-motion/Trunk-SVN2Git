@@ -18,13 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -43,7 +40,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private MultiDictionary<MethodInfo, MethodInfo> GetInterfaceMethodImplementationCache ()
     {
-      MultiDictionary<MethodInfo, MethodInfo> cache = new MultiDictionary<MethodInfo, MethodInfo> ();
+      var cache = new MultiDictionary<MethodInfo, MethodInfo> ();
       foreach (Type currentType in GetInheritanceHierarchy ())
       {
         foreach (Type interfaceType in currentType.GetInterfaces ())
@@ -62,15 +59,19 @@ namespace Remotion.ObjectBinding.BindableObject
       
       foreach (Type currentType in GetInheritanceHierarchy ())
       {
-        foreach (PropertyInfo propertyInfo in currentType.FindMembers (MemberTypes.Property,
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, PropertyFilter, null))
+        var propertyInfos = currentType.FindMembers (
+            MemberTypes.Property, 
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, 
+            PropertyFilter, 
+            null);
+        foreach (PropertyInfo propertyInfo in propertyInfos)
         {
           if (!propertyNames.Contains (propertyInfo.Name))
           {
             var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
             if (introducedMemberAttributes.Length > 0)
             {
-              var introducedMemberAttribute = introducedMemberAttributes[0] as IntroducedMemberAttribute;
+              var introducedMemberAttribute = (IntroducedMemberAttribute) introducedMemberAttributes[0];
               var interfaceProperty = new PropertyInfoAdapter (
                   introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
               var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
@@ -96,11 +97,11 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected virtual bool PropertyFilter (MemberInfo memberInfo, object filterCriteria)
     {
-      ObjectBindingAttribute attribute = AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (memberInfo, true);
+      var attribute = AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (memberInfo, true);
       if (attribute != null && !attribute.Visible)
         return false;
 
-      PropertyInfo propertyInfo = (PropertyInfo) memberInfo;
+      var propertyInfo = (PropertyInfo) memberInfo;
 
       if (propertyInfo.GetIndexParameters ().Length > 0)
         return false;

@@ -19,7 +19,6 @@ using Remotion.Collections;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization;
 using Remotion.Mixins.Globalization;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -37,10 +36,6 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     private readonly InterlockedCache<Type, IResourceManager> _resourceManagerCache = new InterlockedCache<Type, IResourceManager>();
-
-    public BindableObjectGlobalizationService ()
-    {
-    }
 
     public string GetEnumerationValueDisplayName (Enum value)
     {
@@ -64,11 +59,16 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
-      var type = mixinIntroducedPropertyInformation!=null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
+      // Note: Currently, MixedMultilingualResources requires the concrete mixed type and the concrete implemented property for globalization 
+      // attribute analysis. We need to extract that information from BindableObjectMixinIntroducedPropertyInformation. The goal is to redesign mixin-
+      // based globalization some time, so that we can work with ordinary IPropertyInformation objects
 
-      IResourceManager resourceManager = GetResourceManagerFromCache (type);
+      var mixinIntroducedPropertyInformation = propertyInfo as BindableObjectMixinIntroducedPropertyInformation;
+      var globalizedType = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteType : propertyInfo.DeclaringType;
       var propertyName = mixinIntroducedPropertyInformation != null ? mixinIntroducedPropertyInformation.ConcreteProperty.Name : propertyInfo.Name;
+      
+      var resourceManager = GetResourceManagerFromCache (globalizedType);
+
       string resourceID = "property:" + propertyName;
       if (!resourceManager.ContainsResource (resourceID))
         return propertyInfo.Name;

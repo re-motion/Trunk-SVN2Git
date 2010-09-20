@@ -23,5 +23,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   [Uses (typeof (MixinAddingProperty))]
   public class ClassWithMixedProperty
   {
+    public string PublicExistingProperty { get; set; }
   }
 }
