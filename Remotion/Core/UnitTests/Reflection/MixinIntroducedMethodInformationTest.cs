@@ -171,5 +171,13 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (_mixinIntroducedMethodInformation.GetParameters(), Is.SameAs (objToReturn));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      _mixinMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
+
+      Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test(Mixin)"));
+    }
   }
 }

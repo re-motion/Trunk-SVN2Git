@@ -99,6 +99,19 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "FindInterfaceImplementation can only be called on inteface properties.")]
+    public void FindInterfaceImplementation ()
+    {
+      _nullPropertyInformation.FindInterfaceImplementation (typeof (object));
+    }
+
+    [Test]
+    public void FindInterfaceDeclaration ()
+    {
+      Assert.That (_nullPropertyInformation.FindInterfaceDeclaration (), Is.Null);
+    }
+
+    [Test]
     public void TestEquals ()
     {
       var nullPropertyInformation2 = new NullPropertyInformation ();
@@ -114,16 +127,9 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "FindInterfaceImplementation can only be called on inteface properties.")]
-    public void FindInterfaceImplementation ()
+    public void To_String ()
     {
-       _nullPropertyInformation.FindInterfaceImplementation (typeof (object));
-    }
-
-    [Test]
-    public void FindInterfaceDeclaration ()
-    {
-      Assert.That (_nullPropertyInformation.FindInterfaceDeclaration(), Is.Null);
+      Assert.That (_nullPropertyInformation.ToString(), Is.EqualTo("NullPropertyInformation"));
     }
 
   }

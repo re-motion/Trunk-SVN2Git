@@ -175,6 +175,11 @@ namespace Remotion.Reflection
       return _methodInfo.GetHashCode();
     }
 
+    public override string ToString ()
+    {
+      return Name;
+    }
+
     // Implements an equality check for MethodInfos that have different ReflectedTypes (ie, one where MethodInfo.Equals woudn't work).
     // Cannot currently deal with closed generic methods.
     private bool AreEqualMethodsWithoutReflectedType (MethodInfo one, MethodInfo two)

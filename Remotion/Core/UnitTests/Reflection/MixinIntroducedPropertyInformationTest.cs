@@ -207,5 +207,12 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (_mixinIntroducedPropertyInformation.GetIndexParameters(), Is.SameAs (objToReturn));
     }
+
+    [Test]
+    public void To_String ()
+    {
+      _propertyInformationStub.Stub (stub => stub.Name).Return ("Test");
+      Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test(Mixin)"));
+    }
   }
 }

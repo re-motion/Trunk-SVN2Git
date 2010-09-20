@@ -124,5 +124,10 @@ namespace Remotion.Reflection
     {
       return null;
     }
+
+    public override string ToString ()
+    {
+      return "NullMethodInformation";
+    }
   }
 }

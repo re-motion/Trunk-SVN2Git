@@ -122,5 +122,11 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_nullMethodInformation.GetHashCode(), Is.EqualTo (0));
     }
 
+    [Test]
+    public void To_String ()
+    {
+      Assert.That (_nullMethodInformation.ToString(), Is.EqualTo ("NullMethodInformation"));
+    }
+
   }
 }

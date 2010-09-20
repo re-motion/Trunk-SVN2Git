@@ -128,5 +128,10 @@ namespace Remotion.Reflection
     {
       return FindInterfaceDeclaration();
     }
+
+    public override string ToString ()
+    {
+      return Name + "(Mixin)";
+    }
   }
 }

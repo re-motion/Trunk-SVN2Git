@@ -459,6 +459,12 @@ namespace Remotion.UnitTests.Reflection
        Assert.That (adapter.GetParameters ().Length, Is.EqualTo (2));
     }
 
+    [Test]
+    public void To_String ()
+    {
+      Assert.That (_adapter.Name, Is.EqualTo ("TestMethod"));
+    }
+
     void CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
     {
       Assert.That (actualProperty.Name, Is.EqualTo(expectedName));

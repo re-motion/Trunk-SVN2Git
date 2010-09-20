@@ -119,5 +119,10 @@ namespace Remotion.Reflection
     {
       return 0;
     }
+
+    public override string ToString ()
+    {
+      return "NullPropertyInformation";
+    }
   }
 }
