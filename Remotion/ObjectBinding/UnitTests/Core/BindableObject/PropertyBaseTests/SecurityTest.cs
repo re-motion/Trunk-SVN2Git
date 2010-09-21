@@ -56,23 +56,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
 
       _securableExplicitInterfaceProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
               "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
       
       _nonSecurablePropertyReadOnly = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, new BindableObjectDefaultValueStrategy ()));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true, BindableObjectDefaultValueStrategy.Instance));
       
       _nonSecurableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, new BindableObjectDefaultValueStrategy ()));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false, BindableObjectDefaultValueStrategy.Instance));
     }
 
     public override void TearDown ()

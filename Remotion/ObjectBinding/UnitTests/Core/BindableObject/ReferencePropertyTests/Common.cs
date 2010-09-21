@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           null,
           false,
           false,
-          new BindableObjectDefaultValueStrategy ());
+          BindableObjectDefaultValueStrategy.Instance);
       new ReferenceProperty (parameters);
     }
 
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
           null,
           false,
           false,
-          new BindableObjectDefaultValueStrategy ());
+          BindableObjectDefaultValueStrategy.Instance);
       new ReferenceProperty (parameters);
     }
 

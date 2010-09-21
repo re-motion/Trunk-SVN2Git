@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               new ListInfo (typeof (bool[]), typeof (bool)),
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              BindableObjectDefaultValueStrategy.Instance));
 
       Assert.That (property.GetDefaultValue (_businessObjectClass), Is.False);
     }
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               new ListInfo (typeof (bool?[]), typeof (bool?)),
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              BindableObjectDefaultValueStrategy.Instance));
 
       Assert.That (property.GetDefaultValue (_businessObjectClass), Is.Null);
     }

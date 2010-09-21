@@ -26,7 +26,9 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   public class BindableObjectDefaultValueStrategy : IDefaultValueStrategy
   {
-    // TODO Review 3272: Since the strategy is stateless, refactor to make it a singleton with private ctor and public static readonly Instance field.
+    public static readonly IDefaultValueStrategy Instance = new BindableObjectDefaultValueStrategy ();
+
+    private BindableObjectDefaultValueStrategy () { }
 
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {

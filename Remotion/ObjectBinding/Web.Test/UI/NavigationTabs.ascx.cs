@@ -66,7 +66,7 @@ namespace OBWTest.UI
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy()));
+              BindableObjectDefaultValueStrategy.Instance));
 
       WaiConformanceLevelField.Property = property;
       WaiConformanceLevelField.LoadUnboundValue (ConformanceLevel, IsPostBack);

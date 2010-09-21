@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       IBusinessObjectStringProperty property = new GuidProperty (
           new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithAllDataTypes), "Guid"),
-          typeof (Guid), typeof (Guid), null, true, false, new BindableObjectDefaultValueStrategy ()));
+          typeof (Guid), typeof (Guid), null, true, false, BindableObjectDefaultValueStrategy.Instance));
 
       Assert.That (property.MaxLength, Is.EqualTo (38));
     }
@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       return new GuidProperty (
           new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Scalar"),
-          typeof (Guid), typeof (Guid), null, true, false, new BindableObjectDefaultValueStrategy ()));
+          typeof (Guid), typeof (Guid), null, true, false, BindableObjectDefaultValueStrategy.Instance));
     }
 
     private PropertyBase GetArrayProperty ()
@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               new ListInfo (typeof (Guid[]), typeof (Guid)),
               false,
               false,
-              new BindableObjectDefaultValueStrategy ()));
+              BindableObjectDefaultValueStrategy.Instance));
     }
 
     private PropertyBase GetNullableArrayProperty ()
@@ -144,7 +144,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               new ListInfo (typeof (Guid?[]), typeof (Guid?)),
               false,
               false, 
-              new BindableObjectDefaultValueStrategy ()));
+              BindableObjectDefaultValueStrategy.Instance));
     }
   }
 }

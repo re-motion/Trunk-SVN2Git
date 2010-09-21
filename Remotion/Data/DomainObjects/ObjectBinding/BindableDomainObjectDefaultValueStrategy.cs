@@ -22,13 +22,16 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
-  // TODO Review 3272: Since the strategy is stateless, refactor to make it a singleton with private ctor and public static readonly Instance field.
   /// <summary>
   /// Implements <see cref="IDefaultValueStrategy"/> for <see cref="DomainObject"/> instances. A <see cref="DomainObject"/> property is defined
   /// to have its default value set if it is a new object and the property has not been touched yet.
   /// </summary>
   public class BindableDomainObjectDefaultValueStrategy : IDefaultValueStrategy
   {
+    public static readonly IDefaultValueStrategy Instance = new BindableDomainObjectDefaultValueStrategy ();
+
+    private BindableDomainObjectDefaultValueStrategy () { }
+
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
       var domainObject = ArgumentUtility.CheckNotNullAndType<DomainObject> ("obj", obj);
@@ -41,7 +44,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       if (propertyDefinition != null)
         return !domainObject.Properties[propertyDefinition.PropertyName].HasBeenTouched;
 
-      return new BindableObjectDefaultValueStrategy().IsDefaultValue (obj, property);
+      return BindableObjectDefaultValueStrategy.Instance.IsDefaultValue (obj, property);
     }
   }
 }

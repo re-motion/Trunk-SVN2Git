@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     protected override IDefaultValueStrategy GetDefaultValueStrategy ()
     {
-      return new BindableDomainObjectDefaultValueStrategy();
+      return BindableDomainObjectDefaultValueStrategy.Instance;
     }
   }
 }

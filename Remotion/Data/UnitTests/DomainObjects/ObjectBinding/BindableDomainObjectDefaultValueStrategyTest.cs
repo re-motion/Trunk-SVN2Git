@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       ClientTransactionMock.Delete (instance);
 
       var property = GetProperty (instance);
-      var strategy = new BindableDomainObjectDefaultValueStrategy();
+      var strategy = BindableDomainObjectDefaultValueStrategy.Instance;
       Assert.That (instance.State, Is.Not.EqualTo (StateType.New));
       
       var result = strategy.IsDefaultValue (instance, property);
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var instance = SampleBindableDomainObject.NewObject ();
 
       var property = GetProperty (instance);
-      var strategy = new BindableDomainObjectDefaultValueStrategy ();
+      var strategy = BindableDomainObjectDefaultValueStrategy.Instance;
       instance.Name = instance.Name;
       Assert.That (instance.State, Is.EqualTo (StateType.New));
       
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var instance = SampleBindableDomainObject.NewObject ();
 
       var property = GetProperty (instance);
-      var strategy = new BindableDomainObjectDefaultValueStrategy ();
+      var strategy = BindableDomainObjectDefaultValueStrategy.Instance;
       Assert.That (instance.State, Is.EqualTo (StateType.New));
 
       var result = strategy.IsDefaultValue (instance, property);
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void IsDefaultDefault_StateIsNewAndPropertyCannotBeResolved ()
     {
-      var strategy = new BindableDomainObjectDefaultValueStrategy ();
+      var strategy = BindableDomainObjectDefaultValueStrategy.Instance;
       var instance = SampleBindableDomainObject.NewObject ();
 
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();

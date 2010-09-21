@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
                   null,
                   true,
                   false,
-                  new BindableObjectDefaultValueStrategy())
+                  BindableObjectDefaultValueStrategy.Instance)
               );
       _enumValue.Property = property;
       _enumValue.Stub (stub => stub.ClientID).Return ("MyEnumValue");
