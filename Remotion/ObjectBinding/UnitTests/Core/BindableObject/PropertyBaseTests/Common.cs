@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Indexed properties are not valid at this point.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Indexed properties are not supported.")]
     public void Initialize_IndexedProperty ()
     {
       IPropertyInformation propertyInfo =

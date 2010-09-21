@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var finder = new ReflectionBasedPropertyFinder (typeof (ClassWithReferenceType<object>));
       var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
 
-      Assert.That (properties.Where (p => p.Name=="Item").Count(), Is.EqualTo (0));
+      Assert.That (properties.Where (p => p.Name == "Item").Count(), Is.EqualTo (0));
     }
 
     [Test]

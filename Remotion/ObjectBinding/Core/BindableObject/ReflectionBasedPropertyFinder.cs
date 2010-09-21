@@ -97,12 +97,14 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected virtual bool PropertyFilter (MemberInfo memberInfo, object filterCriteria)
     {
+      // properties explicitly marked invisible are ignored
       var attribute = AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (memberInfo, true);
       if (attribute != null && !attribute.Visible)
         return false;
 
       var propertyInfo = (PropertyInfo) memberInfo;
 
+      // indexed properties are ignored
       if (propertyInfo.GetIndexParameters ().Length > 0)
         return false;
 

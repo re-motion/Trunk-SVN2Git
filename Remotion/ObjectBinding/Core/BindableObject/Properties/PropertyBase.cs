@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     protected PropertyBase (Parameters parameters)
     {
       if (parameters.PropertyInfo.GetIndexParameters ().Length > 0)
-        throw new InvalidOperationException ("Indexed properties are not valid at this point.");
+        throw new InvalidOperationException ("Indexed properties are not supported.");
 
       _businessObjectProvider = parameters.BusinessObjectProvider;
       _propertyInfo = parameters.PropertyInfo;
