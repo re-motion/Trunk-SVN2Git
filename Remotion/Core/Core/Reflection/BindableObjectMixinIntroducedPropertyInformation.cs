@@ -31,7 +31,7 @@ namespace Remotion.Reflection
     private readonly Type _concreteType;
     private readonly PropertyInfo _concreteProperty;
 
-    public BindableObjectMixinIntroducedPropertyInformation (IPropertyInformation mixinPropertyInfo, Type concreteType, PropertyInfo propertyInfo)
+    public BindableObjectMixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation mixinPropertyInfo, Type concreteType, PropertyInfo propertyInfo)
         :  base (mixinPropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);

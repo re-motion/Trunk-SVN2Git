@@ -172,6 +172,14 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetGetMethod_ReturnsNull ()
+    {
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (null);
+
+      Assert.That (_interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
+    }
+
+    [Test]
     public void GetSetMethod ()
     {
       var implementationPropertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar");
@@ -187,6 +195,14 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.TypeOf (typeof (InterfaceImplementationMethodInformation)));
       Assert.That (result.DeclaringType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
       Assert.That (result.Name, Is.EqualTo ("set_ImplicitInterfaceScalar"));
+    }
+
+    [Test]
+    public void GetSetMethod_ReturnsNull ()
+    {
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (null);
+
+      Assert.That (_interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
     }
 
     [Test]

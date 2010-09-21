@@ -72,8 +72,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         var interfaceProperty = new PropertyInfoAdapter (
             introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
         var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
+        var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
 
-        return new BindableObjectMixinIntroducedPropertyInformation (mixinProperty, type, propertyInfo);
+        return new BindableObjectMixinIntroducedPropertyInformation (interfaceImplementation, type, propertyInfo);
       }
       else
       {

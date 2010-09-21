@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -94,27 +95,29 @@ namespace Remotion.Reflection
     public object GetValue (object instance, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      
+
       return _declarationPropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      
+
       _declarationPropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public InterfaceImplementationMethodInformation GetGetMethod (bool nonPublic)
     {
-      return new InterfaceImplementationMethodInformation (
-          _implementationPropertyInfo.GetGetMethod (nonPublic), _declarationPropertyInfo.GetGetMethod (nonPublic));
+      return
+          Maybe.ForValue (_implementationPropertyInfo.GetGetMethod (nonPublic)).Select (
+              mi => new InterfaceImplementationMethodInformation (mi, _declarationPropertyInfo.GetGetMethod (nonPublic))).ValueOrDefault ();
     }
 
     public InterfaceImplementationMethodInformation GetSetMethod (bool nonPublic)
     {
-      return new InterfaceImplementationMethodInformation (
-          _implementationPropertyInfo.GetSetMethod (nonPublic), _declarationPropertyInfo.GetSetMethod (nonPublic));
+      return
+          Maybe.ForValue (_implementationPropertyInfo.GetSetMethod (nonPublic)).Select (
+              mi => new InterfaceImplementationMethodInformation (mi, _declarationPropertyInfo.GetSetMethod (nonPublic))).ValueOrDefault();
     }
 
     IMethodInformation IPropertyInformation.GetGetMethod (bool nonPublic)

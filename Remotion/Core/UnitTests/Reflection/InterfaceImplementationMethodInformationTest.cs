@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetFastInvoker ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<string>))).Return ((Func<string>)(()=>"Test"));
+      _declarationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<string>))).Return ((Func<string>)(()=>"Test"));
 
       var invoker = _interfaceImplementationMethodInformation.GetFastInvoker<Func<string>> ();
 

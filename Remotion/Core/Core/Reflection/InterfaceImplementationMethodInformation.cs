@@ -85,7 +85,7 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("delegateType", delegateType);
 
-      return _implementationMethodInfo.GetFastInvoker (delegateType);
+      return _declarationMethodInfo.GetFastInvoker (delegateType);
     }
 
     public ParameterInfo[] GetParameters ()

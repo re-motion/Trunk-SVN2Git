@@ -34,9 +34,9 @@ namespace Remotion.Reflection
   /// <seealso cref="MixinIntroducedMethodInformation"/>
   public class MixinIntroducedPropertyInformation : IPropertyInformation
   {
-    private readonly IPropertyInformation _mixinPropertyInfo;
+    private readonly InterfaceImplementationPropertyInformation _mixinPropertyInfo;
 
-    public MixinIntroducedPropertyInformation (IPropertyInformation mixinPropertyInfo)
+    public MixinIntroducedPropertyInformation (InterfaceImplementationPropertyInformation mixinPropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("mixinPropertyInfo", mixinPropertyInfo);
 
@@ -102,13 +102,16 @@ namespace Remotion.Reflection
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      return GetGetMethod (true).Invoke (instance, indexParameters);
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      return _mixinPropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      var parameters = indexParameters!=null ? ArrayUtility.Combine (indexParameters, value) : new[] { value };
-      GetSetMethod (true).Invoke (instance, parameters);
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      _mixinPropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
@@ -134,7 +137,7 @@ namespace Remotion.Reflection
     public override string ToString ()
     {
       // TODO Review 3325: Should be _mixinPropertyInfo + " (Mixin)"
-      return Name + "(Mixin)";
+      return Name + "(added by mixin)";
     }
   }
 }

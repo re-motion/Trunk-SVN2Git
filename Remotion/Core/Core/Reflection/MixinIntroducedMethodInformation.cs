@@ -33,10 +33,10 @@ namespace Remotion.Reflection
   /// <seealso cref="MixinIntroducedPropertyInformation"/>
   public class MixinIntroducedMethodInformation : IMethodInformation
   {
-    private readonly IMethodInformation _mixinMethodInfo;
+    private readonly InterfaceImplementationMethodInformation _mixinMethodInfo;
     private readonly DoubleCheckedLockingContainer<IMethodInformation> _methodInterfaceDeclarationCache;
 
-    public MixinIntroducedMethodInformation (IMethodInformation mixinMethodInfo)
+    public MixinIntroducedMethodInformation (InterfaceImplementationMethodInformation mixinMethodInfo)
     {
       ArgumentUtility.CheckNotNull ("mixinMethodInfo", mixinMethodInfo);
 
@@ -95,8 +95,7 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("delegateType", delegateType, typeof (Delegate));
 
-      var methodInterfaceDeclaration = FindInterfaceDeclaration();
-      return methodInterfaceDeclaration.GetFastInvoker (delegateType);
+      return _mixinMethodInfo.GetFastInvoker (delegateType);
     }
 
     public ParameterInfo[] GetParameters ()
@@ -116,7 +115,9 @@ namespace Remotion.Reflection
 
     public object Invoke (object instance, object[] parameters)
     {
-      return FindInterfaceDeclaration().Invoke (instance, parameters);
+      ArgumentUtility.CheckNotNull ("instance", instance);
+
+      return _mixinMethodInfo.Invoke (instance, parameters);
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
