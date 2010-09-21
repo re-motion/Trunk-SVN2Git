@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -136,6 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     }
 
     [Test]
+    [Ignore ("TODO Review 3292: Fix explicit interface implementations")]
     public void GetMetadata_WithReadWriteExplicitInterfaceScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), 
@@ -152,7 +152,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True); //TODO 3292: correct ? (explicit interface properties cannot be set from outside)
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False); //TODO Review 3292: Should definitely be False!
     }
 
     [Test]
