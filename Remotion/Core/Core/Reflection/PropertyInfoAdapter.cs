@@ -42,11 +42,6 @@ namespace Remotion.Reflection
       get { return _propertyInfo; }
     }
 
-    private PropertyInfo ValuePropertyInfo
-    {
-      get { return PropertyInfo; }
-    }
-
     public Type PropertyType
     {
       get { return _propertyInfo.PropertyType; }
@@ -69,7 +64,7 @@ namespace Remotion.Reflection
 
     public bool CanBeSetFromOutside
     {
-      get { return ValuePropertyInfo.GetSetMethod (false) != null; }
+      get { return PropertyInfo.GetSetMethod (false) != null; }
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
@@ -91,14 +86,14 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return ValuePropertyInfo.GetValue (instance, indexParameters);
+      return PropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      ValuePropertyInfo.SetValue (instance, value, indexParameters);
+      PropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
