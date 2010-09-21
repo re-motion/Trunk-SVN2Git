@@ -146,6 +146,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       query.ToArray ();
     }
 
+    // TODO Review 3309: Add a new MethodCallTest and move tests for method calls over there
+
     [Test]
     public void Trim ()
     {
@@ -154,10 +156,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.OrderItem2);
     }
 
+    // TODO Review 3309: This is not correct, Insert (1, "Test") should return ("CTestPU Fan").
     [Test]
     public void Insert ()
     {
       var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Product.Insert(1, "Test") == "TestCPU Fan" select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("TODO Review 3309: This doesn't work because STUFF can't be used when the index is too large => CASE WHEN is missing.")]
+    public void Insert_AtEndOfString ()
+    {
+      // TODO Review 3309: Should actually be Insert (7, "Test") when the bug described above is solved.
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Product.Insert (8, "Test") == "CPU FanTest" select oi;
 
       CheckQueryResult (query, DomainObjectIDs.OrderItem2);
     }
