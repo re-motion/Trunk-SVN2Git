@@ -152,6 +152,8 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.EqualTo (null));
     }
 
+    // TODO Review 3319: Please add a test where the method being invoked throws an exception; ExpectedException is a TargetInvocationException
+
     [Test]
     [ExpectedException (typeof (TargetException), ExpectedMessage = "Object does not match target type.")]
     public void Invoke_WrongInstanceForMethod_GetExceptionFromReflectionApi()
