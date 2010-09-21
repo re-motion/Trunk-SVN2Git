@@ -136,5 +136,10 @@ namespace Remotion.Reflection
     {
       return FindInterfaceDeclaration();
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0}(impl of '{1}'", Name, _declarationPropertyInfo.DeclaringType.Name);
+    }
   }
 }

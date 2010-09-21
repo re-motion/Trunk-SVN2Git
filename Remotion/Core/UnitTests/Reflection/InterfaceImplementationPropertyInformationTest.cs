@@ -189,6 +189,15 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result.Name, Is.EqualTo ("set_ImplicitInterfaceScalar"));
     }
 
+    [Test]
+    public void To_String ()
+    {
+      _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
+      _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof(bool));
+
+      Assert.That (_interfaceImplementationPropertyInformation.ToString (), Is.EqualTo ("Test(impl of 'Boolean'"));
+    }
+
    
   }
 }
