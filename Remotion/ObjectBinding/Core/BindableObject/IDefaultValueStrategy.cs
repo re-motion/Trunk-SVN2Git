@@ -19,6 +19,11 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
+  /// <summary>
+  /// Defines a mechanism to determine whether a property still has its default value. This is meant as an extensibility hook for implemntations
+  /// extending the bindable object implementation. The concrete implementation is chosen in <see cref="PropertyReflector.GetDefaultValueStrategy"/>
+  /// (or overrides).
+  /// </summary>
   public interface IDefaultValueStrategy
   {
     bool IsDefaultValue (IBusinessObject obj, PropertyBase property);

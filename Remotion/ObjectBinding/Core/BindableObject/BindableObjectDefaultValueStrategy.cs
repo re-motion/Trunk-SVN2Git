@@ -20,8 +20,14 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
+  /// <summary>
+  /// Provides a standard implementaton of <see cref="IDefaultValueStrategy"/>. The standard implementation is that the value is never seen as the
+  /// default value.
+  /// </summary>
   public class BindableObjectDefaultValueStrategy : IDefaultValueStrategy
   {
+    // TODO Review 3272: Since the strategy is stateless, refactor to make it a singleton with private ctor and public static readonly Instance field.
+
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
