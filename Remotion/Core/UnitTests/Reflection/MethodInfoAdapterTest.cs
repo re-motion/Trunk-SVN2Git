@@ -24,6 +24,7 @@ using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection
 {
@@ -152,7 +153,14 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (result, Is.EqualTo (null));
     }
 
-    // TODO Review 3319: Please add a test where the method being invoked throws an exception; ExpectedException is a TargetInvocationException
+    [Test]
+    [ExpectedException (typeof (TargetInvocationException))]
+    public void Invoke_NullParameterForMethod_GetExceptionFromReflectionApi ()
+    {
+      var methodInfo = typeof (string).GetMethod ("Insert", new[] { typeof (int), typeof (string) });
+      var adapter = new MethodInfoAdapter (methodInfo);
+      adapter.Invoke ("Test", new object[] { 5, null });
+    }
 
     [Test]
     [ExpectedException (typeof (TargetException), ExpectedMessage = "Object does not match target type.")]
