@@ -191,6 +191,8 @@
     <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
+    <Compile Include="Reflection\InterfaceImplementationMethodInformation.cs" />
+    <Compile Include="Reflection\InterfaceImplementationPropertyInformation.cs" />
     <Compile Include="Reflection\MethodInfoAdapter.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
