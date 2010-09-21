@@ -177,6 +177,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
+      // TODO Review 3325: Should be _methodInfo.ToString()
       return Name;
     }
 

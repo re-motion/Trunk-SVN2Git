@@ -464,6 +464,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void To_String ()
     {
+      // TODO Review 3325: This test does not test ToString but Name...
       Assert.That (_adapter.Name, Is.EqualTo ("TestMethod"));
     }
 
