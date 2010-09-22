@@ -36,8 +36,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly RelationEndPointMap _relationEndPointMap;
 
     private readonly DataContainer[] _unloadedDataContainers;
-    private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
     private readonly RelationEndPoint[] _unloadedEndPoints;
+
+    private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
 
     public UnloadCommand (
         ObjectID[] objectIDs, 
@@ -54,9 +55,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction = clientTransaction;
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
-      
-      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs);
-      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers);
+
+      var problems = new List<string> ();
+
+      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, problems);
+      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers, problems);
+
+      if (problems.Count > 0)
+        throw new InvalidOperationException (problems[0]);
+    
       _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
     }
 
@@ -112,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     }
 
     // The affected DataContainers are all DataContainers to be unloaded. The DataContainers must be unchanged.
-    private DataContainer[] GetAndCheckUnloadedDataContainers (IEnumerable<ObjectID> unloadedObjectIDs)
+    private DataContainer[] GetAndCheckUnloadedDataContainers (IEnumerable<ObjectID> unloadedObjectIDs, ICollection<string> problemAggregator)
     {
       var affectedDataContainers = unloadedObjectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
       var notUnchangedDataContainers = affectedDataContainers.Where (dc => dc.State != StateType.Unchanged);
@@ -122,29 +129,28 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
             "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
             + SeparatedStringBuilder.Build (", ", notUnchangedDataContainers, dc => String.Format ("'{0}' ({1})", dc.ID, dc.State))
             + ".";
-        throw new InvalidOperationException (message);
+        problemAggregator.Add (message);
       }
       
       return affectedDataContainers;
     }
 
-    private RelationEndPoint[] GetAndCheckUnloadedEndPoints (IEnumerable<DataContainer> unloadedDataContainers)
+    private RelationEndPoint[] GetAndCheckUnloadedEndPoints (
+        IEnumerable<DataContainer> unloadedDataContainers, 
+        ICollection<string> problemAggregator)
     {
-      // All end-points associated with a DataContainer to be unloaded must be unchanged.
-      var checkedAssociatedEndPoints = from dataContainer in unloadedDataContainers
-                                       from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                       let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
-                                       where associatedEndPoint != null
-                                       select EnsureUnchanged (dataContainer.ID, associatedEndPoint);
+      // All end-points associated with a DataContainer to be unloaded must be unchanged, even if they are not unloaded.
+      var associatedEndPoints = from dataContainer in unloadedDataContainers
+                                from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                                let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
+                                where associatedEndPoint != null
+                                select EnsureUnchanged (dataContainer.ID, associatedEndPoint, problemAggregator);
 
-      var checkedUnloadedEndPoints = from associatedEndPoint in checkedAssociatedEndPoints
-                                     from unloadedEndPoint in GetUnloadedEndPoints (associatedEndPoint)
-                                     select 
-                                        unloadedEndPoint != associatedEndPoint 
-                                            ? EnsureUnchanged (associatedEndPoint.ObjectID, unloadedEndPoint)
-                                            : associatedEndPoint; // Optimization: associated end point has already been checked above
-
-      return checkedUnloadedEndPoints.ToArray ();
+      // All unloaded end-points must be unchanged. (We don't need to re-check the associated end-point, they have already been checked.)
+      return (from associatedEndPoint in associatedEndPoints
+              from unloadedEndPoint in GetUnloadedEndPoints (associatedEndPoint)
+              select EnsureUnchanged (associatedEndPoint.ObjectID, unloadedEndPoint, problemAggregator))
+            .ToArray ();
     }
 
     private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
@@ -201,7 +207,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
           maybeOppositeEndPoint); // filters out not loaded opposite end points
     }
 
-    private RelationEndPoint EnsureUnchanged (ObjectID unloadedObjectID, RelationEndPoint endPoint)
+    private RelationEndPoint EnsureUnchanged (ObjectID unloadedObjectID, RelationEndPoint endPoint, ICollection<string> problemAggregator)
     {
       if (endPoint.HasChanged)
       {
@@ -210,7 +216,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
             + "Changed end point: '{1}'.",
             unloadedObjectID, 
             endPoint.ID);
-        throw new InvalidOperationException (message);
+        problemAggregator.Add (message);
       }
 
       return endPoint;
