@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
 
       Assert.That (
-          command.AffectedDataContainers,
+          command.UnloadedDataContainers,
           Is.EqualTo (
               new[]
               {
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var command = CreateCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      Assert.That (command.AffectedDataContainers, Is.EqualTo (new[] { _dataContainerMap[DomainObjectIDs.Order1] }));
+      Assert.That (command.UnloadedDataContainers, Is.EqualTo (new[] { _dataContainerMap[DomainObjectIDs.Order1] }));
     }
 
     [Test]
@@ -128,16 +128,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
 
-      var expectedEndPoint1 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "Official");
-      var expectedEndPoint2 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "Official");
-      var notExpectedEndPoint1 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "OrderItems");
-      var notExpectedEndPoint2 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "OrderTicket");
+      var expectedEndPoint1 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "Official")];
+      var expectedEndPoint2 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "Official")];
+      var notExpectedEndPoint1 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "OrderItems")];
+      var notExpectedEndPoint2 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "OrderTicket")];
 
-      var affectedEndPointIDs = command.AffectedEndPointIDs;
-      Assert.That (affectedEndPointIDs, List.Contains (expectedEndPoint1));
-      Assert.That (affectedEndPointIDs, List.Contains (expectedEndPoint2));
-      Assert.That (affectedEndPointIDs, List.Not.Contains (notExpectedEndPoint1));
-      Assert.That (affectedEndPointIDs, List.Not.Contains (notExpectedEndPoint2));
+      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint1));
+      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint2));
+      Assert.That (command.UnloadedEndPoints, List.Not.Contains (notExpectedEndPoint1));
+      Assert.That (command.UnloadedEndPoints, List.Not.Contains (notExpectedEndPoint2));
     }
 
     [Test]
@@ -146,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var realEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       Assert.That (realEndPoint.Definition.IsVirtual, Is.False);
 
-      CheckAffectedEndPointIDsContains (DomainObjectIDs.OrderTicket1, realEndPoint);
+      CheckAffectedEndPointsContains (DomainObjectIDs.OrderTicket1, realEndPoint);
     }
 
     [Test]
@@ -159,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (
           ((ObjectEndPoint) _dataManager.RelationEndPointMap[loadedVirtualEndPointWithNullValue]).OppositeObjectID, Is.Null);
 
-      CheckAffectedEndPointIDsContains (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
+      CheckAffectedEndPointsContains (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
     }
 
     [Test]
@@ -169,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (oppositeVirtualObjectEndPoint.Definition.Cardinality, Is.EqualTo (CardinalityType.One));
       Assert.That (oppositeVirtualObjectEndPoint.Definition.IsVirtual, Is.True);
 
-      CheckAffectedEndPointIDsContains (DomainObjectIDs.OrderTicket1, oppositeVirtualObjectEndPoint);
+      CheckAffectedEndPointsContains (DomainObjectIDs.OrderTicket1, oppositeVirtualObjectEndPoint);
     }
 
     [Test]
@@ -181,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       EnsureEndPointAvailable (oppositeCollectionEndPoint);
 
-      CheckAffectedEndPointIDsContains (DomainObjectIDs.OrderItem1, oppositeCollectionEndPoint);
+      CheckAffectedEndPointsContains (DomainObjectIDs.OrderItem1, oppositeCollectionEndPoint);
     }
 
     [Test]
@@ -576,20 +575,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (_dataContainerMap[DomainObjectIDs.Order2], Is.Not.Null);
     }
 
-    private void CheckAffectedEndPointIDsContains (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
+    private void CheckAffectedEndPointsContains (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
     {
       var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
-      var endPointIDs = command.AffectedEndPointIDs;
 
-      Assert.That (endPointIDs, List.Contains (expectedEndPointID));
+      var expectedEndPoint = _relationEndPointMap[expectedEndPointID];
+      Assert.That (expectedEndPoint, Is.Not.Null, "Expected end-point ID does not exist: '{0}'", expectedEndPointID);
+      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint));
     }
 
     private void CheckAffectedEndPointIDsNotContains (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
     {
       var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
-      var endPointIDs = command.AffectedEndPointIDs;
+      var endPointIDs = command.UnloadedEndPoints;
 
       Assert.That (endPointIDs, List.Not.Contains (unexpectedEndPointID));
     }

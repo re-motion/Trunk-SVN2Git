@@ -35,10 +35,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly DataContainerMap _dataContainerMap;
     private readonly RelationEndPointMap _relationEndPointMap;
 
-    private readonly DataContainer[] _affectedDataContainers;
-    private readonly ReadOnlyCollection<DomainObject> _affectedDomainObjects;
-
-    private readonly RelationEndPointID[] _affectedEndPointIDs;
+    private readonly DataContainer[] _unloadedDataContainers;
+    private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
+    private readonly RelationEndPoint[] _unloadedEndPoints;
 
     public UnloadCommand (
         ObjectID[] objectIDs, 
@@ -56,55 +55,55 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
       
-      _affectedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs);
-      _affectedDomainObjects = _affectedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
-      _affectedEndPointIDs = GetAndCheckUnloadedEndPointIDs (_affectedDataContainers);
+      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs);
+      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers);
+      _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
     }
 
-    public DataContainer[] AffectedDataContainers
+    public DataContainer[] UnloadedDataContainers
     {
-      get { return _affectedDataContainers; }
+      get { return _unloadedDataContainers; }
     }
 
-    public RelationEndPointID[] AffectedEndPointIDs
+    public RelationEndPoint[] UnloadedEndPoints
     {
-      get { return _affectedEndPointIDs; }
+      get { return _unloadedEndPoints; }
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      if (_affectedDomainObjects.Count > 0)
-        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, _affectedDomainObjects));
+      if (_unloadedDomainObjects.Count > 0)
+        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, _unloadedDomainObjects));
     }
 
     public void Begin ()
     {
       _clientTransaction.Execute (delegate
       {
-        for (int i = 0; i < _affectedDomainObjects.Count; i++)
-          _affectedDomainObjects[i].OnUnloading ();
+        for (int i = 0; i < _unloadedDomainObjects.Count; i++)
+          _unloadedDomainObjects[i].OnUnloading ();
       });
     }
 
     public void Perform ()
     {
-      UnregisterEndPoints (_affectedEndPointIDs);
-      UnregisterDataContainers (_affectedDataContainers);
+      UnregisterEndPoints (_unloadedEndPoints);
+      UnregisterDataContainers (_unloadedDataContainers);
     }
 
     public void End ()
     {
       _clientTransaction.Execute (delegate
       {
-        for (int i = _affectedDomainObjects.Count - 1; i >= 0; i--)
-          _affectedDomainObjects[i].OnUnloaded ();
+        for (int i = _unloadedDomainObjects.Count - 1; i >= 0; i--)
+          _unloadedDomainObjects[i].OnUnloaded ();
       });
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      if (_affectedDomainObjects.Count > 0)
-        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, _affectedDomainObjects));
+      if (_unloadedDomainObjects.Count > 0)
+        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, _unloadedDomainObjects));
     }
 
     ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
@@ -129,14 +128,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return affectedDataContainers;
     }
 
-    private RelationEndPointID[] GetAndCheckUnloadedEndPointIDs (IEnumerable<DataContainer> unloadedDataContainers)
+    private RelationEndPoint[] GetAndCheckUnloadedEndPoints (IEnumerable<DataContainer> unloadedDataContainers)
     {
-      return (from dataContainer in unloadedDataContainers
-              from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-              let loadedAssociatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
-              where loadedAssociatedEndPoint != null
-              from unloadedEndPointID in GetAndCheckUnloadedEndPointIDs (loadedAssociatedEndPoint)
-              select unloadedEndPointID).ToArray ();
+      var associatedEndPointsOfUnloadedContainers = from dataContainer in unloadedDataContainers
+                                                    from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                                                    let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
+                                                    where associatedEndPoint != null
+                                                    select associatedEndPoint;
+      
+      return (from associatedEndPoint in associatedEndPointsOfUnloadedContainers
+              from unloadedEndPoint in GetAndCheckUnloadedEndPoints (associatedEndPoint)
+              select unloadedEndPoint).ToArray ();
     }
 
     private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
@@ -148,40 +150,37 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return loadedEndPoint;
     }
 
-    private IEnumerable<RelationEndPointID> GetAndCheckUnloadedEndPointIDs (RelationEndPoint endPointOfUnloadedDataContainer)
+    private IEnumerable<RelationEndPoint> GetAndCheckUnloadedEndPoints (RelationEndPoint endPointOfUnloadedDataContainer)
     {
-      // All end-points associated with a DataContainer to be unloaded must be unchanged. TODO 3327: Is this true?
+      // All end-points associated with a DataContainer to be unloaded must be unchanged.
       EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, endPointOfUnloadedDataContainer);
 
       // If it is a real end-point, it must be unloaded. Real end-points cannot exist without their DataContainer.
-      var maybeRealEndPointID = Maybe
+      var maybeRealEndPoint = Maybe
           .ForValue (endPointOfUnloadedDataContainer)
-          .Where (endPoint => !endPoint.Definition.IsVirtual)
-          .Select (endPoint => endPoint.ID);
+          .Where (endPoint => !endPoint.Definition.IsVirtual);
 
       // If it is a virtual object end-point and the opposite object is null, it must be unloaded. Virtual end-points pointing to null cannot exist 
       // without their DataContainer.
-      var maybeVirtualNullEndPointID =
+      var maybeVirtualNullEndPoint =
           Maybe.ForValue (endPointOfUnloadedDataContainer)
               .Where (endPoint => endPoint.Definition.IsVirtual)
               .Where (endPoint => endPoint.Definition.Cardinality == CardinalityType.One )
-              .Where (endPoint => ((ObjectEndPoint) endPoint).OppositeObjectID == null)
-              .Select (endPoint => endPoint.ID);
+              .Where (endPoint => ((ObjectEndPoint) endPoint).OppositeObjectID == null);
 
       // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
       // must be unloaded. Virtual end-points cannot exist without their opposite real end-points.
       // In this case, the unloaded opposite virtual end-point must be unchanged. (This only affects 1:n relations where the virtual end-point can be 
       // changed although the (one of many) real end-point is unchanged. For 1:1 relations, the real and virtual end-points are always changed 
       // together.)
-      var maybeOppositeEndPointID =
+      var maybeOppositeEndPoint =
           Maybe.ForValue (endPointOfUnloadedDataContainer)
               .Where (endPoint => !endPoint.Definition.IsVirtual)
               .Select (endPoint => endPoint as ObjectEndPoint)
               .Where (endPoint => endPoint.OppositeObjectID != null)
               .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
               .Select (oppositeID => _relationEndPointMap[oppositeID]) // only loaded opposite end points!
-              .Where (oppositeEndPoint => EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, oppositeEndPoint))
-              .Select (oppositeEndPoint => oppositeEndPoint.ID);
+              .Where (oppositeEndPoint => EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, oppositeEndPoint));
 
       // What's not unloaded:
       // - Virtual object end-points whose opposite object is not null. The life-time of virtual object end-points is defined by the life-time of 
@@ -195,9 +194,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       // - The opposite virtual end-point if it is unloaded.
       
       return Maybe.EnumerateValues (
-          maybeRealEndPointID,
-          maybeVirtualNullEndPointID,
-          maybeOppositeEndPointID);
+          maybeRealEndPoint,
+          maybeVirtualNullEndPoint,
+          maybeOppositeEndPoint);
     }
 
     private bool EnsureUnchanged (ObjectID unloadedObjectID, IEndPoint endPoint)
@@ -221,17 +220,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         _dataContainerMap.Remove (dataContainer.ID);
     }
 
-    private void UnregisterEndPoints (IEnumerable<RelationEndPointID> unloadedEndPointIDs)
+    private void UnregisterEndPoints (IEnumerable<RelationEndPoint> unloadedEndPoints)
     {
-      foreach (var unloadedEndPointID in unloadedEndPointIDs)
+      foreach (var unloadedEndPoint in unloadedEndPoints)
       {
-        if (unloadedEndPointID.Definition.Cardinality == CardinalityType.One)
+        if (unloadedEndPoint.Definition.Cardinality == CardinalityType.One)
         {
-          _relationEndPointMap.RemoveEndPoint (unloadedEndPointID);
+          _relationEndPointMap.RemoveEndPoint (unloadedEndPoint.ID);
         }
         else
         {
-          var unloadedCollectionEndPoint = (CollectionEndPoint) _relationEndPointMap[unloadedEndPointID];
+          var unloadedCollectionEndPoint = (CollectionEndPoint) unloadedEndPoint;
           unloadedCollectionEndPoint.Unload ();
         }
       }
