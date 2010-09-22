@@ -110,7 +110,7 @@ namespace Remotion.Reflection
           (from ifc in DeclaringType.GetInterfaces()
            let map = DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where AreEqualMethodsWithoutReflectedType (map.TargetMethods[index], _methodInfo)
+           where ReflectionUtility.MemberInfoEquals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
       return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
@@ -138,7 +138,7 @@ namespace Remotion.Reflection
           (from t in DeclaringType.CreateSequence (t => t.BaseType)
            from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
            from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
-           where accessor != null && AreEqualMethodsWithoutReflectedType (_methodInfo, accessor)
+           where accessor != null && ReflectionUtility.MemberInfoEquals(_methodInfo, accessor)
            select pi).FirstOrDefault();
       return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
     }
@@ -166,26 +166,26 @@ namespace Remotion.Reflection
     public override bool Equals (object obj)
     {
       var other = obj as MethodInfoAdapter;
+      //return other != null && _methodInfo.Equals (other._methodInfo);
 
-      return other != null && _methodInfo.Equals (other._methodInfo);
+      if (other == null)
+        return false;
+
+      return ReflectionUtility.MemberInfoEquals (_methodInfo, other._methodInfo);
     }
 
     public override int GetHashCode ()
     {
-      return _methodInfo.GetHashCode();
+      if(!DeclaringType.IsArray)
+        return DeclaringType.GetHashCode () ^ _methodInfo.MetadataToken.GetHashCode();
+      else
+        return DeclaringType.GetHashCode () ^ Name.GetHashCode ();
     }
 
     public override string ToString ()
     {
       return _methodInfo.ToString ();
     }
-
-    // Implements an equality check for MethodInfos that have different ReflectedTypes (ie, one where MethodInfo.Equals woudn't work).
-    // Cannot currently deal with closed generic methods.
-    private bool AreEqualMethodsWithoutReflectedType (MethodInfo one, MethodInfo two)
-    {
-      // We compare declaring type and metadata token, which is unique per method overload (as long as no generic type parameters are involved).
-      return one.DeclaringType == two.DeclaringType && one.MetadataToken == two.MetadataToken;
-    }
+    
   }
 }

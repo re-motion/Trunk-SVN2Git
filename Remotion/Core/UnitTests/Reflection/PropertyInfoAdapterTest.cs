@@ -359,27 +359,6 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void Equals_ChecksPropertyInfo ()
-    {
-      Assert.That (
-          _implicitInterfaceAdapter,
-          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty)));
-      Assert.AreNotEqual (
-          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty), _implicitInterfaceAdapter);
-    }
-
-    [Test]
-    public void GetHashCode_UsesPropertyInfo ()
-    {
-      Assert.That (
-          _implicitInterfaceAdapter.GetHashCode(),
-          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty).GetHashCode()));
-      Assert.AreNotEqual (
-          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty).GetHashCode(),
-          _implicitInterfaceAdapter.GetHashCode());
-    }
-
-    [Test]
     public void GetOriginalDeclaringType ()
     {
       Assert.That (_adapter.GetOriginalDeclaringType(), Is.EqualTo (_adapter.DeclaringType));
@@ -667,6 +646,26 @@ namespace Remotion.UnitTests.Reflection
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));
 
       Assert.That (adapter.ToString (), Is.EqualTo ("System.Object ImplicitInterfaceScalar"));
+    }
+
+    [Test]
+    public void Equals_ChecksPropertyInfo ()
+    {
+      Assert.That (_implicitInterfaceAdapter.Equals(new PropertyInfoAdapter (_implicitInterfaceImplementationProperty)), Is.True);
+      Assert.That (new PropertyInfoAdapter (_explicitInterfaceImplementationProperty).Equals(_implicitInterfaceAdapter), Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_UsesPropertyInfo ()
+    {
+      Assert.That (
+          _implicitInterfaceAdapter.GetHashCode (),
+          Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty).GetHashCode ()));
+      Assert.AreNotEqual (
+          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty).GetHashCode (),
+          _implicitInterfaceAdapter.GetHashCode ());
+      Assert.That (new PropertyInfoAdapter (typeof (int[]).GetProperty ("Length")).GetHashCode (), 
+        Is.EqualTo (new PropertyInfoAdapter (typeof (int[]).GetProperty ("Length")).GetHashCode ()));
     }
 
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)

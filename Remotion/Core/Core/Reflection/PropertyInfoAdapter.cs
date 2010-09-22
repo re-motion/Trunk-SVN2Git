@@ -106,20 +106,9 @@ namespace Remotion.Reflection
       return Maybe.ForValue (_propertyInfo.GetSetMethod (nonPublic)).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault ();
     }
 
-    public override bool Equals (object obj)
-    {
-      var other = obj as PropertyInfoAdapter;
-      return other != null && _propertyInfo.Equals (other._propertyInfo);
-    }
-
     public ParameterInfo[] GetIndexParameters ()
     {
       return _propertyInfo.GetIndexParameters();
-    }
-
-    public override int GetHashCode ()
-    {
-      return _propertyInfo.GetHashCode();
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
@@ -164,6 +153,25 @@ namespace Remotion.Reflection
     IMemberInformation IMemberInformation.FindInterfaceDeclaration ()
     {
       return FindInterfaceDeclaration ();
+    }
+
+    public override bool Equals (object obj)
+    {
+      var other = obj as PropertyInfoAdapter;
+      //return other != null && _propertyInfo.Equals (other._propertyInfo);
+
+      if (other == null)
+        return false;
+
+      return ReflectionUtility.MemberInfoEquals (_propertyInfo, other._propertyInfo);
+    }
+
+    public override int GetHashCode ()
+    {
+      if (_propertyInfo.DeclaringType.IsArray)
+        return DeclaringType.GetHashCode () ^ Name.GetHashCode ();
+      else
+        return DeclaringType.GetHashCode() ^ _propertyInfo.MetadataToken.GetHashCode();
     }
 
     public override string ToString ()

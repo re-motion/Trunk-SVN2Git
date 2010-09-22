@@ -288,6 +288,48 @@ namespace Remotion.Utilities
           Tuple.Create (type, ascribeeType), key => GetAscribedGenericArgumentsWithoutCache (key.Item1, key.Item2));
     }
 
+    public static bool MemberInfoEquals (MemberInfo lhs, MemberInfo rhs)
+    {
+      if (lhs == rhs)
+        return true;
+
+
+      if (lhs.DeclaringType != rhs.DeclaringType)
+        return false;
+
+
+      // Methods on arrays do not have metadata tokens but their ReflectedType
+      // always equals their DeclaringType
+      if (lhs.DeclaringType != null && lhs.DeclaringType.IsArray)
+        return false;
+
+
+      if (lhs.MetadataToken != rhs.MetadataToken || lhs.Module != rhs.Module)
+        return false;
+
+
+      if (lhs is MethodInfo)
+      {
+        MethodInfo lhsMethod = lhs as MethodInfo;
+
+
+        if (lhsMethod.IsGenericMethod)
+        {
+          MethodInfo rhsMethod = rhs as MethodInfo;
+
+
+          Type[] lhsGenArgs = lhsMethod.GetGenericArguments ();
+          Type[] rhsGenArgs = rhsMethod.GetGenericArguments ();
+          for (int i = 0; i < rhsGenArgs.Length; i++)
+          {
+            if (lhsGenArgs[i] != rhsGenArgs[i])
+              return false;
+          }
+        }
+      }
+      return true;
+    }
+
     private static bool CanAscribeInternalFromCache (Type type, Type ascribeeType)
     {
       return s_canAscribeInternalCache.GetOrCreateValue (Tuple.Create (type, ascribeeType), key => CanAscribeInternal (key.Item1, key.Item2));

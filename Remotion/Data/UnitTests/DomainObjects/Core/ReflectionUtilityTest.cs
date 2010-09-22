@@ -97,5 +97,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.AreEqual (Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
           ReflectionUtility.GetConfigFileDirectory());
     }
+    
   }
 }
