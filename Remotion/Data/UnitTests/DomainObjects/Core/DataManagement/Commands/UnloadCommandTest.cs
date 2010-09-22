@@ -48,6 +48,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void CanUnload_True ()
+    {
+      EnsureDataAvailable (DomainObjectIDs.Order1);
+      var unloadCommand = CreateCommand (new[] { DomainObjectIDs.Order1 });
+      
+      Assert.That (unloadCommand.CanUnload, Is.True);
+    }
+
+    [Test]
+    public void CanUnload_False_ChangedDataContainers ()
+    {
+      EnsureDataAvailable (DomainObjectIDs.Order1);
+      _dataContainerMap[DomainObjectIDs.Order1].MarkAsChanged ();
+
+      var unloadCommand = CreateCommand (new[] { DomainObjectIDs.Order1 });
+      Assert.That (unloadCommand.CanUnload, Is.False);
+    }
+
+    [Test]
+    public void CanUnload_False_ChangedAssociatedEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+
+      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
+
+      var unloadCommand = CreateCommand (DomainObjectIDs.Order1);
+      Assert.That (unloadCommand.CanUnload, Is.False);
+    }
+
+    [Test]
+    public void CanUnload_False_ChangedOppositeEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+
+      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
+
+      var unloadCommand = CreateCommand (DomainObjectIDs.OrderItem1);
+      Assert.That (unloadCommand.CanUnload, Is.False); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
+    }
+
+    [Test]
     public void EnsureCanUnload_WithoutProblems ()
     {
       EnsureDataAvailable (DomainObjectIDs.Order1);
@@ -269,6 +312,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void NotifyClientTransactionOfBegin_EnsuresCanUnload ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order1.MarkAsChanged);
+
+      var command = CreateCommand (order1.ID);
+      command.NotifyClientTransactionOfBegin ();
+    }
+
+    [Test]
     public void NotifyClientTransactionOfBegin_SetsCurrentTransaction ()
     {
       var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
@@ -314,6 +368,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       listenerMock.AssertWasCalled (mock => mock.ObjectsUnloaded (
           Arg.Is (_transaction), 
           Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void NotifyClientTransactionOfEnd_EnsuresCanUnload ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order1.MarkAsChanged);
+
+      var command = CreateCommand (order1.ID);
+      command.NotifyClientTransactionOfEnd ();
     }
 
     [Test]
@@ -369,6 +434,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Begin_EnsuresCanUnload ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order1.MarkAsChanged);
+
+      var command = CreateCommand (order1.ID);
+      command.Begin();
+    }
+
+    [Test]
     public void Begin_Transaction ()
     {
       var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
@@ -419,6 +495,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void End_EnsuresCanUnload ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order1.MarkAsChanged);
+
+      var command = CreateCommand (order1.ID);
+      command.End ();
+    }
+
+    [Test]
     public void End_Transaction ()
     {
       var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
@@ -447,6 +534,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (order2.OnUnloadedCalled, Is.True);
 
       Assert.That (order1.OnUnloadedDateTime, Is.GreaterThan (order2.OnUnloadedDateTime), "order2 was called first");
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Perform_EnsuresCanUnload ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order1.MarkAsChanged);
+
+      var command = CreateCommand (order1.ID);
+      try
+      {
+        command.Perform ();
+      }
+      catch (InvalidOperationException)
+      {
+        Assert.That (order1.TransactionContext[_transaction].State, Is.Not.EqualTo (StateType.NotLoadedYet));
+        throw;
+      }
     }
 
     [Test]
@@ -557,7 +663,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Perform_Many_ChecksPerformed_BeforePerformingAnything ()
+    public void Perform_Many_Checks_BeforePerformingAnything ()
     {
       EnsureDataAvailable (DomainObjectIDs.Order1);
       EnsureDataAvailable (DomainObjectIDs.Order2);
@@ -567,9 +673,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _dataContainerMap[DomainObjectIDs.Order2].MarkAsChanged();
 
+      var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
       try
       {
-        var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
         command.Perform();
         Assert.Fail ("Expected InvalidOperationException");
       }

@@ -42,9 +42,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
 
     public UnloadCommand (
-        ObjectID[] objectIDs, 
-        ClientTransaction clientTransaction, 
-        DataContainerMap dataContainerMap, 
+        ObjectID[] objectIDs,
+        ClientTransaction clientTransaction,
+        DataContainerMap dataContainerMap,
         RelationEndPointMap relationEndPointMap)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -57,16 +57,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
 
-      var unloadProblems = new List<string> ();
+      var unloadProblems = new List<string>();
 
       _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, unloadProblems);
       _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers, unloadProblems);
 
-      _unloadProblems = unloadProblems.ToArray ();
+      _unloadProblems = unloadProblems.ToArray();
 
-      EnsureCanUnload ();
-    
-      _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
+      _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly();
     }
 
     public DataContainer[] UnloadedDataContainers
@@ -79,44 +77,61 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       get { return _unloadedEndPoints; }
     }
 
+    public bool CanUnload
+    {
+      get { return _unloadProblems.Length == 0; }
+    }
+
     public void EnsureCanUnload ()
     {
-      if (_unloadProblems.Length > 0)
+      if (!CanUnload)
         throw new InvalidOperationException (_unloadProblems[0]);
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
+      EnsureCanUnload();
+
       if (_unloadedDomainObjects.Count > 0)
         _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, _unloadedDomainObjects));
     }
 
     public void Begin ()
     {
-      _clientTransaction.Execute (delegate
-      {
-        for (int i = 0; i < _unloadedDomainObjects.Count; i++)
-          _unloadedDomainObjects[i].OnUnloading ();
-      });
+      EnsureCanUnload();
+
+      _clientTransaction.Execute (
+          delegate
+          {
+            for (int i = 0; i < _unloadedDomainObjects.Count; i++)
+              _unloadedDomainObjects[i].OnUnloading();
+          });
     }
 
     public void Perform ()
     {
+      EnsureCanUnload();
+
       UnregisterEndPoints (_unloadedEndPoints);
       UnregisterDataContainers (_unloadedDataContainers);
     }
 
     public void End ()
     {
-      _clientTransaction.Execute (delegate
-      {
-        for (int i = _unloadedDomainObjects.Count - 1; i >= 0; i--)
-          _unloadedDomainObjects[i].OnUnloaded ();
-      });
+      EnsureCanUnload();
+
+      _clientTransaction.Execute (
+          delegate
+          {
+            for (int i = _unloadedDomainObjects.Count - 1; i >= 0; i--)
+              _unloadedDomainObjects[i].OnUnloaded();
+          });
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
+      EnsureCanUnload();
+
       if (_unloadedDomainObjects.Count > 0)
         _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, _unloadedDomainObjects));
     }
@@ -131,7 +146,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       var affectedDataContainers = unloadedObjectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
       var notUnchangedDataContainers = affectedDataContainers.Where (dc => dc.State != StateType.Unchanged);
-      if (notUnchangedDataContainers.Any ())
+      if (notUnchangedDataContainers.Any())
       {
         var message =
             "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
@@ -139,12 +154,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
             + ".";
         problemAggregator.Add (message);
       }
-      
+
       return affectedDataContainers;
     }
 
     private RelationEndPoint[] GetAndCheckUnloadedEndPoints (
-        IEnumerable<DataContainer> unloadedDataContainers, 
+        IEnumerable<DataContainer> unloadedDataContainers,
         ICollection<string> problemAggregator)
     {
       // All end-points associated with a DataContainer to be unloaded must be unchanged, even if they are not unloaded.
@@ -158,14 +173,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return (from associatedEndPoint in associatedEndPoints
               from unloadedEndPoint in GetUnloadedEndPoints (associatedEndPoint)
               select EnsureUnchanged (associatedEndPoint.ObjectID, unloadedEndPoint, problemAggregator))
-            .ToArray ();
+          .ToArray();
     }
 
     private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
     {
       var loadedEndPoint = _relationEndPointMap[endPointID];
       Assertion.IsTrue (
-          loadedEndPoint != null || endPointID.Definition.IsVirtual, 
+          loadedEndPoint != null || endPointID.Definition.IsVirtual,
           "We can be sure that real end points always exist in the RelationEndPointMap.");
       return loadedEndPoint;
     }
@@ -182,7 +197,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       var maybeVirtualNullEndPoint =
           Maybe.ForValue (endPointOfUnloadedDataContainer)
               .Where (endPoint => endPoint.Definition.IsVirtual)
-              .Where (endPoint => endPoint.Definition.Cardinality == CardinalityType.One )
+              .Where (endPoint => endPoint.Definition.Cardinality == CardinalityType.One)
               .Where (endPoint => ((ObjectEndPoint) endPoint).OppositeObjectID == null);
 
       // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
@@ -195,7 +210,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
               .Where (endPoint => !endPoint.Definition.IsVirtual)
               .Select (endPoint => endPoint as ObjectEndPoint)
               .Where (endPoint => endPoint.OppositeObjectID != null)
-              .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
+              .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition()))
               .Select (oppositeID => _relationEndPointMap[oppositeID]);
 
       // What's not unloaded:
@@ -208,7 +223,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       // What must not be changed:
       // - All end-points of the object being unloaded.
       // - The opposite virtual end-point if it is unloaded.
-      
+
       return Maybe.EnumerateValues (
           maybeRealEndPoint,
           maybeVirtualNullEndPoint,
@@ -222,7 +237,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         var message = String.Format (
             "Object '{0}' cannot be unloaded because one of its relations has been changed. Only unchanged objects can be unloaded. "
             + "Changed end point: '{1}'.",
-            unloadedObjectID, 
+            unloadedObjectID,
             endPoint.ID);
         problemAggregator.Add (message);
       }
@@ -241,13 +256,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       foreach (var unloadedEndPoint in unloadedEndPoints)
       {
         if (unloadedEndPoint.Definition.Cardinality == CardinalityType.One)
-        {
           _relationEndPointMap.RemoveEndPoint (unloadedEndPoint.ID);
-        }
         else
         {
           var unloadedCollectionEndPoint = (CollectionEndPoint) unloadedEndPoint;
-          unloadedCollectionEndPoint.Unload ();
+          unloadedCollectionEndPoint.Unload();
         }
       }
     }
