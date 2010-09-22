@@ -132,8 +132,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
-      // TODO Review 3325: Should be _mixinMethodInfo + " (Mixin)"
-      return Name + "(Mixin)";
+      return _mixinMethodInfo + " (Mixin)";
     }
   }
 }

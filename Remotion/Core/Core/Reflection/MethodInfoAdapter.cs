@@ -177,8 +177,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
-      // TODO Review 3325: Should be _methodInfo.ToString()
-      return Name;
+      return _methodInfo.ToString ();
     }
 
     // Implements an equality check for MethodInfos that have different ReflectedTypes (ie, one where MethodInfo.Equals woudn't work).

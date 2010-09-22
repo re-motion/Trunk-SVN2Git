@@ -204,7 +204,8 @@ namespace Remotion.UnitTests.Reflection
     public void To_String ()
     {
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
-      Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test(added by mixin)"));
+      _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
+      Assert.That (_mixinIntroducedPropertyInformation.ToString (), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
     }
   }
 }

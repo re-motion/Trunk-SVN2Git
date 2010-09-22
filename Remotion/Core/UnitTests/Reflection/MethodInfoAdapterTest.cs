@@ -24,7 +24,6 @@ using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 using Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection
 {

@@ -666,7 +666,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var adapter = new PropertyInfoAdapter (typeof (IInterfaceWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar"));
 
-      Assert.That (adapter.ToString (), Is.EqualTo ("ImplicitInterfaceScalar"));
+      Assert.That (adapter.ToString (), Is.EqualTo ("System.Object ImplicitInterfaceScalar"));
     }
 
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)

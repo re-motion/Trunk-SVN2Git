@@ -457,7 +457,7 @@ namespace Remotion.UnitTests.Reflection
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
 
-      Assert.That (_interfaceImplementationPropertyInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean'"));
+      Assert.That (_interfaceImplementationPropertyInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean')"));
     }
 
     private void CheckMethodInformation (

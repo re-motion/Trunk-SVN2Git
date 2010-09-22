@@ -174,7 +174,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
-      return string.Format ("{0}(impl of '{1}'", Name, _declarationPropertyInfo.DeclaringType.Name);
+      return string.Format ("{0}(impl of '{1}')", Name, _declarationPropertyInfo.DeclaringType.Name);
     }
   }
 }
