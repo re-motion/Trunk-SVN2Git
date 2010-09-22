@@ -130,15 +130,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     private RelationEndPoint[] GetAndCheckUnloadedEndPoints (IEnumerable<DataContainer> unloadedDataContainers)
     {
-      var associatedEndPointsOfUnloadedContainers = from dataContainer in unloadedDataContainers
-                                                    from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                                    let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
-                                                    where associatedEndPoint != null
-                                                    select associatedEndPoint;
-      
-      return (from associatedEndPoint in associatedEndPointsOfUnloadedContainers
-              from unloadedEndPoint in GetAndCheckUnloadedEndPoints (associatedEndPoint)
-              select unloadedEndPoint).ToArray ();
+      // All end-points associated with a DataContainer to be unloaded must be unchanged.
+      var checkedAssociatedEndPoints = from dataContainer in unloadedDataContainers
+                                       from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                                       let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
+                                       where associatedEndPoint != null
+                                       select EnsureUnchanged (dataContainer.ID, associatedEndPoint);
+
+      var checkedUnloadedEndPoints = from associatedEndPoint in checkedAssociatedEndPoints
+                                     from unloadedEndPoint in GetUnloadedEndPoints (associatedEndPoint)
+                                     select 
+                                        unloadedEndPoint != associatedEndPoint 
+                                            ? EnsureUnchanged (associatedEndPoint.ObjectID, unloadedEndPoint)
+                                            : associatedEndPoint; // Optimization: associated end point has already been checked above
+
+      return checkedUnloadedEndPoints.ToArray ();
     }
 
     private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
@@ -150,11 +156,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return loadedEndPoint;
     }
 
-    private IEnumerable<RelationEndPoint> GetAndCheckUnloadedEndPoints (RelationEndPoint endPointOfUnloadedDataContainer)
+    private IEnumerable<RelationEndPoint> GetUnloadedEndPoints (RelationEndPoint endPointOfUnloadedDataContainer)
     {
-      // All end-points associated with a DataContainer to be unloaded must be unchanged.
-      EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, endPointOfUnloadedDataContainer);
-
       // If it is a real end-point, it must be unloaded. Real end-points cannot exist without their DataContainer.
       var maybeRealEndPoint = Maybe
           .ForValue (endPointOfUnloadedDataContainer)
@@ -179,8 +182,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
               .Select (endPoint => endPoint as ObjectEndPoint)
               .Where (endPoint => endPoint.OppositeObjectID != null)
               .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
-              .Select (oppositeID => _relationEndPointMap[oppositeID]) // only loaded opposite end points!
-              .Where (oppositeEndPoint => EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, oppositeEndPoint));
+              .Select (oppositeID => _relationEndPointMap[oppositeID]);
 
       // What's not unloaded:
       // - Virtual object end-points whose opposite object is not null. The life-time of virtual object end-points is defined by the life-time of 
@@ -196,10 +198,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return Maybe.EnumerateValues (
           maybeRealEndPoint,
           maybeVirtualNullEndPoint,
-          maybeOppositeEndPoint);
+          maybeOppositeEndPoint); // filters out not loaded opposite end points
     }
 
-    private bool EnsureUnchanged (ObjectID unloadedObjectID, IEndPoint endPoint)
+    private RelationEndPoint EnsureUnchanged (ObjectID unloadedObjectID, RelationEndPoint endPoint)
     {
       if (endPoint.HasChanged)
       {
@@ -211,7 +213,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         throw new InvalidOperationException (message);
       }
 
-      return true;
+      return endPoint;
     }
 
     private void UnregisterDataContainers (IEnumerable<DataContainer> dataContainers)
