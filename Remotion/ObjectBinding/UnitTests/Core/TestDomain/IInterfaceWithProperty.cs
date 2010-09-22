@@ -15,15 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  [BindableObject]
-  [Uses (typeof (MixinAddingProperty))]
-  public class ClassWithMixedProperty : IInterfaceWithProperty
+  public interface IInterfaceWithProperty
   {
-    public string PublicExistingProperty { get; set; }
-    public string InterfaceProperty { get; set; }
+    string InterfaceProperty { get; set; }
   }
 }

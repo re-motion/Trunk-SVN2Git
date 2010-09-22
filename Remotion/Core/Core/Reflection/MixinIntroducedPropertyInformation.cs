@@ -116,12 +116,20 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_mixinPropertyInfo.GetGetMethod (nonPublic)).Select (mi => new MixinIntroducedMethodInformation (mi)).ValueOrDefault ();
+      return Maybe
+          .ForValue (_mixinPropertyInfo.GetGetMethod (nonPublic))
+          .Select (mi => mi as InterfaceImplementationMethodInformation)
+          .Select (mi => new MixinIntroducedMethodInformation (mi))
+          .ValueOrDefault ();
     }
 
     public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return Maybe.ForValue (_mixinPropertyInfo.GetSetMethod (nonPublic)).Select (mi => new MixinIntroducedMethodInformation(mi)).ValueOrDefault ();
+      return Maybe
+          .ForValue (_mixinPropertyInfo.GetSetMethod (nonPublic))
+          .Select (mi => mi as InterfaceImplementationMethodInformation)
+          .Select (mi => new MixinIntroducedMethodInformation (mi))
+          .ValueOrDefault ();
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

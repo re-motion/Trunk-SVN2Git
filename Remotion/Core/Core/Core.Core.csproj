@@ -233,6 +233,8 @@
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\PropertySignatureStringBuilder.cs" />
+    <Compile Include="Reflection\TestDomain\ClassImplementingInterface.cs" />
+    <Compile Include="Reflection\TestDomain\IInterfaceToImplement.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyNameSpecification.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinder.cs" />

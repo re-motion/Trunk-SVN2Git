@@ -89,7 +89,7 @@ namespace Remotion.Reflection
 
     public bool CanBeSetFromOutside
     {
-      get { return _implementationPropertyInfo.CanBeSetFromOutside; }
+      get { return GetSetMethod (false) != null; }
     }
 
     public object GetValue (object instance, object[] indexParameters)
@@ -106,18 +106,50 @@ namespace Remotion.Reflection
       _declarationPropertyInfo.SetValue (instance, value, indexParameters);
     }
 
-    public InterfaceImplementationMethodInformation GetGetMethod (bool nonPublic)
+    /// <summary>
+    /// Gets the get accessor for this <see cref="InterfaceImplementationPropertyInformation"/>. If the interface declaring this 
+    /// <see cref="InterfaceImplementationPropertyInformation"/> also declares the accessor, an <see cref="InterfaceImplementationMethodInformation"/>
+    /// for that accessor is returned. Otherwise, the <see cref="IMethodInformation"/> (if any) on the type implementing the interface is returned.
+    /// </summary>
+    /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned. If the interface declares the accessor, 
+    /// this flag has no effect since interface methods are always public. If only the implementation type declares the accessor, the flag is used to
+    /// determine whether to return that accessor.</param>
+    /// <returns>
+    /// An instance of <see cref="InterfaceImplementationMethodInformation"/> for the get method if the accessor is delared by the interface.
+    /// Otherwise, an instance of <see cref="IMethodInformation"/> for the get method on the implementation type, or <see langword="null" /> if 
+    /// there is no such method or its visibility does not match the <paramref name="nonPublic"/> flag.
+    /// </returns>
+    public IMethodInformation GetGetMethod (bool nonPublic)
     {
-      return
-          Maybe.ForValue (_implementationPropertyInfo.GetGetMethod (nonPublic)).Select (
-              mi => new InterfaceImplementationMethodInformation (mi, _declarationPropertyInfo.GetGetMethod (nonPublic))).ValueOrDefault ();
+      var interfaceAccessor = _declarationPropertyInfo.GetGetMethod (nonPublic);
+
+      if (interfaceAccessor != null)
+        return new InterfaceImplementationMethodInformation (_implementationPropertyInfo.GetGetMethod (true), interfaceAccessor);
+      else
+        return _implementationPropertyInfo.GetGetMethod (nonPublic);
     }
 
-    public InterfaceImplementationMethodInformation GetSetMethod (bool nonPublic)
+    /// <summary>
+    /// Gets the set accessor for this <see cref="InterfaceImplementationPropertyInformation"/>. If the interface declaring this 
+    /// <see cref="InterfaceImplementationPropertyInformation"/> also declares the accessor, an <see cref="InterfaceImplementationMethodInformation"/>
+    /// for that accessor is returned. Otherwise, the <see cref="IMethodInformation"/> (if any) on the type implementing the interface is returned.
+    /// </summary>
+    /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned. If the interface declares the accessor, 
+    /// this flag has no effect since interface methods are always public. If only the implementation type declares the accessor, the flag is used to
+    /// determine whether to return that accessor.</param>
+    /// <returns>
+    /// An instance of <see cref="InterfaceImplementationMethodInformation"/> for the set method if the accessor is delared by the interface.
+    /// Otherwise, an instance of <see cref="IMethodInformation"/> for the set method on the implementation type, or <see langword="null" /> if 
+    /// there is no such method or its visibility does not match the <paramref name="nonPublic"/> flag.
+    /// </returns>
+    public IMethodInformation GetSetMethod (bool nonPublic)
     {
-      return
-          Maybe.ForValue (_implementationPropertyInfo.GetSetMethod (nonPublic)).Select (
-              mi => new InterfaceImplementationMethodInformation (mi, _declarationPropertyInfo.GetSetMethod (nonPublic))).ValueOrDefault();
+      var interfaceAccessor = _declarationPropertyInfo.GetSetMethod (nonPublic);
+
+      if (interfaceAccessor != null)
+        return new InterfaceImplementationMethodInformation (_implementationPropertyInfo.GetSetMethod (true), interfaceAccessor);
+      else
+        return _implementationPropertyInfo.GetSetMethod (nonPublic);
     }
 
     IMethodInformation IPropertyInformation.GetGetMethod (bool nonPublic)

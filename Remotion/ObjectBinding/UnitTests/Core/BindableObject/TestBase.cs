@@ -78,7 +78,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       }
       else
       {
-        return new PropertyInfoAdapter (propertyInfo);
+        var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
+        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
+        if (interfaceDeclaration != null)
+          return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
+        else
+          return propertyInfoAdapter;
       }
     }
 

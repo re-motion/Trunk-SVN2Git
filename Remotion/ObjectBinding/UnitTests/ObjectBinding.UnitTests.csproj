@@ -154,6 +154,7 @@
     <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
+    <Compile Include="Core\TestDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\TestDomain\IMixinSecurableClass.cs" />
     <Compile Include="Core\TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />
     <Compile Include="Core\TestDomain\MixinOverridingProperty.cs" />

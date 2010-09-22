@@ -128,7 +128,7 @@ namespace Remotion.UnitTests.Reflection
     public void GetGetMethod ()
     {
       var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
-      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (methodInfoAdapter);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (methodInfoAdapter);
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (false)).Return (methodInfoAdapter);
 
       var result = _mixinIntroducedPropertyInformation.GetGetMethod (false);
@@ -149,7 +149,7 @@ namespace Remotion.UnitTests.Reflection
     public void GetSetMethod ()
     {
       var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
-      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (methodInfoAdapter);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (methodInfoAdapter);
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (false)).Return (methodInfoAdapter);
 
       var result = _mixinIntroducedPropertyInformation.GetSetMethod (false);

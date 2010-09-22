@@ -83,7 +83,7 @@ namespace Remotion.Reflection
     /// </summary>
     /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned.</param>
     /// <returns>
-    /// A instance of <see cref="IMethodInformation"/> of the get method.
+    /// An instance of <see cref="IMethodInformation"/> for the get method.
     /// </returns>
     IMethodInformation GetGetMethod (bool nonPublic);
 
@@ -91,7 +91,9 @@ namespace Remotion.Reflection
     /// Get the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
     /// </summary>
     /// <param name="nonPublic">Indicates whether a non-public accessor method may also be returned.</param>
-    /// <returns>The <see cref="IMethodInformation"/> of the set method.</returns>
+    /// <returns>
+    /// An instance of <see cref="IMethodInformation"/> for the set method.
+    /// </returns>
     IMethodInformation GetSetMethod (bool nonPublic);
 
     /// <summary>

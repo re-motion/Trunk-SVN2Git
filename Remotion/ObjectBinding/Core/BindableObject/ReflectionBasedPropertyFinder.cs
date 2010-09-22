@@ -82,8 +82,11 @@ namespace Remotion.ObjectBinding.BindableObject
             else
             {
               var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
-              // TODO Review 3292: Check whether propertyInfoAdapter.FindInterfaceDeclaration() != null. If so, return an InterfaceImplementationPropertyInformation. Add a test checking this. After that change, the ReferenceType.GetMetadata_WithReadWriteExplicitInterfaceScalar() test should work again.
-              yield return propertyInfoAdapter;
+              var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
+              if (interfaceDeclaration != null)
+                yield return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
+              else
+                yield return propertyInfoAdapter;
             }
 
             propertyNames.Add (propertyInfo.Name);
