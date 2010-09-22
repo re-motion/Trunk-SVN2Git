@@ -48,15 +48,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void EnsureCanUnload_WithoutProblems ()
+    {
+      EnsureDataAvailable (DomainObjectIDs.Order1);
+      CreateCommand (new[] { DomainObjectIDs.Order1 }).EnsureCanUnload ();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
-    public void Initialization_ThrowsOnChangedDataContainers ()
+    public void EnsureCanUnload_ThrowsOnChangedDataContainers ()
     {
       EnsureDataAvailable (DomainObjectIDs.Order1);
       _dataContainerMap[DomainObjectIDs.Order1].MarkAsChanged();
 
-      CreateCommand (new[] { DomainObjectIDs.Order1 });
+      CreateCommand (new[] { DomainObjectIDs.Order1 }).EnsureCanUnload();
     }
 
     [Test]
@@ -64,14 +71,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
         + "unchanged objects can be unloaded. Changed end point: "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
-    public void Initialization_ThrowsOnChangedAssociatedEndPoint ()
+    public void EnsureCanUnload_ThrowsOnChangedAssociatedEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
-      CreateCommand (DomainObjectIDs.Order1);
+      CreateCommand (DomainObjectIDs.Order1).EnsureCanUnload ();
     }
 
     [Test]
@@ -79,14 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. "
         + "Only unchanged objects can be unloaded. Changed end point: "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
-    public void Initialization_ThrowsOnChangedOppositeEndPoint ()
+    public void EnsureCanUnload_ThrowsOnChangedOppositeEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
-      CreateCommand (DomainObjectIDs.OrderItem1); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
+      CreateCommand (DomainObjectIDs.OrderItem1).EnsureCanUnload (); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
     }
 
     [Test]

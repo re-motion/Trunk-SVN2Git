@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     private readonly DataContainer[] _unloadedDataContainers;
     private readonly RelationEndPoint[] _unloadedEndPoints;
+    private readonly string[] _unloadProblems;
 
     private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
 
@@ -56,13 +57,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
 
-      var problems = new List<string> ();
+      var unloadProblems = new List<string> ();
 
-      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, problems);
-      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers, problems);
+      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, unloadProblems);
+      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers, unloadProblems);
 
-      if (problems.Count > 0)
-        throw new InvalidOperationException (problems[0]);
+      _unloadProblems = unloadProblems.ToArray ();
+
+      EnsureCanUnload ();
     
       _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
     }
@@ -75,6 +77,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public RelationEndPoint[] UnloadedEndPoints
     {
       get { return _unloadedEndPoints; }
+    }
+
+    public void EnsureCanUnload ()
+    {
+      if (_unloadProblems.Length > 0)
+        throw new InvalidOperationException (_unloadProblems[0]);
     }
 
     public void NotifyClientTransactionOfBegin ()
