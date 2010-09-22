@@ -56,13 +56,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
       
-      _affectedDataContainers = GetAndCheckAffectedDataContainers ();
+      _affectedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs);
       _affectedDomainObjects = _affectedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
-
-      _affectedEndPointIDs = (from dataContainer in _affectedDataContainers
-                              from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                              from unloadedEndPointID in GetAndCheckAffectedEndPointIDs (associatedEndPointID)
-                              select unloadedEndPointID).ToArray();
+      _affectedEndPointIDs = GetAndCheckUnloadedEndPointIDs (_affectedDataContainers);
     }
 
     public DataContainer[] AffectedDataContainers
@@ -116,9 +112,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return new ExpandedCommand (this);
     }
 
-    private DataContainer[] GetAndCheckAffectedDataContainers ()
+    // The affected DataContainers are all DataContainers to be unloaded. The DataContainers must be unchanged.
+    private DataContainer[] GetAndCheckUnloadedDataContainers (IEnumerable<ObjectID> unloadedObjectIDs)
     {
-      var affectedDataContainers = _objectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
+      var affectedDataContainers = unloadedObjectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
       var notUnchangedDataContainers = affectedDataContainers.Where (dc => dc.State != StateType.Unchanged);
       if (notUnchangedDataContainers.Any ())
       {
@@ -132,33 +129,70 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return affectedDataContainers;
     }
 
-    private IEnumerable<RelationEndPointID> GetAndCheckAffectedEndPointIDs (RelationEndPointID endPointID)
+    private RelationEndPointID[] GetAndCheckUnloadedEndPointIDs (IEnumerable<DataContainer> unloadedDataContainers)
     {
-      Assertion.IsFalse (
-          !endPointID.Definition.IsVirtual && !_relationEndPointMap.Contains (endPointID), 
-          "Real end point is always registered when data container exists.");
+      return (from dataContainer in unloadedDataContainers
+              from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+              let loadedAssociatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
+              where loadedAssociatedEndPoint != null
+              from unloadedEndPointID in GetAndCheckUnloadedEndPointIDs (loadedAssociatedEndPoint)
+              select unloadedEndPointID).ToArray ();
+    }
 
-      var maybeLoadedEndPoint = Maybe.ForValue (_relationEndPointMap[endPointID])
-          .Where (endPoint => EnsureUnchanged (endPoint.ObjectID, endPoint));
+    private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
+    {
+      var loadedEndPoint = _relationEndPointMap[endPointID];
+      Assertion.IsTrue (
+          loadedEndPoint != null || endPointID.Definition.IsVirtual, 
+          "We can be sure that real end points always exist in the RelationEndPointMap.");
+      return loadedEndPoint;
+    }
 
-      var maybeRealEndPointID = Maybe.ForValue (endPointID).Where (id => !id.Definition.IsVirtual);
+    private IEnumerable<RelationEndPointID> GetAndCheckUnloadedEndPointIDs (RelationEndPoint endPointOfUnloadedDataContainer)
+    {
+      // All end-points associated with a DataContainer to be unloaded must be unchanged. TODO 3327: Is this true?
+      EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, endPointOfUnloadedDataContainer);
 
+      // If it is a real end-point, it must be unloaded. Real end-points cannot exist without their DataContainer.
+      var maybeRealEndPointID = Maybe
+          .ForValue (endPointOfUnloadedDataContainer)
+          .Where (endPoint => !endPoint.Definition.IsVirtual)
+          .Select (endPoint => endPoint.ID);
+
+      // If it is a virtual object end-point and the opposite object is null, it must be unloaded. Virtual end-points pointing to null cannot exist 
+      // without their DataContainer.
       var maybeVirtualNullEndPointID =
-          maybeLoadedEndPoint
+          Maybe.ForValue (endPointOfUnloadedDataContainer)
               .Where (endPoint => endPoint.Definition.IsVirtual)
-              .Select (endPoint => endPoint as ObjectEndPoint)
-              .Where (endPoint => endPoint.OppositeObjectID == null)
+              .Where (endPoint => endPoint.Definition.Cardinality == CardinalityType.One )
+              .Where (endPoint => ((ObjectEndPoint) endPoint).OppositeObjectID == null)
               .Select (endPoint => endPoint.ID);
 
-      var maybeOppositeEndPointID = 
-          maybeLoadedEndPoint
+      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
+      // must be unloaded. Virtual end-points cannot exist without their opposite real end-points.
+      // In this case, the unloaded opposite virtual end-point must be unchanged. (This only affects 1:n relations where the virtual end-point can be 
+      // changed although the (one of many) real end-point is unchanged. For 1:1 relations, the real and virtual end-points are always changed 
+      // together.)
+      var maybeOppositeEndPointID =
+          Maybe.ForValue (endPointOfUnloadedDataContainer)
               .Where (endPoint => !endPoint.Definition.IsVirtual)
               .Select (endPoint => endPoint as ObjectEndPoint)
               .Where (endPoint => endPoint.OppositeObjectID != null)
               .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
               .Select (oppositeID => _relationEndPointMap[oppositeID]) // only loaded opposite end points!
-              .Where (oppositeEndPoint => EnsureUnchanged (endPointID.ObjectID, oppositeEndPoint))
+              .Where (oppositeEndPoint => EnsureUnchanged (endPointOfUnloadedDataContainer.ObjectID, oppositeEndPoint))
               .Select (oppositeEndPoint => oppositeEndPoint.ID);
+
+      // What's not unloaded:
+      // - Virtual object end-points whose opposite object is not null. The life-time of virtual object end-points is defined by the life-time of 
+      //   the real end-points (unless they point to null).
+      // - Virtual collection end-points. The life-time of virtual collection end-points is defined by the life-time of the full set of its real 
+      //   end-points.
+      // - Opposite real end-points. The life-time of real end-points is coupled to the life-time of the DataContainer.
+
+      // What must not be changed:
+      // - All end-points of the object being unloaded.
+      // - The opposite virtual end-point if it is unloaded.
       
       return Maybe.EnumerateValues (
           maybeRealEndPointID,

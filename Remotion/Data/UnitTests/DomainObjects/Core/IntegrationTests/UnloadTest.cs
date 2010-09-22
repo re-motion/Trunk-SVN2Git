@@ -176,6 +176,77 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    public void UnloadData_OrderTicket_ReloadData ()
+    {
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var order = orderTicket1.Order;
+      order.EnsureDataAvailable ();
+
+      Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (orderTicket1, false);
+      CheckDataContainerExists (order, true);
+
+      // Data reload
+
+      CheckDataContainerExists (orderTicket1, false);
+
+      Assert.That (orderTicket1.FileName, Is.EqualTo ("C:\\order1.png"));
+
+      CheckDataContainerExists (orderTicket1, true);
+      CheckDataContainerExists (order, true);
+    }
+
+    [Test]
+    public void UnloadData_OrderTicket_ReloadRelation_OneToOne_FromRealSide ()
+    {
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var order = orderTicket1.Order;
+      order.EnsureDataAvailable ();
+
+      Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckEndPointExists (orderTicket1, "Order", false);
+      CheckEndPointExists (order, "OrderTicket", false);
+
+      // 1:1 relation reload from real side
+
+      Assert.That (orderTicket1.Order, Is.SameAs (order));
+
+      CheckEndPointExists (orderTicket1, "Order", true);
+      CheckEndPointExists (order, "OrderTicket", true);
+    }
+
+    [Test]
+    public void UnloadData_OrderTicket_ReloadRelation_OneToOne_FromVirtualSide ()
+    {
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var order = orderTicket1.Order;
+      order.EnsureDataAvailable ();
+
+      Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckEndPointExists (orderTicket1, "Order", false);
+      CheckEndPointExists (order, "OrderTicket", false);
+
+      // 1:1 relation reload from virtual side
+
+      Assert.That (order.OrderTicket, Is.SameAs (orderTicket1));
+
+      CheckEndPointExists (orderTicket1, "Order", true);
+      CheckEndPointExists (order, "OrderTicket", true);
+    }
+
+    [Test]
     public void UnloadData_Order ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -222,6 +293,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    public void UnloadData_Order_RelationAccess_OneToMany_FromRealSide ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, false);
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+
+      Assert.That (orderItemA.Order, Is.SameAs (order1));
+      Assert.That (orderItemB.Order, Is.SameAs (order1));
+
+      CheckDataContainerExists (order1, true); // Relation access reloads object, although this is not really necessary
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+    }
+
+    [Test]
+    public void UnloadData_Order_RelationAccess_OneToMany_FromVirtualSide ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, false);
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+
+      Assert.That (order1.OrderItems, Is.EqualTo (new[] { orderItemA, orderItemB }));
+
+      CheckDataContainerExists (order1, true); // Relation access reloads object, although this is not really necessary
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+    }
+
+    [Test]
     public void UnloadData_OrderItem ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -251,7 +379,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadData_Reload_PropertyValue ()
+    public void UnloadData_OrderItem_ReloadRelation_OneToMany_FromRealSide ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, true);
+      CheckDataContainerExists (orderItemA, false);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", false);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", false);
+
+      Assert.That (orderItemA.Order, Is.SameAs (order1));
+
+      CheckDataContainerExists (order1, true);
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", false);
+    }
+
+    [Test]
+    public void UnloadData_OrderItem_ReloadRelation_OneToMany_FromVirtualSide ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, true);
+      CheckDataContainerExists (orderItemA, false);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", false);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", false);
+
+      Assert.That (order1.OrderItems, Is.EquivalentTo (new[] { orderItemA, orderItemB }));
+
+      CheckDataContainerExists (order1, true);
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+    }
+
+    [Test]
+    public void UnloadData_ReloadChanges_PropertyValue ()
     {
       SetDatabaseModifyable();
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -271,7 +455,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadData_Reload_ForeignKey ()
+    public void UnloadData_ReloadChanges_ForeignKey ()
     {
       SetDatabaseModifyable ();
       var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
