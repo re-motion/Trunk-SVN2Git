@@ -40,7 +40,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -50,7 +50,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.js");
+            control, context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
       }
 
@@ -58,7 +58,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
+            control, context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

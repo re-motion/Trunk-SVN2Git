@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       if (!ControlHelper.IsDesignMode (List))
       {
-        bool isXmlRequired = (Context != null) && ControlHelper.IsXmlConformResponseTextRequired (Context);
+        bool isXmlRequired = (context != null) && ControlHelper.IsXmlConformResponseTextRequired (context);
         if (isXmlRequired)
           RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForXmlBrowser;
       }
@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return CssClasses.ReadOnly; }
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       string styleFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.css");
+        string url = ResourceUrlResolver.GetResourceUrl (control, context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
@@ -144,11 +144,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.js");
+            control, context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
+      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
     }
 
     /// <summary>

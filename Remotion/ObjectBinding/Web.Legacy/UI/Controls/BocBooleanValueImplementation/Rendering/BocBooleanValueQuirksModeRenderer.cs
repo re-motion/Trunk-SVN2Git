@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       _resourceSet = resourceSet;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.js");
+            control, context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.css");
+            control, context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

@@ -45,13 +45,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementati
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var key = typeof (BocEnumValueQuirksModeRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
-          control, Context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, "BocEnumValue.css");
+          control, context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 

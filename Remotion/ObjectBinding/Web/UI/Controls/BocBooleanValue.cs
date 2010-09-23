@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory>();
       var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
     /// <summary> 

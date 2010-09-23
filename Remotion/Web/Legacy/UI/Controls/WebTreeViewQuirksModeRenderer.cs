@@ -35,13 +35,13 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       string styleKey = typeof (WebTreeViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
+            control, context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

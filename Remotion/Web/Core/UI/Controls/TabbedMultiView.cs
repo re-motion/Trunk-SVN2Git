@@ -230,7 +230,7 @@ namespace Remotion.Web.UI.Controls
     {
       var factory = SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
       var renderer = factory.CreateRenderer (context, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
     }
 
     protected override void OnLoad (EventArgs e)

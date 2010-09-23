@@ -40,7 +40,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -51,12 +51,12 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       string scriptFileKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.js");
+          control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Style";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
+          control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 

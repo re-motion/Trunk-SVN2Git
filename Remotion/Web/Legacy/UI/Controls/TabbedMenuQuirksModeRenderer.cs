@@ -38,7 +38,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -46,7 +46,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            control, Context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
+            control, context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
     }

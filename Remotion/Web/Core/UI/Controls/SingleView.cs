@@ -85,7 +85,7 @@ namespace Remotion.Web.UI.Controls
     {
       var factory = SafeServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
       var renderer = factory.CreateRenderer (context, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
     }
 
     //private void CreateTemplatedControls (bool recreate)

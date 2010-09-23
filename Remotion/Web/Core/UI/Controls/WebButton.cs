@@ -62,10 +62,10 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-
+      
       var factory = SafeServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current, this);
+      renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current, this, Page.Context);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (this, HtmlHeadAppender.Current);
     }

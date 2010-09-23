@@ -55,15 +55,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private Func<TextBox> TextBoxFactory { get; set; }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      RegisterJavaScriptFiles (htmlHeadAppender);
-      RegisterStylesheets (htmlHeadAppender);
+      RegisterJavaScriptFiles (htmlHeadAppender, control, context);
+      RegisterStylesheets (htmlHeadAppender, control, context);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude ();
 
@@ -71,8 +71,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       htmlHeadAppender.RegisterJavaScriptInclude (
           jqueryAutocompleteScriptKey,
           ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+              control,
+              context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.jquery.js"));
@@ -81,21 +81,21 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       htmlHeadAppender.RegisterJavaScriptInclude (
           scriptKey,
           ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+              control,
+              context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.js"));
     }
 
-    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       string styleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
           styleKey,
           ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+              control,
+              context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.css"),
@@ -105,8 +105,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       htmlHeadAppender.RegisterStylesheetLink (
           jqueryAutocompleteStyleKey,
           ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+              control,
+              context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.jquery.css"),

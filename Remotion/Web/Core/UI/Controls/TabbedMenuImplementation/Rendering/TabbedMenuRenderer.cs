@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       string key = typeof (TabbedMenuRenderer).FullName + "_Style";

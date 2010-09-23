@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
 
       string styleKey = typeof (BocMultilineTextValueQuirksModeRenderer).FullName + "_Style";
       string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (BocMultilineTextValueQuirksModeRenderer), ResourceType.Html, "BocMultilineTextValue.css");
+          control, typeof (BocMultilineTextValueQuirksModeRenderer), ResourceType.Html, "BocMultilineTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
