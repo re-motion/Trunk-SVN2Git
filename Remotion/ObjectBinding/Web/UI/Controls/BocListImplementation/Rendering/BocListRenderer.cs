@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return CssClasses.ReadOnly; }
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
-      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
+      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }
 
     /// <summary>

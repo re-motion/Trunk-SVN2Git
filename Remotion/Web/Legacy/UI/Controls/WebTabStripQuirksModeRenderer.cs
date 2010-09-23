@@ -38,7 +38,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

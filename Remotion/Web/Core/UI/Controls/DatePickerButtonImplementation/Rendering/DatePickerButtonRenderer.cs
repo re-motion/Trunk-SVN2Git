@@ -33,7 +33,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

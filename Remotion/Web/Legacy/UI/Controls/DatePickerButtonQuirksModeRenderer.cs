@@ -45,7 +45,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -53,7 +53,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
+            control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -61,7 +61,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.css");
+            control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

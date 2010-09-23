@@ -84,7 +84,7 @@ namespace Remotion.Web.UI.Controls
 
       var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var renderer = factory.CreateRenderer (httpContext, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
   }
 }

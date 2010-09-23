@@ -74,7 +74,7 @@ namespace Remotion.Web.UI.Controls
 
       var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
       var renderer = factory.CreateRenderer (httpContext, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     protected override void OnPreRender (EventArgs e)

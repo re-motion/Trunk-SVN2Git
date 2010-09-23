@@ -36,7 +36,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -44,7 +44,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.js");
+            control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
       }
 
@@ -52,7 +52,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.css");
+            control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

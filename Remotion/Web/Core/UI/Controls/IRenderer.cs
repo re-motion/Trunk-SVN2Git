@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls
   public interface IRenderer
   {
     /// <summary>Registers script and stylesheet file includes, which has to be done during the initialization stage.</summary>
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
 
     /// <summary>Renders the markup for the control into the <paramref name="writer"/> provided during the invocation.</summary>
     void Render (HtmlTextWriter writer);

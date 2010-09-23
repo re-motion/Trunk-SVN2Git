@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       string styleKey = typeof (WebTreeViewRenderer).FullName + "_Style";
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebTreeViewRenderer), ResourceType.Html, "TreeView.css");

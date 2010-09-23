@@ -407,7 +407,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
       var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator, GetColumnRenderers());
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     protected override void OnLoad (EventArgs e)

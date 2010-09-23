@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -35,11 +36,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control.TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
+      ((IBocMultilineTextValue) control).TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
 
       string key = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
       var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocMultilineTextValueRenderer), ResourceType.Html, "BocMultilineTextValue.css");

@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
       var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     protected override string ValueContainingControlID

@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _textBoxFactory = textBoxFactory;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -147,18 +147,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      TextBox textBox = GetTextBox ((BocAutoCompleteReferenceValueRenderingContext)renderingContext);
-      RenderEditModeValue ((BocAutoCompleteReferenceValueRenderingContext)renderingContext, textBox);
+      TextBox textBox = GetTextBox (renderingContext);
+      RenderEditModeValue (renderingContext, textBox);
     }
 
     protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
-      TextBox textBox = GetTextBox ((BocAutoCompleteReferenceValueRenderingContext) renderingContext);
+      TextBox textBox = GetTextBox (renderingContext);
       textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-      RenderEditModeValue ((BocAutoCompleteReferenceValueRenderingContext) renderingContext, textBox);
+      RenderEditModeValue (renderingContext, textBox);
     }
 
-    private void RenderEditModeValue (BocAutoCompleteReferenceValueRenderingContext renderingContext, TextBox textBox)
+    private void RenderEditModeValue (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext, TextBox textBox)
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -188,7 +188,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       hiddenField.RenderControl (renderingContext.Writer);
     }
 
-    private void RenderDropdownButton (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    private void RenderDropdownButton (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.DropDownButtonClientID);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
@@ -197,7 +197,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Writer.RenderEndTag ();
     }
 
-    private HiddenField GetHiddenField (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    private HiddenField GetHiddenField (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
       return new HiddenField
       {
@@ -208,7 +208,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       };
     }
 
-    private TextBox GetTextBox (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    private TextBox GetTextBox (BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
     {
       var textBox = _textBoxFactory();
       textBox.ID = renderingContext.Control.TextBoxUniqueID;

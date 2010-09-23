@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
+            control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
+            control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

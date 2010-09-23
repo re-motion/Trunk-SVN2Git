@@ -51,7 +51,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       get { return _context; }
     }
 
-    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
 
     public abstract void Render (HtmlTextWriter writer);
 

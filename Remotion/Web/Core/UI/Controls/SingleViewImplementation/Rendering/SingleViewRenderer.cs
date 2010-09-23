@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -49,7 +49,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");
       htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
 
-      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
+      ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -168,7 +168,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
     {
       ScriptUtility.Instance.RegisterResizeOnElement (renderingContext.Control, string.Format ("'#{0}'", renderingContext.Control.ClientID), "ViewLayout.AdjustSingleView");
 
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control,
           typeof (SingleViewRenderer),
           Guid.NewGuid ().ToString (),

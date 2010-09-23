@@ -114,7 +114,7 @@ namespace Remotion.Web.UI.Controls
     {
       var factory = SafeServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
       var renderer = factory.CreateRenderer (context, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)

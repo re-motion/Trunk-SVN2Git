@@ -38,7 +38,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -46,11 +46,11 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, "SingleView.css");
+            control, Context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
 
-      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
+      ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)

@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -83,23 +83,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
     {
-      DropDownList dropDownList = GetDropDownList ((BocReferenceValueRenderingContext)renderingContext);
-      RenderEditModeValue ((BocReferenceValueRenderingContext)renderingContext, dropDownList);
+      DropDownList dropDownList = GetDropDownList (renderingContext);
+      RenderEditModeValue (renderingContext, dropDownList);
     }
 
     protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
     {
-      DropDownList dropDownList = GetDropDownList ((BocReferenceValueRenderingContext)renderingContext);
+      DropDownList dropDownList = GetDropDownList (renderingContext);
       dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-      RenderEditModeValue ((BocReferenceValueRenderingContext)renderingContext, dropDownList);
+      RenderEditModeValue (renderingContext, dropDownList);
     }
 
-    private void RenderEditModeValue (BocReferenceValueRenderingContext renderingContext, DropDownList dropDownList)
+    private void RenderEditModeValue (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext, DropDownList dropDownList)
     {
       dropDownList.RenderControl (renderingContext.Writer);
     }
 
-    private DropDownList GetDropDownList (BocReferenceValueRenderingContext renderingContext)
+    private DropDownList GetDropDownList (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
     {
       var dropDownList = _dropDownListFactoryMethod ();
       dropDownList.ID = renderingContext.Control.DropDownListUniqueID;

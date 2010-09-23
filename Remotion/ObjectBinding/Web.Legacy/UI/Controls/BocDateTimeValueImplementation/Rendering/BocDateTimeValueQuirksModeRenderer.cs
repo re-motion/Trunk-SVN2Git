@@ -52,13 +52,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       
       string styleKey = typeof (BocDateTimeValueQuirksModeRenderer).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, "BocDateTimeValue.css");
+          control, Context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, "BocDateTimeValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 

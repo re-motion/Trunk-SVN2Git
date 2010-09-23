@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
       var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
 
       _datePickerButton.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
     }

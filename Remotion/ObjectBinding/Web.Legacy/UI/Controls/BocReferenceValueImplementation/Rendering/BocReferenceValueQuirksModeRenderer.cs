@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.js");
+            control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.css");
+            control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.css");
 
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }

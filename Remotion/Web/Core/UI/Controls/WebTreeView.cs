@@ -456,7 +456,7 @@ namespace Remotion.Web.UI.Controls
     {
       var factory = SafeServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
       var renderer = factory.CreateRenderer (Context, this, SafeServiceLocator.Current);
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     /// <summary> Overrides the parent control's <c>OnPreRender</c> method. </summary>

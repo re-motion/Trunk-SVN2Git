@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -48,7 +48,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "ViewLayout.js");
       htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
 
-      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
+      ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)
