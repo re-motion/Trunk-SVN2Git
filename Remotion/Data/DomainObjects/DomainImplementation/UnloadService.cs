@@ -113,33 +113,38 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           return TryUnloadCollectionEndPoint (clientTransaction.ParentTransaction, endPointID, transactionMode);
         }
       }
-
-      return true;
+      else
+      {
+        return true;
+      }
     }
 
     /// <summary>
     /// Unloads the data held by the given <see cref="ClientTransaction"/> for the <see cref="DomainObject"/> with the specified 
-    /// <paramref name="objectID"/>. The <see cref="DomainObject"/> reference and <see cref="DomainObjectCollection"/> instances held by the
-    /// object are not removed, only the data is. The object can only be unloaded if it is in unchanged state.
+    /// <paramref name="objectID"/>. The <see cref="DomainObject"/> reference 
+    /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if 
+    /// it is in unchanged state and no relation end-points would remain inconsistent.
     /// </summary>
     /// <param name="clientTransaction">The client transaction.</param>
     /// <param name="objectID">The object ID.</param>
     /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
     /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
+    /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state - or - the operation would affect an 
+    /// opposite relation end-point that is not in unchanged state.</exception>
     /// <remarks>
+    /// <para>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
     /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object 
     /// end-points, and the virtual object end points pointing to <see langword="null" />. This means that unloading an object will unload a relation 
     /// if and only if the object's <see cref="DataContainer"/> is holding the foreign key for the relation or if the relation points from the 
     /// unloaded object to <see langword="null" />.
-    /// </remarks>
-    /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state - or - the operation would affect an 
-    /// opposite relation end-point that is not in unchanged state.</exception>
-    /// <remarks>
+    /// </para>
+    /// <para>
     /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
     /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
     /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
     /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// </para>
     /// </remarks>
     public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID, UnloadTransactionMode transactionMode)
     {
@@ -155,6 +160,57 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         {
           UnloadData (clientTransaction.ParentTransaction, objectID, transactionMode);
         }
+      }
+    }
+
+    /// <summary>
+    /// Unloads the data held by the given <see cref="ClientTransaction"/> for the <see cref="DomainObject"/> with the specified
+    /// <paramref name="objectID"/>, returning a value indicating whether the unload operation succeeded. The <see cref="DomainObject"/> reference
+    /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if
+    /// it is in unchanged state and no relation end-points would remain inconsistent.
+    /// </summary>
+    /// <param name="clientTransaction">The client transaction.</param>
+    /// <param name="objectID">The object ID.</param>
+    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should
+    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
+    /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
+    /// (in any transaction).</returns>
+    /// <remarks>
+    /// 	<para>
+    /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
+    /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object
+    /// end-points, and the virtual object end points pointing to <see langword="null"/>. This means that unloading an object will unload a relation
+    /// if and only if the object's <see cref="DataContainer"/> is holding the foreign key for the relation or if the relation points from the
+    /// unloaded object to <see langword="null"/>.
+    /// </para>
+    /// 	<para>
+    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
+    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
+    /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
+    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// </para>
+    /// </remarks>
+    public static bool TryUnloadData (ClientTransaction clientTransaction, ObjectID objectID, UnloadTransactionMode transactionMode)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      var command = clientTransaction.DataManager.CreateUnloadCommand (objectID);
+      if (!command.CanUnload)
+        return false;
+      
+      command.NotifyAndPerform ();
+
+      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      {
+        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        {
+          return TryUnloadData (clientTransaction.ParentTransaction, objectID, transactionMode);
+        }
+      }
+      else
+      {
+        return true;
       }
     }
 

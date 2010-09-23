@@ -228,6 +228,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void TryUnloadData_Success ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+
+      var result = UnloadService.TryUnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+    }
+
+    [Test]
+    public void TryUnloadData_Failure ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1].MarkAsChanged ();
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
+
+      var result = UnloadService.TryUnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void TryUnloadData_Failure_InHigherTransaction ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1].MarkAsChanged ();
+      
+      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      var subDataManager = ClientTransactionTestHelper.GetDataManager (subTransaction);
+      var parentDataManager = ClientTransactionMock.DataManager;
+
+      subTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
+
+      Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+
+      Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
+      
+      var result = UnloadService.TryUnloadData (subTransaction, DomainObjectIDs.Order1, UnloadTransactionMode.RecurseToRoot);
+
+      Assert.That (result, Is.False);
+      Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
     public void UnloadCollectionEndPointAndData_UnloadsEndPointAndItems ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
