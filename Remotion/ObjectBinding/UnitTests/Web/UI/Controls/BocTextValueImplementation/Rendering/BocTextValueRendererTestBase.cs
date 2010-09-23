@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
     protected void CheckCssClass (XmlNode span, bool withCssClass, bool inStandardProperties)
     {
-      string cssClass = Renderer.GetCssClassBase(Renderer.Control);
+      string cssClass = Renderer.GetCssClassBase(TextValue);
       if (withCssClass)
       {
         if (inStandardProperties)

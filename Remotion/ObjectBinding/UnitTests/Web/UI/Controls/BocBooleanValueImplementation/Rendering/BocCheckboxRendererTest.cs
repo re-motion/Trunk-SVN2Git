@@ -275,7 +275,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _checkbox.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _renderer.GetCssClassBase(_renderer.Control);
+        cssClass = _renderer.GetCssClassBase(_checkbox);
 
       Html.AssertAttribute (outerSpan, "id", "MyCheckbox");
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);

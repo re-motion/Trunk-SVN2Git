@@ -297,7 +297,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _booleanValue.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _renderer.GetCssClassBase(_renderer.Control);
+        cssClass = _renderer.GetCssClassBase(_booleanValue);
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
