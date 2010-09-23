@@ -51,10 +51,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var collectionEndPoint = CheckAndGetCollectionEndPoint(clientTransaction, endPointID);
+      var collectionEndPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
       if (collectionEndPoint != null)
       {
-        if (collectionEndPoint.HasChanged)
+        if (!CanUnloadCollectionEndPoint (collectionEndPoint))
         {
           var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
           throw new InvalidOperationException (message);
@@ -63,13 +63,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         collectionEndPoint.Unload();
       }
 
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
       {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
-        {
-          UnloadCollectionEndPoint (clientTransaction.ParentTransaction, endPointID, transactionMode);
-        }
-      }
+        UnloadCollectionEndPoint (tx, endPointID, transactionMode);
+        return true;
+      });
     }
 
     /// <summary>
@@ -100,23 +98,13 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       var collectionEndPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
       if (collectionEndPoint != null)
       {
-        if (collectionEndPoint.HasChanged)
+        if (!CanUnloadCollectionEndPoint (collectionEndPoint))
           return false;
 
         collectionEndPoint.Unload ();
       }
 
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
-      {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
-        {
-          return TryUnloadCollectionEndPoint (clientTransaction.ParentTransaction, endPointID, transactionMode);
-        }
-      }
-      else
-      {
-        return true;
-      }
+      return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadCollectionEndPoint (tx, endPointID, transactionMode));
     }
 
     /// <summary>
@@ -154,13 +142,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       var command = clientTransaction.DataManager.CreateUnloadCommand (objectID);
       command.NotifyAndPerform ();
 
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
       {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
-        {
-          UnloadData (clientTransaction.ParentTransaction, objectID, transactionMode);
-        }
-      }
+        UnloadData (tx, objectID, transactionMode);
+        return true;
+      });
     }
 
     /// <summary>
@@ -201,17 +187,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       
       command.NotifyAndPerform ();
 
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
-      {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
-        {
-          return TryUnloadData (clientTransaction.ParentTransaction, objectID, transactionMode);
-        }
-      }
-      else
-      {
-        return true;
-      }
+      return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadData (tx, objectID, transactionMode));
     }
 
     /// <summary>
@@ -251,13 +227,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         UnloadCollectionEndPoint (clientTransaction, endPointID, UnloadTransactionMode.ThisTransactionOnly); // needed in case unloadedIDs is empty
       }
 
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
       {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
-        {
-          UnloadCollectionEndPointAndData (clientTransaction.ParentTransaction, endPointID, transactionMode);
-        }
-      }
+        UnloadCollectionEndPointAndData (tx, endPointID, transactionMode);
+        return true;
+      });
     }
 
     private static CollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
@@ -269,6 +243,29 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       }
 
       return (CollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+    }
+
+    private static bool CanUnloadCollectionEndPoint (CollectionEndPoint collectionEndPoint)
+    {
+      return !collectionEndPoint.HasChanged;
+    }
+
+    private static bool ProcessTransactionHierarchy (
+        ClientTransaction clientTransaction,
+        UnloadTransactionMode transactionMode,
+        Func<ClientTransaction, bool> operation)
+    {
+      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      {
+        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        {
+          return operation (clientTransaction.ParentTransaction);
+        }
+      }
+      else
+      {
+        return true;
+      }
     }
   }
 }
