@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
+      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate ((writer)=> RenderOptionsMenuTitle(renderingContext));
       renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
       renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
@@ -103,11 +103,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Writer.RenderEndTag ();
     }
 
-    public void RenderOptionsMenuTitle (HtmlTextWriter writer)
+    public void RenderOptionsMenuTitle (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      var renderingContext = new BocReferenceValueBaseRenderingContext<TControl> (Context, writer, Control); //TODO: get as method parameter
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       Image icon = GetIcon (renderingContext);
       bool isReadOnly = renderingContext.Control.IsReadOnly;
@@ -126,12 +124,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       {
         if (icon.Visible)
           RenderSeparateIcon (renderingContext, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValueWithIntegratedOptionsMenu (renderingContext);
 
-        writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag ();
       }
     }
 

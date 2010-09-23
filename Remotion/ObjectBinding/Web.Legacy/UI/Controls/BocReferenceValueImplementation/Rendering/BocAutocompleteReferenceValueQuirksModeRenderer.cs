@@ -372,16 +372,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
         }
       }
 
-      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
+      renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate ((writer)=> RenderOptionsMenuTitle(renderingContext));
       renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
       renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
-    public void RenderOptionsMenuTitle (HtmlTextWriter writer)
+    public void RenderOptionsMenuTitle (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      var renderingContext = new BocAutoCompleteReferenceValueRenderingContext (Context, writer, Control);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       var textbox = GetTextbox (renderingContext);
       var hiddenField = GetHiddenField (renderingContext);
@@ -407,9 +405,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
         RenderReadOnlyValue (renderingContext, icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         if (!isControlWidthEmpty)
         {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-          writer.RenderEndTag();
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
+          renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+          renderingContext.Writer.RenderEndTag();
         }
       }
       else

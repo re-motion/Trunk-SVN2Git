@@ -30,6 +30,7 @@ using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -418,10 +419,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     {
       var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
-
-
+      
       var document = Html.GetResultDocument();
       AssertRow (document, false, false, false);
     }
@@ -434,10 +434,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
-
-
+      
       var document = Html.GetResultDocument();
       AssertRow (document, true, false, false);
     }
@@ -450,7 +449,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();

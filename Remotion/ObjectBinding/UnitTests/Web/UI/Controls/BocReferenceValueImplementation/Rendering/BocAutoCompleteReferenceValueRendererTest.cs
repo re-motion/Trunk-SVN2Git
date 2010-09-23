@@ -406,7 +406,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
@@ -423,7 +423,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
           HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
 
 

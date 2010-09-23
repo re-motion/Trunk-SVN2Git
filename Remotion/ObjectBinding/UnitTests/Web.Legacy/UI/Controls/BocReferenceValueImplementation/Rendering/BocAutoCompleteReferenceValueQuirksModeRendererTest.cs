@@ -417,7 +417,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     {
       var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
 
 
@@ -433,7 +433,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
 
 
@@ -449,7 +449,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
       var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle (Html.Writer);
+      renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
 
       var document = Html.GetResultDocument ();
