@@ -197,6 +197,7 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueBaseRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactory.cs" />
@@ -409,8 +410,6 @@
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\BocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\IBocRenderableControl.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderer.cs" />

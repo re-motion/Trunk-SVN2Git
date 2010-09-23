@@ -16,22 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.Implementation;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocMultilineTextValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocMultilineTextValue"/>.
   /// </summary>
-  public class BocMultilineTextValueQuirksModeRendererFactory : IBocMultilineTextValueRendererFactory
+  [ConcreteImplementation (typeof (BocMultilineTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocMultilineTextValueRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control, IServiceLocator serviceLocator)
-    {
-      return new BocMultilineTextValueQuirksModeRenderer (context, control);
-    }
+    void Render (BocMultilineTextValueRenderingContext renderingContext);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
   }
 }

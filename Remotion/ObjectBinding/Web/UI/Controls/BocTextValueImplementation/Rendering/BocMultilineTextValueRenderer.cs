@@ -29,10 +29,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>
+  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
   {
-    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public BocMultilineTextValueRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

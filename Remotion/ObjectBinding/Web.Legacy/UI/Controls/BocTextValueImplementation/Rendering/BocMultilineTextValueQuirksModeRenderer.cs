@@ -33,10 +33,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocMultilineTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocMultilineTextValue>
+  public class BocMultilineTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
   {
-    public BocMultilineTextValueQuirksModeRenderer (HttpContextBase context, IBocMultilineTextValue control)
-        : base (context, control)
+    public BocMultilineTextValueQuirksModeRenderer ()
+        : base (null, null)
     {
     }
 
@@ -55,6 +55,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     public override void Render (HtmlTextWriter writer)
     {
       Render (new BocMultilineTextValueRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (BocMultilineTextValueRenderingContext renderingContext)
+    {
+      base.Render (renderingContext);
     }
 
     protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocMultilineTextValue> renderingContext)

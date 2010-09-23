@@ -373,7 +373,7 @@
     <Compile Include="Web\UI\Controls\BocReferenceValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextBoxValueMock.cs" />
-    <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueTests\AllDataTypes.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueTests\Common.cs" />

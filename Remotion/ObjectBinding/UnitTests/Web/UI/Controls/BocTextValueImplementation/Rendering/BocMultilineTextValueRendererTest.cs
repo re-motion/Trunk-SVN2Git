@@ -52,8 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueRenderer (
-          MockRepository.GenerateMock<HttpContextBase>(), TextValue, MockRepository.GenerateStub<IResourceUrlFactory>());
+      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
     }
 
     [Test]
@@ -146,7 +145,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       TextValue.Stub (mock => mock.Enabled).Return (!isDisabled);
 
-      Renderer.Render (Html.Writer);
+      ((IBocMultilineTextValueRenderer) Renderer).Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -175,7 +175,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      Renderer.Render (Html.Writer);
+      ((IBocMultilineTextValueRenderer) Renderer).Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);

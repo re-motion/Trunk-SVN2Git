@@ -18,13 +18,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   [TestFixture]
-  public class IBocMultilineTextValueRendererFactoryTest
+  public class IBocMultilineTextValueRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +36,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocMultilineTextValueRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocMultilineTextValueRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocMultilineTextValueRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocMultilineTextValueRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocMultilineTextValueRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocMultilineTextValueRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocMultilineTextValueRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocMultilineTextValueRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }
