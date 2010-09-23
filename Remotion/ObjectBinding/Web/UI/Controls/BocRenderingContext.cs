@@ -21,6 +21,9 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="IBocRenderableControl"/> and <see cref="IBusinessObjectBoundEditableWebControl"/>.
+  /// </summary>
   public class BocRenderingContext<TControl> : RenderingContext<TControl>
     where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {

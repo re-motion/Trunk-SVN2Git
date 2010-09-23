@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocList"/>.
+  /// </summary>
   public class BocListRenderingContext : BocRenderingContext<IBocList>
   {
     public BocListRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocList control)

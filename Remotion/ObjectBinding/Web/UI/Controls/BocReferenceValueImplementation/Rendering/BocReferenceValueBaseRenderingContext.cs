@@ -20,6 +20,10 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocReferenceValue"/> or <see cref="BocAutoCompleteReferenceValue"/>.
+  /// </summary>
+  /// <typeparam name="TControl">The concrete control or corresponding interface that will be rendered.</typeparam>
   public class BocReferenceValueBaseRenderingContext<TControl> : BocRenderingContext<TControl>
     where TControl : IBocReferenceValueBase
   {

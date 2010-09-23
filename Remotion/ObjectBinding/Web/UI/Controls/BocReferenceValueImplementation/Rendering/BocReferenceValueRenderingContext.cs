@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocReferenceValue"/>.
+  /// </summary>
   public class BocReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocReferenceValue>
   {
     public BocReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocReferenceValue control)

@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="IStyledControl"/>.
+  /// </summary>
   public class RenderingContext<TControl> : IRenderingContext
       where TControl : IStyledControl
   {

@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocAutoCompleteReferenceValue"/>.
+  /// </summary>
   public class BocAutoCompleteReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue>
   {
     public BocAutoCompleteReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)

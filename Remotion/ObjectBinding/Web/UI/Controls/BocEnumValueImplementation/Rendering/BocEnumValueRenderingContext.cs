@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocEnumValue"/>.
+  /// </summary>
   public class BocEnumValueRenderingContext : BocRenderingContext<IBocEnumValue>
   {
     public BocEnumValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocEnumValue control)

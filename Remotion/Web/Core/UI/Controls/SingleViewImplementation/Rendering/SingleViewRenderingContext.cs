@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="SingleView"/>.
+  /// </summary>
   public class SingleViewRenderingContext : RenderingContext<ISingleView>
   {
     public SingleViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ISingleView control)

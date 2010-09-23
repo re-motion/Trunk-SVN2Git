@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocDateTimeValue"/>.
+  /// </summary>
   public class BocDateTimeValueRenderingContext : BocRenderingContext<IBocDateTimeValue>
   {
     public BocDateTimeValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocDateTimeValue control)

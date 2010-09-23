@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="WebTabStrip"/>.
+  /// </summary>
   public class WebTabStripRenderingContext : RenderingContext<IWebTabStrip>
   {
     public WebTabStripRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTabStrip control)

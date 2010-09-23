@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocCheckBox"/>.
+  /// </summary>
   public class BocCheckboxRenderingContext : BocBooleanValueBaseRenderingContext<IBocCheckBox>
   {
     public BocCheckboxRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocCheckBox control)

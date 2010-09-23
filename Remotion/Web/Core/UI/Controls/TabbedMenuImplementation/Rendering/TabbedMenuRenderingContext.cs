@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="TabbedMenu"/>.
+  /// </summary>
   public class TabbedMenuRenderingContext : RenderingContext<ITabbedMenu>
   {
     public TabbedMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ITabbedMenu control)

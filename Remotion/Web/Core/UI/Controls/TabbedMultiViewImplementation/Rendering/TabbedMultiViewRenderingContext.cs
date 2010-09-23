@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="TabbedMultiView"/>.
+  /// </summary>
   public class TabbedMultiViewRenderingContext : RenderingContext<ITabbedMultiView>
   {
     public TabbedMultiViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, ITabbedMultiView control)

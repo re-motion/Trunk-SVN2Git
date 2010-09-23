@@ -17,7 +17,6 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {

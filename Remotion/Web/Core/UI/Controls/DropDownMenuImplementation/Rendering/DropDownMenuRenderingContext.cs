@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="DropDownMenu"/>.
+  /// </summary>
   public class DropDownMenuRenderingContext : RenderingContext<IDropDownMenu>
   {
     public DropDownMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IDropDownMenu control)

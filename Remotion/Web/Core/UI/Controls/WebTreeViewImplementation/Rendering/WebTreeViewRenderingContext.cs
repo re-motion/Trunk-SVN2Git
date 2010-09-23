@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="WebTreeView"/>.
+  /// </summary>
   public class WebTreeViewRenderingContext : RenderingContext<IWebTreeView>
   {
     public WebTreeViewRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTreeView control)

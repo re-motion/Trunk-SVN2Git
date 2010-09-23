@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="WebButton"/>.
+  /// </summary>
   public class WebButtonRenderingContext : RenderingContext<IWebButton>
   {
     public WebButtonRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebButton control)

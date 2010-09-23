@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="DatePickerButton"/>.
+  /// </summary>
   public class DatePickerButtonRenderingContext : RenderingContext<IDatePickerButton>
 
 {

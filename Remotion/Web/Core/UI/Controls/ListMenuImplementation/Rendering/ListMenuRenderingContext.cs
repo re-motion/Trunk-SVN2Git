@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="ListMenu"/>.
+  /// </summary>
   public class ListMenuRenderingContext : RenderingContext<IListMenu>
   {
     public ListMenuRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IListMenu control)

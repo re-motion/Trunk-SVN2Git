@@ -20,6 +20,10 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocCheckBox"/> or <see cref="BocBooleanValue"/>.
+  /// </summary>
+  /// <typeparam name="TControl">The concrete control or corresponding interface that will be rendered.</typeparam>
   public class BocBooleanValueBaseRenderingContext<TControl> : BocRenderingContext<TControl>
     where TControl : IBocBooleanValueBase
   {

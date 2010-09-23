@@ -20,6 +20,9 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
+  /// <summary>
+  /// Groups all arguments required for rendering a <see cref="BocMultilineTextValue"/>.
+  /// </summary>
   public class BocMultilineTextValueRenderingContext : BocTextValueBaseRenderingContext<IBocMultilineTextValue>
   {
     public BocMultilineTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocMultilineTextValue control)
