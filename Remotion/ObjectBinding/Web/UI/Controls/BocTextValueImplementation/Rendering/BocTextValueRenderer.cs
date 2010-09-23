@@ -26,22 +26,13 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
-  /// Defines the API for rendering a <see cref="BocTextValue"/>.
-  /// </summary>
-  public interface IBocTextValueRenderer
-  {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
-    void Render (BocTextValueRenderingContext renderingContext);
-  }
-
-  /// <summary>
   /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
   public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
-    public BocTextValueRenderer (HttpContextBase context, IBocTextValue control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public BocTextValueRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

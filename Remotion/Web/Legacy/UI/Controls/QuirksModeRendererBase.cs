@@ -38,8 +38,8 @@ namespace Remotion.Web.Legacy.UI.Controls
     /// </summary>
     protected QuirksModeRendererBase (HttpContextBase context, TControl control)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
+      //ArgumentUtility.CheckNotNull ("context", context);
+      //ArgumentUtility.CheckNotNull ("control", control);
 
       _control = control;
       _context = context;

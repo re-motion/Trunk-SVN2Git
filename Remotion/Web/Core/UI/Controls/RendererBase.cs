@@ -37,8 +37,8 @@ namespace Remotion.Web.UI.Controls
     /// </summary>
     protected RendererBase (HttpContextBase context, TControl control, IResourceUrlFactory resourceUrlFactory)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
+      //ArgumentUtility.CheckNotNull ("context", context);
+      //ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
       _control = control;

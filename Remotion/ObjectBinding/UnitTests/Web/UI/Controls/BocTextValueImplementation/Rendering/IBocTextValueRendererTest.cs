@@ -24,7 +24,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   [TestFixture]
-  public class IBocTextValueRendererFactoryTest
+  public class IBocTextValueRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +37,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocTextValueRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocTextValueRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocTextValueRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocTextValueRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocTextValueRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocTextValueRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocTextValueRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocTextValueRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

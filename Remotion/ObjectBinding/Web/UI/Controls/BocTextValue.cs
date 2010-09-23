@@ -23,7 +23,6 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -145,9 +144,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var factory = ServiceLocator.GetInstance<IBocTextValueRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
-      renderer.Render (writer);
+      var renderer = ServiceLocator.GetInstance<IBocTextValueRenderer>();
+      renderer.Render (new BocTextValueRenderingContext(Context, writer, this));
     }
 
     /// <summary> Gets or sets the current value. </summary>
@@ -359,8 +357,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocTextValueRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = ServiceLocator.GetInstance<IBocTextValueRenderer>();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 

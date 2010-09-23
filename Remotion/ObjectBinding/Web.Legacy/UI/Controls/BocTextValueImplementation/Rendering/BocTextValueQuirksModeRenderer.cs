@@ -33,10 +33,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocTextValue>
+  public class BocTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
-    public BocTextValueQuirksModeRenderer (HttpContextBase context, IBocTextValue control)
-        : base (context, control)
+    public BocTextValueQuirksModeRenderer ()
+        : base (null, null)
     {
     }
 
@@ -50,6 +50,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     public override void Render (HtmlTextWriter writer)
     {
       Render (new BocTextValueRenderingContext (Context, writer, Control));
+    }
+
+    public void Render (BocTextValueRenderingContext renderingContext)
+    {
+      base.Render (renderingContext);
     }
 
     protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocTextValue> renderingContext)

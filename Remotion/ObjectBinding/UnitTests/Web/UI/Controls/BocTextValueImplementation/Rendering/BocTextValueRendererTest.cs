@@ -37,9 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     {
       Initialize();
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      Renderer = new BocTextValueRenderer (
-          MockRepository.GenerateMock<HttpContextBase>(), TextValue, MockRepository.GenerateStub<IResourceUrlFactory>());
-
+      Renderer = new BocTextValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
@@ -182,8 +180,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
-      Renderer.Render (Html.Writer);
-
+      ((IBocTextValueRenderer) Renderer).Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -211,7 +209,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.Enabled).Return (false);
-      Renderer.Render (Html.Writer);
+      ((IBocTextValueRenderer) Renderer).Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
@@ -240,8 +238,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
-      Renderer.Render (Html.Writer);
-
+      ((IBocTextValueRenderer) Renderer).Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -270,7 +268,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
       TextValue.TextBoxStyle.TextMode = TextBoxMode.MultiLine;
 
-      Renderer.Render (Html.Writer);
+      ((IBocTextValueRenderer)Renderer).Render(new BocTextValueRenderingContext(MockRepository.GenerateMock<HttpContextBase>(),  Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);

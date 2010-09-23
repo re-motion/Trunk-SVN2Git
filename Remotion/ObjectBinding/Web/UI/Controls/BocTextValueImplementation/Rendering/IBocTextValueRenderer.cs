@@ -16,27 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.Utilities;
-using Remotion.Web;
+using Remotion.Implementation;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating standard mode renderers for <see cref="IBocTextValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocTextValue"/>.
   /// </summary>
-  public class BocTextValueRendererFactory : IBocTextValueRendererFactory
+  [ConcreteImplementation(typeof(BocTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocTextValueRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocTextValue control, IServiceLocator serviceLocator)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-
-      return new BocTextValueRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
-    }
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocTextValueRenderingContext renderingContext);
   }
 }
