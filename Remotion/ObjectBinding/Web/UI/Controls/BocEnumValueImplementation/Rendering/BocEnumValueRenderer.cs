@@ -170,9 +170,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       return label;
     }
 
-    public override string CssClassBase
+    public override string GetCssClassBase(IBocEnumValue control)
     {
-      get { return "bocEnumValue"; }
+      return "bocEnumValue";
     }
   }
 }

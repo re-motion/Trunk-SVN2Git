@@ -212,9 +212,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       labelControl.ApplyStyle (renderingContext.Control.LabelStyle);
     }
 
-    public override string CssClassBase
+    public override string GetCssClassBase(IBocBooleanValue control)
     {
-      get { return "bocBooleanValue"; }
+      return "bocBooleanValue";
     }
   }
 }

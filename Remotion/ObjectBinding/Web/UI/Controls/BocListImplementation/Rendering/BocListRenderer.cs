@@ -89,9 +89,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return Control; }
     }
 
-    public override sealed string CssClassBase
+    public override sealed string GetCssClassBase(IBocList control)
     {
-      get { return CssClasses.Base; }
+      return CssClasses.Base;
     }
 
     public override sealed string CssClassDisabled

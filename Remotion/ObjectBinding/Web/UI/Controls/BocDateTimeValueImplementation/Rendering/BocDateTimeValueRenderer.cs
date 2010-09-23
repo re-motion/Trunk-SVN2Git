@@ -142,11 +142,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       }
     }
 
-    public override string CssClassBase
+    public override string GetCssClassBase(IBocDateTimeValue control)
     {
-      get
-      {
-        switch (Control.ActualValueType)
+      switch (control.ActualValueType)
         {
           case BocDateTimeValueType.DateTime:
             return CssClassDateTime;
@@ -155,7 +153,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
           default:
             return CssClassDateTime;
         }
-      }
     }
 
     public string CssClassDateTime

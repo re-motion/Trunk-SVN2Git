@@ -36,6 +36,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>bocTextValue</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    public abstract string GetCssClassBase (TControl control); 
+
     protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
@@ -83,13 +90,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "readOnly"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocTextValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    public abstract string CssClassBase { get; }
-
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed disabled. </summary>
     /// <remarks> 
     ///   <para> Class: <c>disabled</c>. </para>
@@ -113,7 +113,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        renderingContext.Control.CssClass = CssClassBase + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.CssClass = GetCssClassBase(renderingContext.Control) + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
     }
 
     private void RestoreClass (RenderingContext<TControl> renderingContext, string backUpCssClass, string backUpAttributeCssClass)

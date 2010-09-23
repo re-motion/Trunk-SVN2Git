@@ -116,9 +116,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return dropDownList;
     }
 
-    public override string CssClassBase
+    public override string GetCssClassBase(IBocReferenceValue control)
     {
-      get { return "bocReferenceValue"; }
+      return "bocReferenceValue";
     }
   }
 }
