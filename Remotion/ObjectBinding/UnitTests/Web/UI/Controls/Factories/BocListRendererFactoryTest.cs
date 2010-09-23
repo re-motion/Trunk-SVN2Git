@@ -51,19 +51,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
       IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator(), _columnRenderers);
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
-      Assert.AreSame (List, ((BocListRenderer) renderer).List);
-
       Assert.IsInstanceOfType (typeof (BocListNavigationBlockRenderer), ((BocListRenderer) renderer).NavigationBlockRenderer);
-      Assert.AreSame (List, ((BocListNavigationBlockRenderer) ((BocListRenderer) renderer).NavigationBlockRenderer).List);
-
       Assert.IsInstanceOfType (typeof (BocListMenuBlockRenderer), ((BocListRenderer) renderer).MenuBlockRenderer);
-      Assert.AreSame (List, ((BocListMenuBlockRenderer) ((BocListRenderer) renderer).MenuBlockRenderer).List);
-
       Assert.IsInstanceOfType (typeof (BocListTableBlockRenderer), ((BocListRenderer) renderer).TableBlockRenderer);
-      Assert.AreSame (List, ((BocListTableBlockRenderer) ((BocListRenderer) renderer).TableBlockRenderer).List);
-
       Assert.IsInstanceOfType (typeof (BocRowRenderer), ((BocListTableBlockRenderer) ((BocListRenderer) renderer).TableBlockRenderer).RowRenderer);
-      Assert.AreSame (List, ((BocRowRenderer) ((BocListTableBlockRenderer) ((BocListRenderer) renderer).TableBlockRenderer).RowRenderer).List);
     }
   }
 }

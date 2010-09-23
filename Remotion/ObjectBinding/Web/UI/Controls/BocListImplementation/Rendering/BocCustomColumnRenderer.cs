@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// a <see cref="BocCustomCellRenderArguments"/> object is created and passed to the custom cell's 
     /// <see cref="BocCustomColumnDefinitionCell.RenderInternal"/> method.
     /// Otherwise, a click wrapper is rendered around the child control obtained from
-    /// <see cref="BocListRenderer.List"/>'s <see cref="IBocList.CustomColumns"/> property.
+    /// <see cref="IBocList"/>'s <see cref="IBocList.CustomColumns"/> property.
     /// </remarks>
     protected override void RenderCellContents (
         HtmlTextWriter writer,

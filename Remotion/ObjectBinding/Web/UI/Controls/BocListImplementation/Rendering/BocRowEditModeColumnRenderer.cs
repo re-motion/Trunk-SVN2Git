@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRenderer.List"/></param>
+    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="IBocList"/></param>
     /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
     /// when the control is clicked. Must not be <see langword="null" />.</param>
     /// <param name="alternateText">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> 

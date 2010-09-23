@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     void RenderTitlesRow (HtmlTextWriter writer);
 
     /// <summary>
-    /// Renders a row containing the empty list message in <see cref="BocListRenderer.List"/>'s 
+    /// Renders a row containing the empty list message in <see cref="IBocList"/>'s 
     /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.EmptyListMessage"/> property.
     /// </summary>
     /// <remarks>

@@ -83,12 +83,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
-    /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
-    public IBocList List
-    {
-      get { return Control; }
-    }
-
     public override sealed string GetCssClassBase(IBocList control)
     {
       return CssClasses.Base;
@@ -122,8 +116,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     /// <summary>
-    /// Renders the <see cref="BocList"/> in the <see cref="List"/> property 
-    /// to the <see cref="HtmlTextWriter"/> in the Writer property.
+    /// Renders the <see cref="BocList"/> to the <see cref="HtmlTextWriter"/> in the Writer property.
     /// </summary>
     /// <remarks>
     /// This method provides the outline table of the <see cref="BocList"/>, creating three areas:

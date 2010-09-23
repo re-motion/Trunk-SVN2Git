@@ -261,7 +261,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
-    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRenderer.List"/>.</param>
+    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="IBocList"/>.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
     protected abstract void RenderCellContents (
         HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
