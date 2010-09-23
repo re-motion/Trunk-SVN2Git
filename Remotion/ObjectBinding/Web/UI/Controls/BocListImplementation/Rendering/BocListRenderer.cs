@@ -161,15 +161,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       //  Menu Block
-      if (List.HasMenuBlock)
+      if (renderingContext.Control.HasMenuBlock)
       {
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
 
-        if (!List.MenuBlockWidth.IsEmpty)
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, List.MenuBlockWidth.ToString ());
+        if (!renderingContext.Control.MenuBlockWidth.IsEmpty)
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.MenuBlockWidth.ToString ());
 
-        if (!List.MenuBlockOffset.IsEmpty)
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, List.MenuBlockOffset.ToString ());
+        if (!renderingContext.Control.MenuBlockOffset.IsEmpty)
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, renderingContext.Control.MenuBlockOffset.ToString ());
 
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
         MenuBlockRenderer.Render (renderingContext.Writer);
@@ -177,14 +177,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
 
       //  Table Block
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (List.HasMenuBlock, List.HasNavigator));
-      if (List.HasMenuBlock && !List.MenuBlockWidth.IsEmpty)
-        renderingContext.Writer.AddStyleAttribute ("right", List.MenuBlockWidth.ToString ());
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (renderingContext.Control.HasMenuBlock, renderingContext.Control.HasNavigator));
+      if (renderingContext.Control.HasMenuBlock && !renderingContext.Control.MenuBlockWidth.IsEmpty)
+        renderingContext.Writer.AddStyleAttribute ("right", renderingContext.Control.MenuBlockWidth.ToString ());
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       TableBlockRenderer.Render (renderingContext.Writer);
 
-      if (List.HasNavigator)
+      if (renderingContext.Control.HasNavigator)
         NavigationBlockRenderer.Render (renderingContext.Writer);
 
       renderingContext.Writer.RenderEndTag ();
