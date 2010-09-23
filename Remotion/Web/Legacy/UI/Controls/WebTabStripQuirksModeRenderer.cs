@@ -48,8 +48,8 @@ namespace Remotion.Web.Legacy.UI.Controls
       string key = typeof (WebTabStripQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
+        //TODO: get resource url factory via ctor and implement it like this: var styleSheetUrl = _resourceUrlFactory.GetResourceUrl (typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css")
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (null, typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
