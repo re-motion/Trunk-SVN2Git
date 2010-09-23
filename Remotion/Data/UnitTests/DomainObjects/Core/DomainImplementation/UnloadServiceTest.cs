@@ -462,6 +462,156 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (parentOrdersEndPoint.IsDataAvailable, Is.False);
     }
 
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Success ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+
+      var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
+      var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (
+          ClientTransactionMock, 
+          orderItemsEndPoint.ID, 
+          UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.True);
+
+      Assert.That (orderItemsEndPoint.IsDataAvailable, Is.False);
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Success_UnloadsEndPoint_EmptyCollection ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+
+      Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (
+          ClientTransactionMock, 
+          ordersEndPoint.ID, 
+          UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.True);
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' does not denote a CollectionEndPoint.\r\nParameter name: endPointID")]
+    public void TryUnloadCollectionEndPointAndData_ObjectEndPoint ()
+    {
+      var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      EnsureEndPointLoaded (objectEndPointID);
+
+      UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID, UnloadTransactionMode.ThisTransactionOnly);
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Success_IfEndPointNotLoaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, endPointID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_Success_IfNoDataAvailable ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.True);
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Failure_EndPointChanged_EndPointAndItemsStillLoaded ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+
+      var orderA = customer.Orders[0];
+      var orderB = customer.Orders[1];
+      customer.Orders.Remove (orderB);
+
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      Assert.That (ordersEndPoint.HasChanged, Is.True);
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.False);
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Failure_ItemCannotBeUnloaded_EndPointAndItemStillLoaded ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+
+      var orderA = (Order) ordersEndPoint.OppositeDomainObjects[0];
+      var orderB = (Order) ordersEndPoint.OppositeDomainObjects[1];
+
+      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
+      ++orderB.OrderNumber;
+
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderB.State, Is.EqualTo (StateType.Changed));
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (result, Is.False);
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderB.State, Is.EqualTo (StateType.Changed));
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPointAndData_Failure_InHigherTransaction ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+
+      customer.Orders[0].MarkAsChanged ();
+
+      Assert.That (parentOrdersEndPoint.OppositeDomainObjects[0].State, Is.EqualTo (StateType.Changed));
+
+      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      var subOrdersEndPoint = (CollectionEndPoint) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+          parentOrdersEndPoint.ID);
+
+      Assert.That (subOrdersEndPoint.OppositeDomainObjects[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));
+
+      var result = UnloadService.TryUnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadTransactionMode.RecurseToRoot);
+
+      Assert.That (result, Is.False);
+      Assert.That (subOrdersEndPoint.IsDataAvailable, Is.False);
+      Assert.That (parentOrdersEndPoint.IsDataAvailable, Is.True);
+    }
+
     private void EnsureEndPointLoaded (RelationEndPointID endPointID)
     {
       var dataManager = ClientTransactionMock.DataManager;
