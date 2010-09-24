@@ -127,21 +127,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ImplicitInterfaceProperties_GetInterfaceBasedPropertyInfo()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (InterfaceImplementationPropertyInformation) (from p in propertyInfos
+      var interfaceImplProperty = (from p in propertyInfos
                                where p.Name == "InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.Name, Is.EqualTo ("InterfaceProperty"));
+      
+      Assert.That (interfaceImplProperty, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
+      Assert.That (interfaceImplProperty.DeclaringType, Is.SameAs (typeof (TestTypeWithInterfaces)));
+      Assert.That (interfaceImplProperty.FindInterfaceDeclaration().DeclaringType, Is.SameAs (typeof (ITestInterface)));
     }
 
     [Test]
     public void ExplicitInterfaceProperties_GetInterfaceBasedPropertyInfo ()
     {
       var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
-      var interfaceProperty = (InterfaceImplementationPropertyInformation) (from p in propertyInfos
+      var interfaceImplProperty = (from p in propertyInfos
                                where p.Name == typeof (IExplicitTestInterface).FullName + ".InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.Name, 
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPropertyFinderTestDomain.IExplicitTestInterface.InterfaceProperty"));
+
+      Assert.That (interfaceImplProperty, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
+      
+      Assert.That (interfaceImplProperty, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
+      Assert.That (interfaceImplProperty.DeclaringType, Is.SameAs (typeof (TestTypeWithInterfaces)));
+      Assert.That (interfaceImplProperty.FindInterfaceDeclaration ().DeclaringType, Is.SameAs (typeof (IExplicitTestInterface)));
     }
 
     [Test]

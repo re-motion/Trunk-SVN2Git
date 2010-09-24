@@ -35,8 +35,10 @@ namespace Remotion.UnitTests.Reflection
     {
       _implementationMethodInformationStub = MockRepository.GenerateStub<IMethodInformation>();
       _declarationMethodInformationStub = MockRepository.GenerateStub<IMethodInformation>();
+
       _interfaceImplementationMethodInformation = new InterfaceImplementationMethodInformation (
-          _implementationMethodInformationStub, _declarationMethodInformationStub);
+          _implementationMethodInformationStub, 
+          _declarationMethodInformationStub);
     }
 
     [Test]
@@ -106,19 +108,21 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetFastInvoker ()
     {
-      _declarationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<string>))).Return ((Func<string>)(()=>"Test"));
+      var objToReturn = (Func<string>)(()=>"Test");
+      _declarationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<string>))).Return (objToReturn);
 
       var invoker = _interfaceImplementationMethodInformation.GetFastInvoker<Func<string>> ();
 
-      Assert.That (invoker (), Is.EqualTo("Test"));
+      Assert.That (invoker, Is.SameAs (objToReturn));
     }
 
     [Test]
     public void GetParameters ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.GetParameters()).Return (new ParameterInfo[0]);
+      var objToReturn = new ParameterInfo[0];
+      _implementationMethodInformationStub.Stub (stub => stub.GetParameters()).Return (objToReturn);
 
-      Assert.That (_interfaceImplementationMethodInformation.GetParameters().Length, Is.EqualTo (0));
+      Assert.That (_interfaceImplementationMethodInformation.GetParameters(), Is.SameAs (objToReturn));
     }
 
     [Test]

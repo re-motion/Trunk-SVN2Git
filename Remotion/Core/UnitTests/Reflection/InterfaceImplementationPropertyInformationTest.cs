@@ -109,9 +109,10 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetIndexParameters ()
     {
-      _implementationPropertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
+      var objToReturn = new ParameterInfo[0];
+      _implementationPropertyInformationStub.Stub (stub => stub.GetIndexParameters()).Return (objToReturn);
 
-      Assert.That (_interfaceImplementationPropertyInformation.GetIndexParameters().Length, Is.EqualTo (0));
+      Assert.That (_interfaceImplementationPropertyInformation.GetIndexParameters(), Is.SameAs (objToReturn));
     }
 
     [Test]
@@ -120,14 +121,6 @@ namespace Remotion.UnitTests.Reflection
       _implementationPropertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (bool));
 
       Assert.That (_interfaceImplementationPropertyInformation.PropertyType, Is.SameAs (typeof (bool)));
-    }
-
-    [Test]
-    public void CanBeSetFromOutside ()
-    {
-      _declarationPropertyInformationStub.Stub (stub => stub.CanBeSetFromOutside).Return (false);
-
-      Assert.That (_interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.False);
     }
 
     [Test]

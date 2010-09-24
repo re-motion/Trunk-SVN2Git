@@ -16,11 +16,15 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Represents a property that implements a property declared by an interface. The accessors returned by <see cref="GetGetMethod(bool)"/> and 
+  /// <see cref="GetSetMethod(bool)"/> will usually be instances <see cref="InterfaceImplementationMethodInformation"/>, but since a property can
+  /// add accessors not declared by the interface property, they don't have to be.
+  /// </summary>
   public class InterfaceImplementationPropertyInformation : IPropertyInformation
   {
     private readonly IPropertyInformation _implementationPropertyInfo;
@@ -96,6 +100,7 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
+      // TODO Review 3334: This is not correct - it will not work if the implementation added the get accessor. Add a respective failing test, then use GetGetMethod().Invoke() instead.
       return _declarationPropertyInfo.GetValue (instance, indexParameters);
     }
 
@@ -103,6 +108,7 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
+      // TODO Review 3334: This is not correct - it will not work if the implementation added the set accessor. Add a respective failing test, then use GetSetMethod().Invoke() instead.
       _declarationPropertyInfo.SetValue (instance, value, indexParameters);
     }
 
@@ -152,16 +158,6 @@ namespace Remotion.Reflection
         return _implementationPropertyInfo.GetSetMethod (nonPublic);
     }
 
-    IMethodInformation IPropertyInformation.GetGetMethod (bool nonPublic)
-    {
-      return GetGetMethod (nonPublic);
-    }
-
-    IMethodInformation IPropertyInformation.GetSetMethod (bool nonPublic)
-    {
-      return GetSetMethod (nonPublic);
-    }
-
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);
@@ -174,6 +170,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
+      // TODO Review 3334: Use _implementationProperty.ToString(), add a blank before the opening parenthesis
       return string.Format ("{0}(impl of '{1}')", Name, _declarationPropertyInfo.DeclaringType.Name);
     }
   }
