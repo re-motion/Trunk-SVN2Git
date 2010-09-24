@@ -30,6 +30,7 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Reflection;
 using Remotion.Web.UI;
 using Rhino.Mocks;
@@ -330,8 +331,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), _enumValue);
-      renderer.Render (Html.Writer);
+      var renderer = new BocEnumValueQuirksModeRenderer ();
+      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
       XmlNode div = GetAssertedSpan (document, true, false, false, renderer);
@@ -376,8 +377,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), _enumValue);
-      renderer.Render (Html.Writer);
+      var renderer = new BocEnumValueQuirksModeRenderer ();
+      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
       var div = GetAssertedSpan (document, false, false, false, renderer);

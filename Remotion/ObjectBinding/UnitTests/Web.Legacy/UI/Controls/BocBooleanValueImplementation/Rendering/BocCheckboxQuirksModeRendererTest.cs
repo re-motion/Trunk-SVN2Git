@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementatio
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;
@@ -225,8 +226,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), _checkbox);
-      _renderer.Render (Html.Writer);
+      _renderer = new BocCheckboxQuirksModeRenderer ();
+      _renderer.Render (new BocCheckboxRenderingContext (HttpContext, Html.Writer, _checkbox));
 
       var document = Html.GetResultDocument();
 

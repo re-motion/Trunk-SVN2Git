@@ -178,6 +178,7 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueBaseRenderingContext.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
@@ -362,12 +363,10 @@
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditModeController.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRendererFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererBase.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\BocCheckboxRendererFactory.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRenderer.cs" />

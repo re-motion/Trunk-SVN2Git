@@ -41,8 +41,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Startup";
 
-    public BocCheckboxQuirksModeRenderer (HttpContextBase context, IBocCheckBox control)
-        : base (context, control)
+    public BocCheckboxQuirksModeRenderer ()
+        : base (null, null)
     {
     }
 

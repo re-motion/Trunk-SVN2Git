@@ -16,19 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IBocCheckBox"/> controls.
+  /// Defines the API for rendering a <see cref="BocCheckBox"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(BocCheckboxRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocCheckboxRendererFactory
+  [ConcreteImplementation (typeof (BocCheckboxRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocCheckboxRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocCheckboxRenderingContext renderingContext);
   }
 }

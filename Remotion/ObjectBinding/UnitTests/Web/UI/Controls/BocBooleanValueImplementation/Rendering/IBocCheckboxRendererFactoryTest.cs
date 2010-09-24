@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -37,17 +36,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocCheckboxRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocCheckboxRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocCheckboxRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocCheckboxRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocCheckboxRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocCheckboxRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocCheckboxRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocCheckboxRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

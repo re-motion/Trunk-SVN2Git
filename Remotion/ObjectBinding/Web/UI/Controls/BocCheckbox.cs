@@ -93,8 +93,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocCheckboxRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = ServiceLocator.GetInstance<IBocCheckboxRenderer>();
       renderer.RegisterHtmlHeadContents(htmlHeadAppender, this, httpContext);
     }
 
@@ -104,9 +103,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var factory = ServiceLocator.GetInstance<IBocCheckboxRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
-      renderer.Render (writer);
+      var renderer = ServiceLocator.GetInstance<IBocCheckboxRenderer>();
+      renderer.Render (new BocCheckboxRenderingContext(Context, writer, this));
     }
 
     /// <summary>

@@ -30,15 +30,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
-  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>
+  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>, IBocCheckboxRenderer
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckboxRenderer).FullName + "_Startup";
 
-    public BocCheckboxRenderer (HttpContextBase context, IBocCheckBox control, IResourceUrlFactory resourceUrlFactory)
-        : base (context, control, resourceUrlFactory)
+    public BocCheckboxRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base (null, null, resourceUrlFactory)
     {
     }
 
