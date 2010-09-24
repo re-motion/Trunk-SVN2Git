@@ -103,6 +103,8 @@ namespace OBWTest
 
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
             .Where (t => t.Namespace.EndsWith (".Rendering")).AsImplementedInterfaces ().SingleInstance ();
+        builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
+            .Where (t => t.Namespace.EndsWith (".Controls")).AsImplementedInterfaces ().SingleInstance ();
 
         var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
         ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);

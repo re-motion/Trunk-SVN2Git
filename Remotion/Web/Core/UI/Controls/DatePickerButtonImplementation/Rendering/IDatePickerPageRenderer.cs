@@ -15,11 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
+using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
+  /// <summary>
+  /// Defines the API for rendering a <see cref="DatePickerPage"/>.
+  /// </summary>
+  [ConcreteImplementation (typeof (DatePickerPageRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IDatePickerPageRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, DatePickerPage page, HttpContextBase context);
   }
 }

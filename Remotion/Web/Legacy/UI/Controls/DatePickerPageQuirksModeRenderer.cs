@@ -26,45 +26,28 @@ namespace Remotion.Web.Legacy.UI.Controls
 {
   public class DatePickerPageQuirksModeRenderer : IDatePickerPageRenderer
   {
-    private readonly HttpContextBase _context;
-    private readonly DatePickerPage _page;
-
-    public DatePickerPageQuirksModeRenderer (HttpContextBase context, DatePickerPage page)
+    public DatePickerPageQuirksModeRenderer ()
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("page", page);
-
-      _context = context;
-      _page = page;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, DatePickerPage page, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      var page = PageWrapper.CastOrCreate (Page);
+      var newPage = PageWrapper.CastOrCreate (page);
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            page,
-            Context,
+            newPage,
+            context,
             typeof (DatePickerPageQuirksModeRenderer),
             ResourceType.Html,
             "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
       }
     }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public DatePickerPage Page
-    {
-      get { return _page; }
-    }
+    
   }
 }

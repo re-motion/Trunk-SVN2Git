@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -49,6 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     private IBocBooleanValue _booleanValue;
     private BocBooleanValueQuirksModeRenderer _renderer;
     private BocBooleanValueResourceSet _resourceSet;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -64,6 +66,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
           "DefaultFalseDescription",
           "DefaultNullDescription"
           );
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
 
       _booleanValue = MockRepository.GenerateMock<IBocBooleanValue>();
 
@@ -264,7 +268,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueQuirksModeRenderer (new BocBooleanValueResourceSetFactory());
+      _renderer = new BocBooleanValueQuirksModeRenderer (new BocBooleanValueResourceSetFactory(_resourceUrlFactory));
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

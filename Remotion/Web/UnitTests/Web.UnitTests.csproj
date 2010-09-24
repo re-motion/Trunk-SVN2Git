@@ -204,7 +204,7 @@
     <Compile Include="Core\ExecutionEngine\WxeFunctionTests\Execute.cs" />
     <Compile Include="Core\ExecutionEngine\WxeTransactionModeTest.cs" />
     <Compile Include="Core\ResourceUrlTest.cs" />
-    <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRendererFactoryTest.cs" />
+    <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRendererTest.cs" />
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererFactoryTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorFactoryTest.cs" />
     <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererFactoryTest.cs" />

@@ -23,7 +23,6 @@ using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -88,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      var resourceSet = _resourceSetFactory.CreateResourceSet (renderingContext.HttpContext, renderingContext.Control, new QuirksModeResourceUrlFactory());
+      var resourceSet = _resourceSetFactory.CreateResourceSet (renderingContext.HttpContext, renderingContext.Control);
 
       AddAttributesToRender (renderingContext, false);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);

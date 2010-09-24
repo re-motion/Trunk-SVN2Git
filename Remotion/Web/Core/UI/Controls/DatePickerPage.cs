@@ -102,9 +102,8 @@ public class DatePickerPage : Page
 
   private void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
   {
-    var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory>();
-    var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), this, SafeServiceLocator.Current);
-    renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+    var renderer = SafeServiceLocator.Current.GetInstance<IDatePickerPageRenderer>();
+    renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, new HttpContextWrapper(Context));
   }
 
   protected override void OnLoad(EventArgs e)

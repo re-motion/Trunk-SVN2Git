@@ -16,19 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IDatePickerButton"/> controls.
+  /// Defines the API for rendering a <see cref="DatePickerButton"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(DatePickerButtonRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IDatePickerButtonRendererFactory
+  [ConcreteImplementation (typeof (DatePickerButtonRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IDatePickerButtonRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator);
-    IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (DatePickerButtonRenderingContext renderingContext);
   }
 }

@@ -26,7 +26,6 @@ using Remotion.Logging.BridgeInterfaces;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
@@ -34,7 +33,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.Reflection;
 using Remotion.Web;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
@@ -67,16 +65,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocStubColumnRendererFactory), new StubColumnRendererFactory());
 
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownMenuRendererFactory());
-      _instances.Add (typeof (IListMenuRendererFactory), new ListMenuRendererFactory ());
-      _instances.Add (typeof (IDatePickerButtonRendererFactory), new DatePickerButtonRendererFactory ());
-      _instances.Add (typeof (IBocReferenceValueRenderer), new BocReferenceValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
-      _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
-      _instances.Add (typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
-      _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (new ResourceUrlFactory(new ResourceTheme.ClassicBlue())));
-      _instances.Add (typeof (IBocBooleanValueRenderer), new BocBooleanValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), new BocBooleanValueResourceSetFactory()));
-      _instances.Add (typeof (IBocBooleanValueResourceSetFactory), new BocBooleanValueResourceSetFactory ());
-      _instances.Add (typeof (IBocCheckboxRenderer), new BocCheckboxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
-      _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
+      _instances.Add (typeof (IListMenuRendererFactory), new ListMenuRendererFactory());
+      _instances.Add (typeof (IDatePickerButtonRenderer), new DatePickerButtonRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocReferenceValueRenderer), new BocReferenceValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (
+          typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (
+          typeof (IBocBooleanValueRenderer),
+          new BocBooleanValueRenderer (
+              new ResourceUrlFactory (new ResourceTheme.ClassicBlue()),
+              new BocBooleanValueResourceSetFactory (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()))));
+      _instances.Add (
+          typeof (IBocBooleanValueResourceSetFactory),
+          new BocBooleanValueResourceSetFactory (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocCheckboxRenderer), new BocCheckboxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
 
       _instances.Add (typeof (IClientScriptBehaviorFactory), new ClientScriptBehaviorFactory());
       _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());

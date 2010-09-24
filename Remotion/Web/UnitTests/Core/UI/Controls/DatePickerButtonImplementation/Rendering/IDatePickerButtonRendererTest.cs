@@ -19,27 +19,26 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   [TestFixture]
-  public class IDatePickerButtonRendererFactoryTest
+  public class IDatePickerButtonRendererTest
   {
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (DatePickerButtonRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (DatePickerButtonRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var factory2 = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var factory1 = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
+      var factory2 = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

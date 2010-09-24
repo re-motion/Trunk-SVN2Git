@@ -17,31 +17,24 @@
 using System;
 using System.Web;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   public class DatePickerPageRenderer : IDatePickerPageRenderer
   {
-    private readonly HttpContextBase _context;
-    private readonly DatePickerPage _page;
     private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public DatePickerPageRenderer (HttpContextBase context, DatePickerPage page, IResourceUrlFactory resourceUrlFactory)
+    public DatePickerPageRenderer (IResourceUrlFactory resourceUrlFactory)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
-      _context = context;
-      _page = page;
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, DatePickerPage page, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      var page = PageWrapper.CastOrCreate (Page);
+
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageRenderer).FullName + "_Script";
@@ -50,16 +43,6 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "Style.css");
       htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPageRenderer).FullName + "_Style", styleUrl);
-    }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public DatePickerPage Page
-    {
-      get { return _page; }
     }
 
     protected IResourceUrlFactory ResourceUrlFactory

@@ -35,12 +35,20 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
     private const string c_nullIcon = "CheckBoxNull.gif";
     private const string c_defaultResourceGroup = "default";
 
-    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory)
+    private readonly IResourceUrlFactory _resourceUrlFactory;
+
+    public BocBooleanValueQuirksModeResourceSetFactory (IResourceUrlFactory resourceUrlFactory)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", context);
-      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
+      _resourceUrlFactory = resourceUrlFactory;
+    }
+
+    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      
       return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control);
     }
 

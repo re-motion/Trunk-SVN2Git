@@ -62,9 +62,9 @@ namespace Remotion.Web.UI.Controls
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
-      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
-      renderer.Render (writer);
+
+      var renderer = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
+      renderer.Render (new DatePickerButtonRenderingContext(Page.Context, writer, this));
     }
 
     IControl IDatePickerButton.Parent
@@ -82,8 +82,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var renderer = factory.CreateRenderer (httpContext, this, SafeServiceLocator.Current);
+      var renderer = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
   }

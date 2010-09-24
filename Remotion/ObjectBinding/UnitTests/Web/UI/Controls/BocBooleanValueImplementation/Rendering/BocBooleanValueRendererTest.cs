@@ -262,7 +262,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), new BocBooleanValueResourceSetFactory());
+      var resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
+      _renderer = new BocBooleanValueRenderer (resourceUrlFactory, new BocBooleanValueResourceSetFactory(resourceUrlFactory));
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

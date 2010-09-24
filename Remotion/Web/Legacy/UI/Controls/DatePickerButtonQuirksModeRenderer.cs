@@ -30,19 +30,15 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonQuirksModeRenderer : QuirksModeRendererBase<IDatePickerButton>
+  public class DatePickerButtonQuirksModeRenderer : QuirksModeRendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
     private const string c_datePickerIcon = "DatePicker.gif";
-    private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public DatePickerButtonQuirksModeRenderer (HttpContextBase context, IDatePickerButton control, IClientScriptBehavior clientScriptBehavior)
-        : base (context, control)
+    public DatePickerButtonQuirksModeRenderer ()
+        : base (null, null)
     {
-      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
-
-      _clientScriptBehavior = clientScriptBehavior;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
@@ -166,7 +162,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!renderingContext.Control.EnableClientScript)
         return false;
 
-      return _clientScriptBehavior.IsBrowserCapableOfScripting;
+      return new QuirksModeClientScriptBehavior (renderingContext.HttpContext, renderingContext.Control).IsBrowserCapableOfScripting; //TODO: ServiceLocator.GetInstance or ctor injection
     }
 
     protected Unit PopUpWidth

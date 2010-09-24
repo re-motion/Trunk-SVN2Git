@@ -28,6 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   [ConcreteImplementation (typeof(BocBooleanValueResourceSetFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueResourceSetFactory
   {
-    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory);
+    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control);
   }
 }
