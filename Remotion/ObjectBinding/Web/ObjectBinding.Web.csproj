@@ -179,6 +179,7 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderingContext.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactory.cs" />
@@ -366,9 +367,7 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocCheckboxRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderer.cs" />
-    <Compile Include="UI\Controls\Factories\BocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocEnumValueRendererFactory.cs" />

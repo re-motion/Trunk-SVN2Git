@@ -147,8 +147,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
     {
-      renderer = new BocDateTimeValueRenderer (HttpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory>(), _dateTextBox, _timeTextBox);
-      renderer.Render (Html.Writer);
+      renderer = new TestableBocDateTimeValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _dateTextBox, _timeTextBox);
+      renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _control));
 
       var document = Html.GetResultDocument ();
       var container = document.GetAssertedChildElement ("span", 0);

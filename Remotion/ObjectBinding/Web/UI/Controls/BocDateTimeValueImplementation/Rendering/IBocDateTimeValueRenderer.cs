@@ -16,27 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
-using Remotion.Utilities;
-using Remotion.Web;
+using Remotion.Implementation;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating standard mode renderers for <see cref="IBocDateTimeValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocDateTimeValue"/>.
   /// </summary>
-  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
+  [ConcreteImplementation (typeof (BocDateTimeValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocDateTimeValueRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control, IServiceLocator serviceLocator)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-
-      return new BocDateTimeValueRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
-    }
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocDateTimeValueRenderingContext renderingContext);
   }
 }

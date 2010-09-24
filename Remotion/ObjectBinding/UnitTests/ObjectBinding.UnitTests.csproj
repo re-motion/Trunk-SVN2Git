@@ -337,7 +337,8 @@
     <Compile Include="Web\UI\Controls\BocBooleanValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocCheckBoxMock.cs" />
     <Compile Include="Web\UI\Controls\BocCheckBoxTest.cs" />
-    <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\TestableBocDateTimeValueRenderer.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocDropDownMenuMock.cs" />

@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IListMenuRendererFactory), new ListMenuRendererFactory ());
       _instances.Add (typeof (IDatePickerButtonRendererFactory), new DatePickerButtonRendererFactory ());
       _instances.Add (typeof (IBocReferenceValueRenderer), new BocReferenceValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
-      _instances.Add (typeof (IBocDateTimeValueRendererFactory), new BocDateTimeValueRendererFactory());
+      _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
       _instances.Add (typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (new ResourceUrlFactory(new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IBocBooleanValueRendererFactory), new BocBooleanValueRendererFactory ());

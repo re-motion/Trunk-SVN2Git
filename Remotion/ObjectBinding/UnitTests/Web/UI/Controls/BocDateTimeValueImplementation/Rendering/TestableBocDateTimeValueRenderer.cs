@@ -15,41 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.ServiceLocation;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
-  [TestFixture]
-  public class IBocDateTimeValueRendererFactoryTest
+  public class TestableBocDateTimeValueRenderer : BocDateTimeValueRenderer
   {
-    private DefaultServiceLocator _serviceLocator;
-
-    [SetUp]
-    public void SetUp ()
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base(resourceUrlFactory)
     {
-      _serviceLocator = new DefaultServiceLocator ();
     }
 
-    [Test]
-    public void GetInstance_Once ()
+    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, TextBox dateTextBox, TextBox timeTextBox)
+        : base(resourceUrlFactory, dateTextBox, timeTextBox)
     {
-      var factory = _serviceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-
-      Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocDateTimeValueRendererFactory)));
-    }
-
-    [Test]
-    public void GetInstance_Twice_ReturnsSameInstance ()
-    {
-      var factory1 = _serviceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-      var factory2 = _serviceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-
-      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

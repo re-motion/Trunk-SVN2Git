@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -25,10 +26,12 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Rhino.Mocks;
+using AttributeCollection = System.Web.UI.AttributeCollection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
@@ -413,10 +416,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
 
     private void AssertDocument (bool isReadOnly, bool isDisabled, bool withStyle)
     {
+      var siteStub = MockRepository.GenerateStub<ISite> ();
+      siteStub.Stub (stub => stub.DesignMode).Return (true);
+      _dateTimeValue.Site = siteStub;
+
       IClientScriptBehavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBehavior>();
       clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting).Return (true);
-      _renderer = new BocDateTimeValueQuirksModeRenderer (HttpContext, _dateTimeValue, clientScriptBehaviorStub);
-      _renderer.Render (Html.Writer);
+      _renderer = new BocDateTimeValueQuirksModeRenderer ();
+      _renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _dateTimeValue));
 
       var document = Html.GetResultDocument();
       var div = GetAssertedDiv (document, isReadOnly, isDisabled, withStyle);

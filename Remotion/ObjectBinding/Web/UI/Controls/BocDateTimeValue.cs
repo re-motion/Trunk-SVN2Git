@@ -138,8 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = ServiceLocator.GetInstance<IBocDateTimeValueRenderer>();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
 
       _datePickerButton.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
@@ -259,9 +258,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory> ();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
-      renderer.Render (writer);
+      var renderer = ServiceLocator.GetInstance<IBocDateTimeValueRenderer> ();
+      renderer.Render (new BocDateTimeValueRenderingContext(Context, writer, this));
     }
 
     protected override void LoadControlState (object savedState)

@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
@@ -36,20 +37,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
-  public class BocDateTimeValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocDateTimeValue>
+  public class BocDateTimeValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
     private const string c_defaultControlWidth = "150pt";
-    private readonly IClientScriptBehavior _clientScriptBehavior;
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter ();
 
-    public BocDateTimeValueQuirksModeRenderer (HttpContextBase context, IBocDateTimeValue control, IClientScriptBehavior clientScriptBehavior)
-        : base (context, control)
+    public BocDateTimeValueQuirksModeRenderer ()
+        : base (null, null)
     {
-      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
-
-      _clientScriptBehavior = clientScriptBehavior;
+      
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
@@ -123,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
           hasTimeField = true;
           break;
       }
-      bool canScript = DetermineClientScriptLevel(datePickerButton);
+      bool canScript = DetermineClientScriptLevel(datePickerButton, renderingContext);
       bool hasDatePicker = hasDateField && canScript;
 
       int dateTextBoxWidthPercentage = GetDateTextBoxWidthPercentage (renderingContext, hasDateField, hasTimeField);
@@ -254,12 +252,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       renderingContext.Writer.AddStyleAttribute ("display", "inline");
     }
 
-    private bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)
+    private bool DetermineClientScriptLevel (IDatePickerButton datePickerButton, BocDateTimeValueRenderingContext renderingContext)
     {
       if (!datePickerButton.EnableClientScript)
         return false;
 
-      return _clientScriptBehavior.IsBrowserCapableOfScripting;
+      return new QuirksModeClientScriptBehavior (renderingContext.HttpContext, renderingContext.Control).IsBrowserCapableOfScripting; //TODO: ServiceLocator.GetInstance or ctor injection
     }
 
     public override string CssClassBase
