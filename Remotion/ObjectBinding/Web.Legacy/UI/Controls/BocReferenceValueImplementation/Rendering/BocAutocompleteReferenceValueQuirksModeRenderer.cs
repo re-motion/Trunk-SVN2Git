@@ -37,17 +37,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocAutoCompleteReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
-        : this (context, control, () => new TextBox())
+    public BocAutoCompleteReferenceValueQuirksModeRenderer ()
+        : this (() => new TextBox())
     {
     }
 
-    public BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxFactory)
-        : base (context, control)
+    protected BocAutoCompleteReferenceValueQuirksModeRenderer (Func<TextBox> textBoxFactory)
+        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       TextBoxFactory = textBoxFactory;

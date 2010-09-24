@@ -16,19 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(BocAutoCompleteReferenceValueRendereFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocAutoCompleteReferenceValueRendererFactory
+  [ConcreteImplementation (typeof (BocAutoCompleteReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocAutoCompleteReferenceValueRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext);
   }
 }

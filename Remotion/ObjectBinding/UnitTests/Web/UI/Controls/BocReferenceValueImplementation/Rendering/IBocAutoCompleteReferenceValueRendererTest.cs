@@ -18,13 +18,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   [TestFixture]
-  public class IBocAutoCompleteReferenceValueRendererFactoryTest
+  public class IBocAutoCompleteReferenceValueRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +36,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocAutoCompleteReferenceValueRendereFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocAutoCompleteReferenceValueRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

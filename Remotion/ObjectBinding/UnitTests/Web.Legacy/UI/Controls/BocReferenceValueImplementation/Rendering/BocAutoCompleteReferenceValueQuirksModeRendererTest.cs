@@ -415,7 +415,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
@@ -431,7 +431,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       AddStyle ();
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control);
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer ();
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
@@ -458,8 +458,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContext, Control, () =>TextBox);
-      renderer.Render (Html.Writer);
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() =>TextBox);
+      renderer.Render (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument ();
       var div = document.GetAssertedChildElement ("div", 0);

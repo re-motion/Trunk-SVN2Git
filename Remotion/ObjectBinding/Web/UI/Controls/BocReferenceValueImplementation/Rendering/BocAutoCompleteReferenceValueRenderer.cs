@@ -34,17 +34,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.TextBox"/> and a pop-up element.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
   {
     private readonly Func<TextBox> _textBoxFactory;
 
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory)
-      : this (context, control, resourceUrlFactory, () => new TextBox ())
+    public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
+      : this (resourceUrlFactory, () => new TextBox ())
     {
     }
 
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
-      : base (context, control, resourceUrlFactory)
+    protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
+      : base (null, null, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       _textBoxFactory = textBoxFactory;
@@ -63,11 +63,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderingContext = new BocAutoCompleteReferenceValueRenderingContext (Context, writer, Control);
+      Render (new BocAutoCompleteReferenceValueRenderingContext (Context, writer, Control));
+    }
 
-      RegisterBindScript(renderingContext);
-      
-      Render (renderingContext);
+    public void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      RegisterBindScript (renderingContext);
+
+      base.Render (renderingContext);
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)

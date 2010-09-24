@@ -401,8 +401,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new BocAutoCompleteReferenceValueRenderer (
-          HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -419,14 +418,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocAutoCompleteReferenceValueRenderer (
-          HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubTextBox());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
-
-
+      
       var document = Html.GetResultDocument();
       AssertReadOnlyContent (document);
     }
@@ -573,9 +570,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new BocAutoCompleteReferenceValueRenderer (
-          HttpContext, Control, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), () => TextBox);
-      renderer.Render (Html.Writer);
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), () => TextBox);
+      renderer.Render (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

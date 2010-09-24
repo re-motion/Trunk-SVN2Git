@@ -15,23 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.Web.UI.Controls;
+using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
-  /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
-  /// </summary>
-  public class BocAutoCompleteReferenceValueQuirksModeRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
+  public class TestableBocAutoCompleteReferenceValueRenderer : BocAutoCompleteReferenceValueRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IServiceLocator serviceLocator)
+    public TestableBocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base(resourceUrlFactory)
     {
-      return new BocAutoCompleteReferenceValueQuirksModeRenderer (context, control);
+    }
+
+    public TestableBocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
+        : base(resourceUrlFactory, textBoxFactory)
+    {
     }
   }
 }
