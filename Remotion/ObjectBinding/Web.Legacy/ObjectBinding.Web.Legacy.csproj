@@ -111,7 +111,6 @@
     <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocCheckboxQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocColumnQuirksModeRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\BocEnumValueQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocListQuirksModeRendererFactory.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

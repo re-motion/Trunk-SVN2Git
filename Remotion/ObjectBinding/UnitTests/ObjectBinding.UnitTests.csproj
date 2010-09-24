@@ -343,7 +343,7 @@
     <Compile Include="Web\UI\Controls\BocDateTimeValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocDropDownMenuMock.cs" />
     <Compile Include="Web\UI\Controls\BocDropDownMenuTest.cs" />
-    <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinitionTest.cs" />

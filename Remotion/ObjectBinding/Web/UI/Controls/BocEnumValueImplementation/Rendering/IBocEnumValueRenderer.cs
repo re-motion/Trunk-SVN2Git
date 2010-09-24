@@ -16,22 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
+using Remotion.Implementation;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocEnumValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocEnumValue"/>.
   /// </summary>
-  public class BocEnumValueQuirksModeRendererFactory : IBocEnumValueRendererFactory
+  [ConcreteImplementation (typeof (BocEnumValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocEnumValueRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control, IServiceLocator serviceLocator)
-    {
-      return new BocEnumValueQuirksModeRenderer (context, control);
-    }
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocEnumValueRenderingContext renderingContext);
   }
 }

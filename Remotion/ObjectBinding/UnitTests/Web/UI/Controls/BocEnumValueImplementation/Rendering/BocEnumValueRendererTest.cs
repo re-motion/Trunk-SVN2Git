@@ -330,9 +330,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueRenderer (
-          MockRepository.GenerateMock<HttpContextBase>(), _enumValue, MockRepository.GenerateStub<IResourceUrlFactory>());
-      renderer.Render (Html.Writer);
+      var renderer = new BocEnumValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
       XmlNode div = GetAssertedSpan (document, true, false, false, renderer);
@@ -380,9 +379,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueRenderer (
-          MockRepository.GenerateMock<HttpContextBase>(), _enumValue, MockRepository.GenerateStub<IResourceUrlFactory>());
-      renderer.Render (Html.Writer);
+      var renderer = new BocEnumValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      renderer.Render (new BocEnumValueRenderingContext (HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
       var div = GetAssertedSpan (document, false, false, false, renderer);
