@@ -317,6 +317,7 @@
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubQuirksModeRenderer.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubRowQuirksModeRenderer.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRendererTestBase.cs" />
     <Compile Include="Web\Domain\TypeWithAllDataTypes.cs" />
     <Compile Include="Web\Domain\TypeWithBoolean.cs" />
@@ -368,7 +369,8 @@
     <Compile Include="Web\UI\Controls\BocMultilineTextBoxValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocMultilineTextValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocReferenceValueRenderer.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocTest.cs" />

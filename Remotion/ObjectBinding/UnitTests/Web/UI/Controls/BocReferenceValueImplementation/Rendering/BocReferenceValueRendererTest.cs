@@ -398,8 +398,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new BocReferenceValueRenderer (
-          HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
       Control.Stub (stub => stub.HasValueEmbeddedInsideOptionsMenu).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
@@ -418,8 +417,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (
-          HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => new StubDropDownList());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
@@ -488,8 +486,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Control, MockRepository.GenerateStub<IResourceUrlFactory>(), () => DropDownList);
-      renderer.Render (Html.Writer);
+      var renderer = new TestableBocReferenceValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), () => DropDownList);
+      renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

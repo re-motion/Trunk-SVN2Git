@@ -115,7 +115,6 @@
     <Compile Include="UI\Controls\Factories\BocDateTimeValueQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocEnumValueQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocListQuirksModeRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\BocReferenceValueQuirksModeRendererFactory.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

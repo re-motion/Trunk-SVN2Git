@@ -107,8 +107,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = ServiceLocator.GetInstance<IBocReferenceValueRenderer> ();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -327,9 +326,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
-      renderer.Render (writer);
+      var renderer = ServiceLocator.GetInstance<IBocReferenceValueRenderer>();
+      renderer.Render (new BocReferenceValueRenderingContext(Context, writer, this));
     }
 
     protected override void LoadControlState (object savedState)

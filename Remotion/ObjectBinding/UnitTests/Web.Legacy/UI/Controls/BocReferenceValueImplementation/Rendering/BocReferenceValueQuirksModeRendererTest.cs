@@ -417,7 +417,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (() => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -432,7 +432,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (() => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       AddStyle();
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control);
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer ();
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -458,8 +458,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => DropDownList);
-      renderer.Render (Html.Writer);
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (() => DropDownList);
+      renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);

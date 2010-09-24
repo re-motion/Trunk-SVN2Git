@@ -16,19 +16,23 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.Web.UI.Controls;
+using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
-  /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IBocReferenceValue"/> controls.
-  /// </summary>
-  [ConcreteImplementation (typeof(BocReferenceValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocReferenceValueRendererFactory
+  public class TestableBocReferenceValueRenderer : BocReferenceValueRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control, IServiceLocator serviceLocator);
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base(resourceUrlFactory)
+    {
+    }
+
+    public TestableBocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
+        : base(resourceUrlFactory, dropDownListFactoryMethod)
+    {
+    }
   }
 }

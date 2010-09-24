@@ -32,18 +32,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocReferenceValueRenderer : BocReferenceValueRendererBase<IBocReferenceValue>
+  public class BocReferenceValueRenderer : BocReferenceValueRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control, IResourceUrlFactory resourceUrlFactory)
-      : this (context, control, resourceUrlFactory, () => new DropDownList ())
+    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
+      : this (resourceUrlFactory, () => new DropDownList ())
     {
     }
 
-    public BocReferenceValueRenderer (
-        HttpContextBase context, IBocReferenceValue control, IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
-      : base (context, control, resourceUrlFactory)
+    protected BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
+      : base (null, null, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
@@ -65,6 +64,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       Render (new BocReferenceValueRenderingContext(Context, writer, Control));
+    }
+
+    public void Render (BocReferenceValueRenderingContext renderingContext)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+
+      base.Render (renderingContext);
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)

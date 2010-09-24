@@ -35,18 +35,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocReferenceValue>
+  public class BocReferenceValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueQuirksModeRenderer (HttpContextBase context, IBocReferenceValue control)
-        : this (context, control, () => new DropDownList())
+    public BocReferenceValueQuirksModeRenderer ()
+        : this (() => new DropDownList())
     {
     }
 
-    public BocReferenceValueQuirksModeRenderer (HttpContextBase context, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
-        : base (context, control)
+    protected BocReferenceValueQuirksModeRenderer (Func<DropDownList> dropDownListFactoryMethod)
+        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
