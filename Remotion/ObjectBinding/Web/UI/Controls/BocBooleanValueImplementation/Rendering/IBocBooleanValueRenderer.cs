@@ -16,19 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IBocBooleanValue"/> controls.
+  /// Defines the API for rendering a <see cref="BocBooleanValue"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(BocBooleanValueRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocBooleanValueRendererFactory
+  [ConcreteImplementation (typeof (BocBooleanValueRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocBooleanValueRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocBooleanValueRenderingContext renderingContext);
   }
 }

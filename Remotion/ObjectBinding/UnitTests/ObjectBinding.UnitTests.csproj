@@ -330,7 +330,7 @@
     <Compile Include="Web\UI\Controls\BaseBocListRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
-    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueMock.cs" />

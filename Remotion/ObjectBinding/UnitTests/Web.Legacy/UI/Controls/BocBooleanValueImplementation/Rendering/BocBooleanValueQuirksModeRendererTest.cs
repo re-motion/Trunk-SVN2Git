@@ -23,6 +23,8 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -120,6 +122,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
       _booleanValue.Stub (mock => mock.Style).Return (_booleanValue.Attributes.CssStyle);
       _booleanValue.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _booleanValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      _booleanValue.Stub (stub => stub.CreateResourceSet ()).Return (_resourceSet);
     }
 
     [Test]
@@ -260,8 +264,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase> (), _booleanValue, _resourceSet);
-      _renderer.Render (Html.Writer);
+      _renderer = new BocBooleanValueQuirksModeRenderer (new BocBooleanValueResourceSetFactory());
+      _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       CheckOuterSpanAttributes (outerSpan);

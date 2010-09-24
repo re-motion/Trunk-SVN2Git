@@ -24,7 +24,6 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
-using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
@@ -100,9 +99,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
-      renderer.Render (writer);
+      var renderer = ServiceLocator.GetInstance<IBocBooleanValueRenderer> ();
+      renderer.Render (new BocBooleanValueRenderingContext(Context, writer, this));
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -136,8 +134,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      var renderer = ServiceLocator.GetInstance<IBocBooleanValueRenderer>();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 

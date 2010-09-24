@@ -23,6 +23,7 @@ using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -38,16 +39,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   {
     private const string c_nullString = "null";
 
-    private readonly BocBooleanValueResourceSet _resourceSet;
+    private readonly IBocBooleanValueResourceSetFactory _resourceSetFactory;
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Startup_";
 
-    public BocBooleanValueQuirksModeRenderer (HttpContextBase context, IBocBooleanValue control, BocBooleanValueResourceSet resourceSet)
-        : base (context, control)
+    public BocBooleanValueQuirksModeRenderer (IBocBooleanValueResourceSetFactory resourceSetFactory)
+        : base (null, null)
     {
-      ArgumentUtility.CheckNotNull ("resourceSet", resourceSet);
+      ArgumentUtility.CheckNotNull ("resourceSetFactory", resourceSetFactory);
 
-      _resourceSet = resourceSet;
+      _resourceSetFactory = resourceSetFactory;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
@@ -87,6 +88,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
+      var resourceSet = _resourceSetFactory.CreateResourceSet (renderingContext.HttpContext, renderingContext.Control, new QuirksModeResourceUrlFactory());
+
       AddAttributesToRender (renderingContext, false);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -99,16 +102,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       if (isClientScriptEnabled)
       {
         if (renderingContext.Control.Enabled)
-          RegisterStarupScriptIfNeeded (renderingContext);
+          RegisterStarupScriptIfNeeded (renderingContext, resourceSet);
 
-        string script = GetClickScript (renderingContext, imageControl, labelControl, hiddenFieldControl, renderingContext.Control.Enabled);
+        string script = GetClickScript (renderingContext, resourceSet, imageControl, labelControl, hiddenFieldControl, renderingContext.Control.Enabled);
         labelControl.Attributes.Add ("onclick", script);
         linkControl.Attributes.Add ("onclick", script);
       }
 
       PrepareLinkControl (renderingContext, linkControl, isClientScriptEnabled);
       PrepareHiddenControl (renderingContext, hiddenFieldControl, renderingContext.Control.IsReadOnly);
-      PrepareVisibleControls (renderingContext, imageControl, labelControl);
+      PrepareVisibleControls (renderingContext, resourceSet, imageControl, labelControl);
 
       hiddenFieldControl.RenderControl (renderingContext.Writer);
       linkControl.Controls.Add (imageControl);
@@ -143,9 +146,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       linkControl.Enabled = renderingContext.Control.Enabled;
     }
 
-    private void RegisterStarupScriptIfNeeded (BocBooleanValueRenderingContext renderingContext)
+    private void RegisterStarupScriptIfNeeded (BocBooleanValueRenderingContext renderingContext, BocBooleanValueResourceSet resourceSet)
     {
-      string startUpScriptKey = s_startUpScriptKeyPrefix + _resourceSet.ResourceKey;
+      string startUpScriptKey = s_startUpScriptKeyPrefix + resourceSet.ResourceKey;
       if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocBooleanValueQuirksModeRenderer), startUpScriptKey))
       {
         string trueValue = true.ToString();
@@ -154,21 +157,21 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
         string startupScript = string.Format (
             "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
-            _resourceSet.ResourceKey,
+            resourceSet.ResourceKey,
             trueValue,
             falseValue,
             nullValue,
-            ScriptUtility.EscapeClientScript (_resourceSet.DefaultTrueDescription),
-            ScriptUtility.EscapeClientScript (_resourceSet.DefaultFalseDescription),
-            ScriptUtility.EscapeClientScript (_resourceSet.DefaultNullDescription),
-            _resourceSet.TrueIconUrl,
-            _resourceSet.FalseIconUrl,
-            _resourceSet.NullIconUrl);
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultTrueDescription),
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription),
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
+            resourceSet.TrueIconUrl,
+            resourceSet.FalseIconUrl,
+            resourceSet.NullIconUrl);
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocBooleanValueQuirksModeRenderer), startUpScriptKey, startupScript);
       }
     }
 
-    private string GetClickScript (BocBooleanValueRenderingContext renderingContext, Image imageControl,Label labelControl,HiddenField hiddenFieldControl,bool isEnabled)
+    private string GetClickScript (BocBooleanValueRenderingContext renderingContext, BocBooleanValueResourceSet resourceSet, Image imageControl,Label labelControl,HiddenField hiddenFieldControl,bool isEnabled)
     {
       string script = "return false;";
       if (!isEnabled)
@@ -179,7 +182,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       string label = renderingContext.Control.ShowDescription ? "document.getElementById ('" + labelControl.ClientID + "')" : "null";
       string hiddenField = "document.getElementById ('" + hiddenFieldControl.ClientID + "')";
       script = "BocBooleanValue_SelectNextCheckboxValue ("
-               + "'" + _resourceSet.ResourceKey + "', "
+               + "'" + resourceSet.ResourceKey + "', "
                + image + ", "
                + label + ", "
                + hiddenField + ", "
@@ -197,25 +200,26 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       return script;
     }
 
-    private void PrepareVisibleControls (BocBooleanValueRenderingContext renderingContext, Image imageControl, Label labelControl)
+    private void PrepareVisibleControls (BocBooleanValueRenderingContext renderingContext, BocBooleanValueResourceSet resourceSet, Image imageControl, 
+      Label labelControl)
     {
       string imageUrl;
       string description;
 
       if (!renderingContext.Control.Value.HasValue)
       {
-        imageUrl = _resourceSet.NullIconUrl;
-        description = string.IsNullOrEmpty (renderingContext.Control.NullDescription) ? _resourceSet.DefaultNullDescription : renderingContext.Control.NullDescription;
+        imageUrl = resourceSet.NullIconUrl;
+        description = string.IsNullOrEmpty (renderingContext.Control.NullDescription) ? resourceSet.DefaultNullDescription : renderingContext.Control.NullDescription;
       }
       else if (renderingContext.Control.Value.Value)
       {
-        imageUrl = _resourceSet.TrueIconUrl;
-        description = string.IsNullOrEmpty (renderingContext.Control.TrueDescription) ? _resourceSet.DefaultTrueDescription : renderingContext.Control.TrueDescription;
+        imageUrl = resourceSet.TrueIconUrl;
+        description = string.IsNullOrEmpty (renderingContext.Control.TrueDescription) ? resourceSet.DefaultTrueDescription : renderingContext.Control.TrueDescription;
       }
       else
       {
-        imageUrl = _resourceSet.FalseIconUrl;
-        description = string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? _resourceSet.DefaultFalseDescription : renderingContext.Control.FalseDescription;
+        imageUrl = resourceSet.FalseIconUrl;
+        description = string.IsNullOrEmpty (renderingContext.Control.FalseDescription) ? resourceSet.DefaultFalseDescription : renderingContext.Control.FalseDescription;
       }
 
       imageControl.AlternateText = description;

@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocDateTimeValueRenderer), new BocDateTimeValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
       _instances.Add (typeof (IBocMultilineTextValueRenderer), new BocMultilineTextValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IBocTextValueRenderer), new BocTextValueRenderer (new ResourceUrlFactory(new ResourceTheme.ClassicBlue())));
-      _instances.Add (typeof (IBocBooleanValueRendererFactory), new BocBooleanValueRendererFactory ());
+      _instances.Add (typeof (IBocBooleanValueRenderer), new BocBooleanValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), new BocBooleanValueResourceSetFactory()));
       _instances.Add (typeof (IBocBooleanValueResourceSetFactory), new BocBooleanValueResourceSetFactory ());
       _instances.Add (typeof (IBocCheckboxRenderer), new BocCheckboxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
       _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ())));
