@@ -24,10 +24,10 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTreeView"/> controls.
   /// <seealso cref="IWebTreeView"/>
   /// </summary>
-  public class WebTreeViewRenderer : RendererBase<IWebTreeView>
+  public class WebTreeViewRenderer : RendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
-    public WebTreeViewRenderer (HttpContextBase context, IWebTreeView control, IResourceUrlFactory resourceUrlFactory)
-        : base (context, control, resourceUrlFactory)
+    public WebTreeViewRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base (null, null, resourceUrlFactory)
     {
     }
 

@@ -197,6 +197,7 @@
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderingContext.cs" />
+    <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\IWebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
     <Compile Include="UI\Controls\StyleSheetBlock.cs" />
@@ -248,8 +249,6 @@
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\IWebTreeView.cs" />
-    <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\IWebTreeViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\WebTreeViewRendererFactory.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />

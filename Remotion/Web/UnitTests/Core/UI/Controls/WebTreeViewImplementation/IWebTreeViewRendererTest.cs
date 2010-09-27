@@ -15,22 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.WebTreeViewImplementation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls.Factories
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTreeViewImplementation
 {
-  /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IWebTreeView"/> controls.
-  /// </summary>
-  public class WebTreeViewQuirksModeRendererFactory : IWebTreeViewRendererFactory
+  [TestFixture]
+  public class IWebTreeViewRendererTest
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control, IServiceLocator serviceLocator)
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new WebTreeViewQuirksModeRenderer (context, control);
+      _serviceLocator = new DefaultServiceLocator ();
+    }
+
+    [Test]
+    public void GetInstance_Once ()
+    {
+      var factory = _serviceLocator.GetInstance<IWebTreeViewRenderer> ();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (WebTreeViewRenderer)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IWebTreeViewRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IWebTreeViewRenderer> ();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

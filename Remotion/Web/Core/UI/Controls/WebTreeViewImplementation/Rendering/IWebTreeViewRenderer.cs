@@ -16,18 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IWebTreeView"/> controls.
+  /// Defines the API for rendering a <see cref="WebTreeView"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(WebTreeViewRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebTreeViewRendererFactory
+  [ConcreteImplementation (typeof (WebTreeViewRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IWebTreeViewRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (WebTreeViewRenderingContext renderingContext);
   }
 }
