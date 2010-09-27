@@ -27,9 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     Lifetime = LifetimeKind.Singleton)]
   public class BocListCssClassDefinition
   {
-    private static readonly DoubleCheckedLockingContainer<BocListCssClassDefinition> s_instance =
-        new DoubleCheckedLockingContainer<BocListCssClassDefinition> (() => new BocListCssClassDefinition());
-
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocTextValue</c>. </para>
