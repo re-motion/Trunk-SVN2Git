@@ -15,29 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.WebTabStripImplementation;
-using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls.Factories
+namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rendering
 {
-  /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="MenuTab"/> controls  and <see cref="Remotion.Web.Legacy"/> items.
-  /// </summary>
-  public class TabbedMenuQuirksModeRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
+  [TestFixture]
+  public class ITabbedMenuRendererTest
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control, IServiceLocator serviceLocator)
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new TabbedMenuQuirksModeRenderer (context, control);
+      _serviceLocator = new DefaultServiceLocator ();
     }
 
-    public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
+    [Test]
+    public void GetInstance_Once ()
     {
-      return new MenuTabRenderer (context, control, tab);
+      var factory = _serviceLocator.GetInstance<ITabbedMenuRenderer> ();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (TabbedMenuRenderer)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<ITabbedMenuRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<ITabbedMenuRenderer> ();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

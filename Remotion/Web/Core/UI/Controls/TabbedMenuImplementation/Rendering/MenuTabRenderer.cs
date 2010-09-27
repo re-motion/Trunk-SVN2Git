@@ -28,41 +28,40 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// Responsible for rendering a <see cref="MenuTab"/> in quirks mode.
   /// <seealso cref="IMenuTab"/>
   /// </summary>
-  public class MenuTabRenderer : WebTabRenderer
+  public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
-    public MenuTabRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
-        : base(context, control, tab)
+    public MenuTabRenderer ()
     {
     }
 
-    protected override void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
+    protected override void RenderBeginTagForCommand (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
     {
       ArgumentUtility.CheckNotNull ("style", style);
 
-      var menuTab = ((IMenuTab) Tab).GetActiveTab ();
+      var menuTab = ((IMenuTab) tab).GetActiveTab ();
       RenderingCommand = GetRenderingCommand(isEnabled, menuTab);
 
       if (RenderingCommand != null)
       {
         NameValueCollection additionalUrlParameters = menuTab.GetUrlParameters();
         RenderingCommand.RenderBegin (
-            writer, Tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+            renderingContext.Writer, tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
       else
       {
-        style.AddAttributesToRender (writer);
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
+        style.AddAttributesToRender (renderingContext.Writer);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
     }
 
     protected Command RenderingCommand { get; set; }
 
-    protected override void RenderEndTagForCommand (HtmlTextWriter writer)
+    protected override void RenderEndTagForCommand (WebTabStripRenderingContext renderingContext)
     {
       if (RenderingCommand != null)
-        RenderingCommand.RenderEnd (writer);
+        RenderingCommand.RenderEnd (renderingContext.Writer);
       else
-        writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag ();
     }
 
     private Command GetRenderingCommand (bool isEnabled, IMenuTab activeTab)

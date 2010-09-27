@@ -27,6 +27,7 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
@@ -328,7 +329,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private XmlNode GetAssertedOuterDiv ()
     {
       var renderer = new DropDownMenuQuirksModeRenderer ();
-      renderer.Render (_htmlHelper.Writer);
+      renderer.Render (new DropDownMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();
       document.AssertChildElementCount (1);

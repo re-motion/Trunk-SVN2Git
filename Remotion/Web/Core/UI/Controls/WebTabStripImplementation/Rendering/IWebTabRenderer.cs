@@ -15,15 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
-  /// Interface for classes able to render <see cref="IWebTab"/> items.
+  /// Defines the API for rendering a <see cref="WebTab"/>.
   /// </summary>
+  [ConcreteImplementation (typeof (WebTabRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTabRenderer
   {
-    void Render (HtmlTextWriter writer, bool isEnabled, bool isLast, WebTabStyle style);
+    void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style);
   }
 }

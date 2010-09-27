@@ -31,10 +31,10 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class TabbedMenuQuirksModeRenderer : QuirksModeRendererBase<ITabbedMenu>
+  public class TabbedMenuQuirksModeRenderer : QuirksModeRendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuQuirksModeRenderer (HttpContextBase context, ITabbedMenu control)
-        : base(context, control)
+    public TabbedMenuQuirksModeRenderer ()
+        : base(null, null)
     {
     }
 

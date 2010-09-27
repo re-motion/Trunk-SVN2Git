@@ -52,10 +52,9 @@ namespace Remotion.Web.UI.Controls
       _command = new SingleControlItemCollection (new NavigationCommand (), new[] { typeof (NavigationCommand) });
     }
 
-    public override IWebTabRenderer GetRenderer (HttpContextBase context, IWebTabStrip tabStrip)
+    public override IWebTabRenderer GetRenderer ()
     {
-      var factory = SafeServiceLocator.Current.GetInstance<IMenuTabRendererFactory> ();
-      return factory.CreateRenderer (context, tabStrip, this);
+      return (IWebTabRenderer) SafeServiceLocator.Current.GetInstance<IMenuTabRenderer> ();
     }
 
     protected TabbedMenu TabbedMenu

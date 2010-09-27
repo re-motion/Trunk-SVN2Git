@@ -32,6 +32,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation
     bool IsSelected { get; }
     bool EvaluateEnabled ();
 
-    IWebTabRenderer GetRenderer (HttpContextBase context, IWebTabStrip tabStrip);
+    IWebTabRenderer GetRenderer ();
   }
 }

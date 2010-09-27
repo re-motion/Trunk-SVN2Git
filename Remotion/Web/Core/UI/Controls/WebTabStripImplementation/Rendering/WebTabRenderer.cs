@@ -28,149 +28,123 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// </summary>
   public class WebTabRenderer : IWebTabRenderer
   {
-    private readonly HttpContextBase _context;
-    private readonly IWebTabStrip _control;
-    private readonly IWebTab _tab;
-
-    public WebTabRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
+    public WebTabRenderer ()
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("tab", tab);
-
-      _context = context;
-      _control = control;
-      _tab = tab;
+     
     }
 
-    public void Render (HtmlTextWriter writer, bool isEnabled, bool isLast, WebTabStyle style)
+    public void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + TabClientID + " > *:first");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + GetTabClientID(renderingContext, tab) + " > *:first");
 
-      RenderTabBegin (writer);
-      RenderSeperator (writer);
-      RenderWrapperBegin (writer);
+      RenderTabBegin (renderingContext);
+      RenderSeperator (renderingContext);
+      RenderWrapperBegin (renderingContext, tab);
 
-      RenderBeginTagForCommand (writer, isEnabled, style);
-      RenderContents (writer);
-      RenderEndTagForCommand (writer);
+      RenderBeginTagForCommand (renderingContext, tab, isEnabled, style);
+      RenderContents (renderingContext, tab);
+      RenderEndTagForCommand (renderingContext);
 
-      writer.RenderEndTag (); // End tab span
-      writer.RenderEndTag (); // End tab wrapper span
+      renderingContext.Writer.RenderEndTag (); // End tab span
+      renderingContext.Writer.RenderEndTag (); // End tab wrapper span
 
       if (isLast)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        writer.RenderEndTag ();
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.RenderEndTag ();
       }
 
-      writer.RenderEndTag (); // End list item
+      renderingContext.Writer.RenderEndTag (); // End list item
     }
 
-    public HttpContextBase Context
+    private string GetTabClientID (WebTabStripRenderingContext renderingContext, IWebTab tab)
     {
-      get { return _context; }
+      return renderingContext.Control.ClientID + "_" + tab.ItemID;
     }
 
-    public IWebTabStrip Control
+    private void RenderWrapperBegin (WebTabStripRenderingContext renderingContext, IWebTab tab)
     {
-      get { return _control; }
-    }
-
-    public IWebTab Tab
-    {
-      get { return _tab; }
-    }
-
-    private string TabClientID
-    {
-      get { return Control.ClientID + "_" + Tab.ItemID; }
-    }
-
-    private void RenderWrapperBegin (HtmlTextWriter writer)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, TabClientID);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetTabClientID(renderingContext, tab));
       string cssClass;
-      if (Tab.IsSelected)
+      if (tab.IsSelected)
         cssClass = CssClassTabSelected;
       else
         cssClass = CssClassTab;
-      if (!Tab.EvaluateEnabled ())
+      if (!tab.EvaluateEnabled ())
         cssClass += " " + CssClassDisabled;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
     }
 
-    private void RenderTabBegin (HtmlTextWriter writer)
+    private void RenderTabBegin (WebTabStripRenderingContext renderingContext)
     {
-      if (Control.IsDesignMode)
+      if (renderingContext.Control.IsDesignMode)
       {
-        writer.AddStyleAttribute ("float", "left");
-        writer.AddStyleAttribute ("display", "block");
-        writer.AddStyleAttribute ("white-space", "nowrap");
+        renderingContext.Writer.AddStyleAttribute ("float", "left");
+        renderingContext.Writer.AddStyleAttribute ("display", "block");
+        renderingContext.Writer.AddStyleAttribute ("white-space", "nowrap");
       }
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
     }
 
-    private void RenderSeperator (HtmlTextWriter writer)
+    private void RenderSeperator (WebTabStripRenderingContext renderingContext)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      writer.RenderEndTag ();
-      writer.RenderEndTag ();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    protected virtual void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
+    protected virtual void RenderBeginTagForCommand (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      if (isEnabled && !Tab.IsDisabled)
+      if (isEnabled && !tab.IsDisabled)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, Tab.GetPostBackClientEvent ());
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
       }
-      style.AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
+      style.AddAttributesToRender (renderingContext.Writer);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
     }
 
-    protected virtual void RenderEndTagForCommand (HtmlTextWriter writer)
+    protected virtual void RenderEndTagForCommand (WebTabStripRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      writer.RenderEndTag ();
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    protected virtual void RenderContents (HtmlTextWriter writer)
+    protected virtual void RenderContents (WebTabStripRenderingContext renderingContext, IWebTab tab)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
 
-      bool hasIcon = Tab.Icon != null && !string.IsNullOrEmpty (Tab.Icon.Url);
-      bool hasText = !string.IsNullOrEmpty (Tab.Text);
+      bool hasIcon = tab.Icon != null && !string.IsNullOrEmpty (tab.Icon.Url);
+      bool hasText = !string.IsNullOrEmpty (tab.Text);
       if (hasIcon)
-        Tab.Icon.Render (writer, Control);
+        tab.Icon.Render (renderingContext.Writer, renderingContext.Control);
       else
-        IconInfo.Spacer.Render (writer, Control);
+        IconInfo.Spacer.Render (renderingContext.Writer, renderingContext.Control);
       if (hasIcon && hasText)
-        writer.Write ("&nbsp;");
+        renderingContext.Writer.Write ("&nbsp;");
       if (hasText)
-        writer.Write (Tab.Text); // Do not HTML encode
+        renderingContext.Writer.Write (tab.Text); // Do not HTML encode
       if (!hasIcon && !hasText)
-        writer.Write ("&nbsp;");
+        renderingContext.Writer.Write ("&nbsp;");
 
-      writer.RenderEndTag (); // End anchor body span
-
+      renderingContext.Writer.RenderEndTag (); // End anchor body span
     }
 
     /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for formatting the inside of the anchor element. </summary>

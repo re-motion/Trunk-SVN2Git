@@ -27,10 +27,10 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class TabbedMenuRenderer : RendererBase<ITabbedMenu>
+  public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public TabbedMenuRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

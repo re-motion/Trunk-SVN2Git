@@ -16,18 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IWebTabStrip"/> controls.
+  /// Defines the API for rendering a <see cref="WebTabStrip"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(WebTabStripRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebTabStripRendererFactory
+  [ConcreteImplementation (typeof (WebTabStripRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IWebTabStripRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (WebTabStripRenderingContext renderingContext);
   }
 }

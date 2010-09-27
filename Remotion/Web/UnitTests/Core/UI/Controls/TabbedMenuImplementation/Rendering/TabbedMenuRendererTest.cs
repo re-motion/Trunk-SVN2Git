@@ -102,8 +102,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
 
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
-      var renderer = new TabbedMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
-      renderer.Render (_htmlHelper.Writer);
+      var renderer = new TabbedMenuRenderer (MockRepository.GenerateStub<IResourceUrlFactory> ());
+      renderer.Render (new TabbedMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
       // _control.RenderControl (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

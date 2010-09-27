@@ -31,10 +31,10 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripQuirksModeRenderer : QuirksModeRendererBase<IWebTabStrip>
+  public class WebTabStripQuirksModeRenderer : QuirksModeRendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripQuirksModeRenderer (HttpContextBase context, IWebTabStrip control)
-        : base (context, control)
+    public WebTabStripQuirksModeRenderer ()
+        : base (null, null)
     {
     }
 
@@ -119,11 +119,11 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     private void RenderTab (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (renderingContext.HttpContext, renderingContext.Control);
+      var tabRenderer = tab.GetRenderer ();
 
       bool isEnabled = !tab.IsSelected || renderingContext.Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      tabRenderer.Render (renderingContext.Writer, isEnabled, isLast, style);
+      tabRenderer.Render (renderingContext, tab, isEnabled, isLast, style);
 
       renderingContext.Writer.WriteLine ();
     }

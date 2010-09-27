@@ -23,6 +23,7 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
+using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 using Remotion.Web.UnitTests.Core.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -77,7 +78,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuQuirksModeRenderer), _control.UniqueID + "_MenuItems", script));
 
       var renderer = new ListMenuQuirksModeRenderer ();
-      renderer.Render (_htmlHelper.Writer);
+      renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
   
       _clientScriptManagerMock.VerifyAllExpectations ();
     }
@@ -152,7 +153,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private XmlNode GetAssertedTable ()
     {
       var renderer = new ListMenuQuirksModeRenderer ();
-      renderer.Render (_htmlHelper.Writer);
+      renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();
 

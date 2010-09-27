@@ -18,8 +18,6 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
@@ -28,10 +26,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripRenderer : RendererBase<IWebTabStrip>
+  public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public WebTabStripRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 
@@ -117,11 +115,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 
     private void RenderTab (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (renderingContext.HttpContext, renderingContext.Control);
+      var tabRenderer = tab.GetRenderer ();
 
       bool isEnabled = !tab.IsSelected || renderingContext.Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      tabRenderer.Render (renderingContext.Writer, isEnabled, isLast, style);
+      tabRenderer.Render (renderingContext, tab, isEnabled, isLast, style);
 
       renderingContext.Writer.WriteLine ();
     }

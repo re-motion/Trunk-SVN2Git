@@ -23,6 +23,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
@@ -177,7 +178,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         _singleView.ViewStyle.CssClass = viewCssClass;
       }
 
-      renderer.Render (_htmlHelper.Writer);
+      renderer.Render (new SingleViewRenderingContext (_httpContext, _htmlHelper.Writer, _singleView));
       //_singleView.RenderControl (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

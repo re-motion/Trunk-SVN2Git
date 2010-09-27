@@ -328,10 +328,9 @@ public class WebTab: IWebTab, IControlStateManager
     return !IsDisabled;
   }
 
-  public virtual IWebTabRenderer GetRenderer (HttpContextBase context, IWebTabStrip tabStrip)
+  public virtual IWebTabRenderer GetRenderer ()
   {
-    var factory = SafeServiceLocator.Current.GetInstance<IWebTabRendererFactory> ();
-    return factory.CreateRenderer (context, tabStrip, this);
+    return SafeServiceLocator.Current.GetInstance<IWebTabRenderer> ();
   }
 
   protected string GetPostBackClientEvent ()

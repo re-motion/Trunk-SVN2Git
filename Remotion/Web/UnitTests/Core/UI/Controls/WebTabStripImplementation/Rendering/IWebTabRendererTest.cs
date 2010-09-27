@@ -15,20 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
-using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rendering
 {
-  /// <summary>
-  /// Interface for factories creating renderers for <see cref="MenuTab"/> items.
-  /// </summary>
-  [ConcreteImplementation (typeof(TabbedMenuRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IMenuTabRendererFactory
+  [TestFixture]
+  public class IWebTabRendererTest
   {
-    IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab);
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _serviceLocator = new DefaultServiceLocator ();
+    }
+
+    [Test]
+    public void GetInstance_Once ()
+    {
+      var factory = _serviceLocator.GetInstance<IWebTabRenderer> ();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (WebTabRenderer)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IWebTabRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IWebTabRenderer> ();
+
+      Assert.That (factory1, Is.SameAs (factory2));
+    }
   }
 }

@@ -101,8 +101,7 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (context, this, SafeServiceLocator.Current);
+      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMenuRenderer>();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
     }
 
@@ -242,9 +241,8 @@ namespace Remotion.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
-      renderer.Render (writer);
+      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMenuRenderer>();
+      renderer.Render (new TabbedMenuRenderingContext(Page.Context, writer, this));
     }
 
     /// <summary> Overrides the <see cref="Control.Controls"/> property. </summary>

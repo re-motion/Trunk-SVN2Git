@@ -190,9 +190,12 @@
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRenderer.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderingContext.cs" />
+    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\IMenuTabRenderer.cs" />
+    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\ITabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderingContext.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderingContext.cs" />
+    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderingContext.cs" />
     <Compile Include="UI\Controls\WebUpdatePanel.cs" />
@@ -225,10 +228,7 @@
     <Compile Include="UI\Controls\SingleViewImplementation\ISingleView.cs" />
     <Compile Include="UI\Controls\RendererBase.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderer.cs" />
-    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\ITabbedMenu.cs" />
-    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\ITabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\TabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRendererFactory.cs" />
@@ -243,10 +243,7 @@
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\IWebTab.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabRenderer.cs" />
-    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabRendererFactory.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\IWebTabStrip.cs" />
-    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\WebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\MenuTabRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderer.cs" />

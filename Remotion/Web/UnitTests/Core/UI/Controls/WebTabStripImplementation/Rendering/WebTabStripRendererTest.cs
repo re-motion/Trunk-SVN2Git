@@ -149,8 +149,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       _tab0.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab0.ItemID));
       _tab0.Stub (stub => stub.GetActiveTab()).Return (_tab0);
       _tab0.Stub (stub => stub.Command).Return (new NavigationCommand (CommandType.Event));
-      _tab0.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new MenuTabRenderer (_httpContextStub, _webTabStrip, _tab0));
+      _tab0.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new MenuTabRenderer ());
 
       var tab1 = MockRepository.GenerateStub<IMenuTab>();
       tab1.Stub (stub => stub.ItemID).Return ("Tab1");
@@ -160,8 +159,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       tab1.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
       tab1.Stub (stub => stub.GetActiveTab()).Return (tab1);
       tab1.Stub (stub => stub.Command).Return (new NavigationCommand (CommandType.Event));
-      tab1.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new MenuTabRenderer (_httpContextStub, _webTabStrip, tab1));
+      tab1.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new MenuTabRenderer ());
 
       var tab2 = MockRepository.GenerateStub<IMenuTab>();
       tab2.Stub (stub => stub.ItemID).Return ("Tab2");
@@ -171,8 +169,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       tab2.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
       tab2.Stub (stub => stub.GetActiveTab()).Return (tab2);
       tab2.Stub (stub => stub.Command).Return (new NavigationCommand (CommandType.Event));
-      tab2.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new MenuTabRenderer (_httpContextStub, _webTabStrip, tab2));
+      tab2.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new MenuTabRenderer ());
 
       var tab3 = MockRepository.GenerateStub<IMenuTab>();
       tab3.Stub (stub => stub.ItemID).Return ("Tab3");
@@ -182,8 +179,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       tab3.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
       tab3.Stub (stub => stub.GetActiveTab()).Return (tab3);
       tab3.Stub (stub => stub.Command).Return (new NavigationCommand (CommandType.Event));
-      tab3.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new MenuTabRenderer (_httpContextStub, _webTabStrip, tab3));
+      tab3.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new MenuTabRenderer ());
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);
       _webTabStrip.GetVisibleTabs().Add (tab1);
@@ -193,8 +189,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripRenderer (_httpContextStub, _webTabStrip, MockRepository.GenerateStub<IResourceUrlFactory> ());
-      _renderer.Render (_htmlHelper.Writer);
+      _renderer = new WebTabStripRenderer (MockRepository.GenerateStub<IResourceUrlFactory> ());
+      _renderer.Render (new WebTabStripRenderingContext (_httpContextStub, _htmlHelper.Writer, _webTabStrip));
 
       var document = _htmlHelper.GetResultDocument();
       XmlNode list = GetAssertedTabList (document, withCssClass, isEmpty, tabCount, isDesignMode);

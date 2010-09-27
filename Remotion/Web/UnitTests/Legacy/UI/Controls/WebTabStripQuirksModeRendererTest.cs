@@ -147,8 +147,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0.Stub (stub => stub.Icon).Return (new IconInfo());
       _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       _tab0.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink(_webTabStrip, _tab0.ItemID));
-      _tab0.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
-          new WebTabRenderer (_httpContextStub, _webTabStrip, _tab0));
+      _tab0.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new WebTabRenderer ());
 
       var tab1 = MockRepository.GenerateStub<IWebTab> ();
       tab1.Stub (stub => stub.ItemID).Return ("Tab1");
@@ -156,8 +155,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab1.Stub (stub => stub.Icon).Return (new IconInfo ("~/myImageUrl"));
       tab1.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab1.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
-      tab1.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContextStub, _webTabStrip, tab1));
+      tab1.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
 
       var tab2 = MockRepository.GenerateStub<IWebTab> ();
       tab2.Stub (stub => stub.ItemID).Return ("Tab2");
@@ -165,8 +163,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab2.Stub (stub => stub.Icon).Return (null);
       tab2.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab2.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
-      tab2.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContextStub, _webTabStrip, tab2));
+      tab2.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
 
       var tab3 = MockRepository.GenerateStub<IWebTab> ();
       tab3.Stub (stub => stub.ItemID).Return ("Tab3");
@@ -174,8 +171,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab3.Stub (stub => stub.Icon).Return (null);
       tab3.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab3.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
-      tab3.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
-          new WebTabRenderer (_httpContextStub, _webTabStrip, tab3));
+      tab3.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);
       _webTabStrip.GetVisibleTabs().Add (tab1);
@@ -185,8 +181,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripQuirksModeRenderer (_httpContextStub, _webTabStrip);
-      _renderer.Render (_htmlHelper.Writer);
+      _renderer = new WebTabStripQuirksModeRenderer ();
+      _renderer.Render (new WebTabStripRenderingContext (_httpContextStub, _htmlHelper.Writer, _webTabStrip));
 
       var document = _htmlHelper.GetResultDocument();
       XmlNode list = GetAssertedTabList (document, withCssClass, isEmpty, tabCount, isDesignMode);
