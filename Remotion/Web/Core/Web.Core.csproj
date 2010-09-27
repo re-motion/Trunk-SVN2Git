@@ -183,6 +183,7 @@
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
+    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\IRenderingContext.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
@@ -213,10 +214,8 @@
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\IDropDownMenu.cs" />
-    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\ClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderer.cs" />
-    <Compile Include="UI\Controls\Factories\DropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\IRenderer.cs" />
     <Compile Include="UI\Controls\IStyledControl.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererFactory.cs" />

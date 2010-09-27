@@ -16,21 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
+using Remotion.Implementation;
 
-namespace Remotion.Web.Legacy.UI.Controls.Factories
+namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="DropDownMenu"/> controls.
+  /// Defines the API for rendering a <see cref="DropDownMenuRenderer"/>.
   /// </summary>
-  public class DropDownMenuQuirksModeRendererFactory : IDropDownMenuRendererFactory
+  [ConcreteImplementation (typeof (DropDownMenuRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IDropDownMenuRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator)
-    {
-      return new DropDownMenuQuirksModeRenderer (context, control);
-    }
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (DropDownMenuRenderingContext renderingContext);
   }
 }

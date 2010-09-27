@@ -19,12 +19,11 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Rendering
 {
   [TestFixture]
-  public class IDropDownMenuRendererFactoryTest
+  public class IDropDownMenuRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +36,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IDropDownMenuRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IDropDownMenuRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (DropDownMenuRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (DropDownMenuRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IDropDownMenuRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IDropDownMenuRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IDropDownMenuRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IDropDownMenuRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

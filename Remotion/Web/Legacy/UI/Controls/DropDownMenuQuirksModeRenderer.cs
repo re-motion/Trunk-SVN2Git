@@ -31,12 +31,12 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DropDownMenu"/> control in quirks mode.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public class DropDownMenuQuirksModeRenderer : QuirksModeRendererBase<IDropDownMenu>
+  public class DropDownMenuQuirksModeRenderer : QuirksModeRendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
-    public DropDownMenuQuirksModeRenderer (HttpContextBase context, IDropDownMenu control)
-        : base(context, control)
+    public DropDownMenuQuirksModeRenderer ()
+        : base(null, null)
     {
     }
 

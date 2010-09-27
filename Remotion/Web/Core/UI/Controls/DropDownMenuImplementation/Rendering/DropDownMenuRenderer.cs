@@ -27,14 +27,14 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// Responsible for rendering <see cref="DropDownMenu"/> controls in standard mode.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public class DropDownMenuRenderer : RendererBase<IDropDownMenu>
+  public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_whiteSpace = "&nbsp;";
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
     private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
-    public DropDownMenuRenderer (HttpContextBase context, IDropDownMenu control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public DropDownMenuRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

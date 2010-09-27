@@ -327,7 +327,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var renderer = new DropDownMenuQuirksModeRenderer (_httpContext, _control);
+      var renderer = new DropDownMenuQuirksModeRenderer ();
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

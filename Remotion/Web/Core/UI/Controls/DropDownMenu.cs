@@ -71,8 +71,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
-      var renderer = factory.CreateRenderer (httpContext, this, SafeServiceLocator.Current);
+      var renderer = SafeServiceLocator.Current.GetInstance<IDropDownMenuRenderer> ();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -98,9 +97,8 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
-      renderer.Render (writer);
+      var renderer = SafeServiceLocator.Current.GetInstance<IDropDownMenuRenderer>();
+      renderer.Render (new DropDownMenuRenderingContext (Page.Context, writer, this));
     }
 
     public string GetBindOpenEventScript (string elementReference, string menuIDReference, bool moveToMousePosition)
