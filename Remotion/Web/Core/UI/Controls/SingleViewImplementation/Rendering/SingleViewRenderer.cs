@@ -27,10 +27,10 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="SingleView"/> controls.
   /// <seealso cref="ISingleView"/>
   /// </summary>
-  public class SingleViewRenderer : RendererBase<ISingleView>
+  public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewRenderer (HttpContextBase context, ISingleView control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public SingleViewRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

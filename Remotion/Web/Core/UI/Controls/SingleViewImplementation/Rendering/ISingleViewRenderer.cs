@@ -16,21 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.SingleViewImplementation;
-using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
+using Remotion.Implementation;
 
-namespace Remotion.Web.Legacy.UI.Controls.Factories
+namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="SingleView"/> controls.
+  /// Defines the API for rendering a <see cref="SingleViewRenderer"/>.
   /// </summary>
-  public class SingleViewQuirksModeRendererFactory : ISingleViewRendererFactory
+  [ConcreteImplementation (typeof (SingleViewRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface ISingleViewRenderer
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control, IServiceLocator serviceLocator)
-    {
-      return new SingleViewQuirksModeRenderer (context, control);
-    }
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (SingleViewRenderingContext renderingContext);
   }
 }

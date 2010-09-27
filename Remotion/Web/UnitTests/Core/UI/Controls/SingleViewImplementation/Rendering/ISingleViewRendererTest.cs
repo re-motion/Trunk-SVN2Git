@@ -18,13 +18,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rendering
 {
   [TestFixture]
-  public class ISingleViewRendererFactoryTest
+  public class ISingleViewRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +36,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<ISingleViewRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<ISingleViewRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (SingleViewRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (SingleViewRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<ISingleViewRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<ISingleViewRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<ISingleViewRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<ISingleViewRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

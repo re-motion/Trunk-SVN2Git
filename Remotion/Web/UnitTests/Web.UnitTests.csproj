@@ -208,7 +208,7 @@
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorTest.cs" />
     <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererTest.cs" />
-    <Compile Include="Core\UI\Controls\SingleViewImplementation\Rendering\ISingleViewRendererFactoryTest.cs" />
+    <Compile Include="Core\UI\Controls\SingleViewImplementation\Rendering\ISingleViewRendererTest.cs" />
     <Compile Include="Core\UI\Controls\StubStyleSheetElement.cs" />
     <Compile Include="Core\UI\Controls\StyleSheetBlockTest.cs" />
     <Compile Include="Core\UI\Controls\StyleSheetImportRuleTest.cs" />

@@ -188,6 +188,7 @@
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
+    <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRenderer.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderingContext.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderingContext.cs" />
@@ -223,8 +224,6 @@
     <Compile Include="UI\Controls\JavaScriptInclude.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\ISingleView.cs" />
     <Compile Include="UI\Controls\RendererBase.cs" />
-    <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\ITabbedMenu.cs" />

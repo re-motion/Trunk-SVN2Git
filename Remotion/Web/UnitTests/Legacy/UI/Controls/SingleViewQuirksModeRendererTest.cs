@@ -151,7 +151,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewQuirksModeRenderer (_httpContext, _singleView);
+      var renderer = new SingleViewQuirksModeRenderer ();
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;
