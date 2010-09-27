@@ -158,7 +158,6 @@ namespace Remotion.Reflection
     public override bool Equals (object obj)
     {
       var other = obj as PropertyInfoAdapter;
-      //return other != null && _propertyInfo.Equals (other._propertyInfo);
 
       if (other == null)
         return false;

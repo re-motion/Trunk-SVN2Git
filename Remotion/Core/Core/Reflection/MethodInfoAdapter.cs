@@ -166,8 +166,7 @@ namespace Remotion.Reflection
     public override bool Equals (object obj)
     {
       var other = obj as MethodInfoAdapter;
-      //return other != null && _methodInfo.Equals (other._methodInfo);
-
+ 
       if (other == null)
         return false;
 
