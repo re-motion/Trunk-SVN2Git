@@ -39,6 +39,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.UI.Controls;
 
 namespace OBWTest
 {
@@ -68,7 +69,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      PreferQuirksModeRendering = false;
+      PreferQuirksModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))

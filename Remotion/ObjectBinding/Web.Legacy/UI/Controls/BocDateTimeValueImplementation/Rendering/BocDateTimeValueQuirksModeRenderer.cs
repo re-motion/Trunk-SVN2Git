@@ -43,11 +43,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     private const string c_designModeEmptyLabelContents = "##";
     private const string c_defaultControlWidth = "150pt";
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter ();
+    private IClientScriptBehavior _clientScriptBehavior;
 
-    public BocDateTimeValueQuirksModeRenderer ()
+    public BocDateTimeValueQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
         : base (null, null)
     {
-      
+      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
+
+      _clientScriptBehavior = clientScriptBehavior;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
@@ -257,7 +260,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       if (!datePickerButton.EnableClientScript)
         return false;
 
-      return new QuirksModeClientScriptBehavior (renderingContext.HttpContext, renderingContext.Control).IsBrowserCapableOfScripting; //TODO: ServiceLocator.GetInstance or ctor injection
+      return _clientScriptBehavior.IsBrowserCapableOfScripting(renderingContext.HttpContext, renderingContext.Control); 
     }
 
     public override string CssClassBase

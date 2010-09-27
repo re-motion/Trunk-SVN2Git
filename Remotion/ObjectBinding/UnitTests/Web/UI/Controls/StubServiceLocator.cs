@@ -36,6 +36,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.Factories;
@@ -83,7 +84,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocCheckboxRenderer), new BocCheckboxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
 
-      _instances.Add (typeof (IClientScriptBehaviorFactory), new ClientScriptBehaviorFactory());
+      _instances.Add (typeof (IClientScriptBehavior), new ClientScriptBehavior());
       _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
       _instances.Add (typeof (IResourceUrlFactory), new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
 

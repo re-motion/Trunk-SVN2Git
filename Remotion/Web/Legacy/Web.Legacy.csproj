@@ -83,7 +83,6 @@
     <Compile Include="UI\Controls\DatePickerButtonQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\DatePickerPageQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\DropDownMenuQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\Factories\DropDownMenuQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\ListMenuQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\SingleViewQuirksModeRendererFactory.cs" />

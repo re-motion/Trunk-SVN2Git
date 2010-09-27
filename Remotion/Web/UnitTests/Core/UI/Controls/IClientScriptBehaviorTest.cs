@@ -15,20 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls.Factories
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
-  /// <summary>
-  /// Responsible for creating <see cref="QuirksModeClientScriptBehavior"/>.
-  /// </summary>
-  public class QuirksModeClientScriptBehaviorFactory : IClientScriptBehaviorFactory
+  [TestFixture]
+  public class IClientScriptBehaviorTest
   {
-    public IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new QuirksModeClientScriptBehavior(context, control);
+      _serviceLocator = new DefaultServiceLocator ();
+    }
+
+    [Test]
+    public void GetInstance_Once ()
+    {
+      var factory = _serviceLocator.GetInstance<IClientScriptBehavior>();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (ClientScriptBehavior)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IClientScriptBehavior> ();
+      var factory2 = _serviceLocator.GetInstance<IClientScriptBehavior>();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

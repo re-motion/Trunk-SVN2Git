@@ -197,9 +197,7 @@
     <Compile Include="UI\Controls\StyleSheetElement.cs" />
     <Compile Include="UI\Controls\StyleSheetImportRule.cs" />
     <Compile Include="UI\Controls\DatePickerButton.cs" />
-    <Compile Include="UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\HtmlHeadElement.cs" />
-    <Compile Include="UI\Controls\IClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\IControlItem.cs" />
     <Compile Include="Infrastructure\IThemedResourceUrlResolver.cs" />
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />

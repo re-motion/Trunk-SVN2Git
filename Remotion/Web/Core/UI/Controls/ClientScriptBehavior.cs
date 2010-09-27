@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -28,9 +29,9 @@ namespace Remotion.Web.UI.Controls
     {
     }
 
-    public bool IsBrowserCapableOfScripting
+    public bool IsBrowserCapableOfScripting(HttpContextBase httpContext, IControl control)
     {
-      get { return true; }
+      return true;
     }
   }
 }

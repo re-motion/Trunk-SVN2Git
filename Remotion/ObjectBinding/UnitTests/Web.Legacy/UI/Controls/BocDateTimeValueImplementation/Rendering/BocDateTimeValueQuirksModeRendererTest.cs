@@ -421,8 +421,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
       _dateTimeValue.Site = siteStub;
 
       IClientScriptBehavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBehavior>();
-      clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting).Return (true);
-      _renderer = new BocDateTimeValueQuirksModeRenderer ();
+      clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting(HttpContext, _dateTimeValue)).Return (true);
+      _renderer = new BocDateTimeValueQuirksModeRenderer (clientScriptBehaviorStub);
       _renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _dateTimeValue));
 
       var document = Html.GetResultDocument();

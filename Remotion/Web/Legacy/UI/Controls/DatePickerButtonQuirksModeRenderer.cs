@@ -35,10 +35,14 @@ namespace Remotion.Web.Legacy.UI.Controls
     private const int c_defaultDatePickerLengthInPoints = 150;
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
     private const string c_datePickerIcon = "DatePicker.gif";
+    private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public DatePickerButtonQuirksModeRenderer ()
+    public DatePickerButtonQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
         : base (null, null)
     {
+      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
+
+      _clientScriptBehavior = clientScriptBehavior;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
@@ -162,7 +166,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!renderingContext.Control.EnableClientScript)
         return false;
 
-      return new QuirksModeClientScriptBehavior (renderingContext.HttpContext, renderingContext.Control).IsBrowserCapableOfScripting; //TODO: ServiceLocator.GetInstance or ctor injection
+      return _clientScriptBehavior.IsBrowserCapableOfScripting(renderingContext.HttpContext, renderingContext.Control);
     }
 
     protected Unit PopUpWidth

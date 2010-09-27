@@ -60,9 +60,8 @@ namespace Remotion.Web.UI.Controls
     {
       if (!IsDesignMode)
       {
-        var factory = SafeServiceLocator.Current.GetInstance<IClientScriptBehaviorFactory>();
-        var clientScriptBahavior = factory.CreateClientScriptBehavior (Page.Context, this);
-        _isBrowserCapableOfScripting = clientScriptBahavior.IsBrowserCapableOfScripting;
+        var clientScriptBahavior = SafeServiceLocator.Current.GetInstance<IClientScriptBehavior> ();
+        _isBrowserCapableOfScripting = clientScriptBahavior.IsBrowserCapableOfScripting(Page.Context, this);
         RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }

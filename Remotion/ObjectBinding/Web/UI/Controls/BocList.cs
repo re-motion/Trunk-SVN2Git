@@ -1214,9 +1214,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (!_isBrowserCapableOfSCripting.HasValue)
         {
-          var factory = ServiceLocator.GetInstance<IClientScriptBehaviorFactory>();
-          var preRenderer = factory.CreateClientScriptBehavior (Context, this);
-          _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting;
+          var preRenderer = ServiceLocator.GetInstance<IClientScriptBehavior> ();
+          _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting(Context, this);
         }
         return _isBrowserCapableOfSCripting.Value;
       }

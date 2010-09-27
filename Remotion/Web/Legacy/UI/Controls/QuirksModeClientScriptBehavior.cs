@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -27,34 +26,27 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class QuirksModeClientScriptBehavior : IClientScriptBehavior
   {
-    private readonly HttpContextBase _context;
-    private readonly IControl _control;
-
-    public QuirksModeClientScriptBehavior (HttpContextBase context, IControl control)
+    public QuirksModeClientScriptBehavior ()
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("control", control);
-
-      _context = context;
-      _control = control;
+      
     }
 
-    public bool IsBrowserCapableOfScripting
+    public bool IsBrowserCapableOfScripting(HttpContextBase httpContext, IControl control)
     {
-      get { return IsInternetExplorer55OrHigher(); }
+      return IsInternetExplorer55OrHigher(httpContext, control); 
     }
 
-    private bool IsInternetExplorer55OrHigher ()
+    private bool IsInternetExplorer55OrHigher (HttpContextBase httpContext, IControl control)
     {
-      if (ControlHelper.IsDesignMode (_control))
+      if (ControlHelper.IsDesignMode (control))
         return true;
 
       bool isVersionGreaterOrEqual55 =
-          _context.Request.Browser.MajorVersion >= 6
-          || _context.Request.Browser.MajorVersion == 5
-             && _context.Request.Browser.MinorVersion >= 0.5;
+          httpContext.Request.Browser.MajorVersion >= 6
+          || httpContext.Request.Browser.MajorVersion == 5
+             && httpContext.Request.Browser.MinorVersion >= 0.5;
       bool isInternetExplorer55AndHigher =
-          _context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+          httpContext.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
       return isInternetExplorer55AndHigher;
     }
