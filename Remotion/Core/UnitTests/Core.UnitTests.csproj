@@ -1082,9 +1082,15 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\MemberInfoEquals.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\ClassWithProperties.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\ClassWithMethods.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithDifferentProperties.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\ClassWithFields.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\DerivedClassWithFields.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\DerivedClassWithMethods.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClosedGenericClassWithDifferentProperties.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedMemberInfoEqualsTestClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\DerivedClassWithProperties.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\FakeMemberInfo.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\GenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedOpenGenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClassWithDifferentProperties.cs" />
@@ -1095,7 +1101,7 @@
     <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GuessIsExplicitInterfaceProperty.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEqualsTestClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\GenericClassWithMethods.cs" />
     <Compile Include="Utilities\StopwatchScopeTest.cs" />
     <Compile Include="Utilities\StubStringUtility.cs">
       <SubType>Code</SubType>

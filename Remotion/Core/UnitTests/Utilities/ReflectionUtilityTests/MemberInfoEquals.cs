@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain;
+using Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
@@ -26,120 +26,223 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
   public class MemberInfoEquals
   {
     [Test]
-    public void MemberInfoEquals_DifferentMethods ()
+    public void MemberInfoEquals_True_SameInstance ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("NonGenericMethod");
-      var methodInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod");
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = one;
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.False);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_DifferentDeclaringType ()
+    public void MemberInfoEquals_True_DifferentReflectedTypes ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("Trim");
-      var methodInfo2 = typeof (string).GetMethod ("Trim", new Type[0]);
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = typeof (DerivedClassWithMethods).GetMethod ("SimpleMethod1");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.False);
+      Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_NonGenericMethod ()
+    public void MemberInfoEquals_True_NullDeclaringType ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("NonGenericMethod");
-      var methodInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("NonGenericMethod");
+      var one = new FakeMemberInfo (null, 1, typeof (object).Module);
+      var two = new FakeMemberInfo (null, 1, typeof (object).Module);
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.True);
+      Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_NonGenericMethod_DerivedMethod ()
+    public void MemberInfoEquals_True_ArrayMembers ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("NonGenericMethod");
-      var methodInfo2 = typeof (DerivedMemberInfoEqualsTestClass).GetMethod ("NonGenericMethod");
+      var one = typeof (int[]).GetMethod ("Set");
+      var two = typeof (int[]).GetMethod ("Set");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.True);
+     var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_GenericOpenMethod ()
+    public void MemberInfoEquals_True_AbstractArrayMembers ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod");
-      var methodInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod");
+      var one = typeof (Array).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
+      var two = typeof (int[]).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.True);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_GenericClosedMethod ()
+    public void MemberInfoEquals_True_SameMember_OnSameDeclaringTypeInstantiations ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod").MakeGenericMethod(typeof(int));
-      var methodInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod").MakeGenericMethod(typeof(int));
+      var one = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
+      var two = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.True);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_GenericClosedMethod_DifferentTypes ()
+    public void MemberInfoEquals_True_SameMember_OnGenericTypeDefinition ()
     {
-      var methodInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (int));
-      var methodInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (bool));
+      var one = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
+      var two = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1, methodInfo2), Is.False);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_DifferentProperties ()
+    public void MemberInfoEquals_True_SameMethod_WithSameMethodInstantiations ()
     {
-      var propertyInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("Property");
-      var propertyInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("GenericProperty");
+      var one = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
+      var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1, propertyInfo2), Is.False);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_NonGenericProperties ()
+    public void MemberInfoEquals_True_SameMethod_GenericMethodDefinition ()
     {
-      var propertyInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("Property");
-      var propertyInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("Property");
+      var one = typeof (ClassWithMethods).GetMethod ("GenericMethod");
+      var two = typeof (ClassWithMethods).GetMethod ("GenericMethod");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1, propertyInfo2), Is.True);
+      Assert.That (one.IsGenericMethodDefinition, Is.True);
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void MemberInfoEquals_NonGenericProperties_DerivedType ()
+    public void MemberInfoEquals_False_DifferentMetadataTokens ()
     {
-      var propertyInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("Property");
-      var propertyInfo2 = typeof (DerivedMemberInfoEqualsTestClass).GetProperty ("Property");
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = typeof (ClassWithMethods).GetMethod ("SimpleMethod2");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1, propertyInfo2), Is.True);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
-    public void MemberInfoEquals_GenericProperties ()
+    public void MemberInfoEquals_False_DifferentTypes ()
     {
-      var propertyInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("GenericProperty");
-      var propertyInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("GenericProperty");
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = new FakeMemberInfo (typeof (string), one.MetadataToken, one.Module);
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1, propertyInfo2), Is.True);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
-    public void MemberInfoEquals_GenericProperties_DifferentTypes ()
+    public void MemberInfoEquals_False_DifferentModules ()
     {
-      var propertyInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("GenericProperty");
-      var propertyInfo2 = typeof (MemberInfoEqualsTestClass<bool>).GetProperty ("GenericProperty");
+      var one = new FakeMemberInfo (typeof (object), 1, typeof (object).Module);
+      var two = new FakeMemberInfo (one.DeclaringType, one.MetadataToken, typeof (MemberInfoEquals).Module);
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1, propertyInfo2), Is.False);
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberInfoEquals_False_SameMember_OnDifferentDeclaringTypeInstantiations ()
+    {
+      var one = typeof (GenericClassWithMethods<string>).GetMethod ("SimpleMethod");
+      var two = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberInfoEquals_False_SameMethod_WithDifferentMethodInstantiations ()
+    {
+      var one = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (string));
+      var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberInfoEquals_False_WithGenericMethodDefinition_AndInstantiation ()
+    {
+      var one = typeof (ClassWithMethods).GetMethod ("GenericMethod");
+      var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberInfoEquals_False_ArrayMembers ()
+    {
+      var one = typeof (int[]).GetMethods ()[0];
+      var two = typeof (int[]).GetMethods ()[1];
+
+      Assert.That (one, Is.Not.SameAs (two));
+
+      var result = ReflectionUtility.MemberInfoEquals (one, two);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void MemberInfoEquals_Methods ()
+    {
+      var methodInfo1a = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var methodInfo1b = typeof (DerivedClassWithMethods).GetMethod ("SimpleMethod1");
+      var methodInfo2 = typeof (ClassWithMethods).GetMethod ("SimpleMethod2");
+      var methodInfo3 = typeof (ClassWithMethods).GetMethod ("OverriddenMethod");
+      var methodInfo4 = typeof (DerivedClassWithMethods).GetMethod ("OverriddenMethod");
+
+      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1a, methodInfo1b), Is.True);
+      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1a, methodInfo2), Is.False);
+      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo3, methodInfo4), Is.False);
+    }
+
+    [Test]
+    public void MemberInfoEquals_Properties ()
+    {
+      var propertyInfo1a = typeof (ClassWithProperties).GetProperty ("Property1");
+      var propertyInfo1b = typeof (DerivedClassWithProperties).GetProperty ("Property1");
+      var propertyInfo2 = typeof (ClassWithProperties).GetProperty ("Property2");
+
+      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1a, propertyInfo1b), Is.True);
+      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1a, propertyInfo2), Is.False);
     }
 
     [Test]
     public void MemberInfoEquals_Field ()
     {
-      var fieldInfo1 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("PublicField");
-      var fieldInfo2 = typeof (MemberInfoEqualsTestClass<string>).GetProperty ("PublicField");
+      var fieldInfo1a = typeof (ClassWithFields).GetField ("Field1");
+      var fieldInfo1b = typeof (DerivedClassWithFields).GetField ("Field1");
+      var fieldInfo2 = typeof (ClassWithFields).GetField ("Field2");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (fieldInfo1, fieldInfo2), Is.True);
+      Assert.That (ReflectionUtility.MemberInfoEquals (fieldInfo1a, fieldInfo1b), Is.True);
+      Assert.That (ReflectionUtility.MemberInfoEquals (fieldInfo1a, fieldInfo2), Is.False);
     }
   }
 }
