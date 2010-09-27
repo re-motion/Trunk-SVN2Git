@@ -193,6 +193,7 @@
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\IMenuTabRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\ITabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderingContext.cs" />
+    <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderingContext.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRenderer.cs" />
@@ -232,8 +233,6 @@
     <Compile Include="UI\Controls\TabbedMenuImplementation\ITabbedMenu.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\ITabbedMultiView.cs" />
-    <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\TabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\IMenuTab.cs" />
     <Compile Include="Infrastructure\ThemedResourceUrlResolver.cs" />

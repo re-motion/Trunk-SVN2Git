@@ -24,7 +24,7 @@ using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   [TestFixture]
-  public class ITabbedMultiViewRendererFactoryTest
+  public class ITabbedMultiViewRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +37,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<ITabbedMultiViewRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<ITabbedMultiViewRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (TabbedMultiViewRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (TabbedMultiViewRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<ITabbedMultiViewRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<ITabbedMultiViewRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<ITabbedMultiViewRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<ITabbedMultiViewRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

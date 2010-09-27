@@ -25,6 +25,7 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
@@ -176,8 +177,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewQuirksModeRenderer (_httpContext, _control);
-      renderer.Render (_htmlHelper.Writer);
+      var renderer = new TabbedMultiViewQuirksModeRenderer ();
+      renderer.Render (new TabbedMultiViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);
       AssertTopRow (table, withCssClass, isEmpty, renderer);

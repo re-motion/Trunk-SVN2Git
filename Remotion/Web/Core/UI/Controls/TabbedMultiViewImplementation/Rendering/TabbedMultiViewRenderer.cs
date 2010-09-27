@@ -27,10 +27,10 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMultiView"/> controls.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
-  public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
+  public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public TabbedMultiViewRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 

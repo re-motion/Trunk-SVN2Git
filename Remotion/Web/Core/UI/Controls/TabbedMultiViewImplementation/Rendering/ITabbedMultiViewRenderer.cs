@@ -16,18 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="ITabbedMultiView"/> controls.
+  /// Defines the API for rendering a <see cref="TabbedMultiView"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(TabbedMultiViewRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface ITabbedMultiViewRendererFactory
+  [ConcreteImplementation (typeof (TabbedMultiViewRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface ITabbedMultiViewRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (TabbedMultiViewRenderingContext renderingContext);
   }
 }
