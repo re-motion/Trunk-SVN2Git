@@ -63,8 +63,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       
-      var factory = SafeServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
+      var renderer = SafeServiceLocator.Current.GetInstance<IWebButtonRenderer>();
       renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current, this, Page.Context);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (this, HtmlHeadAppender.Current);

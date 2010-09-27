@@ -16,18 +16,17 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.Web.UI.Controls.Factories;
 
 namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
   /// <summary>
-  /// Defines a factory method for creating renderers for <see cref="IWebButton"/> controls.
+  /// Defines the API for rendering a <see cref="WebButton"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(WebButtonRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IWebButtonRendererFactory
+  [ConcreteImplementation (typeof (WebButtonRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IWebButtonRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebButton control, IServiceLocator serviceLocator);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (WebButtonRenderingContext renderingContext);
   }
 }

@@ -195,6 +195,7 @@
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderingContext.cs" />
+    <Compile Include="UI\Controls\WebButtonImplementation\Rendering\IWebButtonRenderer.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderingContext.cs" />
@@ -238,8 +239,6 @@
     <Compile Include="Infrastructure\ThemedResourceUrlResolver.cs" />
     <Compile Include="UI\Controls\TitleTag.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\IWebButton.cs" />
-    <Compile Include="UI\Controls\WebButtonImplementation\Rendering\IWebButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\WebButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\IWebTab.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabRenderer.cs" />

@@ -29,10 +29,10 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.
   /// <seealso cref="IWebButton"/>
   /// </summary>
-  public class WebButtonQuirksModeRenderer : QuirksModeRendererBase<IWebButton>
+  public class WebButtonQuirksModeRenderer : QuirksModeRendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonQuirksModeRenderer (HttpContextBase context, IWebButton control)
-        : base (context, control)
+    public WebButtonQuirksModeRenderer ()
+        : base (null, null)
     {
     }
 

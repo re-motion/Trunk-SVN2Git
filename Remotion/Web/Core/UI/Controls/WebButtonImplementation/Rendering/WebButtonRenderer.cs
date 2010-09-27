@@ -25,10 +25,10 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebButton"/> controls.
   /// <seealso cref="IWebButton"/>
   /// </summary>
-  public class WebButtonRenderer : RendererBase<IWebButton>
+  public class WebButtonRenderer : RendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonRenderer (HttpContextBase context, IWebButton control, IResourceUrlFactory resourceUrlFactory)
-        : base (context, control, resourceUrlFactory)
+    public WebButtonRenderer (IResourceUrlFactory resourceUrlFactory)
+        : base (null, null, resourceUrlFactory)
     {
     }
 

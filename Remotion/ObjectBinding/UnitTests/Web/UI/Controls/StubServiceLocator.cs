@@ -39,7 +39,6 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls

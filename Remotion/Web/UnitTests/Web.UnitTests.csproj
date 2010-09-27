@@ -219,7 +219,7 @@
     <Compile Include="Core\UI\Controls\TabbedMenuImplementation\Rendering\ITabbedMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\Rendering\ITabbedMultiViewRendererTest.cs" />
     <Compile Include="Core\UI\Controls\TitleTagTest.cs" />
-    <Compile Include="Core\UI\Controls\WebButtonImplementation\IWebButtonRendererFactoryTest.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonImplementation\IWebButtonRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\IWebTabRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />

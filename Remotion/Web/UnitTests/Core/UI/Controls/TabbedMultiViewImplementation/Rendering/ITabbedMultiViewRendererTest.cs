@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.Rendering
