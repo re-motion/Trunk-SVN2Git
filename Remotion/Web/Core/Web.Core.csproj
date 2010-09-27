@@ -185,6 +185,7 @@
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\IRenderingContext.cs" />
+    <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRenderingContext.cs" />
@@ -218,8 +219,6 @@
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\IRenderer.cs" />
     <Compile Include="UI\Controls\IStyledControl.cs" />
-    <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Factories\ListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\JavaScriptInclude.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\ISingleView.cs" />

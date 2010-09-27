@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuQuirksModeRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuQuirksModeRenderer (_httpContextStub, _control);
+      var renderer = new ListMenuQuirksModeRenderer ();
       renderer.Render (_htmlHelper.Writer);
   
       _clientScriptManagerMock.VerifyAllExpectations ();
@@ -151,7 +151,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuQuirksModeRenderer (_httpContextStub, _control);
+      var renderer = new ListMenuQuirksModeRenderer ();
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

@@ -27,12 +27,12 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   /// Responsible for rendering a <see cref="ListMenu"/> control in standard mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
-  public class ListMenuRenderer : RendererBase<IListMenu>
+  public class ListMenuRenderer : RendererBase<IListMenu>, IListMenuRenderer
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (HttpContextBase context, IListMenu control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+    public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base (null, null, resourceUrlFactory)
     {
     }
 
