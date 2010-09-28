@@ -37,7 +37,7 @@
   <target name="all-test" depends="prereq, Remotion.License, Dms.License, SecurityManager.License,
       Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, 
       Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
-      Data.Linq.UnitTests, Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
+      Data.Linq.UnitTests, Data.Linq.IntegrationTests.Common, Data.Linq.IntegrationTests.CSharp, Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
       Security.UnitTests.TestDomain, Security.UnitTests, Dms.UnitTests, SecurityManager.Core.UnitTests">
     <echo message="Target has executed."/>
   </target>
@@ -454,10 +454,26 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Data.Linq.UnitTests" depdends="Core.Core, Data.Linq, Development.Core, Data.Linq.SqlBackend, Data.Linq.LinqToSqlAdapter">
+  <target name="Data.Linq.UnitTests" depdends="Data.Linq, Data.Linq.SqlBackend, Data.Linq.LinqToSqlAdapter">
     <property name="project.name" value="Data.Linq.UnitTests" />
     <property name="project.dir" value="Remotion/Data/Linq.UnitTests" />
     <property name="project.output" value="Remotion.Data.Linq.UnitTests" />
+    <property name="project.extension" value="dll" />
+    <call target="buildtest" />
+  </target>
+
+  <target name="Data.Linq.IntegrationTests.Common" depdends="Data.Linq, Data.Linq.SqlBackend, Data.Linq.LinqToSqlAdapter">
+    <property name="project.name" value="Data.Linq.IntegrationTests.Common" />
+    <property name="project.dir" value="Remotion/Data/Linq.IntegrationTests.Common" />
+    <property name="project.output" value="Remotion.Data.Linq.IntegrationTests.Common" />
+    <property name="project.extension" value="dll" />
+    <call target="buildtest" />
+  </target>
+
+  <target name="Data.Linq.IntegrationTests.CSharp" depdends="Data.Linq, Data.Linq.SqlBackend, Data.Linq.LinqToSqlAdapter, Data.Linq.IntegrationTests.Common">
+    <property name="project.name" value="Data.Linq.IntegrationTests.CSharp" />
+    <property name="project.dir" value="Remotion/Data/Linq.IntegrationTests.CSharp" />
+    <property name="project.output" value="Remotion.Data.Linq.IntegrationTests.CSharp" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
   </target>
