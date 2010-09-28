@@ -193,7 +193,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.SqlBackend", "Rem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.LinqToSqlAdapter", "Remotion\Data\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj", "{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.IntegrationTests", "Remotion\Data\Linq.IntegrationTests\Data.Linq.IntegrationTests.csproj", "{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.IntegrationTests.Common", "Remotion\Data\Linq.IntegrationTests\Data.Linq.IntegrationTests.Common.csproj", "{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.IntegrationTests.CSharp", "Remotion\Data\Linq.IntegrationTests.CSharp\Data.Linq.IntegrationTests.CSharp.csproj", "{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}"
 EndProject
