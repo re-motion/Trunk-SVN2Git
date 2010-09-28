@@ -260,8 +260,10 @@
 
   <target name="prepareassemblyinfo" if="${build.update.assembly-info}" >
     <copy file="${project.basedir}/Properties/AssemblyInfoTemplate.cs"  tofile="${project.basedir}/Properties/AssemblyInfo.cs" overwrite="true" />
+    <copy file="${project.basedir}/My Project/AssemblyInfoTemplate.vb"  tofile="${project.basedir}/My Project/AssemblyInfo.vb" overwrite="true" />
     <!--
     <attrib readonly="false" file="${project.basedir}/Properties/AssemblyInfo.cs"/>
+    <attrib readonly="false" file="${project.basedir}/My Project/AssemblyInfo.vb"/>
     -->
     <if test="${string::starts-with(project.basedir, path::combine(solution.basedir, 'Remotion'))}">
       <replace>
@@ -275,6 +277,7 @@
         </filterset>
         <fileset>
           <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+          <include name="${project.basedir}/My Project/AssemblyInfo.vb" />
         </fileset>
       </replace>
     </if>
@@ -290,6 +293,7 @@
         </filterset>
         <fileset>
           <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+          <include name="${project.basedir}/My Project/AssemblyInfo.vb" />
         </fileset>
       </replace>
     </if>
@@ -305,6 +309,7 @@
         </filterset>
         <fileset>
           <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+          <include name="${project.basedir}/My Project/AssemblyInfo.vb" />
         </fileset>
       </replace>
     </if>
