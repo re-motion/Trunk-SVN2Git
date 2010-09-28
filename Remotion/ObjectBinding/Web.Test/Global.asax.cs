@@ -30,6 +30,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -97,21 +98,15 @@ namespace OBWTest
             builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency();
         }
 
-        //TODO: remove after rendering factories are removed
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Factories")).AsImplementedInterfaces().SingleInstance();
-        
-
-        builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Rendering")).AsImplementedInterfaces ().SingleInstance ();
+            .Where (t => t.Namespace.EndsWith (".Rendering") && !t.Name.Contains ("Column")).AsImplementedInterfaces ().SingleInstance (); //TODO: Remove !t.Name.Contains("Column") after refactoring!
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
             .Where (t => t.Namespace.EndsWith (".Controls")).AsImplementedInterfaces ().SingleInstance ();
 
         var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
         ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
 
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRendererFactory>() is BocListQuirksModeRendererFactory); //TODO: Remove
-
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer>() is BocListQuirksModeRenderer); 
         Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
       }
     }

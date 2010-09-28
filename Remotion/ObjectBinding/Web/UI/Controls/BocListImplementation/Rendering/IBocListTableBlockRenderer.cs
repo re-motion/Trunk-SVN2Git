@@ -15,12 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  [ConcreteImplementation (typeof (BocListTableBlockRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListTableBlockRenderer
   {
-    void Render (HtmlTextWriter writer);
+    void Render (BocListRenderingContext renderingContext);
   }
 }

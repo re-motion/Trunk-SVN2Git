@@ -18,13 +18,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
-  public class IBocIndexColumnRendererFactoryTest
+  public class IBocListRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +36,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocIndexColumnRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocListRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocIndexColumnRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocListRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocIndexColumnRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocIndexColumnRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocListRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocListRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

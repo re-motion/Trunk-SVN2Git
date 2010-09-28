@@ -79,9 +79,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
-          HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
-      renderer.Render (Html.Writer);
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -93,9 +92,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
-          HttpContext, List, _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
-      renderer.Render (Html.Writer);
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 

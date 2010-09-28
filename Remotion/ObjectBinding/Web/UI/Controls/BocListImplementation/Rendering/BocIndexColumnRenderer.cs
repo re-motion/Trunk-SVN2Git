@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using Remotion.Utilities;
 using System.Web;
@@ -26,29 +27,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   public class BocIndexColumnRenderer : IBocIndexColumnRenderer
   {
-    private readonly HttpContextBase _context;
-    private readonly IBocList _list;
     private readonly BocListCssClassDefinition _cssClasses;
 
-    public BocIndexColumnRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses)
+    public BocIndexColumnRenderer (BocListCssClassDefinition cssClasses)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
-      _context = context;
-      _list = list;
       _cssClasses = cssClasses;
-    }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public IBocList List
-    {
-      get { return _list; }
     }
 
     public BocListCssClassDefinition CssClasses
@@ -56,68 +41,68 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
-    public void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
+    public void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
 
-      if (!List.IsIndexEnabled)
+      if (!renderingContext.Control.IsIndexEnabled)
         return;
 
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      if (List.Index == RowIndex.InitialOrder)
-        RenderRowIndex (writer, originalRowIndex, selectorControlID);
-      else if (List.Index == RowIndex.SortedOrder)
-        RenderRowIndex (writer, absoluteRowIndex, selectorControlID);
-      writer.RenderEndTag();
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      if (renderingContext.Control.Index == RowIndex.InitialOrder)
+        RenderRowIndex (renderingContext, originalRowIndex, selectorControlID);
+      else if (renderingContext.Control.Index == RowIndex.SortedOrder)
+        RenderRowIndex (renderingContext, absoluteRowIndex, selectorControlID);
+      renderingContext.Writer.RenderEndTag();
     }
 
-    public void RenderTitleCell (HtmlTextWriter writer)
+    public void RenderTitleCell (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      if (!List.IsIndexEnabled)
+      if (!renderingContext.Control.IsIndexEnabled)
         return;
 
       string cssClass = CssClasses.TitleCell + " " + CssClasses.TitleCellIndex;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      string indexColumnTitle = List.IndexColumnTitle;
-      if (StringUtility.IsNullOrEmpty (List.IndexColumnTitle))
-        indexColumnTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      string indexColumnTitle = renderingContext.Control.IndexColumnTitle;
+      if (StringUtility.IsNullOrEmpty (renderingContext.Control.IndexColumnTitle))
+        indexColumnTitle = renderingContext.Control.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
 
       // Do not HTML encode.
-      writer.Write (indexColumnTitle);
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      renderingContext.Writer.Write (indexColumnTitle);
+      renderingContext.Writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary> Renders the zero-based row index normalized to a one-based format
     /// (Optionally as a label for the selector control). </summary>
-    private void RenderRowIndex (HtmlTextWriter writer, int index, string selectorControlID)
+    private void RenderRowIndex (BocListRenderingContext renderingContext, int index, string selectorControlID)
     {
       bool hasSelectorControl = selectorControlID != null;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
       if (hasSelectorControl)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
-        if (List.HasClientScript)
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
+        if (renderingContext.Control.HasClientScript)
         {
           const string script = "BocList_OnSelectorControlLabelClick();";
-          writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         }
-        writer.RenderBeginTag (HtmlTextWriterTag.Label);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Label);
       }
       else
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       int renderedIndex = index + 1;
-      if (List.IndexOffset != null)
-        renderedIndex += List.IndexOffset.Value;
-      writer.Write (renderedIndex);
-      writer.RenderEndTag();
+      if (renderingContext.Control.IndexOffset != null)
+        renderedIndex += renderingContext.Control.IndexOffset.Value;
+      renderingContext.Writer.Write (renderedIndex);
+      renderingContext.Writer.RenderEndTag();
     }
 
 

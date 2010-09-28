@@ -48,9 +48,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -86,9 +85,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -124,9 +122,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -162,9 +159,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockRenderer (
-          HttpContext, List, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 

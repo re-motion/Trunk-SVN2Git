@@ -37,8 +37,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <see cref="BocSimpleColumnDefinition"/> column for which to render cells.
     /// </summary>
     /// <remarks>
-    /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRendererFactory"/> should use a
-    /// <see cref="BocRowRenderer"/> to obtain instances of this class.
+    /// This class should not be instantiated directly by clients.
     /// </remarks>
     public BocSimpleColumnQuirksModeRenderer (
         HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)

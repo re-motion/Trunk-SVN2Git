@@ -16,19 +16,19 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Interface for factory creating renderers for <see cref="IBocList"/> controls.
+  /// Defines the API for rendering a <see cref="BocList"/>.
   /// </summary>
-  [ConcreteImplementation (typeof(BocListRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocListRendererFactory
+  [ConcreteImplementation (typeof (BocListRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocListRenderer
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator, IBocColumnRenderer[] columnRenderers);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void Render (BocListRenderingContext renderingContext);
   }
 }

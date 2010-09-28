@@ -35,8 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <see cref="BocSimpleColumnDefinition"/> column for which to render cells.
     /// </summary>
     /// <remarks>
-    /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRendererFactory"/> should use a
-    /// <see cref="BocRowRenderer"/> to obtain instances of this class.
+    /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
+    /// factory to obtain instances of this class.
     /// </remarks>
     public BocSimpleColumnRenderer (
         HttpContextBase context,

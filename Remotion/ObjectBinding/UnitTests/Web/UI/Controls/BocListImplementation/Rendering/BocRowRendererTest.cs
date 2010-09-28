@@ -52,10 +52,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderTitlesRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderTitlesRow (Html.Writer);
-
-
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer(_bocListCssClassDefinition), new BocSelectorColumnRenderer(_bocListCssClassDefinition));
+      renderer.RenderTitlesRow (new BocListRenderingContext(HttpContext, Html.Writer, List, _columnRenderers)); //TODO: use STubServiceLocator !?
+      
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
@@ -69,10 +68,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderTitlesRow (Html.Writer);
-
-
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer(_bocListCssClassDefinition), new BocSelectorColumnRenderer(_bocListCssClassDefinition));
+      renderer.RenderTitlesRow (new BocListRenderingContext(HttpContext, Html.Writer, List, _columnRenderers)); //TODO: use STubServiceLocator !?
+      
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
@@ -90,8 +88,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderTitlesRow (Html.Writer);
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer (_bocListCssClassDefinition), new BocSelectorColumnRenderer (_bocListCssClassDefinition));
+      renderer.RenderTitlesRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers)); //TODO: use STubServiceLocator !?
 
 
       var document = Html.GetResultDocument();
@@ -106,8 +104,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderDataRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer (_bocListCssClassDefinition), new BocSelectorColumnRenderer (_bocListCssClassDefinition));
+      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers), BusinessObject, 0, 0, 0); //TODO: use STubServiceLocator !?
 
       var document = Html.GetResultDocument();
 
@@ -122,9 +120,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       List.SelectorControlCheckedState.Add (0);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
-
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer (_bocListCssClassDefinition), new BocSelectorColumnRenderer (_bocListCssClassDefinition));
+      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers), BusinessObject, 0, 0, 0); //TODO: use STubServiceLocator !?
+      
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
@@ -139,8 +137,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, _bocListCssClassDefinition, new StubServiceLocator (), _columnRenderers);
-      renderer.RenderEmptyListDataRow (Html.Writer);
+      IBocRowRenderer renderer = new BocRowRenderer (_bocListCssClassDefinition, new BocIndexColumnRenderer (_bocListCssClassDefinition), new BocSelectorColumnRenderer (_bocListCssClassDefinition));
+      renderer.RenderEmptyListDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers)); //TODO: use STubServiceLocator !?
 
       var document = Html.GetResultDocument();
 

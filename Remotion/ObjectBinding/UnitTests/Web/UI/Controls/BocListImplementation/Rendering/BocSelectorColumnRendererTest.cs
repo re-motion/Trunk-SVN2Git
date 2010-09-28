@@ -26,6 +26,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocSelectorColumnRendererTest : BocListRendererTestBase
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private BocListRenderingContext _bocListRenderingContext;
 
     [SetUp]
     public void SetUp ()
@@ -35,14 +36,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();
+      _bocListRenderingContext = new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]);
     }
 
     [Test]
     public void RenderTitleCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, List, _bocListCssClassDefinition);
-      renderer.RenderTitleCell (Html.Writer);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      renderer.RenderTitleCell (_bocListRenderingContext);
 
       var document = Html.GetResultDocument();
 
@@ -60,8 +62,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderDataCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, List, _bocListCssClassDefinition);
-      renderer.RenderDataCell (Html.Writer, 0, "checkboxControl", false, "bocListTableCell");
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      renderer.RenderDataCell (_bocListRenderingContext, 0, "checkboxControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 
@@ -79,8 +81,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderTitleCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, List, _bocListCssClassDefinition);
-      renderer.RenderTitleCell (Html.Writer);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      renderer.RenderTitleCell (_bocListRenderingContext);
 
       var document = Html.GetResultDocument();
 
@@ -94,8 +96,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderDataCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, List, _bocListCssClassDefinition);
-      renderer.RenderDataCell (Html.Writer, 0, "radioControl", false, "bocListTableCell");
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      renderer.RenderDataCell (_bocListRenderingContext, 0, "radioControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 

@@ -405,8 +405,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator, GetColumnRenderers());
+      var renderer = ServiceLocator.GetInstance<IBocListRenderer>();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -1158,9 +1157,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, this, ServiceLocator, GetColumnRenderers());
-      renderer.Render (writer);
+      IBocColumnRenderer[] columnRenderers = GetColumnRenderers (renderColumns);
+      var renderer = ServiceLocator.GetInstance<IBocListRenderer>();
+      renderer.Render (new BocListRenderingContext(Context, writer, this, columnRenderers));
     }
 
     public bool HasNavigator
@@ -2105,10 +2104,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return EnsureColumnsGot (false);
     }
 
-    private IBocColumnRenderer[] GetColumnRenderers ()
+    private IBocColumnRenderer[] GetColumnRenderers (BocColumnDefinition[] columns)
     {
       var bocColumnRenderers = new List<IBocColumnRenderer>();
-      BocColumnDefinition[] columns = EnsureColumnsGot();
       for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
       {
         var column = columns[columnIndex];

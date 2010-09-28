@@ -44,14 +44,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasMenuBlock).Return (false);
 
       var renderer = new BocListRenderer (
-          HttpContext,
-          List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (Html.Writer);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -72,14 +70,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.MenuBlockOffset).Return (s_menuBlockOffset);
 
       var renderer = new BocListRenderer (
-          HttpContext,
-          List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (Html.Writer);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -107,14 +103,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasMenuBlock).Return (true);
 
       var renderer = new BocListRenderer (
-          HttpContext,
-          List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (Html.Writer);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -138,14 +132,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.HasNavigator).Return (true);
 
       var renderer = new BocListRenderer (
-          HttpContext,
-          List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (Html.Writer);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 

@@ -17,7 +17,6 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -33,9 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// 
   /// This class should not be instantiated directly. Use a <see cref="BocRowRenderer"/> to obtain an instance.</remarks>
   /// <seealso cref="BocListNavigationBlockRenderer"/>
-  /// <seealso cref="BocListRendererFactory"/>
   /// <seealso cref="BocListMenuBlockRenderer"/>
-  public class BocListRenderer : BocRendererBase<IBocList>
+  public class BocListRenderer : BocRendererBase<IBocList>, IBocListRenderer
   {
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
     private readonly IBocListNavigationBlockRenderer _navigationBlockRenderer;
@@ -43,14 +41,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly BocListCssClassDefinition _cssClasses;
 
     public BocListRenderer (
-        HttpContextBase context,
-        IBocList list,
         IResourceUrlFactory resourceUrlFactory,
         BocListCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
-        : base (context, list, resourceUrlFactory)
+        : base (null, null, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);
@@ -112,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
-      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
+      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
     }
 
     /// <summary>
@@ -128,11 +124,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </remarks>
     /// <seealso cref="BocListMenuBlockRenderer"/>
     /// <seealso cref="BocListNavigationBlockRenderer"/>
-    public override void Render (HtmlTextWriter writer)
+    public override void Render (HtmlTextWriter writer)  //TODO: remove this method
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      Render (new BocListRenderingContext (Context, writer, Control));
+      Render (new BocListRenderingContext (Context, writer, Control, new IBocColumnRenderer[0]));  
     }
 
     public void Render (BocListRenderingContext renderingContext)
@@ -165,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, renderingContext.Control.MenuBlockOffset.ToString ());
 
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-        MenuBlockRenderer.Render (renderingContext.Writer);
+        MenuBlockRenderer.Render (renderingContext);
         renderingContext.Writer.RenderEndTag ();
       }
 
@@ -175,10 +171,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         renderingContext.Writer.AddStyleAttribute ("right", renderingContext.Control.MenuBlockWidth.ToString ());
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      TableBlockRenderer.Render (renderingContext.Writer);
+      TableBlockRenderer.Render (renderingContext);
 
       if (renderingContext.Control.HasNavigator)
-        NavigationBlockRenderer.Render (renderingContext.Writer);
+        NavigationBlockRenderer.Render (renderingContext);
 
       renderingContext.Writer.RenderEndTag ();
     }

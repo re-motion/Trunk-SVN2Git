@@ -35,9 +35,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
           IBocCommandColumnRendererFactory,
           IBocCustomColumnRendererFactory,
           IBocDropDownMenuColumnRendererFactory,
-          IBocRowEditModeColumnRendererFactory,
-          IBocIndexColumnRendererFactory,
-          IBocSelectorColumnRendererFactory
+          IBocRowEditModeColumnRendererFactory
   {
     private readonly BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
 
@@ -83,15 +81,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
     {
       return new BocRowEditModeColumnQuirksModeRenderer (context, list, columnDefinition, _bocListQuirksModeCssClassDefinition, columnIndex);
     }
-
-    IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocIndexColumnQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition);
-    }
-
-    IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocSelectorColumnQuirksModeRenderer (context, list, _bocListQuirksModeCssClassDefinition);
-    }
+    
   }
 }

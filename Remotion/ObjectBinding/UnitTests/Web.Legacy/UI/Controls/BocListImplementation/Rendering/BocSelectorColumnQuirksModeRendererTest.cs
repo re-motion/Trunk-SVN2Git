@@ -44,8 +44,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderTitleCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.RenderTitleCell (Html.Writer);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -63,8 +63,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderDataCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (Html.Writer, 0, "checkboxControl", false, "bocListTableCell");
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]), 0, "checkboxControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 
@@ -82,8 +82,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderTitleCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.RenderTitleCell (Html.Writer);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -97,8 +97,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderDataCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (Html.Writer, 0, "radioControl", false, "bocListTableCell");
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]), 0, "radioControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 

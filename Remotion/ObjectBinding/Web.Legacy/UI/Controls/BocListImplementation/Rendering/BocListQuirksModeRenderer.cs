@@ -34,8 +34,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
-  /// <seealso cref="BocListQuirksModeRendererFactory"/>
-  public class BocListQuirksModeRenderer : BocQuirksModeRendererBase<IBocList>
+  public class BocListQuirksModeRenderer : BocQuirksModeRendererBase<IBocList>, IBocListRenderer
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";
@@ -46,23 +45,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
     /// <summary>
-    /// Initializes the renderer with the <see cref="BocList"/> to render and the <see cref="HtmlTextWriter"/> to render it to,
-    /// as well as a <see cref="BocListQuirksModeRendererFactory"/> used to create detail renderers.
+    /// Initializes the renderer with the <see cref="BocList"/> to render and the <see cref="HtmlTextWriter"/> to render it to.
     /// </summary>
-    /// <param name="list">The <see cref="BocList"/> object to render.</param>
-    /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
     /// <param name="cssClasses">The <see cref="BocListQuirksModeCssClassDefinition"/> containing the CSS classes to apply to the rendered elements.</param>
     /// <param name="tableBlockRenderer">The <see cref="IBocListTableBlockRenderer"/> responsible for rendering the table-part of the <see cref="BocList"/>.</param>
     /// <param name="navigationBlockRenderer">The <see cref="IBocListNavigationBlockRenderer"/> responsible for rendering the navigation-part of the <see cref="BocList"/>.</param>
     /// <param name="menuBlockRenderer">The <see cref="IBocListMenuBlockRenderer"/> responsible for rendering the menu-part of the <see cref="BocList"/>.</param>
     public BocListQuirksModeRenderer (
-        HttpContextBase context,
-        IBocList list,
         BocListQuirksModeCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
-        : base (context, list)
+        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);
@@ -73,15 +67,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _tableBlockRenderer = tableBlockRenderer;
       _navigationBlockRenderer = navigationBlockRenderer;
       _menuBlockRenderer = menuBlockRenderer;
-
-      RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForLegacyBrowser;
-
-      if (!ControlHelper.IsDesignMode (List))
-      {
-        bool isXmlRequired = (context != null) && ControlHelper.IsXmlConformResponseTextRequired (context);
-        if (isXmlRequired)
-          RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForXmlBrowser;
-      }
     }
 
     private IBocListMenuBlockRenderer MenuBlockRenderer
@@ -99,17 +84,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _tableBlockRenderer; }
     }
 
-    private Action<HtmlTextWriter> RenderTopLevelColumnGroup { get; set; }
+    private Action<BocListRenderingContext> RenderTopLevelColumnGroup { get; set; }
 
     public BocListQuirksModeCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
-    }
-
-    /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
-    public IBocList List
-    {
-      get { return Control; }
     }
 
     public override sealed string CssClassBase
@@ -152,8 +131,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     }
 
     /// <summary>
-    /// Renders the <see cref="BocList"/> in the <see cref="List"/> property 
-    /// to the <see cref="HtmlTextWriter"/> in the Writer property.
+    /// Renders the <see cref="BocList"/> to the <see cref="HtmlTextWriter"/> in the Writer property.
     /// </summary>
     /// <remarks>
     /// This method provides the outline table of the <see cref="BocList"/>, creating three areas:
@@ -165,11 +143,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// </remarks>
     /// <seealso cref="BocListMenuBlockQuirksModeRenderer"/>
     /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
-    public override void Render (HtmlTextWriter writer)
+    public override void Render (HtmlTextWriter writer) //TODO: remove this method
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      Render (new BocListRenderingContext (Context, writer, Control));
+      Render (new BocListRenderingContext (Context, writer, Control, new IBocColumnRenderer[0]));
     }
 
     public void Render (BocListRenderingContext renderingContext)
@@ -196,7 +174,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      RenderTopLevelColumnGroup (renderingContext.Writer);
+      RenderTopLevelColumnGroup = (ctx) => RenderTopLevelColumnGroupForLegacyBrowser (ctx);
+      if (!ControlHelper.IsDesignMode (renderingContext.Control))
+      {
+        bool isXmlRequired = (renderingContext.HttpContext != null) && ControlHelper.IsXmlConformResponseTextRequired (renderingContext.HttpContext);
+        if (isXmlRequired)
+          RenderTopLevelColumnGroup = (ctx) => RenderTopLevelColumnGroupForXmlBrowser(ctx);
+      }
+
+      RenderTopLevelColumnGroup (renderingContext);
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
@@ -204,20 +190,20 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.AddStyleAttribute ("vertical-align", "top");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-      TableBlockRenderer.Render (renderingContext.Writer);
+      TableBlockRenderer.Render (renderingContext);
 
-      if (List.HasNavigator)
-        NavigationBlockRenderer.Render (renderingContext.Writer);
+      if (renderingContext.Control.HasNavigator)
+        NavigationBlockRenderer.Render (renderingContext);
 
       renderingContext.Writer.RenderEndTag ();
 
-      if (List.HasMenuBlock)
+      if (renderingContext.Control.HasMenuBlock)
       {
         //  Menu Block
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
         renderingContext.Writer.AddStyleAttribute ("vertical-align", "top");
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        MenuBlockRenderer.Render (renderingContext.Writer);
+        MenuBlockRenderer.Render (renderingContext);
         renderingContext.Writer.RenderEndTag ();
       }
 
@@ -225,63 +211,63 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.RenderEndTag (); //  Table
     }
 
-    private void RenderTopLevelColumnGroupForLegacyBrowser (HtmlTextWriter writer)
+    private void RenderTopLevelColumnGroupForLegacyBrowser (BocListRenderingContext renderingContext)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       //  Left: list block
-      writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
+      renderingContext.Writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
       //  writes empty tags, which is not valid for col in HTML 4.01
-      writer.Write (">");
+      renderingContext.Writer.Write (">");
 
-      if (List.HasMenuBlock)
+      if (renderingContext.Control.HasMenuBlock)
       {
         //  Right: menu block
-        writer.WriteBeginTag ("col");
-        writer.Write (" style=\"");
+        renderingContext.Writer.WriteBeginTag ("col");
+        renderingContext.Writer.Write (" style=\"");
 
         string menuBlockWidth = c_defaultMenuBlockWidth;
-        if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString ();
-        writer.WriteStyleAttribute ("width", menuBlockWidth);
+        if (!renderingContext.Control.MenuBlockWidth.IsEmpty)
+          menuBlockWidth = renderingContext.Control.MenuBlockWidth.ToString ();
+        renderingContext.Writer.WriteStyleAttribute ("width", menuBlockWidth);
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
-        if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString ();
-        writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
+        if (!renderingContext.Control.MenuBlockOffset.IsEmpty)
+          menuBlockOffset = renderingContext.Control.MenuBlockOffset.ToString ();
+        renderingContext.Writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
 
-        writer.Write ("\">");
+        renderingContext.Writer.Write ("\">");
       }
 
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderTopLevelColumnGroupForXmlBrowser (HtmlTextWriter writer)
+    private void RenderTopLevelColumnGroupForXmlBrowser (BocListRenderingContext renderingContext)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       // Left: list block
-      writer.RenderBeginTag (HtmlTextWriterTag.Col);
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Col);
+      renderingContext.Writer.RenderEndTag ();
 
-      if (List.HasMenuBlock)
+      if (renderingContext.Control.HasMenuBlock)
       {
         //  Right: menu block
         string menuBlockWidth = c_defaultMenuBlockWidth;
-        if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString ();
+        if (!renderingContext.Control.MenuBlockWidth.IsEmpty)
+          menuBlockWidth = renderingContext.Control.MenuBlockWidth.ToString ();
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
-        if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString ();
+        if (!renderingContext.Control.MenuBlockOffset.IsEmpty)
+          menuBlockOffset = renderingContext.Control.MenuBlockOffset.ToString ();
 
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
-        writer.RenderBeginTag (HtmlTextWriterTag.Col);
-        writer.RenderEndTag ();
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Col);
+        renderingContext.Writer.RenderEndTag ();
       }
 
-      writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag ();
     }
 
     private void RegisterInitializeGlobalsScript (BocListRenderingContext renderingContext)

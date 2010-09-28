@@ -27,28 +27,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
     }
 
-    public void RenderTitlesRow (HtmlTextWriter writer)
+    public void RenderTitlesRow (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, "titleStub");
-      writer.RenderBeginTag ("tr");
-      writer.RenderEndTag();
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "titleStub");
+      renderingContext.Writer.RenderBeginTag ("tr");
+      renderingContext.Writer.RenderEndTag ();
     }
 
-    public void RenderEmptyListDataRow (HtmlTextWriter writer)
+    public void RenderEmptyListDataRow (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, "emptyStub");
-      writer.RenderBeginTag ("tr");
-      writer.RenderEndTag();
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "emptyStub");
+      renderingContext.Writer.RenderBeginTag ("tr");
+      renderingContext.Writer.RenderEndTag();
     }
 
-    public void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    public void RenderDataRow (BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
-      writer.RenderBeginTag ("tr");
-      writer.RenderEndTag();
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
+      renderingContext.Writer.RenderBeginTag ("tr");
+      renderingContext.Writer.RenderEndTag();
     }
   }
 }

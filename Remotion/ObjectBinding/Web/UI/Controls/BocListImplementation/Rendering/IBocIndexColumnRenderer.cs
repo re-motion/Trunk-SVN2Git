@@ -16,27 +16,29 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for classes that render the index column of <see cref="IBocList"/> controls.
   /// </summary>
+  [ConcreteImplementation(typeof(BocIndexColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocIndexColumnRenderer
   {
     /// <summary>
     /// Renders the index cell for the title row.
     /// </summary>
-    void RenderTitleCell (HtmlTextWriter writer);
+    void RenderTitleCell (BocListRenderingContext renderingContext);
 
     /// <summary>
     /// Renders the index cell for the data row identified by <paramref name="originalRowIndex"/>.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
     /// <param name="originalRowIndex">The absolute row index in the original (unsorted) item collection.</param>
     /// <param name="selectorControlID">The ID of the control used for selecting the row. See <see cref="IBocSelectorColumnRenderer"/>.</param>
     /// <param name="absoluteRowIndex">The absolute row index (including previous pages) after sorting.</param>
     /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell);
+    void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell);
   }
 }

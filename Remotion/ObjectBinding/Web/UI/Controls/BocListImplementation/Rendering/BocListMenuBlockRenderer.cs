@@ -17,9 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -33,8 +31,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     protected const string c_defaultMenuBlockItemOffset = "5pt";
     protected const int c_designModeAvailableViewsListWidthInPoints = 40;
 
-    private readonly HttpContextBase _context;
-    private readonly IBocList _list;
     private readonly BocListCssClassDefinition _cssClasses;
 
     /// <summary>
@@ -42,27 +38,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <remarks>
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
-    /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
+    /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (HttpContextBase context, IBocList list, BocListCssClassDefinition cssClasses)
+    public BocListMenuBlockRenderer (BocListCssClassDefinition cssClasses)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
-      _context = context;
-      _list = list;
       _cssClasses = cssClasses;
-    }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public IBocList List
-    {
-      get { return _list; }
     }
 
     public BocListCssClassDefinition CssClasses
@@ -72,69 +54,70 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     /// <summary> Renders the menu block of the control. </summary>
     /// <remarks> Contains the drop down list for selcting a column configuration and the options menu.  </remarks> 
-    public void Render (HtmlTextWriter writer)
+    public void Render (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       string menuBlockItemOffset = c_defaultMenuBlockItemOffset;
-      if (! List.MenuBlockItemOffset.IsEmpty)
-        menuBlockItemOffset = List.MenuBlockItemOffset.ToString();
+      if (!renderingContext.Control.MenuBlockItemOffset.IsEmpty)
+        menuBlockItemOffset = renderingContext.Control.MenuBlockItemOffset.ToString();
 
-      RenderAvailableViewsList (writer, menuBlockItemOffset);
+      RenderAvailableViewsList (renderingContext, menuBlockItemOffset);
 
-      RenderOptionsMenu (writer, menuBlockItemOffset);
+      RenderOptionsMenu (renderingContext, menuBlockItemOffset);
 
-      RenderListMenu (writer, menuBlockItemOffset);
+      RenderListMenu (renderingContext, menuBlockItemOffset);
     }
 
-    private void RenderListMenu (HtmlTextWriter writer, string menuBlockItemOffset)
+    private void RenderListMenu (BocListRenderingContext renderingContext, string menuBlockItemOffset)
     {
-      if (!List.HasListMenu)
+      if (!renderingContext.Control.HasListMenu)
         return;
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      List.ListMenu.RenderControl (writer);
-      writer.RenderEndTag();
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Control.ListMenu.RenderControl (renderingContext.Writer);
+      renderingContext.Writer.RenderEndTag();
     }
 
-    private void RenderOptionsMenu (HtmlTextWriter writer, string menuBlockItemOffset)
+    private void RenderOptionsMenu (BocListRenderingContext renderingContext, string menuBlockItemOffset)
     {
-      if (!List.HasOptionsMenu)
+      if (!renderingContext.Control.HasOptionsMenu)
         return;
 
-      List.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
-      List.OptionsMenu.RenderControl (writer);
+      renderingContext.Control.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
+      renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
     }
 
-    private void RenderAvailableViewsList (HtmlTextWriter writer, string menuBlockItemOffset)
+    private void RenderAvailableViewsList (BocListRenderingContext renderingContext, string menuBlockItemOffset)
     {
-      if (!List.HasAvailableViewsList)
+      if (!renderingContext.Control.HasAvailableViewsList)
         return;
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.AvailableViewsListLabel);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.AvailableViewsListLabel);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string availableViewsListTitle;
-      if (StringUtility.IsNullOrEmpty (List.AvailableViewsListTitle))
-        availableViewsListTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.AvailableViewsListTitle);
+      if (StringUtility.IsNullOrEmpty (renderingContext.Control.AvailableViewsListTitle))
+        availableViewsListTitle = renderingContext.Control.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.AvailableViewsListTitle);
       else
-        availableViewsListTitle = List.AvailableViewsListTitle;
+        availableViewsListTitle = renderingContext.Control.AvailableViewsListTitle;
       // Do not HTML encode.
-      writer.Write (availableViewsListTitle);
-      writer.RenderEndTag();
+      renderingContext.Writer.Write (availableViewsListTitle);
+      renderingContext.Writer.RenderEndTag();
 
-      writer.Write (c_whiteSpace);
-      if (List.IsDesignMode)
-        List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
-      List.AvailableViewsList.Enabled = !List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive;
-      List.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
-      List.AvailableViewsList.RenderControl (writer);
-      writer.RenderEndTag();
+      renderingContext.Writer.Write (c_whiteSpace);
+      if (renderingContext.Control.IsDesignMode)
+        renderingContext.Control.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
+      renderingContext.Control.AvailableViewsList.Enabled = !renderingContext.Control.EditModeController.IsRowEditModeActive && 
+        !renderingContext.Control.EditModeController.IsListEditModeActive;
+      renderingContext.Control.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
+      renderingContext.Control.AvailableViewsList.RenderControl (renderingContext.Writer);
+      renderingContext.Writer.RenderEndTag();
     }
   }
 }

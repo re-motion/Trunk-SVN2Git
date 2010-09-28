@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <remarks>
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
-    /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
+    /// factory to obtain instances of this class.
     /// </remarks>
     public BocCustomColumnRenderer (
         HttpContextBase context,

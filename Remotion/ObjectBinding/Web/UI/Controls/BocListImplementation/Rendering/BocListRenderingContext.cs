@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -25,9 +26,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   public class BocListRenderingContext : BocRenderingContext<IBocList>
   {
-    public BocListRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocList control)
+    private readonly IBocColumnRenderer[] _columnRenderers;
+
+    public BocListRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocList control, IBocColumnRenderer[] columnRenderers)
         : base(httpContext, writer, control)
     {
+      ArgumentUtility.CheckNotNull ("columnRenderers", columnRenderers);
+
+      _columnRenderers = columnRenderers;
+    }
+
+    public IBocColumnRenderer[] ColumnRenderers
+    {
+      get { return _columnRenderers; }
     }
   }
 }

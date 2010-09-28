@@ -15,30 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Utilities;
+using Remotion.ServiceLocation;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class BocIndexColumnRendererFactory : IBocIndexColumnRendererFactory
+  [TestFixture]
+  public class IBocListTableBlockRendererTest
   {
-    readonly BocListCssClassDefinition _bocListCssClassDefinition;
+    private DefaultServiceLocator _serviceLocator;
 
-    public BocIndexColumnRendererFactory (BocListCssClassDefinition bocListCssClassDefinition)
+    [SetUp]
+    public void SetUp ()
     {
-      ArgumentUtility.CheckNotNull ("bocListCssClassDefinition", bocListCssClassDefinition);
-
-      _bocListCssClassDefinition = bocListCssClassDefinition;
+      _serviceLocator = new DefaultServiceLocator ();
     }
 
-    public IBocIndexColumnRenderer CreateRenderer (HttpContextBase context, IBocList list)
+    [Test]
+    public void GetInstance_Once ()
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
+      var factory = _serviceLocator.GetInstance<IBocListTableBlockRenderer> ();
 
-      return new BocIndexColumnRenderer (context, list, _bocListCssClassDefinition);
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (BocListTableBlockRenderer)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<IBocListTableBlockRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocListTableBlockRenderer> ();
+
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

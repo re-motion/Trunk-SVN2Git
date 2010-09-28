@@ -86,8 +86,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       Next
     }
 
-    private readonly HttpContextBase _context;
-    private readonly IBocList _list;
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
     /// <summary>
@@ -95,27 +93,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// </summary>
     /// <remarks>
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListQuirksModeRenderer"/> should use a
-    /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
+    /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockQuirksModeRenderer (HttpContextBase context, IBocList list, BocListQuirksModeCssClassDefinition cssClasses)
+    public BocListNavigationBlockQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
-      _context = context;
-      _list = list;
       _cssClasses = cssClasses;
-    }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public IBocList List
-    {
-      get { return _list; }
     }
 
     public BocListQuirksModeCssClassDefinition CssClasses
@@ -131,72 +115,72 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <summary> 
     /// Renders the navigation bar consisting of the move buttons and the <see cref="BocList.PageInfo"/>. 
     /// </summary>
-    public void Render (HtmlTextWriter writer)
+    public void Render (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      bool isFirstPage = List.CurrentPage == 0;
-      bool isLastPage = List.CurrentPage + 1 >= List.PageCount;
+      bool isFirstPage = renderingContext.Control.CurrentPage == 0;
+      bool isLastPage = renderingContext.Control.CurrentPage + 1 >= renderingContext.Control.PageCount;
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
-      writer.AddStyleAttribute ("position", "relative");
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
+      renderingContext.Writer.AddStyleAttribute ("position", "relative");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Page info
       string pageInfo;
-      if (StringUtility.IsNullOrEmpty (List.PageInfo))
-        pageInfo = List.GetResourceManager().GetString (BocList.ResourceIdentifier.PageInfo);
+      if (StringUtility.IsNullOrEmpty (renderingContext.Control.PageInfo))
+        pageInfo = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.PageInfo);
       else
-        pageInfo = List.PageInfo;
+        pageInfo = renderingContext.Control.PageInfo;
 
-      string navigationText = string.Format (pageInfo, List.CurrentPage + 1, List.PageCount);
+      string navigationText = string.Format (pageInfo, renderingContext.Control.CurrentPage + 1, renderingContext.Control.PageCount);
       // Do not HTML encode.
-      writer.Write (navigationText);
+      renderingContext.Writer.Write (navigationText);
 
-      if (List.HasClientScript)
+      if (renderingContext.Control.HasClientScript)
       {
-        writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
+        renderingContext.Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
 
-        RenderNavigationIcon (writer, isFirstPage, GoToOption.First);
-        RenderNavigationIcon (writer, isFirstPage, GoToOption.Previous);
-        RenderNavigationIcon (writer, isLastPage, GoToOption.Next);
-        RenderNavigationIcon (writer, isLastPage, GoToOption.Last);
+        RenderNavigationIcon (renderingContext, isFirstPage, GoToOption.First);
+        RenderNavigationIcon (renderingContext, isFirstPage, GoToOption.Previous);
+        RenderNavigationIcon (renderingContext, isLastPage, GoToOption.Next);
+        RenderNavigationIcon (renderingContext, isLastPage, GoToOption.Last);
       }
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary>Renders the appropriate icon for the given <paramref name="command"/>, depending on <paramref name="isInactive"/>.</summary>
-    private void RenderNavigationIcon (HtmlTextWriter writer, bool isInactive, GoToOption command)
+    private void RenderNavigationIcon (BocListRenderingContext renderingContext, bool isInactive, GoToOption command)
     {
-      if (isInactive || List.EditModeController.IsRowEditModeActive)
+      if (isInactive || renderingContext.Control.EditModeController.IsRowEditModeActive)
       {
-        string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
-        new IconInfo (imageUrl).Render (writer, List);
+        string imageUrl = GetResolvedImageUrl(renderingContext, s_inactiveIcons[command]);
+        new IconInfo (imageUrl).Render (renderingContext.Writer, renderingContext.Control);
       }
       else
       {
-        string imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
+        string imageUrl = GetResolvedImageUrl (renderingContext, s_activeIcons[command]);
 
         string argument = BocList.GoToCommandPrefix + command;
-        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
+        string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
         var icon = new IconInfo (imageUrl);
-        icon.AlternateText = List.GetResourceManager().GetString (s_alternateTexts[command]);
-        icon.Render (writer, List);
+        icon.AlternateText = renderingContext.Control.GetResourceManager().GetString (s_alternateTexts[command]);
+        icon.Render (renderingContext.Writer, renderingContext.Control);
 
-        writer.RenderEndTag();
+        renderingContext.Writer.RenderEndTag();
       }
 
-      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
+      renderingContext.Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
     }
 
-    private string GetResolvedImageUrl (string imageUrl)
+    private string GetResolvedImageUrl (BocListRenderingContext renderingContext, string imageUrl)
     {
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (BocListNavigationBlockQuirksModeRenderer), ResourceType.Image, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl (renderingContext.Control, renderingContext.HttpContext, typeof (BocListNavigationBlockQuirksModeRenderer), ResourceType.Image, imageUrl);
       return imageUrl;
     }
   }

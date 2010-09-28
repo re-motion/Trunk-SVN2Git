@@ -15,26 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  [ConcreteImplementation(typeof(BocSelectorColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocSelectorColumnRenderer
   {
     /// <summary>
     /// Renders the cell for the title row.
     /// </summary>
-    void RenderTitleCell (HtmlTextWriter writer);
+    void RenderTitleCell (BocListRenderingContext renderingContext);
 
     /// <summary>
     /// Renders a cell containing the selector control specified by <see cref="IBocList.Selection"/> for the row
     /// identified by <paramref name="originalRowIndex"/>
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
     /// <param name="originalRowIndex">The absollute index of the row in the original (unsorted) collection.</param>
     /// <param name="selectorControlID">The ID to apply to the selector control.</param>
     /// <param name="isChecked">Indicates whether the row is selected.</param>
     /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell);
+    void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell);
   }
 }

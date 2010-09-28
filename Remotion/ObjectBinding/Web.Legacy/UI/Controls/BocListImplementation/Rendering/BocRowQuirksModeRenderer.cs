@@ -39,39 +39,20 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
     public const int DesignModeDummyColumnCount = 3;
 
-    private readonly HttpContextBase _context;
-    private readonly IBocList _list;
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
-    private readonly IServiceLocator _serviceLocator;
-    private readonly IBocColumnRenderer[] _columnRenderers;
+    private readonly IBocIndexColumnRenderer _indexColumnRenderer;
+    private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
 
-    public BocRowQuirksModeRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocListQuirksModeCssClassDefinition cssClasses,
-        IServiceLocator serviceLocator,
-        IBocColumnRenderer[] columnRenderers)
+
+    public BocRowQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses, IBocIndexColumnRenderer indexColumnRenderer, IBocSelectorColumnRenderer selectorColumnRenderer)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("indexColumnRenderer", indexColumnRenderer);
+      ArgumentUtility.CheckNotNull ("selectorColumnRenderer", selectorColumnRenderer);
 
-      _context = context;
-      _list = list;
       _cssClasses = cssClasses;
-      _serviceLocator = serviceLocator;
-      _columnRenderers = columnRenderers;
-    }
-
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    public IBocList List
-    {
-      get { return _list; }
+      _indexColumnRenderer = indexColumnRenderer;
+      _selectorColumnRenderer = selectorColumnRenderer;
     }
 
     public BocListQuirksModeCssClassDefinition CssClasses
@@ -79,51 +60,46 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _cssClasses; }
     }
 
-    public IServiceLocator ServiceLocator
+    public void RenderTitlesRow (BocListRenderingContext renderingContext)
     {
-      get { return _serviceLocator; }
-    }
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-    public void RenderTitlesRow (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-
-      GetIndexColumnRenderer().RenderTitleCell (writer);
-      GetSelectorColumnRenderer().RenderTitleCell (writer);
+      _indexColumnRenderer.RenderTitleCell (renderingContext);
+      _selectorColumnRenderer.RenderTitleCell (renderingContext);
 
       var sortingDirections = new Dictionary<int, SortingDirection>();
       var sortingOrder = new List<int>();
-      if (List.IsClientSideSortingEnabled || List.HasSortingKeys)
+      if (renderingContext.Control.IsClientSideSortingEnabled || renderingContext.Control.HasSortingKeys)
       {
-        for (int i = 0; i < List.SortingOrder.Count; i++)
+        for (int i = 0; i < renderingContext.Control.SortingOrder.Count; i++)
         {
-          var currentEntry = (BocListSortingOrderEntry) List.SortingOrder[i];
+          var currentEntry = (BocListSortingOrderEntry) renderingContext.Control.SortingOrder[i];
           sortingDirections[currentEntry.ColumnIndex] = currentEntry.Direction;
           if (currentEntry.Direction != SortingDirection.None)
             sortingOrder.Add (currentEntry.ColumnIndex);
         }
       }
 
-      RenderTitleCells (writer, sortingDirections, sortingOrder);
+      RenderTitleCells (renderingContext, sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode (List) && _columnRenderers.Length == 0)
+      if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
-          writer.RenderBeginTag (HtmlTextWriterTag.Td);
-          writer.Write (String.Format (DesignModeDummyColumnTitle, i + 1));
-          writer.RenderEndTag();
+          renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+          renderingContext.Writer.Write (String.Format (DesignModeDummyColumnTitle, i + 1));
+          renderingContext.Writer.RenderEndTag();
         }
       }
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
-    private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
+    private void RenderTitleCells (BocListRenderingContext renderingContext, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      IBocColumnRenderer[] columnRenderers = _columnRenderers;
+      IBocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
         IBocColumnRenderer renderer = columnRenderers[idxColumns];
@@ -131,99 +107,89 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
 
-        renderer.RenderTitleCell (writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
+        renderer.RenderTitleCell (renderingContext.Writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
       }
     }
 
-    public void RenderEmptyListDataRow (HtmlTextWriter writer)
+    public void RenderEmptyListDataRow (BocListRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      IBocColumnRenderer[] columnRenderers = _columnRenderers;
+      IBocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
       int columnCount = 0;
 
-      if (List.IsIndexEnabled)
+      if (renderingContext.Control.IsIndexEnabled)
         columnCount++;
 
-      if (List.IsSelectionEnabled)
+      if (renderingContext.Control.IsSelectionEnabled)
         columnCount++;
 
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
         BocColumnDefinition column = columnRenderers[idxColumns].Column;
-        if (List.IsColumnVisible (column))
+        if (renderingContext.Control.IsColumnVisible (column))
           columnCount++;
       }
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       string emptyListMessage;
-      if (StringUtility.IsNullOrEmpty (List.EmptyListMessage))
-        emptyListMessage = List.GetResourceManager().GetString (BocList.ResourceIdentifier.EmptyListMessage);
+      if (StringUtility.IsNullOrEmpty (renderingContext.Control.EmptyListMessage))
+        emptyListMessage = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.EmptyListMessage);
       else
-        emptyListMessage = List.EmptyListMessage;
+        emptyListMessage = renderingContext.Control.EmptyListMessage;
       // Do not HTML encode
-      writer.Write (emptyListMessage);
+      renderingContext.Writer.Write (emptyListMessage);
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
-    public void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    public void RenderDataRow (BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
     {
-      string selectorControlID = List.GetSelectorControlClientId (rowIndex);
-      bool isChecked = (List.SelectorControlCheckedState.Contains (originalRowIndex));
+      string selectorControlID = renderingContext.Control.GetSelectorControlClientId (rowIndex);
+      bool isChecked = (renderingContext.Control.SelectorControlCheckedState.Contains (originalRowIndex));
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
-      string cssClassTableRow = GetCssClassTableRow (isChecked);
+      string cssClassTableRow = GetCssClassTableRow (renderingContext, isChecked);
       string cssClassTableCell = CssClasses.GetDataCell (isOddRow);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      GetIndexColumnRenderer().RenderDataCell (writer, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
-      GetSelectorColumnRenderer().RenderDataCell (writer, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
+      _indexColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
+      _selectorColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
 
       var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject) { IsOddRow = isOddRow };
-      List.OnDataRowRendering (dataRowRenderEventArgs);
+      renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
 
-      RenderDataCells (writer, rowIndex, dataRowRenderEventArgs);
+      RenderDataCells (renderingContext, rowIndex, dataRowRenderEventArgs);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
-    private IBocSelectorColumnRenderer GetSelectorColumnRenderer ()
-    {
-      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, List);
-    }
-
-    private IBocIndexColumnRenderer GetIndexColumnRenderer ()
-    {
-      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, List);
-    }
-
-    private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    private void RenderDataCells (BocListRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (IBocColumnRenderer renderer in _columnRenderers)
+      foreach (IBocColumnRenderer renderer in renderingContext.ColumnRenderers)
       {
         bool showIcon = false;
         if ((!firstValueColumnRendered) && renderer.Column is BocValueColumnDefinition)
         {
           firstValueColumnRendered = true;
-          showIcon = List.EnableIcon;
+          showIcon = renderingContext.Control.EnableIcon;
         }
 
-        renderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
+        renderer.RenderDataCell (renderingContext.Writer, rowIndex, showIcon, dataRowRenderEventArgs);
       }
     }
 
-    private string GetCssClassTableRow (bool isChecked)
+    private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked)
     {
       string cssClassTableRow;
-      if (isChecked && List.AreDataRowsClickSensitive())
+      if (isChecked && renderingContext.Control.AreDataRowsClickSensitive ())
         cssClassTableRow = CssClasses.DataRowSelected;
       else
         cssClassTableRow = CssClasses.DataRow;

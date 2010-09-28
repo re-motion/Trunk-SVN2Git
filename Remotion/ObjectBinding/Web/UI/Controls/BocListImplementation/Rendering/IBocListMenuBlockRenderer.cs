@@ -15,15 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for classes able to render the menu block of a <see cref="IBocList"/> control.
   /// </summary>
+  [ConcreteImplementation (typeof (BocListMenuBlockRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListMenuBlockRenderer
   {
-    void Render (HtmlTextWriter writer);
+    void Render (BocListRenderingContext renderingContext);
   }
 }

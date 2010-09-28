@@ -45,8 +45,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocIndexColumnRenderer renderer = new BocIndexColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.RenderTitleCell (Html.Writer);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -77,9 +77,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderIndexDataCell (int indexOffset)
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       const string cssClassTableCell = "bocListTableCell";
-      renderer.RenderDataCell (Html.Writer, 0, "selectorID", 0, cssClassTableCell);
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]), 0, "selectorID", 0, cssClassTableCell);
 
       var document = Html.GetResultDocument();
 

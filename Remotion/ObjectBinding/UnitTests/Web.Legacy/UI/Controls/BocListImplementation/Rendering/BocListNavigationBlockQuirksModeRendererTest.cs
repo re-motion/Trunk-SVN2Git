@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
@@ -48,8 +49,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -87,8 +88,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -126,8 +127,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -165,8 +166,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockQuirksModeRenderer (HttpContext, List, _bocListQuirksModeCssClassDefinition);
-      renderer.Render (Html.Writer);
+      var renderer = new BocListNavigationBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
