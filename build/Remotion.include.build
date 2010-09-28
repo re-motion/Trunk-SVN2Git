@@ -259,8 +259,8 @@
   </target>
 
   <target name="prepareassemblyinfo" if="${build.update.assembly-info}" >
-    <copy file="${project.basedir}/Properties/AssemblyInfoTemplate.cs"  tofile="${project.basedir}/Properties/AssemblyInfo.cs" overwrite="true" />
-    <copy file="${project.basedir}/My Project/AssemblyInfoTemplate.vb"  tofile="${project.basedir}/My Project/AssemblyInfo.vb" overwrite="true" />
+    <copy file="${project.basedir}/Properties/AssemblyInfoTemplate.cs"  tofile="${project.basedir}/Properties/AssemblyInfo.cs" overwrite="true" if="${file::exists(path::combine(project.basedir,'Properties/AssemblyInfoTemplate.cs'))}" />
+    <copy file="${project.basedir}/My Project/AssemblyInfoTemplate.vb"  tofile="${project.basedir}/My Project/AssemblyInfo.vb" overwrite="true" if="${file::exists(path::combine(project.basedir,'My Project/AssemblyInfoTemplate.vb'))}"/>
     <!--
     <attrib readonly="false" file="${project.basedir}/Properties/AssemblyInfo.cs"/>
     <attrib readonly="false" file="${project.basedir}/My Project/AssemblyInfo.vb"/>
