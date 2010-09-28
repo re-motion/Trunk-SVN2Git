@@ -20,7 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {

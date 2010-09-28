@@ -427,6 +427,12 @@
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\IMixinAddingProperty.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\MixinAddingProperty.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\MixinAddingPropertyBase.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\PersistentMixinsInInheritanceHierarchyTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
@@ -439,6 +445,9 @@
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\LegacyTestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassWithDerivedMixinWithInterface.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingSimplePersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForMixinWithState.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\HookedTargetClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
@@ -710,7 +719,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingSimplePersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStoragePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStorageTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />

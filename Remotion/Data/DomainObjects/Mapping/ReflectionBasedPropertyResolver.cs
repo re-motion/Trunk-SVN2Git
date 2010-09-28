@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
@@ -35,34 +36,39 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      IEnumerable<IPropertyInformation> propertyImplementationCandidates;
       if (propertyInformation.DeclaringType.IsInterface)
       {
-        Type implementingType = GetImplementingType(classDefinition, propertyInformation);
-        if (implementingType == null)
-          return null;
-
-        propertyInformation = propertyInformation.FindInterfaceImplementation (implementingType);
+        var implementingTypes = GetImplementingType (classDefinition, propertyInformation);
+        propertyImplementationCandidates = implementingTypes
+            .Select (t => propertyInformation.FindInterfaceImplementation (t))
+            .Where (pi => pi != null);
       }
-      
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInformation);
-      return definitionGetter (propertyIdentifier);
+      else
+      {
+        propertyImplementationCandidates = new[] { propertyInformation };
+      }
+
+      return (from pi in propertyImplementationCandidates
+              let propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (pi)
+              let definition = definitionGetter (propertyIdentifier)
+              where definition != null
+              select definition).FirstOrDefault();
     }
 
-    private static Type GetImplementingType (ReflectionBasedClassDefinition classDefinition, IPropertyInformation interfaceProperty)
+    private static IEnumerable<Type> GetImplementingType (ReflectionBasedClassDefinition classDefinition, IPropertyInformation interfaceProperty)
     {
       Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
 
-      Type implementingType;
       if (interfaceProperty.DeclaringType.IsAssignableFrom (classDefinition.ClassType))
-        implementingType = classDefinition.ClassType;
+        return new[] { classDefinition.ClassType };
       else
       {
         var allPersistentMixins = classDefinition
             .CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass)
             .SelectMany (cd => cd.PersistentMixins);
-        implementingType = allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).SingleOrDefault();
+        return allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).ToArray();
       }
-      return implementingType;
     }
   }
 }

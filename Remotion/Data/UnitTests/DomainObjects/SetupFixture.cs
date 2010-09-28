@@ -33,21 +33,30 @@ namespace Remotion.Data.UnitTests.DomainObjects
     [SetUp]
     public void SetUp ()
     {
-      ServiceLocator.SetLocatorProvider (() => null);
+      try
+      {
+        ServiceLocator.SetLocatorProvider (() => null);
 
-      StandardConfiguration.Initialize();
+        StandardConfiguration.Initialize();
 
-      SqlConnection.ClearAllPools();
+        SqlConnection.ClearAllPools();
 
-      DatabaseAgent masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
-      masterAgent.ExecuteBatch ("DataDomainObjects_CreateDB.sql", false);
-      DatabaseAgent testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
-      testDomainAgent.ExecuteBatch ("DataDomainObjects_SetupDB.sql", true);
+        DatabaseAgent masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
+        masterAgent.ExecuteBatch ("DataDomainObjects_CreateDB.sql", false);
+        DatabaseAgent testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
+        testDomainAgent.ExecuteBatch ("DataDomainObjects_SetupDB.sql", true);
 
-      _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);
-      _standardMappingDatabaseAgent.ExecuteBatch (StandardMappingTest.CreateTestDataFileName, true);
-      _standardMappingDatabaseAgent.ExecuteBatch (TableInheritanceMappingTest.CreateTestDataFileName, true);
-      _standardMappingDatabaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
+        _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);
+        _standardMappingDatabaseAgent.ExecuteBatch (StandardMappingTest.CreateTestDataFileName, true);
+        _standardMappingDatabaseAgent.ExecuteBatch (TableInheritanceMappingTest.CreateTestDataFileName, true);
+        _standardMappingDatabaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("SetUpFixture failed: " + ex);
+        Console.WriteLine ();
+        throw;
+      }
     }
 
     [TearDown]

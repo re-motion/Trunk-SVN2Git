@@ -14,14 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  /// <summary>
-  /// Derives from <see cref="MixinAddingPersistentProperties"/> and therefore implicitly introduces the same interface as that class.
-  /// </summary>
-  public class DerivedMixinAddingPersistentProperties : MixinAddingPersistentProperties
+  public interface IMixinAddingProperty
   {
+    int Property { get; set; }
   }
 }

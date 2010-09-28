@@ -15,13 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   /// <summary>
-  /// Derives from <see cref="MixinAddingPersistentProperties"/> and therefore implicitly introduces the same interface as that class.
+  /// This class inherits a mixin from its base class that introduces an interface, and it itself has a mixin derived from that base class mixin.
+  /// The mixin implicitly introduces the same interface. This can create name clashes.
   /// </summary>
-  public class DerivedMixinAddingPersistentProperties : MixinAddingPersistentProperties
+  [Uses (typeof (DerivedMixinAddingPersistentProperties))]
+  public class DerivedTargetClassWithDerivedMixinWithInterface : TargetClassForPersistentMixin
   {
   }
 }

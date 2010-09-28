@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -38,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private ReflectionBasedClassDefinition _classDerivedFromClassWithInterface;
     private ReflectionBasedClassDefinition _classWithInterfaceWithMissingAccessors;
     private ReflectionBasedClassDefinition _classWithMixinAddingInterface;
+    private ReflectionBasedClassDefinition _derivedClassWithMixinWithDuplicateInterface;
 
     public override void SetUp ()
     {
@@ -54,6 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       _classDerivedFromClassWithInterface = CreateDefinitionForClassDerivedFromClassWithInterface(_classWithInterface);
       _classWithInterfaceWithMissingAccessors = CreateDefinitionForClassWithInterfaceWithMissingAccessors();
       _classWithMixinAddingInterface = CreateDefinitionForClassWithMixinAddingInterface();
+      _derivedClassWithMixinWithDuplicateInterface = CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface();
     }
 
     [Test]
@@ -248,6 +251,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (result, Is.SameAs (expected));
     }
 
+    [Test]
+    public void ResolveDefinition_MixinWithDuplicateInterface ()
+    {
+      var property = new PropertyInfoAdapter (typeof (IMixinAddingProperty).GetProperty ("Property"));
+
+      var result = ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (
+          property, _derivedClassWithMixinWithDuplicateInterface, _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition);
+
+      var expected = _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition (typeof (MixinAddingPropertyBase).FullName + ".Property");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
     private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterface ()
     {
       var classWithInterface = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
@@ -323,6 +338,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
               typeof (MixinAddingInterfaceWithProperties),
               typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
               "ExplicitManagedProperty",
+              typeof (string),
+              false,
+              100));
+      return classWithMixinAddingInterface;
+    }
+
+    private ReflectionBasedClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
+    {
+      var classWithMixinAddingInterface =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
+      classWithMixinAddingInterface.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classWithMixinAddingInterface,
+              typeof (MixinAddingPropertyBase),
+              "Property",
+              "Property",
               typeof (string),
               false,
               100));

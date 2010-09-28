@@ -18,7 +18,10 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -43,6 +46,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                     select m);
 
       CheckQueryResult (mixins, DomainObjectIDs.DerivedTargetClassForPersistentMixin1);
+    }
+
+    [Test]
+    public void PropertyDeclaredByMixin_AppliedToBaseObject_WithInterfaceIntroducedByTwoMixins ()
+    {
+      var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedTargetClassWithDerivedMixinWithInterface> ()
+                    where ((IMixinAddingPersistentProperties) m).PersistentProperty == 199
+                    select m);
+
+      CheckQueryResult (mixins, DomainObjectIDs.DerivedTargetClassWithDerivedMixinWithInterface1);
     }
 
     [Test]

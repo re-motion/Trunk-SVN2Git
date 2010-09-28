@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -18,10 +18,8 @@ using System;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  /// <summary>
-  /// Derives from <see cref="MixinAddingPersistentProperties"/> and therefore implicitly introduces the same interface as that class.
-  /// </summary>
-  public class DerivedMixinAddingPersistentProperties : MixinAddingPersistentProperties
+  public interface IMixinAddingSimplePersistentProperties
   {
+    int PersistentProperty { get; set; }
   }
 }

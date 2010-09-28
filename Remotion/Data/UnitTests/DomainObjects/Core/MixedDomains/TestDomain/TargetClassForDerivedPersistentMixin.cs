@@ -21,7 +21,7 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   [DBTable]
-  [Uses (typeof (DerivedMixinAddingPersistentProperties))]
+  [Uses (typeof (DerivedMixinAddingSimplePersistentProperties))]
   public class TargetClassForDerivedPersistentMixin : SimpleDomainObject<TargetClassForDerivedPersistentMixin>
   {
   }

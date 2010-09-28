@@ -447,7 +447,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // CollectionProperty1Side: -
     // CollectionPropertyNSide: -
     public readonly ObjectID DerivedDerivedTargetClassForPersistentMixin1 = new ObjectID ("DerivedDerivedTargetClassForPersistentMixin", new Guid ("{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}"));
-    
+
+    // PersistentProperty: 199
+    // ExtraPersistentProperty: 100
+    // RelationProperty: -
+    // VirtualRelationProperty: -
+    // CollectionProperty1Side: -
+    // CollectionPropertyNSide: -
+    public readonly ObjectID DerivedTargetClassWithDerivedMixinWithInterface1 = new ObjectID ("DerivedTargetClassWithDerivedMixinWithInterface", new Guid ("{5FFD52D9-2A38-4DEC-9AA1-FA76C30B91A4}"));
+
     #endregion
 
     #region RelationTargetForPersistentMixin

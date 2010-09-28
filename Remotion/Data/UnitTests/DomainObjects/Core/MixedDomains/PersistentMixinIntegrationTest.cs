@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void ClassDefinitionIncludesPersistentPropertiesFromDerivedMixin ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (TargetClassForDerivedPersistentMixin));
-      Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (DerivedMixinAddingPersistentProperties).FullName + ".AdditionalPersistentProperty"));
+      Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (DerivedMixinAddingSimplePersistentProperties).FullName + ".AdditionalPersistentProperty"));
       Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (MixinAddingSimplePersistentProperties).FullName + ".PersistentProperty"));
     }
 
@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void DerivedMixin ()
     {
       var tc = TargetClassForDerivedPersistentMixin.NewObject();
-      var mixin = Mixin.Get<DerivedMixinAddingPersistentProperties> (tc);
+      var mixin = Mixin.Get<DerivedMixinAddingSimplePersistentProperties> (tc);
       mixin.AdditionalPersistentProperty = 12;
       Assert.AreEqual (12, mixin.AdditionalPersistentProperty);
       mixin.PersistentProperty = 10;

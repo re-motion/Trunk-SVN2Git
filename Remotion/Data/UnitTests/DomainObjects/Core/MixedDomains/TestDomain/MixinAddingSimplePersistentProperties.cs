@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class MixinAddingSimplePersistentProperties : DomainObjectMixin<DomainObject>
+  public class MixinAddingSimplePersistentProperties : DomainObjectMixin<DomainObject>, IMixinAddingSimplePersistentProperties
   {
     public int PersistentProperty
     {

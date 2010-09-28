@@ -15,13 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  /// <summary>
-  /// Derives from <see cref="MixinAddingPersistentProperties"/> and therefore implicitly introduces the same interface as that class.
-  /// </summary>
-  public class DerivedMixinAddingPersistentProperties : MixinAddingPersistentProperties
+  public class DerivedMixinAddingSimplePersistentProperties : MixinAddingSimplePersistentProperties
   {
+    public int AdditionalPersistentProperty
+    {
+      get { return Properties[typeof (DerivedMixinAddingSimplePersistentProperties), "AdditionalPersistentProperty"].GetValue<int> (); }
+      set { Properties[typeof (DerivedMixinAddingSimplePersistentProperties), "AdditionalPersistentProperty"].SetValue (value); }
+    }
   }
 }

@@ -473,6 +473,8 @@ insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersist
 	values ('{4ED563B8-B337-4C8E-9A77-5FA907919377}', 'DerivedTargetClassForPersistentMixin', 199, 100)
 insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
 	values ('{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}', 'DerivedDerivedTargetClassForPersistentMixin', 299, 100)
+insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
+	values ('{5FFD52D9-2A38-4DEC-9AA1-FA76C30B91A4}', 'DerivedTargetClassWithDerivedMixinWithInterface', 199, 100)
 
 
 insert into [MixedDomains_Target] ([ID], [ClassID], [PersistentProperty], [ExtraPersistentProperty]) 

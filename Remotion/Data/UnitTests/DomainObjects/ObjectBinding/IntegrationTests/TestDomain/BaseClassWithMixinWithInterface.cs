@@ -15,13 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  /// <summary>
-  /// Derives from <see cref="MixinAddingPersistentProperties"/> and therefore implicitly introduces the same interface as that class.
-  /// </summary>
-  public class DerivedMixinAddingPersistentProperties : MixinAddingPersistentProperties
+  [Uses (typeof (MixinAddingPropertyBase))]
+  [DBTable ("BaseClassWithMixinWithInterface")]
+  [BindableDomainObject]
+  public class BaseClassWithMixinWithInterface : DomainObject
   {
+    public static BaseClassWithMixinWithInterface NewObject ()
+    {
+      return NewObject<BaseClassWithMixinWithInterface> ();
+    }
   }
 }
