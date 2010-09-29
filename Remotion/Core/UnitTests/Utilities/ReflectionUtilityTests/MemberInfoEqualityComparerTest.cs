@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 {
   [TestFixture]
-  public class MemberInfoEquals
+  public class MemberInfoEqualityComparerTest
   {
     [Test]
     public void MemberInfoEquals_True_SameInstance ()
@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
       var two = one;
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 
       Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 
       Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (int[]).GetMethod ("Set");
       var two = typeof (int[]).GetMethod ("Set");
 
-     var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (Array).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
       var two = typeof (int[]).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
       var two = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -101,7 +101,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
       var two = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -112,7 +112,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
       var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -125,7 +125,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 
       Assert.That (one.IsGenericMethodDefinition, Is.True);
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -136,7 +136,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
       var two = typeof (ClassWithMethods).GetMethod ("SimpleMethod2");
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -147,7 +147,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
       var two = new FakeMemberInfo (typeof (string), one.MetadataToken, one.Module);
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -156,9 +156,9 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
     public void MemberInfoEquals_False_DifferentModules ()
     {
       var one = new FakeMemberInfo (typeof (object), 1, typeof (object).Module);
-      var two = new FakeMemberInfo (one.DeclaringType, one.MetadataToken, typeof (MemberInfoEquals).Module);
+      var two = new FakeMemberInfo (one.DeclaringType, one.MetadataToken, typeof (MemberInfoEqualityComparerTest).Module);
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -169,7 +169,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (GenericClassWithMethods<string>).GetMethod ("SimpleMethod");
       var two = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -180,7 +180,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (string));
       var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -191,7 +191,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var one = typeof (ClassWithMethods).GetMethod ("GenericMethod");
       var two = typeof (ClassWithMethods).GetMethod ("GenericMethod").MakeGenericMethod (typeof (object));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.False);
     }
@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 
       Assert.That (one, Is.Not.SameAs (two));
 
-      var result = ReflectionUtility.MemberInfoEquals (one, two);
+      var result = MemberInfoEqualityComparer.MemberInfoEquals (one, two);
 
       Assert.That (result, Is.True);
     }
@@ -218,9 +218,9 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var methodInfo3 = typeof (ClassWithMethods).GetMethod ("OverriddenMethod");
       var methodInfo4 = typeof (DerivedClassWithMethods).GetMethod ("OverriddenMethod");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1a, methodInfo1b), Is.True);
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo1a, methodInfo2), Is.False);
-      Assert.That (ReflectionUtility.MemberInfoEquals (methodInfo3, methodInfo4), Is.False);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (methodInfo1a, methodInfo1b), Is.True);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (methodInfo1a, methodInfo2), Is.False);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (methodInfo3, methodInfo4), Is.False);
     }
 
     [Test]
@@ -230,8 +230,8 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var propertyInfo1b = typeof (DerivedClassWithProperties).GetProperty ("Property1");
       var propertyInfo2 = typeof (ClassWithProperties).GetProperty ("Property2");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1a, propertyInfo1b), Is.True);
-      Assert.That (ReflectionUtility.MemberInfoEquals (propertyInfo1a, propertyInfo2), Is.False);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (propertyInfo1a, propertyInfo1b), Is.True);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (propertyInfo1a, propertyInfo2), Is.False);
     }
 
     [Test]
@@ -241,8 +241,8 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       var fieldInfo1b = typeof (DerivedClassWithFields).GetField ("Field1");
       var fieldInfo2 = typeof (ClassWithFields).GetField ("Field2");
 
-      Assert.That (ReflectionUtility.MemberInfoEquals (fieldInfo1a, fieldInfo1b), Is.True);
-      Assert.That (ReflectionUtility.MemberInfoEquals (fieldInfo1a, fieldInfo2), Is.False);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (fieldInfo1a, fieldInfo1b), Is.True);
+      Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (fieldInfo1a, fieldInfo2), Is.False);
     }
   }
 }

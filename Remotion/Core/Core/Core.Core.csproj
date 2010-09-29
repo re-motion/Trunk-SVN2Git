@@ -640,6 +640,7 @@
     <Compile Include="Utilities\ExceptionUtility.cs" />
     <Compile Include="Utilities\FileUtility.cs" />
     <Compile Include="Utilities\IConsoleManager.cs" />
+    <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
     <Compile Include="Utilities\PropertyRestorer\PropertyRestorer.cs" />
     <Compile Include="Utilities\PropertyRestorer\PropertyRestorerMother.cs" />

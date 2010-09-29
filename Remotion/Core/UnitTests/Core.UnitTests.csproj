@@ -1081,7 +1081,7 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\MemberInfoEquals.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\MemberInfoEqualityComparerTest.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\ClassWithProperties.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\MemberInfoEquals\ClassWithMethods.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithDifferentProperties.cs" />
