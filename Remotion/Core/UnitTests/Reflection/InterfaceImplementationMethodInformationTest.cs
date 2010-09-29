@@ -164,6 +164,14 @@ namespace Remotion.UnitTests.Reflection
               new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub)),
           Is.True);
       Assert.That (
+         _interfaceImplementationMethodInformation.Equals (
+             new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _declarationMethodInformationStub)),
+         Is.False);
+      Assert.That (
+         _interfaceImplementationMethodInformation.Equals (
+             new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _implementationMethodInformationStub)),
+         Is.False);
+      Assert.That (
           _interfaceImplementationMethodInformation.Equals (
               new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _implementationMethodInformationStub)),
           Is.False);

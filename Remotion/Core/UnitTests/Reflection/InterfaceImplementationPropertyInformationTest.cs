@@ -445,6 +445,29 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void EqualsTest ()
+    {
+      Assert.That (_interfaceImplementationPropertyInformation.Equals (null), Is.False);
+      Assert.That (_interfaceImplementationPropertyInformation.Equals ("Test"), Is.False);
+      Assert.That (
+          _interfaceImplementationPropertyInformation.Equals (new InterfaceImplementationPropertyInformation(_implementationPropertyInformationStub, _declarationPropertyInformationStub)), Is.True);
+      Assert.That (
+          _interfaceImplementationPropertyInformation.Equals (
+              new InterfaceImplementationPropertyInformation (
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))),
+          Is.False);
+    }
+
+    [Test]
+    public void GetHashCodeTest ()
+    {
+      Assert.That (
+          _interfaceImplementationPropertyInformation.GetHashCode (),
+          Is.EqualTo (new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub).GetHashCode ()));
+    }
+
+    [Test]
     public void To_String ()
     {
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");

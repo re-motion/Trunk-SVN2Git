@@ -222,15 +222,7 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (
           _mixinIntroducedPropertyInformation.GetHashCode (),
           Is.EqualTo (new MixinIntroducedPropertyInformation (_interfaceImplementationPropertyInformation).GetHashCode ()));
-      Assert.AreNotEqual (
-          new MixinIntroducedPropertyInformation (
-                  new InterfaceImplementationPropertyInformation (
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))).GetHashCode (),
-          new MixinIntroducedPropertyInformation (
-                  new InterfaceImplementationPropertyInformation (
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))).GetHashCode ());
+     
     }
 
     [Test]

@@ -132,7 +132,7 @@ namespace Remotion.Reflection
       if (other == null)
         return false;
 
-      return _implementationMethodInfo.Equals (other._implementationMethodInfo);
+      return _implementationMethodInfo.Equals (other._implementationMethodInfo) && _declarationMethodInfo.Equals(other._declarationMethodInfo);
     }
 
     public override int GetHashCode ()

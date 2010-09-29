@@ -168,6 +168,21 @@ namespace Remotion.Reflection
       return FindInterfaceDeclaration();
     }
 
+    public override bool Equals (object obj)
+    {
+      var other = obj as InterfaceImplementationPropertyInformation;
+
+      if (other == null)
+        return false;
+
+      return _implementationPropertyInfo.Equals (other._implementationPropertyInfo) && _declarationPropertyInfo.Equals(other._declarationPropertyInfo);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _implementationPropertyInfo.GetHashCode() ^ _declarationPropertyInfo.GetHashCode();
+    }
+
     public override string ToString ()
     {
       // TODO Review 3334: Use _implementationProperty.ToString(), add a blank before the opening parenthesis
