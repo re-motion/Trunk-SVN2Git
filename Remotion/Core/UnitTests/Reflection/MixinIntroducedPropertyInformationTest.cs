@@ -165,7 +165,7 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (_mixinIntroducedPropertyInformation.GetSetMethod (false), Is.Null);
     }
-    
+
     [Test]
     public void SetValue ()
     {
@@ -176,19 +176,19 @@ namespace Remotion.UnitTests.Reflection
           mi => instance.ImplicitInterfaceScalar = value);
 
       _mixinIntroducedPropertyInformation.SetValue (instance, value, null);
-      
+
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
     }
 
     [Test]
     public void GetValue ()
     {
-      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      var value = new SimpleReferenceType ();
+      var instance = new ClassWithReferenceType<SimpleReferenceType>();
+      var value = new SimpleReferenceType();
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetValue (instance, null)).Return (value);
 
-      Assert.That(_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs(value));
+      Assert.That (_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
 
     [Test]
@@ -201,11 +201,44 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void Equals_ChecksPropertyInfo ()
+    {
+      Assert.That (_mixinIntroducedPropertyInformation.Equals (null), Is.False);
+      Assert.That (_mixinIntroducedPropertyInformation.Equals ("Test"), Is.False);
+      Assert.That (
+          _mixinIntroducedPropertyInformation.Equals (new MixinIntroducedPropertyInformation (_interfaceImplementationPropertyInformation)), Is.True);
+      Assert.That (
+          _mixinIntroducedPropertyInformation.Equals (
+              new MixinIntroducedPropertyInformation (
+                  new InterfaceImplementationPropertyInformation (
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length"))))),
+          Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_UsesPropertyInfo ()
+    {
+      Assert.That (
+          _mixinIntroducedPropertyInformation.GetHashCode (),
+          Is.EqualTo (new MixinIntroducedPropertyInformation (_interfaceImplementationPropertyInformation).GetHashCode ()));
+      Assert.AreNotEqual (
+          new MixinIntroducedPropertyInformation (
+                  new InterfaceImplementationPropertyInformation (
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))).GetHashCode (),
+          new MixinIntroducedPropertyInformation (
+                  new InterfaceImplementationPropertyInformation (
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
+                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))).GetHashCode ());
+    }
+
+    [Test]
     public void To_String ()
     {
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
-      Assert.That (_mixinIntroducedPropertyInformation.ToString (), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
+      Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
     }
   }
 }
