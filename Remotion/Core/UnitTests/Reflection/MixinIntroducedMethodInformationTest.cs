@@ -52,9 +52,9 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void DeclaringType ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof(object));
+      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (object));
 
-      Assert.That (_mixinIntroducedMethodInformation.DeclaringType, Is.SameAs(typeof(object)));
+      Assert.That (_mixinIntroducedMethodInformation.DeclaringType, Is.SameAs (typeof (object)));
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Reflection
       var objToReturn = new object();
       _implementationMethodInformationStub.Stub (stub => stub.GetCustomAttribute<object> (false)).Return (objToReturn);
 
-      Assert.That (_mixinIntroducedMethodInformation.GetCustomAttribute<object>(false), Is.SameAs (objToReturn));
+      Assert.That (_mixinIntroducedMethodInformation.GetCustomAttribute<object> (false), Is.SameAs (objToReturn));
     }
 
     [Test]
@@ -86,9 +86,9 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void IsDefined ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.IsDefined<object>(false)).Return (false);
+      _implementationMethodInformationStub.Stub (stub => stub.IsDefined<object> (false)).Return (false);
 
-      Assert.That (_mixinIntroducedMethodInformation.IsDefined<object>(false), Is.False);
+      Assert.That (_mixinIntroducedMethodInformation.IsDefined<object> (false), Is.False);
     }
 
     [Test]
@@ -104,18 +104,18 @@ namespace Remotion.UnitTests.Reflection
     public void FindInterfaceDeclaration ()
     {
       var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
-      _declarationMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration ()).Return (methodInfoAdapter);
+      _declarationMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration()).Return (methodInfoAdapter);
 
-      Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclaration (), Is.SameAs (_declarationMethodInformationStub));
+      Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclaration(), Is.SameAs (_declarationMethodInformationStub));
     }
 
     [Test]
     public void FindDeclaringProperty ()
     {
       var propertyInfoAdapter = new PropertyInfoAdapter (typeof (string).GetProperty ("Length"));
-      _implementationMethodInformationStub.Stub (stub => stub.FindDeclaringProperty ()).Return (propertyInfoAdapter);
+      _implementationMethodInformationStub.Stub (stub => stub.FindDeclaringProperty()).Return (propertyInfoAdapter);
 
-      Assert.That (_mixinIntroducedMethodInformation.FindDeclaringProperty (), Is.SameAs (propertyInfoAdapter));
+      Assert.That (_mixinIntroducedMethodInformation.FindDeclaringProperty(), Is.SameAs (propertyInfoAdapter));
     }
 
     [Test]
@@ -130,20 +130,20 @@ namespace Remotion.UnitTests.Reflection
     public void Invoke ()
     {
       var methodInfoAdapter = new MethodInfoAdapter (typeof (object).GetMethod ("ToString"));
-      _declarationMethodInformationStub.Stub (stub => stub.Invoke ("Test", new object[] {})).Return (methodInfoAdapter);
+      _declarationMethodInformationStub.Stub (stub => stub.Invoke ("Test", new object[] { })).Return (methodInfoAdapter);
 
       var result = _mixinIntroducedMethodInformation.Invoke ("Test", new object[] { });
 
-      Assert.That (result, Is.SameAs(methodInfoAdapter));
+      Assert.That (result, Is.SameAs (methodInfoAdapter));
     }
 
     [Test]
     public void GetFastInvoker ()
     {
-      var fakeResult = new object ();
-      
-      _declarationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<object>))).Return((Func<object>)(()=>fakeResult));
-      
+      var fakeResult = new object();
+
+      _declarationMethodInformationStub.Stub (stub => stub.GetFastInvoker (typeof (Func<object>))).Return ((Func<object>) (() => fakeResult));
+
       var invoker = _mixinIntroducedMethodInformation.GetFastInvoker<Func<object>>();
 
       Assert.That (invoker(), Is.SameAs (fakeResult));
@@ -159,12 +159,34 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void Equals ()
+    {
+      Assert.That (_mixinIntroducedMethodInformation.Equals (null), Is.False);
+      Assert.That (
+          _mixinIntroducedMethodInformation.Equals (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation)), Is.True);
+      Assert.That (
+          _mixinIntroducedMethodInformation.Equals (
+              new MixinIntroducedMethodInformation (
+                  new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub))),
+          Is.False);
+    }
+
+    [Test]
+    public void GetHashcode ()
+    {
+      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (int));
+      _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
+      Assert.That (_mixinIntroducedMethodInformation.GetHashCode (),
+          Is.EqualTo (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation).GetHashCode ()));
+    }
+
+    [Test]
     public void To_String ()
     {
       _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
 
-      Assert.That (_mixinIntroducedMethodInformation.ToString (), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
+      Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
     }
   }
 }

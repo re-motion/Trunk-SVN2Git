@@ -130,6 +130,21 @@ namespace Remotion.Reflection
       return FindInterfaceDeclaration();
     }
 
+    public override bool Equals (object obj)
+    {
+      var other = obj as MixinIntroducedMethodInformation;
+
+      if (other == null)
+        return false;
+
+      return _mixinMethodInfo.Equals (other._mixinMethodInfo);
+    }
+
+    public override int GetHashCode ()
+    {
+      return DeclaringType.GetHashCode () ^ Name.GetHashCode ();
+    }
+
     public override string ToString ()
     {
       return _mixinMethodInfo + " (Mixin)";
