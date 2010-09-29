@@ -162,15 +162,12 @@ namespace Remotion.Reflection
       if (other == null)
         return false;
 
-      return MemberInfoEqualityComparer.MemberInfoEquals (_propertyInfo, other._propertyInfo);
+      return MemberInfoEqualityComparer.Instance.MemberInfoEquals (_propertyInfo, other._propertyInfo);
     }
 
     public override int GetHashCode ()
     {
-      if (_propertyInfo.DeclaringType.IsArray)
-        return DeclaringType.GetHashCode () ^ Name.GetHashCode ();
-      else
-        return DeclaringType.GetHashCode() ^ _propertyInfo.MetadataToken.GetHashCode();
+      return MemberInfoEqualityComparer.Instance.GetHashCode (_propertyInfo);
     }
 
     public override string ToString ()

@@ -19,8 +19,12 @@ using System.Reflection;
 
 namespace Remotion.Utilities
 {
-  public static class MemberInfoEqualityComparer
+  public class MemberInfoEqualityComparer
   {
+    public static readonly MemberInfoEqualityComparer Instance = new MemberInfoEqualityComparer ();
+
+    protected MemberInfoEqualityComparer () { }
+
     /// <summary>
     /// Checks two <see cref="MemberInfo"/> instances for logical equality, without considering the <see cref="MemberInfo.ReflectedType"/>.
     /// </summary>
@@ -37,7 +41,7 @@ namespace Remotion.Utilities
     /// The idea for this method, but not the code, was taken from http://blogs.msdn.com/b/kingces/archive/2005/08/17/452774.aspx.
     /// </para>
     /// </returns>
-    public static bool MemberInfoEquals (MemberInfo one, MemberInfo two)
+    public bool MemberInfoEquals (MemberInfo one, MemberInfo two)
     {
       ArgumentUtility.CheckNotNull ("one", one);
       ArgumentUtility.CheckNotNull ("two", two);
@@ -87,7 +91,7 @@ namespace Remotion.Utilities
     /// </summary>
     /// <param name="memberInfo">The <see cref="MemberInfo"/> for which the hash code should be calculated.</param>
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
-    public static int GetHashCode (MemberInfo memberInfo)
+    public int GetHashCode (MemberInfo memberInfo)
     {
       if (memberInfo.DeclaringType!=null && memberInfo.DeclaringType.IsArray)
         return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.Name) ^ GetHashCodeOrZero (memberInfo.Module);
@@ -95,7 +99,7 @@ namespace Remotion.Utilities
         return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.MetadataToken) ^ GetHashCodeOrZero (memberInfo.Module);
     }
 
-    private static int GetHashCodeOrZero (object valueOrNull)
+    private int GetHashCodeOrZero (object valueOrNull)
     {
       return valueOrNull != null ? valueOrNull.GetHashCode () : 0;
     }
