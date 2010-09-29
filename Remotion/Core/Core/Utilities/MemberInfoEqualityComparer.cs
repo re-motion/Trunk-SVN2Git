@@ -79,5 +79,25 @@ namespace Remotion.Utilities
 
       return true;
     }
+
+    /// <summary>
+    /// Returns the hash code for the given <see cref="MemberInfo"/>. To calculate the hash code, the hash codes of the declaring type, 
+    /// metadata token and module of the <see cref="MemberInfo"/> are combined. If the declaring type is an array, the name of the 
+    /// <see cref="MemberInfo"/> is used instead of the metadata token.
+    /// </summary>
+    /// <param name="memberInfo">The <see cref="MemberInfo"/> for which the hash code should be calculated.</param>
+    /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
+    public static int GetHashCode (MemberInfo memberInfo)
+    {
+      if (memberInfo.DeclaringType!=null && memberInfo.DeclaringType.IsArray)
+        return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.Name) ^ GetHashCodeOrZero (memberInfo.Module);
+      else
+        return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.MetadataToken) ^ GetHashCodeOrZero (memberInfo.Module);
+    }
+
+    private static int GetHashCodeOrZero (object valueOrNull)
+    {
+      return valueOrNull != null ? valueOrNull.GetHashCode () : 0;
+    }
   }
 }

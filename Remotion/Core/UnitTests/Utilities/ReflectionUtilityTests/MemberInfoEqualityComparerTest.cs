@@ -244,5 +244,71 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
       Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (fieldInfo1a, fieldInfo1b), Is.True);
       Assert.That (MemberInfoEqualityComparer.MemberInfoEquals (fieldInfo1a, fieldInfo2), Is.False);
     }
+
+    [Test]
+    public void GetHashcode_SameInstance ()
+    {
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = one;
+
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_DifferentReflectedType ()
+    {
+      var one = typeof (ClassWithMethods).GetMethod ("SimpleMethod1");
+      var two = typeof (DerivedClassWithMethods).GetMethod ("SimpleMethod1");
+
+      Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_NullDeclaringType ()
+    {
+      var one = new FakeMemberInfo (null, 1, typeof (object).Module);
+      var two = new FakeMemberInfo (null, 1, typeof (object).Module);
+
+      Assert.That (one.DeclaringType, Is.SameAs (two.DeclaringType));
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_ArrayMembers ()
+    {
+      var one = typeof (int[]).GetMethod ("Set");
+      var two = typeof (int[]).GetMethod ("Set");
+
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_AbstractArrayMembers ()
+    {
+      var one = typeof (Array).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
+      var two = typeof (bool[]).GetMethod ("CopyTo", new[] { typeof (Array), typeof (int) });
+
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_SameMember_OnSameDeclaringTypeInstantiations ()
+    {
+      var one = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
+      var two = typeof (GenericClassWithMethods<object>).GetMethod ("SimpleMethod");
+
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
+    [Test]
+    public void GetHashcode_SameMember_OnGenericTypeDefinition ()
+    {
+      var one = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
+      var two = typeof (GenericClassWithMethods<>).GetMethod ("SimpleMethod");
+
+      Assert.That (MemberInfoEqualityComparer.GetHashCode (one), Is.EqualTo (MemberInfoEqualityComparer.GetHashCode (two)));
+    }
+
   }
 }
