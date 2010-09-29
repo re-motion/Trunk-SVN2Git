@@ -162,20 +162,24 @@ namespace Remotion.UnitTests.Reflection
     public void Equals ()
     {
       Assert.That (_mixinIntroducedMethodInformation.Equals (null), Is.False);
+      Assert.That (_mixinIntroducedMethodInformation.Equals ("test"), Is.False);
       Assert.That (
           _mixinIntroducedMethodInformation.Equals (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation)), Is.True);
       Assert.That (
           _mixinIntroducedMethodInformation.Equals (
               new MixinIntroducedMethodInformation (
                   new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub))),
+          Is.True);
+      Assert.That (
+          _mixinIntroducedMethodInformation.Equals (
+              new MixinIntroducedMethodInformation (
+                  new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _implementationMethodInformationStub))),
           Is.False);
     }
 
     [Test]
     public void GetHashcode ()
     {
-      _implementationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (int));
-      _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
       Assert.That (_mixinIntroducedMethodInformation.GetHashCode (),
           Is.EqualTo (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation).GetHashCode ()));
     }

@@ -125,6 +125,21 @@ namespace Remotion.Reflection
       return FindInterfaceDeclaration();
     }
 
+    public override bool Equals (object obj)
+    {
+      var other = obj as InterfaceImplementationMethodInformation;
+
+      if (other == null)
+        return false;
+
+      return _implementationMethodInfo.Equals (other._implementationMethodInfo);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _implementationMethodInfo.GetHashCode() ^ _declarationMethodInfo.GetHashCode();
+    }
+
     public override string ToString ()
     {
       // TODO Review 3334: Use _implementationMethodInfo.ToString(), not Name; add a space before the opening parenthesis

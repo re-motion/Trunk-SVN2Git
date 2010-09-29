@@ -142,7 +142,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return DeclaringType.GetHashCode () ^ Name.GetHashCode ();
+      return _mixinMethodInfo.GetHashCode();
     }
 
     public override string ToString ()
