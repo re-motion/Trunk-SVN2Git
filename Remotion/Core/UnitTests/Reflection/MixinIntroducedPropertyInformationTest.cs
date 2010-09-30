@@ -172,8 +172,9 @@ namespace Remotion.UnitTests.Reflection
       var instance = new ClassWithReferenceType<SimpleReferenceType>();
       var value = new SimpleReferenceType();
 
-      _declarationPropertyInformationStub.Stub (stub => stub.SetValue (instance, value, null)).WhenCalled (
-          mi => instance.ImplicitInterfaceScalar = value);
+      _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return(
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
       _mixinIntroducedPropertyInformation.SetValue (instance, value, null);
 
@@ -185,8 +186,11 @@ namespace Remotion.UnitTests.Reflection
     {
       var instance = new ClassWithReferenceType<SimpleReferenceType>();
       var value = new SimpleReferenceType();
+      instance.ImplicitInterfaceScalar = value;
 
-      _declarationPropertyInformationStub.Stub (stub => stub.GetValue (instance, null)).Return (value);
+      _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (null);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
       Assert.That (_mixinIntroducedPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
@@ -230,7 +234,7 @@ namespace Remotion.UnitTests.Reflection
     {
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
-      Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
+      Assert.That (_mixinIntroducedPropertyInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean') (Mixin)"));
     }
   }
 }

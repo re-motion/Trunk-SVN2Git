@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -100,16 +101,25 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      // TODO Review 3334: This is not correct - it will not work if the implementation added the get accessor. Add a respective failing test, then use GetGetMethod().Invoke() instead.
-      return _declarationPropertyInfo.GetValue (instance, indexParameters);
+      return GetGetMethod (true).Invoke (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      // TODO Review 3334: This is not correct - it will not work if the implementation added the set accessor. Add a respective failing test, then use GetSetMethod().Invoke() instead.
-      _declarationPropertyInfo.SetValue (instance, value, indexParameters);
+      var setMethod = GetSetMethod (true);
+
+      if (indexParameters != null)
+      {
+        var parameters = new List<object> (indexParameters);
+        parameters.Add (value);
+        setMethod.Invoke (instance, parameters.ToArray ());
+      }
+      else
+      {
+        setMethod.Invoke (instance, new[] { value });
+      }
     }
 
     /// <summary>
@@ -185,8 +195,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
-      // TODO Review 3334: Use _implementationProperty.ToString(), add a blank before the opening parenthesis
-      return string.Format ("{0}(impl of '{1}')", Name, _declarationPropertyInfo.DeclaringType.Name);
+      return string.Format ("{0} (impl of '{1}')", _implementationPropertyInfo.Name, _declarationPropertyInfo.DeclaringType.Name);
     }
   }
 }

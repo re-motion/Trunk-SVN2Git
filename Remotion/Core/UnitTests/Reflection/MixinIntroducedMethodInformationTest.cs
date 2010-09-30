@@ -190,7 +190,7 @@ namespace Remotion.UnitTests.Reflection
       _implementationMethodInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationMethodInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
 
-      Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean') (Mixin)"));
+      Assert.That (_mixinIntroducedMethodInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean') (Mixin)"));
     }
   }
 }

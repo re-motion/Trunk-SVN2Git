@@ -110,8 +110,7 @@ namespace Remotion.Reflection
     public object Invoke (object instance, object[] parameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      ArgumentUtility.CheckNotNull ("parameters", parameters);
-
+      
       return _declarationMethodInfo.Invoke (instance, parameters);
     }
 
@@ -142,8 +141,7 @@ namespace Remotion.Reflection
 
     public override string ToString ()
     {
-      // TODO Review 3334: Use _implementationMethodInfo.ToString(), not Name; add a space before the opening parenthesis
-      return string.Format ("{0}(impl of '{1}')", Name, _declarationMethodInfo.DeclaringType.Name);
+      return string.Format ("{0} (impl of '{1}')", _implementationMethodInfo.Name, _declarationMethodInfo.DeclaringType.Name);
     }
   }
 }

@@ -129,11 +129,41 @@ namespace Remotion.UnitTests.Reflection
       var instance = new ClassWithReferenceType<SimpleReferenceType>();
       var value = new SimpleReferenceType();
 
-      _declarationPropertyInformationStub.Stub (stub => stub.SetValue (instance, value, null)).WhenCalled (
-          mi => instance.ImplicitInterfaceScalar = value);
+      _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
       _interfaceImplementationPropertyInformation.SetValue (instance, value, null);
       Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
+    }
+
+    [Test]
+    public void SetValue_ImplementationAddsSetAccessor ()
+    {
+      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
+      var value = new SimpleReferenceType ();
+
+      _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+
+      _interfaceImplementationPropertyInformation.SetValue (instance, value, null);
+      Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
+    }
+
+    [Test]
+    public void SetValue_ImplementationAddsSetAccessor_IndexedProperty ()
+    {
+      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
+      var value = new SimpleReferenceType ();
+
+      _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[]{typeof(int) }).GetSetMethod (true)));
+
+      _interfaceImplementationPropertyInformation.SetValue (instance, value, new object[] { 0 });
+      Assert.That (instance[0], Is.SameAs (value));
     }
 
     [Test]
@@ -141,8 +171,26 @@ namespace Remotion.UnitTests.Reflection
     {
       var instance = new ClassWithReferenceType<SimpleReferenceType>();
       var value = new SimpleReferenceType();
+      instance.ImplicitInterfaceScalar = value;
 
-      _declarationPropertyInformationStub.Stub (stub => stub.GetValue (instance, null)).Return (value);
+      _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+
+      Assert.That (_interfaceImplementationPropertyInformation.GetValue (instance, null), Is.SameAs (value));
+    }
+
+    [Test]
+    public void GetValue_ImplementationsAddsGetAccessor ()
+    {
+      var instance = new ClassWithReferenceType<SimpleReferenceType>();
+      var value = new SimpleReferenceType();
+      instance.ImplicitInterfaceScalar = value;
+
+      _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (null);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
+          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
       Assert.That (_interfaceImplementationPropertyInformation.GetValue (instance, null), Is.SameAs (value));
     }
@@ -171,8 +219,9 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty", 
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
@@ -180,13 +229,17 @@ namespace Remotion.UnitTests.Reflection
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), 
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ExplicitProperty", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ExplicitProperty",
+          getMethodResult);
 
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), 
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_ExplicitProperty", setMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_ExplicitProperty",
+          setMethodResult);
     }
 
     [Test]
@@ -201,7 +254,7 @@ namespace Remotion.UnitTests.Reflection
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
           typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_ReadOnlyImplicitProperty", getMethodResult);
-      Assert.That(interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
+      Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
     }
 
     [Test]
@@ -224,8 +277,9 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
 
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
@@ -233,10 +287,11 @@ namespace Remotion.UnitTests.Reflection
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ReadOnlyExplicitProperty", getMethodResult);
-      Assert.That(interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
-      
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "Remotion.Reflection.TestDomain.IInterfaceToImplement.get_ReadOnlyExplicitProperty",
+          getMethodResult);
+      Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
     }
 
     [Test]
@@ -244,17 +299,21 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
 
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
       var getMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface),
-          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_WriteOnlyExplicitProperty", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "Remotion.Reflection.TestDomain.IInterfaceToImplement.set_WriteOnlyExplicitProperty",
+          getMethodResult);
     }
 
     [Test]
@@ -305,7 +364,10 @@ namespace Remotion.UnitTests.Reflection
           typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "get_PropertyAddingPrivateGetAccessor", getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "set_PropertyAddingPrivateGetAccessor", setMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "set_PropertyAddingPrivateGetAccessor",
+          setMethodResult);
     }
 
     [Test]
@@ -317,10 +379,13 @@ namespace Remotion.UnitTests.Reflection
       var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
           implementationPropertyInfo, declaringPropertyInfo);
 
-     Assert.That(interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
+      Assert.That (interfaceImplementationPropertyInformation.GetGetMethod (false), Is.Null);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "set_PropertyAddingPrivateGetAccessor", setMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "set_PropertyAddingPrivateGetAccessor",
+          setMethodResult);
     }
 
     [Test]
@@ -334,7 +399,10 @@ namespace Remotion.UnitTests.Reflection
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_PropertyAddingPrivateSetAccessor", getMethodResult);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "get_PropertyAddingPrivateSetAccessor",
+          getMethodResult);
       var setMethodResult = interfaceImplementationPropertyInformation.GetSetMethod (true);
       CheckMethodInformation (
           typeof (MethodInfoAdapter), typeof (ClassImplementingInterface), "set_PropertyAddingPrivateSetAccessor", setMethodResult);
@@ -351,8 +419,11 @@ namespace Remotion.UnitTests.Reflection
 
       var getMethodResult = interfaceImplementationPropertyInformation.GetGetMethod (false);
       CheckMethodInformation (
-          typeof (InterfaceImplementationMethodInformation), typeof (ClassImplementingInterface), "get_PropertyAddingPrivateSetAccessor", getMethodResult);
-      Assert.That(interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
+          typeof (InterfaceImplementationMethodInformation),
+          typeof (ClassImplementingInterface),
+          "get_PropertyAddingPrivateSetAccessor",
+          getMethodResult);
+      Assert.That (interfaceImplementationPropertyInformation.GetSetMethod (false), Is.Null);
     }
 
     [Test]
@@ -360,7 +431,8 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ImplicitProperty"));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ImplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.True);
     }
@@ -370,10 +442,12 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ExplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.True);
     }
@@ -383,7 +457,8 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("ReadOnlyImplicitProperty"));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyImplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.False);
     }
@@ -393,7 +468,8 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("WriteOnlyImplicitProperty"));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyImplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.True);
     }
@@ -403,10 +479,12 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.ReadOnlyExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("ReadOnlyExplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.False);
     }
@@ -416,10 +494,12 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo =
           new PropertyInfoAdapter (
-              typeof (ClassImplementingInterface).GetProperty ("Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+              typeof (ClassImplementingInterface).GetProperty (
+                  "Remotion.Reflection.TestDomain.IInterfaceToImplement.WriteOnlyExplicitProperty",
+                  BindingFlags.NonPublic | BindingFlags.Instance));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("WriteOnlyExplicitProperty"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.True);
     }
@@ -429,7 +509,8 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingSetAccessor"));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingSetAccessor"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.True);
     }
@@ -439,7 +520,8 @@ namespace Remotion.UnitTests.Reflection
     {
       var implementationPropertyInfo = new PropertyInfoAdapter (typeof (ClassImplementingInterface).GetProperty ("PropertyAddingPrivateSetAccessor"));
       var declaringPropertyInfo = new PropertyInfoAdapter (typeof (IInterfaceToImplement).GetProperty ("PropertyAddingPrivateSetAccessor"));
-      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (implementationPropertyInfo, declaringPropertyInfo);
+      var interfaceImplementationPropertyInformation = new InterfaceImplementationPropertyInformation (
+          implementationPropertyInfo, declaringPropertyInfo);
 
       Assert.That (interfaceImplementationPropertyInformation.CanBeSetFromOutside, Is.False);
     }
@@ -450,12 +532,14 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_interfaceImplementationPropertyInformation.Equals (null), Is.False);
       Assert.That (_interfaceImplementationPropertyInformation.Equals ("Test"), Is.False);
       Assert.That (
-          _interfaceImplementationPropertyInformation.Equals (new InterfaceImplementationPropertyInformation(_implementationPropertyInformationStub, _declarationPropertyInformationStub)), Is.True);
+          _interfaceImplementationPropertyInformation.Equals (
+              new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub)),
+          Is.True);
       Assert.That (
           _interfaceImplementationPropertyInformation.Equals (
               new InterfaceImplementationPropertyInformation (
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
-                      new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))),
+                  new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
+                  new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))),
           Is.False);
     }
 
@@ -463,8 +547,10 @@ namespace Remotion.UnitTests.Reflection
     public void GetHashCodeTest ()
     {
       Assert.That (
-          _interfaceImplementationPropertyInformation.GetHashCode (),
-          Is.EqualTo (new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub).GetHashCode ()));
+          _interfaceImplementationPropertyInformation.GetHashCode(),
+          Is.EqualTo (
+              new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub).GetHashCode
+                  ()));
     }
 
     [Test]
@@ -473,7 +559,7 @@ namespace Remotion.UnitTests.Reflection
       _implementationPropertyInformationStub.Stub (stub => stub.Name).Return ("Test");
       _declarationPropertyInformationStub.Stub (stub => stub.DeclaringType).Return (typeof (bool));
 
-      Assert.That (_interfaceImplementationPropertyInformation.ToString(), Is.EqualTo ("Test(impl of 'Boolean')"));
+      Assert.That (_interfaceImplementationPropertyInformation.ToString(), Is.EqualTo ("Test (impl of 'Boolean')"));
     }
 
     private void CheckMethodInformation (
