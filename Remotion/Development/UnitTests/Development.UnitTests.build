@@ -53,6 +53,9 @@
         <include asis="true" name="System.Web.dll"/>
         <include asis="true" name="System.Xml.dll"/>
       </references>
+	  <resources failonempty="true" prefix="Remotion.Development.UnitTests" dynamicprefix="true">
+        <include name="Core/UnitTesting/Resources/**/*.*" />
+      </resources>
     </csc>
         
   </target>
