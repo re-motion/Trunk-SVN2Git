@@ -73,11 +73,11 @@ namespace Remotion.SecurityManager.UnitTests
         SqlConnection.ClearAllPools();
 
         DatabaseAgent masterAgent = new DatabaseAgent (c_masterConnectionString);
-        masterAgent.ExecuteBatch ("SecurityManagerCreateDB.sql", false);
+        masterAgent.ExecuteBatchFile ("SecurityManagerCreateDB.sql", false);
         DatabaseAgent databaseAgent = new DatabaseAgent (c_testDomainConnectionString);
-        databaseAgent.ExecuteBatch ("SecurityManagerSetupDB.sql", true);
-        databaseAgent.ExecuteBatch ("SecurityManagerSetupConstraints.sql", true);
-        databaseAgent.ExecuteBatch ("SecurityManagerSetupDBSpecialTables.sql", true);
+        databaseAgent.ExecuteBatchFile ("SecurityManagerSetupDB.sql", true);
+        databaseAgent.ExecuteBatchFile ("SecurityManagerSetupConstraints.sql", true);
+        databaseAgent.ExecuteBatchFile ("SecurityManagerSetupDBSpecialTables.sql", true);
       }
       catch (Exception e)
       {

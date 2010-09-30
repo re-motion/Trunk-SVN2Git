@@ -47,29 +47,50 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ExecuteCommand (string.Format ("ALTER DATABASE [{0}] SET READ_ONLY WITH ROLLBACK IMMEDIATE", database));
     }
 
-    public int ExecuteBatch (string sqlFileName, bool useTransaction)
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
-      int count = 0;
-      using (IDbConnection connection = CreateConnection())
+      if (!Path.IsPathRooted (sqlFileName))
       {
-        connection.Open();
+        string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
+        Uri uri = new Uri (assemblyUrl);
+        sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
+      }
+      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction);
+    }
+
+    public int ExecuteBatchString (string commandBatch, bool useTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
+
+      int count = 0;
+      using (IDbConnection connection = CreateConnection ())
+      {
+        connection.Open ();
         if (useTransaction)
         {
           using (IDbTransaction transaction = connection.BeginTransaction ())
           {
-            count = ExecuteBatch (connection, sqlFileName, transaction);
+            count = ExecuteBatchString (connection, commandBatch, transaction);
             transaction.Commit ();
           }
         }
         else
         {
-          count = ExecuteBatch (connection, sqlFileName, null);
+          count = ExecuteBatchString (connection, commandBatch, null);
         }
       }
 
       return count;
+    }
+
+    [Obsolete ("Use 'ExecuteBatchFile' instead.")]
+    public int ExecuteBatch (string sqlFileName, bool useTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("sqlFileName", sqlFileName);
+
+      return ExecuteBatchFile (sqlFileName, useTransaction);
     }
 
     protected virtual IDbConnection CreateConnection ()
@@ -90,9 +111,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection())
+      using (IDbConnection connection = CreateConnection ())
       {
-        connection.Open();
+        connection.Open ();
         return ExecuteCommand (connection, commandText, null);
       }
     }
@@ -101,20 +122,20 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection())
+      using (IDbConnection connection = CreateConnection ())
       {
         connection.Open ();
-        return ExecuteScalarCommand(connection, commandText, null);
+        return ExecuteScalarCommand (connection, commandText, null);
       }
     }
 
-    protected virtual int ExecuteBatch (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
+    protected virtual int ExecuteBatchString (IDbConnection connection, string commandBatch, IDbTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
-      ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
       int count = 0;
-      foreach (string commandText in GetCommandTextBatchesFromFile (sqlFileName))
+      foreach (string commandText in GetCommandTextBatchesFromFile (commandBatch))
         count += ExecuteCommand (connection, commandText, transaction);
       return count;
     }
@@ -123,7 +144,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
-        return command.ExecuteNonQuery();
+        return command.ExecuteNonQuery ();
       }
     }
 
@@ -135,16 +156,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       }
     }
 
-    private string[] GetCommandTextBatchesFromFile (string sqlFileName)
+    private string[] GetCommandTextBatchesFromFile (string commandBatch)
     {
-      if (!Path.IsPathRooted (sqlFileName))
-      {
-        string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
-        Uri uri = new Uri (assemblyUrl);
-        sqlFileName = Path.Combine (Path.GetDirectoryName(uri.LocalPath), sqlFileName);
-      }
-      string fileContent = File.ReadAllText (sqlFileName, Encoding.Default);
-      return fileContent.Split (new string[] {"\r\nGO\r\n", "\nGO\n"}, StringSplitOptions.RemoveEmptyEntries);
+      return commandBatch.Split (new[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
     }
   }
 }

@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       _databaseAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
       _databaseAgent.SetDatabaseReadWrite (DatabaseTest.DatabaseName);
-      _databaseAgent.ExecuteBatch (TableInheritanceMappingTest.CreateTestDataFileName, true);
+      _databaseAgent.ExecuteBatchFile (TableInheritanceMappingTest.CreateTestDataFileName, true);
       _databaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
     }
   }

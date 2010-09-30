@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Database
     {
     }
 
-    protected override int ExecuteBatch (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
+    protected override int ExecuteBatchString (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
     {
-      int batch =  base.ExecuteBatch (connection, sqlFileName, transaction);
+      int batch =  base.ExecuteBatchString (connection, sqlFileName, transaction);
       LoadBlobs (connection, transaction);
       return batch;
     }

@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public virtual void TearDown ()
     {
       if (_isDatabaseModifyable)
-        _databaseAgent.ExecuteBatch (_createTestDataFileName, true);
+        _databaseAgent.ExecuteBatchFile (_createTestDataFileName, true);
     }
 
     [TestFixtureSetUp]

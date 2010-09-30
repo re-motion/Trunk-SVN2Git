@@ -42,13 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects
         SqlConnection.ClearAllPools();
 
         DatabaseAgent masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
-        masterAgent.ExecuteBatch ("DataDomainObjects_CreateDB.sql", false);
+        masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false);
         DatabaseAgent testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
-        testDomainAgent.ExecuteBatch ("DataDomainObjects_SetupDB.sql", true);
+        testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true);
 
         _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);
-        _standardMappingDatabaseAgent.ExecuteBatch (StandardMappingTest.CreateTestDataFileName, true);
-        _standardMappingDatabaseAgent.ExecuteBatch (TableInheritanceMappingTest.CreateTestDataFileName, true);
+        _standardMappingDatabaseAgent.ExecuteBatchFile (StandardMappingTest.CreateTestDataFileName, true);
+        _standardMappingDatabaseAgent.ExecuteBatchFile (TableInheritanceMappingTest.CreateTestDataFileName, true);
         _standardMappingDatabaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
       }
       catch (Exception ex)
