@@ -32,5 +32,10 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
     {
       return _connection;
     }
+
+    public new int ExecuteBatchString (IDbConnection connection, string commandBatch, IDbTransaction transaction)
+    {
+      return base.ExecuteBatchString (connection, commandBatch, transaction);
+    }
   }
 }

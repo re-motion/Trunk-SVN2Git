@@ -68,6 +68,35 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
       _mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void ExecuteBatchString ()
+    {
+      SetupCommandExpectations ("ABCDEFG", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery ()).Return (5); });
+      
+      _mockRepository.ReplayAll ();
+
+      TestableDatabaseAgent agent = new TestableDatabaseAgent (_connectionStub);
+      int result = agent.ExecuteBatchString (_connectionStub, "ABCDEFG", null);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (5));
+    }
+
+    [Test]
+    public void ExecuteBatchString_StringIsSplitted ()
+    {
+      SetupCommandExpectations ("ABC", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery ()).Return (10); });
+      SetupCommandExpectations ("GFE", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery ()).Return (20); });
+      
+      _mockRepository.ReplayAll ();
+
+      TestableDatabaseAgent agent = new TestableDatabaseAgent (_connectionStub);
+      int result = agent.ExecuteBatchString (_connectionStub, "ABC\nGO\nGFE", null);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (30));
+    }
+
     private void SetupCommandExpectations (string commandText, IDbTransaction transaction, Action actualCommandExpectation)
     {
       using (_mockRepository.Ordered ())
