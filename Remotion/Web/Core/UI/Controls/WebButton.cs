@@ -62,11 +62,16 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-      
-      var renderer = SafeServiceLocator.Current.GetInstance<IWebButtonRenderer>();
+
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current, this, Page.Context);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (this, HtmlHeadAppender.Current);
+    }
+
+    protected virtual IWebButtonRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<IWebButtonRenderer> ();
     }
 
     void IPostBackDataHandler.RaisePostDataChangedEvent ()

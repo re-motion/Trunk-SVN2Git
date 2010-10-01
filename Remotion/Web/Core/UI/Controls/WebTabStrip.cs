@@ -112,7 +112,7 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var renderer = SafeServiceLocator.Current.GetInstance<IWebTabStripRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -250,8 +250,20 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<IWebTabStripRenderer>();
-      renderer.Render (new WebTabStripRenderingContext(Page.Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IWebTabStripRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<IWebTabStripRenderer> ();
+    }
+
+    protected virtual WebTabStripRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new WebTabStripRenderingContext (Page.Context, writer, this);
     }
 
     private List<WebTab> GetVisibleTabs ()

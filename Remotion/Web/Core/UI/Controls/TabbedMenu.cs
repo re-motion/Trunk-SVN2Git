@@ -101,8 +101,20 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMenuRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
+    }
+
+    protected virtual ITabbedMenuRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<ITabbedMenuRenderer> ();
+    }
+
+    protected virtual TabbedMenuRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new TabbedMenuRenderingContext (Page.Context, writer, this);
     }
 
     /// <summary> Overrides the <see cref="Control.CreateChildControls"/> method. </summary>
@@ -241,8 +253,8 @@ namespace Remotion.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMenuRenderer>();
-      renderer.Render (new TabbedMenuRenderingContext(Page.Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
     }
 
     /// <summary> Overrides the <see cref="Control.Controls"/> property. </summary>

@@ -144,8 +144,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderer = ServiceLocator.GetInstance<IBocTextValueRenderer>();
-      renderer.Render (new BocTextValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
     }
 
     /// <summary> Gets or sets the current value. </summary>
@@ -357,8 +357,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocTextValueRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+    }
+
+    protected virtual IBocTextValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocTextValueRenderer> ();
+    }
+
+    protected virtual BocTextValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocTextValueRenderingContext (Context, writer, this);
     }
 
     /// <summary>

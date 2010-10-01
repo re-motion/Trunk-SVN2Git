@@ -405,7 +405,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocListRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -1157,9 +1157,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      IBocColumnRenderer[] columnRenderers = GetColumnRenderers (renderColumns);
-      var renderer = ServiceLocator.GetInstance<IBocListRenderer>();
-      renderer.Render (new BocListRenderingContext(Context, writer, this, columnRenderers));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext (writer, GetColumnRenderers (renderColumns)));
+    }
+
+    protected virtual IBocListRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocListRenderer> ();
+    }
+
+    protected virtual BocListRenderingContext CreateRenderingContext (HtmlTextWriter writer, IBocColumnRenderer[] columnRenderers)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocListRenderingContext (Context, writer, this, columnRenderers);
     }
 
     public bool HasNavigator

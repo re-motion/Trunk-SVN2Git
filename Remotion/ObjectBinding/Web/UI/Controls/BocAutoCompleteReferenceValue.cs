@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -176,8 +176,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var renderer = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer>();
-      renderer.Render (new BocAutoCompleteReferenceValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IBocAutoCompleteReferenceValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRenderer> ();
+    }
+
+    protected virtual BocAutoCompleteReferenceValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocAutoCompleteReferenceValueRenderingContext (Context, writer, this);
     }
 
     protected override void LoadControlState (object savedState)

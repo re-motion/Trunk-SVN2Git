@@ -228,8 +228,20 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
+    }
+
+    protected virtual ITabbedMultiViewRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRenderer> ();
+    }
+
+    protected virtual TabbedMultiViewRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new TabbedMultiViewRenderingContext (Page.Context, writer, this);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -356,7 +368,7 @@ namespace Remotion.Web.UI.Controls
 
       EnsureChildControls();
 
-      var renderer = SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRenderer>();
+      var renderer = CreateRenderer();
       renderer.Render (new TabbedMultiViewRenderingContext(Page.Context, writer, this));
     }
 

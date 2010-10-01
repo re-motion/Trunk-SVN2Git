@@ -99,8 +99,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var renderer = ServiceLocator.GetInstance<IBocBooleanValueRenderer> ();
-      renderer.Render (new BocBooleanValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IBocBooleanValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocBooleanValueRenderer> ();
+    }
+
+    protected virtual BocBooleanValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocBooleanValueRenderingContext (Context, writer, this);
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -134,7 +146,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocBooleanValueRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 

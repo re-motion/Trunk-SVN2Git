@@ -83,7 +83,7 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var renderer = SafeServiceLocator.Current.GetInstance<ISingleViewRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
     }
 
@@ -130,8 +130,20 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<ISingleViewRenderer>();
-      renderer.Render (new SingleViewRenderingContext(Page.Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual ISingleViewRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<ISingleViewRenderer> ();
+    }
+
+    protected virtual SingleViewRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new SingleViewRenderingContext (Page.Context, writer, this);
     }
 
     protected string ViewClientID

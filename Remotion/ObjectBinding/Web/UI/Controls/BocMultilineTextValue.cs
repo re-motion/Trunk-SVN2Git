@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocMultilineTextValueRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
@@ -117,8 +117,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderer = ServiceLocator.GetInstance<IBocMultilineTextValueRenderer>();
-      renderer.Render (new BocMultilineTextValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IBocMultilineTextValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocMultilineTextValueRenderer> ();
+    }
+
+    protected virtual BocMultilineTextValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocMultilineTextValueRenderingContext (Context, writer, this);
     }
 
     // ReSharper disable RedundantOverridenMember

@@ -63,8 +63,8 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
-      renderer.Render (new DatePickerButtonRenderingContext(Page.Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
     }
 
     IControl IDatePickerButton.Parent
@@ -82,8 +82,20 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+    }
+
+    protected virtual IDatePickerButtonRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<IDatePickerButtonRenderer> ();
+    }
+
+    protected virtual DatePickerButtonRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new DatePickerButtonRenderingContext (Page.Context, writer, this);
     }
   }
 }

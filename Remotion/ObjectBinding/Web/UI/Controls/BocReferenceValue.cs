@@ -107,8 +107,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocReferenceValueRenderer> ();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+    }
+
+    protected virtual IBocReferenceValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocReferenceValueRenderer> ();
+    }
+
+    protected virtual BocReferenceValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocReferenceValueRenderingContext (Context, writer, this);
     }
 
     /// <remarks>
@@ -326,8 +338,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var renderer = ServiceLocator.GetInstance<IBocReferenceValueRenderer>();
-      renderer.Render (new BocReferenceValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
     }
 
     protected override void LoadControlState (object savedState)

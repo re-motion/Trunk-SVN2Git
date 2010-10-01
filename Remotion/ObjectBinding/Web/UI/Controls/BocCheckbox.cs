@@ -23,6 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
@@ -93,7 +94,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var renderer = ServiceLocator.GetInstance<IBocCheckboxRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents(htmlHeadAppender, this, httpContext);
     }
 
@@ -103,8 +104,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var renderer = ServiceLocator.GetInstance<IBocCheckboxRenderer>();
-      renderer.Render (new BocCheckboxRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IBocCheckboxRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocCheckboxRenderer> ();
+    }
+
+    protected virtual BocCheckboxRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocCheckboxRenderingContext (Context, writer, this);
     }
 
     /// <summary>

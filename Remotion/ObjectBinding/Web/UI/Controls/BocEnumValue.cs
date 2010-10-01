@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
-      var renderer = ServiceLocator.GetInstance<IBocEnumValueRenderer>();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
     }
 
@@ -107,8 +107,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var renderer = ServiceLocator.GetInstance<IBocEnumValueRenderer>();
-      renderer.Render (new BocEnumValueRenderingContext(Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
+    }
+
+    protected virtual IBocEnumValueRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocEnumValueRenderer> ();
+    }
+
+    protected virtual BocEnumValueRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocEnumValueRenderingContext(Context, writer, this);
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>

@@ -57,8 +57,8 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<IListMenuRenderer>();
-      renderer.Render (new ListMenuRenderingContext(Page.Context, writer, this));
+      var renderer = CreateRenderer();
+      renderer.Render (CreateRenderingContext(writer));
     }
 
     protected override void OnInit (EventArgs e)
@@ -75,8 +75,20 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var renderer = SafeServiceLocator.Current.GetInstance<IListMenuRenderer> ();
+      var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+    }
+
+    protected virtual IListMenuRenderer CreateRenderer ()
+    {
+      return SafeServiceLocator.Current.GetInstance<IListMenuRenderer> ();
+    }
+
+    protected virtual ListMenuRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new ListMenuRenderingContext (Page.Context, writer, this);
     }
 
     protected override void OnPreRender (EventArgs e)
