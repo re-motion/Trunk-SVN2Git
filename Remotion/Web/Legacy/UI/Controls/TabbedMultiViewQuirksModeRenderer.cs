@@ -35,7 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     public TabbedMultiViewQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

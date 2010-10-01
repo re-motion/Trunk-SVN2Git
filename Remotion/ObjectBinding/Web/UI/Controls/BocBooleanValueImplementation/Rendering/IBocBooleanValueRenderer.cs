@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -28,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   [ConcreteImplementation (typeof (BocBooleanValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocBooleanValue control, HttpContextBase context);
     void Render (BocBooleanValueRenderingContext renderingContext);
   }
 }

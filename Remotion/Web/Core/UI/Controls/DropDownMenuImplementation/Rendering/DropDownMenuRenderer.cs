@@ -38,7 +38,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDropDownMenu control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

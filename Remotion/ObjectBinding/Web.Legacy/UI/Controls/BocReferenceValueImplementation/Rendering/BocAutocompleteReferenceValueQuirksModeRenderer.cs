@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private Func<TextBox> TextBoxFactory { get; set; }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       RegisterStylesheets (htmlHeadAppender, control, context);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
     {
       htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude ();
 
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
               "BocAutoCompleteReferenceValue.js"));
     }
 
-    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
     {
       string styleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (

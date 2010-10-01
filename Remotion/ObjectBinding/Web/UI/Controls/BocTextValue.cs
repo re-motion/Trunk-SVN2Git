@@ -358,7 +358,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var renderer = ServiceLocator.GetInstance<IBocTextValueRenderer>();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     /// <summary>

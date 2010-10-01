@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var renderer = ServiceLocator.GetInstance<IBocMultilineTextValueRenderer>();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>

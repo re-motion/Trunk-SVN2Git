@@ -76,7 +76,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = SafeServiceLocator.Current.GetInstance<IListMenuRenderer> ();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     protected override void OnPreRender (EventArgs e)

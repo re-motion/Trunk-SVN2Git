@@ -25,7 +25,6 @@ using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -34,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
-  public class BocCheckboxQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocCheckBox>
+  public class BocCheckboxQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocCheckBox>, IBocCheckboxRenderer
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
@@ -43,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     public BocCheckboxQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocCheckBox control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

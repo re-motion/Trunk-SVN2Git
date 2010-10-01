@@ -24,7 +24,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rende
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -34,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// <seealso cref="IBocBooleanValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class'/>
-  public class BocBooleanValueQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocBooleanValue>
+  public class BocBooleanValueQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocBooleanValue>, IBocBooleanValueRenderer
   {
     private const string c_nullString = "null";
 
@@ -49,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       _resourceSetFactory = resourceSetFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocBooleanValue control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

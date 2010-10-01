@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -28,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof (BocListRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocList control, HttpContextBase context);
     void Render (BocListRenderingContext renderingContext);
   }
 }

@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
@@ -28,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   [ConcreteImplementation (typeof (BocEnumValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocEnumValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocEnumValue control, HttpContextBase context);
     void Render (BocEnumValueRenderingContext renderingContext);
   }
 }

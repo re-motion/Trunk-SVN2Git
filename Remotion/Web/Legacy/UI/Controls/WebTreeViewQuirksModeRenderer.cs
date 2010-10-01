@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
@@ -32,7 +31,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     public WebTreeViewQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebTreeView control, HttpContextBase context)
     {
       string styleKey = typeof (WebTreeViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))

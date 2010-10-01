@@ -22,7 +22,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Utilities;
-using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
@@ -52,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocDateTimeValue control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       

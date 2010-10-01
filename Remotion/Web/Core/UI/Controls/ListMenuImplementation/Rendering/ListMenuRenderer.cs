@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
@@ -36,7 +35,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IListMenu control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

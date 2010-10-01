@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   [ConcreteImplementation (typeof (WebButtonRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IWebButtonRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebButton control, HttpContextBase context);
     void Render (WebButtonRenderingContext renderingContext);
   }
 }

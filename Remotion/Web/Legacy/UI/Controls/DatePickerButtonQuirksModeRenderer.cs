@@ -44,7 +44,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDatePickerButton control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

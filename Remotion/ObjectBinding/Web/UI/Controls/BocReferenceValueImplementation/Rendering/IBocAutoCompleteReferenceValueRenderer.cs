@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   [ConcreteImplementation (typeof (BocAutoCompleteReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocAutoCompleteReferenceValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context);
     void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext);
   }
 }

@@ -113,7 +113,7 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var renderer = SafeServiceLocator.Current.GetInstance<IWebTabStripRenderer>();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)

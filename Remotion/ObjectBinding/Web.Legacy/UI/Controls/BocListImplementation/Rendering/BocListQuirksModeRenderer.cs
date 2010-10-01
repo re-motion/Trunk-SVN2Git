@@ -17,13 +17,11 @@
 using System;
 using System.Web.UI;
 using System.Web;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 using Remotion.Web;
 
@@ -105,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return CssClasses.ReadOnly; }
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocList control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -126,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      ((IBocList) control).EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
+      control.EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
     }
 
     /// <summary>

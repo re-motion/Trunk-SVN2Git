@@ -16,12 +16,10 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -36,11 +34,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocMultilineTextValue control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ((IBocMultilineTextValue) control).TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
+      control.TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
 
       string key = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
       var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocMultilineTextValueRenderer), ResourceType.Html, "BocMultilineTextValue.css");

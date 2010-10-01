@@ -32,9 +32,16 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class WebTabStripQuirksModeRenderer : QuirksModeRendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripQuirksModeRenderer () { }
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public WebTabStripQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+    {
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+
+      _resourceUrlFactory = resourceUrlFactory;
+    }
+
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -44,8 +51,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       string key = typeof (WebTabStripQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        //TODO: get resource url factory via ctor and implement it like this: var styleSheetUrl = _resourceUrlFactory.GetResourceUrl (typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css")
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (null, typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
+        var styleSheetUrl = _resourceUrlFactory.CreateResourceUrl (typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

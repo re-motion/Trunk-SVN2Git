@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
@@ -28,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
   [ConcreteImplementation (typeof (BocDateTimeValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocDateTimeValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocDateTimeValue control, HttpContextBase context);
     void Render (BocDateTimeValueRenderingContext renderingContext);
   }
 }

@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   [ConcreteImplementation (typeof (DatePickerButtonRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IDatePickerButtonRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDatePickerButton control, HttpContextBase context);
     void Render (DatePickerButtonRenderingContext renderingContext);
   }
 }

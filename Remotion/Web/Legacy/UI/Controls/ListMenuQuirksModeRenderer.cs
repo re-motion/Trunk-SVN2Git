@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -37,7 +36,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     public ListMenuQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IListMenu control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

@@ -35,7 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     public SingleViewQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ISingleView control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

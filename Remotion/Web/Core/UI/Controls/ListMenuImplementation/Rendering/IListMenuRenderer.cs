@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   [ConcreteImplementation (typeof (ListMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IListMenuRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IListMenu control);
     void Render (ListMenuRenderingContext renderingContext);
   }
 }

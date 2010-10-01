@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
@@ -25,7 +24,6 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -37,11 +35,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   {
     public BocTextValueQuirksModeRenderer () { }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocTextValue control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ((IBocTextValue) control).TextBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
+      control.TextBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
     }
 
     public void Render (BocTextValueRenderingContext renderingContext)

@@ -29,6 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   public interface IBocMultilineTextValueRenderer
   {
     void Render (BocMultilineTextValueRenderingContext renderingContext);
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocMultilineTextValue control);
   }
 }

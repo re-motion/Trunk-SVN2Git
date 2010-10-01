@@ -23,6 +23,7 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
+using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
@@ -181,7 +182,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripQuirksModeRenderer ();
+      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory(new ResourceTheme.ClassicBlue()));
       _renderer.Render (new WebTabStripRenderingContext (_httpContextStub, _htmlHelper.Writer, _webTabStrip));
 
       var document = _htmlHelper.GetResultDocument();

@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   [ConcreteImplementation (typeof (WebTreeViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTreeViewRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebTreeView control, HttpContextBase context);
     void Render (WebTreeViewRenderingContext renderingContext);
   }
 }

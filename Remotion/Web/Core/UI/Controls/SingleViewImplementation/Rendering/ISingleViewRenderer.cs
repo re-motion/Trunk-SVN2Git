@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   [ConcreteImplementation (typeof (SingleViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface ISingleViewRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ISingleView control, HttpContextBase context);
     void Render (SingleViewRenderingContext renderingContext);
   }
 }

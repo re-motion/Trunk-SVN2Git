@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   [ConcreteImplementation (typeof (TabbedMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface ITabbedMenuRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMenu control, HttpContextBase context);
     void Render (TabbedMenuRenderingContext renderingContext);
   }
 }
