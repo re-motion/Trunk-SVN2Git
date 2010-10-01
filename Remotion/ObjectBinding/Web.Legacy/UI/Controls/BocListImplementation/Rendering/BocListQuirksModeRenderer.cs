@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return CssClasses.ReadOnly; }
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -143,13 +143,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// </remarks>
     /// <seealso cref="BocListMenuBlockQuirksModeRenderer"/>
     /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
-    public override void Render (HtmlTextWriter writer) //TODO: remove this method
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new BocListRenderingContext (Context, writer, Control, new IBocColumnRenderer[0]));
-    }
-
     public void Render (BocListRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);

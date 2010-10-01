@@ -36,11 +36,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
     }
 
-    public override void Render (HtmlTextWriter writer)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Render (new BocTextValueRenderingContext(Context, writer, Control));
+      ((IBocTextValue) control).TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
+
+      string styleKey = typeof (BocTextValueRenderer).FullName + "_Style";
+      var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
     public void Render (BocTextValueRenderingContext renderingContext)
@@ -48,17 +52,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       base.Render (renderingContext);
-    }
-
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
-    {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      ((IBocTextValue) control).TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
-      
-      string styleKey = typeof (BocTextValueRenderer).FullName + "_Style";
-      var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
     protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocTextValue> renderingContext)

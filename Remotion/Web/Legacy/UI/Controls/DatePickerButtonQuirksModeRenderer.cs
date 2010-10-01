@@ -45,7 +45,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -70,13 +70,6 @@ namespace Remotion.Web.Legacy.UI.Controls
     /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
     /// into the control specified by <see cref="P:Control.TargetControlID"/>.
     /// </summary>
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new DatePickerButtonRenderingContext (Context, writer, Control));
-    }
-
     public void Render (DatePickerButtonRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);

@@ -38,7 +38,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -49,13 +49,6 @@ namespace Remotion.Web.Legacy.UI.Controls
             control, context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new TabbedMenuRenderingContext (Context, writer, Control));
     }
 
     public void Render (TabbedMenuRenderingContext renderingContext)

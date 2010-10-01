@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       _resourceSetFactory = resourceSetFactory;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -63,13 +63,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     /// scripted to respond to clicks and change the "checkbox" state accordingly; 
     /// in addition, the state is put into an additional hidden field.
     /// </summary>
-    public override void Render(HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new BocBooleanValueRenderingContext (Context, writer, Control));
-    }
-
     public void Render (BocBooleanValueRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);

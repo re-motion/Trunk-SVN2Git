@@ -224,7 +224,6 @@
     <Compile Include="UI\Controls\DropDownMenuImplementation\IDropDownMenu.cs" />
     <Compile Include="UI\Controls\ClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderer.cs" />
-    <Compile Include="UI\Controls\IRenderer.cs" />
     <Compile Include="UI\Controls\IStyledControl.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\JavaScriptInclude.cs" />

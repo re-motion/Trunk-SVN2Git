@@ -40,7 +40,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -58,13 +58,6 @@ namespace Remotion.Web.Legacy.UI.Controls
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
           control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new ListMenuRenderingContext (Context, writer, Control));
     }
 
     public void Render (ListMenuRenderingContext renderingContext)

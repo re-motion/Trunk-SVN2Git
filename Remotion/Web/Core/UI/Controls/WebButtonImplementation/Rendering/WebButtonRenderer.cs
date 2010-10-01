@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -43,11 +43,6 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
       string styleKey = typeof (WebButtonRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebButtonRenderer), ResourceType.Html, "WebButton.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      Render (new WebButtonRenderingContext (Context, writer, Control));
     }
 
     public void Render (WebButtonRenderingContext renderingContext)

@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls
   /// Base class for all renderers. Contains the essential properties used in rendering.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
-  public abstract class RendererBase<TControl> : IRenderer
+  public abstract class RendererBase<TControl>
       where TControl: IStyledControl
   {
     private readonly HttpContextBase _context;
@@ -65,10 +65,6 @@ namespace Remotion.Web.UI.Controls
     {
       get { return _resourceUrlFactory; }
     }
-
-    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
-
-    public abstract void Render (HtmlTextWriter writer);
 
     protected void AddStandardAttributesToRender (RenderingContext<TControl> renderingContext)
     {

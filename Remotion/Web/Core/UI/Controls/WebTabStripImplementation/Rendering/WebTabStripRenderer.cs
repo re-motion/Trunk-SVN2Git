@@ -33,20 +33,13 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string key = typeof (WebTabStripRenderer).FullName + "_Style";
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebTabStripRenderer), ResourceType.Html, "TabStrip.css");
       htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new WebTabStripRenderingContext (Context, writer, Control));
     }
 
     public void Render (WebTabStripRenderingContext renderingContext)

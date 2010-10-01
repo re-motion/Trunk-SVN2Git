@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -50,13 +50,6 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
       htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new SingleViewRenderingContext (Context, writer, Control));
     }
 
     public void Render (SingleViewRenderingContext renderingContext)

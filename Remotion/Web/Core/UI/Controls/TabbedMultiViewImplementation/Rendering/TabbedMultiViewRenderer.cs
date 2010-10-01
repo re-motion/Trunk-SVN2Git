@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -49,13 +49,6 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new TabbedMultiViewRenderingContext (Context, writer, Control));
     }
 
     public void Render (TabbedMultiViewRenderingContext renderingContext)

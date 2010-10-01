@@ -50,20 +50,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _textBoxFactory = textBoxFactory;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
       RegisterJavaScriptFiles (htmlHeadAppender);
       RegisterStylesheets (htmlHeadAppender);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new BocAutoCompleteReferenceValueRenderingContext (Context, writer, Control));
     }
 
     public void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext)

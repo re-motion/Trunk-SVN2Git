@@ -38,7 +38,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -52,13 +52,6 @@ namespace Remotion.Web.Legacy.UI.Controls
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (null, typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new WebTabStripRenderingContext (Context, writer, Control));
     }
 
     public void Render (WebTabStripRenderingContext renderingContext)

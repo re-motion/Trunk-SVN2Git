@@ -27,7 +27,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Base class for all renderers. Contains the essential properties used in rendering.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
-  public abstract class QuirksModeRendererBase<TControl> : IRenderer
+  public abstract class QuirksModeRendererBase<TControl>
       where TControl : IStyledControl
   {
     private readonly HttpContextBase _context;
@@ -50,10 +50,6 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       get { return _context; }
     }
-
-    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context);
-
-    public abstract void Render (HtmlTextWriter writer);
 
     /// <summary>Gets the control that will be rendered.</summary>
     public TControl Control

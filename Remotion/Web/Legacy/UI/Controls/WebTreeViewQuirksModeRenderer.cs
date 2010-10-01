@@ -35,7 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       string styleKey = typeof (WebTreeViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
@@ -44,11 +44,6 @@ namespace Remotion.Web.Legacy.UI.Controls
             control, context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      Render (new WebTreeViewRenderingContext (Context, writer, Control));
     }
 
     public void Render (WebTreeViewRenderingContext renderingContext)

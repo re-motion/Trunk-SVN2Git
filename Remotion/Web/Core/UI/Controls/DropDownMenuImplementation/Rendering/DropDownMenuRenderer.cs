@@ -38,7 +38,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -52,13 +52,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       string styleSheetKey = typeof (DropDownMenuRenderer).FullName + "_Style";
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new DropDownMenuRenderingContext (Context, writer, Control));
     }
 
     public void Render (DropDownMenuRenderingContext renderingContext)

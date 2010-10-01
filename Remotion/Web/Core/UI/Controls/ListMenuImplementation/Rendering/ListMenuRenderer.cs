@@ -36,7 +36,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -49,13 +49,6 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      Render (new ListMenuRenderingContext (Context, writer, Control));
     }
 
     public void Render (ListMenuRenderingContext renderingContext)
