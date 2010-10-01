@@ -28,15 +28,12 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMultiView"/> controls.
+  /// Implements <see cref="ITabbedMultiViewRenderer"/> for quirks mode rendering of <see cref="TabbedMultiView"/> controls.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewQuirksModeRenderer : QuirksModeRendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewQuirksModeRenderer ()
-        : base(null, null)
-    {
-    }
+    public TabbedMultiViewQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

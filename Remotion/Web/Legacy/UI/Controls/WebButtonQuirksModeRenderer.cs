@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -26,15 +25,12 @@ using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.
+  /// Implements <see cref="IWebButtonRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.
   /// <seealso cref="IWebButton"/>
   /// </summary>
   public class WebButtonQuirksModeRenderer : QuirksModeRendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public WebButtonQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

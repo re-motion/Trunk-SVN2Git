@@ -28,15 +28,12 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="SingleView"/> controls.
+  /// Implements <see cref="ISingleViewRenderer"/> for quirks mode rendering of <see cref="SingleView"/> controls.
   /// <seealso cref="ISingleView"/>
   /// </summary>
   public class SingleViewQuirksModeRenderer : QuirksModeRendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewQuirksModeRenderer ()
-        : base(null, null)
-    {
-    }
+    public SingleViewQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

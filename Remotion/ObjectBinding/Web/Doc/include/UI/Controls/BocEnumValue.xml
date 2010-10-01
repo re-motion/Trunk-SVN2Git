@@ -76,7 +76,7 @@
         value back into the data source.
       </para>
       <para>
-        Rendering of the control is done by the <see cref="Remotion.Web.UI.Controls.IRenderer" /> registered in 
+        Rendering of the control is done by the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering.IBocEnumValueRenderer" /> registered in 
 		<see cref="BusinessObjectBoundWebControl.ServiceLocator"/>.
       </para>
 

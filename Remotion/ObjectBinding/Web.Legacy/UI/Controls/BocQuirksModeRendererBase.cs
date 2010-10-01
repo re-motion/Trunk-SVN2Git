@@ -33,10 +33,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   public abstract class BocQuirksModeRendererBase<TControl> : QuirksModeRendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocQuirksModeRendererBase (HttpContextBase context, TControl control)
-        : base (context, control)
-    {
-    }
+    protected BocQuirksModeRendererBase () { }
 
     protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
     {
@@ -46,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     }
 
     /// <summary>
-    /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
+    /// Adds class and style attributes found in the <see cref="RenderingContext{TControl}.Control"/> 
     /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
     /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>

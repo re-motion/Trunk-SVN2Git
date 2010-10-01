@@ -45,8 +45,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
     }
 
-    protected BocReferenceValueQuirksModeRenderer (Func<DropDownList> dropDownListFactoryMethod)
-        : base (null, null)
+    protected BocReferenceValueQuirksModeRenderer (Func<DropDownList> dropDownListFactoryMethod) 
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;

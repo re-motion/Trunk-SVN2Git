@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -28,15 +27,12 @@ using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
+  /// Implements <see cref="IWebTabStripRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
   public class WebTabStripQuirksModeRenderer : QuirksModeRendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public WebTabStripQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

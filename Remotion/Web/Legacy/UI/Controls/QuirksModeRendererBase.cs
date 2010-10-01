@@ -30,32 +30,10 @@ namespace Remotion.Web.Legacy.UI.Controls
   public abstract class QuirksModeRendererBase<TControl>
       where TControl : IStyledControl
   {
-    private readonly HttpContextBase _context;
-    private readonly TControl _control;
-
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected QuirksModeRendererBase (HttpContextBase context, TControl control)
-    {
-      //ArgumentUtility.CheckNotNull ("context", context);
-      //ArgumentUtility.CheckNotNull ("control", control);
-
-      _control = control;
-      _context = context;
-    }
-
-    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    /// <summary>Gets the control that will be rendered.</summary>
-    public TControl Control
-    {
-      get { return _control; }
-    }
+    protected QuirksModeRendererBase () { }
 
     protected void AddStandardAttributesToRender (RenderingContext<TControl> renderingContext)
     {

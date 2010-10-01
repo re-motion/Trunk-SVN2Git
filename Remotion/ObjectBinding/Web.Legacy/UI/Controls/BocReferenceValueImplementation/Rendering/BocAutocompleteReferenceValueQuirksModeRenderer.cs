@@ -46,8 +46,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
     }
 
-    protected BocAutoCompleteReferenceValueQuirksModeRenderer (Func<TextBox> textBoxFactory)
-        : base (null, null)
+    protected BocAutoCompleteReferenceValueQuirksModeRenderer (Func<TextBox> textBoxFactory) 
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       TextBoxFactory = textBoxFactory;

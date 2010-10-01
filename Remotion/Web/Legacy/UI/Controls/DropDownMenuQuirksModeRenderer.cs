@@ -35,10 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
-    public DropDownMenuQuirksModeRenderer ()
-        : base(null, null)
-    {
-    }
+    public DropDownMenuQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

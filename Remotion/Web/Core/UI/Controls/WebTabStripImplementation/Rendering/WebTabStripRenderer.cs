@@ -23,13 +23,13 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.
+  /// Implements <see cref="IWebTabStripRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
     public WebTabStripRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

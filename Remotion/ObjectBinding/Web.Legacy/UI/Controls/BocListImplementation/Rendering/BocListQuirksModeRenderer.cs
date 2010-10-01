@@ -56,7 +56,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
-        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);

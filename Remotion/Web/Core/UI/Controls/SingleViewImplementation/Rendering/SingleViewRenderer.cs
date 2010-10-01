@@ -24,13 +24,13 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="SingleView"/> controls.
+  /// Implements <see cref="ISingleViewRenderer"/> for standard mode rendering of <see cref="SingleView"/> controls.
   /// <seealso cref="ISingleView"/>
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
     public SingleViewRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

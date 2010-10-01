@@ -24,13 +24,13 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMultiView"/> controls.
+  /// Implements <see cref="ITabbedMultiViewRenderer"/> for standard mode rendering of <see cref="TabbedMultiView"/> controls.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
     public TabbedMultiViewRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

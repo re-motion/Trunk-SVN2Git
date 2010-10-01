@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     protected const string c_whiteSpace = "&nbsp;";
 
     public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

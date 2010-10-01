@@ -31,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocRendererBase (HttpContextBase context, TControl control, IResourceUrlFactory resourceUrlFactory)
-        : base (context, control, resourceUrlFactory)
+    protected BocRendererBase (IResourceUrlFactory resourceUrlFactory)
+        : base (resourceUrlFactory)
     {
     }
 
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
+    /// Adds class and style attributes found in the <see cref="RenderingContext{TControl}.Control"/> 
     /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
     /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>

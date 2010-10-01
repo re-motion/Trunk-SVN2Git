@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     private static readonly string s_startUpScriptKey = typeof (BocCheckboxRenderer).FullName + "_Startup";
 
     public BocCheckboxRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (null, null, resourceUrlFactory)
+        : base (resourceUrlFactory)
     {
     }
 

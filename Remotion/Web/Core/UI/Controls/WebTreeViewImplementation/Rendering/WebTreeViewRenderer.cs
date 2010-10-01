@@ -16,18 +16,17 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTreeView"/> controls.
+  /// Implements <see cref="IWebTreeViewRenderer"/> for standard mode rendering of <see cref="WebTreeView"/> controls.
   /// <seealso cref="IWebTreeView"/>
   /// </summary>
   public class WebTreeViewRenderer : RendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
     public WebTreeViewRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (null, null, resourceUrlFactory)
+        : base (resourceUrlFactory)
     {
     }
 

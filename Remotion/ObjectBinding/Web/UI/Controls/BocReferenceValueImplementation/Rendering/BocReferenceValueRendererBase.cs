@@ -14,8 +14,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   public abstract class BocReferenceValueRendererBase<TControl> : BocRendererBase<TControl>
     where TControl : IBocReferenceValueBase
   {
-    protected BocReferenceValueRendererBase (HttpContextBase context, TControl control, IResourceUrlFactory resourceUrlFactory)
-        : base(context, control, resourceUrlFactory)
+    protected BocReferenceValueRendererBase (IResourceUrlFactory resourceUrlFactory)
+        : base(resourceUrlFactory)
     {
     }
 

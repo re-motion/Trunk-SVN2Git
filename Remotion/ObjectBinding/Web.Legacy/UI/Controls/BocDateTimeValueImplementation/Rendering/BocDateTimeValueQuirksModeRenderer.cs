@@ -46,7 +46,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     private IClientScriptBehavior _clientScriptBehavior;
 
     public BocDateTimeValueQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
-        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
 

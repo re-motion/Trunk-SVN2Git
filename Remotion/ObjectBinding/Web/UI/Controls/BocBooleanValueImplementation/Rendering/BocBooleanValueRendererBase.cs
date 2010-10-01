@@ -29,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>
       where T: IBocBooleanValueBase
   {
-    protected BocBooleanValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
-        : base (context, control, resourceUrlFactory)
+    protected BocBooleanValueRendererBase (IResourceUrlFactory resourceUrlFactory)
+        : base (resourceUrlFactory)
     { 
     }
   }

@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     }
 
     protected BocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, TextBox dateTextBox, TextBox timeTextBox)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("dateTextBox", dateTextBox);
       ArgumentUtility.CheckNotNull ("timeTextBox", timeTextBox);

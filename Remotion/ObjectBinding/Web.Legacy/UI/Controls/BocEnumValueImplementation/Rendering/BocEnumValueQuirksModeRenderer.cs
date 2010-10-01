@@ -40,10 +40,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementati
 
     private const string c_defaultListControlWidth = "150pt";
 
-    public BocEnumValueQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public BocEnumValueQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

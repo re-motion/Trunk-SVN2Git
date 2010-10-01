@@ -35,10 +35,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// </summary>
   public class BocTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
-    public BocTextValueQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public BocTextValueQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

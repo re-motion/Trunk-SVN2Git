@@ -42,10 +42,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueQuirksModeRendererBase (HttpContextBase context, T control)
-        : base(context, control)
-    {
-    }
+    protected BocTextValueQuirksModeRendererBase () { }
 
     /// <summary>
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,

@@ -37,8 +37,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     protected const string c_designModeEmptyLabelContents = "##";
 
-    protected BocTextValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
-        : base(context, control, resourceUrlFactory)
+    protected BocTextValueRendererBase (IResourceUrlFactory resourceUrlFactory)
+        : base(resourceUrlFactory)
     {
     }
 

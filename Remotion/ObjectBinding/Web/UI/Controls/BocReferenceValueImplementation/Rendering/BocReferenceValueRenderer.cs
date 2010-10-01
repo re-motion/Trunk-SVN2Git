@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     protected BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;

@@ -22,13 +22,13 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebButton"/> controls.
+  /// Implements <see cref="IWebButtonRenderer"/> for standard mode rendering of <see cref="WebButton"/> controls.
   /// <seealso cref="IWebButton"/>
   /// </summary>
   public class WebButtonRenderer : RendererBase<IWebButton>, IWebButtonRenderer
   {
     public WebButtonRenderer (IResourceUrlFactory resourceUrlFactory)
-        : base (null, null, resourceUrlFactory)
+        : base (resourceUrlFactory)
     {
     }
 

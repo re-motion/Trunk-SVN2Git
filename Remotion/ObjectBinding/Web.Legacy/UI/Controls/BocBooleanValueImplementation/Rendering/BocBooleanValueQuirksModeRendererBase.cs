@@ -34,10 +34,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   {
     private const string c_defaultControlWidth = "100pt";
 
-    protected BocBooleanValueQuirksModeRendererBase (HttpContextBase context, T control)
-        : base (context, control)
-    {
-    }
+    protected BocBooleanValueQuirksModeRendererBase () { }
 
     protected override void AddAdditionalAttributes(RenderingContext<T> renderingContext)
     {

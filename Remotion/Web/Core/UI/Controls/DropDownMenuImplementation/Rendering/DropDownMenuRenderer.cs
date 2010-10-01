@@ -34,7 +34,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
     public DropDownMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

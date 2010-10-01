@@ -25,15 +25,12 @@ using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
+  /// Implements <see cref="IWebTreeViewRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
   /// <seealso cref="IWebTreeView"/>
   /// </summary>
   public class WebTreeViewQuirksModeRenderer : QuirksModeRendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
-    public WebTreeViewQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public WebTreeViewQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

@@ -42,9 +42,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Startup_";
 
-    public BocBooleanValueQuirksModeRenderer (IBocBooleanValueResourceSetFactory resourceSetFactory)
-        : base (null, null)
-    {
+    public BocBooleanValueQuirksModeRenderer (IBocBooleanValueResourceSetFactory resourceSetFactory) 
+    { 
       ArgumentUtility.CheckNotNull ("resourceSetFactory", resourceSetFactory);
 
       _resourceSetFactory = resourceSetFactory;

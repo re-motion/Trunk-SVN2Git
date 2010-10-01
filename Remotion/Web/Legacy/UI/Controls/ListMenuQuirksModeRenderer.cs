@@ -35,10 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuQuirksModeRenderer ()
-        : base (null, null)
-    {
-    }
+    public ListMenuQuirksModeRenderer () { }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
     {

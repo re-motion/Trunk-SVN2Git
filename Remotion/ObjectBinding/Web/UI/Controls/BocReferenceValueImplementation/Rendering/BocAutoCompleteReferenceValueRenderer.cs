@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     protected BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       _textBoxFactory = textBoxFactory;

@@ -38,7 +38,6 @@ namespace Remotion.Web.Legacy.UI.Controls
     private readonly IClientScriptBehavior _clientScriptBehavior;
 
     public DatePickerButtonQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
-        : base (null, null)
     {
       ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
 

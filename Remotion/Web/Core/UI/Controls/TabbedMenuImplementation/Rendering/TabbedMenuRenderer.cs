@@ -24,13 +24,13 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMenu"/> controls.
+  /// Implements <see cref="ITabbedMenuRenderer"/> for standard mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
     public TabbedMenuRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

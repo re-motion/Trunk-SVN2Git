@@ -29,7 +29,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
     public DatePickerButtonRenderer (IResourceUrlFactory resourceUrlFactory)
-      : base (null, null, resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
     }
 

@@ -28,34 +28,16 @@ namespace Remotion.Web.UI.Controls
   public abstract class RendererBase<TControl>
       where TControl: IStyledControl
   {
-    private readonly HttpContextBase _context;
-    private readonly TControl _control;
     private readonly IResourceUrlFactory _resourceUrlFactory;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (HttpContextBase context, TControl control, IResourceUrlFactory resourceUrlFactory)
+    protected RendererBase (IResourceUrlFactory resourceUrlFactory)
     {
-      //ArgumentUtility.CheckNotNull ("context", context);
-      //ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
-      _control = control;
-      _context = context;
       _resourceUrlFactory = resourceUrlFactory;
-    }
-
-    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
-    public HttpContextBase Context
-    {
-      get { return _context; }
-    }
-
-    /// <summary>Gets the control that will be rendered.</summary>
-    public TControl Control
-    {
-      get { return _control; }
     }
 
     /// <summary>
