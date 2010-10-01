@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Remotion.Utilities;
 
@@ -66,21 +67,19 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
 
       int count = 0;
-      using (IDbConnection connection = CreateConnection ())
+      using (IDbConnection connection = CreateConnection())
       {
-        connection.Open ();
+        connection.Open();
         if (useTransaction)
         {
-          using (IDbTransaction transaction = connection.BeginTransaction ())
+          using (IDbTransaction transaction = connection.BeginTransaction())
           {
             count = ExecuteBatchString (connection, commandBatch, transaction);
-            transaction.Commit ();
+            transaction.Commit();
           }
         }
         else
-        {
           count = ExecuteBatchString (connection, commandBatch, null);
-        }
       }
 
       return count;
@@ -101,7 +100,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
 
     protected virtual IDbCommand CreateCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
     {
-      IDbCommand command = connection.CreateCommand ();
+      IDbCommand command = connection.CreateCommand();
       command.CommandType = CommandType.Text;
       command.CommandText = commandText;
       command.Transaction = transaction;
@@ -112,9 +111,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection ())
+      using (IDbConnection connection = CreateConnection())
       {
-        connection.Open ();
+        connection.Open();
         return ExecuteCommand (connection, commandText, null);
       }
     }
@@ -123,9 +122,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection ())
+      using (IDbConnection connection = CreateConnection())
       {
-        connection.Open ();
+        connection.Open();
         return ExecuteScalarCommand (connection, commandText, null);
       }
     }
@@ -135,17 +134,16 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
-      int count = 0;
-      foreach (string commandText in GetCommandTextBatches (commandBatch))
-        count += ExecuteCommand (connection, commandText, transaction);
-      return count;
+      return
+          GetCommandTextBatches (commandBatch).Where (c => !string.IsNullOrEmpty (c)).Sum (
+              commandText => ExecuteCommand (connection, commandText, transaction));
     }
 
     protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
-        return command.ExecuteNonQuery ();
+        return command.ExecuteNonQuery();
       }
     }
 
@@ -153,13 +151,26 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
-        return command.ExecuteScalar ();
+        return command.ExecuteScalar();
       }
     }
 
     private IEnumerable<string> GetCommandTextBatches (string commandBatch)
     {
-      return commandBatch.Split (new[] { "\r\nGO\r\n", "\nGO\n" }, StringSplitOptions.RemoveEmptyEntries);
+      var sb = new StringBuilder (commandBatch.Length);
+      foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+      {
+        if (line.Trim().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
+        {
+          var batch = sb.ToString().Trim();
+          sb = new StringBuilder (commandBatch.Length);
+          yield return batch;
+        }
+        else
+          sb.AppendLine (line.Trim());
+      }
+
+      yield return sb.ToString().Trim();
     }
   }
 }

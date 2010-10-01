@@ -97,6 +97,21 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
       Assert.That (result, Is.EqualTo (30));
     }
 
+    [Test]
+    public void ExecuteBatchString_EmptyLines ()
+    {
+      SetupCommandExpectations ("ABC", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery ()).Return (10); });
+      SetupCommandExpectations ("GFE", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery ()).Return (20); });
+
+      _mockRepository.ReplayAll ();
+
+      TestableDatabaseAgent agent = new TestableDatabaseAgent (_connectionStub);
+      int result = agent.ExecuteBatchString (_connectionStub, "ABC\n\nGO\n\n\nGFE\n\n", null);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.EqualTo (30));
+    }
+
     private void SetupCommandExpectations (string commandText, IDbTransaction transaction, Action actualCommandExpectation)
     {
       using (_mockRepository.Ordered ())
