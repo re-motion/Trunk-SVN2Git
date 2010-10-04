@@ -135,8 +135,8 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
       return
-          GetCommandTextBatches (commandBatch).Where (c => !string.IsNullOrEmpty (c)).Sum (
-              commandText => ExecuteCommand (connection, commandText, transaction));
+          GetCommandTextBatches (commandBatch).Where (c => c.CommandBatch!=null).Sum (
+              c => ExecuteCommand (connection, c.CommandBatch, transaction));
     }
 
     protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
@@ -155,22 +155,24 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       }
     }
 
-    private IEnumerable<string> GetCommandTextBatches (string commandBatch)
+    private IEnumerable<BatchCommand> GetCommandTextBatches (string commandBatch)
     {
-      var sb = new StringBuilder (commandBatch.Length);
+      var lineNumber = 1;
+      var command = new BatchCommand (lineNumber, commandBatch.Length);
       foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
       {
         if (line.Trim().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
         {
-          var batch = sb.ToString().Trim();
-          sb = new StringBuilder (commandBatch.Length);
+          var batch = command;
+          command = new BatchCommand(lineNumber+1, commandBatch.Length);
           yield return batch;
         }
         else
-          sb.AppendLine (line.Trim());
+          command.AppendCommandBatchLine(line.Trim());
+        lineNumber++;
       }
 
-      yield return sb.ToString().Trim();
+      yield return command;
     }
   }
 }
