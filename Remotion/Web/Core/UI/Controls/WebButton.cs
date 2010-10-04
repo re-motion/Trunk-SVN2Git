@@ -64,7 +64,7 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current, this, Page.Context);
+      renderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (this, HtmlHeadAppender.Current);
     }

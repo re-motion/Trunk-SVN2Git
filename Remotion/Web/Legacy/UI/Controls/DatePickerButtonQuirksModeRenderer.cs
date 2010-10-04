@@ -37,30 +37,29 @@ namespace Remotion.Web.Legacy.UI.Controls
     private const string c_datePickerIcon = "DatePicker.gif";
     private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public DatePickerButtonQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
+    public DatePickerButtonQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior, IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
 
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDatePickerButton control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptFileKey = typeof (DatePickerButtonQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
       string styleFileKey = typeof (DatePickerButtonQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.css");
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, "DatePicker.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

@@ -4,19 +4,19 @@
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class TestableBocAutoCompleteReferenceValueQuirksModeRenderer : BocAutoCompleteReferenceValueQuirksModeRenderer
   {
-    public TestableBocAutoCompleteReferenceValueQuirksModeRenderer ()
-        : this (() => new TextBox())
+    public TestableBocAutoCompleteReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+        : this ( resourceUrlFactory, () => new TextBox())
     {
     }
 
-    public TestableBocAutoCompleteReferenceValueQuirksModeRenderer (Func<TextBox> textBoxFactory)
-        : base (textBoxFactory)
+    public TestableBocAutoCompleteReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
+        : base (resourceUrlFactory, textBoxFactory)
     {
       
     }

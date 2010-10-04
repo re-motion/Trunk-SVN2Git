@@ -40,16 +40,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementati
 
     private const string c_defaultListControlWidth = "150pt";
 
-    public BocEnumValueQuirksModeRenderer () { }
+    public BocEnumValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      :base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocEnumValue control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var key = typeof (BocEnumValueQuirksModeRenderer).FullName + "_Style";
-      string url = ResourceUrlResolver.GetResourceUrl (
-          control, context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, "BocEnumValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+      var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, "BocEnumValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     /// <summary>

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   [ConcreteImplementation (typeof (TabbedMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface ITabbedMenuRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMenu control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (TabbedMenuRenderingContext renderingContext);
   }
 }

@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   [ConcreteImplementation (typeof (DropDownMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IDropDownMenuRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDropDownMenu control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (DropDownMenuRenderingContext renderingContext);
   }
 }

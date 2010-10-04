@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary> 

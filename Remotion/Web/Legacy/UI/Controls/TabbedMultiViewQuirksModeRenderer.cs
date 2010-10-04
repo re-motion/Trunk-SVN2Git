@@ -33,18 +33,20 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class TabbedMultiViewQuirksModeRenderer : QuirksModeRendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewQuirksModeRenderer () { }
+    public TabbedMultiViewQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string key = typeof (TabbedMultiViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (TabbedMultiViewQuirksModeRenderer), ResourceType.Html, "TabbedMultiView.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (TabbedMultiViewQuirksModeRenderer), ResourceType.Html, "TabbedMultiView.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
       }
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);

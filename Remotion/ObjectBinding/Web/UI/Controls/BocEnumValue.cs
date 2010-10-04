@@ -100,7 +100,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void Render (HtmlTextWriter writer)

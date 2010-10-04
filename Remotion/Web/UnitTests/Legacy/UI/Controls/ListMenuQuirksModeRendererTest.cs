@@ -19,6 +19,7 @@ using System.Web;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -77,7 +78,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuQuirksModeRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuQuirksModeRenderer ();
+      var renderer = new ListMenuQuirksModeRenderer (new QuirksModeResourceUrlFactory());
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
   
       _clientScriptManagerMock.VerifyAllExpectations ();
@@ -152,7 +153,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuQuirksModeRenderer ();
+      var renderer = new ListMenuQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();

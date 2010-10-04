@@ -84,7 +84,7 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     //private void CreateTemplatedControls (bool recreate)

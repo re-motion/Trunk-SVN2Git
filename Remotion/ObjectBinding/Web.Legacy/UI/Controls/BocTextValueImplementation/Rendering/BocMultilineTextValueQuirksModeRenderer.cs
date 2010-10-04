@@ -33,7 +33,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// </summary>
   public class BocMultilineTextValueQuirksModeRenderer : BocTextValueQuirksModeRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
   {
-    public BocMultilineTextValueQuirksModeRenderer () { }
+    public BocMultilineTextValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    {
+    }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocMultilineTextValue control)
     {

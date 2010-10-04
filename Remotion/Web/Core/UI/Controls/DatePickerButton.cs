@@ -83,7 +83,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected virtual IDatePickerButtonRenderer CreateRenderer ()

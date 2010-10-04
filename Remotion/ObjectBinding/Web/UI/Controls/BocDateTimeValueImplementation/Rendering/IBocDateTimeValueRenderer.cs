@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
 
@@ -27,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
   [ConcreteImplementation (typeof (BocDateTimeValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocDateTimeValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocDateTimeValue control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocDateTimeValueRenderingContext renderingContext);
   }
 }

@@ -31,6 +31,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -415,12 +416,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
-
-
+      
       var document = Html.GetResultDocument ();
       AssertRow (document, false, false, false);
     }
@@ -431,7 +431,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () => new StubTextBox());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       AddStyle ();
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer ();
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocAutoCompleteReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag ();
@@ -458,7 +458,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (() =>TextBox);
+      var renderer = new TestableBocAutoCompleteReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () =>TextBox);
       renderer.Render (new BocAutoCompleteReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument ();

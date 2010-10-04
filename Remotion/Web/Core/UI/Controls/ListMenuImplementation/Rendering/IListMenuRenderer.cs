@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   [ConcreteImplementation (typeof (ListMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IListMenuRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IListMenu control);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (ListMenuRenderingContext renderingContext);
   }
 }

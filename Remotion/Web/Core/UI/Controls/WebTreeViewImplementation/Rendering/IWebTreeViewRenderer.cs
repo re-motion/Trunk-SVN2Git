@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   [ConcreteImplementation (typeof (WebTreeViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTreeViewRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebTreeView control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (WebTreeViewRenderingContext renderingContext);
   }
 }

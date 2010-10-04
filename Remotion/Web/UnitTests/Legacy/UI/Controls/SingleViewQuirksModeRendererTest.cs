@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
@@ -152,7 +153,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewQuirksModeRenderer ();
+      var renderer = new SingleViewQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;

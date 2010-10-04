@@ -33,18 +33,20 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class SingleViewQuirksModeRenderer : QuirksModeRendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewQuirksModeRenderer () { }
+    public SingleViewQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ISingleView control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ISingleView control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string key = typeof (SingleViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, "SingleView.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (SingleViewQuirksModeRenderer), ResourceType.Html, "SingleView.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
       }
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);

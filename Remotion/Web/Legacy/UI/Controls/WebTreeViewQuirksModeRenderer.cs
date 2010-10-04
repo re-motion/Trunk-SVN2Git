@@ -29,16 +29,18 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class WebTreeViewQuirksModeRenderer : QuirksModeRendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
-    public WebTreeViewQuirksModeRenderer () { }
+    public WebTreeViewQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebTreeView control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       string styleKey = typeof (WebTreeViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Legacy.UI.Controls
@@ -30,10 +28,22 @@ namespace Remotion.Web.Legacy.UI.Controls
   public abstract class QuirksModeRendererBase<TControl>
       where TControl : IStyledControl
   {
+    private readonly IResourceUrlFactory _resourceUrlFactory;
+
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected QuirksModeRendererBase () { }
+    protected QuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory) 
+    {
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+
+      _resourceUrlFactory = resourceUrlFactory;
+    }
+
+    public IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory; }
+    }
 
     protected void AddStandardAttributesToRender (RenderingContext<TControl> renderingContext)
     {

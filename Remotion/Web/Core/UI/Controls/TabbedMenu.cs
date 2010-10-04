@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, context);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected virtual ITabbedMenuRenderer CreateRenderer ()

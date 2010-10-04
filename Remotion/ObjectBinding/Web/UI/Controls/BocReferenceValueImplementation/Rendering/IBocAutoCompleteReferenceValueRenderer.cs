@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -28,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   [ConcreteImplementation (typeof (BocAutoCompleteReferenceValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocAutoCompleteReferenceValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext);
   }
 }

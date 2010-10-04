@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.R
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -59,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueQuirksModeRenderer ();
+      Renderer = new BocMultilineTextValueQuirksModeRenderer (new QuirksModeResourceUrlFactory());
     }
 
     [Test]

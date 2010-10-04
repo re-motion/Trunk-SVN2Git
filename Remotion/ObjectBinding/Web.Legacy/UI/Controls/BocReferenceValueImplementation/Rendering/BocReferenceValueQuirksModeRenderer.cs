@@ -40,18 +40,20 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueQuirksModeRenderer ()
-        : this (() => new DropDownList())
+    public BocReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+        : this (resourceUrlFactory, () => new DropDownList())
     {
     }
 
-    protected BocReferenceValueQuirksModeRenderer (Func<DropDownList> dropDownListFactoryMethod) 
+    protected BocReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)  
+      :base(resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
+
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -60,18 +62,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       string scriptFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
       string styleFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.css");
-
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

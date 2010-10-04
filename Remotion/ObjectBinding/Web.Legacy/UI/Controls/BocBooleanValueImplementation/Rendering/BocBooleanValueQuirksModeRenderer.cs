@@ -41,30 +41,29 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Startup_";
 
-    public BocBooleanValueQuirksModeRenderer (IBocBooleanValueResourceSetFactory resourceSetFactory) 
+    public BocBooleanValueQuirksModeRenderer (IBocBooleanValueResourceSetFactory resourceSetFactory, IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
     { 
       ArgumentUtility.CheckNotNull ("resourceSetFactory", resourceSetFactory);
 
       _resourceSetFactory = resourceSetFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocBooleanValue control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptFileKey = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
       string styleFileKey = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.css");
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, "BocBooleanValue.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

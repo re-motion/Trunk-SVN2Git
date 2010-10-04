@@ -33,18 +33,20 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class TabbedMenuQuirksModeRenderer : QuirksModeRendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuQuirksModeRenderer () { }
+    public TabbedMenuQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMenu control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string key = typeof (TabbedMenuQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

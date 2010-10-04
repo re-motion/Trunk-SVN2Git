@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -177,7 +178,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewQuirksModeRenderer ();
+      var renderer = new TabbedMultiViewQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
       renderer.Render (new TabbedMultiViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);

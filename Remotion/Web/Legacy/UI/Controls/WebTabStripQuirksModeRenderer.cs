@@ -35,6 +35,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     private readonly IResourceUrlFactory _resourceUrlFactory;
 
     public WebTabStripQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 

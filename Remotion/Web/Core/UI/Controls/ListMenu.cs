@@ -76,7 +76,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected virtual IListMenuRenderer CreateRenderer ()

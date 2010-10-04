@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   [ConcreteImplementation (typeof (BocBooleanValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocBooleanValue control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocBooleanValueRenderingContext renderingContext);
   }
 }

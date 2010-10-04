@@ -35,9 +35,12 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
-    public DropDownMenuQuirksModeRenderer () { }
+    public DropDownMenuQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IDropDownMenu control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -46,17 +49,15 @@ namespace Remotion.Web.Legacy.UI.Controls
       string key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
       }
 
       key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
     

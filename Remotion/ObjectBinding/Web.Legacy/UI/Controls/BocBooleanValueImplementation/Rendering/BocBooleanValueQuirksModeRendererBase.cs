@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -34,7 +35,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   {
     private const string c_defaultControlWidth = "100pt";
 
-    protected BocBooleanValueQuirksModeRendererBase () { }
+    protected BocBooleanValueQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
     protected override void AddAdditionalAttributes(RenderingContext<T> renderingContext)
     {

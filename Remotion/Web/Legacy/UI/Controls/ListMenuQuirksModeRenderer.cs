@@ -34,9 +34,12 @@ namespace Remotion.Web.Legacy.UI.Controls
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuQuirksModeRenderer () { }
+    public ListMenuQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IListMenu control)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -46,14 +49,12 @@ namespace Remotion.Web.Legacy.UI.Controls
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string scriptFileKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Script";
-      string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-          control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.js");
-      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
       string styleSheetKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Style";
-      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public void Render (ListMenuRenderingContext renderingContext)

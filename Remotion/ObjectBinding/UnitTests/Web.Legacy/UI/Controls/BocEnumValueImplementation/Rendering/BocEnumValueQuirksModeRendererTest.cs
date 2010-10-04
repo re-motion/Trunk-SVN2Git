@@ -32,6 +32,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Reflection;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -331,7 +332,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer ();
+      var renderer = new BocEnumValueQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
@@ -377,7 +378,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer ();
+      var renderer = new BocEnumValueQuirksModeRenderer (new QuirksModeResourceUrlFactory());
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();

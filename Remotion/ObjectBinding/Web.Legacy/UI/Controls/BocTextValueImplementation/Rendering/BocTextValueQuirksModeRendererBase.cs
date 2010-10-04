@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
@@ -42,7 +43,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueQuirksModeRendererBase () { }
+    protected BocTextValueQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory)
+      : base(resourceUrlFactory)
+    { 
+    }
 
     /// <summary>
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,

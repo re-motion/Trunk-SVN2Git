@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -33,7 +32,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   public abstract class BocQuirksModeRendererBase<TControl> : QuirksModeRendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocQuirksModeRendererBase () { }
+    protected BocQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory) 
+      :base(resourceUrlFactory)
+    { 
+    }
 
     protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
     {

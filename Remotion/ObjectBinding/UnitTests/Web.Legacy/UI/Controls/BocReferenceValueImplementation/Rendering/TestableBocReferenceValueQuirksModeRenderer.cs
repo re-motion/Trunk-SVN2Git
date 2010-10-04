@@ -17,18 +17,19 @@
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class TestableBocReferenceValueQuirksModeRenderer : BocReferenceValueQuirksModeRenderer
   {
-    public TestableBocReferenceValueQuirksModeRenderer ()
-        : this (() => new DropDownList())
+    public TestableBocReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+        : this (resourceUrlFactory, () => new DropDownList())
     {
     }
 
-    public TestableBocReferenceValueQuirksModeRenderer (Func<DropDownList> dropDownListFactoryMethod)
-        : base (dropDownListFactoryMethod)
+    public TestableBocReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, Func<DropDownList> dropDownListFactoryMethod)
+        : base (resourceUrlFactory, dropDownListFactoryMethod)
     {
       
     }

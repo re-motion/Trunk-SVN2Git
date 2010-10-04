@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.Legacy.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
@@ -75,12 +76,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListQuirksModeRenderer (_bocListQuirksModeCssClassDefinition, new StubQuirksModeRenderer (), new StubQuirksModeRenderer (), new StubQuirksModeRenderer ());
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      var renderer = new BocListQuirksModeRenderer (
+          _bocListQuirksModeCssClassDefinition,
+          new StubQuirksModeRenderer(),
+          new StubQuirksModeRenderer(),
+          new StubQuirksModeRenderer(),
+          new QuirksModeResourceUrlFactory());
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
-      var div = Html.GetAssertedChildElement(document, "div", 0);
+      var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "id", "MyList");
 
       var table = Html.GetAssertedChildElement (div, "table", 0);

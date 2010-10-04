@@ -49,11 +49,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <param name="tableBlockRenderer">The <see cref="IBocListTableBlockRenderer"/> responsible for rendering the table-part of the <see cref="BocList"/>.</param>
     /// <param name="navigationBlockRenderer">The <see cref="IBocListNavigationBlockRenderer"/> responsible for rendering the navigation-part of the <see cref="BocList"/>.</param>
     /// <param name="menuBlockRenderer">The <see cref="IBocListMenuBlockRenderer"/> responsible for rendering the menu-part of the <see cref="BocList"/>.</param>
+    /// <param name="resourceUrlFactory">The <see cref="IResourceUrlFactory"/> responsible for creating URLs for resources.</param>
     public BocListQuirksModeRenderer (
         BocListQuirksModeCssClassDefinition cssClasses,
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
-        IBocListMenuBlockRenderer menuBlockRenderer)
+        IBocListMenuBlockRenderer menuBlockRenderer,
+        IResourceUrlFactory resourceUrlFactory)
+      :base(resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);
@@ -112,15 +115,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       string styleFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (control, context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
 
       string scriptFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 

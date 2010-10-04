@@ -455,7 +455,7 @@ namespace Remotion.Web.UI.Controls
     public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, HttpContextBase httpContext)
     {
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected virtual IWebTreeViewRenderer CreateRenderer ()

@@ -30,26 +30,27 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// </summary>
   public class WebButtonQuirksModeRenderer : QuirksModeRendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonQuirksModeRenderer () { }
+    public WebButtonQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IWebButton control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptKey = typeof (WebButtonQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
+        var scripUrl = ResourceUrlFactory.CreateResourceUrl (typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, scripUrl);
       }
 
       string styleKey = typeof (WebButtonQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   [ConcreteImplementation (typeof (TabbedMultiViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface ITabbedMultiViewRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control);
     void Render (TabbedMultiViewRenderingContext renderingContext);
   }
 }

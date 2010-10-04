@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   [ConcreteImplementation (typeof (BocEnumValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocEnumValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocEnumValue control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     void Render (BocEnumValueRenderingContext renderingContext);
   }
 }

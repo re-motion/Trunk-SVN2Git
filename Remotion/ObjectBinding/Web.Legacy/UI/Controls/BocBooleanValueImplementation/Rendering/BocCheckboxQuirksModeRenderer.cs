@@ -40,25 +40,26 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Startup";
 
-    public BocCheckboxQuirksModeRenderer () { }
+    public BocCheckboxQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+      : base(resourceUrlFactory)
+    { 
+    }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocCheckBox control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptFileKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
       string styleFileKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

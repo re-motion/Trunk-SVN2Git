@@ -42,22 +42,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     private const string c_designModeEmptyLabelContents = "##";
     private const string c_defaultControlWidth = "150pt";
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter ();
-    private IClientScriptBehavior _clientScriptBehavior;
+    private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public BocDateTimeValueQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior)
+    public BocDateTimeValueQuirksModeRenderer (IClientScriptBehavior clientScriptBehavior, IResourceUrlFactory resourceUrlFactory)
+      : base (resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
 
       _clientScriptBehavior = clientScriptBehavior;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocDateTimeValue control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       
       string styleKey = typeof (BocDateTimeValueQuirksModeRenderer).FullName + "_Style";
-      string styleFile = ResourceUrlResolver.GetResourceUrl (
-          control, context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, "BocDateTimeValue.css");
+      var styleFile = ResourceUrlFactory.CreateResourceUrl (typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, "BocDateTimeValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 

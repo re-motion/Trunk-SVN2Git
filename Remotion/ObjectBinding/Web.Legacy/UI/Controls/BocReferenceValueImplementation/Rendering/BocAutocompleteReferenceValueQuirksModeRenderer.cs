@@ -41,12 +41,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueQuirksModeRenderer ()
-        : this (() => new TextBox())
+    public BocAutoCompleteReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
+        : this (resourceUrlFactory, () => new TextBox())
     {
     }
 
-    protected BocAutoCompleteReferenceValueQuirksModeRenderer (Func<TextBox> textBoxFactory) 
+    protected BocAutoCompleteReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory) 
+      : base(resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       TextBoxFactory = textBoxFactory;
@@ -54,62 +55,40 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private Func<TextBox> TextBoxFactory { get; set; }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      RegisterJavaScriptFiles (htmlHeadAppender, control, context);
-      RegisterStylesheets (htmlHeadAppender, control, context);
+      RegisterJavaScriptFiles (htmlHeadAppender);
+      RegisterStylesheets (htmlHeadAppender);
     }
 
-    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
+    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
       htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude ();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteScript";
-      htmlHeadAppender.RegisterJavaScriptInclude (
-          jqueryAutocompleteScriptKey,
-          ResourceUrlResolver.GetResourceUrl (
-              control,
-              context,
-              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
-              ResourceType.Html,
-              "BocAutoCompleteReferenceValue.jquery.js"));
+      var jqueryScriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), ResourceType.Html, 
+        "BocAutoCompleteReferenceValue.jquery.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (jqueryAutocompleteScriptKey, jqueryScriptUrl);
 
       string scriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Script";
-      htmlHeadAppender.RegisterJavaScriptInclude (
-          scriptKey,
-          ResourceUrlResolver.GetResourceUrl (
-              control,
-              context,
-              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
-              ResourceType.Html,
-              "BocAutoCompleteReferenceValue.js"));
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), ResourceType.Html, 
+        "BocAutoCompleteReferenceValue.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, scriptUrl);
     }
 
-    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender, IBocAutoCompleteReferenceValue control, HttpContextBase context)
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
     {
       string styleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Style";
-      htmlHeadAppender.RegisterStylesheetLink (
-          styleKey,
-          ResourceUrlResolver.GetResourceUrl (
-              control,
-              context,
-              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
-              ResourceType.Html,
-              "BocAutoCompleteReferenceValue.css"),
-          HtmlHeadAppender.Priority.Library);
+      var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), ResourceType.Html, 
+        "BocAutoCompleteReferenceValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
 
       string jqueryAutocompleteStyleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteStyle";
-      htmlHeadAppender.RegisterStylesheetLink (
-          jqueryAutocompleteStyleKey,
-          ResourceUrlResolver.GetResourceUrl (
-              control,
-              context,
-              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
-              ResourceType.Html,
-              "BocAutoCompleteReferenceValue.jquery.css"),
-          HtmlHeadAppender.Priority.Library);
+      var jqueryStyleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), ResourceType.Html, 
+        "BocAutoCompleteReferenceValue.jquery.css");
+      htmlHeadAppender.RegisterStylesheetLink (jqueryAutocompleteStyleKey, jqueryStyleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public void Render (BocAutoCompleteReferenceValueRenderingContext renderingContext)
