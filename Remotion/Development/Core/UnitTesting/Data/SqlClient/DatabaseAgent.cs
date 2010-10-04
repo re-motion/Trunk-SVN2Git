@@ -135,8 +135,8 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
 
       return
-          GetCommandTextBatches (commandBatch).Where (c => c.CommandBatch!=null).Sum (
-              c => ExecuteCommand (connection, c.CommandBatch, transaction));
+          GetCommandTextBatches (commandBatch).Where (c => c.Content!=null).Sum (
+              c => ExecuteCommand (connection, c.Content, transaction));
     }
 
     protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)

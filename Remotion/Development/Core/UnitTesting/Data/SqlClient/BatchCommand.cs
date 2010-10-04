@@ -24,12 +24,12 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
   {
     private readonly int _startRowNumber;
     private int _lineCount;
-    private readonly StringBuilder _commandBatch;
+    private readonly StringBuilder _content;
 
     public BatchCommand (int startRowNumber, int maxBatchLength)
     {
       _startRowNumber = startRowNumber;
-      _commandBatch = new StringBuilder(maxBatchLength);
+      _content = new StringBuilder(maxBatchLength);
       _lineCount = 0;
     }
 
@@ -43,11 +43,11 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       get { return _lineCount == 0 ? 0 : _startRowNumber + _lineCount - 1; }
     }
 
-    public string CommandBatch
+    public string Content
     {
       get
       {
-        var batch = _commandBatch.ToString().Trim();
+        var batch = _content.ToString().Trim();
         return string.IsNullOrEmpty (batch) ? null : batch;
       }
     }
@@ -56,7 +56,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNull ("commandBatchLine", commandBatchLine);
       
-      _commandBatch.AppendLine (commandBatchLine);
+      _content.AppendLine (commandBatchLine);
       _lineCount++;
     }
   }
