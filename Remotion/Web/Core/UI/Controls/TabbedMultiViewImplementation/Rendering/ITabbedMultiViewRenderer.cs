@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   [ConcreteImplementation (typeof (TabbedMultiViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface ITabbedMultiViewRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ITabbedMultiView control);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
     void Render (TabbedMultiViewRenderingContext renderingContext);
   }
 }
