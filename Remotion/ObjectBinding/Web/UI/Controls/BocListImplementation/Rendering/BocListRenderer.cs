@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -78,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
-    public override sealed string GetCssClassBase(IBocList control)
+    public override sealed string GetCssClassBase (IBocList control)
     {
       return CssClasses.Base;
     }
@@ -93,11 +94,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return CssClasses.ReadOnly; }
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocList control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (
+        HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
       string styleFileKey = typeof (BocListRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.css");
@@ -107,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
-      control.EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
+      editableRowControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
     }
 
     /// <summary>
@@ -134,7 +136,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       RenderContents (renderingContext);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     protected virtual void RenderContents (BocListRenderingContext renderingContext)
@@ -147,20 +149,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
 
         if (!renderingContext.Control.MenuBlockWidth.IsEmpty)
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.MenuBlockWidth.ToString ());
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.MenuBlockWidth.ToString());
 
         if (!renderingContext.Control.MenuBlockOffset.IsEmpty)
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, renderingContext.Control.MenuBlockOffset.ToString ());
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, renderingContext.Control.MenuBlockOffset.ToString());
 
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
         MenuBlockRenderer.Render (renderingContext);
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
       }
 
       //  Table Block
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (renderingContext.Control.HasMenuBlock, renderingContext.Control.HasNavigator));
+      renderingContext.Writer.AddAttribute (
+          HtmlTextWriterAttribute.Class, CssClasses.GetTableBlock (renderingContext.Control.HasMenuBlock, renderingContext.Control.HasNavigator));
       if (renderingContext.Control.HasMenuBlock && !renderingContext.Control.MenuBlockWidth.IsEmpty)
-        renderingContext.Writer.AddStyleAttribute ("right", renderingContext.Control.MenuBlockWidth.ToString ());
+        renderingContext.Writer.AddStyleAttribute ("right", renderingContext.Control.MenuBlockWidth.ToString());
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       TableBlockRenderer.Render (renderingContext);
@@ -168,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (renderingContext.Control.HasNavigator)
         NavigationBlockRenderer.Render (renderingContext);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void RegisterInitializeGlobalsScript (BocListRenderingContext renderingContext)
@@ -183,7 +186,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
             "BocList_InitializeGlobals ('{0}', '{1}');",
             CssClasses.DataRow,
             CssClasses.DataRowSelected);
-        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocListRenderer), startUpScriptKey, script);
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+            renderingContext.Control, typeof (BocListRenderer), startUpScriptKey, script);
       }
     }
   }

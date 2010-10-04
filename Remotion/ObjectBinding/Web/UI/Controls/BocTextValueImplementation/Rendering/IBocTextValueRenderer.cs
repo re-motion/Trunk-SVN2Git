@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   [ConcreteImplementation(typeof(BocTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocTextValueRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocTextValue control);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, TextBoxStyle textBoxStyle);
     void Render (BocTextValueRenderingContext renderingContext);
   }
 }

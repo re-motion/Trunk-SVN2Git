@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -106,7 +107,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return CssClasses.ReadOnly; }
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocList control, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -126,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      control.EditModeControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
+      editableRowControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
     }
 
     /// <summary>

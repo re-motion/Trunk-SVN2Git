@@ -34,11 +34,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocTextValue control)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, TextBoxStyle textBoxStyle)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      control.TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
+      textBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
 
       string styleKey = typeof (BocTextValueRenderer).FullName + "_Style";
       var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");

@@ -358,7 +358,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, TextBoxStyle);
     }
 
     protected virtual IBocTextValueRenderer CreateRenderer ()

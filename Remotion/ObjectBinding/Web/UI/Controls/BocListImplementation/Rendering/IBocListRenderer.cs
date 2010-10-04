@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using Remotion.Implementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -27,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof (BocListRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocList control, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context);
     void Render (BocListRenderingContext renderingContext);
   }
 }
