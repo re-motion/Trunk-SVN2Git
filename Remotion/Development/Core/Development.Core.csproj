@@ -128,6 +128,7 @@
     <Compile Include="UnitTesting\Configuration\FakeConfigurationWrapper.cs" />
     <Compile Include="UnitTesting\Data\SqlClient\BatchCommand.cs" />
     <Compile Include="UnitTesting\Data\SqlClient\DatabaseAgent.cs" />
+    <Compile Include="UnitTesting\Data\SqlClient\SqlBatchCommandException.cs" />
     <Compile Include="UnitTesting\Dev.cs" />
     <Compile Include="UnitTesting\Configuration\FakeInternalConfigSystem.cs" />
     <Compile Include="UnitTesting\IMockRepository.cs" />
