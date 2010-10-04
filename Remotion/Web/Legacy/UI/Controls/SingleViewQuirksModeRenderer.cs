@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -38,7 +37,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     { 
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, ISingleView control)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
