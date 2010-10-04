@@ -28,6 +28,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
   public class DatabaseAgent
   {
     private readonly string _connectionString;
+    private string _fileName = null;
 
     public DatabaseAgent (string connectionString)
     {
@@ -52,6 +53,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
+      _fileName = sqlFileName;
       if (!Path.IsPathRooted (sqlFileName))
       {
         string assemblyUrl = typeof (DatabaseAgent).Assembly.CodeBase;
@@ -65,16 +67,16 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
 
-      int count = 0;
-      using (IDbConnection connection = CreateConnection())
+      var count = 0;
+      using (IDbConnection connection = CreateConnection ())
       {
-        connection.Open();
+        connection.Open ();
         if (useTransaction)
         {
-          using (IDbTransaction transaction = connection.BeginTransaction())
+          using (IDbTransaction transaction = connection.BeginTransaction ())
           {
             count = ExecuteBatchString (connection, commandBatch, transaction);
-            transaction.Commit();
+            transaction.Commit ();
           }
         }
         else
@@ -99,7 +101,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
 
     protected virtual IDbCommand CreateCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
     {
-      IDbCommand command = connection.CreateCommand();
+      IDbCommand command = connection.CreateCommand ();
       command.CommandType = CommandType.Text;
       command.CommandText = commandText;
       command.Transaction = transaction;
@@ -110,9 +112,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection())
+      using (IDbConnection connection = CreateConnection ())
       {
-        connection.Open();
+        connection.Open ();
         return ExecuteCommand (connection, commandText, null);
       }
     }
@@ -121,9 +123,9 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (IDbConnection connection = CreateConnection())
+      using (IDbConnection connection = CreateConnection ())
       {
-        connection.Open();
+        connection.Open ();
         return ExecuteScalarCommand (connection, commandText, null);
       }
     }
@@ -146,9 +148,10 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
           {
             throw new SqlBatchCommandException (
                 string.Format (
-                    "Could not execute batch command from row {0} to row {1}. (Error message: {2})",
+                    "Could not execute batch command from row {0} to row {1}{2}. (Error message: {3})",
                     command.StartRowNumber,
                     command.EndRowNumber,
+                    !string.IsNullOrEmpty (_fileName) ? " in file '" + _fileName + "'" : string.Empty,
                     ex.Message),
                 ex);
           }
@@ -161,7 +164,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
-        return command.ExecuteNonQuery();
+        return command.ExecuteNonQuery ();
       }
     }
 
@@ -169,7 +172,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
-        return command.ExecuteScalar();
+        return command.ExecuteScalar ();
       }
     }
 
@@ -179,14 +182,14 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       var command = new BatchCommand (lineNumber, commandBatch.Length);
       foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
       {
-        if (line.Trim().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
+        if (line.Trim ().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
         {
           var batch = command;
           command = new BatchCommand (lineNumber + 1, commandBatch.Length);
           yield return batch;
         }
         else
-          command.AppendCommandBatchLine (line.Trim());
+          command.AppendCommandBatchLine (line.Trim ());
         lineNumber++;
       }
 
