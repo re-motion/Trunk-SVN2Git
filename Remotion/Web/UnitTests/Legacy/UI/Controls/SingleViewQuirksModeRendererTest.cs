@@ -21,7 +21,6 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
@@ -38,6 +37,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private ISingleView _singleView;
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -58,6 +58,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _singleView.Stub (stub => stub.BottomControlsStyle).Return (new Style (stateBag));
       _singleView.Stub (stub => stub.ViewStyle).Return (new Style (stateBag));
       _singleView.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
@@ -153,7 +155,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      var renderer = new SingleViewQuirksModeRenderer (_resourceUrlFactory);
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;

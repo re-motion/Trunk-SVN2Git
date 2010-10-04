@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -32,7 +31,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Reflection;
-using Remotion.Web.Legacy.Factories;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -45,6 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
     private readonly Unit _width = Unit.Point (173);
     private readonly Unit _height = Unit.Point (17);
     private IEnumerationValueInfo[] _enumerationInfos;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -90,6 +90,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
       _enumValue.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _enumValue.Stub (mock => mock.ListControlStyle).Return (new ListControlStyle());
       _enumValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
@@ -332,7 +334,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      var renderer = new BocEnumValueQuirksModeRenderer (_resourceUrlFactory);
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
@@ -378,7 +380,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueIm
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueQuirksModeRenderer (new QuirksModeResourceUrlFactory());
+      var renderer = new BocEnumValueQuirksModeRenderer (_resourceUrlFactory);
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();

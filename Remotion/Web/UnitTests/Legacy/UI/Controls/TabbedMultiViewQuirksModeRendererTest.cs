@@ -21,7 +21,6 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -41,6 +40,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private ITabbedMultiView _control;
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -71,6 +71,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptStub);
 
       _control.Stub (stub => stub.Page).Return (pageStub);
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
@@ -178,7 +180,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      var renderer = new TabbedMultiViewQuirksModeRenderer (_resourceUrlFactory);
       renderer.Render (new TabbedMultiViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);

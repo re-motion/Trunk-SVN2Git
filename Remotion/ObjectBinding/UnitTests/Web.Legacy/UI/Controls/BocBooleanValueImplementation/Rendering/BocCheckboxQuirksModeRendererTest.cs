@@ -23,10 +23,9 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -45,6 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     private IBocCheckBox _checkbox;
     private string _startupScript;
     private BocCheckboxQuirksModeRenderer _renderer;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -84,6 +84,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
       _checkbox.Stub (mock => mock.Style).Return (_checkbox.Attributes.CssStyle);
       _checkbox.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _checkbox.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
@@ -227,7 +229,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      _renderer = new BocCheckboxQuirksModeRenderer (_resourceUrlFactory);
       _renderer.Render (new BocCheckboxRenderingContext (HttpContext, Html.Writer, _checkbox));
 
       var document = Html.GetResultDocument();

@@ -27,7 +27,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementati
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
-using Remotion.Web.Legacy.Factories;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
@@ -43,6 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
 
     private IBocDateTimeValue _dateTimeValue;
     private BocDateTimeValueQuirksModeRenderer _renderer;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -73,6 +74,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
       _dateTimeValue.Stub (mock => mock.TimeTextBoxStyle).Return (new TextBoxStyle());
       _dateTimeValue.Stub (mock => mock.DateTimeTextBoxStyle).Return (new TextBoxStyle());
       _dateTimeValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
@@ -423,7 +426,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
 
       IClientScriptBehavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBehavior>();
       clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting(HttpContext, _dateTimeValue)).Return (true);
-      _renderer = new BocDateTimeValueQuirksModeRenderer (clientScriptBehaviorStub, new QuirksModeResourceUrlFactory ());
+      _renderer = new BocDateTimeValueQuirksModeRenderer (clientScriptBehaviorStub, _resourceUrlFactory);
       _renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _dateTimeValue));
 
       var document = Html.GetResultDocument();

@@ -23,7 +23,6 @@ using System.Xml;
 using NUnit.Framework;
 using System.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -41,6 +40,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private readonly List<string> _itemInfos = new List<string>();
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -67,7 +67,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
       _control.Page.Stub (stub => stub.ClientScript).Return (scriptManagerMock);
-      
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
     }
 
     [TearDown]
@@ -329,7 +330,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var renderer = new DropDownMenuQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      var renderer = new DropDownMenuQuirksModeRenderer (_resourceUrlFactory);
       renderer.Render (new DropDownMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();

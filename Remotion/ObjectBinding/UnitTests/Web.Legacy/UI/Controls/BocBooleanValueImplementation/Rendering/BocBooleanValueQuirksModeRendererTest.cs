@@ -22,12 +22,10 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -269,7 +267,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueQuirksModeRenderer (new BocBooleanValueResourceSetFactory (_resourceUrlFactory), new QuirksModeResourceUrlFactory ());
+      _renderer = new BocBooleanValueQuirksModeRenderer (new BocBooleanValueResourceSetFactory (_resourceUrlFactory), _resourceUrlFactory);
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

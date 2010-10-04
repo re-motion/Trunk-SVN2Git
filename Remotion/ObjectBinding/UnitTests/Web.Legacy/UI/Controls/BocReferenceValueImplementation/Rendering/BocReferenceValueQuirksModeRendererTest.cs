@@ -27,12 +27,11 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Legacy.Factories;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -46,6 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     private BusinessObjectReferenceDataSource _dataSource;
     protected static readonly Unit Width = Unit.Pixel (250);
     protected static readonly Unit Height = Unit.Point (12);
+    private IResourceUrlFactory _resourceUrlFactory;
     public IClientScriptManager ClientScriptManagerMock { get; set; }
     public IBocReferenceValue Control { get; set; }
     public TypeWithReference BusinessObject { get; set; }
@@ -107,6 +107,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
           });
 
       Control.Stub (stub => stub.GetLabelText ()).Return ("MyText");
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [TearDown]
@@ -418,7 +420,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -433,7 +435,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -448,7 +450,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
       AddStyle();
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory());
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (new BocReferenceValueRenderingContext (HttpContext, Html.Writer, Control));
       Html.Writer.RenderEndTag();
@@ -459,7 +461,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceVa
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new TestableBocReferenceValueQuirksModeRenderer (new QuirksModeResourceUrlFactory(), () => DropDownList);
+      var renderer = new TestableBocReferenceValueQuirksModeRenderer (_resourceUrlFactory, () => DropDownList);
       renderer.Render (new BocReferenceValueRenderingContext(HttpContext, Html.Writer, Control));
 
       var document = Html.GetResultDocument();

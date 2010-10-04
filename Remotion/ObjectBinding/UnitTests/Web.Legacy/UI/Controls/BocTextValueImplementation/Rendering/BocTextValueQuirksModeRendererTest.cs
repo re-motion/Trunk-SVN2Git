@@ -24,7 +24,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.R
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.Web.Legacy.Factories;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -33,12 +33,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
   [TestFixture]
   public class BocTextValueQuirksModeRendererTest : BocTextValueQuirksModeRendererTestBase<IBocTextValue>
   {
+    private IResourceUrlFactory _resourceUrlFactory;
+
     [SetUp]
     public void SetUp ()
     {
       Initialize();
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      Renderer = new BocTextValueQuirksModeRenderer (new QuirksModeResourceUrlFactory ());
+      Renderer = new BocTextValueQuirksModeRenderer (_resourceUrlFactory);
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");

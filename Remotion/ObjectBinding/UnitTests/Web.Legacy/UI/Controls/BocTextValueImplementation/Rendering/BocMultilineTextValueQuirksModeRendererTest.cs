@@ -20,12 +20,11 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.Web.Legacy.Factories;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -34,6 +33,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
   [TestFixture]
   public class BocMultilineTextValueQuirksModeRendererTest : BocTextValueQuirksModeRendererTestBase<IBocMultilineTextValue>
   {
+    private IResourceUrlFactory _resourceUrlFactory;
+
     [SetUp]
     public void SetUp ()
     {
@@ -60,7 +61,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueQuirksModeRenderer (new QuirksModeResourceUrlFactory());
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
+
+      Renderer = new BocMultilineTextValueQuirksModeRenderer (_resourceUrlFactory);
     }
 
     [Test]

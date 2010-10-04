@@ -44,6 +44,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private IWebTab _tab0;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
@@ -69,6 +70,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _webTabStrip.Stub (stub => stub.SelectedTabStyle).Return (new WebTabStyle());
       _webTabStrip.Stub (stub => stub.TabStyle).Return (new WebTabStyle());
       _webTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+
+      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
     }
 
     [Test]
