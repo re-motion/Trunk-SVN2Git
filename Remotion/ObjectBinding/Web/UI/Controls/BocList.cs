@@ -398,15 +398,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender, EditModeControlFactory, httpContext);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, EditModeControlFactory);
     }
 
     protected override void OnLoad (EventArgs e)

@@ -75,7 +75,7 @@ namespace Remotion.Web.UI.Controls
     string DisplayName { get; }
 
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
-    void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
   }
 
 }

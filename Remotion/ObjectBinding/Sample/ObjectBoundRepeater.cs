@@ -524,7 +524,7 @@ namespace Remotion.ObjectBinding.Sample
       base.Render (writer);
     }
 
-    void ISmartControl.RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    void ISmartControl.RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
     }
 

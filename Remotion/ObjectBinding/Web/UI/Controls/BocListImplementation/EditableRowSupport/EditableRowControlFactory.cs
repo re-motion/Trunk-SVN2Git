@@ -55,28 +55,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return (IBusinessObjectBoundEditableWebControl) ControlFactory.CreateControl (propertyPath.LastProperty, ControlFactory.EditMode.InlineEdit);
     }
 
-    public virtual void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var bocBooleanValue = new Controls.BocBooleanValue();
-      bocBooleanValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocBooleanValue.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocDateTimeValue = new Controls.BocDateTimeValue();
-      bocDateTimeValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocDateTimeValue.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocEnumValue = new BocEnumValue();
-      bocEnumValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocEnumValue.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocMultilineTextValue = new BocMultilineTextValue();
-      bocMultilineTextValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocMultilineTextValue.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocReferenceValue = new BocReferenceValue();
-      bocReferenceValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocReferenceValue.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocTextValue = new BocTextValue();
-      bocTextValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocTextValue.RegisterHtmlHeadContents (htmlHeadAppender);
     }
   }
 }

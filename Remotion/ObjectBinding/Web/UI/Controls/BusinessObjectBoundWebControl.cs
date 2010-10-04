@@ -227,7 +227,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!IsDesignMode && Page != null)
       {
         Page.RegisterRequiresControlState (this);
-        RegisterHtmlHeadContents (Context, HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current);
       }
     }
 
@@ -383,7 +383,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
-    public virtual void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
     }
 

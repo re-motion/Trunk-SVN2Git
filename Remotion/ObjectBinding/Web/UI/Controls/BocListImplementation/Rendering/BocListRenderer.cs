@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     public void RegisterHtmlHeadContents (
-        HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context)
+        HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
-      editableRowControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
+      editableRowControlFactory.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary>

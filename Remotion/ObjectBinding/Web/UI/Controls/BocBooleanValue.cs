@@ -139,12 +139,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
     
-    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var renderer = CreateRenderer();
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);

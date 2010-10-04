@@ -56,7 +56,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       if (!IsDesignMode)
-        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
     
     protected override void Render (HtmlTextWriter writer)
@@ -77,9 +77,8 @@ namespace Remotion.Web.UI.Controls
       get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
-    public void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = CreateRenderer();

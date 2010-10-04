@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ConcreteImplementation (typeof (BocListRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory);
     void Render (BocListRenderingContext renderingContext);
   }
 }

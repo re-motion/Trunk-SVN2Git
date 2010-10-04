@@ -33,15 +33,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
     }
 
-    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (httpContext,htmlHeadAppender);
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
 
       var bocAutoCompleteReferenceValue = new BocAutoCompleteReferenceValue();
-      bocAutoCompleteReferenceValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+      bocAutoCompleteReferenceValue.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override IBusinessObjectBoundEditableWebControl CreateFromPropertyPath (IBusinessObjectPropertyPath propertyPath)

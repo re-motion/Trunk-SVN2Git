@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return CssClasses.ReadOnly; }
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, EditableRowControlFactory editableRowControlFactory)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      editableRowControlFactory.RegisterHtmlHeadContents (context, htmlHeadAppender);
+      editableRowControlFactory.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary>
