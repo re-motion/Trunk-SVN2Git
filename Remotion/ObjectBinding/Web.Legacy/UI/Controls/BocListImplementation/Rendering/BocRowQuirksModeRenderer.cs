@@ -99,10 +99,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private void RenderTitleCells (BocListRenderingContext renderingContext, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      IBocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
+      BocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        IBocColumnRenderer renderer = columnRenderers[idxColumns];
+        var renderer = columnRenderers[idxColumns];
         SortingDirection sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
@@ -115,7 +115,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      IBocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
+      BocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
       int columnCount = 0;
 
       if (renderingContext.Control.IsIndexEnabled)
@@ -126,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
-        BocColumnDefinition column = columnRenderers[idxColumns].Column;
+        BocColumnDefinition column = columnRenderers[idxColumns].ColumnDefinition;
         if (renderingContext.Control.IsColumnVisible (column))
           columnCount++;
       }
@@ -173,10 +173,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private void RenderDataCells (BocListRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (IBocColumnRenderer renderer in renderingContext.ColumnRenderers)
+      foreach (BocColumnRenderer renderer in renderingContext.ColumnRenderers)
       {
         bool showIcon = false;
-        if ((!firstValueColumnRendered) && renderer.Column is BocValueColumnDefinition)
+        if ((!firstValueColumnRendered) && renderer.ColumnDefinition is BocValueColumnDefinition)
         {
           firstValueColumnRendered = true;
           showIcon = renderingContext.Control.EnableIcon;

@@ -1165,7 +1165,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return ServiceLocator.GetInstance<IBocListRenderer> ();
     }
 
-    protected virtual BocListRenderingContext CreateRenderingContext (HtmlTextWriter writer, IBocColumnRenderer[] columnRenderers)
+    protected virtual BocListRenderingContext CreateRenderingContext (HtmlTextWriter writer, BocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
@@ -2114,16 +2114,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return EnsureColumnsGot (false);
     }
 
-    private IBocColumnRenderer[] GetColumnRenderers (BocColumnDefinition[] columns)
+    private BocColumnRenderer[] GetColumnRenderers (BocColumnDefinition[] columns)
     {
-      var bocColumnRenderers = new List<IBocColumnRenderer>();
+      var bocColumnRenderers = new List<BocColumnRenderer>();
       for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
       {
         var column = columns[columnIndex];
         if (IsColumnVisible (column))
-          bocColumnRenderers.Add (column.GetRenderer (ServiceLocator, Context, this, columnIndex));
+          bocColumnRenderers.Add (new BocColumnRenderer(column.GetRenderer (ServiceLocator, Context, this, columnIndex), column, columnIndex));
         else
-          bocColumnRenderers.Add (new NullColumnRenderer ());
+          bocColumnRenderers.Add (new BocColumnRenderer(new NullColumnRenderer (), column, columnIndex));
       }
       return bocColumnRenderers.ToArray();
     }

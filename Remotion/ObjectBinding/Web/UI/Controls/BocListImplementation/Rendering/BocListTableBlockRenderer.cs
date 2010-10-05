@@ -254,12 +254,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       //bool isFirstColumnUndefinedWidth = true;
       for (int i = 0; i < renderingContext.ColumnRenderers.Length; i++)
       {
-        IBocColumnRenderer renderer = renderingContext.ColumnRenderers[i];
+        var renderer = renderingContext.ColumnRenderers[i];
 
-        if (!renderingContext.Control.IsColumnVisible (renderer.Column))
+        if (!renderingContext.Control.IsColumnVisible (renderer.ColumnDefinition))
           continue;
 
-        RenderDataColumnDeclaration (renderingContext, isTextXml, renderer.Column);
+        RenderDataColumnDeclaration (renderingContext, isTextXml, renderer.ColumnDefinition);
       }
 
       //  Design-mode and empty table

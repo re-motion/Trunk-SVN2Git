@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]), 0, "checkboxControl", false, "bocListTableCell");
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, "checkboxControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]), 0, "radioControl", false, "bocListTableCell");
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, "radioControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 

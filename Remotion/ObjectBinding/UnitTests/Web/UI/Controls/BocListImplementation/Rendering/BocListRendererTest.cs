@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
           new StubRenderer ("menu"));
-      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 

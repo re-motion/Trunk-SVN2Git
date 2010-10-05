@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();
-      _bocListRenderingContext = new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]);
+      _bocListRenderingContext = new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]);
     }
 
     [Test]

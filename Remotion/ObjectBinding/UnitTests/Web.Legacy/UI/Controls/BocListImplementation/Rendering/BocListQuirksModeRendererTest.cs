@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
           new StubQuirksModeRenderer(),
           new StubQuirksModeRenderer(),
           _resourceUrlFactory);
-      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new IBocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 

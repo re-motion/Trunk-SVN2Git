@@ -26,9 +26,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   public class BocListRenderingContext : BocRenderingContext<IBocList>
   {
-    private readonly IBocColumnRenderer[] _columnRenderers;
+    private readonly BocColumnRenderer[] _columnRenderers;
 
-    public BocListRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocList control, IBocColumnRenderer[] columnRenderers)
+    public BocListRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocList control, BocColumnRenderer[] columnRenderers)
         : base(httpContext, writer, control)
     {
       ArgumentUtility.CheckNotNull ("columnRenderers", columnRenderers);
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _columnRenderers = columnRenderers;
     }
 
-    public IBocColumnRenderer[] ColumnRenderers
+    public BocColumnRenderer[] ColumnRenderers
     {
       get { return _columnRenderers; }
     }

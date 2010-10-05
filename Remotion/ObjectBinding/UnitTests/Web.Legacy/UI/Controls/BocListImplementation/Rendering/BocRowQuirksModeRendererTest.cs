@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocRowQuirksModeRendererTest : BocListRendererTestBase
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
-    private IBocColumnRenderer[] _bocColumnRenderers;
+    private BocColumnRenderer[] _bocColumnRenderers;
 
     [SetUp]
     public void SetUp ()
@@ -44,8 +44,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.AreDataRowsClickSensitive()).Return (true);
       List.Stub (mock => mock.SortingOrder).Return (new ArrayList { SortingDirection.Ascending });
 
-      _bocColumnRenderers = new IBocColumnRenderer[] { new StubColumnQuirksModeRenderer (HttpContext, List, stubColumnDefinition, 0) };
-
+      _bocColumnRenderers = new[]
+                         {
+                             new BocColumnRenderer (
+                                 new StubColumnQuirksModeRenderer (HttpContext, List, stubColumnDefinition, 0),
+                                 stubColumnDefinition,
+                                 0)
+                         };
+      
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
     }
 
