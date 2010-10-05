@@ -49,7 +49,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                                  new StubColumnRenderer (
                                      HttpContext, List, stubColumnDefinition, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0),
                                  stubColumnDefinition,
-                                 0)
+                                 true,
+                                 0,
+                                 false)
                          };
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();

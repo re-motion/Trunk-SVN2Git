@@ -49,7 +49,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                              new BocColumnRenderer (
                                  new StubColumnQuirksModeRenderer (HttpContext, List, stubColumnDefinition, 0),
                                  stubColumnDefinition,
-                                 0)
+                                 true,
+                                 0,
+                                 false)
                          };
       
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();

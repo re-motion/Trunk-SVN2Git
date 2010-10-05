@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var renderer = new BocSimpleColumnRenderer (
           HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var renderer = new BocSimpleColumnRenderer (
           HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var renderer = new BocSimpleColumnRenderer (
           HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
 
-      renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, true, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var renderer = new BocSimpleColumnRenderer (
           HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 

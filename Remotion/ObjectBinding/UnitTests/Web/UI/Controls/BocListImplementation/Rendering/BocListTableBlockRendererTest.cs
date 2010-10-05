@@ -119,8 +119,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (list => list.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
       var stubColumnDefinition1 = new StubColumnDefinition();
-      var stubColumnDefinition2 = new StubColumnDefinition ();
-      var stubColumnDefinition3 = new StubColumnDefinition ();
+      var stubColumnDefinition2 = new StubColumnDefinition();
+      var stubColumnDefinition3 = new StubColumnDefinition();
       List.FixedColumns.Add (stubColumnDefinition1);
       List.FixedColumns.Add (stubColumnDefinition2);
       List.FixedColumns.Add (stubColumnDefinition3);
@@ -128,13 +128,29 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.PageSize).Return (5);
 
       _stubColumnRenderers = new[]
-                         {
-                             new BocColumnRenderer (new StubColumnRenderer (HttpContext, List, stubColumnDefinition1, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0), stubColumnDefinition1, 0),
-                             new BocColumnRenderer (new StubColumnRenderer (HttpContext, List, stubColumnDefinition2, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 1), stubColumnDefinition2, 1),
-                             new BocColumnRenderer (new StubColumnRenderer (HttpContext, List, stubColumnDefinition3, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 2), stubColumnDefinition2, 2)
-                  
-                         };
-      
+                             {
+                                 new BocColumnRenderer (
+                                     new StubColumnRenderer (
+                                         HttpContext, List, stubColumnDefinition1, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0),
+                                     stubColumnDefinition1,
+                                     true,
+                                     0,
+                                     false),
+                                 new BocColumnRenderer (
+                                     new StubColumnRenderer (
+                                         HttpContext, List, stubColumnDefinition2, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 1),
+                                     stubColumnDefinition2,
+                                     true,
+                                     1,
+                                     false),
+                                 new BocColumnRenderer (
+                                     new StubColumnRenderer (
+                                         HttpContext, List, stubColumnDefinition3, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 2),
+                                     stubColumnDefinition2,
+                                     true,
+                                     2,
+                                     false)
+                             };
     }
 
     private void InitializePopulatedList ()

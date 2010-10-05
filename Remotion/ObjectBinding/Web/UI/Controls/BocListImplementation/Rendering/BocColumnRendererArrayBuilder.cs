@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -36,16 +38,68 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _serviceLocator = serviceLocator;
     }
 
-    public BocColumnRenderer[] CreateColumnRenderers (HttpContextBase context, IBocList list) //TODO: remove these parameters as soon as the renderers are stateless
+    public bool EnableIcon { get; set; }
+    public bool IsListReadOnly { get; set; }
+    public bool IsListEditModeActive { get; set; }
+    public bool IsBrowserCapableOfScripting { get; set; }
+
+    public BocColumnRenderer[] CreateColumnRenderers (HttpContextBase context, IBocList list)
+        //TODO: remove these parameters as soon as the renderers are stateless
     {
-      var bocColumnRenderers = new List<BocColumnRenderer>(_columnDefinitions.Length);
+      var firstValueColumnRendered = false;
+      var bocColumnRenderers = new List<BocColumnRenderer> (_columnDefinitions.Length);
       for (int columnIndex = 0; columnIndex < _columnDefinitions.Length; columnIndex++)
       {
         var columnDefinition = _columnDefinitions[columnIndex];
-        var columnRenderer = columnDefinition.GetRenderer (_serviceLocator, context, list, columnIndex);
-        bocColumnRenderers.Add(new BocColumnRenderer (columnRenderer, columnDefinition, columnIndex));
+        var showIcon = !firstValueColumnRendered && columnDefinition is BocValueColumnDefinition && EnableIcon;
+
+        if (IsColumnVisible (columnDefinition))
+        {
+          var columnRenderer = columnDefinition.GetRenderer (_serviceLocator, context, list, columnIndex);
+          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, true, columnIndex, showIcon));
+        }
+        else
+          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, false, columnIndex, false));
+
+        if (columnDefinition is BocValueColumnDefinition)
+          firstValueColumnRendered = true;
       }
       return bocColumnRenderers.ToArray();
     }
+
+    protected bool IsColumnVisible (BocColumnDefinition column)
+    {
+      ArgumentUtility.CheckNotNull ("column", column);
+
+      var columnAsCommandColumn = column as BocCommandColumnDefinition;
+      if (columnAsCommandColumn != null && columnAsCommandColumn.Command != null)
+      {
+        if (WcagHelper.Instance.IsWaiConformanceLevelARequired()
+            && (columnAsCommandColumn.Command.Type == CommandType.Event || columnAsCommandColumn.Command.Type == CommandType.WxeFunction))
+          return false;
+      }
+
+      var columnAsRowEditModeColumn = column as BocRowEditModeColumnDefinition;
+      if (columnAsRowEditModeColumn != null)
+      {
+        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
+          return false;
+        if (columnAsRowEditModeColumn.Show == BocRowEditColumnDefinitionShow.EditMode && IsListReadOnly)
+          return false;
+        if (IsListEditModeActive)
+          return false;
+      }
+
+      var columnAsDropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
+      if (columnAsDropDownMenuColumn != null)
+      {
+        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
+          return false;
+        return IsBrowserCapableOfScripting;
+      }
+
+      return true;
+    }
+
   }
 }

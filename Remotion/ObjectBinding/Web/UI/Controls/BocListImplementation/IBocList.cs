@@ -392,7 +392,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     void RenderBeginTag (HtmlTextWriter writer);
     void RenderEndTag (HtmlTextWriter writer);
     IResourceManager GetResourceManager ();
-    bool IsColumnVisible (BocColumnDefinition columnDefinition);
     string GetListItemCommandArgument (int columnIndex, int originalRowIndex);
     BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);

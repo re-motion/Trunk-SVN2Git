@@ -15,35 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using System.Web;
 using Remotion.Web;
+using Remotion.Web.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class StubColumnRenderer : BocColumnRendererBase<StubColumnDefinition>
+  public class StubValueColumnDefinition : BocValueColumnDefinition
   {
-    public StubColumnRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IResourceUrlFactory resourceUrlFactory, int columnIndex)
-        : base (context, list, columnDefinition, resourceUrlFactory, new BocListCssClassDefinition(), columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex)
     {
+      return new StubColumnRenderer (context, list, new StubColumnDefinition(), new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), columnIndex);
     }
 
-    public override void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      writer.RenderEndTag();
-    }
-
-    public override void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      writer.RenderEndTag();
-    }
-
-    protected override void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+    public override string GetStringValue (IBusinessObject obj)
     {
       throw new NotImplementedException();
     }

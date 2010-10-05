@@ -238,6 +238,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
+    /// <param name="isVisibleColumn">Specifies if the column of the datacell is visible.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
     /// <remarks>
     /// This is a template method. Deriving classes must implement <see cref="RenderCellContents"/> to provide the contents of
@@ -247,12 +248,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         HtmlTextWriter writer, 
         int rowIndex,
         bool showIcon,
+        bool isVisibleColumn,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      if (!List.IsColumnVisible (Column))
+      if (!isVisibleColumn)
         return;
 
       string cssClassTableCell = CssClasses.GetDataCell (dataRowRenderEventArgs.IsOddRow);

@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocListTableBlockQuirksModeRendererTest : BocListRendererTestBase
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
-    private IBocColumnRenderer[] _stubColumnRenderers;
+    private BocColumnRenderer[] _stubColumnRenderers;
 
     [SetUp]
     public void SetUp ()
@@ -79,8 +79,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
+          _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -92,8 +93,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (_bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
+          _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer(), _stubColumnRenderers);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -119,17 +121,35 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.Stub (list => list.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
-      List.FixedColumns.Add (new StubColumnDefinition());
-      List.FixedColumns.Add (new StubColumnDefinition());
-      List.FixedColumns.Add (new StubColumnDefinition());
+      var stubColumnDefinition1 = new StubColumnDefinition();
+      var stubColumnDefinition2 = new StubColumnDefinition();
+      var stubColumnDefinition3 = new StubColumnDefinition();
+      List.FixedColumns.Add (stubColumnDefinition1);
+      List.FixedColumns.Add (stubColumnDefinition2);
+      List.FixedColumns.Add (stubColumnDefinition3);
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
 
-      _stubColumnRenderers = new IBocColumnRenderer[]
+      _stubColumnRenderers = new[]
                              {
-                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 0),
-                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 1),
-                                 new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 2)
+                                 new BocColumnRenderer (
+                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 0),
+                                     stubColumnDefinition1,
+                                     true,
+                                     0,
+                                     false),
+                                 new BocColumnRenderer (
+                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 1),
+                                     stubColumnDefinition2,
+                                     true,
+                                     1,
+                                     false),
+                                 new BocColumnRenderer (
+                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 2),
+                                     stubColumnDefinition3,
+                                     true,
+                                     2,
+                                     false)
                              };
     }
 

@@ -41,7 +41,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
+    /// <param name="isVisibleColumn">Specifies if the column of the data cell is visible.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
-    void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs);
+    void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs);
   }
 }

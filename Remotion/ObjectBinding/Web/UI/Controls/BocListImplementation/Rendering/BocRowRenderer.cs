@@ -120,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
       {
         BocColumnRenderer columnRenderer = columnRenderers[idxColumns];
-        if (renderingContext.Control.IsColumnVisible (columnRenderer.ColumnDefinition))
+        if (columnRenderer.IsVisibleColumn)
           columnCount++;
       }
 
@@ -176,17 +176,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private void RenderDataCells (BocListRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
-      bool firstValueColumnRendered = false;
       foreach (BocColumnRenderer columnRenderer in renderingContext.ColumnRenderers)
       {
-        bool showIcon = false;
-        if ((!firstValueColumnRendered) && columnRenderer.ColumnDefinition is BocValueColumnDefinition)
-        {
-          firstValueColumnRendered = true;
-          showIcon = renderingContext.Control.EnableIcon;
-        }
-        
-        columnRenderer.RenderDataCell (renderingContext.Writer, rowIndex, showIcon, dataRowRenderEventArgs);
+        columnRenderer.RenderDataCell (renderingContext.Writer, rowIndex, dataRowRenderEventArgs);
       }
     }
 

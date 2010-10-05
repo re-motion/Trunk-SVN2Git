@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       writer.RenderEndTag();
     }
 
-    public override void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public override void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool IsVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       writer.RenderBeginTag (HtmlTextWriterTag.Td);
       writer.RenderEndTag();

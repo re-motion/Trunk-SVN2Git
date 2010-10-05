@@ -256,7 +256,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         var renderer = renderingContext.ColumnRenderers[i];
 
-        if (!renderingContext.Control.IsColumnVisible (renderer.ColumnDefinition))
+        if (!renderer.IsVisibleColumn)
           continue;
 
         RenderDataColumnDeclaration (renderingContext, isTextXml, renderer.ColumnDefinition);

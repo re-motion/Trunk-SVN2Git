@@ -1296,50 +1296,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return IsEmptyList; }
     }
-
-    protected bool IsColumnVisible (BocColumnDefinition column)
-    {
-      ArgumentUtility.CheckNotNull ("column", column);
-
-      bool isReadOnly = IsReadOnly;
-      BocCommandColumnDefinition commandColumn = column as BocCommandColumnDefinition;
-      if (commandColumn != null && commandColumn.Command != null)
-      {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired()
-            && (commandColumn.Command.Type == CommandType.Event
-                || commandColumn.Command.Type == CommandType.WxeFunction))
-          return false;
-      }
-
-      BocRowEditModeColumnDefinition rowEditModeColumn = column as BocRowEditModeColumnDefinition;
-      if (rowEditModeColumn != null)
-      {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
-          return false;
-        if (rowEditModeColumn.Show == BocRowEditColumnDefinitionShow.EditMode
-            && isReadOnly)
-          return false;
-        if (_editModeController.IsListEditModeActive)
-          return false;
-      }
-
-      BocDropDownMenuColumnDefinition dropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
-      if (dropDownMenuColumn != null)
-      {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
-          return false;
-        return IsBrowserCapableOfScripting;
-      }
-
-
-      return true;
-    }
-
-    bool IBocList.IsColumnVisible (BocColumnDefinition columnDefinition)
-    {
-      return IsColumnVisible (columnDefinition);
-    }
-
+    
     private void PopulateAvailableViewsList ()
     {
       _availableViewsList.Items.Clear();
@@ -2116,16 +2073,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private BocColumnRenderer[] GetColumnRenderers (BocColumnDefinition[] columns)
     {
-      var bocColumnRenderers = new List<BocColumnRenderer>();
-      for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
-      {
-        var column = columns[columnIndex];
-        if (IsColumnVisible (column))
-          bocColumnRenderers.Add (new BocColumnRenderer(column.GetRenderer (ServiceLocator, Context, this, columnIndex), column, columnIndex));
-        else
-          bocColumnRenderers.Add (new BocColumnRenderer(new NullColumnRenderer (), column, columnIndex));
-      }
-      return bocColumnRenderers.ToArray();
+      var columnRendererBuilder = new BocColumnRendererArrayBuilder (columns, ServiceLocator);
+      columnRendererBuilder.IsListReadOnly = IsReadOnly;
+      columnRendererBuilder.EnableIcon = EnableIcon;
+      columnRendererBuilder.IsListEditModeActive = _editModeController.IsListEditModeActive;
+      columnRendererBuilder.IsBrowserCapableOfScripting = IsBrowserCapableOfScripting;
+      //TODO: other properties
+
+      return columnRendererBuilder.CreateColumnRenderers (Context, this);
     }
 
     /// <summary>

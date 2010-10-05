@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
           HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
           HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 

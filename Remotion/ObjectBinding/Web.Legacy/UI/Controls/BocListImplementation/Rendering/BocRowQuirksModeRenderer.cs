@@ -16,11 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Web;
+using System.Linq;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
@@ -124,12 +122,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (renderingContext.Control.IsSelectionEnabled)
         columnCount++;
 
-      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
-      {
-        BocColumnDefinition column = columnRenderers[idxColumns].ColumnDefinition;
-        if (renderingContext.Control.IsColumnVisible (column))
-          columnCount++;
-      }
+      columnCount += columnRenderers.Count (t => t.IsVisibleColumn);
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
@@ -172,17 +165,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private void RenderDataCells (BocListRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
-      bool firstValueColumnRendered = false;
       foreach (BocColumnRenderer renderer in renderingContext.ColumnRenderers)
       {
-        bool showIcon = false;
-        if ((!firstValueColumnRendered) && renderer.ColumnDefinition is BocValueColumnDefinition)
-        {
-          firstValueColumnRendered = true;
-          showIcon = renderingContext.Control.EnableIcon;
-        }
-
-        renderer.RenderDataCell (renderingContext.Writer, rowIndex, showIcon, dataRowRenderEventArgs);
+        renderer.RenderDataCell (renderingContext.Writer, rowIndex, dataRowRenderEventArgs);
       }
     }
 

@@ -251,23 +251,6 @@ public class BocListWcagTest: BocTest
   }
 
   [Test]
-  public void IsDropDownMenuColumnInvisibleWithWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
-    BocDropDownMenuColumnDefinition dropDownMenuColumn = new BocDropDownMenuColumnDefinition();
-    Assert.IsFalse (_bocList.IsColumnVisible (dropDownMenuColumn));
-  }
-
-  [Test]
-  public void IsDropDownMenuColumnVisibleWithoutWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
-    BocDropDownMenuColumnDefinition dropDownMenuColumn = new BocDropDownMenuColumnDefinition();
-    Assert.IsTrue (_bocList.IsColumnVisible (dropDownMenuColumn));
-  }
-
-
-	[Test]
   public void EvaluateWaiConformityDebugLevelAWithRowEditModeColumn()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -281,23 +264,6 @@ public class BocListWcagTest: BocTest
   }
 
   [Test]
-  public void IsRowEditModeColumnInvisibleWithWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
-    BocRowEditModeColumnDefinition rowEditModeColumn = new BocRowEditModeColumnDefinition();
-    Assert.IsFalse (_bocList.IsColumnVisible (rowEditModeColumn));
-  }
-
-  [Test]
-  public void IsRowEditModeColumnVisibleWithoutWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
-    BocRowEditModeColumnDefinition rowEditModeColumn = new BocRowEditModeColumnDefinition();
-    Assert.IsTrue (_bocList.IsColumnVisible (rowEditModeColumn));
-  }
-
-
-	[Test]
   public void EvaluateWaiConformityDebugLevelAWithCommandColumnSetToEvent()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -312,25 +278,6 @@ public class BocListWcagTest: BocTest
   }
 
   [Test]
-  public void IsCommandColumnSetToEventInvisibleWithWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
-    BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
-    commandColumn.Command.Type = CommandType.Event;
-    Assert.IsFalse (_bocList.IsColumnVisible (commandColumn));
-  }
-
-  [Test]
-  public void IsCommandColumnSetToEventVisibleWithoutWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
-    BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
-    commandColumn.Command.Type = CommandType.Event;
-    Assert.IsTrue (_bocList.IsColumnVisible (commandColumn));
-  }
-
-
-	[Test]
   public void EvaluateWaiConformityDebugLevelAWithCommandColumnSetToWxeFunction()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -344,25 +291,6 @@ public class BocListWcagTest: BocTest
     Assert.AreEqual ("Columns[0].Command", WcagHelperMock.Property);
   }
 
-  [Test]
-  public void IsCommandColumnSetToWxeFunctionInvisibleWithWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
-    BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
-    commandColumn.Command.Type = CommandType.WxeFunction;
-    Assert.IsFalse (_bocList.IsColumnVisible (commandColumn));
-  }
-
-  [Test]
-  public void IsCommandColumnSetToWxeFunctionVisibleWithoutWcagOverride()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
-    BocCommandColumnDefinition commandColumn = new BocCommandColumnDefinition();
-    commandColumn.Command.Type = CommandType.WxeFunction;
-    Assert.IsTrue (_bocList.IsColumnVisible (commandColumn));
-  }
-
-	
   [Test]
   public void EvaluateWaiConformityDebugLevelAWithCommandColumnSetToHref()
   {

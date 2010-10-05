@@ -24,16 +24,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   {
     private readonly IBocColumnRenderer _columnRenderer;
     private readonly BocColumnDefinition _columnDefinition;
+    private readonly bool _isVisibleColumn;
     private readonly int _columnIndex;
+    private readonly bool _showIcon;
 
-    public BocColumnRenderer (IBocColumnRenderer columnRenderer, BocColumnDefinition columnDefinition, int columnIndex)
+    public BocColumnRenderer (IBocColumnRenderer columnRenderer, BocColumnDefinition columnDefinition, bool isVisibleColumn, int columnIndex, bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("columnRenderer", columnRenderer);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
       _columnRenderer = columnRenderer;
       _columnDefinition = columnDefinition;
+      _isVisibleColumn = isVisibleColumn;
       _columnIndex = columnIndex;
+      _showIcon = showIcon;
     }
 
     public IBocColumnRenderer ColumnRenderer
@@ -46,9 +50,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _columnDefinition; }
     }
 
+    public bool IsVisibleColumn
+    {
+      get { return _isVisibleColumn; }
+    }
+
     public int ColumnIndex
     {
       get { return _columnIndex; }
+    }
+
+    public bool ShowIcon
+    {
+      get { return _showIcon; }
     }
 
     public void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
@@ -56,12 +70,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _columnRenderer.RenderTitleCell (writer, sortingDirection, orderIndex);
     }
 
-    public void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public void RenderDataCell (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      _columnRenderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
+      _columnRenderer.RenderDataCell (writer, rowIndex, _showIcon, _isVisibleColumn, dataRowRenderEventArgs);
     }
 
   }

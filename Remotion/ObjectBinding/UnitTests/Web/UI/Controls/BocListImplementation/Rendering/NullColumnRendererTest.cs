@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       _htmlTextWriterMock.Replay ();
 
-      _nullColumnRenderer.RenderDataCell (_htmlTextWriterMock, 0, true, null);
+      _nullColumnRenderer.RenderDataCell (_htmlTextWriterMock, 0, true, true, null);
 
       _htmlTextWriterMock.VerifyAllExpectations ();
     }

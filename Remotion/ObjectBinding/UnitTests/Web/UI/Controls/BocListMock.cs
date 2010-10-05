@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
@@ -56,12 +55,6 @@ public class BocListMock: BocList
   {
     get { return base.IsPagingEnabled; }
   }
-
-  public new bool IsColumnVisible (BocColumnDefinition column)
-  {
-    return base.IsColumnVisible (column);
-  }
-
 
   public new bool IsClientSideSortingEnabled
   {

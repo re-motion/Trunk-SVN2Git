@@ -33,10 +33,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   {
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
     private readonly IBocRowRenderer _rowRenderer;
-    private readonly IBocColumnRenderer[] _columnRenderers;
+    private readonly BocColumnRenderer[] _columnRenderers;
 
     public BocListTableBlockQuirksModeRenderer (
-         BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, IBocColumnRenderer[] columnRenderers)
+         BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, BocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("rowRenderer", rowRenderer);
@@ -231,7 +231,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup (BocListRenderingContext renderingContext)
     {
-      IBocColumnRenderer[] columnRenderers = _columnRenderers;
+      BocColumnRenderer[] columnRenderers = _columnRenderers;
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
@@ -246,9 +246,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       //bool isFirstColumnUndefinedWidth = true;
       for (int i = 0; i < columnRenderers.Length; i++)
       {
-        BocColumnDefinition column = columnRenderers[i].Column;
+        BocColumnDefinition column = columnRenderers[i].ColumnDefinition;
 
-        if (column == null || !renderingContext.Control.IsColumnVisible (column))
+        if (column == null || !columnRenderers[i].IsVisibleColumn)
           continue;
 
         RenderDataColumnDeclaration (renderingContext, isTextXml, column);
