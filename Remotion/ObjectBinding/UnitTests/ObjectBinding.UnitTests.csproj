@@ -347,6 +347,7 @@
     <Compile Include="Web\UI\Controls\BocEnumValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererArrayBuilderTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactoryTest.cs" />
@@ -407,7 +408,7 @@
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererBaseTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCommandColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCustomColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocDropDownMenuColumnRendererTest.cs" />

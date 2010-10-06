@@ -17,117 +17,62 @@
 using System;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Web;
-using Remotion.Web.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
-  public class BocColumnRendererTest : BocListRendererTestBase
+  public class BocColumnRendererTest
   {
-    private BocListCssClassDefinition _bocListCssClassDefinition;
-    private const string c_columnCssClass = "cssClassColumn";
+    private BocColumnRenderer _columnRendererAdapter;
+    private IBocColumnRenderer _columnRenderMock;
+    private StubColumnDefinition _columnDefinition;
+    private HtmlTextWriter _htmlTextWriterStub;
 
-    private BocColumnDefinition Column { get; set; }
-
-    [SetUp]
+    [SetUp] 
     public void SetUp ()
     {
-      Column = new BocSimpleColumnDefinition();
-      Column.ColumnTitle = "TestColumn1";
-      Column.CssClass = c_columnCssClass;
-
-      Initialize();
-
-      var editModeController = MockRepository.GenerateMock<IEditModeController>();
-      editModeController.Stub (mock => mock.RenderTitleCellMarkers (Html.Writer, Column, 0)).WhenCalled (
-          invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write (string.Empty));
-
-      List.Stub (mock => mock.EditModeController).Return (editModeController);
-
-      List.Stub (mock => mock.IsClientSideSortingEnabled).Return (true);
-      List.Stub (mock => mock.IsShowSortingOrderEnabled).Return (true);
-
-      _bocListCssClassDefinition = new BocListCssClassDefinition();
+      _columnDefinition = new StubColumnDefinition();
+      _columnRenderMock = MockRepository.GenerateStrictMock<IBocColumnRenderer>();
+      _columnRendererAdapter = new BocColumnRenderer (_columnRenderMock, _columnDefinition, true, 0, true, SortingDirection.None, 0);
+      _htmlTextWriterStub = MockRepository.GenerateStub<HtmlTextWriter> ();
     }
 
     [Test]
-    public void RenderTitleCellAscendingZero ()
+    public void RenderTitleCell ()
     {
-      RenderTitleCell (SortingDirection.Ascending, 0, "SortAscending.gif", "Sorted Ascending");
+      _columnRenderMock.Expect (mock => mock.RenderTitleCell (_htmlTextWriterStub, SortingDirection.None, 0));
+      _columnRenderMock.Replay();
+
+      _columnRendererAdapter.RenderTitleCell (_htmlTextWriterStub);
+
+      _columnRenderMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void RenderTitleCellDescendingZero ()
+    public void RenderDataColumnDeclaration ()
     {
-      RenderTitleCell (SortingDirection.Descending, 0, "SortDescending.gif", "Sorted Descending");
+      _columnRenderMock.Expect (mock => mock.RenderDataColumnDeclaration (_htmlTextWriterStub, false, _columnDefinition));
+      _columnRenderMock.Replay ();
+
+      _columnRendererAdapter.RenderDataColumnDeclaration(_htmlTextWriterStub, false);
+
+      _columnRenderMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void RenderTitleCellAscendingThree ()
+    public void RenderDataCell ()
     {
-      RenderTitleCell (SortingDirection.Ascending, 3, "SortAscending.gif", "Sorted Ascending");
-    }
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (0, null);
 
-    [Test]
-    public void RenderTitleCellDescendingFour ()
-    {
-      RenderTitleCell (SortingDirection.Descending, 4, "SortDescending.gif", "Sorted Descending");
-    }
+      _columnRenderMock.Expect (mock => mock.RenderDataCell (_htmlTextWriterStub, 0,true, true, dataRowRenderEventArgs));
+      _columnRenderMock.Replay ();
 
-    [Test]
-    public void RenderTitleCellNoSorting ()
-    {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, SortingDirection.None, -1);
+      _columnRendererAdapter.RenderDataCell (_htmlTextWriterStub, 0, dataRowRenderEventArgs);
 
-      var document = Html.GetResultDocument();
-
-      var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", _bocListCssClassDefinition.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
-
-      Assert.Less (0, th.ChildNodes.Count);
-      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
-      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue, 0);
-
-      Html.AssertChildElementCount (sortCommandLink, 0);
-    }
-
-    private void RenderTitleCell (
-        SortingDirection sortDirection,
-        int sortIndex,
-        string iconFilename,
-        string iconAltText)
-    {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, sortDirection, sortIndex);
-
-      var document = Html.GetResultDocument();
-
-      var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, "class", _bocListCssClassDefinition.TitleCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
-
-      Assert.Less (0, th.ChildNodes.Count);
-      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
-      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0);
-
-      var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1);
-      Html.AssertAttribute (sortOrderSpan, "class", _bocListCssClassDefinition.SortingOrder, HtmlHelperBase.AttributeValueCompareMode.Contains);
-
-      var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0);
-      Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertAttribute (sortIcon, "alt", iconAltText);
-
-      Html.AssertTextNode (sortOrderSpan, HtmlHelper.WhiteSpace + (sortIndex + 1), 1);
+      _columnRenderMock.VerifyAllExpectations ();
     }
   }
 }
