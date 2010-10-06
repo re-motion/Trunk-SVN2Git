@@ -2073,7 +2073,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private BocColumnRenderer[] GetColumnRenderers (BocColumnDefinition[] columns)
     {
-      var columnRendererBuilder = new BocColumnRendererArrayBuilder (columns, ServiceLocator);
+      var columnRendererBuilder = new BocColumnRendererArrayBuilder (columns, ServiceLocator, WcagHelper.Instance);
       columnRendererBuilder.IsListReadOnly = IsReadOnly;
       columnRendererBuilder.EnableIcon = EnableIcon;
       columnRendererBuilder.IsListEditModeActive = _editModeController.IsListEditModeActive;

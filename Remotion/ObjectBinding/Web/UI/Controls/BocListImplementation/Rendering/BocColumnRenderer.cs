@@ -65,6 +65,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _showIcon; }
     }
 
+    //public void RenderColumnDeclaration (...)
+
     public void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
     {
       _columnRenderer.RenderTitleCell (writer, sortingDirection, orderIndex);

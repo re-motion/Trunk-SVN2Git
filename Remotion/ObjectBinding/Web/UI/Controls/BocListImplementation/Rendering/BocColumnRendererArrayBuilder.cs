@@ -28,21 +28,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   {
     private readonly BocColumnDefinition[] _columnDefinitions;
     private readonly IServiceLocator _serviceLocator;
+    private readonly WcagHelper _wcagHelper;
 
-    public BocColumnRendererArrayBuilder (BocColumnDefinition[] columnDefinitions, IServiceLocator serviceLocator)
+    public BocColumnRendererArrayBuilder (BocColumnDefinition[] columnDefinitions, IServiceLocator serviceLocator, WcagHelper wcagHelper)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnDefinitions", columnDefinitions);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("wcagHelper", wcagHelper);
 
       _columnDefinitions = columnDefinitions;
       _serviceLocator = serviceLocator;
+      _wcagHelper = wcagHelper;
     }
 
     public bool EnableIcon { get; set; }
     public bool IsListReadOnly { get; set; }
     public bool IsListEditModeActive { get; set; }
     public bool IsBrowserCapableOfScripting { get; set; }
-
+    
     public BocColumnRenderer[] CreateColumnRenderers (HttpContextBase context, IBocList list)
         //TODO: remove these parameters as soon as the renderers are stateless
     {
@@ -67,14 +70,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       return bocColumnRenderers.ToArray();
     }
 
-    protected bool IsColumnVisible (BocColumnDefinition column)
+    private bool IsColumnVisible (BocColumnDefinition column)
     {
       ArgumentUtility.CheckNotNull ("column", column);
 
       var columnAsCommandColumn = column as BocCommandColumnDefinition;
       if (columnAsCommandColumn != null && columnAsCommandColumn.Command != null)
       {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired()
+        if (_wcagHelper.IsWaiConformanceLevelARequired ()
             && (columnAsCommandColumn.Command.Type == CommandType.Event || columnAsCommandColumn.Command.Type == CommandType.WxeFunction))
           return false;
       }
@@ -82,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var columnAsRowEditModeColumn = column as BocRowEditModeColumnDefinition;
       if (columnAsRowEditModeColumn != null)
       {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
+        if (_wcagHelper.IsWaiConformanceLevelARequired ())
           return false;
         if (columnAsRowEditModeColumn.Show == BocRowEditColumnDefinitionShow.EditMode && IsListReadOnly)
           return false;
@@ -93,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var columnAsDropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
       if (columnAsDropDownMenuColumn != null)
       {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
+        if (_wcagHelper.IsWaiConformanceLevelARequired ())
           return false;
         return IsBrowserCapableOfScripting;
       }
