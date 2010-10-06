@@ -137,19 +137,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                                      stubColumnDefinition1,
                                      true,
                                      0,
-                                     false),
+                                     false,
+                                     SortingDirection.Ascending,
+                                     0),
                                  new BocColumnRenderer (
                                      new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 1),
                                      stubColumnDefinition2,
                                      true,
                                      1,
-                                     false),
+                                     false,
+                                     SortingDirection.Ascending,
+                                     1),
                                  new BocColumnRenderer (
                                      new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 2),
                                      stubColumnDefinition3,
                                      true,
                                      2,
-                                     false)
+                                     false,
+                                     SortingDirection.Ascending,
+                                     2)
                              };
     }
 

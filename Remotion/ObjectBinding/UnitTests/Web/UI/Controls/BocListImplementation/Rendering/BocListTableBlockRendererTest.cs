@@ -135,21 +135,27 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                                      stubColumnDefinition1,
                                      true,
                                      0,
-                                     false),
+                                     false,
+                                     SortingDirection.Ascending,
+                                     0),
                                  new BocColumnRenderer (
                                      new StubColumnRenderer (
                                          HttpContext, List, stubColumnDefinition2, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 1),
                                      stubColumnDefinition2,
                                      true,
                                      1,
-                                     false),
+                                     false,
+                                     SortingDirection.Ascending,
+                                     1),
                                  new BocColumnRenderer (
                                      new StubColumnRenderer (
                                          HttpContext, List, stubColumnDefinition3, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 2),
                                      stubColumnDefinition2,
                                      true,
                                      2,
-                                     false)
+                                     false,
+                                     SortingDirection.Ascending,
+                                     3)
                              };
     }
 

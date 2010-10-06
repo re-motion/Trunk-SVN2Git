@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
@@ -45,29 +46,55 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public bool IsListReadOnly { get; set; }
     public bool IsListEditModeActive { get; set; }
     public bool IsBrowserCapableOfScripting { get; set; }
+    public bool IsClientSideSortingEnabled { get; set; }
+    public bool HasSortingKeys { get; set; }
+    public ArrayList SortingOrder { get; set; }
     
     public BocColumnRenderer[] CreateColumnRenderers (HttpContextBase context, IBocList list)
         //TODO: remove these parameters as soon as the renderers are stateless
     {
+      var sortingDirections = new Dictionary<int, SortingDirection> ();
+      var sortingOrder = new List<int> ();
+      
+      PrepareSorting (sortingDirections, sortingOrder);
+      
       var firstValueColumnRendered = false;
       var bocColumnRenderers = new List<BocColumnRenderer> (_columnDefinitions.Length);
       for (int columnIndex = 0; columnIndex < _columnDefinitions.Length; columnIndex++)
       {
         var columnDefinition = _columnDefinitions[columnIndex];
         var showIcon = !firstValueColumnRendered && columnDefinition is BocValueColumnDefinition && EnableIcon;
+        
+        var sortingDirection = SortingDirection.None;
+        if (sortingDirections.ContainsKey (columnIndex))
+          sortingDirection = sortingDirections[columnIndex];
+        var orderIndex = sortingOrder.IndexOf (columnIndex);
 
         if (IsColumnVisible (columnDefinition))
         {
           var columnRenderer = columnDefinition.GetRenderer (_serviceLocator, context, list, columnIndex);
-          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, true, columnIndex, showIcon));
+          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, true, columnIndex, showIcon, sortingDirection, orderIndex));
         }
         else
-          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, false, columnIndex, false));
+          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, false, columnIndex, false, sortingDirection, orderIndex));
 
         if (columnDefinition is BocValueColumnDefinition)
           firstValueColumnRendered = true;
       }
       return bocColumnRenderers.ToArray();
+    }
+
+    private void PrepareSorting (IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
+    {
+      if (IsClientSideSortingEnabled || HasSortingKeys)
+      {
+        foreach (BocListSortingOrderEntry entry in SortingOrder)
+        {
+          sortingDirections[entry.ColumnIndex] = entry.Direction;
+          if (entry.Direction != SortingDirection.None)
+            sortingOrder.Add (entry.ColumnIndex);
+        }
+      }
     }
 
     private bool IsColumnVisible (BocColumnDefinition column)

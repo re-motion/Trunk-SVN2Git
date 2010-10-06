@@ -2078,6 +2078,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       columnRendererBuilder.EnableIcon = EnableIcon;
       columnRendererBuilder.IsListEditModeActive = _editModeController.IsListEditModeActive;
       columnRendererBuilder.IsBrowserCapableOfScripting = IsBrowserCapableOfScripting;
+      columnRendererBuilder.IsClientSideSortingEnabled = IsClientSideSortingEnabled;
+      columnRendererBuilder.HasSortingKeys = HasSortingKeys;
+      columnRendererBuilder.SortingOrder = _sortingOrder;
+
       //TODO: other properties
 
       return columnRendererBuilder.CreateColumnRenderers (Context, this);

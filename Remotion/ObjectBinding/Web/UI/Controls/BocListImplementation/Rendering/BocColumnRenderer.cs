@@ -27,8 +27,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly bool _isVisibleColumn;
     private readonly int _columnIndex;
     private readonly bool _showIcon;
+    private readonly SortingDirection _sortingDirection;
+    private readonly int _orderIndex;
 
-    public BocColumnRenderer (IBocColumnRenderer columnRenderer, BocColumnDefinition columnDefinition, bool isVisibleColumn, int columnIndex, bool showIcon)
+    public BocColumnRenderer (
+        IBocColumnRenderer columnRenderer,
+        BocColumnDefinition columnDefinition,
+        bool isVisibleColumn,
+        int columnIndex,
+        bool showIcon,
+        SortingDirection sortingDirection,
+        int orderIndex)
     {
       ArgumentUtility.CheckNotNull ("columnRenderer", columnRenderer);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
@@ -38,6 +47,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _isVisibleColumn = isVisibleColumn;
       _columnIndex = columnIndex;
       _showIcon = showIcon;
+      _sortingDirection = sortingDirection;
+      _orderIndex = orderIndex;
     }
 
     public IBocColumnRenderer ColumnRenderer
@@ -65,11 +76,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _showIcon; }
     }
 
+    public SortingDirection SortingDirection
+    {
+      get { return _sortingDirection; }
+    }
+
+    public int OrderIndex
+    {
+      get { return _orderIndex; }
+    }
+
     //public void RenderColumnDeclaration (...)
 
-    public void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
+    public void RenderTitleCell (HtmlTextWriter writer)
     {
-      _columnRenderer.RenderTitleCell (writer, sortingDirection, orderIndex);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      _columnRenderer.RenderTitleCell (writer, _sortingDirection, _orderIndex);
     }
 
     public void RenderDataCell (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
@@ -79,6 +102,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       _columnRenderer.RenderDataCell (writer, rowIndex, _showIcon, _isVisibleColumn, dataRowRenderEventArgs);
     }
-
   }
 }

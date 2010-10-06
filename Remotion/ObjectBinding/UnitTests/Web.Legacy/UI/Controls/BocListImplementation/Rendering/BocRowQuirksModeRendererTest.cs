@@ -51,7 +51,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                                  stubColumnDefinition,
                                  true,
                                  0,
-                                 false)
+                                 false,
+                                 SortingDirection.Ascending,
+                                 0)
                          };
       
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();

@@ -60,22 +60,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       GetIndexColumnRenderer ().RenderTitleCell (renderingContext);
       GetSelectorColumnRenderer ().RenderTitleCell (renderingContext);
-
-      var sortingDirections = new Dictionary<int, SortingDirection>();
-      var sortingOrder = new List<int>();
-      if (renderingContext.Control.IsClientSideSortingEnabled || renderingContext.Control.HasSortingKeys)
-      {
-        for (int i = 0; i < renderingContext.Control.SortingOrder.Count; i++)
-        {
-          var currentEntry = (BocListSortingOrderEntry) renderingContext.Control.SortingOrder[i];
-          sortingDirections[currentEntry.ColumnIndex] = currentEntry.Direction;
-          if (currentEntry.Direction != SortingDirection.None)
-            sortingOrder.Add (currentEntry.ColumnIndex);
-        }
-      }
-
-      RenderTitleCells (renderingContext, sortingDirections, sortingOrder);
-
+      
+      foreach (var columnRenderer in renderingContext.ColumnRenderers)
+        columnRenderer.RenderTitleCell (renderingContext.Writer);
+      
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
@@ -87,21 +75,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
 
       renderingContext.Writer.RenderEndTag ();
-    }
-
-    private void RenderTitleCells (BocListRenderingContext renderingContext, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
-    {
-      BocColumnRenderer[] columnRenderers =renderingContext.ColumnRenderers;
-      for (int idxColumns = 0; idxColumns < columnRenderers.Length; idxColumns++)
-      {
-        BocColumnRenderer columnRenderer = columnRenderers[idxColumns];
-        
-        SortingDirection sortingDirection = SortingDirection.None;
-        if (sortingDirections.ContainsKey (idxColumns))
-          sortingDirection = sortingDirections[idxColumns];
-
-        columnRenderer.RenderTitleCell (renderingContext.Writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
-      }
     }
 
     public void RenderEmptyListDataRow (BocListRenderingContext renderingContext)
