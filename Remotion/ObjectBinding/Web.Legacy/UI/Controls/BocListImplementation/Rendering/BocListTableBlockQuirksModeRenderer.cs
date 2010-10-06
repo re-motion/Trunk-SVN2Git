@@ -243,17 +243,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       RenderIndexColumnDeclaration (renderingContext, isTextXml);
       RenderSelectorColumnDeclaration (renderingContext, isTextXml);
 
-      //bool isFirstColumnUndefinedWidth = true;
-      for (int i = 0; i < columnRenderers.Length; i++)
-      {
-        BocColumnDefinition column = columnRenderers[i].ColumnDefinition;
-
-        if (column == null || !columnRenderers[i].IsVisibleColumn)
-          continue;
-
-        RenderDataColumnDeclaration (renderingContext, isTextXml, column);
-      }
-
+      foreach (var renderer in columnRenderers)
+        renderer.RenderDataColumnDeclaration (renderingContext.Writer, isTextXml);
+      
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (renderingContext.Control) && columnRenderers.Length == 0)
       {
@@ -265,28 +257,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       }
 
       renderingContext.Writer.RenderEndTag ();
-    }
-
-    /// <summary>Renders a single col element for the given column.</summary>
-    private void RenderDataColumnDeclaration (BocListRenderingContext renderingContext, bool isTextXml, BocColumnDefinition column)
-    {
-      renderingContext.Writer.WriteBeginTag ("col");
-      if (!column.Width.IsEmpty)
-      {
-        renderingContext.Writer.Write (" style=\"");
-        string width;
-        BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
-        if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
-          width = "2em";
-        else
-          width = column.Width.ToString();
-        renderingContext.Writer.WriteStyleAttribute ("width", width);
-        renderingContext.Writer.Write ("\"");
-      }
-      if (isTextXml)
-        renderingContext.Writer.Write (" />");
-      else
-        renderingContext.Writer.Write (">");
     }
 
     /// <summary>Renders the col element for the selector column</summary>

@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -128,6 +129,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderEndTagTitleCellSortCommand (writer);
 
       writer.RenderEndTag();
+    }
+
+    public virtual void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column)
+    {
+      writer.WriteBeginTag ("col");
+      if (!column.Width.IsEmpty)
+      {
+        writer.Write (" style=\"");
+        string width;
+        var columnAsValueColumn = column as BocValueColumnDefinition;
+        if (columnAsValueColumn != null && columnAsValueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
+          width = "2em";
+        else
+          width = column.Width.ToString ();
+        writer.WriteStyleAttribute ("width", width);
+        writer.Write ("\"");
+      }
+      if (isTextXml)
+        writer.Write (" />");
+      else
+        writer.Write (">");
     }
 
     private void RenderTitleCellMarkers (HtmlTextWriter writer)

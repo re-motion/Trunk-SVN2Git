@@ -86,13 +86,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _orderIndex; }
     }
 
-    //public void RenderColumnDeclaration (...)
-
     public void RenderTitleCell (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       _columnRenderer.RenderTitleCell (writer, _sortingDirection, _orderIndex);
+    }
+
+    public void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      _columnRenderer.RenderDataColumnDeclaration (writer, isTextXml, _columnDefinition);
     }
 
     public void RenderDataCell (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)

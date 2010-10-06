@@ -44,5 +44,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="isVisibleColumn">Specifies if the column of the data cell is visible.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
     void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs);
+
+    /// <summary>
+    /// Renders a data column declaration for a <see cref="BocColumnDefinition"/>.
+    /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="isTextXml">Specifies the text syntax.</param>
+    /// <param name="column">The <see cref="BocColumnDefinition"/> to render.</param>
+    void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column);
   }
 }

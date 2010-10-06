@@ -64,5 +64,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _htmlTextWriterMock.VerifyAllExpectations ();
     }
 
+    [Test]
+    public void RenderDataColumnDeclaration ()
+    {
+      _htmlTextWriterMock.Replay();
+
+      _nullColumnRenderer.RenderDataColumnDeclaration (_htmlTextWriterMock, false, new BocSimpleColumnDefinition());
+
+      _htmlTextWriterMock.VerifyAllExpectations();
+    }
+
   }
 }

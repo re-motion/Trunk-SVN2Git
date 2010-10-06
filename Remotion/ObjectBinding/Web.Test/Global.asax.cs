@@ -70,7 +70,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      PreferQuirksModeRendering = true;
+      PreferQuirksModeRendering = false;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))

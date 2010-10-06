@@ -251,17 +251,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderIndexColumnDeclaration (renderingContext, isTextXml);
       RenderSelectorColumnDeclaration (renderingContext, isTextXml);
 
-      //bool isFirstColumnUndefinedWidth = true;
-      for (int i = 0; i < renderingContext.ColumnRenderers.Length; i++)
-      {
-        var renderer = renderingContext.ColumnRenderers[i];
-
-        if (!renderer.IsVisibleColumn)
-          continue;
-
-        RenderDataColumnDeclaration (renderingContext, isTextXml, renderer.ColumnDefinition);
-      }
-
+      foreach (var renderer in renderingContext.ColumnRenderers)
+        renderer.RenderDataColumnDeclaration (renderingContext.Writer, isTextXml);
+      
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
@@ -273,28 +265,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
 
       renderingContext.Writer.RenderEndTag();
-    }
-
-    /// <summary>Renders a single col element for the given column.</summary>
-    private void RenderDataColumnDeclaration (BocListRenderingContext renderingContext, bool isTextXml, BocColumnDefinition column)
-    {
-      renderingContext.Writer.WriteBeginTag ("col");
-      if (!column.Width.IsEmpty)
-      {
-        renderingContext.Writer.Write (" style=\"");
-        string width;
-        BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
-        if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
-          width = "2em";
-        else
-          width = column.Width.ToString();
-        renderingContext.Writer.WriteStyleAttribute ("width", width);
-        renderingContext.Writer.Write ("\"");
-      }
-      if (isTextXml)
-        renderingContext.Writer.Write (" />");
-      else
-        renderingContext.Writer.Write (">");
     }
 
     /// <summary>Renders the col element for the selector column</summary>

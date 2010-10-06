@@ -39,5 +39,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
     }
+
+    public void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column)
+    {
+    }
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -267,6 +268,27 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       RenderCellContents (writer, dataRowRenderEventArgs, rowIndex, showIcon);
 
       writer.RenderEndTag();
+    }
+
+    public virtual void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column)
+    {
+      writer.WriteBeginTag ("col");
+      if (!column.Width.IsEmpty)
+      {
+        writer.Write (" style=\"");
+        string width;
+        var columnAsValueColumn = column as BocValueColumnDefinition;
+        if (columnAsValueColumn != null && columnAsValueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
+          width = "2em";
+        else
+          width = column.Width.ToString ();
+        writer.WriteStyleAttribute ("width", width);
+        writer.Write ("\"");
+      }
+      if (isTextXml)
+        writer.Write (" />");
+      else
+        writer.Write (">");
     }
 
     /// <summary>
