@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -27,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocRowEditModeColumnDefinition"/> columns.
   /// </summary>
-  public class BocRowEditModeColumnRenderer : BocColumnRendererBase<BocRowEditModeColumnDefinition>
+  public class BocRowEditModeColumnRenderer : BocColumnRendererBase<BocRowEditModeColumnDefinition>, IBocRowEditModeColumnRenderer
   {
     private const string c_eventRowEditModePrefix = "RowEditMode=";
 

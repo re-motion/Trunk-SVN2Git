@@ -30,8 +30,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocColumnQuirksModeRendererFactory
       :
-          IBocSimpleColumnRendererFactory,
-          IBocRowEditModeColumnRendererFactory
+          IBocSimpleColumnRendererFactory
   {
     private readonly BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
 

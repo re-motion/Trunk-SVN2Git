@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocRowEditModeColumnDefinition"/> columns.
   /// </summary>
-  public class BocRowEditModeColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<BocRowEditModeColumnDefinition>
+  public class BocRowEditModeColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<BocRowEditModeColumnDefinition>, IBocRowEditModeColumnRenderer
   {
     private const string c_eventRowEditModePrefix = "RowEditMode=";
 
