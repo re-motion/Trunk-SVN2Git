@@ -181,9 +181,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocCustomColumnRendererFactory> ();
-
-      return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator, columnIndex);
+      return serviceLocator.GetInstance<IBocCustomColumnRenderer> ();
     }
 
     /// <summary> Gets the displayed value of the column title. </summary>

@@ -24,7 +24,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
-  public class IBocCustomColumnRendererFactoryTest
+  public class IBocCustomColumnRendererTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -37,17 +37,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IBocCustomColumnRendererFactory> ();
+      var factory = _serviceLocator.GetInstance<IBocCustomColumnRenderer> ();
 
       Assert.That (factory, Is.Not.Null);
-      Assert.That (factory, Is.TypeOf (typeof (BocCustomColumnRendererFactory)));
+      Assert.That (factory, Is.TypeOf (typeof (BocCustomColumnRenderer)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocCustomColumnRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocCustomColumnRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocCustomColumnRenderer> ();
+      var factory2 = _serviceLocator.GetInstance<IBocCustomColumnRenderer> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

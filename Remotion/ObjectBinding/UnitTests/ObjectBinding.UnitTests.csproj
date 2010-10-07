@@ -351,7 +351,7 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocListMenuBlockRendererTest.cs" />
