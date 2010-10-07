@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocRowEditModeColumnQuirksModeRendererTest : ColumnRendererTestBase<BocRowEditModeColumnDefinition>
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+    private BocColumnRenderingContext<BocRowEditModeColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -50,15 +51,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.OnPreRender();
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocRowEditModeColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -76,9 +79,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
-      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 

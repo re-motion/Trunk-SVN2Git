@@ -32,7 +32,6 @@ using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Reflection.TypeDiscovery;
@@ -40,7 +39,6 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Legacy.UI.Controls;
-using Remotion.Web.UI.Controls;
 
 namespace OBWTest
 {
@@ -70,7 +68,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      PreferQuirksModeRendering = false;
+      PreferQuirksModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))

@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -78,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       else
         RenderTable (renderingContext, true, true);
 
-      RenderClientSelectionScript(renderingContext);
+      RenderClientSelectionScript (renderingContext);
     }
 
     private void RenderTable (BocListRenderingContext renderingContext, bool tableHead, bool tableBody)
@@ -111,9 +109,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       renderingContext.Writer.Write ("&nbsp;");
-      renderingContext.Writer.RenderEndTag ();
-      renderingContext.Writer.RenderEndTag ();
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -168,7 +166,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         }
       }
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void RenderClientSelectionScript (BocListRenderingContext renderingContext)
@@ -181,21 +179,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           count = renderingContext.Control.PageSize.Value;
         else if (renderingContext.Control.Value != null)
           count = renderingContext.Control.Value.Count;
-        
-        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive && renderingContext.Control.AreDataRowsClickSensitive();
+
+        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive
+                                     && renderingContext.Control.AreDataRowsClickSensitive();
 
         const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, $('#{5}')[0] );";
         string script = string.Format (
             scriptTemplate,
             renderingContext.Control.ClientID,
-            renderingContext.Control.GetSelectorControlClientId(null),
+            renderingContext.Control.GetSelectorControlClientId (null),
             count,
             (int) renderingContext.Control.Selection,
             hasClickSensitiveRows ? "true" : "false",
             renderingContext.Control.ListMenu.ClientID);
 
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-            renderingContext.Control, typeof (BocListTableBlockRenderer), typeof (Controls.BocList).FullName + "_" + renderingContext.Control.ClientID + "_InitializeListScript", script);
+            renderingContext.Control,
+            typeof (BocListTableBlockRenderer),
+            typeof (BocList).FullName + "_" + renderingContext.Control.ClientID + "_InitializeListScript",
+            script);
       }
     }
 
@@ -228,14 +230,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.FakeTableHead);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      renderingContext.Writer.AddStyleAttribute(HtmlTextWriterStyle.Width, "100%");
-      renderingContext.Writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "0");
-      renderingContext.Writer.AddAttribute(HtmlTextWriterAttribute.Cellspacing, "0");
-      renderingContext.Writer.RenderBeginTag(HtmlTextWriterTag.Table);
+      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
       RenderTableHead (renderingContext);
       renderingContext.Writer.RenderEndTag();
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
@@ -251,9 +253,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderIndexColumnDeclaration (renderingContext, isTextXml);
       RenderSelectorColumnDeclaration (renderingContext, isTextXml);
 
-      foreach (var renderer in renderingContext.ColumnRenderers)
-        renderer.RenderDataColumnDeclaration (renderingContext.Writer, isTextXml);
-      
+      foreach (var columnRenderer in renderingContext.ColumnRenderers)
+      {
+        columnRenderer.RenderDataColumnDeclaration (
+            new BocColumnRenderingContext (
+                renderingContext.HttpContext,
+                renderingContext.Writer,
+                renderingContext.Control,
+                columnRenderer.ColumnDefinition,
+                columnRenderer.ColumnIndex),
+            isTextXml);
+      }
+
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {

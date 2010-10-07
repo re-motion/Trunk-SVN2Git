@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -42,7 +41,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
 
 
-    public BocRowQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses, IBocIndexColumnRenderer indexColumnRenderer, IBocSelectorColumnRenderer selectorColumnRenderer)
+    public BocRowQuirksModeRenderer (
+        BocListQuirksModeCssClassDefinition cssClasses, IBocIndexColumnRenderer indexColumnRenderer, IBocSelectorColumnRenderer selectorColumnRenderer)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("indexColumnRenderer", indexColumnRenderer);
@@ -68,8 +68,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _selectorColumnRenderer.RenderTitleCell (renderingContext);
 
       foreach (var renderer in renderingContext.ColumnRenderers)
-        renderer.RenderTitleCell (renderingContext.Writer);
-      
+      {
+        renderer.RenderTitleCell (
+            new BocColumnRenderingContext (
+                renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control, renderer.ColumnDefinition, renderer.ColumnIndex));
+      }
+
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
@@ -114,7 +118,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.RenderEndTag();
     }
 
-    public void RenderDataRow (BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    public void RenderDataRow (
+        BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
     {
       string selectorControlID = renderingContext.Control.GetSelectorControlClientId (rowIndex);
       bool isChecked = (renderingContext.Control.SelectorControlCheckedState.Contains (originalRowIndex));
@@ -141,14 +146,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       foreach (BocColumnRenderer renderer in renderingContext.ColumnRenderers)
       {
-        renderer.RenderDataCell (renderingContext.Writer, rowIndex, dataRowRenderEventArgs);
+        renderer.RenderDataCell (
+            new BocColumnRenderingContext (
+                renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control, renderer.ColumnDefinition, renderer.ColumnIndex),
+            rowIndex,
+            dataRowRenderEventArgs);
       }
     }
 
     private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked)
     {
       string cssClassTableRow;
-      if (isChecked && renderingContext.Control.AreDataRowsClickSensitive ())
+      if (isChecked && renderingContext.Control.AreDataRowsClickSensitive())
         cssClassTableRow = CssClasses.DataRowSelected;
       else
         cssClassTableRow = CssClasses.DataRow;

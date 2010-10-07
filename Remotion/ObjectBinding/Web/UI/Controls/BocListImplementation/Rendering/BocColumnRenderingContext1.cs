@@ -15,37 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class NullColumnRenderer : INullObject, IBocColumnRenderer
+  public class BocColumnRenderingContext<TBocColumnDefinition> : BocColumnRenderingContext
+      where TBocColumnDefinition: BocColumnDefinition
   {
-    public bool IsNull
+    public BocColumnRenderingContext (
+        BocColumnRenderingContext renderingContext)
+        : base (
+            renderingContext.HttpContext,
+            renderingContext.Writer,
+            renderingContext.Control,
+            renderingContext.ColumnDefinition,
+            renderingContext.ColumnIndex)
     {
-      get { return true; }
+      if (!(renderingContext.ColumnDefinition is TBocColumnDefinition))
+        throw new ArgumentTypeException (
+            "renderingContext.ColumnDefinition", typeof (TBocColumnDefinition), renderingContext.ColumnDefinition.GetType());
     }
-
-    public BocColumnDefinition Column
+    
+    public new TBocColumnDefinition ColumnDefinition
     {
-      get { return null; }
-    }
-
-    public void RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex)
-    {
-    }
-
-    public void RenderDataCell (
-        BocColumnRenderingContext renderingContext,
-        int rowIndex,
-        bool showIcon,
-        bool isVisibleColumn,
-        BocListDataRowRenderEventArgs dataRowRenderEventArgs)
-    {
-    }
-
-    public void RenderDataColumnDeclaration (BocColumnRenderingContext renderingContext, bool isTextXml)
-    {
+      get { return (TBocColumnDefinition) base.ColumnDefinition; }
     }
   }
 }

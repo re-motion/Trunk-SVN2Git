@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -36,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private readonly BocColumnRenderer[] _columnRenderers;
 
     public BocListTableBlockQuirksModeRenderer (
-         BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, BocColumnRenderer[] columnRenderers)
+        BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, BocColumnRenderer[] columnRenderers)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("rowRenderer", rowRenderer);
@@ -84,7 +82,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       else
         RenderTable (renderingContext, true, true);
 
-      RenderClientSelectionScript(renderingContext);
+      RenderClientSelectionScript (renderingContext);
     }
 
     private void RenderTable (BocListRenderingContext renderingContext, bool tableHead, bool tableBody)
@@ -138,7 +136,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Thead);
       RowRenderer.RenderTitlesRow (renderingContext);
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -174,7 +172,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         }
       }
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void RenderClientSelectionScript (BocListRenderingContext renderingContext)
@@ -188,8 +186,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         else if (renderingContext.Control.Value != null)
           count = renderingContext.Control.Value.Count;
 
-        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive && 
-          renderingContext.Control.AreDataRowsClickSensitive ();
+        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive &&
+                                     renderingContext.Control.AreDataRowsClickSensitive();
 
         const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, $('#{5}')[0] );";
         string script = string.Format (
@@ -202,8 +200,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
             renderingContext.Control.ListMenu.ClientID);
 
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-            renderingContext.Control, typeof (BocListTableBlockQuirksModeRenderer), typeof (BocList).FullName + "_" + renderingContext.Control.ClientID 
-            + "_InitializeListScript", script);
+            renderingContext.Control,
+            typeof (BocListTableBlockQuirksModeRenderer),
+            typeof (BocList).FullName + "_" + renderingContext.Control.ClientID
+            + "_InitializeListScript",
+            script);
       }
     }
 
@@ -224,8 +225,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <summary> Renderes the closing tag of the table. </summary>
     private void RenderTableClosingTag (BocListRenderingContext renderingContext)
     {
-      renderingContext.Writer.RenderEndTag (); // table
-      renderingContext.Writer.RenderEndTag (); // div
+      renderingContext.Writer.RenderEndTag(); // table
+      renderingContext.Writer.RenderEndTag(); // div
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
@@ -244,19 +245,24 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       RenderSelectorColumnDeclaration (renderingContext, isTextXml);
 
       foreach (var renderer in columnRenderers)
-        renderer.RenderDataColumnDeclaration (renderingContext.Writer, isTextXml);
-      
+      {
+        renderer.RenderDataColumnDeclaration (
+            new BocColumnRenderingContext (
+                renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control, renderer.ColumnDefinition, renderer.ColumnIndex),
+            isTextXml);
+      }
+
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (renderingContext.Control) && columnRenderers.Length == 0)
       {
         for (int i = 0; i < BocRowQuirksModeRenderer.DesignModeDummyColumnCount; i++)
         {
           renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-          renderingContext.Writer.RenderEndTag ();
+          renderingContext.Writer.RenderEndTag();
         }
       }
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary>Renders the col element for the selector column</summary>

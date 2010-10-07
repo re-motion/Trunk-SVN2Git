@@ -17,12 +17,9 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -39,28 +36,29 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// This class should not be instantiated directly by clients. Instead, a <see cref="Web.UI.Controls.BocListImplementation.Rendering.BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocCompoundColumnQuirksModeRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)
-        : base (context, list, columnDefinition, cssClasses, columnIndex)
+    public BocCompoundColumnQuirksModeRenderer(BocListQuirksModeCssClassDefinition cssClasses)
+        : base (cssClasses)
     {
     }
 
     /// <summary>
     /// Renders a string representation of the property of <paramref name="businessObject"/> that is shown in the column.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
     /// <param name="showEditModeControl">Prevents rendering if <see langword="true"/>.</param>
     /// <param name="editableRow">Ignored.</param>
-    protected override void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
+    protected override void RenderCellText (BocColumnRenderingContext<BocCompoundColumnDefinition> renderingContext, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       string valueColumnText = null;
       if (!showEditModeControl)
-        valueColumnText = Column.GetStringValue (businessObject);
+        valueColumnText = renderingContext.ColumnDefinition.GetStringValue (businessObject);
 
-      RenderValueColumnCellText (writer, valueColumnText);
+      RenderValueColumnCellText (renderingContext, valueColumnText);
     }
+    
   }
 }

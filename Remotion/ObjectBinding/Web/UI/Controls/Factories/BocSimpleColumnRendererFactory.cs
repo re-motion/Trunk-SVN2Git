@@ -42,8 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
-      return new BocSimpleColumnRenderer (
-          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory> (), _bocListCssClassDefinition, columnIndex);
+      return new BocSimpleColumnRenderer (serviceLocator.GetInstance<IResourceUrlFactory> (), _bocListCssClassDefinition);
     }
   }
 }

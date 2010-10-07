@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocCustomColumnQuirksModeRendererTest : ColumnRendererTestBase<BocCustomColumnDefinition>
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+    private BocColumnRenderingContext<BocCustomColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -57,6 +58,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.CustomColumns).Return (customColumns);
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
+
+      _renderingContext = new BocColumnRenderingContext<BocCustomColumnDefinition> (new BocColumnRenderingContext(HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
@@ -65,9 +68,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -83,9 +85,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -101,9 +102,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (
-          HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);

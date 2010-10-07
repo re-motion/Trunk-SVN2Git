@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -39,29 +37,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// factory to obtain instances of this class.
     /// </remarks>
     public BocSimpleColumnRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocSimpleColumnDefinition columnDefinition,
         IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses, columnIndex)
+        BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
     /// <summary>
     /// Renders the edit mode control.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
     /// <param name="editableRow">The <see cref="EditableRow"/> object used to actually render the edit row controls.</param>
-    protected override void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
+    protected override void RenderCellDataForEditMode (
+        BocColumnRenderingContext<BocSimpleColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("editableRow", editableRow);
 
-      RenderEditModeControl (writer, businessObject, editableRow);
+      RenderEditModeControl (renderingContext, businessObject, editableRow);
     }
 
     /// <summary>
@@ -70,50 +65,52 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <seealso cref="BocSimpleColumnDefinition.GetDynamicPropertyPath"/>
     /// <seealso cref="BocSimpleColumnDefinition.IsDynamic"/>
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> that acts as a starting point for the property path.</param>
-    protected override void RenderOtherIcons (HtmlTextWriter writer, IBusinessObject businessObject)
+    protected override void RenderOtherIcons (BocColumnRenderingContext<BocSimpleColumnDefinition> renderingContext, IBusinessObject businessObject)
     {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      if (Column.EnableIcon)
+      if (renderingContext.ColumnDefinition.EnableIcon)
       {
         IBusinessObjectPropertyPath propertyPath;
-        if (Column.IsDynamic)
-          propertyPath = Column.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
+        if (renderingContext.ColumnDefinition.IsDynamic)
+          propertyPath = renderingContext.ColumnDefinition.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
         else
-          propertyPath = Column.GetPropertyPath();
+          propertyPath = renderingContext.ColumnDefinition.GetPropertyPath();
 
         IBusinessObject value = propertyPath.GetValue (businessObject, false, true) as IBusinessObject;
         if (value != null)
-          RenderCellIcon (writer, value);
+          RenderCellIcon (renderingContext, value);
       }
     }
 
-    private void RenderEditModeControl (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
+    private void RenderEditModeControl (
+        BocColumnRenderingContext<BocSimpleColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow)
     {
       EditModeValidator editModeValidator = null;
-      for (int i = 0; i < List.Validators.Count; i++)
+      for (int i = 0; i < renderingContext.Control.Validators.Count; i++)
       {
-        BaseValidator validator = (BaseValidator) List.Validators[i];
+        BaseValidator validator = (BaseValidator) renderingContext.Control.Validators[i];
         if (validator is EditModeValidator)
           editModeValidator = (EditModeValidator) validator;
       }
 
-      if (List.HasClientScript)
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
+      if (renderingContext.Control.HasClientScript)
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
 
       editableRow.RenderSimpleColumnCellEditModeControl (
-          writer,
-          Column,
+          renderingContext.Writer,
+          renderingContext.ColumnDefinition,
           businessObject,
-          ColumnIndex,
+          renderingContext.ColumnIndex,
           editModeValidator,
-          List.EditModeController.ShowEditModeValidationMarkers,
-          List.EditModeController.DisableEditModeValidationMessages);
+          renderingContext.Control.EditModeController.ShowEditModeValidationMarkers,
+          renderingContext.Control.EditModeController.DisableEditModeValidationMessages);
 
-      writer.RenderEndTag(); // End span
+      renderingContext.Writer.RenderEndTag(); // End span
     }
   }
 }

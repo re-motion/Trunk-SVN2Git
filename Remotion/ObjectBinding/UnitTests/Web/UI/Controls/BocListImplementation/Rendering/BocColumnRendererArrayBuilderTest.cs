@@ -62,8 +62,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (StubColumnRenderer)));
       Assert.That (bocColumnRenderers[0].ColumnDefinition, Is.SameAs (_stubColumnDefinition));
       Assert.That (bocColumnRenderers[0].ColumnIndex, Is.EqualTo (0));
-      Assert.That (((StubColumnRenderer) bocColumnRenderers[0].ColumnRenderer).Context, Is.SameAs (_httpContextStub));
-      Assert.That (((StubColumnRenderer) bocColumnRenderers[0].ColumnRenderer).List, Is.SameAs (_bocListStub));
     }
 
     [Test]

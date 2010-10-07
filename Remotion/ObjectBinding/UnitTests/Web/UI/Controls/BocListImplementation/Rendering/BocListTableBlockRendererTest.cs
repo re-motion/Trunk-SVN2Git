@@ -129,27 +129,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _stubColumnRenderers = new[]
                              {
-                                 new BocColumnRenderer (
-                                     new StubColumnRenderer (
-                                         HttpContext, List, stubColumnDefinition1, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0),
+                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
                                      stubColumnDefinition1,
                                      true,
                                      0,
                                      false,
                                      SortingDirection.Ascending,
                                      0),
-                                 new BocColumnRenderer (
-                                     new StubColumnRenderer (
-                                         HttpContext, List, stubColumnDefinition2, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 1),
+                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
                                      stubColumnDefinition2,
                                      true,
                                      1,
                                      false,
                                      SortingDirection.Ascending,
                                      1),
-                                 new BocColumnRenderer (
-                                     new StubColumnRenderer (
-                                         HttpContext, List, stubColumnDefinition3, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 2),
+                                 new BocColumnRenderer (new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
                                      stubColumnDefinition2,
                                      true,
                                      2,

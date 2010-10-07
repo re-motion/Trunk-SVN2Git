@@ -15,13 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Security;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -35,56 +34,58 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   public abstract class BocCommandEnabledColumnQuirksModeRendererBase<TBocColumnDefinition> : BocColumnQuirksModeRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefintion, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)
-        : base (context, list, columnDefintion, cssClasses, columnIndex)
+    protected BocCommandEnabledColumnQuirksModeRendererBase (BocListQuirksModeCssClassDefinition cssClasses)
+        : base (cssClasses)
     {
     }
 
-    protected void RenderCellIcon (HtmlTextWriter writer, IBusinessObject businessObject)
+    protected void RenderCellIcon (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       IconInfo icon = BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
 
       if (icon != null)
       {
-        icon.Render (writer, List);
-        writer.Write (c_whiteSpace);
+        icon.Render (renderingContext.Writer, renderingContext.Control);
+        renderingContext.Writer.Write (c_whiteSpace);
       }
     }
 
-    protected void RenderValueColumnCellText (HtmlTextWriter writer, string contents)
+    protected void RenderValueColumnCellText (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, string contents)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      writer.AddAttribute ("class", CssClasses.CommandText);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      
+      renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
       contents = HttpUtility.HtmlEncode (contents);
       if (StringUtility.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
-      writer.Write (contents);
+      renderingContext.Writer.Write (contents);
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
-    protected bool RenderBeginTagDataCellCommand (HtmlTextWriter writer, IBusinessObject businessObject, int originalRowIndex)
+    protected bool RenderBeginTagDataCellCommand (
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject, int originalRowIndex)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      BocListItemCommand command = Column.Command;
+      BocListItemCommand command = renderingContext.ColumnDefinition.Command;
       if (command == null)
         return false;
 
-      bool isReadOnly = List.IsReadOnly;
+      bool isReadOnly = renderingContext.Control.IsReadOnly;
       bool isActive = command.Show == CommandShow.Always
                       || isReadOnly && command.Show == CommandShow.ReadOnly
                       || !isReadOnly && command.Show == CommandShow.EditMode;
 
-      bool isCommandAllowed = (command.Type != CommandType.None) && !List.EditModeController.IsRowEditModeActive;
-      bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ( List, businessObject, Column);
+      bool isCommandAllowed = (command.Type != CommandType.None) && !renderingContext.Control.EditModeController.IsRowEditModeActive;
+      bool isCommandEnabled = (command.CommandState == null)
+                              || command.CommandState.IsEnabled (renderingContext.Control, businessObject, renderingContext.ColumnDefinition);
       bool isCommandWaiCompliant = (!WcagHelper.Instance.IsWaiConformanceLevelARequired() || command.Type == CommandType.Href);
       if (isActive && isCommandAllowed && isCommandEnabled && isCommandWaiCompliant)
       {
@@ -93,23 +94,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         if (businessObjectWithIdentity != null)
           objectID = businessObjectWithIdentity.UniqueIdentifier;
 
-        string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
-        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
-        string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
+        string argument = renderingContext.Control.GetListItemCommandArgument (renderingContext.ColumnIndex, originalRowIndex);
+        string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+        string onClick = renderingContext.Control.HasClientScript ? c_onCommandClickScript : string.Empty;
         if (command.Type == CommandType.None)
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Disabled);
-        command.RenderBegin (writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Disabled);
+        command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 
         return true;
-        
       }
       return false;
     }
 
-    protected void RenderEndTagDataCellCommand (HtmlTextWriter writer)
+    protected void RenderEndTagDataCellCommand (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      Column.Command.RenderEnd (writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      renderingContext.ColumnDefinition.Command.RenderEnd (renderingContext.Writer);
     }
   }
 }

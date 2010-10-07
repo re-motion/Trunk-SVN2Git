@@ -18,31 +18,30 @@ using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
-using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   public class StubColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<StubColumnDefinition>
   {
-    public StubColumnQuirksModeRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, int columnIndex)
-        : base (context, list, columnDefinition, new BocListQuirksModeCssClassDefinition(), columnIndex)
+    public StubColumnQuirksModeRenderer ()
+        : base (new BocListQuirksModeCssClassDefinition())
     {
     }
 
-    public override void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
+    public override void RenderTitleCell (BocColumnRenderingContext<StubColumnDefinition> renderingContext, SortingDirection sortingDirection, int orderIndex)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
+      renderingContext.Writer.RenderEndTag();
     }
 
-    public override void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool IsVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public override void RenderDataCell (BocColumnRenderingContext<StubColumnDefinition> renderingContext, int rowIndex, bool showIcon, bool IsVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      renderingContext.Writer.RenderEndTag();
     }
 
-    protected override void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+    protected override void RenderCellContents (BocColumnRenderingContext<StubColumnDefinition> renderingContext, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
       throw new NotImplementedException();
     }

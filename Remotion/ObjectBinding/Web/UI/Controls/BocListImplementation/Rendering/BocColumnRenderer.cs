@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -86,26 +85,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _orderIndex; }
     }
 
-    public void RenderTitleCell (HtmlTextWriter writer)
+    public void RenderTitleCell (BocColumnRenderingContext renderingContext)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      _columnRenderer.RenderTitleCell (writer, _sortingDirection, _orderIndex);
+      _columnRenderer.RenderTitleCell (renderingContext, _sortingDirection, _orderIndex);
     }
 
-    public void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml)
+    public void RenderDataColumnDeclaration (BocColumnRenderingContext renderingContext, bool isTextXml)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      _columnRenderer.RenderDataColumnDeclaration (writer, isTextXml, _columnDefinition);
+      _columnRenderer.RenderDataColumnDeclaration (renderingContext, isTextXml);
     }
 
-    public void RenderDataCell (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public void RenderDataCell (BocColumnRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      _columnRenderer.RenderDataCell (writer, rowIndex, _showIcon, _isVisibleColumn, dataRowRenderEventArgs);
+      _columnRenderer.RenderDataCell (renderingContext, rowIndex, _showIcon, _isVisibleColumn, dataRowRenderEventArgs);
     }
   }
 }

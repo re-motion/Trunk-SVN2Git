@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocCompoundColumnRendererTest : ColumnRendererTestBase<BocCompoundColumnDefinition>
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private BocColumnRenderingContext<BocCompoundColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -44,6 +45,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       base.SetUp();
 
       Column.PropertyPathBindings.Add (new PropertyPathBinding ("DisplayName"));
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocCompoundColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
@@ -51,10 +55,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -70,10 +73,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -92,10 +94,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);

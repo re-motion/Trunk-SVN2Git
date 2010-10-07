@@ -27,6 +27,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocRowEditModeColumnRendererTest : ColumnRendererTestBase<BocRowEditModeColumnDefinition>
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private BocColumnRenderingContext<BocRowEditModeColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -49,15 +50,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.OnPreRender();
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocRowEditModeColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -75,9 +78,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
-      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 

@@ -46,8 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _columnRenderers = new[]
                          {
                              new BocColumnRenderer (
-                                 new StubColumnRenderer (
-                                     HttpContext, List, stubColumnDefinition, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), 0),
+                                 new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
                                  stubColumnDefinition,
                                  true,
                                  0,

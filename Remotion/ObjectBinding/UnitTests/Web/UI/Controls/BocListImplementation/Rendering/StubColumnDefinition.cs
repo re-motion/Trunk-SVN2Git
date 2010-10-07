@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex)
     {
-      return new StubColumnRenderer (context, list, this, new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), columnIndex);
+      return new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
     }
   }
 }

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -37,14 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocCommandColumnDefinition columnDefinition,
-        IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses, columnIndex)
+    public BocCommandColumnRenderer (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
@@ -57,58 +49,63 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// an URL. Furthermore, the command text in <see cref="BocCommandColumnDefinition.Text"/> is rendered after any icons.
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+        BocColumnRenderingContext<BocCommandColumnDefinition> renderingContext,
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool showIcon)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      IEditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
+      IEditableRow editableRow = renderingContext.Control.EditModeController.GetEditableRow (originalRowIndex);
 
-      bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
+      bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (renderingContext.ColumnIndex);
 
-      bool isCommandEnabled = RenderBeginTag (writer, originalRowIndex, businessObject);
+      bool isCommandEnabled = RenderBeginTag (renderingContext, originalRowIndex, businessObject);
 
-      RenderCellIcon (writer, businessObject, hasEditModeControl, showIcon);
-      RenderCellCommand (writer);
+      RenderCellIcon (renderingContext, businessObject, hasEditModeControl, showIcon);
+      RenderCellCommand (renderingContext);
 
-      RenderEndTag (writer, isCommandEnabled);
+      RenderEndTag (renderingContext, isCommandEnabled);
     }
 
-    private void RenderCellCommand (HtmlTextWriter writer)
+    private void RenderCellCommand (BocColumnRenderingContext<BocCommandColumnDefinition> renderingContext)
     {
-      if (Column.Icon.HasRenderingInformation)
-        Column.Icon.Render (writer, List);
+      if (renderingContext.ColumnDefinition.Icon.HasRenderingInformation)
+        renderingContext.ColumnDefinition.Icon.Render (renderingContext.Writer, renderingContext.Control);
 
-      if (!StringUtility.IsNullOrEmpty (Column.Text))
-        writer.Write (Column.Text); // Do not HTML encode
+      if (!StringUtility.IsNullOrEmpty (renderingContext.ColumnDefinition.Text))
+        renderingContext.Writer.Write (renderingContext.ColumnDefinition.Text); // Do not HTML encode
     }
 
-    private void RenderCellIcon (HtmlTextWriter writer, IBusinessObject businessObject, bool hasEditModeControl, bool showIcon)
+    private void RenderCellIcon (
+        BocColumnRenderingContext<BocCommandColumnDefinition> renderingContext, IBusinessObject businessObject, bool hasEditModeControl, bool showIcon)
     {
       if (!hasEditModeControl && showIcon)
-        RenderCellIcon (writer, businessObject);
+        RenderCellIcon (renderingContext, businessObject);
     }
 
-    private bool RenderBeginTag (HtmlTextWriter writer, int originalRowIndex, IBusinessObject businessObject)
+    private bool RenderBeginTag (
+        BocColumnRenderingContext<BocCommandColumnDefinition> renderingContext, int originalRowIndex, IBusinessObject businessObject)
     {
-      bool isCommandEnabled = RenderBeginTagDataCellCommand (writer, businessObject, originalRowIndex);
+      bool isCommandEnabled = RenderBeginTagDataCellCommand (renderingContext, businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return isCommandEnabled;
     }
 
-    protected void RenderEndTag (HtmlTextWriter writer, bool isCommandEnabled)
+    protected void RenderEndTag (BocColumnRenderingContext<BocCommandColumnDefinition> renderingContext, bool isCommandEnabled)
     {
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand (writer);
+        RenderEndTagDataCellCommand (renderingContext);
       else
-        writer.RenderEndTag();
+        renderingContext.Writer.RenderEndTag();
     }
   }
 }

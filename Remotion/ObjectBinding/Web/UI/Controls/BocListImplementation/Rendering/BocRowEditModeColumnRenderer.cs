@@ -39,14 +39,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocRowEditModeColumnDefinition columnDefinition,
-        IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses, columnIndex)
+    public BocRowEditModeColumnRenderer (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
@@ -61,66 +55,66 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// Since the "Save", "Cancel" and "Edit" controls are structurally identical, their actual rendering is done by <see cref="RenderCommandControl"/>
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer,
+        BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
-      bool isEditedRow = List.EditModeController.EditableRowIndex.HasValue
-                         && List.EditModeController.EditableRowIndex == dataRowRenderEventArgs.ListIndex;
+      bool isEditedRow = renderingContext.Control.EditModeController.EditableRowIndex.HasValue
+                         && renderingContext.Control.EditModeController.EditableRowIndex == dataRowRenderEventArgs.ListIndex;
 
       if (isEditedRow)
-        RenderEditedRowCellContents (writer, originalRowIndex);
+        RenderEditedRowCellContents (renderingContext, originalRowIndex);
       else
       {
         if (isEditableRow)
-          RenderEditableRowCellContents (writer, originalRowIndex);
+          RenderEditableRowCellContents (renderingContext, originalRowIndex);
         else
-          writer.Write (c_whiteSpace);
+          renderingContext.Writer.Write (c_whiteSpace);
       }
     }
 
-    private void RenderEditableRowCellContents (HtmlTextWriter writer, int originalRowIndex)
+    private void RenderEditableRowCellContents (BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext, int originalRowIndex)
     {
       RenderCommandControl (
-          writer,
+          renderingContext,
           originalRowIndex,
           BocList.RowEditModeCommand.Edit,
           BocList.ResourceIdentifier.RowEditModeEditAlternateText,
-          Column.EditIcon,
-          Column.EditText);
+          renderingContext.ColumnDefinition.EditIcon,
+          renderingContext.ColumnDefinition.EditText);
     }
 
-    private void RenderEditedRowCellContents (HtmlTextWriter writer, int originalRowIndex)
+    private void RenderEditedRowCellContents (BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext, int originalRowIndex)
     {
       RenderCommandControl (
-          writer,
+          renderingContext,
           originalRowIndex,
           BocList.RowEditModeCommand.Save,
           BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
-          Column.SaveIcon,
-          Column.SaveText);
+          renderingContext.ColumnDefinition.SaveIcon,
+          renderingContext.ColumnDefinition.SaveText);
 
-      writer.Write (" ");
+      renderingContext.Writer.Write (" ");
 
       RenderCommandControl (
-          writer,
+          renderingContext,
           originalRowIndex,
           BocList.RowEditModeCommand.Cancel,
           BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
-          Column.CancelIcon,
-          Column.CancelText);
+          renderingContext.ColumnDefinition.CancelIcon,
+          renderingContext.ColumnDefinition.CancelText);
     }
 
     /// <summary>
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="IBocList"/></param>
     /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
     /// when the control is clicked. Must not be <see langword="null" />.</param>
@@ -130,46 +124,46 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// To skip the icon, set <see cref="IconInfo.Url"/> to <see langword="null" />.</param>
     /// <param name="text">The text to render after the icon. May be <see langword="null"/>, in which case no text is rendered.</param>
     protected virtual void RenderCommandControl (
-        HtmlTextWriter writer,
+        BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext,
         int originalRowIndex,
         BocList.RowEditModeCommand command,
         BocList.ResourceIdentifier alternateText,
         IconInfo icon,
         string text)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
-      if (!List.IsReadOnly && List.HasClientScript)
+      if (!renderingContext.Control.IsReadOnly && renderingContext.Control.HasClientScript)
       {
         string argument = c_eventRowEditModePrefix + originalRowIndex + "," + command;
-        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
+        string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
       }
-      writer.RenderBeginTag (HtmlTextWriterTag.A);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       bool hasIcon = icon.HasRenderingInformation;
       bool hasText = !StringUtility.IsNullOrEmpty (text);
 
       if (hasIcon && hasText)
       {
-        icon.Render (writer, List);
-        writer.Write (c_whiteSpace);
+        icon.Render (renderingContext.Writer, renderingContext.Control);
+        renderingContext.Writer.Write (c_whiteSpace);
       }
       else if (hasIcon)
       {
         bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
         if (!hasAlternateText)
-          icon.AlternateText = List.GetResourceManager().GetString (alternateText);
+          icon.AlternateText = renderingContext.Control.GetResourceManager().GetString (alternateText);
 
-        icon.Render (writer, List);
+        icon.Render (renderingContext.Writer, renderingContext.Control);
       }
       if (hasText)
-        writer.Write (text); // Do not HTML encode.
+        renderingContext.Writer.Write (text); // Do not HTML encode.
 
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
   }
 }

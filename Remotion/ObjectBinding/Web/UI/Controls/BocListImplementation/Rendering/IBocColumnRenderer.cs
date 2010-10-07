@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -24,33 +23,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   public interface IBocColumnRenderer
   {
-    BocColumnDefinition Column { get; }
-
     /// <summary>
     /// Renders a table header cell for a <see cref="BocColumnDefinition"/> including title and sorting controls.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext"/>.</param>
     /// <param name="sortingDirection">Specifies if rows are sorted by this column's data, and if so in which direction.</param>
     /// <param name="orderIndex">The zero-based index of the column in a virtual sorted list containing all columns by which data is sorted.</param>
-    void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex);
+    void RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex);
 
     /// <summary>
     /// Renders a table cell for a <see cref="BocColumnDefinition"/> containing the appropriate data from the <see cref="IBusinessObject"/>
     /// contained in <paramref name="dataRowRenderEventArgs"/>.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext"/>.</param>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
     /// <param name="isVisibleColumn">Specifies if the column of the data cell is visible.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
-    void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs);
+    void RenderDataCell (BocColumnRenderingContext renderingContext, int rowIndex, bool showIcon, bool isVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs);
 
     /// <summary>
     /// Renders a data column declaration for a <see cref="BocColumnDefinition"/>.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext"/>.</param>
     /// <param name="isTextXml">Specifies the text syntax.</param>
-    /// <param name="column">The <see cref="BocColumnDefinition"/> to render.</param>
-    void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column);
+    void RenderDataColumnDeclaration (BocColumnRenderingContext renderingContext, bool isTextXml);
   }
 }

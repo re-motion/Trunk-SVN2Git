@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -38,13 +36,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// factory to obtain instances of this class.
     /// </remarks>
     public BocDropDownMenuColumnRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocDropDownMenuColumnDefinition column,
         IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, column, resourceUrlFactory, cssClasses, columnIndex)
+        BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
@@ -54,37 +48,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <remarks>
     /// The menu title is generated from the <see cref="DropDownMenu.TitleText"/> and <see cref="DropDownMenu.TitleText"/> properties of
-    /// the column definition in <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/>, and populated with the menu items in
+    /// the column definition in <see cref="BocColumnRenderingContext.ColumnDefinition"/>, and populated with the menu items in
     /// the <see cref="IBocList.RowMenus"/> property.
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer,
+        BocColumnRenderingContext<BocDropDownMenuColumnDefinition> renderingContext,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      if (List.RowMenus == null || List.RowMenus.Length < rowIndex || List.RowMenus[rowIndex] == null)
+      if (renderingContext.Control.RowMenus == null || renderingContext.Control.RowMenus.Length < rowIndex || renderingContext.Control.RowMenus[rowIndex] == null)
       {
-        writer.Write (c_whiteSpace);
+        renderingContext.Writer.Write (c_whiteSpace);
         return;
       }
 
-      DropDownMenu dropDownMenu = List.RowMenus[rowIndex].Item3;
+      DropDownMenu dropDownMenu = renderingContext.Control.RowMenus[rowIndex].Item3;
 
-      if (List.HasClientScript)
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
+      if (renderingContext.Control.HasClientScript)
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
 
-      dropDownMenu.Enabled = !List.EditModeController.IsRowEditModeActive;
+      dropDownMenu.Enabled = !renderingContext.Control.EditModeController.IsRowEditModeActive;
 
-      dropDownMenu.TitleText = Column.MenuTitleText;
-      dropDownMenu.TitleIcon = Column.MenuTitleIcon;
-      dropDownMenu.RenderControl (writer);
+      dropDownMenu.TitleText = renderingContext.ColumnDefinition.MenuTitleText;
+      dropDownMenu.TitleIcon = renderingContext.ColumnDefinition.MenuTitleIcon;
+      dropDownMenu.RenderControl (renderingContext.Writer);
 
-      writer.RenderEndTag(); // End div
+      renderingContext.Writer.RenderEndTag(); // End div
     }
   }
 }

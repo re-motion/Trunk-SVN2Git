@@ -33,6 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocCustomColumnRendererTest : ColumnRendererTestBase<BocCustomColumnDefinition>
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private BocColumnRenderingContext<BocCustomColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -56,6 +57,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                               { Column, triplets }
                           };
       List.Stub (mock => mock.CustomColumns).Return (customColumns);
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocCustomColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
@@ -64,9 +68,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -82,9 +85,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -100,9 +102,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
       List.OnPreRender();
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
-          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
@@ -32,14 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (
-        HttpContextBase context,
-        IBocList list,
-        TBocColumnDefinition columnDefintion,
-        IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, columnDefintion, resourceUrlFactory, cssClasses, columnIndex)
+    protected BocValueColumnRendererBase (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
@@ -47,78 +40,82 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// Renders a table cell for a <see cref="BocValueColumnDefinition"/>.
     /// </summary>
     protected override void RenderCellContents (
-        HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool showIcon)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      IEditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
+      IEditableRow editableRow = renderingContext.Control.EditModeController.GetEditableRow (originalRowIndex);
 
-      bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
-      bool showEditModeControl = hasEditModeControl && !editableRow.GetEditControl (ColumnIndex).IsReadOnly;
+      bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (renderingContext.ColumnIndex);
+      bool showEditModeControl = hasEditModeControl && !editableRow.GetEditControl (renderingContext.ColumnIndex).IsReadOnly;
 
       string valueColumnText = null;
       if (!showEditModeControl)
-        valueColumnText = Column.GetStringValue (businessObject);
+        valueColumnText = renderingContext.ColumnDefinition.GetStringValue (businessObject);
 
-      bool enforceWidth = RenderCropSpanBeginTag (writer, showEditModeControl, valueColumnText);
-      bool isCommandEnabled = RenderBeginTag (writer, originalRowIndex, businessObject, valueColumnText);
+      bool enforceWidth = RenderCropSpanBeginTag (renderingContext, showEditModeControl, valueColumnText);
+      bool isCommandEnabled = RenderBeginTag (renderingContext, originalRowIndex, businessObject, valueColumnText);
 
       if (!hasEditModeControl)
       {
         if (showIcon)
-          RenderCellIcon (writer, businessObject);
+          RenderCellIcon (renderingContext, businessObject);
 
-        RenderOtherIcons (writer, businessObject);
+        RenderOtherIcons (renderingContext, businessObject);
       }
       if (showEditModeControl)
-        RenderCellDataForEditMode (writer, businessObject, editableRow);
+        RenderCellDataForEditMode (renderingContext, businessObject, editableRow);
       else
-        RenderValueColumnCellText (writer, valueColumnText);
+        RenderValueColumnCellText (renderingContext, valueColumnText);
 
-      RenderEndTag (writer, isCommandEnabled);
-      RenderCropSpanEndTag (writer, enforceWidth);
+      RenderEndTag (renderingContext, isCommandEnabled);
+      RenderCropSpanEndTag (renderingContext, enforceWidth);
     }
 
-    protected abstract void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow);
+    protected abstract void RenderCellDataForEditMode (
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow);
 
     /// <summary>
     /// Used by <see cref="RenderCellContents"/> to render icons in addition to the <paramref name="businessObject"/>'s icon.
     /// Deriving classes should override this empty implementation if they wish to add other icons.
     /// Should not be used by other clients.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="businessObject">Can be used to derive the icon to render.</param>
-    protected virtual void RenderOtherIcons (HtmlTextWriter writer, IBusinessObject businessObject)
+    protected virtual void RenderOtherIcons (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject)
     {
     }
 
     /// <summary>
     /// If the column width must be enforced, this method renders a &lt;span&gt; block container that crops any overflowing content.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="showEditModeControl">Specifies if the cell contains edit mode controls.</param>
     /// <param name="spanTitle">Specifies the text to be written to the 'title' attribute.</param>
     /// <returns><see langword="true"/> if the crop span begin tag has been rendered, <see langword="false"/> otherwise.</returns>
-    private bool RenderCropSpanBeginTag (HtmlTextWriter writer, bool showEditModeControl, string spanTitle)
+    private bool RenderCropSpanBeginTag (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool showEditModeControl, string spanTitle)
     {
       bool enforceWidth =
-          Column.EnforceWidth
-          && !Column.Width.IsEmpty
-          && Column.Width.Type != UnitType.Percentage
+          renderingContext.ColumnDefinition.EnforceWidth
+          && !renderingContext.ColumnDefinition.Width.IsEmpty
+          && renderingContext.ColumnDefinition.Width.Type != UnitType.Percentage
           && !showEditModeControl;
 
       if (enforceWidth)
       {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Column.Width.ToString());
-        writer.AddStyleAttribute ("overflow", "hidden");
-        writer.AddStyleAttribute ("white-space", "nowrap");
-        writer.AddStyleAttribute ("display", "block");
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, spanTitle);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.ColumnDefinition.Width.ToString());
+        renderingContext.Writer.AddStyleAttribute ("overflow", "hidden");
+        renderingContext.Writer.AddStyleAttribute ("white-space", "nowrap");
+        renderingContext.Writer.AddStyleAttribute ("display", "block");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Title, spanTitle);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return enforceWidth;
     }
@@ -126,34 +123,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary>
     /// Renders the end tag to the crop span element if a begin tag has been rendered.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="enforceWidth">Specifies if a corresponding begin tag has been rendered.</param>
-    private void RenderCropSpanEndTag (HtmlTextWriter writer, bool enforceWidth)
+    private void RenderCropSpanEndTag (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool enforceWidth)
     {
       if (enforceWidth)
-        writer.RenderEndTag();
+        renderingContext.Writer.RenderEndTag();
     }
 
 
-    private bool RenderBeginTag (HtmlTextWriter writer, int originalRowIndex, IBusinessObject businessObject, string valueColumnText)
+    private bool RenderBeginTag (
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, int originalRowIndex, IBusinessObject businessObject, string valueColumnText)
     {
       bool isCommandEnabled = false;
       if (!StringUtility.IsNullOrEmpty (valueColumnText))
-        isCommandEnabled = RenderBeginTagDataCellCommand (writer, businessObject, originalRowIndex);
+        isCommandEnabled = RenderBeginTagDataCellCommand (renderingContext, businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return isCommandEnabled;
     }
 
-    private void RenderEndTag (HtmlTextWriter writer, bool isCommandEnabled)
+    private void RenderEndTag (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool isCommandEnabled)
     {
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand (writer);
+        RenderEndTagDataCellCommand (renderingContext);
       else
-        writer.RenderEndTag();
+        renderingContext.Writer.RenderEndTag();
     }
   }
 }

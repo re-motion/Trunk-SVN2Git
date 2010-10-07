@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -38,28 +36,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// factory to obtain instances of this class.
     /// </remarks>
     public BocCompoundColumnRenderer (
-        HttpContextBase context,
-        IBocList list,
-        BocCompoundColumnDefinition columnDefinition,
         IResourceUrlFactory resourceUrlFactory,
-        BocListCssClassDefinition cssClasses,
-        int columnIndex)
-        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses, columnIndex)
+        BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, cssClasses)
     {
     }
 
     /// <summary>
     /// Renders a string representation of the property of <paramref name="businessObject"/> that is shown in the column.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
     /// <param name="editableRow">Ignored.</param>
-    protected override void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
-     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
+    protected override void RenderCellDataForEditMode (
+        BocColumnRenderingContext<BocCompoundColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      RenderValueColumnCellText (writer, Column.GetStringValue (businessObject));
+      RenderValueColumnCellText (renderingContext, renderingContext.ColumnDefinition.GetStringValue (businessObject));
     }
   }
 }

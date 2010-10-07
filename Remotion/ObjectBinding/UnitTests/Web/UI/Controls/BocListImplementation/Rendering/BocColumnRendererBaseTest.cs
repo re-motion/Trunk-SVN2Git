@@ -31,9 +31,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   public class BocColumnRendererBaseTest : BocListRendererTestBase
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
+    private BocColumnRenderingContext<BocSimpleColumnDefinition> _renderingContext;
     private const string c_columnCssClass = "cssClassColumn";
 
-    private BocColumnDefinition Column { get; set; }
+    private BocSimpleColumnDefinition Column { get; set; }
 
     [SetUp]
     public void SetUp ()
@@ -54,6 +55,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsShowSortingOrderEnabled).Return (true);
 
       _bocListCssClassDefinition = new BocListCssClassDefinition();
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
@@ -83,9 +87,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, SortingDirection.None, -1);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), _bocListCssClassDefinition);
+      renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
 
@@ -106,9 +109,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, new ResourceUrlFactory (new ResourceTheme.ClassicBlue ()), _bocListCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, sortDirection, sortIndex);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), _bocListCssClassDefinition);
+      renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();
 

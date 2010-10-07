@@ -32,9 +32,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocColumnQuirksModeRendererTest : BocListRendererTestBase
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+    private BocColumnRenderingContext<BocSimpleColumnDefinition> _renderingContext;
     private const string c_columnCssClass = "cssClassColumn";
 
-    private BocColumnDefinition Column { get; set; }
+    private BocSimpleColumnDefinition Column { get; set; }
 
     [SetUp]
     public void SetUp ()
@@ -55,6 +56,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.IsShowSortingOrderEnabled).Return (true);
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
@@ -84,9 +88,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, SortingDirection.None, -1);
+      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
 
@@ -107,9 +110,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (
-          HttpContext, List, (BocSimpleColumnDefinition) Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderTitleCell (Html.Writer, sortDirection, sortIndex);
+      IBocColumnRenderer renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();
 
@@ -122,7 +124,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0);
 
       var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1);
-      Html.AssertAttribute (sortOrderSpan, "class", _bocListQuirksModeCssClassDefinition.SortingOrder, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (
+          sortOrderSpan, "class", _bocListQuirksModeCssClassDefinition.SortingOrder, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelperBase.AttributeValueCompareMode.Contains);

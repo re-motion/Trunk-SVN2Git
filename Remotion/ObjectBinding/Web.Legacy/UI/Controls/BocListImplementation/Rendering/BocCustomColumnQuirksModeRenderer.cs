@@ -21,9 +21,7 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
@@ -39,8 +37,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <remarks>
     /// This class should not be instantiated directly by clients.
     /// </remarks>
-    public BocCustomColumnQuirksModeRenderer (HttpContextBase context, IBocList list, BocCustomColumnDefinition column, BocListQuirksModeCssClassDefinition cssClasses, int columnIndex)
-        : base (context, list, column, cssClasses, columnIndex)
+    public BocCustomColumnQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses)
+        : base (cssClasses)
     {
     }
 
@@ -49,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// and the current row state.
     /// </summary>
     /// <remarks>
-    /// If the <see cref="BocCustomColumnDefinition.Mode"/> property of <see cref="Web.UI.Controls.BocListImplementation.Rendering.BocColumnRendererBase{TBocColumnDefinition}.Column"/> indicates that
+    /// If the <see cref="BocCustomColumnDefinition.Mode"/> property of <see cref="BocColumnRenderingContext.ColumnDefinition"/> indicates that
     /// the custom cell does not contain any controls (<see cref="BocCustomColumnDefinitionMode.NoControls"/> or 
     /// <see cref="BocCustomColumnDefinitionMode.ControlInEditedRow"/> when the current row is not being edited),
     /// a <see cref="BocCustomCellRenderArguments"/> object is created and passed to the custom cell's 
@@ -58,59 +56,59 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// property.
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer, 
+        BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
-      if (List.CustomColumns == null)
+      if (renderingContext.Control.CustomColumns == null)
         return;
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
-      bool isEditedRow = List.EditModeController.EditableRowIndex.HasValue
-                         && List.EditModeController.EditableRowIndex == originalRowIndex;
+      bool isEditedRow = renderingContext.Control.EditModeController.EditableRowIndex.HasValue
+                         && renderingContext.Control.EditModeController.EditableRowIndex == originalRowIndex;
 
-      if (Column.Mode == BocCustomColumnDefinitionMode.NoControls
-          || (Column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))
-        RenderCustomCellDirectly (writer, businessObject, ColumnIndex, originalRowIndex);
+      if (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.NoControls
+          || (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))
+        RenderCustomCellDirectly (renderingContext, businessObject, renderingContext.ColumnIndex, originalRowIndex);
       else
-        RenderCustomCellInnerControls (writer, rowIndex);
+        RenderCustomCellInnerControls (renderingContext, rowIndex);
     }
 
-    private void RenderCustomCellInnerControls (HtmlTextWriter writer, int rowIndex)
+    private void RenderCustomCellInnerControls (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext, int rowIndex)
     {
-      BocListCustomColumnTuple[] customColumnTuples = List.CustomColumns[Column];
+      BocListCustomColumnTuple[] customColumnTuples = renderingContext.Control.CustomColumns[renderingContext.ColumnDefinition];
       BocListCustomColumnTuple customColumnTuple = customColumnTuples[rowIndex];
       if (customColumnTuple == null)
       {
-        writer.Write (c_whiteSpace);
+        renderingContext.Writer.Write (c_whiteSpace);
         return;
       }
 
-      RenderClickWrapperBeginTag (writer);
+      RenderClickWrapperBeginTag (renderingContext);
 
       Control control = customColumnTuple.Item3;
       if (control != null)
       {
         ApplyStyleDefaults (control);
-        control.RenderControl (writer);
+        control.RenderControl (renderingContext.Writer);
       }
 
-      RenderClickWrapperEndTag (writer);
+      RenderClickWrapperEndTag (renderingContext);
     }
 
-    private void RenderClickWrapperBeginTag (HtmlTextWriter writer)
+    private void RenderClickWrapperBeginTag (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext)
     {
-      string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      string onClick = renderingContext.Control.HasClientScript ? c_onCommandClickScript : string.Empty;
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
     }
 
-    private void RenderClickWrapperEndTag (HtmlTextWriter writer)
+    private void RenderClickWrapperEndTag (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext)
     {
-      writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void ApplyStyleDefaults (Control control)
@@ -140,12 +138,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       return controlStyle;
     }
 
-    private void RenderCustomCellDirectly (HtmlTextWriter writer, IBusinessObject businessObject, int columnIndex, int originalRowIndex)
+    private void RenderCustomCellDirectly (
+        BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext, IBusinessObject businessObject, int columnIndex, int originalRowIndex)
     {
-      string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
+      string onClick = renderingContext.Control.HasClientScript ? c_onCommandClickScript : string.Empty;
       BocCustomCellRenderArguments arguments = new BocCustomCellRenderArguments (
-          List, businessObject, Column, columnIndex, originalRowIndex, onClick);
-      Column.CustomCell.RenderInternal (writer, arguments);
+          renderingContext.Control, businessObject, renderingContext.ColumnDefinition, columnIndex, originalRowIndex, onClick);
+      renderingContext.ColumnDefinition.CustomCell.RenderInternal (renderingContext.Writer, arguments);
     }
   }
 }

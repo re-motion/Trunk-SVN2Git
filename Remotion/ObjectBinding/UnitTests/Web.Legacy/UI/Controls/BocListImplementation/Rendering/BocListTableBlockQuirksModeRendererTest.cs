@@ -132,24 +132,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       _stubColumnRenderers = new[]
                              {
-                                 new BocColumnRenderer (
-                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 0),
+                                 new BocColumnRenderer (new StubColumnQuirksModeRenderer (),
                                      stubColumnDefinition1,
                                      true,
                                      0,
                                      false,
                                      SortingDirection.Ascending,
                                      0),
-                                 new BocColumnRenderer (
-                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 1),
+                                 new BocColumnRenderer (new StubColumnQuirksModeRenderer (),
                                      stubColumnDefinition2,
                                      true,
                                      1,
                                      false,
                                      SortingDirection.Ascending,
                                      1),
-                                 new BocColumnRenderer (
-                                     new StubColumnQuirksModeRenderer (HttpContext, List, new StubColumnDefinition(), 2),
+                                 new BocColumnRenderer (new StubColumnQuirksModeRenderer (),
                                      stubColumnDefinition3,
                                      true,
                                      2,

@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Ren
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -33,6 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
   public class BocSimpleColumnQuirksModeRendererTest : ColumnRendererTestBase<BocSimpleColumnDefinition>
   {
     private BocListQuirksModeCssClassDefinition _bocListQuirksModeCssClassDefinition;
+    private BocColumnRenderingContext<BocSimpleColumnDefinition> _renderingContext;
 
     [SetUp]
     public override void SetUp ()
@@ -48,14 +50,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       base.SetUp();
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
     }
 
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -73,9 +78,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -92,9 +97,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (Html.Writer, 0, true, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, true, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -107,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 1);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 2);
-      Html.AssertTextNode(textWrapper, BusinessObject.GetPropertyString ("FirstValue"), 0);
+      Html.AssertTextNode (textWrapper, BusinessObject.GetPropertyString ("FirstValue"), 0);
     }
 
     [Test]
@@ -120,20 +125,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       editableRow.Stub (mock => mock.GetEditControl (0)).IgnoreArguments().Return (MockRepository.GenerateStub<IBocTextValue>());
       editableRow.Expect (
           mock => mock.RenderSimpleColumnCellEditModeControl (
-                      Html.Writer,
-                      Column,
-                      firstObject,
-                      0,
-                      null,
-                      List.EditModeController.ShowEditModeValidationMarkers,
-                      List.EditModeController.DisableEditModeValidationMessages));
+              Html.Writer,
+              Column,
+              firstObject,
+              0,
+              null,
+              List.EditModeController.ShowEditModeValidationMarkers,
+              List.EditModeController.DisableEditModeValidationMessages));
 
       List.EditModeController.Stub (mock => mock.GetEditableRow (0)).Return (editableRow);
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
-      var renderer = new BocSimpleColumnQuirksModeRenderer (HttpContext, List, Column, _bocListQuirksModeCssClassDefinition, 0);
-      renderer.RenderDataCell (Html.Writer, 0, false, true, EventArgs);
+      var renderer = new BocSimpleColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -148,13 +153,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       editableRow.AssertWasCalled (
           mock => mock.RenderSimpleColumnCellEditModeControl (
-                      Html.Writer,
-                      Column,
-                      firstObject,
-                      0,
-                      null,
-                      List.EditModeController.ShowEditModeValidationMarkers,
-                      List.EditModeController.DisableEditModeValidationMessages));
+              Html.Writer,
+              Column,
+              firstObject,
+              0,
+              null,
+              List.EditModeController.ShowEditModeValidationMarkers,
+              List.EditModeController.DisableEditModeValidationMessages));
     }
   }
 }

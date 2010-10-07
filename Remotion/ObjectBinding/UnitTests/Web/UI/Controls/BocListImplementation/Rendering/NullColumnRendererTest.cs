@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Rhino.Mocks;
 
@@ -29,12 +31,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     private NullColumnRenderer _nullColumnRenderer;
     private HtmlTextWriter _htmlTextWriterMock;
+    private HttpContextBase _httpContextStub;
+    private IBocList _bocListStub;
+    private BocColumnRenderingContext<StubColumnDefinition> _renderingContext;
+    private StubColumnDefinition _columnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _nullColumnRenderer = new NullColumnRenderer();
+      _columnDefinition = new StubColumnDefinition();
       _htmlTextWriterMock = MockRepository.GenerateStrictMock<HtmlTextWriter> ();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+      _bocListStub = MockRepository.GenerateStub<IBocList> ();
+      _renderingContext = new BocColumnRenderingContext<StubColumnDefinition> (
+          new BocColumnRenderingContext(_httpContextStub, _htmlTextWriterMock, _bocListStub, _columnDefinition, 0));
     }
 
     [Test]
@@ -49,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       _htmlTextWriterMock.Replay();
 
-      _nullColumnRenderer.RenderTitleCell (_htmlTextWriterMock, SortingDirection.None, 0);
+      _nullColumnRenderer.RenderTitleCell (_renderingContext, SortingDirection.None, 0);
 
       _htmlTextWriterMock.VerifyAllExpectations();
     }
@@ -59,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       _htmlTextWriterMock.Replay ();
 
-      _nullColumnRenderer.RenderDataCell (_htmlTextWriterMock, 0, true, true, null);
+      _nullColumnRenderer.RenderDataCell (_renderingContext, 0, true, true, null);
 
       _htmlTextWriterMock.VerifyAllExpectations ();
     }
@@ -69,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       _htmlTextWriterMock.Replay();
 
-      _nullColumnRenderer.RenderDataColumnDeclaration (_htmlTextWriterMock, false, new BocSimpleColumnDefinition());
+      _nullColumnRenderer.RenderDataColumnDeclaration (_renderingContext, false);
 
       _htmlTextWriterMock.VerifyAllExpectations();
     }
