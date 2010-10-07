@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocSimpleColumnDefinition"/> columns.
   /// </summary>
-  public class BocSimpleColumnQuirksModeRenderer : BocValueColumnQuirksModeRendererBase<BocSimpleColumnDefinition>
+  public class BocSimpleColumnQuirksModeRenderer : BocValueColumnQuirksModeRendererBase<BocSimpleColumnDefinition>, IBocSimpleColumnRenderer
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a

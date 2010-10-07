@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
 using Remotion.Web.Factories;
 
@@ -47,7 +46,9 @@ namespace OBWTest
               new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), new BocListCssClassDefinition()),
               new BocListMenuBlockRenderer (new BocListCssClassDefinition())));
 
-      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocSimpleColumnRenderer),
+          new BocSimpleColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCompoundColumnRenderer),
           new BocCompoundColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));

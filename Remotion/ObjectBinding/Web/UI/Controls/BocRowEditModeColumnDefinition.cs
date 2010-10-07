@@ -193,12 +193,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _cancelIcon.Reset ();
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator, HttpContextBase context, IBocList list, int columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
-
+      
       return serviceLocator.GetInstance<IBocRowEditModeColumnRenderer> ();
     }
 

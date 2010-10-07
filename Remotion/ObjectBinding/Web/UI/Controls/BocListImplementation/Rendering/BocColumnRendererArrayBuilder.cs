@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
         if (IsColumnVisible (columnDefinition))
         {
-          var columnRenderer = columnDefinition.GetRenderer (_serviceLocator, context, list, columnIndex);
+          var columnRenderer = columnDefinition.GetRenderer (_serviceLocator);
           bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, true, columnIndex, showIcon, sortingDirection, orderIndex));
         }
         else

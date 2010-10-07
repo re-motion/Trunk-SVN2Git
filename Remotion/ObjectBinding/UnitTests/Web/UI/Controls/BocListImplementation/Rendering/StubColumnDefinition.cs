@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
 using Remotion.Web.Factories;
@@ -27,7 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 {
   public class StubColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator)
     {
       return new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
     }

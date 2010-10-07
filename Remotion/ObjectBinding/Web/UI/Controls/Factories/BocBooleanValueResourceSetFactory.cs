@@ -16,11 +16,9 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 

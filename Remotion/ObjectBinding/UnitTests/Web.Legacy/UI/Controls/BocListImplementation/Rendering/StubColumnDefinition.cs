@@ -15,17 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   public class StubColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list, int columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator)
     {
       return new StubColumnQuirksModeRenderer();
     }

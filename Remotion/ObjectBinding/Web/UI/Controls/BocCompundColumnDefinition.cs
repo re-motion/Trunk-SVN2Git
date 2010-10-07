@@ -18,10 +18,8 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -106,12 +104,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _propertyPathBindings; }
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator, HttpContextBase context, IBocList list, int columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
-
+      
       return serviceLocator.GetInstance<IBocCompoundColumnRenderer> ();
     }
 

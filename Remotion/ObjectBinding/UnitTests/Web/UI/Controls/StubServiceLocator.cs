@@ -25,7 +25,6 @@ using Remotion.Logging.BridgeImplementations;
 using Remotion.Logging.BridgeInterfaces;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.Mixins.BridgeInterfaces;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
@@ -65,7 +64,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
               new BocListNavigationBlockRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition),
               new BocListMenuBlockRenderer (bocListCssClassDefinition)));
 
-      _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocSimpleColumnRenderer),
+          new BocSimpleColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCompoundColumnRenderer),
           new BocCompoundColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
@@ -75,15 +76,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (
           typeof (IBocCustomColumnRenderer),
           new BocCustomColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
-      _instances.Add (typeof (IBocRowEditModeColumnRenderer), new BocRowEditModeColumnRenderer(new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocRowEditModeColumnRenderer),
+          new BocRowEditModeColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocDropDownMenuColumnRenderer),
           new BocDropDownMenuColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (typeof (IBocIndexColumnRenderer), new BocIndexColumnRenderer (bocListCssClassDefinition));
       _instances.Add (typeof (IBocSelectorColumnRenderer), new BocSelectorColumnRenderer (bocListCssClassDefinition));
-
-      _instances.Add (typeof (IBocStubColumnRendererFactory), new StubColumnRendererFactory());
-
+      
       _instances.Add (typeof (IDropDownMenuRenderer), new DropDownMenuRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IListMenuRenderer), new ListMenuRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IDatePickerButtonRenderer), new DatePickerButtonRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));

@@ -15,18 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  [ConcreteImplementation (typeof(BocSimpleColumnRendererFactory), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocStubColumnRendererFactory
+  /// <summary>
+  /// Defines the API for rendering a <see cref="BocSimpleColumnDefinition"/>.
+  /// </summary>
+  [ConcreteImplementation (typeof (BocSimpleColumnRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocSimpleColumnRenderer : IBocColumnRenderer
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex);
   }
 }

@@ -360,8 +360,7 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocRowRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocStubColumnRendererFactory.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocListTableBlockRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\NullColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
@@ -437,7 +436,6 @@
     <Compile Include="Web\UI\Controls\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubColumnDefinition.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubColumnRenderer.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubColumnRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubRenderer.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubRowRenderer.cs" />

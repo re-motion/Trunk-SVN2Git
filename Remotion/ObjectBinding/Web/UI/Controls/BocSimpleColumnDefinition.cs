@@ -204,15 +204,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _enableIcon = value; }
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator, HttpContextBase context, IBocList list, int columnIndex)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("list", list);
-
-      var columnRendererFactory = serviceLocator.GetInstance<IBocSimpleColumnRendererFactory> ();
-
-      return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator, columnIndex);
+      
+      return serviceLocator.GetInstance<IBocSimpleColumnRenderer> ();
     }
 
     /// <summary> Gets the displayed value of the column title. </summary>

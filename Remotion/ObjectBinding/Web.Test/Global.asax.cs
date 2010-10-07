@@ -97,7 +97,7 @@ namespace OBWTest
         }
 
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Rendering") && !t.Name.Contains ("Column")).AsImplementedInterfaces ().SingleInstance (); //TODO: Remove !t.Name.Contains("Column") after refactoring!
+            .Where (t => t.Namespace.EndsWith (".Rendering")).AsImplementedInterfaces ().SingleInstance ();
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
             .Where (t => t.Namespace.EndsWith (".Controls")).AsImplementedInterfaces ().SingleInstance ();
 

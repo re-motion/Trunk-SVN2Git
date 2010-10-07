@@ -108,7 +108,6 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\Factories\BocColumnQuirksModeRendererFactory.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

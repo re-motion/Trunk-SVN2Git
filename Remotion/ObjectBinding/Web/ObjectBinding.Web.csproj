@@ -195,7 +195,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRenderer.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\NullColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderingContext.cs" />
@@ -327,7 +327,6 @@
     <Compile Include="UI\Controls\BocListImplementation\IBocList.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValue.cs" />
-    <Compile Include="UI\Controls\Factories\BocSimpleColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\IBocSortableColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\IBocTextValue.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\IBocTextValueBase.cs" />
