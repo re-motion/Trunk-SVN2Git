@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocDropDownMenuColumnDefinition"/> columns.
   /// </summary>
-  public class BocDropDownMenuColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<BocDropDownMenuColumnDefinition>
+  public class BocDropDownMenuColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<BocDropDownMenuColumnDefinition>, IBocDropDownMenuColumnRenderer
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a

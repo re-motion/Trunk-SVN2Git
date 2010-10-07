@@ -45,9 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocDropDownMenuColumnRendererFactory> ();
-
-      return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator, columnIndex);
+      return serviceLocator.GetInstance<IBocDropDownMenuColumnRenderer> ();
     }
 
     /// <summary> Gets the human readable name of this type. </summary>

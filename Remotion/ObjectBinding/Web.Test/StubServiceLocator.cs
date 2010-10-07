@@ -58,7 +58,9 @@ namespace OBWTest
           typeof (IBocCustomColumnRenderer),
           new BocCustomColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory (bocListCssClassDefinition));
-      _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocDropDownMenuColumnRenderer),
+          new BocDropDownMenuColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (typeof (IBocIndexColumnRenderer), new BocIndexColumnRenderer (bocListCssClassDefinition));
       _instances.Add (typeof (IBocSelectorColumnRenderer), new BocSelectorColumnRenderer (bocListCssClassDefinition));
     }
