@@ -32,7 +32,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
       :
           IBocSimpleColumnRendererFactory,
           IBocCompoundColumnRendererFactory,
-          IBocCommandColumnRendererFactory,
           IBocCustomColumnRendererFactory,
           IBocDropDownMenuColumnRendererFactory,
           IBocRowEditModeColumnRendererFactory
@@ -56,12 +55,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
         HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex)
     {
       return new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-    }
-
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, IServiceLocator serviceLocator, int columnIndex)
-    {
-      return new BocCommandColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
     }
 
     public IBocColumnRenderer CreateRenderer (

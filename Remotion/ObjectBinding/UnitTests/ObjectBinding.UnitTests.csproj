@@ -349,7 +349,7 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererArrayBuilderTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListCssClassDefinitionTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IBocDropDownMenuColumnRendererFactoryTest.cs" />
@@ -423,11 +423,6 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListTableBlockRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\ColumnRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCompoundColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocColumnRendererFactoryBase.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocCommandColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocCompoundColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocCustomColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocDropDownMenuColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListRendererTestBase.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererTest.cs" />
@@ -438,8 +433,6 @@
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocRowEditModeColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Factories\BocSimpleColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubColumnDefinition.cs" />

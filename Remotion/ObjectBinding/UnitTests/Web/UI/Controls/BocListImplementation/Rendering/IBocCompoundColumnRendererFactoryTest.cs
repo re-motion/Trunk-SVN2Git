@@ -46,8 +46,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IBocCommandColumnRendererFactory> ();
-      var factory2 = _serviceLocator.GetInstance<IBocCommandColumnRendererFactory> ();
+      var factory1 = _serviceLocator.GetInstance<IBocCompoundColumnRendererFactory> ();
+      var factory2 = _serviceLocator.GetInstance<IBocCompoundColumnRendererFactory> ();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

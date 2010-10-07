@@ -15,21 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Implementation;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class BocCommandColumnRendererFactoryTest : BocColumnRendererFactoryBase
+  /// <summary>
+  /// Defines the API for rendering a <see cref="BocCommandColumnDefinition"/>.
+  /// </summary>
+  [ConcreteImplementation (typeof (BocCommandColumnRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocCommandColumnRenderer : IBocColumnRenderer
   {
-    [Test]
-    public void CreateBocCommandColumnRenderer ()
-    {
-      BocCommandColumnDefinition column = new BocCommandColumnDefinition ();
-      IBocCommandColumnRendererFactory factory = new BocCommandColumnRendererFactory (new BocListCssClassDefinition());
-      CreateRenderer (column, (http, l, service) => factory.CreateRenderer (http, l, column, service, 0));
-    }
   }
 }

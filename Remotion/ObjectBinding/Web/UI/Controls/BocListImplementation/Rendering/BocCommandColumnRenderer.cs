@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocCommandColumnDefinition"/> columns.
   /// </summary>
-  public class BocCommandColumnRenderer : BocCommandEnabledColumnRendererBase<BocCommandColumnDefinition>
+  public class BocCommandColumnRenderer : BocCommandEnabledColumnRendererBase<BocCommandColumnDefinition>, IBocCommandColumnRenderer
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
