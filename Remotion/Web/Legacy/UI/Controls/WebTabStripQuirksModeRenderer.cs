@@ -64,13 +64,13 @@ namespace Remotion.Web.Legacy.UI.Controls
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      var visibleTabs = renderingContext.Control.GetVisibleTabs ();
-
       RenderBeginTabsPane (renderingContext);
-      for (int i = 0; i < visibleTabs.Count; i++)
+
+      var tabRendererAdapters = renderingContext.WebTabRenderers;
+      for (int i = 0; i < tabRendererAdapters.Length; i++)
       {
-        bool isLast = i == (visibleTabs.Count - 1);
-        var tab = visibleTabs[i];
+        bool isLast = i == (tabRendererAdapters.Length - 1);
+        var tab = tabRendererAdapters[i];
         RenderTab (renderingContext, tab, isLast);
       }
       RenderEndTabsPane (renderingContext);
@@ -113,13 +113,11 @@ namespace Remotion.Web.Legacy.UI.Controls
       renderingContext.Writer.RenderEndTag (); // End Div
     }
 
-    private void RenderTab (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isLast)
+    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer ();
-
-      bool isEnabled = !tab.IsSelected || renderingContext.Control.EnableSelectedTab;
-      WebTabStyle style = tab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      tabRenderer.Render (renderingContext, tab, isEnabled, isLast, style);
+      bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
+      WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
+      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, isLast, style);
 
       renderingContext.Writer.WriteLine ();
     }

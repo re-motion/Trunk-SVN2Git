@@ -15,30 +15,41 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.UI;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
-  /// <summary>
-  /// Groups all arguments required for rendering a <see cref="WebTabStrip"/>.
-  /// </summary>
-  public class WebTabStripRenderingContext : RenderingContext<IWebTabStrip>
+  public class WebTabRendererAdapter
   {
-    private readonly WebTabRendererAdapter[] _webTabRenderers;
+    private readonly IWebTabRenderer _webTabRenderer;
+    private readonly IWebTab _webTab;
 
-    public WebTabStripRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTabStrip control, WebTabRendererAdapter[] webTabRenderers)
-        : base(httpContext, writer, control)
+    public WebTabRendererAdapter (IWebTabRenderer webTabRenderer, IWebTab webTab)
     {
-      ArgumentUtility.CheckNotNull ("webTabRenderers", webTabRenderers);
+      ArgumentUtility.CheckNotNull ("webTabRenderer", webTabRenderer);
+      ArgumentUtility.CheckNotNull ("webTab", webTab);
 
-      _webTabRenderers = webTabRenderers;
+      _webTabRenderer = webTabRenderer;
+      _webTab = webTab;
     }
 
-    public WebTabRendererAdapter[] WebTabRenderers
+    public IWebTabRenderer WebTabRenderer
     {
-      get { return _webTabRenderers; }
+      get { return _webTabRenderer; }
     }
+
+    public IWebTab WebTab
+    {
+      get { return _webTab; }
+    }
+
+    public void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("style", style);
+
+      _webTabRenderer.Render (renderingContext, tab, isEnabled, isLast, style);
+    }
+
   }
 }

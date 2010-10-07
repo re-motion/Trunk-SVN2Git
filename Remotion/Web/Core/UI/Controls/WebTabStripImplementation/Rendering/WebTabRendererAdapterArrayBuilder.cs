@@ -15,30 +15,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.UI;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
-  /// <summary>
-  /// Groups all arguments required for rendering a <see cref="WebTabStrip"/>.
-  /// </summary>
-  public class WebTabStripRenderingContext : RenderingContext<IWebTabStrip>
+  public class WebTabRendererAdapterArrayBuilder
   {
-    private readonly WebTabRendererAdapter[] _webTabRenderers;
-
-    public WebTabStripRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IWebTabStrip control, WebTabRendererAdapter[] webTabRenderers)
-        : base(httpContext, writer, control)
+    private readonly IWebTab[] _webTabs;
+    
+    public WebTabRendererAdapterArrayBuilder (IWebTab[] webTabs)
     {
-      ArgumentUtility.CheckNotNull ("webTabRenderers", webTabRenderers);
-
-      _webTabRenderers = webTabRenderers;
+      ArgumentUtility.CheckNotNull ("webTabs", webTabs);
+      
+      _webTabs = webTabs;
     }
 
-    public WebTabRendererAdapter[] WebTabRenderers
+    public WebTabRendererAdapter[] GetWebTabRenderers ()
     {
-      get { return _webTabRenderers; }
+      var rendererAdapters = new List<WebTabRendererAdapter>();
+      foreach (var webTab in _webTabs)
+      {
+        rendererAdapters.Add (new WebTabRendererAdapter (webTab.GetRenderer(), webTab));
+      }
+      return rendererAdapters.ToArray();
     }
+    
   }
 }

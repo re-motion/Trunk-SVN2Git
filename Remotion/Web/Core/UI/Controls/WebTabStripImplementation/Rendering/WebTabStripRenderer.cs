@@ -48,16 +48,15 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      var visibleTabs = renderingContext.Control.GetVisibleTabs ();
-
       RenderBeginTabsPane (renderingContext);
-      for (int i = 0; i < visibleTabs.Count; i++)
+
+      var webTabRenderers = renderingContext.WebTabRenderers;
+      for (int i = 0; i < webTabRenderers.Length; i++)
       {
-        bool isLast = i == (visibleTabs.Count - 1);
-        var tab = visibleTabs[i];
-        RenderTab (renderingContext, tab, isLast);
+        bool isLast = i == (webTabRenderers.Length - 1);
+        RenderTab (renderingContext, webTabRenderers[i], isLast);
       }
+      
       RenderEndTabsPane (renderingContext);
       RenderClearingPane (renderingContext);
       renderingContext.Writer.RenderEndTag ();
@@ -106,13 +105,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderTab (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isLast)
+    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer ();
-
-      bool isEnabled = !tab.IsSelected || renderingContext.Control.EnableSelectedTab;
-      WebTabStyle style = tab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      tabRenderer.Render (renderingContext, tab, isEnabled, isLast, style);
+      bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
+      WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
+      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, isLast, style);
 
       renderingContext.Writer.WriteLine ();
     }

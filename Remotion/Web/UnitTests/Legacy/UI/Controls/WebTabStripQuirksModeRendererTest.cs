@@ -41,20 +41,19 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private IWebTabStrip _webTabStrip;
     private WebTabStripQuirksModeRenderer _renderer;
     private IPage _pageStub;
-    private IWebTab _tab0;
+    private IWebTab _tab0, _tab1, _tab2, _tab3;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
-    private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
     public void SetUp ()
     {
-      _htmlHelper = new HtmlHelper ();
-      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+      _htmlHelper = new HtmlHelper();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
-      _webTabStrip.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
+      _webTabStrip.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _pageStub = MockRepository.GenerateStub<IPage>();
       var clientScriptStub = MockRepository.GenerateStub<IClientScriptManager>();
@@ -71,22 +70,33 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _webTabStrip.Stub (stub => stub.TabStyle).Return (new WebTabStyle());
       _webTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
-      _resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory> ();
+      MockRepository.GenerateStub<IResourceUrlFactory>();
     }
 
     [Test]
     public void RenderEmptyStrip ()
     {
-      AssertControl (false, true, false, 0);
+      var renderingContext = new WebTabStripRenderingContext (_httpContextStub, _htmlHelper.Writer, _webTabStrip, new WebTabRendererAdapter[0]);
+      AssertControl (false, true, false, 0, renderingContext);
     }
 
     [Test]
     public void RenderPopulatedStrip ()
     {
       PopulateTabStrip();
-      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
 
-      AssertControl (false, false, false, 4);
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (false, false, false, 4, renderingContext);
     }
 
     [Test]
@@ -94,9 +104,19 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       _webTabStrip.CssClass = "SomeCssClass";
       PopulateTabStrip();
-      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
 
-      AssertControl (true, false, false, 4);
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (true, false, false, 4, renderingContext);
     }
 
     [Test]
@@ -105,17 +125,38 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _webTabStrip.Stub (stub => stub.EnableSelectedTab).Return (true);
 
       PopulateTabStrip();
-      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
 
-      AssertControl (false, false, false, 4);
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (false, false, false, 4, renderingContext);
     }
 
     [Test]
     public void RenderPopulatedStripWithDisabledTab ()
     {
       PopulateTabStrip();
-      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (false);
-      AssertControl (false, false, false, 4);
+      _tab0.Stub (stub => stub.EvaluateEnabled()).Return (false);
+
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (false, false, false, 4, renderingContext);
     }
 
     [Test]
@@ -124,7 +165,17 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       PopulateTabStrip();
       _webTabStrip.GetVisibleTabs().RemoveAt (2);
 
-      AssertControl (false, false, false, 3);
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (false, false, false, 3, renderingContext);
     }
 
     [Test]
@@ -132,7 +183,13 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       _webTabStrip.Stub (stub => stub.IsDesignMode).Return (true);
 
-      AssertControl (false, true, true, 0);
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new WebTabRendererAdapter[0]);
+
+      AssertControl (false, true, true, 0, renderingContext);
     }
 
     [Test]
@@ -140,7 +197,18 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       _webTabStrip.Stub (stub => stub.IsDesignMode).Return (true);
       PopulateTabStrip();
-      AssertControl (false, true, true, 4);
+
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3)
+          });
+
+      AssertControl (false, true, true, 4, renderingContext);
     }
 
     private void PopulateTabStrip ()
@@ -149,44 +217,44 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0.Stub (stub => stub.ItemID).Return ("Tab0");
       _tab0.Stub (stub => stub.Text).Return ("First Tab");
       _tab0.Stub (stub => stub.Icon).Return (new IconInfo());
-      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
-      _tab0.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink(_webTabStrip, _tab0.ItemID));
-      _tab0.Stub (stub => stub.GetRenderer ()).IgnoreArguments().Return (new WebTabRenderer ());
+      _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
+      _tab0.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab0.ItemID));
+      _tab0.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
 
-      var tab1 = MockRepository.GenerateStub<IWebTab> ();
-      tab1.Stub (stub => stub.ItemID).Return ("Tab1");
-      tab1.Stub (stub => stub.Text).Return ("Second Tab");
-      tab1.Stub (stub => stub.Icon).Return (new IconInfo ("~/myImageUrl"));
-      tab1.Stub (stub => stub.EvaluateEnabled ()).Return (true);
-      tab1.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
-      tab1.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
+      _tab1 = MockRepository.GenerateStub<IWebTab>();
+      _tab1.Stub (stub => stub.ItemID).Return ("Tab1");
+      _tab1.Stub (stub => stub.Text).Return ("Second Tab");
+      _tab1.Stub (stub => stub.Icon).Return (new IconInfo ("~/myImageUrl"));
+      _tab1.Stub (stub => stub.EvaluateEnabled()).Return (true);
+      _tab1.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab1.ItemID));
+      _tab1.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
 
-      var tab2 = MockRepository.GenerateStub<IWebTab> ();
-      tab2.Stub (stub => stub.ItemID).Return ("Tab2");
-      tab2.Stub (stub => stub.Text).Return ("Third Tab");
-      tab2.Stub (stub => stub.Icon).Return (null);
-      tab2.Stub (stub => stub.EvaluateEnabled ()).Return (true);
-      tab2.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
-      tab2.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
+      _tab2 = MockRepository.GenerateStub<IWebTab>();
+      _tab2.Stub (stub => stub.ItemID).Return ("Tab2");
+      _tab2.Stub (stub => stub.Text).Return ("Third Tab");
+      _tab2.Stub (stub => stub.Icon).Return (null);
+      _tab2.Stub (stub => stub.EvaluateEnabled()).Return (true);
+      _tab2.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab2.ItemID));
+      _tab2.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
 
-      var tab3 = MockRepository.GenerateStub<IWebTab> ();
-      tab3.Stub (stub => stub.ItemID).Return ("Tab3");
-      tab3.Stub (stub => stub.Text).Return (null);
-      tab3.Stub (stub => stub.Icon).Return (null);
-      tab3.Stub (stub => stub.EvaluateEnabled ()).Return (true);
-      tab3.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
-      tab3.Stub (stub => stub.GetRenderer ()).IgnoreArguments ().Return (new WebTabRenderer ());
+      _tab3 = MockRepository.GenerateStub<IWebTab>();
+      _tab3.Stub (stub => stub.ItemID).Return ("Tab3");
+      _tab3.Stub (stub => stub.Text).Return (null);
+      _tab3.Stub (stub => stub.Icon).Return (null);
+      _tab3.Stub (stub => stub.EvaluateEnabled()).Return (true);
+      _tab3.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab3.ItemID));
+      _tab3.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);
-      _webTabStrip.GetVisibleTabs().Add (tab1);
-      _webTabStrip.GetVisibleTabs().Add (tab2);
-      _webTabStrip.GetVisibleTabs().Add (tab3);
+      _webTabStrip.GetVisibleTabs().Add (_tab1);
+      _webTabStrip.GetVisibleTabs().Add (_tab2);
+      _webTabStrip.GetVisibleTabs().Add (_tab3);
     }
 
-    private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
+    private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory(new ResourceTheme.ClassicBlue()));
-      _renderer.Render (new WebTabStripRenderingContext (_httpContextStub, _htmlHelper.Writer, _webTabStrip));
+      _renderer = new WebTabStripQuirksModeRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+      _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();
       XmlNode list = GetAssertedTabList (document, withCssClass, isEmpty, tabCount, isDesignMode);

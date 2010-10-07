@@ -198,6 +198,8 @@
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\IWebButtonRenderer.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\WebButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRenderer.cs" />
+    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabRendererAdapter.cs" />
+    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabRendererAdapterArrayBuilder.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRenderingContext.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\IWebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderingContext.cs" />
