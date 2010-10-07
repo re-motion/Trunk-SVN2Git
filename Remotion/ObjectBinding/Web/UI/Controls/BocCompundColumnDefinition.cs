@@ -112,9 +112,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      var columnRendererFactory = serviceLocator.GetInstance<IBocCompoundColumnRendererFactory> ();
-
-      return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator, columnIndex);
+      return serviceLocator.GetInstance<IBocCompoundColumnRenderer> ();
     }
 
     /// <summary> Gets or sets the text displayed in the column title. Must not be empty or <see langword="null"/>. </summary>

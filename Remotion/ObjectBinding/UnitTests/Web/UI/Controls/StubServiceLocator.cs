@@ -66,7 +66,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
               new BocListMenuBlockRenderer (bocListCssClassDefinition)));
 
       _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
-      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory (bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocCompoundColumnRenderer),
+          new BocCompoundColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (
           typeof (IBocCommandColumnRenderer),
           new BocCommandColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));

@@ -31,7 +31,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   public class BocColumnQuirksModeRendererFactory
       :
           IBocSimpleColumnRendererFactory,
-          IBocCompoundColumnRendererFactory,
           IBocCustomColumnRendererFactory,
           IBocDropDownMenuColumnRendererFactory,
           IBocRowEditModeColumnRendererFactory

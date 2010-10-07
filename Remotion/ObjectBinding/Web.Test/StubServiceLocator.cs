@@ -48,8 +48,12 @@ namespace OBWTest
               new BocListMenuBlockRenderer (new BocListCssClassDefinition())));
 
       _instances.Add (typeof (IBocSimpleColumnRendererFactory), new BocSimpleColumnRendererFactory (bocListCssClassDefinition));
-      _instances.Add (typeof (IBocCompoundColumnRendererFactory), new BocCompoundColumnRendererFactory (bocListCssClassDefinition));
-      _instances.Add (typeof (IBocCommandColumnRenderer), new BocCommandColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocCompoundColumnRenderer),
+          new BocCompoundColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
+      _instances.Add (
+          typeof (IBocCommandColumnRenderer),
+          new BocCommandColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()), bocListCssClassDefinition));
       _instances.Add (typeof (IBocCustomColumnRendererFactory), new BocCustomColumnRendererFactory (bocListCssClassDefinition));
       _instances.Add (typeof (IBocRowEditModeColumnRendererFactory), new BocRowEditModeColumnRendererFactory (bocListCssClassDefinition));
       _instances.Add (typeof (IBocDropDownMenuColumnRendererFactory), new BocDropDownMenuColumnRendererFactory (bocListCssClassDefinition));
