@@ -17,10 +17,12 @@
 using System;
 using System.Web.UI;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Factories;
 using Rhino.Mocks;
@@ -58,6 +60,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _renderingContext =
           new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+    }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (Column.GetRenderer (new DefaultServiceLocator()).IsNull, Is.False);
     }
 
     [Test]

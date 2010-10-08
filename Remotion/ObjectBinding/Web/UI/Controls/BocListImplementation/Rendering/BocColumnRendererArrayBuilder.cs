@@ -73,10 +73,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         if (IsColumnVisible (columnDefinition))
         {
           var columnRenderer = columnDefinition.GetRenderer (_serviceLocator);
-          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, true, columnIndex, showIcon, sortingDirection, orderIndex));
+          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, columnIndex, showIcon, sortingDirection, orderIndex));
         }
         else
-          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, false, columnIndex, false, sortingDirection, orderIndex));
+          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, columnIndex, false, sortingDirection, orderIndex));
 
         if (columnDefinition is BocValueColumnDefinition)
           firstValueColumnRendered = true;

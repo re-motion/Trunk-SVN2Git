@@ -60,6 +60,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _cssClasses = cssClasses;
     }
 
+    public bool IsNull
+    {
+      get { return false; }
+    }
+
     public IResourceUrlFactory ResourceUrlFactory
     {
       get { return _resourceUrlFactory; }
@@ -278,5 +283,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon);
+    
   }
 }

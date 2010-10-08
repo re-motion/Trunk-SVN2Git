@@ -48,7 +48,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                              new BocColumnRenderer (
                                  new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())),
                                  stubColumnDefinition,
-                                 true,
                                  0,
                                  false,
                                  SortingDirection.Ascending,

@@ -63,6 +63,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _cssClasses = cssClasses;
     }
 
+    public bool IsNull
+    {
+      get { return false; }
+    }
+
     public BocListQuirksModeCssClassDefinition CssClasses
     {
       get { return _cssClasses; }
@@ -296,5 +301,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon);
+    
   }
 }

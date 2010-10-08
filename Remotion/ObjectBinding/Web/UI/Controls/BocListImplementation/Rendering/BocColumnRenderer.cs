@@ -23,7 +23,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   {
     private readonly IBocColumnRenderer _columnRenderer;
     private readonly BocColumnDefinition _columnDefinition;
-    private readonly bool _isVisibleColumn;
     private readonly int _columnIndex;
     private readonly bool _showIcon;
     private readonly SortingDirection _sortingDirection;
@@ -32,7 +31,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public BocColumnRenderer (
         IBocColumnRenderer columnRenderer,
         BocColumnDefinition columnDefinition,
-        bool isVisibleColumn,
         int columnIndex,
         bool showIcon,
         SortingDirection sortingDirection,
@@ -43,7 +41,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       _columnRenderer = columnRenderer;
       _columnDefinition = columnDefinition;
-      _isVisibleColumn = isVisibleColumn;
       _columnIndex = columnIndex;
       _showIcon = showIcon;
       _sortingDirection = sortingDirection;
@@ -57,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     public bool IsVisibleColumn
     {
-      get { return _isVisibleColumn; }
+      get { return !_columnRenderer.IsNull; }
     }
 
     public int ColumnIndex

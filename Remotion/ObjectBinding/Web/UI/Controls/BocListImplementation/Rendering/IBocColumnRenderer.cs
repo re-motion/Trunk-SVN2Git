@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// <summary>
   /// Interface for classes able to render table cells from a column definition derived from <see cref="BocColumnDefinition"/>.
   /// </summary>
-  public interface IBocColumnRenderer
+  public interface IBocColumnRenderer : INullObject
   {
     /// <summary>
     /// Renders a table header cell for a <see cref="BocColumnDefinition"/> including title and sorting controls.

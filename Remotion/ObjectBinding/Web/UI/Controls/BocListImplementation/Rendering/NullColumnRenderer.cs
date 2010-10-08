@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class NullColumnRenderer : INullObject, IBocColumnRenderer
+  public class NullColumnRenderer : IBocColumnRenderer
   {
     public bool IsNull
     {

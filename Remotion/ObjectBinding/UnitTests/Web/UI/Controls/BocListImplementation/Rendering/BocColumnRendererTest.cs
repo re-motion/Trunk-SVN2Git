@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       _columnDefinition = new StubColumnDefinition();
       _columnRenderMock = MockRepository.GenerateStrictMock<IBocColumnRenderer>();
-      _columnRendererAdapter = new BocColumnRenderer (_columnRenderMock, _columnDefinition, true, 0, true, SortingDirection.None, 0);
+      _columnRendererAdapter = new BocColumnRenderer (_columnRenderMock, _columnDefinition, 0, true, SortingDirection.None, 0);
       _htmlTextWriterStub = MockRepository.GenerateStub<HtmlTextWriter> ();
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
       _bocListStub = MockRepository.GenerateStub<IBocList>();

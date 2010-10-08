@@ -49,7 +49,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                              new BocColumnRenderer (
                                  new StubColumnQuirksModeRenderer (),
                                  stubColumnDefinition,
-                                 true,
                                  0,
                                  false,
                                  SortingDirection.Ascending,
