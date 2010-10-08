@@ -222,6 +222,8 @@
     <Compile Include="Core\UI\Controls\WebButtonImplementation\IWebButtonRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\IWebTabRendererTest.cs" />
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\IWebTabStripRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\WebTabRendererAdapterArrayBuilderTest.cs" />
+    <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\WebTabRendererAdapterTest.cs" />
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">

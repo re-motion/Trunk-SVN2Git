@@ -20,6 +20,7 @@ using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -53,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (StubColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (StubColumnRenderer)));
       Assert.That (bocColumnRenderers[0].ColumnDefinition, Is.SameAs (_stubColumnDefinition));
       Assert.That (bocColumnRenderers[0].ColumnIndex, Is.EqualTo (0));
     }
@@ -187,7 +188,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -202,7 +203,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -217,7 +218,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -232,7 +233,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -247,7 +248,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -261,7 +262,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -277,7 +278,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -293,7 +294,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -309,7 +310,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -324,7 +325,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -339,7 +340,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -353,7 +354,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -368,7 +369,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
     }
 
     [Test]
@@ -383,7 +384,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
+      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
     }
   }
 }

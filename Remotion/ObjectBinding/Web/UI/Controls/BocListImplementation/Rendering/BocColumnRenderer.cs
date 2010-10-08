@@ -50,11 +50,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _orderIndex = orderIndex;
     }
 
-    public IBocColumnRenderer ColumnRenderer
-    {
-      get { return _columnRenderer; }
-    }
-
     public BocColumnDefinition ColumnDefinition
     {
       get { return _columnDefinition; }

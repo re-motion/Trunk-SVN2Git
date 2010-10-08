@@ -35,11 +35,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       _isLast = isLast;
     }
 
-    public IWebTabRenderer WebTabRenderer
-    {
-      get { return _webTabRenderer; }
-    }
-
     public IWebTab WebTab
     {
       get { return _webTab; }
