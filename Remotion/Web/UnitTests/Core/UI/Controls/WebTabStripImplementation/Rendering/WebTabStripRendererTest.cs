@@ -93,8 +93,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -113,8 +113,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (true, false, false, 4, renderingContext);
@@ -134,8 +134,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -153,8 +153,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -172,8 +172,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (false, false, false, 3, renderingContext);
@@ -204,8 +204,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1),
-              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3)
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab0, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab1, false),
+              new WebTabRendererAdapter (new MenuTabRenderer(), _tab2, false), new WebTabRendererAdapter (new MenuTabRenderer(), _tab3, true)
           });
 
       AssertControl (false, true, true, 4, renderingContext);

@@ -50,12 +50,8 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
       RenderBeginTabsPane (renderingContext);
 
-      var webTabRenderers = renderingContext.WebTabRenderers;
-      for (int i = 0; i < webTabRenderers.Length; i++)
-      {
-        bool isLast = i == (webTabRenderers.Length - 1);
-        RenderTab (renderingContext, webTabRenderers[i], isLast);
-      }
+      foreach (var webTabRenderer in renderingContext.WebTabRenderers)
+        RenderTab (renderingContext, webTabRenderer);
       
       RenderEndTabsPane (renderingContext);
       RenderClearingPane (renderingContext);
@@ -105,11 +101,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter, bool isLast)
+    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter)
     {
       bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
       WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, isLast, style);
+      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, style);
 
       renderingContext.Writer.WriteLine ();
     }

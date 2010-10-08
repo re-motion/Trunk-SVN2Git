@@ -34,9 +34,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     public WebTabRendererAdapter[] GetWebTabRenderers ()
     {
       var rendererAdapters = new List<WebTabRendererAdapter>();
-      foreach (var webTab in _webTabs)
+      for (int i = 0; i < _webTabs.Length; i++)
       {
-        rendererAdapters.Add (new WebTabRendererAdapter (webTab.GetRenderer(), webTab));
+        var webTab = _webTabs[i];
+        var isLast = i == (_webTabs.Length - 1);
+        rendererAdapters.Add (new WebTabRendererAdapter (webTab.GetRenderer(), webTab, isLast));
       }
       return rendererAdapters.ToArray();
     }

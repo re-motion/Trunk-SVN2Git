@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
@@ -66,13 +65,9 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       RenderBeginTabsPane (renderingContext);
 
-      var tabRendererAdapters = renderingContext.WebTabRenderers;
-      for (int i = 0; i < tabRendererAdapters.Length; i++)
-      {
-        bool isLast = i == (tabRendererAdapters.Length - 1);
-        var tab = tabRendererAdapters[i];
-        RenderTab (renderingContext, tab, isLast);
-      }
+      foreach (var webTabRenderer in renderingContext.WebTabRenderers)
+        RenderTab (renderingContext, webTabRenderer);
+      
       RenderEndTabsPane (renderingContext);
       renderingContext.Writer.RenderEndTag ();
     }
@@ -113,11 +108,11 @@ namespace Remotion.Web.Legacy.UI.Controls
       renderingContext.Writer.RenderEndTag (); // End Div
     }
 
-    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter, bool isLast)
+    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter)
     {
       bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
       WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, isLast, style);
+      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, style);
 
       renderingContext.Writer.WriteLine ();
     }
