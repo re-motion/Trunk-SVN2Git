@@ -35,19 +35,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     private StubColumnDefinition _stubColumnDefinition;
     private IServiceLocator _serviceLocator;
-    private HttpContextBase _httpContextStub;
-    private IBocList _bocListStub;
     private WcagHelper _wcagHelperStub;
 
     [SetUp]
     public void SetUp ()
     {
       _serviceLocator = new DefaultServiceLocator();
-      _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
-      _bocListStub = MockRepository.GenerateStub<IBocList>();
-
       _stubColumnDefinition = new StubColumnDefinition();
-
       _wcagHelperStub = MockRepository.GenerateStub<WcagHelper>();
     }
 
@@ -56,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (StubColumnRenderer)));
@@ -72,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.None));
@@ -87,7 +81,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -102,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -128,7 +122,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (3));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -145,7 +139,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.False);
@@ -157,7 +151,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.True);
@@ -173,7 +167,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               _wcagHelperStub);
       builder.EnableIcon = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (3));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.True);
@@ -190,7 +184,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -205,7 +199,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -220,7 +214,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -235,7 +229,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -250,7 +244,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -264,7 +258,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -280,7 +274,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -296,7 +290,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -312,7 +306,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -327,7 +321,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));
@@ -342,7 +336,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -356,7 +350,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -371,7 +365,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.TypeOf (typeof (NullColumnRenderer)));
@@ -386,7 +380,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers (_httpContextStub, _bocListStub);
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
       Assert.That (bocColumnRenderers[0].ColumnRenderer, Is.Not.TypeOf (typeof (NullColumnRenderer)));

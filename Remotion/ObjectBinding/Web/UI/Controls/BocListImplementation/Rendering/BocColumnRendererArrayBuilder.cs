@@ -50,8 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public bool HasSortingKeys { get; set; }
     public ArrayList SortingOrder { get; set; }
     
-    public BocColumnRenderer[] CreateColumnRenderers (HttpContextBase context, IBocList list)
-        //TODO: remove these parameters as soon as the renderers are stateless
+    public BocColumnRenderer[] CreateColumnRenderers ()
     {
       var sortingDirections = new Dictionary<int, SortingDirection> ();
       var sortingOrder = new List<int> ();

@@ -2082,9 +2082,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       columnRendererBuilder.HasSortingKeys = HasSortingKeys;
       columnRendererBuilder.SortingOrder = _sortingOrder;
 
-      //TODO: other properties
-
-      return columnRendererBuilder.CreateColumnRenderers (Context, this);
+      return columnRendererBuilder.CreateColumnRenderers ();
     }
 
     /// <summary>
