@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       _indexColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
       _selectorColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
 
-      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject) { IsOddRow = isOddRow };
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject, true, isOddRow);
       renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
 
       RenderDataCells (renderingContext, rowIndex, dataRowRenderEventArgs);

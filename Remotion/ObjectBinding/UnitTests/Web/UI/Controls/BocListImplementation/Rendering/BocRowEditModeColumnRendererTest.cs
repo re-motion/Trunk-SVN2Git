@@ -40,8 +40,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       base.SetUp();
 
-      EventArgs.IsEditableRow = true;
-
+      EventArgs = new BocListDataRowRenderEventArgs (EventArgs.ListIndex, EventArgs.BusinessObject, true, EventArgs.IsOddRow);
+      
       List.Stub (mock => mock.EnableClientScript).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
       List.Stub (mock => mock.IsReadOnly).Return (false);
@@ -59,7 +59,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderEditable ()
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
-      EventArgs.IsEditableRow = true;
+      
+      EventArgs = new BocListDataRowRenderEventArgs (EventArgs.ListIndex, EventArgs.BusinessObject, true, EventArgs.IsOddRow);
+      
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

@@ -113,15 +113,30 @@ public delegate void BocListDataRowRenderEventHandler (object sender, BocListDat
 
 public class BocListDataRowRenderEventArgs: BocListItemEventArgs
 {
-  public BocListDataRowRenderEventArgs (int listIndex, IBusinessObject businessObject)
+  private bool _isEditableRow;
+  private readonly bool _isOddRow;
+
+  public BocListDataRowRenderEventArgs (int listIndex, IBusinessObject businessObject, bool isEditableRow, bool isOddRow)
     : base (listIndex, businessObject)
   {
-    IsEditableRow = true;
-    IsOddRow = true;
+    _isEditableRow = isEditableRow;
+    _isOddRow = isOddRow;
   }
 
-  public bool IsEditableRow { get; set; }
-  public bool IsOddRow { get; set; }
+  public bool IsEditableRow
+  {
+    get { return _isEditableRow; }
+  }
+
+  public bool IsOddRow
+  {
+    get { return _isOddRow; }
+  }
+
+  public void SetRowReadonly ()
+  {
+    _isEditableRow = false;
+  }
 }
 
 }

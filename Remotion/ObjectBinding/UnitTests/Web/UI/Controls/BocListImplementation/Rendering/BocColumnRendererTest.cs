@@ -74,9 +74,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderDataCell ()
     {
-      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (0, null);
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (0, null, true, true);
 
-      _columnRenderMock.Expect (mock => mock.RenderDataCell (_renderingContext, 0,true, dataRowRenderEventArgs));
+      _columnRenderMock.Expect (mock => mock.RenderDataCell (_renderingContext, 0, true, dataRowRenderEventArgs));
       _columnRenderMock.Replay ();
 
       _columnRendererAdapter.RenderDataCell (_renderingContext, 0, dataRowRenderEventArgs);
