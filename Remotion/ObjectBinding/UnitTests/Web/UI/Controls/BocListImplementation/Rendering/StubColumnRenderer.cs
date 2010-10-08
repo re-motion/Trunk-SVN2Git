@@ -40,7 +40,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
         BocColumnRenderingContext<StubColumnDefinition> renderingContext,
         int rowIndex,
         bool showIcon,
-        bool isVisibleColumn,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);

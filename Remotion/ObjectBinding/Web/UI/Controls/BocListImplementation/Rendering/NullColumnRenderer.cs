@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -39,7 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         BocColumnRenderingContext renderingContext,
         int rowIndex,
         bool showIcon,
-        bool isVisibleColumn,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
     }

@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       IBocColumnRenderer renderer = new BocCompoundColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);

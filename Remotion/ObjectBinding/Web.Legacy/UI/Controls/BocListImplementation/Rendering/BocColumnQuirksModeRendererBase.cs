@@ -215,14 +215,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         BocColumnRenderingContext renderingContext,
         int rowIndex,
         bool showIcon,
-        bool isVisibleColumn,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       RenderDataCell (
           new BocColumnRenderingContext<TBocColumnDefinition>(renderingContext),
           rowIndex,
           showIcon,
-          isVisibleColumn,
           dataRowRenderEventArgs);
     }
 
@@ -233,7 +231,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{TBocColumnDefinition}"/>.</param>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
-    /// <param name="isVisibleColumn">Specifies if the column of the datacell is visible.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
     /// <remarks>
     /// This is a template method. Deriving classes must implement <see cref="RenderCellContents"/> to provide the contents of
@@ -243,14 +240,10 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
         int rowIndex,
         bool showIcon,
-        bool isVisibleColumn,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
-
-      if (!isVisibleColumn)
-        return;
 
       string cssClassTableCell = CssClasses.GetDataCell (dataRowRenderEventArgs.IsOddRow);
 

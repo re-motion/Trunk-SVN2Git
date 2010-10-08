@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       renderingContext.Writer.RenderEndTag();
     }
 
-    public override void RenderDataCell (BocColumnRenderingContext<StubColumnDefinition> renderingContext, int rowIndex, bool showIcon, bool IsVisibleColumn, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public override void RenderDataCell (BocColumnRenderingContext<StubColumnDefinition> renderingContext, int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       renderingContext.Writer.RenderEndTag();

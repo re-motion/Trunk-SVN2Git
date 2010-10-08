@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      _columnRenderer.RenderDataCell (renderingContext, rowIndex, _showIcon, _isVisibleColumn, dataRowRenderEventArgs);
+      _columnRenderer.RenderDataCell (renderingContext, rowIndex, _showIcon, dataRowRenderEventArgs);
     }
   }
 }

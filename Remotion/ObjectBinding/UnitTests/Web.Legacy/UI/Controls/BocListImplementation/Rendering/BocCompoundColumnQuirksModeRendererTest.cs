@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       IBocColumnRenderer renderer = new BocCompoundColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
 
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);

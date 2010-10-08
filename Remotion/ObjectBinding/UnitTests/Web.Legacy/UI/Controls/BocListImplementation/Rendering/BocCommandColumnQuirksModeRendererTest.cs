@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderBasicCell ()
     {
       var renderer = new BocCommandColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderIconCell ()
     {
       var renderer = new BocCommandColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, true, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, true, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
       var renderer = new BocCommandColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
 
       var renderer = new BocCommandColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 

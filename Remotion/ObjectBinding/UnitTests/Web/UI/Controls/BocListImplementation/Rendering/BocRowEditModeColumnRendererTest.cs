@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 

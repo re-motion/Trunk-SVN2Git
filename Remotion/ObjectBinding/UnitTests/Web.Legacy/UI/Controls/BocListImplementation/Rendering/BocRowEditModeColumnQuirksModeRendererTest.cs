@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer renderer = new BocRowEditModeColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, true, EventArgs);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
