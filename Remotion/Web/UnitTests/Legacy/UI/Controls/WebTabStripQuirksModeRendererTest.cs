@@ -26,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;

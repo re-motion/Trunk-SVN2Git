@@ -22,6 +22,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Remotion.Web.UnitTests.Core.UI.Controls;

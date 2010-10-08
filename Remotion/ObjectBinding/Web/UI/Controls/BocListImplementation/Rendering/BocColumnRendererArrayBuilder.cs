@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -55,14 +56,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var sortingOrder = new List<int> ();
       
       PrepareSorting (sortingDirections, sortingOrder);
-      
+      //var entries = SortingOrder.Where (e => e.Direction != SortingDirection.None).Select ((e, i) => new { Entry = e, OrderIndex = i }).ToDictionary (result.Entry.ColumnINdex, result);
+
       var firstValueColumnRendered = false;
       var bocColumnRenderers = new List<BocColumnRenderer> (_columnDefinitions.Length);
       for (int columnIndex = 0; columnIndex < _columnDefinitions.Length; columnIndex++)
       {
         var columnDefinition = _columnDefinitions[columnIndex];
         var showIcon = !firstValueColumnRendered && columnDefinition is BocValueColumnDefinition && EnableIcon;
-        
+
         var sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (columnIndex))
           sortingDirection = sortingDirections[columnIndex];
@@ -121,13 +123,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var columnAsDropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
       if (columnAsDropDownMenuColumn != null)
       {
-        if (_wcagHelper.IsWaiConformanceLevelARequired ())
-          return false;
-        return IsBrowserCapableOfScripting;
+        return IsColumnVisibleForBocDropDownMenuColumnDefinition (columnAsDropDownMenuColumn);
       }
 
       return true;
     }
 
+    private bool IsColumnVisibleForBocDropDownMenuColumnDefinition (BocDropDownMenuColumnDefinition column)
+    {
+      if (_wcagHelper.IsWaiConformanceLevelARequired ())
+        return false;
+      return IsBrowserCapableOfScripting;
+    }
   }
 }

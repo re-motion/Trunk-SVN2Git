@@ -15,13 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
   /// <summary>
   /// Implements <see cref="IWebTreeViewRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.

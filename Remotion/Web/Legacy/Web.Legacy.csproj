@@ -80,18 +80,18 @@
     <Compile Include="Infrastructure\Factories\QuirksModeResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\QuirksModeResourceUrlResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Controls\DatePickerButtonQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\DatePickerPageQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\DropDownMenuQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\ListMenuQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\QuirksModeClientScriptBehavior.cs" />
-    <Compile Include="UI\Controls\QuirksModeRendererBase.cs" />
-    <Compile Include="UI\Controls\SingleViewQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\TabbedMenuQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\TabbedMultiViewQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\WebButtonQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\WebTabStripQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\WebTreeViewQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButtonQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerPageQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\QuirksModeClientScriptBehavior.cs" />
+    <Compile Include="UI\Controls\Rendering\QuirksModeRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleViewQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiViewQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebButtonQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStripQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTreeViewQuirksModeRenderer.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>

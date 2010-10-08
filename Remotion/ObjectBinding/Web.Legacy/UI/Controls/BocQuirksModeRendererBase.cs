@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 

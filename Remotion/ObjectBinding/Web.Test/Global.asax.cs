@@ -37,8 +37,9 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Renderin
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.Configuration;
-using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.Legacy.UI.Controls.Rendering;
 
 namespace OBWTest
 {
@@ -69,6 +70,14 @@ namespace OBWTest
     {
       XmlConfigurator.Configure();
       PreferQuirksModeRendering = true;
+      bool useClassicBlueTheme = true;
+
+      if (useClassicBlueTheme)
+      {
+        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator();
+        defaultServiceLocator.Register (typeof (ResourceTheme), typeof (ResourceTheme.ClassicBlue), LifetimeKind.Singleton);
+        ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
+      }
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -97,15 +106,14 @@ namespace OBWTest
         }
 
         builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Rendering")).AsImplementedInterfaces ().SingleInstance ();
-        builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Controls")).AsImplementedInterfaces ().SingleInstance ();
-
+            .Where (t => t.Namespace.EndsWith (".Rendering") || t.Namespace.EndsWith (".Factories"))
+            .AsImplementedInterfaces().SingleInstance();
+        
         var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
         ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
 
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer>() is BocListQuirksModeRenderer); 
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer>() is BocListQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer>() is BocTextValueQuirksModeRenderer);
       }
     }
 

@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -22,7 +21,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
   public class DatePickerPageQuirksModeRenderer : IDatePickerPageRenderer
   {

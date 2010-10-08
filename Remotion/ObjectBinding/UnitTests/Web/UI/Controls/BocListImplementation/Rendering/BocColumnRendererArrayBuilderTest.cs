@@ -16,17 +16,14 @@
 // 
 using System;
 using System.Collections;
-using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -37,12 +34,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     private StubColumnDefinition _stubColumnDefinition;
     private IServiceLocator _serviceLocator;
     private WcagHelper _wcagHelperStub;
+    private StubValueColumnDefinition _stubValueColumnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _serviceLocator = new DefaultServiceLocator();
       _stubColumnDefinition = new StubColumnDefinition();
+      _stubValueColumnDefinition = new StubValueColumnDefinition();
       _wcagHelperStub = MockRepository.GenerateStub<WcagHelper>();
     }
 
@@ -60,9 +59,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledIsFalseAndHasSortingKeysIsFalse ()
+    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_False ()
     {
-      var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
+      var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = false;
@@ -75,9 +74,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledIsTrueAndHasSortingKeysIsFalse ()
+    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledTrue_And_HasSortingKeys_False ()
     {
-      var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
+      var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = false;
@@ -90,9 +89,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledIsFalseAndHasSortingKeysIsTrue ()
+    public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_True ()
     {
-      var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
+      var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = true;
@@ -109,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       var builder =
           new BocColumnRendererArrayBuilder (
-              new[] { new BocSimpleColumnDefinition(), new BocSimpleColumnDefinition(), new BocSimpleColumnDefinition() },
+              new[] { _stubColumnDefinition, new StubColumnDefinition(), new StubColumnDefinition(), new StubColumnDefinition() },
               _serviceLocator,
               _wcagHelperStub);
       builder.SortingOrder =
@@ -117,27 +116,61 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               new[]
               {
                   new BocListSortingOrderEntryMock (0, SortingDirection.Ascending), 
-                  new BocListSortingOrderEntryMock (1, SortingDirection.Descending),
-                  new BocListSortingOrderEntryMock (2, SortingDirection.None)
+                  new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
+                  new BocListSortingOrderEntryMock (3, SortingDirection.None)
               });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;
 
       var bocColumnRenderers = builder.CreateColumnRenderers ();
 
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (3));
+      Assert.That (bocColumnRenderers.Length, Is.EqualTo (4));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
       Assert.That (bocColumnRenderers[0].OrderIndex, Is.EqualTo (0));
-      Assert.That (bocColumnRenderers[1].SortingDirection, Is.EqualTo (SortingDirection.Descending));
-      Assert.That (bocColumnRenderers[1].OrderIndex, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[2].SortingDirection, Is.EqualTo (SortingDirection.None));
-      Assert.That (bocColumnRenderers[2].OrderIndex, Is.EqualTo (-1));
+      Assert.That (bocColumnRenderers[1].SortingDirection, Is.EqualTo (SortingDirection.None));
+      Assert.That (bocColumnRenderers[1].OrderIndex, Is.EqualTo (-1));
+      Assert.That (bocColumnRenderers[2].SortingDirection, Is.EqualTo (SortingDirection.Descending));
+      Assert.That (bocColumnRenderers[2].OrderIndex, Is.EqualTo (1));
+      Assert.That (bocColumnRenderers[3].SortingDirection, Is.EqualTo (SortingDirection.None));
+      Assert.That (bocColumnRenderers[3].OrderIndex, Is.EqualTo (-1));
     }
 
     [Test]
-    public void GetColumnRenderers_BocValueColumnDefinition_EnableIconIsFalse ()
+    public void GetColumnRenderers_PrepareSorting_SeveralMixedColumns ()
     {
-      var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
+      var builder =
+          new BocColumnRendererArrayBuilder (
+              new BocColumnDefinition[] { _stubColumnDefinition, new StubColumnDefinition (), new StubValueColumnDefinition (), new StubColumnDefinition () },
+              _serviceLocator,
+              _wcagHelperStub);
+      builder.SortingOrder =
+          new ArrayList (
+              new[]
+              {
+                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending), 
+                  new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
+                  new BocListSortingOrderEntryMock (3, SortingDirection.None)
+              });
+      builder.IsClientSideSortingEnabled = true;
+      builder.HasSortingKeys = true;
+
+      var bocColumnRenderers = builder.CreateColumnRenderers ();
+
+      Assert.That (bocColumnRenderers.Length, Is.EqualTo (4));
+      Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
+      Assert.That (bocColumnRenderers[0].OrderIndex, Is.EqualTo (0));
+      Assert.That (bocColumnRenderers[1].SortingDirection, Is.EqualTo (SortingDirection.None));
+      Assert.That (bocColumnRenderers[1].OrderIndex, Is.EqualTo (-1));
+      Assert.That (bocColumnRenderers[2].SortingDirection, Is.EqualTo (SortingDirection.Descending));
+      Assert.That (bocColumnRenderers[2].OrderIndex, Is.EqualTo (1));
+      Assert.That (bocColumnRenderers[3].SortingDirection, Is.EqualTo (SortingDirection.None));
+      Assert.That (bocColumnRenderers[3].OrderIndex, Is.EqualTo (-1));
+    }
+
+    [Test]
+    public void GetColumnRenderers_BocValueColumnDefinition_EnableIcon_False ()
+    {
+      var builder = new BocColumnRendererArrayBuilder (new[] { _stubValueColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = false;
 
       var bocColumnRenderers = builder.CreateColumnRenderers ();
@@ -147,9 +180,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetColumnRenderers_BocValueColumnDefinition_EnableIconIsTrue ()
+    public void GetColumnRenderers_BocValueColumnDefinition_EnableIcon_True ()
     {
-      var builder = new BocColumnRendererArrayBuilder (new[] { new BocSimpleColumnDefinition() }, _serviceLocator, _wcagHelperStub);
+      var builder = new BocColumnRendererArrayBuilder (new[] { _stubValueColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = true;
 
       var bocColumnRenderers = builder.CreateColumnRenderers ();
@@ -159,11 +192,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetColumnRenderers_SeveralBocValueColumnDefinitions_EnableIconIsTrue ()
+    public void GetColumnRenderers_SeveralBocValueColumnDefinitions_EnableIcon_True ()
     {
       var builder =
           new BocColumnRendererArrayBuilder (
-              new[] { new BocSimpleColumnDefinition(), new BocSimpleColumnDefinition(), new BocSimpleColumnDefinition() },
+              new[] { _stubValueColumnDefinition, new StubValueColumnDefinition(), new StubValueColumnDefinition() },
               _serviceLocator,
               _wcagHelperStub);
       builder.EnableIcon = true;
@@ -176,215 +209,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Assert.That (bocColumnRenderers[2].ShowIcon, Is.False);
     }
 
-    [Test]
-    public void IsColumnVisible_BocCommandColumnDefinition_IsWaiConformanceLevelARequiredIsTrueAndCommandTypeIsNone ()
-    {
-      var columnDefinition = new BocCommandColumnDefinition();
-      columnDefinition.Command = new BocListItemCommand (CommandType.None);
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocCommandColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndCommandTypeIsEvent ()
-    {
-      var columnDefinition = new BocCommandColumnDefinition();
-      columnDefinition.Command = new BocListItemCommand (CommandType.Event);
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocCommandColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndCommandTypeIsWxeFunction ()
-    {
-      var columnDefinition = new BocCommandColumnDefinition();
-      columnDefinition.Command = new BocListItemCommand (CommandType.WxeFunction);
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocCommandColumnDefinition_IsWaiConformanceLevelARequiredIsTrueAndCommandTypeIsEvent ()
-    {
-      var columnDefinition = new BocCommandColumnDefinition();
-      columnDefinition.Command = new BocListItemCommand (CommandType.Event);
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocCommandColumnDefinition_IsWaiConformanceLevelARequiredIsTrueAndCommandTypeIsWxeFunction ()
-    {
-      var columnDefinition = new BocCommandColumnDefinition();
-      columnDefinition.Command = new BocListItemCommand (CommandType.WxeFunction);
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsWaiConformanceLevelARequiredIsTrue ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndIsListReadOnlyIsTrueAndEditModeIsFalse ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      columnDefinition.Show = BocRowEditColumnDefinitionShow.Always;
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsListReadOnly = true;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndIsListReadOnlyIsFalseAndEditModeIsTrue ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      columnDefinition.Show = BocRowEditColumnDefinitionShow.EditMode;
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsListReadOnly = false;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndIsListReadOnlyIsTrueAndEditModeIsTrue ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      columnDefinition.Show = BocRowEditColumnDefinitionShow.EditMode;
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsListReadOnly = true;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsListEditModeActiveIsFalse ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsListEditModeActive = false;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocRowEditModeColumnDefinition_IsListEditModeActiveIsTrue ()
-    {
-      var columnDefinition = new BocRowEditModeColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsListEditModeActive = true;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocDropDownMenuColumnDefinition_IsWaiConformanceLevelARequiredIsTrue ()
-    {
-      var columnDefinition = new BocDropDownMenuColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (true);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocDropDownMenuColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndIBrowserCapableOfScriptingIsFalse ()
-    {
-      var columnDefinition = new BocDropDownMenuColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsBrowserCapableOfScripting = false;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.False);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (NullColumnRenderer)));
-    }
-
-    [Test]
-    public void IsColumnVisible_BocDropDownMenuColumnDefinition_IsWaiConformanceLevelARequiredIsFalseAndIBrowserCapableOfScriptingIsTrue ()
-    {
-      var columnDefinition = new BocDropDownMenuColumnDefinition();
-      var builder = new BocColumnRendererArrayBuilder (new[] { columnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.IsBrowserCapableOfScripting = true;
-
-      _wcagHelperStub.Stub (stub => stub.IsWaiConformanceLevelARequired()).Return (false);
-
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
-      Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
-      Assert.That (bocColumnRenderers[0].IsVisibleColumn, Is.True);
-      Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.Not.TypeOf (typeof (NullColumnRenderer)));
-    }
+    
   }
 }
