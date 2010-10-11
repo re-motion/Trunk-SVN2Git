@@ -262,6 +262,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (string propertyName)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
       ClassDefinition oppositeClassDefinition = GetOppositeClassDefinition (propertyName);
 
       if (oppositeClassDefinition == null)
