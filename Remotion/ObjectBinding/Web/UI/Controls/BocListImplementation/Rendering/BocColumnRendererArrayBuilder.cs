@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -104,28 +103,40 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var columnAsCommandColumn = column as BocCommandColumnDefinition;
       if (columnAsCommandColumn != null && columnAsCommandColumn.Command != null)
       {
-        if (_wcagHelper.IsWaiConformanceLevelARequired ()
-            && (columnAsCommandColumn.Command.Type == CommandType.Event || columnAsCommandColumn.Command.Type == CommandType.WxeFunction))
+        if (!IsColumnVisibleForBocCommandColumnDefinition(columnAsCommandColumn))
           return false;
       }
 
       var columnAsRowEditModeColumn = column as BocRowEditModeColumnDefinition;
       if (columnAsRowEditModeColumn != null)
       {
-        if (_wcagHelper.IsWaiConformanceLevelARequired ())
-          return false;
-        if (columnAsRowEditModeColumn.Show == BocRowEditColumnDefinitionShow.EditMode && IsListReadOnly)
-          return false;
-        if (IsListEditModeActive)
+        if (!IsColumnVisibleForBocRowEditModeColumnDefinition(columnAsRowEditModeColumn))
           return false;
       }
 
       var columnAsDropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
       if (columnAsDropDownMenuColumn != null)
-      {
         return IsColumnVisibleForBocDropDownMenuColumnDefinition (columnAsDropDownMenuColumn);
-      }
+      
+      return true;
+    }
 
+    private bool IsColumnVisibleForBocCommandColumnDefinition (BocCommandColumnDefinition columnAsCommandColumn)
+    {
+      if (_wcagHelper.IsWaiConformanceLevelARequired ()
+          && (columnAsCommandColumn.Command.Type == CommandType.Event || columnAsCommandColumn.Command.Type == CommandType.WxeFunction))
+        return false;
+      return true;
+    }
+
+    private bool IsColumnVisibleForBocRowEditModeColumnDefinition (BocRowEditModeColumnDefinition column)
+    {
+      if (_wcagHelper.IsWaiConformanceLevelARequired ())
+        return false;
+      if (column.Show == BocRowEditColumnDefinitionShow.EditMode && IsListReadOnly)
+        return false;
+      if (IsListEditModeActive)
+        return false;
       return true;
     }
 
@@ -135,5 +146,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         return false;
       return IsBrowserCapableOfScripting;
     }
+    
   }
 }
