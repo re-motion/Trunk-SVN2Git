@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public bool IsBrowserCapableOfScripting { get; set; }
     public bool IsClientSideSortingEnabled { get; set; }
     public bool HasSortingKeys { get; set; }
-    public ArrayList SortingOrder { get; set; }
+    public List<BocListSortingOrderEntry> SortingOrder { get; set; }
     
     public BocColumnRenderer[] CreateColumnRenderers ()
     {
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       if (IsClientSideSortingEnabled || HasSortingKeys)
       {
-        foreach (BocListSortingOrderEntry entry in SortingOrder)
+        foreach (var entry in SortingOrder)
         {
           sortingDirections[entry.ColumnIndex] = entry.Direction;
           if (entry.Direction != SortingDirection.None)

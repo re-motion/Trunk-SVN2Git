@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (PrivateInvoke.GetNonPublicField (bocColumnRenderers[0], "_columnRenderer"), Is.TypeOf (typeof (StubColumnRenderer)));
@@ -62,11 +62,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_False ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.None));
@@ -77,11 +77,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledTrue_And_HasSortingKeys_False ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -92,11 +92,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_True ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new ArrayList (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -112,17 +112,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               _serviceLocator,
               _wcagHelperStub);
       builder.SortingOrder =
-          new ArrayList (
+          new List<BocListSortingOrderEntry> (
               new[]
               {
-                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending), 
+                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending),
                   new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
                   new BocListSortingOrderEntryMock (3, SortingDirection.None)
               });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (4));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -140,21 +140,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       var builder =
           new BocColumnRendererArrayBuilder (
-              new BocColumnDefinition[] { _stubColumnDefinition, new StubColumnDefinition (), new StubValueColumnDefinition (), new StubColumnDefinition () },
+              new BocColumnDefinition[]
+              { _stubColumnDefinition, new StubColumnDefinition(), new StubValueColumnDefinition(), new StubColumnDefinition() },
               _serviceLocator,
               _wcagHelperStub);
       builder.SortingOrder =
-          new ArrayList (
+          new List<BocListSortingOrderEntry> (
               new[]
               {
-                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending), 
+                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending),
                   new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
                   new BocListSortingOrderEntryMock (3, SortingDirection.None)
               });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (4));
       Assert.That (bocColumnRenderers[0].SortingDirection, Is.EqualTo (SortingDirection.Ascending));
@@ -173,7 +174,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubValueColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = false;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.False);
@@ -185,7 +186,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubValueColumnDefinition }, _serviceLocator, _wcagHelperStub);
       builder.EnableIcon = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (1));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.True);
@@ -201,14 +202,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
               _wcagHelperStub);
       builder.EnableIcon = true;
 
-      var bocColumnRenderers = builder.CreateColumnRenderers ();
+      var bocColumnRenderers = builder.CreateColumnRenderers();
 
       Assert.That (bocColumnRenderers.Length, Is.EqualTo (3));
       Assert.That (bocColumnRenderers[0].ShowIcon, Is.True);
       Assert.That (bocColumnRenderers[1].ShowIcon, Is.False);
       Assert.That (bocColumnRenderers[2].ShowIcon, Is.False);
     }
-
-    
   }
 }

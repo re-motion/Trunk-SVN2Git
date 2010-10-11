@@ -2080,7 +2080,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       columnRendererBuilder.IsBrowserCapableOfScripting = IsBrowserCapableOfScripting;
       columnRendererBuilder.IsClientSideSortingEnabled = IsClientSideSortingEnabled;
       columnRendererBuilder.HasSortingKeys = HasSortingKeys;
-      columnRendererBuilder.SortingOrder = _sortingOrder;
+      columnRendererBuilder.SortingOrder = new List<BocListSortingOrderEntry>(_sortingOrder.OfType<BocListSortingOrderEntry>());
 
       return columnRendererBuilder.CreateColumnRenderers ();
     }
