@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
@@ -24,6 +23,11 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  /// <summary>
+  /// <see cref="BocColumnRendererArrayBuilder"/> is responsible to create a collection of <see cref="BocColumnRenderer"/>s for the given
+  /// <see cref="BocColumnDefinition"/>s. It exposes several properties which must be set to ensure that the right column renderers
+  /// are created and the correct sorting information gets prepared.
+  /// </summary>
   public class BocColumnRendererArrayBuilder
   {
     private readonly BocColumnDefinition[] _columnDefinitions;
@@ -55,8 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var sortingOrder = new List<int> ();
       
       PrepareSorting (sortingDirections, sortingOrder);
-      //var entries = SortingOrder.Where (e => e.Direction != SortingDirection.None).Select ((e, i) => new { Entry = e, OrderIndex = i }).ToDictionary (result.Entry.ColumnINdex, result);
-
+      
       var firstValueColumnRendered = false;
       var bocColumnRenderers = new List<BocColumnRenderer> (_columnDefinitions.Length);
       for (int columnIndex = 0; columnIndex < _columnDefinitions.Length; columnIndex++)
