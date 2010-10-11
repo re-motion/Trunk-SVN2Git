@@ -20,6 +20,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
+  /// <summary>
+  /// <see cref="WebTabRendererAdapterArrayBuilder"/> is responsible to create a collection of <see cref="WebTabRendererAdapter"/>s for the given
+  /// <see cref="IWebTab"/>s.
+  /// </summary>
   public class WebTabRendererAdapterArrayBuilder
   {
     private readonly IWebTab[] _webTabs;

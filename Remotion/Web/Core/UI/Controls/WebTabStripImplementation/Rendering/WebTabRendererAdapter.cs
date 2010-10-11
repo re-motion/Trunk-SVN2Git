@@ -19,6 +19,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
+  /// <summary>
+  /// <see cref="WebTabRendererAdapter"/> holds a <see cref="IWebTab"/> and it's corresponding <see cref="IWebTabRenderer"/>. It exposes a render 
+  /// method which delegates to the <see cref="IWebTabRenderer"/> to render a <see cref="IWebTabStrip"/> tab. 
+  /// </summary>
   public class WebTabRendererAdapter
   {
     private readonly IWebTabRenderer _webTabRenderer;
