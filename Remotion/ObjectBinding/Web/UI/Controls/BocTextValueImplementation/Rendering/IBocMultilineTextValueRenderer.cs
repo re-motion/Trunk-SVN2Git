@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -28,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   [ConcreteImplementation (typeof (BocMultilineTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocMultilineTextValueRenderer
   {
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, TextBoxStyle textBoxStyle);
     void Render (BocMultilineTextValueRenderingContext renderingContext);
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocMultilineTextValue control);
   }
 }

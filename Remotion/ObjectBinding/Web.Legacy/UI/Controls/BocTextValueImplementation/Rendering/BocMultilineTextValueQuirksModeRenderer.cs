@@ -38,15 +38,16 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IBocMultilineTextValue control)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, TextBoxStyle textBoxStyle)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      control.TextBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
+      textBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
 
       string styleKey = typeof (BocMultilineTextValueQuirksModeRenderer).FullName + "_Style";
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          control, typeof (BocMultilineTextValueQuirksModeRenderer), ResourceType.Html, "BocMultilineTextValue.css");
+
+      var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocMultilineTextValueQuirksModeRenderer), ResourceType.Html, "BocMultilineTextValue.css");
+      
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
