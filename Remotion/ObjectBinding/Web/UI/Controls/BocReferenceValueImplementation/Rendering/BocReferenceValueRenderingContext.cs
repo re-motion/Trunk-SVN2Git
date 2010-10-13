@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="BocReferenceValue"/>.
   /// </summary>
-  public class BocReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocReferenceValue>
+  public class BocReferenceValueRenderingContext : BocRenderingContext<IBocReferenceValue>
   {
     public BocReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocReferenceValue control)
         : base (httpContext, writer, control)

@@ -80,25 +80,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
-    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
+    protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<IBocReferenceValue> renderingContext)
     {
       DropDownList dropDownList = GetDropDownList (renderingContext);
       RenderEditModeValue (renderingContext, dropDownList);
     }
 
-    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
+    protected override sealed void RenderEditModeValueWithIntegratedOptionsMenu (BocRenderingContext<IBocReferenceValue> renderingContext)
     {
       DropDownList dropDownList = GetDropDownList (renderingContext);
       dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
       RenderEditModeValue (renderingContext, dropDownList);
     }
 
-    private void RenderEditModeValue (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext, DropDownList dropDownList)
+    private void RenderEditModeValue (BocRenderingContext<IBocReferenceValue> renderingContext, DropDownList dropDownList)
     {
       dropDownList.RenderControl (renderingContext.Writer);
     }
 
-    private DropDownList GetDropDownList (BocReferenceValueBaseRenderingContext<IBocReferenceValue> renderingContext)
+    private DropDownList GetDropDownList (BocRenderingContext<IBocReferenceValue> renderingContext)
     {
       var dropDownList = _dropDownListFactoryMethod ();
       dropDownList.ID = renderingContext.Control.DropDownListUniqueID;

@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
       base.Render (renderingContext);
     }
 
-    protected override Label GetLabel (BocTextValueBaseRenderingContext<IBocTextValue> renderingContext)
+    protected override Label GetLabel (BocRenderingContext<IBocTextValue> renderingContext)
     {
       Label label = new Label { Text = renderingContext.Control.Text };
       label.ID = renderingContext.Control.GetTextBoxClientID ();

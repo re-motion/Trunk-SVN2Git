@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  public class BocAutoCompleteReferenceValueRenderingContext : BocReferenceValueBaseRenderingContext<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueRenderingContext : BocRenderingContext<IBocAutoCompleteReferenceValue>
   {
     public BocAutoCompleteReferenceValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
         : base(httpContext, writer, control)

@@ -17,13 +17,11 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -52,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
     /// a textbox in edit mode.
     /// </summary>
-    public void Render (BocTextValueBaseRenderingContext<T> renderingContext)
+    public void Render (BocRenderingContext<T> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -94,7 +92,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     /// Creates a <see cref="TextBox"/> control to use for rendering the <see cref="BocTextValueBase"/> control in edit mode.
     /// </summary>
     /// <returns>A <see cref="TextBox"/> control with the all relevant properties set and all appropriate styles applied to it.</returns>
-    protected virtual TextBox GetTextBox (BocTextValueBaseRenderingContext<T> renderingContext)
+    protected virtual TextBox GetTextBox (BocRenderingContext<T> renderingContext)
     {
       TextBox textBox = new TextBox { Text = renderingContext.Control.Text };
       textBox.ID = renderingContext.Control.TextBoxID;
@@ -115,6 +113,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     /// Creates a <see cref="Label"/> control to use for rendering the <see cref="BocTextValueBase"/> control in read-only mode.
     /// </summary>
     /// <returns>A <see cref="Label"/> control with all relevant properties set and all appropriate styles applied to it.</returns>
-    protected abstract Label GetLabel (BocTextValueBaseRenderingContext<T> renderingContext);
+    protected abstract Label GetLabel (BocRenderingContext<T> renderingContext);
   }
 }

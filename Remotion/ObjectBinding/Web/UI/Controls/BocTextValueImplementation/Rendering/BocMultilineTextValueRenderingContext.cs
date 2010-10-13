@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="BocMultilineTextValue"/>.
   /// </summary>
-  public class BocMultilineTextValueRenderingContext : BocTextValueBaseRenderingContext<IBocMultilineTextValue>
+  public class BocMultilineTextValueRenderingContext : BocRenderingContext<IBocMultilineTextValue>
   {
     public BocMultilineTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocMultilineTextValue control)
         : base(httpContext, writer, control)

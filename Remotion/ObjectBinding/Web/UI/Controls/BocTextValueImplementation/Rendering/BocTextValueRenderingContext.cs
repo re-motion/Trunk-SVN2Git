@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="BocTextValue"/>.
   /// </summary>
-  public class BocTextValueRenderingContext : BocTextValueBaseRenderingContext<IBocTextValue>
+  public class BocTextValueRenderingContext : BocRenderingContext<IBocTextValue>
   {
     public BocTextValueRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocTextValue control)
         : base(httpContext, writer, control)

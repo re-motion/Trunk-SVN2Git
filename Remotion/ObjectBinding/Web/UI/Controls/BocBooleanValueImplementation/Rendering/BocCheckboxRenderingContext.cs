@@ -17,13 +17,14 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Groups all arguments required for rendering a <see cref="BocCheckBox"/>.
   /// </summary>
-  public class BocCheckboxRenderingContext : BocBooleanValueBaseRenderingContext<IBocCheckBox>
+  public class BocCheckboxRenderingContext : RenderingContext<IBocCheckBox>
   {
     public BocCheckboxRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocCheckBox control)
         : base(httpContext, writer, control)

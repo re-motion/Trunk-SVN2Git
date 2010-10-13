@@ -19,10 +19,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
     }
 
-    protected abstract void RenderEditModeValueWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<TControl> renderingContext);
-    protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<TControl> renderingContext);
+    protected abstract void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<TControl> renderingContext);
+    protected abstract void RenderEditModeValueWithIntegratedOptionsMenu (BocRenderingContext<TControl> renderingContext);
 
-    public void Render (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    public void Render (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Writer.RenderEndTag ();
     }
 
-    protected virtual void RenderContents (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    protected virtual void RenderContents (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         RenderContentsWithSeparateOptionsMenu (renderingContext);
     }
 
-    private void RenderContentsWithIntegratedOptionsMenu (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    private void RenderContentsWithIntegratedOptionsMenu (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
-    private void RenderContentsWithSeparateOptionsMenu (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    private void RenderContentsWithSeparateOptionsMenu (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       renderingContext.Writer.RenderEndTag ();
     }
 
-    public void RenderOptionsMenuTitle (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    public void RenderOptionsMenuTitle (BocRenderingContext<TControl> renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -133,7 +133,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
     }
 
-    private void RenderSeparateIcon (BocReferenceValueBaseRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderSeparateIcon (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         renderingContext.Writer.RenderEndTag ();
     }
 
-    private void RenderReadOnlyValue (BocReferenceValueBaseRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderReadOnlyValue (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
       Label label = GetLabel (renderingContext);
 
@@ -174,7 +174,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         renderingContext.Writer.RenderEndTag ();
     }
 
-    private Image GetIcon (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    private Image GetIcon (BocRenderingContext<TControl> renderingContext)
     {
       var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
       if (renderingContext.Control.EnableIcon && renderingContext.Control.Property != null)
@@ -201,7 +201,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return icon;
     }
 
-    private Label GetLabel (BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    private Label GetLabel (BocRenderingContext<TControl> renderingContext)
     {
       var label = new Label { ID = renderingContext.Control.LabelClientID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
       label.ApplyStyle (renderingContext.Control.CommonStyle);
@@ -210,13 +210,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return label;
     }
 
-    private bool IsEmbedInOptionsMenu(BocReferenceValueBaseRenderingContext<TControl> renderingContext)
+    private bool IsEmbedInOptionsMenu (BocRenderingContext<TControl> renderingContext)
     {
       return renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == true && renderingContext.Control.HasOptionsMenu
                || renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == null && renderingContext.Control.IsReadOnly && renderingContext.Control.HasOptionsMenu;
     }
 
-    private string GetCssClassInnerContent (BocReferenceValueBaseRenderingContext<TControl> renderingContext, bool hasIcon)
+    private string GetCssClassInnerContent (BocRenderingContext<TControl> renderingContext, bool hasIcon)
     {
       string cssClass = CssClassInnerContent;
 
