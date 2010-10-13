@@ -231,6 +231,7 @@
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\ITypeValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
@@ -768,7 +769,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mapping\Configuration\Validation\Logical\" />
-    <Folder Include="Mapping\Configuration\Validation\Persistence\" />
     <Folder Include="Mapping\Configuration\Validation\Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
