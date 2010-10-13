@@ -31,6 +31,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
   [TestFixture]
   public class BocMultilineTextValueRendererTest : BocTextValueRendererTestBase<IBocMultilineTextValue>
   {
+    private BocMultilineTextValueRenderer _renderer;
+    
     [SetUp]
     public void SetUp ()
     {
@@ -52,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      _renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
     }
 
     [Test]
@@ -145,16 +147,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       TextValue.Stub (mock => mock.Enabled).Return (!isDisabled);
 
-      ((IBocMultilineTextValueRenderer) Renderer).Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      _renderer.Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
       
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
       var span = Html.GetAssertedChildElement (document, "span", 0);
       Html.AssertAttribute (span, "id", "MyTextValue");
-      CheckCssClass (span, withCssClass, inStandardProperties);
+      CheckCssClass (_renderer, span, withCssClass, inStandardProperties);
       if (isDisabled)
-        Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (span, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Html.AssertChildElementCount (span, 1);
       var content = Html.GetAssertedChildElement (span, "span", 0);
@@ -175,15 +177,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      ((IBocMultilineTextValueRenderer) Renderer).Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      _renderer.Render (new BocMultilineTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
       var span = Html.GetAssertedChildElement (document, "span", 0);
       Html.AssertAttribute (span, "id", "MyTextValue");
-      CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+      CheckCssClass (_renderer, span, withCssClass, inStandardProperties);
+      Html.AssertAttribute (span, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertChildElementCount (span, 1);
       var content = Html.GetAssertedChildElement (span, "span", 0);
       Html.AssertAttribute (content, "class", "content");
