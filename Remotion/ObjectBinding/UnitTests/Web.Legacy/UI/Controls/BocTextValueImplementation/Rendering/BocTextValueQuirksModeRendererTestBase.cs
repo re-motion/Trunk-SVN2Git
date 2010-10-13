@@ -35,8 +35,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
     private readonly Unit _height = new Unit (17, UnitType.Point);
     private readonly Unit _width = new Unit (123, UnitType.Point);
     protected T TextValue { get; set; }
-    protected BocTextValueQuirksModeRendererBase<T> Renderer { get; set; }
-
+    
     protected Unit Height
     {
       get { return _height; }
@@ -47,9 +46,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueIm
       get { return _width; }
     }
 
-    protected void CheckCssClass (XmlNode span, bool withCssClass, bool inStandardProperties)
+    protected void CheckCssClass (BocTextValueQuirksModeRendererBase<T> renderer, XmlNode span, bool withCssClass, bool inStandardProperties)
     {
-      string cssClass = Renderer.CssClassBase;
+      string cssClass = renderer.CssClassBase;
       if (withCssClass)
       {
         if (inStandardProperties)
