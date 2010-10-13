@@ -1551,7 +1551,14 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\" />
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\" />
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\" />
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\" />
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\" />
+    <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -226,6 +226,11 @@
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Mapping\ColumnDefinition.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IPropertyDefintionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\ITypeValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
@@ -760,6 +765,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mapping\Configuration\Validation\Logical\" />
+    <Folder Include="Mapping\Configuration\Validation\Persistence\" />
+    <Folder Include="Mapping\Configuration\Validation\Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
