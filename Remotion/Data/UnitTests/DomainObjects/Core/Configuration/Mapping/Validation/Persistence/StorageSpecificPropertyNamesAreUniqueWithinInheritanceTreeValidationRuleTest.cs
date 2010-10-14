@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using
     Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.
         StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
