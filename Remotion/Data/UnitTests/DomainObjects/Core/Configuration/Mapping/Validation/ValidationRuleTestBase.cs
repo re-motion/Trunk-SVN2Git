@@ -15,27 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation
 {
-  public class ReflectionBasedClassDefinitionWithUnresolvedClassType : ReflectionBasedClassDefinition
+  [TestFixture]
+  public class ValidationRuleTestBase
   {
-    public ReflectionBasedClassDefinitionWithUnresolvedClassType (
-        string id,
-        string entityName,
-        string storageProviderID,
-        Type classType,
-        bool isAbstract,
-        ReflectionBasedClassDefinition baseClass,
-        IPersistentMixinFinder persistentMixinFinder)
-        : base (id, entityName, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
+    protected void AssertMappingValidationResult (MappingValidationResult validationResult, bool expectedIsValid, string expectedMessage)
     {
-    }
-
-    public override bool IsClassTypeResolved
-    {
-      get { return false; }
+      Assert.That (validationResult.IsValid, Is.EqualTo (expectedIsValid));
+      Assert.That (validationResult.Message, Is.EqualTo (expectedMessage));
     }
   }
 }

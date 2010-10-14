@@ -46,9 +46,14 @@ namespace Remotion.Data.DomainObjects.Mapping
     private void ValidateEntityName ()
     {
       var entityNameValidationRule = new NonAbstractClassHasEntityNameValidationRule();
-      var validationResult = entityNameValidationRule.Validate (_classDefinition);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (validationResult.Message);
+      var entityNameValidationResult = entityNameValidationRule.Validate (_classDefinition);
+      if (!entityNameValidationResult.IsValid)
+        throw CreateMappingException (entityNameValidationResult.Message);
+
+      var parentEntityNameValidationRule = new EntityNameMatchesParentEntityNameValidationRule();
+      var parentEntityNameValidationResult = parentEntityNameValidationRule.Validate (_classDefinition);
+      if (!parentEntityNameValidationResult.IsValid)
+        throw CreateMappingException (parentEntityNameValidationResult.Message);
 
       if (_classDefinition.BaseClass != null && _classDefinition.MyEntityName != null && _classDefinition.BaseClass.GetEntityName () != null && _classDefinition.MyEntityName != _classDefinition.BaseClass.GetEntityName ())
       {
