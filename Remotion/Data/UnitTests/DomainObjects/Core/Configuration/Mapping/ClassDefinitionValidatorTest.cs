@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Class 'Partner' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
+        "Property 'Name' of class 'Partner' must not define storage specific name 'Name', because class 'Company' in same inheritance hierarchy already defines property 'Name' with the same storage specific name.")]
     public void ValidateMappingWithDuplicatePropertyBaseClass ()
     {
       ReflectionBasedClassDefinition companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Class 'Supplier' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
+        "Property 'Name' of class 'Supplier' must not define storage specific name 'Name', because class 'Company' in same inheritance hierarchy already defines property 'Name' with the same storage specific name.")]
     public void ValidateMappingWithDuplicatePropertyBaseOfBaseClass ()
     {
       ReflectionBasedClassDefinition companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);

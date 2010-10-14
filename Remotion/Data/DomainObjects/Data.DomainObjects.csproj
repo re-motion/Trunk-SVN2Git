@@ -234,6 +234,7 @@
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />

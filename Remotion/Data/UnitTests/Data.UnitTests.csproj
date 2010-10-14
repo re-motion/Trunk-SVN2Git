@@ -393,9 +393,14 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule\NonAbstractClassHasEntityNameDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesBaseOfBaseDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedBase1DomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedBase2DomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ValidationRuleTestBase.cs" />
