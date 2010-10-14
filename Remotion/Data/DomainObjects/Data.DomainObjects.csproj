@@ -230,6 +230,7 @@
     <Compile Include="Mapping\Configuration\Validation\IPropertyDefintionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\ITypeValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
@@ -769,7 +770,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mapping\Configuration\Validation\Logical\" />
     <Folder Include="Mapping\Configuration\Validation\Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Utilities;
 
@@ -58,21 +59,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidateUniquePropertyDefinitions ()
     {
-      if (_classDefinition.BaseClass != null)
-      {
-        PropertyDefinitionCollection basePropertyDefinitions = _classDefinition.BaseClass.GetPropertyDefinitions ();
-        foreach (PropertyDefinition propertyDefinition in _classDefinition.MyPropertyDefinitions)
-        {
-          if (basePropertyDefinitions.Contains (propertyDefinition.PropertyName))
-          {
-            throw CreateMappingException (
-                "Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
-                _classDefinition.ID,
-                propertyDefinition.PropertyName,
-                basePropertyDefinitions[propertyDefinition.PropertyName].ClassDefinition.ID);
-          }
-        }
-      }
+      var validationRule = new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule();
+      var validationResult = validationRule.Validate (_classDefinition);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (validationResult.Message);
     }
 
     private void ValidateStorageSpecificPropertyNames (IDictionary<string, List<PropertyDefinition>> persistentPropertyDefinitionsInInheritanceHierarchy)

@@ -387,10 +387,14 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\DerivedInheritanceRootClass1.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\DerivedInheritanceRootClass2.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\UnidirectionalRelationClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule\PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule\PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule\PropertyNamesAreUniqueWithinInheritanceTreeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule\NonAbstractClassHasEntityNameDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
@@ -1559,9 +1563,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\" />
     <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\" />
-    <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\" />
     <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
