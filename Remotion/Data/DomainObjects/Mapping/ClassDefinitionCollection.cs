@@ -215,7 +215,7 @@ public class ClassDefinitionCollection : CommonCollection
   private void ValidateRootClass (ClassDefinition rootClass)
   {
     ValidateEntireInheritanceHierarchyIsPartOfCollection (rootClass);
-    rootClass.GetValidator().ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+    rootClass.GetValidator().ValidateInheritanceHierarchy ();
     ValidateConcreteEntityNames (rootClass);
   }
 

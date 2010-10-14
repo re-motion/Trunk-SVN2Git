@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       companyClass.SetReadOnly ();
       partnerClass.SetReadOnly ();
       
-      new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       partnerClass.SetReadOnly ();
       supplierClass.SetReadOnly ();
 
-      new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy ();
     }
   }
 }

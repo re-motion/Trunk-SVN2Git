@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       organizationalUnit.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       organizationalUnit.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       customerClass.SetReadOnly ();
       
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       organizationalUnit.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
     [Test]
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       organizationalUnit.SetReadOnly ();
 
-      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+      new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy ();
     }
 
   }

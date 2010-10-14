@@ -32,7 +32,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       _classDefinition = classDefinition;
     }
 
-    public virtual void ValidateInheritanceHierarchy (Dictionary<string, List<PropertyDefinition>> persistentPropertyDefinitionsInInheritanceHierarchy)
+    public void ValidateInheritanceHierarchy ()
+    {
+      ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>>());
+    }
+
+    protected virtual void ValidateInheritanceHierarchy (Dictionary<string, List<PropertyDefinition>> persistentPropertyDefinitionsInInheritanceHierarchy)
     {
       ArgumentUtility.CheckNotNull ("persistentPropertyDefinitionsInInheritanceHierarchy", persistentPropertyDefinitionsInInheritanceHierarchy);
 
@@ -92,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           }
 
           persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StorageProperty.Name] =
-              new List<PropertyDefinition> (new PropertyDefinition[] {myPropertyDefinition});
+              new List<PropertyDefinition> (new[] {myPropertyDefinition});
         }
       }
     }
