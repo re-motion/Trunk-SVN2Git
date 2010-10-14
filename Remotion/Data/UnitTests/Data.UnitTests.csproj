@@ -389,6 +389,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Relations\UnidirectionalRelationClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule\NonAbstractClassHasEntityNameClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionDataTest.cs" />

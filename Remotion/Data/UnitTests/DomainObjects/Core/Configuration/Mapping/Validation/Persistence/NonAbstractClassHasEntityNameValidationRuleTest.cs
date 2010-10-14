@@ -38,10 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void ClassTypeResolved_NoEntityName_Abstract ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameClass",
+          "NonAbstractClassHasEntityNameTestClass",
           null,
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameClass),
+          typeof (NonAbstractClassHasEntityNameTestClass),
           true);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -53,10 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void ClassTypeResolved_EntityName_NotAbstract ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameClass",
+          "NonAbstractClassHasEntityNameTestClass",
           "EntityName",
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameClass),
+          typeof (NonAbstractClassHasEntityNameTestClass),
           false);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -68,11 +68,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void ClassTypeResolved_EntityName_Abstract ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameClass",
+          "NonAbstractClassHasEntityNameTestClass",
           "EntityName",
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameClass),
+          typeof (NonAbstractClassHasEntityNameTestClass),
           false);
+
+      var validationResult = _validationRule.Validate (classDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void ClassTypeUnresolved ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
+          "NonAbstractClassHasEntityNameTestClass",
+          null,
+          "NonAbstractClassHasEntityNameStorageProviderID",
+          typeof (NonAbstractClassHasEntityNameTestClass),
+          false,
+          null,
+          new PersistentMixinFinderMock (typeof (NonAbstractClassHasEntityNameTestClass), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -83,18 +100,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void ClassTypeResolved_NoEntityName_NotAbstract ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameClass",
+          "NonAbstractClassHasEntityNameTestClass",
           null,
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameClass),
+          typeof (NonAbstractClassHasEntityNameTestClass),
           false);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = string.Format (
-          "Neither class 'NonAbstractClassHasEntityNameClass' nor its base classes specify an entity name. Make "
+          "Neither class 'NonAbstractClassHasEntityNameTestClass' nor its base classes specify an entity name. Make "
           + "class '{0}' abstract or apply a DBTable attribute to it or one of its base classes.",
-          typeof (NonAbstractClassHasEntityNameClass).AssemblyQualifiedName);
+          typeof (NonAbstractClassHasEntityNameTestClass).AssemblyQualifiedName);
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

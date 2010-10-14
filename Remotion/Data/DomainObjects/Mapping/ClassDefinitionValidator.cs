@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -44,17 +45,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidateEntityName ()
     {
-      if (_classDefinition.IsClassTypeResolved)
-      {
-        if (_classDefinition.GetEntityName () == null && !_classDefinition.IsAbstract)
-        {
-          throw CreateMappingException (
-              "Neither class '{0}' nor its base classes specify an entity name. Make class '{1}' abstract or apply a DBTable attribute to it or "
-              + "one of its base classes.",
-              _classDefinition.ID,
-              _classDefinition.ClassType.AssemblyQualifiedName);
-        }
-      }
+      var entityNameValidationRule = new NonAbstractClassHasEntityNameValidationRule();
+      var validationResult = entityNameValidationRule.Validate (_classDefinition);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (validationResult.Message);
 
       if (_classDefinition.BaseClass != null && _classDefinition.MyEntityName != null && _classDefinition.BaseClass.GetEntityName () != null && _classDefinition.MyEntityName != _classDefinition.BaseClass.GetEntityName ())
       {

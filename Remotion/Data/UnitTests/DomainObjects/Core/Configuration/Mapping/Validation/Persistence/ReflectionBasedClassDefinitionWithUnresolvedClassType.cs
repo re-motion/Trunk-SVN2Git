@@ -15,28 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
+using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.
-    NonAbstractClassHasEntityNameValidationRule
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
-  [DBTable ("NonAbstractClassHasEntityNameTestClass")]
-  [Instantiable]
-  public abstract class NonAbstractClassHasEntityNameTestClass : DomainBase
+  public class ReflectionBasedClassDefinitionWithUnresolvedClassType : ReflectionBasedClassDefinition
   {
-    public static NonAbstractClassHasEntityNameTestClass NewObject ()
+    public ReflectionBasedClassDefinitionWithUnresolvedClassType (
+        string id,
+        string entityName,
+        string storageProviderID,
+        Type classType,
+        bool isAbstract,
+        ReflectionBasedClassDefinition baseClass,
+        IPersistentMixinFinder persistentMixinFinder)
+        : base (id, entityName, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
     {
-      return NewObject<NonAbstractClassHasEntityNameTestClass>();
     }
 
-    public static NonAbstractClassHasEntityNameTestClass GetObject (ObjectID id)
+    public override bool IsClassTypeResolved
     {
-      return GetObject<NonAbstractClassHasEntityNameTestClass> (id);
-    }
-
-    protected NonAbstractClassHasEntityNameTestClass ()
-    {
+      get { return false; }
     }
   }
 }
