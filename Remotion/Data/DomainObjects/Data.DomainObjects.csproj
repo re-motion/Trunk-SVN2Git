@@ -233,6 +233,7 @@
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />

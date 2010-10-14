@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -221,19 +222,10 @@ public class ClassDefinitionCollection : CommonCollection
 
   private void ValidateConcreteEntityNames (ClassDefinition rootClass)
   {
-    Dictionary<string, object> allDistinctConcreteEntityNames = new Dictionary<string, object> ();
-    foreach (string entityName in rootClass.GetAllConcreteEntityNames ())
-    {
-      if (allDistinctConcreteEntityNames.ContainsKey (entityName))
-      {
-        throw CreateMappingException (
-            "At least two classes in different inheritance branches derived from abstract class '{0}'"
-            + " specify the same entity name '{1}', which is not allowed.",
-            rootClass.ID, entityName);
-      }
-
-      allDistinctConcreteEntityNames.Add (entityName, null);
-    }
+    var validationRule = new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule();
+    var validationResult = validationRule.Validate (rootClass);
+    if (!validationResult.IsValid)
+      throw CreateMappingException (validationResult.Message);
   }
 
   private void ValidateEntireInheritanceHierarchyIsPartOfCollection (ClassDefinition rootClass)
