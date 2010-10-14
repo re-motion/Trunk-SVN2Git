@@ -231,6 +231,7 @@
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\ITypeValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule.cs" />

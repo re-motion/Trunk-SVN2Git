@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -53,8 +54,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("endPointDefinition1", endPointDefinition1);
       ArgumentUtility.CheckNotNull ("endPointDefinition2", endPointDefinition2);
 
-      CheckEndPointDefinitions (id, endPointDefinition1, endPointDefinition2);
-
       _id = id; // Note: Set ID before passing this instance to other end point definitions.
 
       try
@@ -71,21 +70,16 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _endPointDefinitions[0] = endPointDefinition1;
       _endPointDefinitions[1] = endPointDefinition2;
+
+      CheckEndPointDefinitions ();
     }
 
-    private void CheckEndPointDefinitions (
-        string id,
-        IRelationEndPointDefinition endPointDefinition1,
-        IRelationEndPointDefinition endPointDefinition2)
+    private void CheckEndPointDefinitions ()
     {
-      if (endPointDefinition1.IsAnonymous && endPointDefinition2.IsAnonymous)
-        throw CreateMappingException ("Relation '{0}' cannot have two anonymous end points.", id);
-
-      if (endPointDefinition1.IsVirtual && endPointDefinition2.IsVirtual)
-        throw CreateMappingException ("Relation '{0}' cannot have two virtual end points.", id);
-
-      if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
-        throw CreateMappingException ("Relation '{0}' cannot have two non-virtual end points.", id);
+      var validationRule = new RelationEndPointCombinationIsSupportedValidationRule();
+      var validationResult = validationRule.Validate (this);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (validationResult.Message);
     }
 
     // methods and properties
