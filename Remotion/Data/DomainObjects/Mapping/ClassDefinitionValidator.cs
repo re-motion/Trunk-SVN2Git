@@ -54,15 +54,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       var parentEntityNameValidationResult = parentEntityNameValidationRule.Validate (_classDefinition);
       if (!parentEntityNameValidationResult.IsValid)
         throw CreateMappingException (parentEntityNameValidationResult.Message);
-
-      if (_classDefinition.BaseClass != null && _classDefinition.MyEntityName != null && _classDefinition.BaseClass.GetEntityName () != null && _classDefinition.MyEntityName != _classDefinition.BaseClass.GetEntityName ())
-      {
-        throw CreateMappingException (
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
-            _classDefinition.ID,
-            _classDefinition.MyEntityName,
-            _classDefinition.BaseClass.GetEntityName ());
-      }
     }
 
     private void ValidateUniquePropertyDefinitions ()
