@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void LinearSearch_10000 ()
     {
       const int testSetSize = 10000;
-      const int testRepititions = 100;
+      const int testRepititions = 1000;
 
       TimeFindRelatedObjects (testSetSize, testRepititions);
     }
@@ -61,14 +61,16 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void LinearSearch_20000 ()
     {
       const int testSetSize = 20000;
-      const int testRepititions = 100;
+      const int testRepititions = 1000;
 
       TimeFindRelatedObjects (testSetSize, testRepititions);
     }
 
     private void TimeFindRelatedObjects (int testSetSize, int testRepititions)
     {
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      Console.WriteLine ("Expected average duration of LoadObjectsOverRelationTest on reference system: ~0.3-0.6 µs/object");
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         var originatingObject = ClassWithRelationProperties.NewObject ();
         var objects = TestDomainObjectMother.PrepareLocalObjects (testSetSize, () => OppositeClassWithCollectionRelationProperties.NewObject());
@@ -111,7 +113,6 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       return (from dc in dataContainers
               where oppositeEndPointDefinition.ClassDefinition.ClassType.IsAssignableFrom (dc.ID.ClassDefinition.ClassType)
-              // where originatingObjectID.Equals (dc[oppositeEndPointDefinition.PropertyName])
               where originatingObjectID.Equals (dc.PropertyValues[oppositeEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current))
               select dc.DomainObject).ToArray ();
     }
