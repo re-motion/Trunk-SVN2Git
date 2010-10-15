@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       Type = type;
       NameResolver = nameResolver;
-      PersistentMixinFinder = new PersistentMixinFinder (type, IsInheritanceRoot());
+      PersistentMixinFinder = new PersistentMixinFinder (type, IsInheritanceRoot(Type));
     }
 
     public PersistentMixinFinder PersistentMixinFinder { get; private set; }
@@ -132,19 +132,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!legacyCtorValidationResult.IsValid)
         throw CreateMappingException (null, Type, legacyCtorValidationResult.Message);
 
-      if (IsInheritanceRoot() && Attribute.IsDefined (Type.BaseType, typeof (StorageGroupAttribute), true))
-      {
-        Type baseType = Type.BaseType;
-        while (!AttributeUtility.IsDefined<StorageGroupAttribute> (baseType, false))
-          baseType = baseType.BaseType;
-
-        throw CreateMappingException (
-            null,
-            Type,
-            "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.",
-            typeof (StorageGroupAttribute),
-            baseType);
-      }
+      var storageGroupValidationRule = new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ();
+      var storageGroupValidationResult = storageGroupValidationRule.Validate (Type);
+      if (!storageGroupValidationResult.IsValid)
+        throw CreateMappingException (null, Type, storageGroupValidationResult.Message);
     }
 
     private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, MemberInfo[] propertyInfos)
@@ -207,24 +198,26 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return false;
     }
 
-    private bool IsInheritanceRoot ()
+    public static bool IsInheritanceRoot (Type type) //TODO: move to reflection utility
     {
-      if (IsDomainObjectBase (Type.BaseType))
+      if (IsDomainObjectBase (type.BaseType))
         return true;
 
-      return Attribute.IsDefined (Type, typeof (StorageGroupAttribute), false);
+      return Attribute.IsDefined (type, typeof (StorageGroupAttribute), false);
     }
 
     //TODO COMMONS-825: Refactor this
     //TODO COMMONS-839: Refactor this
-    public static bool IsDomainObjectBase (Type type)
+    public static bool IsDomainObjectBase (Type type) //TODO: move to reflection utility
     {
+      //TODO: argument check
+
       return type.Assembly == typeof (DomainObject).Assembly;
     }
 
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
     {
-      if (IsInheritanceRoot())
+      if (IsInheritanceRoot(Type))
         return null;
 
       ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (Type.BaseType, NameResolver);
@@ -233,13 +226,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (), NameResolver);
+      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (Type), NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
     }
 
     private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (), NameResolver);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (Type), NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }
