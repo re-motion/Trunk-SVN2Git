@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
 {
@@ -25,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   {
     public MappingValidationResult Validate (Type type)
     {
-      if (type.IsGenericType && type.Assembly != typeof (DomainObject).Assembly)
+      if (type.IsGenericType && !ClassReflector.IsDomainObjectBase(type))
       {
         var message = "Generic domain objects are not supported.";
         return new MappingValidationResult (false, message);
