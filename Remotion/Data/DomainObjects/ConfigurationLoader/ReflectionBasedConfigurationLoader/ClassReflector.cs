@@ -126,20 +126,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var genericTypeValidationResult = genericTypeValidationRule.Validate (Type);
       if (!genericTypeValidationResult.IsValid)
         throw CreateMappingException (null, Type.GetGenericTypeDefinition(), genericTypeValidationResult.Message);
-      
-      if (!IsAbstract())
-      {
-        BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;
-        ConstructorInfo legacyLoadConstructor = Type.GetConstructor (flags, null, new Type[] {typeof (DataContainer)}, null);
-        if (legacyLoadConstructor != null)
-        {
-          throw CreateMappingException (
-              null,
-              Type,
-              "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
-              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.");
-        }
-      }
+
+      var legacyCtorValidationRule = new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule();
+      var legacyCtorValidationResult = legacyCtorValidationRule.Validate (Type);
+      if (!legacyCtorValidationResult.IsValid)
+        throw CreateMappingException (null, Type, legacyCtorValidationResult.Message);
 
       if (IsInheritanceRoot() && Attribute.IsDefined (Type.BaseType, typeof (StorageGroupAttribute), true))
       {

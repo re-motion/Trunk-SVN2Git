@@ -401,6 +401,11 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedBase1DomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedBase2DomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithAttributeAndWithLegacyCtor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithAttributeAndWithoutLegacyCtor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithoutAttributeAndLegacyCtor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithoutAttributeAndWithLegacyCtor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\NonAbstractClassWithLegacyConstructor.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
@@ -409,6 +414,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
@@ -1574,9 +1580,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
