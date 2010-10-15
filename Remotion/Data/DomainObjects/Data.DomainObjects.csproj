@@ -237,6 +237,7 @@
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
@@ -772,9 +773,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mapping\Configuration\Validation\Reflection\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -121,8 +122,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     //TODO: Add constructor checks
     private void ValidateType ()
     {
-      if (Type.IsGenericType && !IsDomainObjectBase (Type))
-        throw CreateMappingException (null, Type.GetGenericTypeDefinition(), "Generic domain objects are not supported.");
+      var genericTypeValidationRule = new DomainObjectTypeIsNotGenericValidationRule();
+      var genericTypeValidationResult = genericTypeValidationRule.Validate (Type);
+      if (!genericTypeValidationResult.IsValid)
+        throw CreateMappingException (null, Type.GetGenericTypeDefinition(), genericTypeValidationResult.Message);
       
       if (!IsAbstract())
       {

@@ -1,0 +1,72 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Collections.Generic;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Rhino.Mocks;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Reflection
+{
+  [TestFixture]
+  public class DomainObjectTypeIsNotGenericValidationRuleTest : ValidationRuleTestBase
+  {
+    private DomainObjectTypeIsNotGenericValidationRule _validationRule;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _validationRule = new DomainObjectTypeIsNotGenericValidationRule();
+    }
+
+    [Test]
+    public void NoGenericType ()
+    {
+      var type = typeof (string);
+
+      var validationResult = _validationRule.Validate (type);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void IsGenericType_IsDomainObjectBase ()
+    {
+      var typeStub = MockRepository.GenerateStub<Type>();
+      typeStub.Stub (stub => stub.IsGenericType).Return (true);
+      typeStub.Stub (stub => stub.Assembly).Return (typeof (DomainObject).Assembly);
+
+      var validationResult = _validationRule.Validate (typeStub);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void IsGenericType_IsNotDomainObjectBase ()
+    {
+      var type = typeof (List<string>);
+
+      var validationResult = _validationRule.Validate (type);
+
+      var expectedMessage = "Generic domain objects are not supported.";
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
+    }
+  
+  }
+}

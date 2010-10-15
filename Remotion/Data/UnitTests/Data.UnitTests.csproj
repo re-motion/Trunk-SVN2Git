@@ -409,6 +409,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionDataTest.cs" />
@@ -1575,7 +1576,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\" />
-    <Folder Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
