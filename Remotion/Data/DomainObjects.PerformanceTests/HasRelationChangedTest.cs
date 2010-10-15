@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var objects = TestDomainObjectMother.PrepareObjectsWithRelationProperties (TestSetSize);
+        var objects = TestDomainObjectMother.PrepareDatabaseObjectsWithRelationProperties (TestSetSize);
         bool changed = ClientTransaction.Current.HasChanged();
 
         Assert.That (changed, Is.False);

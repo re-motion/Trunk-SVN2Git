@@ -23,17 +23,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class TestDomainObjectMother
   {
-    public static ClassWithRelationProperties[] PrepareObjectsWithRelationProperties (int numberOfObjects)
+    public static ClassWithRelationProperties[] PrepareDatabaseObjectsWithRelationProperties (int numberOfObjects)
     {
-      return PrepareObjects<ClassWithRelationProperties> (numberOfObjects, CreateAndFillRelationPropertyObject);
+      return PrepareDatabaseObjects<ClassWithRelationProperties> (numberOfObjects, CreateAndFillRelationPropertyObject);
     }
 
-    public static ClassWithValueProperties[] PrepareObjectsWithValueProperties (int numberOfObjects)
+    public static ClassWithValueProperties[] PrepareDatabaseObjectsWithValueProperties (int numberOfObjects)
     {
-      return PrepareObjects<ClassWithValueProperties> (numberOfObjects, CreateAndFillValuePropertyObject);
+      return PrepareDatabaseObjects<ClassWithValueProperties> (numberOfObjects, CreateAndFillValuePropertyObject);
     }
 
-    public static T[] PrepareObjects<T> (int numberOfObjects, Func<T> factory) where T : DomainObject
+    public static T[] PrepareDatabaseObjects<T> (int numberOfObjects, Func<T> factory) where T : DomainObject
     {
       var objects = QueryFactory.CreateLinqQuery<T> ().Take (numberOfObjects).ToArray();
       if (objects.Length < numberOfObjects)
@@ -47,6 +47,28 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
         objects = QueryFactory.CreateLinqQuery<T> ().Take (numberOfObjects).ToArray ();
       }
       return objects;
+    }
+
+    public static ClassWithRelationProperties[] PrepareLocalObjectsWithRelationProperties (int numberOfObjects)
+    {
+      return PrepareLocalObjects<ClassWithRelationProperties> (numberOfObjects, CreateAndFillRelationPropertyObject);
+    }
+
+    public static ClassWithValueProperties[] PrepareLocalObjectsWithValueProperties (int numberOfObjects)
+    {
+      return PrepareLocalObjects<ClassWithValueProperties> (numberOfObjects, CreateAndFillValuePropertyObject);
+    }
+
+    public static T[] PrepareLocalObjects<T> (int numberOfObjects, Func<T> factory) where T : DomainObject
+    {
+      var objects = ClientTransaction.Current.GetEnlistedDomainObjects().OfType<T>()
+          .Where (obj => obj.State != StateType.NotLoadedYet).Take (numberOfObjects)
+          .ToList ();
+
+      var remaining = numberOfObjects - objects.Count;
+      for (int i = 0; i < remaining; i++)
+        objects.Add (factory ());
+      return objects.ToArray();
     }
 
     public static ClassWithRelationProperties CreateAndFillRelationPropertyObject ()

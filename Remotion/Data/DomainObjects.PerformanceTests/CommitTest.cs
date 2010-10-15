@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       using (ClientTransaction.CreateRootTransaction ().CreateSubTransaction().EnterDiscardingScope ())
       {
-        ClassWithRelationProperties[] objects = TestDomainObjectMother.PrepareObjectsWithRelationProperties (TestSetSize);
+        ClassWithRelationProperties[] objects = TestDomainObjectMother.PrepareDatabaseObjectsWithRelationProperties (TestSetSize);
 
         Assert.That (ClientTransaction.Current.HasChanged (), Is.False);
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       using (ClientTransaction.CreateRootTransaction ().CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClassWithValueProperties[] objects = TestDomainObjectMother.PrepareObjectsWithValueProperties (TestSetSize);
+        ClassWithValueProperties[] objects = TestDomainObjectMother.PrepareDatabaseObjectsWithValueProperties (TestSetSize);
         
         // Create 3000 unchanged objects in ClientTransaction in order to make test set more similar to relation test
         for (int i = 0; i < 3000; ++i)

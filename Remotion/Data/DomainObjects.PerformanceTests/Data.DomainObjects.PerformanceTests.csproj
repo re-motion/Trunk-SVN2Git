@@ -177,6 +177,7 @@
     <Compile Include="BindableObjectWithSecurityTest.cs" />
     <Compile Include="CommitTest.cs" />
     <Compile Include="ClassDefinitionTest.cs" />
+    <Compile Include="RelationQuerySyncSpike.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="InstantiationTest.cs" />
     <Compile Include="LinqPerformanceTestHelper.cs" />
