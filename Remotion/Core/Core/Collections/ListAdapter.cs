@@ -57,12 +57,12 @@ namespace Remotion.Collections
       get { return _adaptedList.IsReadOnly; }
     }
 
-    public TDest this[int index]
+    public TDest this [int index]
     {
       get { return _sourceToDest (_adaptedList[index]); }
       set { _adaptedList[index] = _destToSource (value); }
     }
- 
+
     public IEnumerator<TDest> GetEnumerator ()
     {
       return _adaptedList.Select (item => _sourceToDest (item)).GetEnumerator();
@@ -82,7 +82,7 @@ namespace Remotion.Collections
     {
       _adaptedList.Add (_destToSource (item));
     }
-    
+
     public bool Remove (TDest item)
     {
       return _adaptedList.Remove (_destToSource (item));
@@ -95,7 +95,7 @@ namespace Remotion.Collections
 
     public void Clear ()
     {
-      _adaptedList.Clear ();
+      _adaptedList.Clear();
     }
 
     public bool Contains (TDest item)
@@ -111,7 +111,7 @@ namespace Remotion.Collections
     public void CopyTo (TDest[] array, int arrayIndex)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("array", array);
-      
+
       if (arrayIndex < 0)
         throw new ArgumentOutOfRangeException ("arrayIndex", "Index must not be negative.");
       if (arrayIndex >= array.Length)
@@ -125,5 +125,33 @@ namespace Remotion.Collections
       for (int i = 0; i < Count; ++i)
         array[arrayIndex + i] = this[i];
     }
- }
+  }
+
+  /// <summary>
+  /// Provides factory methods to create instances of <see cref="ListAdapter{TSource,TDest}"/>.
+  /// </summary>
+  public static class ListAdapter
+  {
+    public static ListAdapter<TSource, TDest> Adapt<TSource, TDest> (
+        IList<TSource> adaptedList, 
+        Func<TSource, TDest> sourceToDest, 
+        Func<TDest, TSource> destToSource)
+    {
+      return new ListAdapter<TSource, TDest> (adaptedList, sourceToDest, destToSource);
+    }
+
+    public static ListAdapter<TSource, TDest> AdaptOneWay<TSource, TDest> (
+        IList<TSource> adaptedList,
+        Func<TSource, TDest> sourceToDest)
+    {
+      return new ListAdapter<TSource, TDest> (
+          adaptedList,
+          sourceToDest,
+          delegate
+          {
+            var message = string.Format ("This list does not support setting of '{0}' values.", typeof (TDest).Name);
+            throw new NotSupportedException (message);
+          });
+    }
+  }
 }

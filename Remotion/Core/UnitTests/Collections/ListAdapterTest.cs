@@ -205,5 +205,34 @@ namespace Remotion.UnitTests.Collections
       var destArray = new[] { "x", "x", "x", "x", "x", "x" };
       _adapter.CopyTo (destArray, 4);
     }
+
+    [Test]
+    public void Adapt ()
+    {
+      var adapter = ListAdapter.Adapt (_innerList, i => i.ToString (), s => int.Parse (s));
+
+      Assert.That (adapter[1], Is.EqualTo ("2"));
+
+      adapter[1] = "5";
+
+      Assert.That (_innerList[1], Is.EqualTo (5));
+    }
+
+    [Test]
+    public void AdaptOneWay ()
+    {
+      var adapter = ListAdapter.AdaptOneWay (_innerList, i => i.ToString ());
+
+      Assert.That (adapter[1], Is.EqualTo ("2"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This list does not support setting of 'String' values.")]
+    public void AdaptOneWay_ReverseNotSupported ()
+    {
+      var adapter = ListAdapter.AdaptOneWay (_innerList, i => i.ToString ());
+
+      adapter[1] = "1";
+    }
   }
 }
