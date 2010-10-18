@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -109,16 +110,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      IMappingAttribute[] mappingAttributes = AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false);
-      if (mappingAttributes.Length > 0)
-      {
-        throw new MappingException (
-            string.Format (
-                "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n  Type: {1}, property: {2}",
-                mappingAttributes[0].GetType().FullName,
-                propertyInfo.DeclaringType.FullName,
-                propertyInfo.Name));
-      }
+      var validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule();
+      var validationResult = validationRule.Validate (propertyInfo);
+      if (!validationResult.IsValid)
+        throw new MappingException (validationResult.Message);
     }
 
     protected bool IsUnmanagedProperty (PropertyInfo propertyInfo)

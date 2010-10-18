@@ -239,6 +239,7 @@
     <Compile Include="Mapping\Configuration\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
