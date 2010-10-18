@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -28,32 +29,6 @@ namespace Remotion.Data.DomainObjects.Mapping
   [Serializable]
   public class ReflectionBasedClassDefinition : ClassDefinition
   {
-    private static void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
-    {
-      if (classType != null && baseClass.ClassType != null && !classType.IsSubclassOf (baseClass.ClassType))
-      {
-        throw CreateMappingException (
-            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
-            classType.AssemblyQualifiedName,
-            id,
-            baseClass.ClassType.AssemblyQualifiedName,
-            baseClass.ID);
-      }
-
-      if (baseClass.StorageProviderID != storageProviderID)
-      {
-        throw CreateMappingException (
-            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
-            id,
-            baseClass.ID);
-      }
-    }
-
-    private static MappingException CreateMappingException (string message, params object[] args)
-    {
-      return new MappingException (string.Format (message, args));
-    }
-
     [NonSerialized]
     private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
 
@@ -100,9 +75,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       if (baseClass != null)
       {
-        CheckBaseClass (baseClass, id, storageProviderID, classType);
-
         _baseClass = baseClass;
+        CheckBaseClass (baseClass, id, storageProviderID, classType);
         baseClass.AddDerivedClass (this);
       }
     }
@@ -163,6 +137,24 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    public override PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _propertyDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (key, this, GetPropertyDefinition));
+    }
+
+    public override IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _relationDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (key, this, GetRelationEndPointDefinition));
+    }
+
     public override ClassDefinitionValidator GetValidator ()
     {
       return new ReflectionBasedClassDefinitionValidator (this);
@@ -180,22 +172,26 @@ namespace Remotion.Data.DomainObjects.Mapping
       _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
     }
 
-    public override PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
+    private void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
     {
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+      var inheritanceHierarchyValidationRule = new InheritanceHierarchyFollowsClassHierarchyValidationRule ();
+      var inheritanceHierarchyValidationResult = inheritanceHierarchyValidationRule.Validate (this);
+      if (!inheritanceHierarchyValidationResult.IsValid)
+        throw CreateMappingException (inheritanceHierarchyValidationResult.Message);
 
-      return _propertyDefinitionCache.GetOrCreateValue (
-          propertyInformation, 
-          key => ReflectionBasedPropertyResolver.ResolveDefinition<PropertyDefinition> (key, this, GetPropertyDefinition));
+      if (baseClass.StorageProviderID != storageProviderID)
+      {
+        throw CreateMappingException (
+            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
+            id,
+            baseClass.ID);
+      }
     }
 
-    public override IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
+    private MappingException CreateMappingException (string message, params object[] args)
     {
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-
-      return _relationDefinitionCache.GetOrCreateValue (
-          propertyInformation, 
-          key => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (key, this, GetRelationEndPointDefinition));
+      return new MappingException (string.Format (message, args));
     }
+   
   }
 }

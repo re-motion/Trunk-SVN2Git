@@ -410,6 +410,9 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\NonAbstractClassWithoutLegacyConstructor.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\GenericTypeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\NonGenericTypeDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\InheritanceHierarchyFollowsClassHierarchyValidationRule\BaseInheritanceHierarchyClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\InheritanceHierarchyFollowsClassHierarchyValidationRule\DerivedInheritanceHierarchyClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\InheritanceHierarchyFollowsClassHierarchyValidationRule\OtherInheritanceHierarchyClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\BaseMappingAttributesClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\DerivedMappingAttributesCheckClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithInvalidPropertyAttributes.cs" />
@@ -429,6 +432,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\InheritanceHierarchyFollowsClassHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRuleTest.cs" />
