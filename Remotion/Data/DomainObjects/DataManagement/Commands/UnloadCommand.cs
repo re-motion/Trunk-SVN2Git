@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
@@ -64,7 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
       _unloadProblems = unloadProblems.ToArray();
 
-      _unloadedDomainObjects = _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly();
+      _unloadedDomainObjects = ListAdapter.AdaptReadOnly (_unloadedDataContainers, dc => dc.DomainObject);
     }
 
     public DataContainer[] UnloadedDataContainers
