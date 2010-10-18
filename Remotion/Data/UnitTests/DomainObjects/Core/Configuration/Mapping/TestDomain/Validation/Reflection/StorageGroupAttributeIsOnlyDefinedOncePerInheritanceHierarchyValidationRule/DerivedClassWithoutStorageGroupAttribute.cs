@@ -15,16 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.
-    DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule
+    StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule
 {
-  public abstract class AbstractClassWithoutAttributeAndWithLegacyCtor : DomainObject
+  public class DerivedClassWithoutStorageGroupAttribute : BaseClassWithoutStorageGroupAttribute
   {
-    protected AbstractClassWithoutAttributeAndWithLegacyCtor (DataContainer dataContainer)
-    {
-    }
   }
 }

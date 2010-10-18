@@ -16,9 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
-using Rhino.Mocks;
+using
+    Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.
+        StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Reflection
 {
@@ -34,48 +36,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     }
 
     [Test]
-    public void NotDomainObjectBase ()
+    public void NotInheritanceRoot ()
     {
-      var type = typeof (string);
+      var type = typeof (DerivedClassWithoutStorageGroupAttribute);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
-    public void DomainObjectBase_WithoutStorageGroupAttribute_ ()
+    public void InheritanceRoot_WithoutStorageGroupAttribute ()
     {
       var type = typeof (BaseClassWithoutStorageGroupAttribute);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
-    public void DomainObjectBase_WithStorageGroupAttribute_And_WithoutStorageGroupAttributeOnBaseClass ()
+    public void InheritanceRoot_WithStorageGroupAttribute_And_WithoutStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (BaseClassWithStorageGroupAttribute);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
-    public void DomainObjectBase_WithStorageGroupAttribute_And_WithStorageGroupAttributeOnBaseClass ()
+    public void InheritanceRoot_WithStorageGroupAttribute_And_WithStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (DerivedClassWithStorageGroupAttribute);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       string message = "The domain object type cannot redefine the 'Remotion.Data.DomainObjects.StorageGroupAttribute' "
-        + "already defined on base type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection."
-        + "StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.BaseClassWithStorageGroupAttribute'.";
+                       +
+                       "already defined on base type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection."
+                       + "StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.BaseClassWithStorageGroupAttribute'.";
       AssertMappingValidationResult (validationResult, false, message);
     }
-
-
   }
 }

@@ -16,15 +16,10 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.
-    DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule
 {
-  public abstract class AbstractClassWithoutAttributeAndWithLegacyCtor : DomainObject
+  public class NonGenericTypeDomainObject : DomainObject
   {
-    protected AbstractClassWithoutAttributeAndWithLegacyCtor (DataContainer dataContainer)
-    {
-    }
   }
 }

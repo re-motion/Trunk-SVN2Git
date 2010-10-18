@@ -406,8 +406,12 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithoutAttributeAndLegacyCtor.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\AbstractClassWithoutAttributeAndWithLegacyCtor.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\NonAbstractClassWithLegacyConstructor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\NonAbstractClassWithoutLegacyConstructor.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\GenericTypeDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\NonGenericTypeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />

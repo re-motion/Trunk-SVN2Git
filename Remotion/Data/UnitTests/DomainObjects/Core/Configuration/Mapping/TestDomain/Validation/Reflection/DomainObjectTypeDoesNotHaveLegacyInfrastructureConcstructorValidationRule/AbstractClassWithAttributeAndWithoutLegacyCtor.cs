@@ -21,7 +21,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestD
     DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule
 {
   [Instantiable]
-  public abstract class AbstractClassWithAttributeAndWithoutLegacyCtor
+  public abstract class AbstractClassWithAttributeAndWithoutLegacyCtor : DomainObject
   {
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule;
 
@@ -33,21 +34,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     }
 
     [Test]
-    public void NotAbstractType_WithoutLegacyConstructor ()
+    public void NonAbstractType_WithoutLegacyConstructor ()
     {
-      var type = typeof (string);
+      var type = typeof (NonAbstractClassWithoutLegacyConstructor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
-    public void NotAbstractType_WithLegacyConstructor()
+    public void NonAbstractType_WithLegacyConstructor()
     {
       var type = typeof (NonAbstractClassWithLegacyConstructor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = 
         "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
@@ -59,8 +64,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void AbstractType_WithoutInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
       var type = typeof (AbstractClassWithoutAttributeAndLegacyCtor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -69,8 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void AbstractType_WithoutInstantiableAttribute_And_WithLegacyConstructor ()
     {
       var type = typeof (AbstractClassWithoutAttributeAndWithLegacyCtor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -79,8 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void AbstractType_WithInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
       var type = typeof (AbstractClassWithAttributeAndWithoutLegacyCtor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -89,8 +100,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void AbstractType_WithInstantiableAttribute_And_WithLegacyConstructor ()
     {
       var type = typeof (AbstractClassWithAttributeAndWithLegacyCtor);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
         "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "

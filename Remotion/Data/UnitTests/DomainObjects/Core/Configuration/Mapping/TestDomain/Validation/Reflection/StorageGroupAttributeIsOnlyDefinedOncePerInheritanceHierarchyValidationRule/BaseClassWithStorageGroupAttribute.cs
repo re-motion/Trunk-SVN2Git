@@ -21,7 +21,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestD
     StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule
 {
   [DBStorageGroup]
-  public class BaseClassWithStorageGroupAttribute
+  public class BaseClassWithStorageGroupAttribute : DomainObject
   {
   }
 }

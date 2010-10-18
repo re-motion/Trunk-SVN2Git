@@ -15,12 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.
     DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule
 {
-  public class NonAbstractClassWithLegacyConstructor
+  public class NonAbstractClassWithLegacyConstructor : DomainObject
   {
     protected NonAbstractClassWithLegacyConstructor (DataContainer dataContainer)
     {
