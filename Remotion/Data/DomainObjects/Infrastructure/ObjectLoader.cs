@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -88,8 +89,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         InitializeLoadedDataContainer (dataContainer);
 
       // The dataContainers collection contains no items for those ids that couldn't be found
-      var loadedDomainObjectsWithoutNulls = dataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList ();
-      RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (loadedDomainObjectsWithoutNulls));
+      var loadedDomainObjectsWithoutNulls = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.DomainObject);
+      RaiseLoadedNotifications (loadedDomainObjectsWithoutNulls);
 
       var loadedDomainObjects = (from id in idsToBeLoaded
                                  let dataContainer = dataContainers[id]
@@ -140,7 +141,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
-      var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
+      var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
       return MergeQueryResult<DomainObject> (relatedDataContainers);
     }
 
@@ -221,14 +222,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
                                        where dataContainer != null && _clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == null
                                        select dataContainer).ToList ();
 
-      RaiseLoadingNotificiations (newlyLoadedDataContainers.Select (dc => dc.ID).ToList ().AsReadOnly ());
+      var newlyLoadedIDs = ListAdapter.AdaptReadOnly (newlyLoadedDataContainers, dc => dc.ID);
+      RaiseLoadingNotificiations (newlyLoadedIDs);
 
       foreach (var dataContainer in newlyLoadedDataContainers)
         InitializeLoadedDataContainer (dataContainer);
 
-      var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
-                                     select dataContainer.DomainObject;
-      RaiseLoadedNotifications (newlyLoadedDomainObjects.ToList ().AsReadOnly ());
+      var newlyLoadedDomainObjects = ListAdapter.AdaptReadOnly (newlyLoadedDataContainers, dc => dc.DomainObject);
+      RaiseLoadedNotifications (newlyLoadedDomainObjects);
     }
 
     private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
