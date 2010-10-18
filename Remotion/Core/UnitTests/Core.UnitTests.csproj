@@ -161,6 +161,7 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
+    <Compile Include="Collections\ListAdapterTest.cs" />
     <Compile Include="FunctionalProgramming\Element.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionarySpecificTest.cs" />
