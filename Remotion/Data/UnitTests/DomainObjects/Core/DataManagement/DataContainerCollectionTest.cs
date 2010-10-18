@@ -42,14 +42,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Add ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void Add_Generic ()
     {
       ((IList<DataContainer>) _collection).Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -69,15 +69,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Item_Get_ObjectID ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreSame (_dataContainer, _collection[_dataContainer.ID]);
+      Assert.That (_collection[_dataContainer.ID], Is.SameAs (_dataContainer));
     }
 
     [Test]
     public void Item_Get_Index ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreSame (_dataContainer, _collection[0]);
-      Assert.AreSame (_dataContainer, ((IList<DataContainer>) _collection)[0]);
+      Assert.That (_collection[0], Is.SameAs (_dataContainer));
+      Assert.That (((IList<DataContainer>) _collection)[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
@@ -92,13 +92,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ContainsObjectIDTrue ()
     {
       _collection.Add (_dataContainer);
-      Assert.IsTrue (_collection.Contains (_dataContainer.ID));
+      Assert.That (_collection.Contains (_dataContainer.ID), Is.True);
     }
 
     [Test]
     public void ContainsObjectIDFalse ()
     {
-      Assert.IsFalse (_collection.Contains (_dataContainer.ID));
+      Assert.That (_collection.Contains (_dataContainer.ID), Is.False);
     }
 
     [Test]
@@ -108,15 +108,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection copiedCollection = new DataContainerCollection (_collection, false);
 
-      Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_dataContainer, copiedCollection[0]);
+      Assert.That (copiedCollection.Count, Is.EqualTo (1));
+      Assert.That (copiedCollection[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
     public void GetEmptyDifference ()
     {
       DataContainerCollection difference = _collection.GetDifference (new DataContainerCollection ());
-      Assert.AreEqual (0, difference.Count);
+      Assert.That (difference.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -124,8 +124,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _collection.Add (_dataContainer);
       DataContainerCollection difference = _collection.GetDifference (new DataContainerCollection ());
-      Assert.AreEqual (1, difference.Count);
-      Assert.AreSame (_dataContainer, difference[0]);
+      Assert.That (difference.Count, Is.EqualTo (1));
+      Assert.That (difference[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
@@ -142,15 +142,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection difference = _collection.GetDifference (secondCollection);
 
-      Assert.AreEqual (1, difference.Count);
-      Assert.AreSame (differentDataContainer, difference[0]);
+      Assert.That (difference.Count, Is.EqualTo (1));
+      Assert.That (difference[0], Is.SameAs (differentDataContainer));
     }
 
     [Test]
     public void EmptyMerge ()
     {
       DataContainerCollection mergedCollection = _collection.Merge (new DataContainerCollection ());
-      Assert.AreEqual (0, mergedCollection.Count);
+      Assert.That (mergedCollection.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -159,8 +159,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Add (_dataContainer);
       DataContainerCollection mergedCollection = _collection.Merge (new DataContainerCollection ());
 
-      Assert.AreEqual (1, mergedCollection.Count);
-      Assert.AreSame (_dataContainer, mergedCollection[0]);
+      Assert.That (mergedCollection.Count, Is.EqualTo (1));
+      Assert.That (mergedCollection[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection mergedCollection = _collection.Merge (secondCollection);
 
-      Assert.AreEqual (0, mergedCollection.Count);
+      Assert.That (mergedCollection.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -185,8 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection mergedCollection = _collection.Merge (secondCollection);
 
-      Assert.AreEqual (1, mergedCollection.Count);
-      Assert.AreSame (container, mergedCollection[0]);
+      Assert.That (mergedCollection.Count, Is.EqualTo (1));
+      Assert.That (mergedCollection[0], Is.SameAs (container));
     }
 
     [Test]
@@ -202,9 +202,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection mergedCollection = _collection.Merge (secondCollection);
 
-      Assert.AreEqual (2, mergedCollection.Count);
-      Assert.AreSame (order1, mergedCollection[_dataContainer.ID]);
-      Assert.AreSame (order2, mergedCollection[order2.ID]);
+      Assert.That (mergedCollection.Count, Is.EqualTo (2));
+      Assert.That (mergedCollection[_dataContainer.ID], Is.SameAs (order1));
+      Assert.That (mergedCollection[order2.ID], Is.SameAs (order2));
     }
 
     [Test]
@@ -213,9 +213,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Add (_dataContainer);
       DataContainerCollection originalContainers = _collection.GetByState (StateType.Unchanged);
 
-      Assert.IsNotNull (originalContainers);
-      Assert.AreEqual (1, originalContainers.Count);
-      Assert.AreSame (_dataContainer, originalContainers[0]);
+      Assert.That (originalContainers, Is.Not.Null);
+      Assert.That (originalContainers.Count, Is.EqualTo (1));
+      Assert.That (originalContainers[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
@@ -228,44 +228,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainerCollection changedContainers = _collection.GetByState (StateType.Changed);
 
-      Assert.IsNotNull (changedContainers);
-      Assert.AreEqual (1, changedContainers.Count);
-      Assert.AreSame (_dataContainer, changedContainers[0]);
+      Assert.That (changedContainers, Is.Not.Null);
+      Assert.That (changedContainers.Count, Is.EqualTo (1));
+      Assert.That (changedContainers[0], Is.SameAs (_dataContainer));
     }
 
     [Test]
     public void RemoveByID ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
 
       _collection.Remove (_dataContainer.ID);
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
     }
 
     [Test]
     public void RemoveByDataContainer ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
 
       var result = _collection.Remove (_dataContainer);
       Assert.That (result, Is.True);
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
 
       result = _collection.Remove (_dataContainer);
       Assert.That (result, Is.False);
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
     }
 
     [Test]
     public void RemoveAt ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
 
       _collection.RemoveAt (0);
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _collection.Add (_dataContainer);
 
-      Assert.IsTrue (_collection.Contains (_dataContainer));
+      Assert.That (_collection.Contains (_dataContainer), Is.True);
     }
 
     [Test]
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       DataContainer copy = DataContainer.CreateNew (_dataContainer.ID);
 
-      Assert.IsFalse (_collection.Contains (copy));
+      Assert.That (_collection.Contains (copy), Is.False);
     }
 
     [Test]
@@ -311,10 +311,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Clear ()
     {
       _collection.Add (_dataContainer);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
 
       _collection.Clear ();
-      Assert.AreEqual (0, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -336,9 +336,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       secondCollection.Add (secondDataContainer);
 
       DataContainerCollection joinedCollection = DataContainerCollection.Join (firstCollection, secondCollection);
-      Assert.AreEqual (2, joinedCollection.Count);
-      Assert.AreEqual (firstDataContainer.ID, joinedCollection[0].ID);
-      Assert.AreEqual (secondDataContainer.ID, joinedCollection[1].ID);
+      Assert.That (joinedCollection.Count, Is.EqualTo (2));
+      Assert.That (joinedCollection[0].ID, Is.EqualTo (firstDataContainer.ID));
+      Assert.That (joinedCollection[1].ID, Is.EqualTo (secondDataContainer.ID));
     }
 
     [Test]
@@ -352,8 +352,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       secondCollection.Add (dataContainer);
 
       DataContainerCollection joinedCollection = DataContainerCollection.Join (firstCollection, secondCollection);
-      Assert.AreEqual (1, joinedCollection.Count);
-      Assert.AreEqual (dataContainer.ID, joinedCollection[0].ID);
+      Assert.That (joinedCollection.Count, Is.EqualTo (1));
+      Assert.That (joinedCollection[0].ID, Is.EqualTo (dataContainer.ID));
     }
 
     [Test]
@@ -367,8 +367,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       secondCollection.Add (TestDataContainerFactory.CreateOrder1DataContainer ());
 
       DataContainerCollection joinedCollection = DataContainerCollection.Join (firstCollection, secondCollection);
-      Assert.AreEqual (1, joinedCollection.Count);
-      Assert.AreSame (dataContainer, joinedCollection[0]);
+      Assert.That (joinedCollection.Count, Is.EqualTo (1));
+      Assert.That (joinedCollection[0], Is.SameAs (dataContainer));
     }
 
     [Test]
