@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 
     [Test]
     [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Only StorageClass.Persistent is supported.\r\n"
+        ExpectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction is supported.\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute, "
         + "property: None")]
     public void GetMetadata_WithStorageClassNone ()
