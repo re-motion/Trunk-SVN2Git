@@ -111,10 +111,23 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var originatingObjectID = relationEndPointID.ObjectID;
       var oppositeEndPointDefinition = relationEndPointID.Definition.GetOppositeEndPointDefinition ();
 
-      return (from dc in dataContainers
-              where oppositeEndPointDefinition.ClassDefinition.ClassType.IsAssignableFrom (dc.ID.ClassDefinition.ClassType)
-              where originatingObjectID.Equals (dc.PropertyValues[oppositeEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current))
-              select dc.DomainObject).ToArray ();
+      var originalRelatedObjects = new List<DomainObject> ();
+      var currentRelatedObjects = new List<DomainObject> ();
+
+      foreach (var dc in dataContainers)
+      {
+        if (oppositeEndPointDefinition.ClassDefinition.ClassType.IsAssignableFrom (dc.ID.ClassDefinition.ClassType))
+        {
+          var propertyValue = dc.PropertyValues[oppositeEndPointDefinition.PropertyName];
+          
+          if (originatingObjectID.Equals (propertyValue.GetValueWithoutEvents (ValueAccess.Current)))
+            currentRelatedObjects.Add (dc.DomainObject);
+          if (originatingObjectID.Equals (propertyValue.GetValueWithoutEvents (ValueAccess.Original)))
+            originalRelatedObjects.Add (dc.DomainObject);
+        }
+      }
+
+      return currentRelatedObjects.ToArray ();
     }
   }
 }
