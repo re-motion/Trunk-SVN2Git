@@ -234,5 +234,17 @@ namespace Remotion.UnitTests.Collections
 
       adapter[1] = "1";
     }
+
+    [Test]
+    public void AdaptReadOnly ()
+    {
+      var adapter = ListAdapter.AdaptReadOnly (_innerList, i => i.ToString ());
+
+      Assert.That (adapter, Is.TypeOf (typeof (ReadOnlyCollection<string>)));
+      Assert.That (adapter[1], Is.EqualTo ("2"));
+
+      _innerList[1] = 5;
+      Assert.That (adapter[1], Is.EqualTo ("5"));
+    }
   }
 }

@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -140,9 +141,7 @@ namespace Remotion.Collections
       return new ListAdapter<TSource, TDest> (adaptedList, sourceToDest, destToSource);
     }
 
-    public static ListAdapter<TSource, TDest> AdaptOneWay<TSource, TDest> (
-        IList<TSource> adaptedList,
-        Func<TSource, TDest> sourceToDest)
+    public static ListAdapter<TSource, TDest> AdaptOneWay<TSource, TDest> (IList<TSource> adaptedList, Func<TSource, TDest> sourceToDest)
     {
       return new ListAdapter<TSource, TDest> (
           adaptedList,
@@ -152,6 +151,11 @@ namespace Remotion.Collections
             var message = string.Format ("This list does not support setting of '{0}' values.", typeof (TDest).Name);
             throw new NotSupportedException (message);
           });
+    }
+
+    public static ReadOnlyCollection<TDest> AdaptReadOnly<TSource, TDest> (IList<TSource> adaptedList, Func<TSource, TDest> sourceToDest)
+    {
+      return new ReadOnlyCollection<TDest> (AdaptOneWay (adaptedList, sourceToDest));
     }
   }
 }
