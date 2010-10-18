@@ -87,6 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       foreach (DataContainer dataContainer in dataContainers)
         InitializeLoadedDataContainer (dataContainer);
 
+      // The dataContainers collection contains no items for those ids that couldn't be found
       var loadedDomainObjectsWithoutNulls = dataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList ();
       RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (loadedDomainObjectsWithoutNulls));
 

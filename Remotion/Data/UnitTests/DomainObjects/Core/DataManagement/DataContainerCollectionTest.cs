@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 
@@ -43,17 +46,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ObjectIDIndexer ()
+    public void Add_Generic ()
+    {
+      ((IList<DataContainer>) _collection).Add (_dataContainer);
+      Assert.AreEqual (1, _collection.Count);
+    }
+
+    [Test]
+    public void GetEnumerator_Generic ()
+    {
+      _collection.Add (_dataContainer);
+
+      using (var enumerator = _collection.GetEnumerator ())
+      {
+        Assert.That (enumerator.MoveNext (), Is.True);
+        Assert.That (enumerator.Current, Is.SameAs (_dataContainer));
+        Assert.That (enumerator.MoveNext (), Is.False);
+      }
+    }
+
+    [Test]
+    public void Item_Get_ObjectID ()
     {
       _collection.Add (_dataContainer);
       Assert.AreSame (_dataContainer, _collection[_dataContainer.ID]);
     }
 
     [Test]
-    public void NumericIndexer ()
+    public void Item_Get_Index ()
     {
       _collection.Add (_dataContainer);
       Assert.AreSame (_dataContainer, _collection[0]);
+      Assert.AreSame (_dataContainer, ((IList<DataContainer>) _collection)[0]);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Item_Set_Index ()
+    {
+      _collection.Add (_dataContainer);
+      ((IList<DataContainer>) _collection)[0] = _dataContainer;
     }
 
     [Test]
@@ -217,17 +249,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Add (_dataContainer);
       Assert.AreEqual (1, _collection.Count);
 
-      _collection.Remove (_dataContainer);
+      var result = _collection.Remove (_dataContainer);
+      Assert.That (result, Is.True);
+      Assert.AreEqual (0, _collection.Count);
+
+      result = _collection.Remove (_dataContainer);
+      Assert.That (result, Is.False);
       Assert.AreEqual (0, _collection.Count);
     }
 
     [Test]
-    public void RemoveByIndex ()
+    public void RemoveAt ()
     {
       _collection.Add (_dataContainer);
       Assert.AreEqual (1, _collection.Count);
 
-      _collection.Remove (0);
+      _collection.RemoveAt (0);
       Assert.AreEqual (0, _collection.Count);
     }
 
@@ -332,6 +369,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainerCollection joinedCollection = DataContainerCollection.Join (firstCollection, secondCollection);
       Assert.AreEqual (1, joinedCollection.Count);
       Assert.AreSame (dataContainer, joinedCollection[0]);
+    }
+
+    [Test]
+    public void CopyTo_Generic ()
+    {
+      var destArray = new DataContainer[] { null, null, null };
+      _collection.Add (_dataContainer);
+
+      ((IList<DataContainer>)_collection).CopyTo (destArray, 1);
+
+      Assert.That (destArray, Is.EqualTo (new[] { null, _dataContainer, null }));
+    }
+
+    [Test]
+    public void IndexOf_Generic ()
+    {
+      Assert.That (_collection.IndexOf (_dataContainer), Is.EqualTo (-1));
+
+      _collection.Add (_dataContainer);
+      Assert.That (_collection.IndexOf (_dataContainer), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void Insert ()
+    {
+      _collection.Insert (0, _dataContainer);
+
+      Assert.That (_collection, Is.EqualTo (new[] { _dataContainer }));
     }
   }
 }

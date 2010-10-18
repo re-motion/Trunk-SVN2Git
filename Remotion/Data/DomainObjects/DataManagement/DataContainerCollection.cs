@@ -16,155 +16,191 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-[Serializable]
-public class DataContainerCollection : CommonCollection
-{
-  // types
-
-  // static members and constants
-
-  public static DataContainerCollection Join (DataContainerCollection firstCollection, DataContainerCollection secondCollection)
+  [Serializable]
+  public class DataContainerCollection : CommonCollection, IList<DataContainer>
   {
-    ArgumentUtility.CheckNotNull ("firstCollection", firstCollection);
-    ArgumentUtility.CheckNotNull ("secondCollection", secondCollection);
+    // types
 
-    DataContainerCollection joinedCollection = new DataContainerCollection (firstCollection, false);
-    foreach (DataContainer dataContainer in secondCollection)
+    // static members and constants
+
+    public static DataContainerCollection Join (DataContainerCollection firstCollection, DataContainerCollection secondCollection)
     {
-      if (!joinedCollection.Contains (dataContainer.ID))
-        joinedCollection.Add (dataContainer);
+      ArgumentUtility.CheckNotNull ("firstCollection", firstCollection);
+      ArgumentUtility.CheckNotNull ("secondCollection", secondCollection);
+
+      DataContainerCollection joinedCollection = new DataContainerCollection (firstCollection, false);
+      foreach (DataContainer dataContainer in secondCollection)
+      {
+        if (!joinedCollection.Contains (dataContainer.ID))
+          joinedCollection.Add (dataContainer);
+      }
+
+      return joinedCollection;
     }
 
-    return joinedCollection;
-  }
+    // member fields
 
-  // member fields
+    // construction and disposing
 
-  // construction and disposing
-
-  public DataContainerCollection ()
-  {
-  }
-
-  // standard constructor for collections
-  public DataContainerCollection (IEnumerable collection, bool makeCollectionReadOnly)
-  {
-    ArgumentUtility.CheckNotNull ("collection", collection);
-
-    foreach (DataContainer dataContainer in collection)
+    public DataContainerCollection ()
     {
-      Add (dataContainer);
     }
 
-    this.SetIsReadOnly (makeCollectionReadOnly);
-  }
-
-  // methods and properties
-
-  public DataContainerCollection GetByState (StateType state)
-  {
-    ArgumentUtility.CheckValidEnumValue ("state", state);
-
-    DataContainerCollection collection = new DataContainerCollection ();
-
-    foreach (DataContainer dataContainer in this)
+    // standard constructor for collections
+    public DataContainerCollection (IEnumerable collection, bool makeCollectionReadOnly)
     {
-      if (dataContainer.State == state)
-        collection.Add (dataContainer);
+      ArgumentUtility.CheckNotNull ("collection", collection);
+
+      foreach (DataContainer dataContainer in collection)
+        Add (dataContainer);
+
+      this.SetIsReadOnly (makeCollectionReadOnly);
     }
 
-    return collection;
-  }
+    // methods and properties
 
-  public DataContainerCollection GetDifference (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-    DataContainerCollection difference = new DataContainerCollection ();
-
-    foreach (DataContainer dataContainer in this)
+    public DataContainerCollection GetByState (StateType state)
     {
-      if (!dataContainers.Contains (dataContainer.ID))
-        difference.Add (dataContainer);
+      ArgumentUtility.CheckValidEnumValue ("state", state);
+
+      DataContainerCollection collection = new DataContainerCollection();
+
+      foreach (DataContainer dataContainer in this)
+      {
+        if (dataContainer.State == state)
+          collection.Add (dataContainer);
+      }
+
+      return collection;
     }
 
-    return difference;
-  }
-
-  public DataContainerCollection Merge (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-    DataContainerCollection mergedCollection = new DataContainerCollection ();
-
-    foreach (DataContainer dataContainer in this)
+    public DataContainerCollection GetDifference (DataContainerCollection dataContainers)
     {
-      if (dataContainers.Contains (dataContainer.ID))
-        mergedCollection.Add (dataContainers[dataContainer.ID]);
-      else
-        mergedCollection.Add (dataContainer);
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+
+      DataContainerCollection difference = new DataContainerCollection();
+
+      foreach (DataContainer dataContainer in this)
+      {
+        if (!dataContainers.Contains (dataContainer.ID))
+          difference.Add (dataContainer);
+      }
+
+      return difference;
     }
 
-    return mergedCollection;
+    public DataContainerCollection Merge (DataContainerCollection dataContainers)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+
+      DataContainerCollection mergedCollection = new DataContainerCollection();
+
+      foreach (DataContainer dataContainer in this)
+      {
+        if (dataContainers.Contains (dataContainer.ID))
+          mergedCollection.Add (dataContainers[dataContainer.ID]);
+        else
+          mergedCollection.Add (dataContainer);
+      }
+
+      return mergedCollection;
+    }
+
+    public new IEnumerator<DataContainer> GetEnumerator ()
+    {
+      for (int i = 0; i < Count; ++i)
+        yield return this[i];
+    }
+
+    #region Standard implementation for collections
+
+    public bool Contains (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      return BaseContains (dataContainer.ID, dataContainer);
+    }
+
+    public void CopyTo (DataContainer[] array, int arrayIndex)
+    {
+      base.CopyTo (array, arrayIndex);
+    }
+
+    public bool Contains (ObjectID id)
+    {
+      return BaseContainsKey (id);
+    }
+
+    public int IndexOf (DataContainer item)
+    {
+      ArgumentUtility.CheckNotNull ("item", item);
+      return BaseIndexOfKey (item.ID);
+    }
+
+    public void Insert (int index, DataContainer item)
+    {
+      ArgumentUtility.CheckNotNull ("item", item);
+      BaseInsert (index, item.ID, item);
+    }
+
+    public DataContainer this [int index]
+    {
+      get { return (DataContainer) BaseGetObject (index); }
+    }
+
+    DataContainer IList<DataContainer>.this[int index]
+    {
+      get { return this[index]; }
+      set { throw new NotSupportedException ("It is not supported to set a DataContainer based by index."); }
+    }
+
+    public DataContainer this [ObjectID id]
+    {
+      get { return (DataContainer) BaseGetObject (id); }
+    }
+
+    public int Add (DataContainer value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      return BaseAdd (value.ID, value);
+    }
+
+    public void RemoveAt (int index)
+    {
+      Remove (this[index]);
+    }
+
+    public void Remove (ObjectID id)
+    {
+      Remove (this[id]);
+    }
+
+    public bool Remove (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      var countBefore = Count;
+      BaseRemove (dataContainer.ID);
+      return Count < countBefore;
+    }
+
+    void ICollection<DataContainer>.Add (DataContainer item)
+    {
+      Add (item);
+    }
+
+    public void Clear ()
+    {
+      BaseClear();
+    }
+
+    #endregion
   }
-
-  #region Standard implementation for collections
-
-  public bool Contains (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-    return BaseContains (dataContainer.ID, dataContainer);
-  }
-
-  public bool Contains (ObjectID id)
-  {
-    return BaseContainsKey (id);
-  }
-
-  public DataContainer this[int index]
-  {
-    get {return (DataContainer) BaseGetObject (index); }
-  }
-
-  public DataContainer this[ObjectID id]  
-  {
-    get { return (DataContainer) BaseGetObject (id); }
-  }
-
-  public int Add (DataContainer value)
-  {
-    ArgumentUtility.CheckNotNull ("value", value);
-    
-    return BaseAdd (value.ID, value);
-  }
-
-  public void Remove (int index)
-  {
-    Remove (this[index]);
-  }
-
-  public void Remove (ObjectID id)
-  {
-    Remove (this[id]);
-  }
-
-  public void Remove (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-    BaseRemove (dataContainer.ID);
-  }
-
-  public void Clear ()
-  {
-    BaseClear ();
-  }
-
-  #endregion
-}
 }
