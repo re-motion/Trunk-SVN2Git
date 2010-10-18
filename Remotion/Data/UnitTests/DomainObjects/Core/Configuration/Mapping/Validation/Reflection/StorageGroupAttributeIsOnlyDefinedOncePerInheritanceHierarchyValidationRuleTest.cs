@@ -66,8 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void DomainObjectBase_WithStorageGroupAttribute_And_WithStorageGroupAttributeOnBaseClass ()
     {
-      var baseTypeStub = MockRepository.GenerateStub<Type>();
-
       var type = typeof (DerivedClassWithStorageGroupAttribute);
 
       var validationResult = _validationRule.Validate (type);

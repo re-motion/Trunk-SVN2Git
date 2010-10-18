@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence
 {
@@ -29,6 +30,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
         return ValidateStorageSpecificPropertyNames (classDefinition);
       

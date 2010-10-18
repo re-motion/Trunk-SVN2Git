@@ -21,12 +21,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
 {
   /// <summary>
-  /// Validates that the StorageGroupAttribute is not redefined in any derived class.
+  /// Validates that the StorageGroupAttribute is not defined twice in the class hierarchy.
   /// </summary>
   public class StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule : ITypeValidator
   {
     public MappingValidationResult Validate (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       if (ClassReflector.IsInheritanceRoot(type) && Attribute.IsDefined (type.BaseType, typeof (StorageGroupAttribute), true)) 
       {
         Type baseType = type.BaseType;

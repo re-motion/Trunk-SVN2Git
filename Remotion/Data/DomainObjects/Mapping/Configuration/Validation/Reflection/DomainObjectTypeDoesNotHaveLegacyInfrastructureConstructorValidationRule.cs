@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
 {
@@ -27,6 +28,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   {
     public MappingValidationResult Validate (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       if (!type.IsAbstract || (type.IsAbstract && Attribute.IsDefined (type, typeof (InstantiableAttribute), false)))
       {
         BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;

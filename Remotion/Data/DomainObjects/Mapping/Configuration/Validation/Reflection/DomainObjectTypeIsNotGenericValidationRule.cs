@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
 {
@@ -26,6 +27,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   {
     public MappingValidationResult Validate (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       if (type.IsGenericType && !ClassReflector.IsDomainObjectBase(type))
       {
         var message = "Generic domain objects are not supported.";

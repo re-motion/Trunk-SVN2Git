@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
 {
@@ -25,6 +26,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       if (classDefinition.BaseClass != null)
       {
         PropertyDefinitionCollection basePropertyDefinitions = classDefinition.BaseClass.GetPropertyDefinitions ();

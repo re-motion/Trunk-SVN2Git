@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
 {
@@ -25,6 +26,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   {
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
     {
+      ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
+
       var endPointDefinition1 = relationDefinition.EndPointDefinitions[0];
       var endPointDefinition2 = relationDefinition.EndPointDefinitions[1];
 

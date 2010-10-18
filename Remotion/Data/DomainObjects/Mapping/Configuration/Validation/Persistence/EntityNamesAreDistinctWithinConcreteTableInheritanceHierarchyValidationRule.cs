@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence
 {
@@ -26,6 +27,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       var allDistinctConcreteEntityNames = new Dictionary<string, object> ();
       foreach (string entityName in classDefinition.GetAllConcreteEntityNames ())
       {
