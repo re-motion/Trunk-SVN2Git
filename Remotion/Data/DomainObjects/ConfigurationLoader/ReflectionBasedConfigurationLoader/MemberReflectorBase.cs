@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.ExtensibleEnums;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -28,37 +27,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Base class for reflecting on the properties and relations of a class.</summary>
   public abstract class MemberReflectorBase
   {
-    protected sealed class AttributeConstraint
-    {
-      private readonly Type[] _propertyTypes;
-      private readonly string _message;
-
-      public AttributeConstraint (string message, params Type[] propertyTypes)
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("message", message);
-        ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("propertyTypes", propertyTypes);
-
-        _propertyTypes = propertyTypes;
-        _message = message;
-      }
-
-      public Type[] PropertyTypes
-      {
-        get { return _propertyTypes; }
-      }
-
-      public string Message
-      {
-        get { return _message; }
-      }
-    }
-
     public const StorageClass DefaultStorageClass = StorageClass.Persistent;
 
-    private Dictionary<Type, AttributeConstraint> _attributeConstraints = null;
-    private PropertyInfo _propertyInfo;
+    private readonly PropertyInfo _propertyInfo;
     private readonly IMappingNameResolver _nameResolver;
-    private StorageClassAttribute _storageClassAttribute;
+    private readonly StorageClassAttribute _storageClassAttribute;
 
     protected MemberReflectorBase (PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
     {
@@ -95,50 +68,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       CheckSupportedPropertyAttributes();
     }
 
-    protected virtual void AddAttributeConstraints (Dictionary<Type, AttributeConstraint> attributeConstraints)
-    {
-      ArgumentUtility.CheckNotNull ("attributeConstraints", attributeConstraints);
-
-      attributeConstraints.Add (typeof (StringPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<StringPropertyAttribute, string>());
-      attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]> ());
-      attributeConstraints.Add (typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum> ());
-      attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute>());
-    }
-
-    protected AttributeConstraint CreateAttributeConstraintForValueTypeProperty<TAttribute, TProperty>()
-        where TAttribute: Attribute
-    {
-      return new AttributeConstraint (
-          string.Format ("The '{0}' may be only applied to properties of type '{1}'.", typeof (TAttribute).FullName, typeof (TProperty).FullName),
-          typeof (TProperty));
-    }
-
-    protected AttributeConstraint CreateAttributeConstraintForRelationProperty<TAttribute>()
-        where TAttribute: Attribute
-    {
-      return new AttributeConstraint (
-          string.Format (
-              "The '{0}' may be only applied to properties assignable to types '{1}' or '{2}'.",
-              typeof (TAttribute),
-              typeof (DomainObject),
-              typeof (ObjectList<>)),
-          typeof (DomainObject),
-          typeof (ObjectList<>));
-    }
-
-    protected Dictionary<Type, AttributeConstraint> AttributeConstraints
-    {
-      get
-      {
-        if (_attributeConstraints == null)
-        {
-          _attributeConstraints = new Dictionary<Type, AttributeConstraint>();
-          AddAttributeConstraints (_attributeConstraints);
-        }
-        return _attributeConstraints;
-      }
-    }
-
     private void CheckStorageClass()
     {
       if (_storageClassAttribute != null && _storageClassAttribute.StorageClass != StorageClass.Persistent && _storageClassAttribute.StorageClass != StorageClass.Transaction)
@@ -147,22 +76,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private void CheckSupportedPropertyAttributes()
     {
-      foreach (Attribute attribute in AttributeUtility.GetCustomAttributes<Attribute> (PropertyInfo, true))
-      {
-        AttributeConstraint constraint;
-        if (AttributeConstraints.TryGetValue (attribute.GetType(), out constraint))
-        {
-          if (!Array.Exists (constraint.PropertyTypes, IsPropertyTypeSupported))
-            throw CreateMappingException (null, PropertyInfo, constraint.Message);
-        }
-      }
-    }
-
-    private bool IsPropertyTypeSupported (Type type)
-    {
-      if (type == typeof (ObjectList<>))
-        return ReflectionUtility.IsObjectList (PropertyInfo.PropertyType);
-      return type.IsAssignableFrom (PropertyInfo.PropertyType);
+      var validationRule = new MappingAttributesAreSupportedForPropertyTypeValidationRule();
+      var validationResult = validationRule.Validate(PropertyInfo);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (null, PropertyInfo, validationResult.Message);
     }
 
     protected virtual string GetPropertyName ()
