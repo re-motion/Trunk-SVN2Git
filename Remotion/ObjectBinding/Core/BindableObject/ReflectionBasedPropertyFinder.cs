@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
@@ -64,41 +65,45 @@ namespace Remotion.ObjectBinding.BindableObject
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, 
             PropertyFilter, 
             null);
+        
         foreach (PropertyInfo propertyInfo in propertyInfos)
         {
           if (!propertyNames.Contains (propertyInfo.Name))
           {
-            var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
-            if (introducedMemberAttributes.Length > 0)
-            {
-              var introducedMemberAttribute = (IntroducedMemberAttribute) introducedMemberAttributes[0];
-              var interfaceProperty = new PropertyInfoAdapter (
-                  introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
-              var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
-              var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
-
-              yield return new BindableObjectMixinIntroducedPropertyInformation (interfaceImplementation, currentType, propertyInfo);
-            }
-            else
-            {
-              var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
-              var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
-              if (interfaceDeclaration != null)
-                yield return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
-              else
-                yield return propertyInfoAdapter;
-            }
-
+            yield return GetPropertyInformation(currentType, propertyInfo);
             propertyNames.Add (propertyInfo.Name);
           }
         }
       }
     }
 
+    private IPropertyInformation GetPropertyInformation (Type currentType, PropertyInfo propertyInfo)
+    {
+      var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
+      if (introducedMemberAttributes.Length > 0)
+      {
+        var introducedMemberAttribute = (IntroducedMemberAttribute) introducedMemberAttributes[0];
+        var interfaceProperty = new PropertyInfoAdapter (
+            introducedMemberAttribute.IntroducedInterface.GetProperty (introducedMemberAttribute.InterfaceMemberName));
+        var mixinProperty = interfaceProperty.FindInterfaceImplementation (introducedMemberAttribute.Mixin);
+        var interfaceImplementation = new InterfaceImplementationPropertyInformation (mixinProperty, interfaceProperty);
+
+        return new BindableObjectMixinIntroducedPropertyInformation (interfaceImplementation, currentType, propertyInfo);
+      }
+      else
+      {
+        var propertyInfoAdapter = new PropertyInfoAdapter (propertyInfo);
+        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
+        if (interfaceDeclaration != null)
+          return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
+        else
+          return propertyInfoAdapter;
+      }
+    }
+
     private IEnumerable<Type> GetInheritanceHierarchy ()
     {
-      for (Type currentType = _concreteType; currentType != null; currentType = currentType.BaseType)
-        yield return currentType;
+      return _concreteType.CreateSequence (c => c.BaseType);
     }
 
     protected virtual bool PropertyFilter (MemberInfo memberInfo, object filterCriteria)
@@ -114,26 +119,16 @@ namespace Remotion.ObjectBinding.BindableObject
       if (propertyInfo.GetIndexParameters ().Length > 0)
         return false;
 
-      // property can be an explicit interface implementation or property must have a public getter
-      if (IsNonInfrastructurePublicProperty (propertyInfo))
+      // properties with a public getter are included, as long as that getter is not an infrastructure property
+      var publicGetter = propertyInfo.GetGetMethod (false);
+      if (publicGetter != null && !IsInfrastructureProperty (propertyInfo, publicGetter))
         return true;
-      else
-        return IsNonInfrastructureInterfaceProperty (propertyInfo);
-    }
 
-    private bool IsNonInfrastructurePublicProperty (PropertyInfo propertyInfo)
-    {
-      MethodInfo accessor = propertyInfo.GetGetMethod (false); // property must have public getter
-      return accessor != null
-          && !IsInfrastructureProperty (propertyInfo, accessor);
-    }
-
-    private bool IsNonInfrastructureInterfaceProperty (PropertyInfo propertyInfo)
-    {
-      MethodInfo accessor = propertyInfo.GetGetMethod (true);
-      return accessor != null
-          && _interfaceMethodImplementations.ContainsKey (accessor)
-          && !_interfaceMethodImplementations[accessor].TrueForAll (m => IsInfrastructureProperty (propertyInfo, m));
+      // property can be any interface implementation as long as it is not an infrastructure property
+      var publicOrNonPublicGetter = publicGetter ?? propertyInfo.GetGetMethod (true);
+      return publicOrNonPublicGetter != null
+             && _interfaceMethodImplementations.ContainsKey (publicOrNonPublicGetter)
+             && !_interfaceMethodImplementations[publicOrNonPublicGetter].TrueForAll (m => IsInfrastructureProperty (propertyInfo, m));
     }
 
     protected virtual bool IsInfrastructureProperty (PropertyInfo propertyInfo, MethodInfo accessorDeclaration)
