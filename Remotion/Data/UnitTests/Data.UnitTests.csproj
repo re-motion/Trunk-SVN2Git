@@ -398,6 +398,8 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule\EntityNamesAreDistinctBase2DomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule\EntityNamesAreDistinctBaseOfBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule\NonAbstractClassHasEntityNameDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValidationRule\BaseStorageProviderIDCheckClass.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValidationRule\DerivedStorageProviderIDCheckClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesBaseOfBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedBase1DomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule\StorageSpecificPropertyNamesDerivedDomainObject.cs" />
@@ -436,6 +438,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValiadationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />

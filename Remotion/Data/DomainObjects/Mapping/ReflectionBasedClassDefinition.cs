@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (baseClass != null)
       {
         _baseClass = baseClass;
-        CheckBaseClass (baseClass, id, storageProviderID, classType);
+        CheckBaseClass ();
         baseClass.AddDerivedClass (this);
       }
     }
@@ -172,20 +173,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
     }
 
-    private void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
+    private void CheckBaseClass ()
     {
       var inheritanceHierarchyValidationRule = new InheritanceHierarchyFollowsClassHierarchyValidationRule ();
       var inheritanceHierarchyValidationResult = inheritanceHierarchyValidationRule.Validate (this);
       if (!inheritanceHierarchyValidationResult.IsValid)
         throw CreateMappingException (inheritanceHierarchyValidationResult.Message);
 
-      if (baseClass.StorageProviderID != storageProviderID)
-      {
-        throw CreateMappingException (
-            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
-            id,
-            baseClass.ID);
-      }
+      var storageProviderValidationRule = new StorageProviderIDMatchesParentStorageProviderIDValiadationRule();
+      var storageProviderValidationResult = storageProviderValidationRule.Validate (this);
+      if (!storageProviderValidationResult.IsValid)
+        throw CreateMappingException (storageProviderValidationResult.Message);
     }
 
     private MappingException CreateMappingException (string message, params object[] args)
