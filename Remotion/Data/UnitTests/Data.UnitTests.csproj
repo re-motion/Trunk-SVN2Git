@@ -484,6 +484,8 @@
     <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\BigRelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\RelationInconsistenciesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
