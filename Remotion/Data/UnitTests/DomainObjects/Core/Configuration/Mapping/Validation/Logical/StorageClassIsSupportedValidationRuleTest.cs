@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Logical.StorageClassIsSupportedValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Logical
 {
@@ -35,14 +34,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       _validationRule = new StorageClassIsSupportedValidationRule();
 
-      _type = typeof (StorageClassIsSupportedType);
+      _type = typeof (DerivedValidationDomainObjectClass);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_type.Name, _type.Name, "SPID", _type, false);
     }
 
     [Test]
     public void PropertyWithoutStorageClassAttribute ()
     {
-      var propertyInfo = _type.GetProperty ("PropertyWithoutStorageClassAttribute");
+      var propertyInfo = _type.GetProperty ("Property");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
 
       var validationResult = _validationRule.Validate (propertyDefinition);

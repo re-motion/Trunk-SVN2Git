@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.SortExpressionIsSupportedForCardinalityOfRelationPropertyValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void SetUp ()
     {
       _validationRule = new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule();
-      var type = typeof (SortExpressionIsSupportedTestClass);
+      var type = typeof (DerivedValidationDomainObjectClass);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void CardinalityIsOne_And_EndPointDefinitionHasNoSortExpression ()
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "Property", false, CardinalityType.One, typeof (SortExpressionIsSupportedTestClass), null);
+        _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 
@@ -74,12 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void CardinalityOne_And_EndPointDefinitionHasSortExpression ()
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "Property", false, CardinalityType.One, typeof (SortExpressionIsSupportedTestClass), null);
+        _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_sortExpression", "SortExpression");
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 
-      var expectedMessage = "Property 'Property' of class 'SortExpressionIsSupportedTestClass' must not specify a SortExpression, because cardinality is equal to 'one'.";
+      var expectedMessage = "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not specify a SortExpression, because cardinality is equal to 'one'.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }

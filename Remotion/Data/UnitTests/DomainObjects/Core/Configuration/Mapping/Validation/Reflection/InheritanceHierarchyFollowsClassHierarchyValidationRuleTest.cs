@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.InheritanceHierarchyFollowsClassHierarchyValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Reflection
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void ClassDefinitionWithoutBaseClass ()
     {
-      var type = typeof (BaseInheritanceHierarchyClass);
+      var type = typeof (BaseOfBaseValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -47,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void ClassDefinitionWithBaseClass_ClassTypeIsDerivedFromBaseClassType ()
     {
-      var baseType = typeof (BaseInheritanceHierarchyClass);
+      var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
-      var derivedType = typeof (DerivedInheritanceHierarchyClass);
+      var derivedType = typeof (BaseValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, "SPID", derivedType, false, baseClassDefinition, new Type[0]);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -60,16 +60,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void ClassDefinitionWithBaseClass_ClassTypeIsNotDerivedFromBaseClassType ()
     {
-      var baseType = typeof (BaseInheritanceHierarchyClass);
+      var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
-      var derivedType = typeof (DerivedInheritanceHierarchyClass);
+      var derivedType = typeof (BaseValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, "SPID", derivedType, false, baseClassDefinition, new Type[0]);
-      PrivateInvoke.SetNonPublicField (classDefinition, "_classType", typeof (OtherInheritanceHierarchyClass));
+      PrivateInvoke.SetNonPublicField (classDefinition, "_classType", typeof (ClassOutOfInheritanceHierarchy));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.InheritanceHierarchyFollowsClassHierarchyValidationRule.OtherInheritanceHierarchyClass, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of class 'DerivedInheritanceHierarchyClass' is not derived from type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Reflection.InheritanceHierarchyFollowsClassHierarchyValidationRule.BaseInheritanceHierarchyClass, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of base class 'BaseInheritanceHierarchyClass'.";
+          "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.ClassOutOfInheritanceHierarchy, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of class 'BaseValidationDomainObjectClass' is not derived from type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of base class 'BaseOfBaseValidationDomainObjectClass'.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

@@ -16,9 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
@@ -40,20 +39,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "EntityNamesAreDistinctBase1DomainObject",
           "SPID",
-          typeof (EntityNamesAreDistinctBase1DomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "EntityNamesAreDistinctBase2DomainObject",
           "SPID",
-          typeof (EntityNamesAreDistinctBase2DomainObject),
+          typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
 
@@ -69,20 +68,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "SameEntityName",
           "SPID",
-          typeof (EntityNamesAreDistinctBase1DomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "SameEntityName",
           "SPID",
-          typeof (EntityNamesAreDistinctBase2DomainObject),
+          typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
 
@@ -100,27 +99,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "EntityNamesAreDistinctBase1DomainObject",
           "SPID",
-          typeof (EntityNamesAreDistinctBase1DomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBase2DomainObject),
+          typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctDerivedDomainObject",
           "EntityNamesAreDistinctDerivedDomainObject",
           "SPID",
-          typeof (EntityNamesAreDistinctDerivedDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           derivedBaseClass1);
 
@@ -136,27 +135,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           null,
           "SPID",
-          typeof (EntityNamesAreDistinctBase1DomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "SameEntityName",
           "SPID",
-          typeof (EntityNamesAreDistinctBase2DomainObject),
+          typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctDerivedDomainObject",
           "SameEntityName",
           "SPID",
-          typeof (EntityNamesAreDistinctDerivedDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           derivedBaseClass1);
 

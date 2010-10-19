@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Logical.VirtualRelationEndPointPropertyTypeIsSupportedValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Logical
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void SetUp ()
     {
       _validationRule = new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule();
-      var type = typeof (VirtualRelationEndPointPropertyIsSupportedTestClass);
+      var type = typeof (BaseOfBaseValidationDomainObjectClass);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void PropertyTypeIsSubclassOfDomainObjectCollection ()
     {
-      var propertyType = typeof (ObjectList<VirtualRelationEndPointPropertyIsSupportedTestClass>);
+      var propertyType = typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>);
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.Many, propertyType, null);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void PropertyTypeIsSubclassOfDomainObject ()
     {
-      var propertyType = typeof (VirtualRelationEndPointPropertyIsSupportedTestClass);
+      var propertyType = typeof (BaseOfBaseValidationDomainObjectClass);
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.One, propertyType, null);
 
@@ -89,13 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var propertyType = typeof (string);
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-          _classDefinition, "Property", false, CardinalityType.One, typeof (VirtualRelationEndPointPropertyIsSupportedTestClass), null);
+          _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", propertyType);
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 
-      var expectedMessage = "Relation definition error: Virtual property 'Property' of class 'VirtualRelationEndPointPropertyIsSupportedTestClass' is "
-                           +"of type'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
+      var expectedMessage = "Relation definition error: Virtual property 'Property' of class 'BaseOfBaseValidationDomainObjectClass' is "
+                           +"of type 'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
                            +"'Remotion.Data.DomainObjects.DomainObjectCollection' or must be 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }

@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Logical.VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Logical
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void SetUp ()
     {
       _validationRule = new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule();
-      var type = typeof (CardinalityMatchesPropertyTypeCheckClass);
+      var type = typeof (BaseOfBaseValidationDomainObjectClass);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
     }
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void VirtualRelationEndPointDefinitionWithCardinalityOne_And_PropertyTypeNotDerivedFromDomainObject ()
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.One, typeof (CardinalityMatchesPropertyTypeCheckClass), null);
+         _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (DomainObject));
 
       var validationResult = _validationRule.Validate (endPointDefinition);
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void VirtualRelationEndPointDefinitionWithCardinalityOne_And_PropertyTypeDerivedFromDomainObject ()
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.One, typeof (CardinalityMatchesPropertyTypeCheckClass), null);
+         _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     public void VirtualRelationEndPointDefinitionWithCardinalityMany_And_PropertyTypeIsDerivedFromDomainObjectCollection ()
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.Many, typeof (ObjectList<CardinalityMatchesPropertyTypeCheckClass>), null);
+         _classDefinition, "Property", false, CardinalityType.Many, typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>), null);
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (CardinalityMatchesPropertyTypeCheckClass));
+      PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (BaseOfBaseValidationDomainObjectClass));
 
       var validationResult = _validationRule.Validate (endPointDefinition);
 

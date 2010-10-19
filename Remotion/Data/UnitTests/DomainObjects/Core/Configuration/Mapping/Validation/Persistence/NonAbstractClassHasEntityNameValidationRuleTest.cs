@@ -16,8 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.NonAbstractClassHasEntityNameValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           true);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -69,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -84,10 +85,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           null,
-          new PersistentMixinFinderMock (typeof (NonAbstractClassHasEntityNameDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           "NonAbstractClassHasEntityNameStorageProviderID",
-          typeof (NonAbstractClassHasEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -109,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
       var expectedMessage = string.Format (
           "Neither class 'NonAbstractClassHasEntityNameDomainObject' nor its base classes specify an entity name. Make "
           + "class '{0}' abstract or apply a DBTable attribute to it or one of its base classes.",
-          typeof (NonAbstractClassHasEntityNameDomainObject).AssemblyQualifiedName);
+          typeof (DerivedValidationDomainObjectClass).AssemblyQualifiedName);
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
     

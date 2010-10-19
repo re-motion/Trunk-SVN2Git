@@ -18,9 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using
-    Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.
-        StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
@@ -41,29 +39,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase1DomainObject",
           "StorageSpecificPropertyNamesDerivedBase1DomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedBase1DomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase2DomainObject",
           "StorageSpecificPropertyNamesDerivedBase2DomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedBase2DomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedDomainObject),
+          typeof (OtherDerivedValidationHierarchyClass),
           false,
-          _derivedBaseClass1);
+          _baseOfBaseClass);
     }
 
     [Test]
@@ -81,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       classDefinition.MyPropertyDefinitions.Add (
@@ -102,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       classDefinition.MyPropertyDefinitions.Add (
@@ -127,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "SPID",
-          typeof (StorageSpecificPropertyNamesDerivedDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
 
       classDefinition.MyPropertyDefinitions.Add (
@@ -188,8 +186,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'FirstName2' of class 'StorageSpecificPropertyNamesDerivedBase2DomainObject' must not define storage specific name 'FirstName', "
-          + "because class 'StorageSpecificPropertyNamesDerivedDomainObject' in same inheritance hierarchy already defines property 'FirstName1' "
+          "Property 'FirstName1' of class 'StorageSpecificPropertyNamesDerivedDomainObject' must not define storage specific name 'FirstName', "
+          + "because class 'StorageSpecificPropertyNamesDerivedBase2DomainObject' in same inheritance hierarchy already defines property 'FirstName2' "
           + "with the same storage specific name.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }

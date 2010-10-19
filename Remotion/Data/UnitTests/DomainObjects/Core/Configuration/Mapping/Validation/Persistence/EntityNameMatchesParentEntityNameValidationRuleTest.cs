@@ -16,8 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.EntityNameMatchesParentEntityNameValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
 {
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false);
       
       var validationResult = _validationRule.Validate (classDefinition);
@@ -54,16 +55,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           null,
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameBaseDomainObject),
+          typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           null,
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
-          new PersistentMixinFinderMock (typeof (EntityNameMatchesParentEntityNameDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -77,16 +78,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "EntityName",
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameBaseDomainObject),
+          typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
-          new PersistentMixinFinderMock (typeof (EntityNameMatchesParentEntityNameDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -100,16 +101,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "BaseEntityName",
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameBaseDomainObject),
+          typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           "SPID",
-          typeof (EntityNameMatchesParentEntityNameDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
-          new PersistentMixinFinderMock (typeof (EntityNameMatchesParentEntityNameDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 

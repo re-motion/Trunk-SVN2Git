@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Persistence.StorageProviderIDMatchesParentStorageProviderIDValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Persistence
@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void SameStorageProviderID ()
     {
-      var baseType = typeof (BaseStorageProviderIDCheckClass);
+      var baseType = typeof (BaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
-      var type = typeof (DerivedStorageProviderIDCheckClass);
+      var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false, baseClassDefinition, new Type[0]);
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -49,16 +49,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     [Test]
     public void DifferentStorageProviderID ()
     {
-      var baseType = typeof (BaseStorageProviderIDCheckClass);
+      var baseType = typeof (BaseValidationDomainObjectClass);
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
-      var type = typeof (DerivedStorageProviderIDCheckClass);
+      var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false, baseClassDefinition, new Type[0]);
       PrivateInvoke.SetNonPublicField (classDefinition, "_storageProviderID", "SPID_NEW");
 
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Cannot derive class 'DerivedStorageProviderIDCheckClass' from base class 'BaseStorageProviderIDCheckClass' handled by different StorageProviders.";
+          "Cannot derive class 'DerivedValidationDomainObjectClass' from base class 'BaseValidationDomainObjectClass' handled by different StorageProviders.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

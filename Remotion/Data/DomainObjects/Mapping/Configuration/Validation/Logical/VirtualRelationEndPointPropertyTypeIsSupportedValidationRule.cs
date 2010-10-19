@@ -34,13 +34,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
           !relationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
       {
         var message = string.Format(
-            "Relation definition error: Virtual property '{0}' of class '{1}' is of type"
-                + "'{2}', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                    + "'Remotion.Data.DomainObjects.DomainObjectCollection' or must be"
-                        + " 'Remotion.Data.DomainObjects.DomainObjectCollection'.",
+            "Relation definition error: Virtual property '{0}' of class '{1}' is of type '{2}', but must be derived from '{3}' or '{4}' or must be '{4}'.",
             relationEndPointDefinition.PropertyName,
             relationEndPointDefinition.ClassDefinition.ID,
-            relationEndPointDefinition.PropertyType);
+            relationEndPointDefinition.PropertyType,
+            typeof(DomainObject).FullName,
+            typeof(DomainObjectCollection).FullName);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);

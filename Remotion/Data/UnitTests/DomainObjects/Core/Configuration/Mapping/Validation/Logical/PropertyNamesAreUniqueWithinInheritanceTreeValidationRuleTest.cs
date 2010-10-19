@@ -16,11 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using
-    Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation.Logical.
-        PropertyNamesAreUniqueWithinInheritanceTreeValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation.Logical
 {
@@ -40,24 +39,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject",
           "BaseEntityName",
           "SPID",
-          typeof (PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject),
+          typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
           "SPID",
-          typeof (PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject),
+          typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClassDefinition,
-          new PersistentMixinFinderMock (typeof (PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
       _derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
           "SPID",
-          typeof (PropertyNamesAreUniqueWithinInheritanceTreeDomainObject),
+          typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClassDefinition,
-          new PersistentMixinFinderMock (typeof (PropertyNamesAreUniqueWithinInheritanceTreeDomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
     }
 
     [Test]
