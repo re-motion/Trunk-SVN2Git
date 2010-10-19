@@ -25,6 +25,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// </summary>
   public class DomainObjectTypeIsNotGenericValidationRule : IClassDefinitionValidator
   {
+    public DomainObjectTypeIsNotGenericValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

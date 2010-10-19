@@ -26,6 +26,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// </summary>
   public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IPropertyDefintionValidator
   {
+    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

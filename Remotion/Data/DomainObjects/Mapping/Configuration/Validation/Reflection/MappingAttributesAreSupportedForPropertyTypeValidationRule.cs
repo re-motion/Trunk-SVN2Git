@@ -67,6 +67,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
       }
     }
 
+    public MappingAttributesAreSupportedForPropertyTypeValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

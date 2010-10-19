@@ -25,6 +25,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IClassDefinitionValidator
   {
+    public EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

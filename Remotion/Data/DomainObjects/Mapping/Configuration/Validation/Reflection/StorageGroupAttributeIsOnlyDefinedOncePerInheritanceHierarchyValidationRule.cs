@@ -25,6 +25,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// </summary>
   public class StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule : IClassDefinitionValidator
   {
+    public StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

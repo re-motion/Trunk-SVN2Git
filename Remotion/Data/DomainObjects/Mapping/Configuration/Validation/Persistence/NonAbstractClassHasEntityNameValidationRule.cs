@@ -24,6 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class NonAbstractClassHasEntityNameValidationRule : IClassDefinitionValidator
   {
+    public NonAbstractClassHasEntityNameValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

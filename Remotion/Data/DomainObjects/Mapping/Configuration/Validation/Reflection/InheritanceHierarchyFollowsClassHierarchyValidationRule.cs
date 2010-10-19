@@ -23,6 +23,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// </summary>
   public class InheritanceHierarchyFollowsClassHierarchyValidationRule : IClassDefinitionValidator
   {
+    public InheritanceHierarchyFollowsClassHierarchyValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       if (classDefinition.BaseClass !=null && !classDefinition.ClassType.IsSubclassOf (classDefinition.BaseClass.ClassType))

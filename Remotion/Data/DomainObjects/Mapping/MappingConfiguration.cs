@@ -92,10 +92,19 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (_classDefinitions == null)
           throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
 
+        // validate class definitions
+        // if not failed
+        // validate property definitions
+
+        // if not failed
         _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
         if (_relationDefinitions == null)
           throw new InvalidOperationException (
               string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
+
+        // validate relation definitions
+        // if not failed
+        // validate persistence configuration
 
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;

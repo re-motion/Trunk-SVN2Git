@@ -24,6 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// </summary>
   public class VirtualRelationEndPointPropertyTypeIsSupportedValidationRule : IRelationEndPointValidator
   {
+    public VirtualRelationEndPointPropertyTypeIsSupportedValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);

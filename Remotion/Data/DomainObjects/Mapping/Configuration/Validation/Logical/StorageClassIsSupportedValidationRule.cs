@@ -26,6 +26,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// </summary>
   public class StorageClassIsSupportedValidationRule : IPropertyDefintionValidator
   {
+    public StorageClassIsSupportedValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

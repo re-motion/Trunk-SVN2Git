@@ -28,6 +28,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
     private readonly IDictionary<string, List<PropertyDefinition>> _persistentPropertyDefinitionsInInheritanceHierarchy =
         new Dictionary<string, List<PropertyDefinition>> ();
 
+    public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

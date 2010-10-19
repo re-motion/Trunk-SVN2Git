@@ -23,6 +23,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class StorageProviderIDMatchesParentStorageProviderIDValiadationRule : IClassDefinitionValidator
   {
+    public StorageProviderIDMatchesParentStorageProviderIDValiadationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       if (classDefinition.BaseClass.StorageProviderID != classDefinition.StorageProviderID)

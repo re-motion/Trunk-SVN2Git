@@ -24,6 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// </summary>
   public class PropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidator
   {
+    public PropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

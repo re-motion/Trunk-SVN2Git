@@ -24,6 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class EntityNameMatchesParentEntityNameValidationRule : IClassDefinitionValidator
   {
+    public EntityNameMatchesParentEntityNameValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

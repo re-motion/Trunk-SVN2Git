@@ -24,6 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationEndPointValidator
   {
+    public SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule ()
+    {
+      
+    }
+
     public MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
