@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -129,8 +130,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         propertyTypeName = propertyType.AssemblyQualifiedName;
       }
 
-      CheckSortExpression (classDefinition, propertyName, cardinality, sortExpression);
-
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = _classDefinition.ID;
       _cardinality = cardinality;
@@ -139,6 +138,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyType = propertyType;
       _propertyTypeName = propertyTypeName;
       _sortExpression = sortExpression;
+
+      CheckSortExpression (classDefinition, propertyName, cardinality, sortExpression);
     }
 
     private void CheckPropertyType (
@@ -184,13 +185,10 @@ namespace Remotion.Data.DomainObjects.Mapping
         CardinalityType cardinality,
         string sortExpression)
     {
-      if (cardinality == CardinalityType.One && sortExpression != null)
-      {
-        throw CreateMappingException (
-            "Property '{0}' of class '{1}' must not specify a SortExpression, because cardinality is equal to 'one'.",
-            propertyName,
-            classDefinition.ID);
-      }
+      var validationRule = new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule();
+      var validationResult = validationRule.Validate (this);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (validationResult.Message);
     }
 
     // methods and properties

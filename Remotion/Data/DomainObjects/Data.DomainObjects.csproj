@@ -229,6 +229,7 @@
     <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IPropertyDefintionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IRelationEndPointValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\StorageClassIsSupportedValidationRule.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Persistence\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValiadationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule.cs" />
