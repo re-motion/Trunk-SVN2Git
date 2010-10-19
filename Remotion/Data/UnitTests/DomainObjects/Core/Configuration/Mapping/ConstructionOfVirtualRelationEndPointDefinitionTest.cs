@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [ExpectedException (typeof (MappingException),
         ExpectedMessage = "Relation definition error: Virtual property 'Dummy' of class 'Company' is of type"
             + "'Remotion.Data.DomainObjects.DomainObject',"
-            + " but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
+            + " but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or"
             + " 'Remotion.Data.DomainObjects.DomainObjectCollection' or must be"
             + " 'Remotion.Data.DomainObjects.DomainObjectCollection'.")]
     public void VirtualEndPointOfDomainObjectType ()

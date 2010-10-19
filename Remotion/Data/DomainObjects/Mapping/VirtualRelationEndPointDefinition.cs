@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
@@ -125,11 +126,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         propertyType = ContextAwareTypeDiscoveryUtility.GetType (propertyTypeName, true);
 
       if (propertyType != null)
-      {
-        CheckPropertyType (classDefinition, propertyName, cardinality, propertyType);
         propertyTypeName = propertyType.AssemblyQualifiedName;
-      }
-
+      
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = _classDefinition.ID;
       _cardinality = cardinality;
@@ -139,7 +137,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyTypeName = propertyTypeName;
       _sortExpression = sortExpression;
 
-      CheckSortExpression (classDefinition, propertyName, cardinality, sortExpression);
+      CheckPropertyType (classDefinition, propertyName, cardinality, propertyType);
+      CheckSortExpression ();
     }
 
     private void CheckPropertyType (
@@ -148,19 +147,10 @@ namespace Remotion.Data.DomainObjects.Mapping
         CardinalityType cardinality,
         Type propertyType)
     {
-      if (propertyType != typeof (DomainObjectCollection)
-          && !propertyType.IsSubclassOf (typeof (DomainObjectCollection))
-              && !propertyType.IsSubclassOf (typeof (DomainObject)))
-      {
-        throw CreateMappingException (
-            "Relation definition error: Virtual property '{0}' of class '{1}' is of type"
-                + "'{2}', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                    + " 'Remotion.Data.DomainObjects.DomainObjectCollection' or must be"
-                        + " 'Remotion.Data.DomainObjects.DomainObjectCollection'.",
-            propertyName,
-            classDefinition.ID,
-            propertyType);
-      }
+      var propertyTypeValidationRule = new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule();
+      var propertyTypeValidtionResult = propertyTypeValidationRule.Validate (this);
+      if (!propertyTypeValidtionResult.IsValid)
+        throw CreateMappingException (propertyTypeValidtionResult.Message);
 
       if (cardinality == CardinalityType.One && !propertyType.IsSubclassOf (typeof (DomainObject)))
       {
@@ -179,11 +169,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private void CheckSortExpression (
-        ClassDefinition classDefinition,
-        string propertyName,
-        CardinalityType cardinality,
-        string sortExpression)
+    private void CheckSortExpression ()
     {
       var validationRule = new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule();
       var validationResult = validationRule.Validate (this);
