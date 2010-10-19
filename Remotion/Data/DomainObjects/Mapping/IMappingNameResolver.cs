@@ -22,10 +22,10 @@ namespace Remotion.Data.DomainObjects.Mapping
   public interface IMappingNameResolver
   {
     /// <summary>
-    /// Returns the mapping name for the given <paramref name="propertyInformationInformation"/>.
+    /// Returns the mapping name for the given <paramref name="propertyInformation"/>.
     /// </summary>
-    /// <param name="propertyInformationInformation">The property whose mapping name should be retrieved.</param>
-    /// <returns>The name of the given <paramref name="propertyInformationInformation"/> as used internally by the mapping.</returns>
-    string GetPropertyName (IPropertyInformation propertyInformationInformation);
+    /// <param name="propertyInformation">The property whose mapping name should be retrieved.</param>
+    /// <returns>The name of the given <paramref name="propertyInformation"/> as used internally by the mapping.</returns>
+    string GetPropertyName (IPropertyInformation propertyInformation);
   }
 }
