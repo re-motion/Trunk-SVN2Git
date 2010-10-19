@@ -198,9 +198,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return false;
     }
 
-    //TODO COMMONS-825: Refactor this
-    //TODO COMMONS-839: Refactor this
-
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
     {
       if (ReflectionUtility.IsInheritanceRoot(Type))

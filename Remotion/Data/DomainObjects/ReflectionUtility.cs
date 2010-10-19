@@ -218,6 +218,8 @@ namespace Remotion.Data.DomainObjects
       return Attribute.IsDefined (type, typeof (StorageGroupAttribute), false);
     }
 
+    //TODO COMMONS-825: Refactor this
+    //TODO COMMONS-839: Refactor this
     /// <summary>
     /// Checks if the given type is the domain object base.
     /// </summary>
