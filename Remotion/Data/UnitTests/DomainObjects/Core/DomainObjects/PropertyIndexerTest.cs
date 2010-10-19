@@ -40,11 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var indexer = new PropertyIndexer (IndustrialSector.NewObject());
       var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
-      Assert.IsNotNull (accessor);
-      Assert.AreSame (
-          MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
-              .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
-          accessor.PropertyData.PropertyDefinition);
+      Assert.That (accessor, Is.Not.Null);
+      Assert.That (
+                  accessor.PropertyData.PropertyDefinition, Is.SameAs (
+                            MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
+                                          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 
     [Test]
@@ -101,10 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var indexer = new PropertyIndexer (sector);
       var accessor = indexer[typeof (IndustrialSector), "Name"];
       Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
-      Assert.AreSame (
-          MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
-              .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
-          accessor.PropertyData.PropertyDefinition);
+      Assert.That (
+                  accessor.PropertyData.PropertyDefinition, Is.SameAs (
+                            MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
+                                          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 
     [Test]
@@ -153,13 +153,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Count ()
     {
       Order order = Order.NewObject ();
-      Assert.AreEqual (6, order.Properties.GetPropertyCount());
+      Assert.That (order.Properties.GetPropertyCount (), Is.EqualTo (6));
 
       OrderItem orderItem = OrderItem.NewObject ();
-      Assert.AreEqual (3, orderItem.Properties.GetPropertyCount());
+      Assert.That (orderItem.Properties.GetPropertyCount (), Is.EqualTo (3));
 
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.NewObject ();
-      Assert.AreEqual (46, cwadt.Properties.GetPropertyCount());
+      Assert.That (cwadt.Properties.GetPropertyCount (), Is.EqualTo (46));
     }
 
     [Test]
@@ -261,19 +261,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Contains ()
     {
       Order order = Order.NewObject ();
-      Assert.IsTrue (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"));
-      Assert.IsTrue (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"));
-      Assert.IsTrue (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-      Assert.IsFalse (order.Properties.Contains ("OrderTicket"));
-      Assert.IsFalse (order.Properties.Contains ("Bla"));
+      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.True);
+      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"), Is.True);
+      Assert.That (order.Properties.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), Is.True);
+      Assert.That (order.Properties.Contains ("OrderTicket"), Is.False);
+      Assert.That (order.Properties.Contains ("Bla"), Is.False);
     }
 
     [Test]
     public void ShortNameAndType ()
     {
       Order order = Order.NewObject ();
-      Assert.AreEqual (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
-          order.Properties[typeof (Order), "OrderNumber"]);
+      Assert.That (
+                  order.Properties[typeof (Order), "OrderNumber"], Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
     }
 
     [Test]
@@ -283,26 +283,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer(classWithMixedProperties);
-      Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
-          indexer[typeof (DerivedClassWithMixedProperties), "String"]);
-      Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
-          indexer[typeof (ClassWithMixedProperties), "String"]);
+      Assert.That (
+                  indexer[typeof (DerivedClassWithMixedProperties), "String"], Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+      Assert.That (
+                  indexer[typeof (ClassWithMixedProperties), "String"], Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
     }
 
     [Test]
-    public void Find ()
+    public void Find_Property ()
     {
       Order order = Order.NewObject ();
-      Assert.AreEqual (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
-        order.Properties.Find (typeof (Order), "OrderNumber"));
+      var result = order.Properties.Find (typeof (Order), "OrderNumber");
+      Assert.That (result, Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]));
+    }
+
+    [Test]
+    public void Find_VirtualRelationEndPoint ()
+    {
+      Order order = Order.NewObject ();
+      var result = order.Properties.Find (typeof (Order), "OrderItems");
+      Assert.That (result, Is.EqualTo (order.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
     }
 
     [Test]
     public void FindFromDerivedType ()
     {
       Distributor distributor = Distributor.NewObject ();
-      Assert.IsFalse (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"));
-      Assert.AreEqual (distributor.Properties[typeof (Partner), "ContactPerson"], distributor.Properties.Find (typeof (Distributor), "ContactPerson"));
+      Assert.That (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"), Is.False);
+      Assert.That (distributor.Properties.Find (typeof (Distributor), "ContactPerson"), Is.EqualTo (distributor.Properties[typeof (Partner), "ContactPerson"]));
     }
 
     [Test]
@@ -310,17 +318,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var instance = (ClosedGenericClassWithManySideRelationProperties)
           LifetimeService.NewObject (ClientTransactionMock, typeof (ClosedGenericClassWithManySideRelationProperties), ParamList.Empty);
-      Assert.IsFalse (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
-      Assert.AreEqual (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"],
-          instance.Properties.Find (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
+      Assert.That (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"), Is.False);
+      Assert.That (
+                  instance.Properties.Find (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"), Is.EqualTo (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"]));
     }
 
     [Test]
     public void FindFromDerivedType_WithoutExplicitType ()
     {
       Distributor distributor = Distributor.NewObject ();
-      Assert.IsFalse (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"));
-      Assert.AreEqual (distributor.Properties[typeof (Partner), "ContactPerson"], distributor.Properties.Find ("ContactPerson"));
+      Assert.That (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"), Is.False);
+      Assert.That (distributor.Properties.Find ("ContactPerson"), Is.EqualTo (distributor.Properties[typeof (Partner), "ContactPerson"]));
     }
 
     [Test]
@@ -330,10 +338,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
       
       var indexer = new PropertyIndexer (classWithMixedProperties);
-      Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
-          indexer.Find (typeof (DerivedClassWithMixedProperties), "String"));
-      Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
-          indexer.Find (typeof (ClassWithMixedProperties), "String"));
+      Assert.That (
+                  indexer.Find (typeof (DerivedClassWithMixedProperties), "String"), Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+      Assert.That (
+                  indexer.Find (typeof (ClassWithMixedProperties), "String"), Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
     }
 
     [Test]
@@ -343,10 +351,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer (classWithMixedProperties);
-      Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
-          indexer.Find (classWithMixedProperties, "String"));
-      Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
-          indexer.Find ((ClassWithMixedProperties) classWithMixedProperties, "String"));
+      Assert.That (
+                  indexer.Find (classWithMixedProperties, "String"), Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+      Assert.That (
+                  indexer.Find ((ClassWithMixedProperties) classWithMixedProperties, "String"), Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
     }
 
     [Test]
