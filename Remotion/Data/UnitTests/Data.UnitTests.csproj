@@ -391,6 +391,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule\PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule\PropertyNamesAreUniqueWithinInheritanceTreeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\StorageClassIsSupportedValidationRule\StorageClassIsSupportedType.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule\CardinalityMatchesPropertyTypeCheckClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRule\VirtualRelationEndPointPropertyIsSupportedTestClass.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameBaseDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule\EntityNameMatchesParentEntityNameDomainObject.cs" />
@@ -429,6 +430,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRuleTest.cs" />

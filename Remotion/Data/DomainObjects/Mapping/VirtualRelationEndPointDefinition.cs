@@ -137,36 +137,21 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyTypeName = propertyTypeName;
       _sortExpression = sortExpression;
 
-      CheckPropertyType (classDefinition, propertyName, cardinality, propertyType);
+      CheckPropertyType ();
       CheckSortExpression ();
     }
 
-    private void CheckPropertyType (
-        ClassDefinition classDefinition,
-        string propertyName,
-        CardinalityType cardinality,
-        Type propertyType)
+    private void CheckPropertyType ()
     {
       var propertyTypeValidationRule = new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule();
       var propertyTypeValidtionResult = propertyTypeValidationRule.Validate (this);
       if (!propertyTypeValidtionResult.IsValid)
         throw CreateMappingException (propertyTypeValidtionResult.Message);
 
-      if (cardinality == CardinalityType.One && !propertyType.IsSubclassOf (typeof (DomainObject)))
-      {
-        throw CreateMappingException (
-            "The property type of a virtual end point of a one-to-one relation"
-                + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.");
-      }
-
-      if (cardinality == CardinalityType.Many
-          && propertyType != typeof (DomainObjectCollection)
-              && !propertyType.IsSubclassOf (typeof (DomainObjectCollection)))
-      {
-        throw CreateMappingException (
-            "The property type of a virtual end point of a one-to-many relation"
-                + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.");
-      }
+      var cardinalityMatchValidationRule = new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule();
+      var validationResult = cardinalityMatchValidationRule.Validate (this);
+      if (!validationResult.IsValid)
+        throw CreateMappingException (validationResult.Message);
     }
 
     private void CheckSortExpression ()

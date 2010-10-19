@@ -233,6 +233,7 @@
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\StorageClassIsSupportedValidationRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\MappingValidationResult.cs" />
     <Compile Include="Mapping\Configuration\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
