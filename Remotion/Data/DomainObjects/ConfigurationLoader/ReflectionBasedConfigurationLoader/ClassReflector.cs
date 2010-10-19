@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       Type = type;
       NameResolver = nameResolver;
-      PersistentMixinFinder = new PersistentMixinFinder (type, IsInheritanceRoot(Type));
+      PersistentMixinFinder = new PersistentMixinFinder (type, ReflectionUtility.IsInheritanceRoot(Type));
     }
 
     public PersistentMixinFinder PersistentMixinFinder { get; private set; }
@@ -198,26 +198,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return false;
     }
 
-    public static bool IsInheritanceRoot (Type type) //TODO: move to reflection utility
-    {
-      if (IsDomainObjectBase (type.BaseType))
-        return true;
-
-      return Attribute.IsDefined (type, typeof (StorageGroupAttribute), false);
-    }
-
     //TODO COMMONS-825: Refactor this
     //TODO COMMONS-839: Refactor this
-    public static bool IsDomainObjectBase (Type type) //TODO: move to reflection utility
-    {
-      //TODO: argument check
-
-      return type.Assembly == typeof (DomainObject).Assembly;
-    }
 
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
     {
-      if (IsInheritanceRoot(Type))
+      if (ReflectionUtility.IsInheritanceRoot(Type))
         return null;
 
       ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (Type.BaseType, NameResolver);
@@ -226,13 +212,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (Type), NameResolver);
+      PropertyFinder propertyFinder = new PropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
     }
 
     private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (Type), NameResolver);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }

@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects
 
       Uri codeBaseUri = new Uri (assembly.EscapedCodeBase);
       if (!codeBaseUri.IsFile)
-        throw new InvalidOperationException (string.Format ("The assembly's code base '{0}' is not a local path.", codeBaseUri.OriginalString));
+        throw new InvalidOperationException (String.Format ("The assembly's code base '{0}' is not a local path.", codeBaseUri.OriginalString));
       return Path.GetDirectoryName (codeBaseUri.LocalPath);
     }
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects
       else
       {
         throw new ArgumentException (
-            string.Format (
+            String.Format (
                 "Type '{0}' has no suitable constructor. Parameter types: ({1})",
                 type,
                 GetTypeListAsString (constructorParameterTypes)));
@@ -107,10 +107,10 @@ namespace Remotion.Data.DomainObjects
     internal static string GetTypeListAsString (Type[] types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
-      string result = string.Empty;
+      string result = String.Empty;
       foreach (Type type in types)
       {
-        if (result != string.Empty)
+        if (result != String.Empty)
           result += ", ";
 
         if (type != null)
@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      Type originalDeclaringType = Remotion.Utilities.ReflectionUtility.GetOriginalDeclaringType (propertyInfo);
+      Type originalDeclaringType = Utilities.ReflectionUtility.GetOriginalDeclaringType (propertyInfo);
       if (originalDeclaringType.IsGenericType)
         return GetPropertyName (originalDeclaringType.GetGenericTypeDefinition (), propertyInfo.Name);
       else
@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public static bool IsObjectList (Type type)
     {
-      return Remotion.Utilities.ReflectionUtility.CanAscribe (type, typeof (ObjectList<>));
+      return Utilities.ReflectionUtility.CanAscribe (type, typeof (ObjectList<>));
     }
 
     /// <summary>
@@ -198,10 +198,36 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     public static Type GetObjectListTypeParameter (Type type)
     {
-      Type[] typeParameters = Remotion.Utilities.ReflectionUtility.GetAscribedGenericArguments (type, typeof (ObjectList<>));
+      Type[] typeParameters = Utilities.ReflectionUtility.GetAscribedGenericArguments (type, typeof (ObjectList<>));
       if (typeParameters == null)
         return null;
       return typeParameters[0];
+    }
+
+    /// <summary>
+    /// Checks if the given type is the inheritance root. A type is the inheritance root if it is either the domain object base or if the
+    /// type has the <see cref="StorageGroupAttribute"/> applied.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to be analyzed</param>
+    /// <returns>true if the given type is the inheritance root.</returns>
+    public static bool IsInheritanceRoot (Type type)
+    {
+      if (IsDomainObjectBase (type.BaseType))
+        return true;
+
+      return Attribute.IsDefined (type, typeof (StorageGroupAttribute), false);
+    }
+
+    /// <summary>
+    /// Checks if the given type is the domain object base.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to be analyzed.</param>
+    /// <returns>true if the given type is the domain object base.</returns>
+    public static bool IsDomainObjectBase (Type type)
+    {
+      //TODO: argument check
+
+      return type.Assembly == typeof (DomainObject).Assembly;
     }
   }
 }

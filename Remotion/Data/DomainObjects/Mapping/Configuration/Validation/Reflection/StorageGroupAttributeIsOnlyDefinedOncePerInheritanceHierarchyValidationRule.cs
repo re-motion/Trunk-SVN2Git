@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (ClassReflector.IsInheritanceRoot(type) && Attribute.IsDefined (type.BaseType, typeof (StorageGroupAttribute), true)) 
+      if (ReflectionUtility.IsInheritanceRoot(type) && Attribute.IsDefined (type.BaseType, typeof (StorageGroupAttribute), true)) 
       {
         Type baseType = type.BaseType;
         while (!AttributeUtility.IsDefined<StorageGroupAttribute> (baseType, false)) //get base type which has the attribute applied
