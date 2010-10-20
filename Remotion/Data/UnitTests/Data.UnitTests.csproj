@@ -429,6 +429,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValiadationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\RelationDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
