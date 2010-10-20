@@ -18,20 +18,17 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class ReflectionBasedClassDefinitionValidator : ClassDefinitionValidator
+  public class ReflectionBasedClassDefinitionValidator
   {
     private readonly ReflectionBasedClassDefinition _classDefinition;
 
-    public ReflectionBasedClassDefinitionValidator (ReflectionBasedClassDefinition classDefinition)
-        : base(classDefinition)
+    public ReflectionBasedClassDefinitionValidator (ReflectionBasedClassDefinition classDefinition) 
     {
       _classDefinition = classDefinition;
     }
 
-    public override void ValidateCurrentMixinConfiguration ()
+    public void ValidateCurrentMixinConfiguration ()
     {
-      base.ValidateCurrentMixinConfiguration ();
-
       var currentMixinConfiguration = PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (_classDefinition.ClassType);
       if (!Equals (currentMixinConfiguration, _classDefinition.PersistentMixinFinder.MixinConfiguration))
       {

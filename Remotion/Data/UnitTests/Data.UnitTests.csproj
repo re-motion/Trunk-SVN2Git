@@ -208,7 +208,6 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeColumnDefinition.cs" />
@@ -621,7 +620,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Serialization\VirtualObjectEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\FulltextIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />

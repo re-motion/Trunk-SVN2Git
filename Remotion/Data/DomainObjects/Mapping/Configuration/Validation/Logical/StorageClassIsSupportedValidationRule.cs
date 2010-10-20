@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 

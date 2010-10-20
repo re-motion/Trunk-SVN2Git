@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -187,16 +186,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       _collection.Add (_classDefinition);
       Assert.IsTrue (_collection.Contains (_classDefinition.ID));
     }
-
-    [Test]
-    public void Validate_MarksClassDefinitionsReadOnly ()
-    {
-      _collection.Add (_classDefinition);
-      Assert.That (_classDefinition.IsReadOnly, Is.False);
-
-      _collection.Validate ();
-
-      Assert.That (_classDefinition.IsReadOnly, Is.True);
-    }
+    
   }
 }

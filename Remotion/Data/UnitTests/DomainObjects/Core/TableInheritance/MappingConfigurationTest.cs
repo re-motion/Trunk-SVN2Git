@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
@@ -36,9 +37,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var nullTypeDiscoveryService = new NullTypeDiscoveryService();
 
-      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
+      var mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
       mappingConfiguration.ClassDefinitions.Add (personClass);
       mappingConfiguration.Validate ();
+    }
+
+    [Test]
+    public void Validate_MarksClassDefinitionsReadOnly ()
+    {
+      var personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "Test", TableInheritanceTestDomainProviderID, typeof (Person), false);
+      var nullTypeDiscoveryService = new NullTypeDiscoveryService ();
+      var mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
+      mappingConfiguration.ClassDefinitions.Add (personClass);
+
+      Assert.That (personClass.IsReadOnly, Is.False);
+
+      mappingConfiguration.Validate();
+
+      Assert.That (personClass.IsReadOnly, Is.True);
     }
 
     [Test]

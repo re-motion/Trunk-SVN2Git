@@ -397,10 +397,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return GetType().FullName + ": " + _id;
     }
 
-    public virtual ClassDefinitionValidator GetValidator ()
-    {
-      return new ClassDefinitionValidator (this);
-    }
+    public abstract ReflectionBasedClassDefinitionValidator GetValidator ();
 
     internal void PropertyDefinitions_Adding (object sender, PropertyDefinitionAddingEventArgs args)
     {

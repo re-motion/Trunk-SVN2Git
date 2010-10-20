@@ -20,7 +20,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Integration;
 using Rhino.Mocks;
 
@@ -31,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
-    private ClassDefinitionCollection _classDefinitionCollection = new ClassDefinitionCollection();
-    private RelationDefinitionCollection _relationDefinitionCollection = new RelationDefinitionCollection();
+    private readonly ClassDefinitionCollection _classDefinitionCollection = new ClassDefinitionCollection();
+    private readonly RelationDefinitionCollection _relationDefinitionCollection = new RelationDefinitionCollection();
     private ReflectionBasedNameResolver _nameResolver;
 
     public override void SetUp()

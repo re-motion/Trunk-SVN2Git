@@ -16,9 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -63,20 +60,6 @@ public class ClassDefinitionCollection : CommonCollection
   }
 
   // methods and properties
-
-  public void Validate ()
-  {
-    s_log.InfoFormat ("Validating {0} class definitions...", Count);
-
-    using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to validate mapping configuration: {elapsed}."))
-    {
-      foreach (ClassDefinition classDefinition in this)
-        classDefinition.SetReadOnly ();
-
-      foreach (ClassDefinition rootClass in GetInheritanceRootClasses())
-        ValidateRootClass (rootClass);
-    }
-  }
 
   public ClassDefinitionCollection GetInheritanceRootClasses ()
   {
@@ -212,42 +195,6 @@ public class ClassDefinitionCollection : CommonCollection
   }
 
   #endregion
-
-  private void ValidateRootClass (ClassDefinition rootClass)
-  {
-    ValidateEntireInheritanceHierarchyIsPartOfCollection (rootClass);
-    rootClass.GetValidator().ValidateInheritanceHierarchy ();
-    ValidateConcreteEntityNames (rootClass);
-  }
-
-  private void ValidateConcreteEntityNames (ClassDefinition rootClass)
-  {
-    var validationRule = new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule();
-    var validationResult = validationRule.Validate (rootClass);
-    if (!validationResult.IsValid)
-      throw CreateMappingException (validationResult.Message);
-  }
-
-  private void ValidateEntireInheritanceHierarchyIsPartOfCollection (ClassDefinition rootClass)
-  {
-    if (!Contains (rootClass))
-    {
-      throw CreateInvalidOperationException (
-          "Validate cannot be invoked, because class '{0}' is a base class of a class in the collection,"
-          + " but the base class is not part of the collection itself.",
-          rootClass.ID);
-    }
-
-    foreach (ClassDefinition derivedClass in rootClass.GetAllDerivedClasses ())
-    {
-      if (!Contains (derivedClass))
-      {
-        throw CreateInvalidOperationException (
-            "Validate cannot be invoked, because class '{0}' is a derived class of '{1}', but is not part of the collection itself.",
-            derivedClass.ID, rootClass.ID);
-      }
-    }
-  }
 
   private MappingException CreateMappingException (string message, params object[] args)
   {

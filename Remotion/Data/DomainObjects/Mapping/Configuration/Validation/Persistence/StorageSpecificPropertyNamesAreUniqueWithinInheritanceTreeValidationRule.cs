@@ -25,9 +25,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// </summary>
   public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidatorRule
   {
-    private readonly IDictionary<string, List<PropertyDefinition>> _persistentPropertyDefinitionsInInheritanceHierarchy =
-        new Dictionary<string, List<PropertyDefinition>> ();
-
+    private IDictionary<string, List<PropertyDefinition>> _persistentPropertyDefinitionsInInheritanceHierarchy;
+        
     public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
       
@@ -36,6 +35,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      _persistentPropertyDefinitionsInInheritanceHierarchy = new Dictionary<string, List<PropertyDefinition>>();
 
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
         return ValidateStorageSpecificPropertyNames (classDefinition);

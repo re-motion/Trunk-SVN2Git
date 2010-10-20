@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           key => ReflectionBasedPropertyResolver.ResolveDefinition<IRelationEndPointDefinition> (key, this, GetRelationEndPointDefinition));
     }
 
-    public override ClassDefinitionValidator GetValidator ()
+    public override ReflectionBasedClassDefinitionValidator GetValidator ()
     {
       return new ReflectionBasedClassDefinitionValidator (this);
     }

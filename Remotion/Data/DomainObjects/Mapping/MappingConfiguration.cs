@@ -16,10 +16,14 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping.Configuration.Validation;
 using Remotion.Utilities;
 using Remotion.Logging;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -92,19 +96,9 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (_classDefinitions == null)
           throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
 
-        // validate class definitions
-        // if not failed
-        // validate property definitions
-
-        // if not failed
         _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
         if (_relationDefinitions == null)
-          throw new InvalidOperationException (
-              string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
-
-        // validate relation definitions
-        // if not failed
-        // validate persistence configuration
+          throw new InvalidOperationException (string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
 
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
@@ -117,7 +111,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void Validate()
     {
-      _classDefinitions.Validate();
+      s_log.InfoFormat ("Validating {0} class definitions...", _classDefinitions.Count);
+
+      SetClassDefinitionsReadOnly ();
+
+      ValidateClassDefinitions ();
+      ValidateRelationDefinitions ();
+      ValidatePersistenceMapping ();
     }
 
     /// <summary>
@@ -183,6 +183,53 @@ namespace Remotion.Data.DomainObjects.Mapping
         return false;
 
       return ((IList) foundRelationDefinition.EndPointDefinitions).Contains (relationEndPointDefinition);
+    }
+
+    private void SetClassDefinitionsReadOnly ()
+    {
+      foreach (ClassDefinition classDefinition in _classDefinitions)
+        classDefinition.SetReadOnly ();
+    }
+
+    private void ValidateClassDefinitions ()
+    {
+      if (_classDefinitions.Count > 0)
+      {
+        var classDefinitionValidator = Configuration.Validation.ClassDefinitionValidator.Create();
+        var classDefinitionValidationResults = classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
+        if (classDefinitionValidationResults.Length > 0)
+          throw CreateMappingException (classDefinitionValidationResults);
+      }
+    }
+
+    private void ValidateRelationDefinitions ()
+    {
+      if (_relationDefinitions.Count > 0)
+      {
+        var relationDefinitionValidator = Configuration.Validation.RelationDefinitionValidator.Create();
+        var relationDefinitionValidationResults = relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()).ToArray();
+        if (relationDefinitionValidationResults.Length > 0)
+          throw CreateMappingException (relationDefinitionValidationResults);
+      }
+    }
+
+    private void ValidatePersistenceMapping ()
+    {
+      if (_classDefinitions.Count > 0)
+      {
+        var persistenceMappingValidator = Configuration.Validation.PersistenceMappingValidator.Create();
+        var persistenceMappingValidationResults = persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
+        if (persistenceMappingValidationResults.Length > 0)
+          throw CreateMappingException (persistenceMappingValidationResults);
+      }
+    }
+
+    private MappingException CreateMappingException (IEnumerable<MappingValidationResult> mappingValidationResults)
+    {
+      var messages = new StringBuilder();
+      foreach (var validationResult in mappingValidationResults)
+        messages.AppendLine (validationResult.Message);
+      return new MappingException (messages.ToString().Trim());
     }
   }
 }
