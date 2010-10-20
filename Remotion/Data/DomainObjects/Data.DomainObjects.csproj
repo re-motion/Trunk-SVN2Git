@@ -228,7 +228,6 @@
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Mapping\ColumnDefinition.cs" />
     <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidator.cs" />
-    <Compile Include="Mapping\Configuration\Validation\IPropertyDefintionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IRelationEndPointValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
