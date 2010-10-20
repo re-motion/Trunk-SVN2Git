@@ -305,25 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void FindFromDerivedType ()
-    {
-      Distributor distributor = Distributor.NewObject ();
-      Assert.That (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"), Is.False);
-      Assert.That (distributor.Properties.Find (typeof (Distributor), "ContactPerson"), Is.EqualTo (distributor.Properties[typeof (Partner), "ContactPerson"]));
-    }
-
-    [Test]
-    public void FindFromGenericType ()
-    {
-      var instance = (ClosedGenericClassWithManySideRelationProperties)
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClosedGenericClassWithManySideRelationProperties), ParamList.Empty);
-      Assert.That (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"), Is.False);
-      Assert.That (
-                  instance.Properties.Find (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"), Is.EqualTo (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"]));
-    }
-
-    [Test]
-    public void FindFromDerivedType_WithoutExplicitType ()
+    public void Find_WithoutExplicitType ()
     {
       Distributor distributor = Distributor.NewObject ();
       Assert.That (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"), Is.False);
@@ -331,35 +313,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void FindWithShadowedProperty ()
+    public void Find_Generic_WithInferredType ()
     {
       var classWithMixedProperties =
           (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+      var indexer = new PropertyIndexer (classWithMixedProperties);
       
-      var indexer = new PropertyIndexer (classWithMixedProperties);
-      Assert.That (
-                  indexer.Find (typeof (DerivedClassWithMixedProperties), "String"), Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
-      Assert.That (
-                  indexer.Find (typeof (ClassWithMixedProperties), "String"), Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
+      var resultOnDerived = indexer.Find (classWithMixedProperties, "String");
+      Assert.That (resultOnDerived, Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+
+      var resultOnBase = indexer.Find ((ClassWithMixedProperties) classWithMixedProperties, "String");
+      Assert.That (resultOnBase, Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
     }
 
     [Test]
-    public void FindWithShadowedPropertyAndInferredType ()
-    {
-      var classWithMixedProperties =
-          (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
-
-      var indexer = new PropertyIndexer (classWithMixedProperties);
-      Assert.That (
-                  indexer.Find (classWithMixedProperties, "String"), Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
-      Assert.That (
-                  indexer.Find ((ClassWithMixedProperties) classWithMixedProperties, "String"), Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "Distributor does not have or inherit a mapping property with the short name 'Frobbers'.", MatchType = MessageMatch.Contains)]
-    public void FindNonExistingProperty ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor' does not have or inherit a mapping property with the "
+        + "short name 'Frobbers'.", MatchType = MessageMatch.Contains)]
+    public void Find_NonExistingProperty ()
     {
       Distributor distributor = Distributor.NewObject ();
       distributor.Properties.Find (typeof (Distributor), "Frobbers");

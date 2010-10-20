@@ -230,10 +230,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var propertyAccessorData = _propertyAccessorDataCache.FindPropertyAccessorData (typeToStartSearch, shortPropertyName);
 
       if (propertyAccessorData != null)
+      {
         return GetPropertyAccessor (_domainObject.DefaultTransactionContext.ClientTransaction, propertyAccessorData);
+      }
       else
-        throw new ArgumentException (string.Format ("The domain object type {0} does not have or inherit a mapping property with the short name '{1}'.",
-            typeToStartSearch.FullName, shortPropertyName), "shortPropertyName");
+      {
+        var message = string.Format (
+            "The domain object type '{0}' does not have or inherit a mapping property with the short name '{1}'.",
+            typeToStartSearch.FullName,
+            shortPropertyName);
+        throw new ArgumentException (message, "shortPropertyName");
+      }
     }
 
     /// <summary>

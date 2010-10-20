@@ -22,6 +22,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// Holds all <see cref="PropertyAccessorData"/> object for a <see cref="ClassDefinition"/>, providing fast access via full property name or
+  /// declaring type and short (.NET) property name.
+  /// </summary>
   public class PropertyAccessorDataCache
   {
     private readonly ClassDefinition _classDefinition;
@@ -29,6 +33,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyAccessorDataCache (ClassDefinition classDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       _classDefinition = classDefinition;
       _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
     }
@@ -40,6 +46,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       PropertyAccessorData result;
       _cachedAccessorData.Value.TryGetValue (propertyIdentifier, out result);
       return result;
+    }
+
+    public PropertyAccessorData GetPropertyAccessorData (Type domainObjectType, string shortPropertyName)
+    {
+      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+
+      string propertyIdentifier = GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName);
+      return GetPropertyAccessorData (propertyIdentifier);
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
@@ -56,15 +71,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         throw new MappingException (message);
       }
       return data;
-    }
-
-    public PropertyAccessorData GetPropertyAccessorData (Type domainObjectType, string shortPropertyName)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
-
-      string propertyIdentifier = GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName);
-      return GetPropertyAccessorData (propertyIdentifier);
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (Type domainObjectType, string shortPropertyName)
