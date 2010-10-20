@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -24,18 +25,27 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// <summary>
   /// Validates that the property mapping attributes are applied at the original property declaration.
   /// </summary>
-  public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IPropertyDefintionValidator
+  public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IClassDefinitionValidator
   {
     public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
     {
       
     }
 
-    public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
+    public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return Validate (propertyDefinition.PropertyInfo);
+      var errorMessages = new StringBuilder();
+      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
+      {
+        var validationResult = Validate (propertyDefinition.PropertyInfo);
+        if (!validationResult.IsValid)
+          errorMessages.AppendLine (validationResult.Message);
+      }
+
+      var messages = errorMessages.ToString().Trim();
+      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
     public MappingValidationResult Validate (PropertyInfo propertyInfo)

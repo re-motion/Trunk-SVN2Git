@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
@@ -25,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// <summary>
   /// Validates that all applied attribute types of a property are supported.
   /// </summary>
-  public class MappingAttributesAreSupportedForPropertyTypeValidationRule : IPropertyDefintionValidator
+  public class MappingAttributesAreSupportedForPropertyTypeValidationRule : IClassDefinitionValidator
   {
     private sealed class AttributeConstraint
     {
@@ -72,11 +73,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
       
     }
 
-    public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
+    public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return Validate (propertyDefinition.PropertyInfo);
+      var errorMessages = new StringBuilder();
+      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
+      {
+        var validationResult = Validate (propertyDefinition.PropertyInfo);
+        if (!validationResult.IsValid)
+          errorMessages.AppendLine (validationResult.Message);
+      }
+
+      var messages = errorMessages.ToString().Trim();
+      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
     public MappingValidationResult Validate (PropertyInfo propertyInfo)
@@ -132,5 +142,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
           typeof (DomainObject),
           typeof (ObjectList<>));
     }
+    
   }
 }

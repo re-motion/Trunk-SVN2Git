@@ -26,5 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestD
     public override int Property1 { get; set; }
 
     public override int Property2 { get; set; }
+
+    [StorageClassNone]
+    public override int Property3 { get; set; }
   }
 }

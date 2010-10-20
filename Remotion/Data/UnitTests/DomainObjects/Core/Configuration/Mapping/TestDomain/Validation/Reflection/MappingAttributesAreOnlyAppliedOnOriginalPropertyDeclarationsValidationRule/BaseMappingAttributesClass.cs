@@ -25,5 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestD
     public abstract int Property1 { get; set; }
 
     public abstract int Property2 { get; set; }
+
+    public abstract int Property3 { get; set; }
   }
 }
