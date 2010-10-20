@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 

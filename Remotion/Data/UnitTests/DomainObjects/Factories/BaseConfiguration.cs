@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
       return FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (
           typeDiscoveryService,
-          "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain",
           "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain");
     }
 

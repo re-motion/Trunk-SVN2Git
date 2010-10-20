@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;

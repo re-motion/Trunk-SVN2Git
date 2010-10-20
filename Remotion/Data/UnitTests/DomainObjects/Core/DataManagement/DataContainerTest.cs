@@ -21,8 +21,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -78,8 +78,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
     public void ClassDefinitionNotInMapping ()
     {
+      TestMappingConfiguration.Initialize();
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ObjectID id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+      
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
       DataContainer.CreateNew (id);

@@ -26,7 +26,7 @@
 
   <domainObjects xmlns="http://www.re-motion.org/Data/DomainObjects/Configuration/2.0">
     <mapping>
-      <loader type="Remotion.Data.UnitTests::DomainObjects.Core.Configuration.Mapping.FakeMappingLoader"/>
+      <loader type="Remotion.Data.UnitTests::DomainObjects.Core.Mapping.FakeMappingLoader"/>
     </mapping>
     <storage defaultProviderDefinition="Test">
       <providerDefinitions>

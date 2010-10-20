@@ -29,7 +29,6 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;

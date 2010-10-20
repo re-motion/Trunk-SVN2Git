@@ -23,7 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Mixins;

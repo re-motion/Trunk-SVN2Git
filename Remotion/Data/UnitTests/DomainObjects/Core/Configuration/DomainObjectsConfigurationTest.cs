@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.IO;
