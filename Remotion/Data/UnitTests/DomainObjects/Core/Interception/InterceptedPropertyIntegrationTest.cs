@@ -367,9 +367,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named 'Bla'.\r\n"
-        + "Parameter name: propertyName")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named 'Bla'.")]
     public void CurrentProperty_ThrowsOnInvalidPropertyName ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);

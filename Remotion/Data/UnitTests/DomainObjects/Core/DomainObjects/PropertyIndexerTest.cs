@@ -126,9 +126,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector' does not have a mapping property named 'Bla'.\r\n"
-        + "Parameter name: propertyName")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector' does not have a mapping property named 'Bla'.")]
     public void Item_ThrowsForNonExistingProperty ()
     {
       var indexer = new PropertyIndexer (IndustrialSector.NewObject ());

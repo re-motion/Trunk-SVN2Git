@@ -33,8 +33,6 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     // types
 
-    // static members and constants
-
     // serialized member fields
     // Note: ClassDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
     // will be serialized; these are used to retrieve the "real" object at deserialization time.
@@ -54,7 +52,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly RelationDefinitionCollection _relationDefinitions;
 
     [NonSerialized]
-    private readonly DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>>  _cachedAccessorData;
+    private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
+
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<RelationDefinitionCollection> _cachedRelationDefinitions;
     [NonSerialized]
@@ -67,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     protected ClassDefinition (string id, string entityName, string storageProviderID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      if (entityName == string.Empty)
+      if (entityName == String.Empty)
         throw new ArgumentEmptyException ("entityName");
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
 
@@ -78,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyDefinitions = new PropertyDefinitionCollection (this);
       _relationDefinitions = new RelationDefinitionCollection();
 
-      _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
+      _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
           FindAllRelationEndPointDefinitions);
@@ -86,6 +85,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     // methods and properties
+
+    public PropertyAccessorDataCache PropertyAccessorDataCache
+    {
+      get { return _propertyAccessorDataCache; }
+    }
 
     public bool IsReadOnly
     {
@@ -398,13 +402,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new ClassDefinitionValidator (this);
     }
 
-    public PropertyAccessorData GetPropertyAccessorData (string propertyIdentifier)
-    {
-      PropertyAccessorData result;
-      _cachedAccessorData.Value.TryGetValue (propertyIdentifier, out result);
-      return result;
-    }
-
     internal void PropertyDefinitions_Adding (object sender, PropertyDefinitionAddingEventArgs args)
     {
       if (!ReferenceEquals (args.PropertyDefinition.ClassDefinition, this))
@@ -442,7 +439,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         string definingClass = 
             basePropertyDefinition.ClassDefinition == this 
             ? "it" 
-            : string.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
+            : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
 
         throw CreateMappingException (
             "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
@@ -458,12 +455,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private MappingException CreateMappingException (string message, params object[] args)
     {
-      return new MappingException (string.Format (message, args));
+      return new MappingException (String.Format (message, args));
     }
 
     private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
     {
-      return new InvalidOperationException (string.Format (message, args));
+      return new InvalidOperationException (String.Format (message, args));
     }
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
@@ -533,23 +530,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         throw new InvalidOperationException ("ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.");
     }
     
-    private Dictionary<string, PropertyAccessorData> BuildAccessorDataDictionary ()
-    {
-      var propertyDefinitions = GetPropertyDefinitions ();
-      var relationEndPointDefinitions = GetRelationEndPointDefinitions ();
-
-      var propertyDefinitionNames = from PropertyDefinition pd in propertyDefinitions
-                                    select pd.PropertyName;
-      var virtualRelationEndPointNames =
-          from IRelationEndPointDefinition repd in relationEndPointDefinitions
-          where repd.IsVirtual
-          select repd.PropertyName;
-
-      var allPropertyNames = propertyDefinitionNames.Concat (virtualRelationEndPointNames);
-      var allPropertyAccessorData = allPropertyNames.Select (name => new PropertyAccessorData (this, name));
-      return allPropertyAccessorData.ToDictionary (data => data.PropertyIdentifier);
-    }
-
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)

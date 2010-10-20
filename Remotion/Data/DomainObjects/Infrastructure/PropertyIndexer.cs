@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -28,6 +29,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class PropertyIndexer
   {
     private readonly DomainObject _domainObject;
+    private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
 
     /// <summary>
     /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
@@ -39,6 +41,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       _domainObject = domainObject;
+      _propertyAccessorDataCache = _domainObject.ID.ClassDefinition.PropertyAccessorDataCache;
     }
 
     /// <summary>
@@ -84,7 +87,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
         ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
 
-        return this[GetIdentifierFromTypeAndShortName(domainObjectType, shortPropertyName)];
+        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (domainObjectType, shortPropertyName);
+        return GetPropertyAccessor (_domainObject.DefaultTransactionContext.ClientTransaction, data);
       }
     }
 
@@ -105,17 +109,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
         ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-        var data = _domainObject.ID.ClassDefinition.GetPropertyAccessorData (propertyName);
-        if (data == null)
-        {
-          var message = string.Format (
-              "The domain object type '{0}' does not have a mapping property named '{1}'.",
-              _domainObject.ID.ClassDefinition.ClassType, 
-              propertyName);
-          throw new ArgumentException (message, "propertyName");
-        }
-
-        return new PropertyAccessor (_domainObject, data, transaction);
+        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (propertyName);
+        return GetPropertyAccessor (transaction, data);
       }
     }
 
@@ -138,13 +133,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
         ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-        return this[GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName), transaction];
+        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (domainObjectType, shortPropertyName);
+        return GetPropertyAccessor (transaction, data);
       }
-    }
-
-    private string GetIdentifierFromTypeAndShortName (Type domainObjectType, string shortPropertyName)
-    {
-      return domainObjectType.FullName + "." + shortPropertyName;
     }
 
     /// <summary>
@@ -156,13 +147,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
       var endPointDefinitions = classDefinition.GetRelationEndPointDefinitions();
-      int count = classDefinition.GetPropertyDefinitions().Count;
-      foreach (IRelationEndPointDefinition endPointDefinition in endPointDefinitions)
-      {
-        if (endPointDefinition.IsVirtual)
-          ++count;
-      }
-      return count;
+      return classDefinition.GetPropertyDefinitions().Count + endPointDefinitions.Count (endPointDefinition => endPointDefinition.IsVirtual);
     }
 
     /// <summary>
@@ -209,8 +194,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </returns>
     public bool Contains (string propertyIdentifier)
     {
-      ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
-      return classDefinition.GetPropertyAccessorData (propertyIdentifier) != null;
+      return _propertyAccessorDataCache.GetPropertyAccessorData (propertyIdentifier) != null;
     }
 
 
@@ -225,7 +209,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </returns>
     public bool Contains (Type domainObjectType, string shortPropertyName)
     {
-      return Contains (GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName));
+      var propertyAccessorData = _propertyAccessorDataCache.GetPropertyAccessorData (domainObjectType, shortPropertyName);
+      return propertyAccessorData != null;
     }
 
     /// <summary>
@@ -242,17 +227,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("typeToStartSearch", typeToStartSearch);
       ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
 
-      Type currentType = typeToStartSearch;
-      while (currentType != null && !Contains (currentType, shortPropertyName))
-      {
-        if (currentType.IsGenericType && !currentType.IsGenericTypeDefinition)
-          currentType = currentType.GetGenericTypeDefinition ();
-        else
-          currentType = currentType.BaseType;
-      }
+      var propertyAccessorData = _propertyAccessorDataCache.FindPropertyAccessorData (typeToStartSearch, shortPropertyName);
 
-      if (currentType != null)
-        return this[currentType, shortPropertyName];
+      if (propertyAccessorData != null)
+        return GetPropertyAccessor (_domainObject.DefaultTransactionContext.ClientTransaction, propertyAccessorData);
       else
         throw new ArgumentException (string.Format ("The domain object type {0} does not have or inherit a mapping property with the short name '{1}'.",
             typeToStartSearch.FullName, shortPropertyName), "shortPropertyName");
@@ -321,6 +299,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             break;
         }
       }
+    }
+
+    private PropertyAccessor GetPropertyAccessor (ClientTransaction transaction, PropertyAccessorData data)
+    {
+      return new PropertyAccessor (_domainObject, data, transaction);
     }
   }
 }

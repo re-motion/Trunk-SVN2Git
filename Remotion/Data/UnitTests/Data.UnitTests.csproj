@@ -194,6 +194,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyAccessorDataCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedPropertyResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\SortExpressionDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\SortExpressionParserTest.cs" />
