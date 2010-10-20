@@ -416,6 +416,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\PersistenceMappingValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Persistence\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest.cs" />

@@ -167,7 +167,9 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MixinPropertyFinder.cs" />
     <Compile Include="Mapping\Configuration\Validation\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IPersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\PersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Configuration\Validation\RelationDefinitionValidator.cs" />
     <Compile Include="Mapping\SortExpressionParser.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
