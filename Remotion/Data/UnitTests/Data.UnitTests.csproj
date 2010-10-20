@@ -410,6 +410,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestMappingConfiguration.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />

@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
 {
   /// <summary>
-  /// Defines the API for the relation definition mapping validators.
+  /// Defines the API for the relation definition mapping validator rules.
   /// </summary>
   public interface IRelationDefinitionValidatorRule
   {

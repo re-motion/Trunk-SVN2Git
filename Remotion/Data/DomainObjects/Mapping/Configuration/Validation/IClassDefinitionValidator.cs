@@ -15,14 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
 {
   /// <summary>
-  /// Defines the API for the relation end point definition mapping validator rules.
+  /// Defines the API for the class definition mapping validator.
   /// </summary>
-  public interface IRelationEndPointValidatorRule
+  public interface IClassDefinitionValidator
   {
-    MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition);
+    ReadOnlyCollection<IClassDefinitionValidatorRule> ValidationRules { get; }
+
+    IEnumerable<MappingValidationResult> Validate (IEnumerable<ClassDefinition> classDefinitions);
   }
 }
