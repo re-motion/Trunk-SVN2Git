@@ -48,10 +48,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       try
       {
-        var sortedPropertySpecifications = sortExpression.Split (',');
-        var sortedProperties = sortedPropertySpecifications
-            .Where (spec => !string.IsNullOrEmpty (spec))
-            .Select (spec => ParseSortedPropertySpecification(spec));
+        var sortedProperties = from s in sortExpression.Split (',')
+                               let specs = s.Trim()
+                               where !string.IsNullOrEmpty (specs)
+                               select ParseSortedPropertySpecification (specs);
         return new SortExpressionDefinition (sortedProperties);
       }
       catch (MappingException ex)
@@ -74,9 +74,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private Tuple<string, string> SplitSortedPropertySpecification (string sortedPropertySpecification)
     {
-      var parts = sortedPropertySpecification.Split (' ');
-
-      Debug.Assert (parts.Length >= 1);
+      var parts = sortedPropertySpecification.Split (' ').Where (s => !string.IsNullOrEmpty (s)).ToArray();
 
       if (parts.Length > 2)
       {

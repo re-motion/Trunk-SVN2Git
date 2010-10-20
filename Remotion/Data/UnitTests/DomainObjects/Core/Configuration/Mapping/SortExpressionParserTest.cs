@@ -132,6 +132,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void Parse_WithOrderSpecification_MultipleSpaces ()
+    {
+      var sortExpression = "Product  desc";
+
+      var result = _parser.Parse (sortExpression);
+
+      var expected = new[] { CreateSortedPropertyDescending (_productPropertyDefinition) };
+      Assert.That (result.SortedProperties, Is.EqualTo (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
         "SortExpression 'Product unknown' cannot be parsed: 'unknown' is not a valid sort order. Expected 'asc' or 'desc'.")]
     public void Parse_WithOrderSpecification_Unknown ()
@@ -169,6 +180,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void Parse_Many_Space ()
+    {
+      var sortExpression = "Product asc, Position, Order desc";
+
+      var result = _parser.Parse (sortExpression);
+
+      var expected = new[]
+                     {
+                         CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                     };
+      Assert.That (result.SortedProperties, Is.EqualTo (expected));
+    }
+
+    [Test]
     public void Parse_Many_TrailingComma ()
     {
       var sortExpression = "Product asc,Position,Order desc,";
@@ -182,6 +209,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
                          CreateSortedPropertyDescending (_orderPropertyDefinition)
                      };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Parse_RoundTrip ()
+    {
+      var sortExpression = "Product asc, Position, Order desc";
+
+      var result1 = _parser.Parse (sortExpression);
+      var result2 = _parser.Parse (result1.ToString ());
+
+      var expected = new[]
+                     {
+                         CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                     };
+      Assert.That (result2.SortedProperties, Is.EqualTo (expected));
     }
 
     private SortExpressionDefinition.SortedProperty CreateSortedPropertyAscending (PropertyDefinition productPropertyDefinition)

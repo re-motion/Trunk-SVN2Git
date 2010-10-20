@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       public SortedProperty (PropertyDefinition propertyDefinition, SortOrder order)
       {
         ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
+        
         PropertyDefinition = propertyDefinition;
         Order = order;
       }
@@ -58,6 +59,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public ReadOnlyCollection<SortedProperty> SortedProperties
     {
       get { return _sortedProperties; }
+    }
+
+    public override string ToString ()
+    {
+      return SeparatedStringBuilder.Build (", ", SortedProperties);
     }
   }
 }
