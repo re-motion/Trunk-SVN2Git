@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// <summary>
   /// Validates that the entity-name of a class is the same as the inherited entity-name.
   /// </summary>
-  public class EntityNameMatchesParentEntityNameValidationRule : IClassDefinitionValidator
+  public class EntityNameMatchesParentEntityNameValidationRule : IClassDefinitionValidatorRule
   {
     public EntityNameMatchesParentEntityNameValidationRule ()
     {

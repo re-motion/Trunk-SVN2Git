@@ -227,9 +227,9 @@
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Mapping\ColumnDefinition.cs" />
-    <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidator.cs" />
-    <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidator.cs" />
-    <Compile Include="Mapping\Configuration\Validation\IRelationEndPointValidator.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IClassDefinitionValidatorRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IRelationDefinitionValidatorRule.cs" />
+    <Compile Include="Mapping\Configuration\Validation\IRelationEndPointValidatorRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Configuration\Validation\Logical\StorageClassIsSupportedValidationRule.cs" />

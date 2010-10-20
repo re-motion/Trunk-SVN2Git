@@ -19,10 +19,10 @@ using System;
 namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
 {
   /// <summary>
-  /// Defines the API for the relation end point definition mapping validators.
+  /// Defines the API for the class definition mapping validators.
   /// </summary>
-  public interface IRelationEndPointValidator
+  public interface IClassDefinitionValidatorRule
   {
-    MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition);
+    MappingValidationResult Validate (ClassDefinition classDefinition);
   }
 }

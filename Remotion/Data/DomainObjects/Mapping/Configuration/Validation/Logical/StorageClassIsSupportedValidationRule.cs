@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// <summary>
   /// Validates that the given storage class is supported.
   /// </summary>
-  public class StorageClassIsSupportedValidationRule : IClassDefinitionValidator
+  public class StorageClassIsSupportedValidationRule : IClassDefinitionValidatorRule
   {
     public StorageClassIsSupportedValidationRule ()
     {

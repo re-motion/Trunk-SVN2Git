@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// <summary>
   /// Validates that each defined persistent property storage specific name is not already defined in a class in the same inheritance hierarchy.
   /// </summary>
-  public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidator
+  public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidatorRule
   {
     private readonly IDictionary<string, List<PropertyDefinition>> _persistentPropertyDefinitionsInInheritanceHierarchy =
         new Dictionary<string, List<PropertyDefinition>> ();

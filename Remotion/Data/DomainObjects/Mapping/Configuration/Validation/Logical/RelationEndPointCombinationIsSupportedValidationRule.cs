@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// <summary>
   /// Validates that a relation has valid relation endpoint combinations.
   /// </summary>
-  public class RelationEndPointCombinationIsSupportedValidationRule : IRelationDefinitionValidator
+  public class RelationEndPointCombinationIsSupportedValidationRule : IRelationDefinitionValidatorRule
   {
     public RelationEndPointCombinationIsSupportedValidationRule ()
     {

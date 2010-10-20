@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// <summary>
   /// Validates that a relation end point defintion with cardinality one must not specify a sort expression.
   /// </summary>
-  public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationEndPointValidator
+  public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationEndPointValidatorRule
   {
     public SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule ()
     {

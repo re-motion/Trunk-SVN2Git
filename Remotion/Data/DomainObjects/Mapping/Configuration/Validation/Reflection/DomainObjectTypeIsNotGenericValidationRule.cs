@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// <summary>
   /// Validates that a class definition type is not generic.
   /// </summary>
-  public class DomainObjectTypeIsNotGenericValidationRule : IClassDefinitionValidator
+  public class DomainObjectTypeIsNotGenericValidationRule : IClassDefinitionValidatorRule
   {
     public DomainObjectTypeIsNotGenericValidationRule ()
     {

@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
   /// <summary>
   /// Validates that the property mapping attributes are applied at the original property declaration.
   /// </summary>
-  public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IClassDefinitionValidator
+  public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IClassDefinitionValidatorRule
   {
     public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
     {

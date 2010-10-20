@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// <summary>
   /// Validates that the virtual property definition is derived from DomainObject, DomainObjectValidation or DomainObjectCollection.
   /// </summary>
-  public class VirtualRelationEndPointPropertyTypeIsSupportedValidationRule : IRelationEndPointValidator
+  public class VirtualRelationEndPointPropertyTypeIsSupportedValidationRule : IRelationEndPointValidatorRule
   {
     public VirtualRelationEndPointPropertyTypeIsSupportedValidationRule ()
     {

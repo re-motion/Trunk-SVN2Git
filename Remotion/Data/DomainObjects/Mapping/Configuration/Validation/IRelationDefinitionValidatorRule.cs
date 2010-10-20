@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
   /// <summary>
   /// Defines the API for the relation definition mapping validators.
   /// </summary>
-  public interface IRelationDefinitionValidator
+  public interface IRelationDefinitionValidatorRule
   {
     MappingValidationResult Validate (RelationDefinition relationDefinition);
   }

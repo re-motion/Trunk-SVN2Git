@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persisten
   /// <summary>
   /// Validates that a specified entity name within concrete table inheritance hierarchy classes in different inheritance brachnes is unique.
   /// </summary>
-  public class EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IClassDefinitionValidator
+  public class EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IClassDefinitionValidatorRule
   {
     public EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule ()
     {

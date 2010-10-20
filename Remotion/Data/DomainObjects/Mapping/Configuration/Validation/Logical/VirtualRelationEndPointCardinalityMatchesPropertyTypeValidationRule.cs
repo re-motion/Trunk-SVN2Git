@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// <summary>
   /// Validates that the virtual relation end point cardinality matches the property type.
   /// </summary>
-  public class VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule : IRelationEndPointValidator
+  public class VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule : IRelationEndPointValidatorRule
   {
     public VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule ()
     {
