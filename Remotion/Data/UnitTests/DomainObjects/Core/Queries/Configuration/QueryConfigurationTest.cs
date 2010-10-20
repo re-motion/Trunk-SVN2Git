@@ -26,9 +26,9 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Configuration;
-using File=System.IO.File;
+using File = System.IO.File;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 {
   [TestFixture]
   public class QueryConfigurationTest : StandardMappingTest

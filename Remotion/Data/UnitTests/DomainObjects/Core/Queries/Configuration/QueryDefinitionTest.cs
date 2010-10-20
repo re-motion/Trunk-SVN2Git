@@ -18,9 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 {
   [TestFixture]
   public class QueryDefinitionTest : StandardMappingTest

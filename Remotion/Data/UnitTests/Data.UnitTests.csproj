@@ -266,7 +266,7 @@
     <Compile Include="DomainObjects\Core\Mapping\FakeMappingLoader.cs" />
     <Compile Include="DomainObjects\Core\Mapping\LengthConstrainedPropertyAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingConfigurationTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\MappingLoaderConfigurationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Configuration\MappingLoaderConfigurationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
@@ -642,7 +642,7 @@
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFileElementTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\Configuration\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TypeProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
@@ -900,16 +900,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Configuration\LoaderUtilityTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryConfigurationTest.cs">
+    <Compile Include="DomainObjects\Core\Queries\Configuration\QueryConfigurationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryDefinitionChecker.cs">
+    <Compile Include="DomainObjects\Core\Queries\Configuration\QueryDefinitionChecker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryDefinitionCollectionTest.cs">
+    <Compile Include="DomainObjects\Core\Queries\Configuration\QueryDefinitionCollectionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryDefinitionTest.cs">
+    <Compile Include="DomainObjects\Core\Queries\Configuration\QueryDefinitionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\DatabaseTest.cs">

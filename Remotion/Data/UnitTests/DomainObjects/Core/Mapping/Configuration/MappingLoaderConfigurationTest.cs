@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Development.UnitTesting.Configuration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Configuration
 {
   [TestFixture]
   public class MappingLoaderConfigurationTest
