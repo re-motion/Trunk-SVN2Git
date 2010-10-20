@@ -18,12 +18,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Validation;
 using Rhino.Mocks;
-using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Configuration.Validation.ClassDefinitionValidator;
+using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Validation

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;

@@ -17,7 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping

@@ -15,18 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
   /// <summary>
-  /// Validates that the domain object does not have a legacy infrastructure constructor taking a single data container argument.
+  /// Validates that a class definition type is not generic.
   /// </summary>
-  public class DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule : IClassDefinitionValidatorRule
+  public class DomainObjectTypeIsNotGenericValidationRule : IClassDefinitionValidatorRule
   {
-    public DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule ()
+    public DomainObjectTypeIsNotGenericValidationRule ()
     {
       
     }
@@ -42,17 +40,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (!type.IsAbstract || (type.IsAbstract && Attribute.IsDefined (type, typeof (InstantiableAttribute), false)))
+      if (type.IsGenericType && !ReflectionUtility.IsDomainObjectBase(type))
       {
-        BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;
-        ConstructorInfo legacyLoadConstructor = type.GetConstructor (flags, null, new[] { typeof (DataContainer) }, null);
-        if (legacyLoadConstructor != null)
-        {
-         string message = 
-           "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
-              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.";
-          return new MappingValidationResult (false, message);
-        }
+        var message = "Generic domain objects are not supported.";
+        return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
     }

@@ -14,33 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Utilities;
-
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
   /// <summary>
-  /// Validates that the entity-name of a class is the same as the inherited entity-name.
+  /// Validates that the type of a class defintion is derived from base type.
   /// </summary>
-  public class EntityNameMatchesParentEntityNameValidationRule : IClassDefinitionValidatorRule
+  public class InheritanceHierarchyFollowsClassHierarchyValidationRule : IClassDefinitionValidatorRule
   {
-    public EntityNameMatchesParentEntityNameValidationRule ()
+    public InheritanceHierarchyFollowsClassHierarchyValidationRule ()
     {
       
     }
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      if (classDefinition.BaseClass != null && classDefinition.MyEntityName != null && classDefinition.BaseClass.GetEntityName() != null
-          && classDefinition.MyEntityName != classDefinition.BaseClass.GetEntityName())
+      if (classDefinition.BaseClass !=null && !classDefinition.ClassType.IsSubclassOf (classDefinition.BaseClass.ClassType))
       {
-        string message = string.Format(
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
+        var message = string.Format(
+            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
+            classDefinition.ClassType.AssemblyQualifiedName,
             classDefinition.ID,
-            classDefinition.MyEntityName,
-            classDefinition.BaseClass.GetEntityName());
+            classDefinition.BaseClass.ClassType.AssemblyQualifiedName,
+            classDefinition.BaseClass.ID);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);

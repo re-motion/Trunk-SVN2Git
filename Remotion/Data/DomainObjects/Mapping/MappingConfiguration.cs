@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
 using Remotion.Logging;
 using System.Linq;
@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       if (_classDefinitions.Count > 0)
       {
-        var classDefinitionValidator = Configuration.Validation.ClassDefinitionValidator.Create();
+        var classDefinitionValidator = ClassDefinitionValidator.Create();
         var classDefinitionValidationResults = classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
         if (classDefinitionValidationResults.Length > 0)
           throw CreateMappingException (classDefinitionValidationResults);
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       if (_relationDefinitions.Count > 0)
       {
-        var relationDefinitionValidator = Configuration.Validation.RelationDefinitionValidator.Create();
+        var relationDefinitionValidator = RelationDefinitionValidator.Create();
         var relationDefinitionValidationResults = relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()).ToArray();
         if (relationDefinitionValidationResults.Length > 0)
           throw CreateMappingException (relationDefinitionValidationResults);
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       if (_classDefinitions.Count > 0)
       {
-        var persistenceMappingValidator = Configuration.Validation.PersistenceMappingValidator.Create();
+        var persistenceMappingValidator = PersistenceMappingValidator.Create();
         var persistenceMappingValidationResults = persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
         if (persistenceMappingValidationResults.Length > 0)
           throw CreateMappingException (persistenceMappingValidationResults);

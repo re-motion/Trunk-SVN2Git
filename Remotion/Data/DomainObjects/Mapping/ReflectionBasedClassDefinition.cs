@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
+using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
 

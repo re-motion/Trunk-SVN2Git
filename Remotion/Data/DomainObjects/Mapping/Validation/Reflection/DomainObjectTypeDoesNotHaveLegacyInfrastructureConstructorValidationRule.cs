@@ -15,17 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using System.Reflection;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
   /// <summary>
-  /// Validates that the StorageGroupAttribute is not defined twice in the class hierarchy.
+  /// Validates that the domain object does not have a legacy infrastructure constructor taking a single data container argument.
   /// </summary>
-  public class StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule : IClassDefinitionValidatorRule
+  public class DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule : IClassDefinitionValidatorRule
   {
-    public StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ()
+    public DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule ()
     {
       
     }
@@ -41,21 +42,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (ReflectionUtility.IsInheritanceRoot(type) && Attribute.IsDefined (type.BaseType, typeof (StorageGroupAttribute), true)) 
+      if (!type.IsAbstract || (type.IsAbstract && Attribute.IsDefined (type, typeof (InstantiableAttribute), false)))
       {
-        Type baseType = type.BaseType;
-        while (!AttributeUtility.IsDefined<StorageGroupAttribute> (baseType, false)) //get base type which has the attribute applied
-          baseType = baseType.BaseType;
-
-        var message = string.Format (
-            "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.",
-            typeof (StorageGroupAttribute),
-            baseType);
-        return new MappingValidationResult (false, message);
+        BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;
+        ConstructorInfo legacyLoadConstructor = type.GetConstructor (flags, null, new[] { typeof (DataContainer) }, null);
+        if (legacyLoadConstructor != null)
+        {
+         string message = 
+           "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
+              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.";
+          return new MappingValidationResult (false, message);
+        }
       }
       return new MappingValidationResult (true);
     }
-
-    
   }
 }

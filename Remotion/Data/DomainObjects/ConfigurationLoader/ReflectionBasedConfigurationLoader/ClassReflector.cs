@@ -21,7 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;

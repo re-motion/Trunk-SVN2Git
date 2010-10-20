@@ -18,8 +18,8 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Persistence;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 

@@ -14,29 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
   /// <summary>
-  /// Validates that the type of a class defintion is derived from base type.
+  /// Validates that the StorageProviderID of a class defintion is equal to the StorageProviderID of the base class definition.
   /// </summary>
-  public class InheritanceHierarchyFollowsClassHierarchyValidationRule : IClassDefinitionValidatorRule
+  public class StorageProviderIDMatchesParentStorageProviderIDValiadationRule : IClassDefinitionValidatorRule
   {
-    public InheritanceHierarchyFollowsClassHierarchyValidationRule ()
+    public StorageProviderIDMatchesParentStorageProviderIDValiadationRule ()
     {
       
     }
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      if (classDefinition.BaseClass !=null && !classDefinition.ClassType.IsSubclassOf (classDefinition.BaseClass.ClassType))
+      if (classDefinition.BaseClass!=null && classDefinition.BaseClass.StorageProviderID != classDefinition.StorageProviderID)
       {
         var message = string.Format(
-            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
-            classDefinition.ClassType.AssemblyQualifiedName,
+            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
             classDefinition.ID,
-            classDefinition.BaseClass.ClassType.AssemblyQualifiedName,
             classDefinition.BaseClass.ID);
         return new MappingValidationResult (false, message);
       }

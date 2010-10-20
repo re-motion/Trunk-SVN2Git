@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 {
   /// <summary>
-  /// Validates that the property mapping attributes are applied at the original property declaration.
+  /// Validates that the given storage class is supported.
   /// </summary>
-  public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IClassDefinitionValidatorRule
+  public class StorageClassIsSupportedValidationRule : IClassDefinitionValidatorRule
   {
-    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
+    public StorageClassIsSupportedValidationRule ()
     {
       
     }
@@ -36,37 +34,30 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflectio
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var errorMessages = new StringBuilder();
       foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo);
         if (!validationResult.IsValid)
-          errorMessages.AppendLine (validationResult.Message);
+          return validationResult;
       }
-
-      var messages = errorMessages.ToString().Trim();
-      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
+      return new MappingValidationResult (true);
     }
 
     public MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
+      var storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, true);
+
+      if (storageClassAttribute != null && storageClassAttribute.StorageClass != StorageClass.Persistent
+          && storageClassAttribute.StorageClass != StorageClass.Transaction)
       {
-        IMappingAttribute[] mappingAttributes = AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false);
-        if (mappingAttributes.Length > 0)
-        {
-          var message =
-              string.Format (
-                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n  Type: {1}, property: {2}",
-                  mappingAttributes[0].GetType().FullName,
-                  propertyInfo.DeclaringType.FullName,
-                  propertyInfo.Name);
-          return new MappingValidationResult (false, message);
-        }
+        var message = "Only StorageClass.Persistent and StorageClass.Transaction is supported.";
+        return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
     }
+
+    
   }
 }

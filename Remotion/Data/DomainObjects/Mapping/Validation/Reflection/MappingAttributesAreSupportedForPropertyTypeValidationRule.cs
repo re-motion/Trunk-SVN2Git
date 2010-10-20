@@ -21,7 +21,7 @@ using System.Text;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Reflection
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
   /// <summary>
   /// Validates that all applied attribute types of a property are supported.

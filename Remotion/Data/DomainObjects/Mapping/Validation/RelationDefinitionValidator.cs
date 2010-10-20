@@ -18,10 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
+namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
   /// <summary>
   /// Holds a read-only collection of relation definition validation rules and exposes a Validate-method, which gets a list of 

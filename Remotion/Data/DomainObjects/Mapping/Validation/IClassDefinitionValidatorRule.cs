@@ -14,41 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Utilities;
-
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
+namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
   /// <summary>
-  /// <see cref="MappingValidationResult"/> is returned by the validate-methods of the mapping configuration validators and contains the information,
-  /// if the rule is valid. If not, it also returns an error message.
+  /// Defines the API for the class definition mapping validator rules.
   /// </summary>
-  public class MappingValidationResult
+  public interface IClassDefinitionValidatorRule
   {
-    private readonly bool _isValid;
-    private readonly string _message;
-
-    public MappingValidationResult (bool isValid)
-    {
-      _isValid = isValid;
-    }
-
-    public MappingValidationResult (bool isValid, string message)
-    {
-      ArgumentUtility.CheckNotNull ("message", message);
-
-      _isValid = isValid;
-      _message = message;
-    }
-
-    public bool IsValid
-    {
-      get { return _isValid; }
-    }
-
-    public string Message
-    {
-      get { return _message; }
-    }
+    MappingValidationResult Validate (ClassDefinition classDefinition);
   }
 }

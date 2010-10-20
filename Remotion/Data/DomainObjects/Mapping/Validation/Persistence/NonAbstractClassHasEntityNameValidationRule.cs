@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
   /// <summary>
-  /// Validates that each defined property definition in a class is not already defined in a base class.
+  /// Validates that each non-abstract class in the mapping can resolve it's entity-name.
   /// </summary>
-  public class PropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidatorRule
+  public class NonAbstractClassHasEntityNameValidationRule : IClassDefinitionValidatorRule
   {
-    public PropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
+    public NonAbstractClassHasEntityNameValidationRule ()
     {
       
     }
@@ -33,19 +32,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.BaseClass != null)
+      if (classDefinition.IsClassTypeResolved)
       {
-        PropertyDefinitionCollection basePropertyDefinitions = classDefinition.BaseClass.GetPropertyDefinitions ();
-        foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
+        if (classDefinition.GetEntityName () == null && !classDefinition.IsAbstract)
         {
-          if (basePropertyDefinitions.Contains (propertyDefinition.PropertyName))
-          {
-            string message = string.Format("Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
-                classDefinition.ID,
-                propertyDefinition.PropertyName,
-                basePropertyDefinitions[propertyDefinition.PropertyName].ClassDefinition.ID);
-            return new MappingValidationResult (false, message);
-          }
+          string message = string.Format("Neither class '{0}' nor its base classes specify an entity name. "
+            +"Make class '{1}' abstract or apply a DBTable attribute to it or one of its base classes.",
+              classDefinition.ID,
+              classDefinition.ClassType.AssemblyQualifiedName);
+          return new MappingValidationResult (false, message);
         }
       }
       return new MappingValidationResult (true);

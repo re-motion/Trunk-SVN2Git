@@ -14,15 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation
+namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
   /// <summary>
-  /// Defines the API for the relation definition mapping validator rules.
+  /// Defines the API for the persistence mapping validator.
   /// </summary>
-  public interface IRelationDefinitionValidatorRule
+  public interface IPersistenceMappingValidator
   {
-    MappingValidationResult Validate (RelationDefinition relationDefinition);
+    ReadOnlyCollection<IClassDefinitionValidatorRule> ValidationRules { get; }
+
+    IEnumerable<MappingValidationResult> Validate (IEnumerable<ClassDefinition> classDefinitions);
   }
 }

@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
   /// <summary>
-  /// Validates that the virtual property definition is derived from DomainObject, DomainObjectValidation or DomainObjectCollection.
+  /// Validates that a relation end point defintion with cardinality one must not specify a sort expression.
   /// </summary>
-  public class VirtualRelationEndPointPropertyTypeIsSupportedValidationRule : IRelationEndPointValidatorRule
+  public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationEndPointValidatorRule
   {
-    public VirtualRelationEndPointPropertyTypeIsSupportedValidationRule ()
+    public SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule ()
     {
       
     }
@@ -33,18 +32,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      if (relationEndPointDefinition.PropertyType!=null && 
-          relationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) && 
-          !relationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObjectCollection)) && 
-          !relationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
+      var relationEndPointDefinitionAsVirtualRelationEndPointDefintion = relationEndPointDefinition as VirtualRelationEndPointDefinition;
+      if (relationEndPointDefinitionAsVirtualRelationEndPointDefintion != null && 
+          relationEndPointDefinitionAsVirtualRelationEndPointDefintion.Cardinality == CardinalityType.One && 
+          relationEndPointDefinitionAsVirtualRelationEndPointDefintion.SortExpression != null)
       {
         var message = string.Format(
-            "Relation definition error: Virtual property '{0}' of class '{1}' is of type '{2}', but must be derived from '{3}' or '{4}' or must be '{4}'.",
-            relationEndPointDefinition.PropertyName,
-            relationEndPointDefinition.ClassDefinition.ID,
-            relationEndPointDefinition.PropertyType,
-            typeof(DomainObject).FullName,
-            typeof(DomainObjectCollection).FullName);
+            "Property '{0}' of class '{1}' must not specify a SortExpression, because cardinality is equal to 'one'.",
+            relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyName,
+            relationEndPointDefinitionAsVirtualRelationEndPointDefintion.ClassDefinition.ID);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
