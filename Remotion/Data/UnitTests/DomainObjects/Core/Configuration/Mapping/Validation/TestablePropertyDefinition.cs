@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
 
     public override bool IsPropertyTypeResolved
     {
-      get { throw new NotImplementedException(); }
+      get { return true; }
     }
 
     public override PropertyInfo PropertyInfo
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
 
     public override bool IsPropertyInfoResolved
     {
-      get { throw new NotImplementedException(); }
+      get { return true; }
     }
 
     public override bool IsNullable

@@ -43,8 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var propertyInfo = _type.GetProperty ("Property");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (propertyDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -54,8 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassPersistent");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (propertyDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -65,8 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassTransaction");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Transaction);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (propertyDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -76,14 +82,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Valid
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (propertyDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       var expectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction is supported.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
-
 
   }
 }

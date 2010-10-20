@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -24,18 +25,24 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
   /// <summary>
   /// Validates that the given storage class is supported.
   /// </summary>
-  public class StorageClassIsSupportedValidationRule : IPropertyDefintionValidator
+  public class StorageClassIsSupportedValidationRule : IClassDefinitionValidator
   {
     public StorageClassIsSupportedValidationRule ()
     {
       
     }
 
-    public MappingValidationResult Validate (PropertyDefinition propertyDefinition)
+    public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return Validate (propertyDefinition.PropertyInfo);
+      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
+      {
+        var validationResult = Validate (propertyDefinition.PropertyInfo);
+        if (!validationResult.IsValid)
+          return new MappingValidationResult (false, validationResult.Message);
+      }
+      return new MappingValidationResult (true);
     }
 
     public MappingValidationResult Validate (PropertyInfo propertyInfo)
@@ -52,5 +59,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration.Validation.Logical
       }
       return new MappingValidationResult (true);
     }
+
+    
   }
 }
