@@ -69,28 +69,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "The property type of a virtual end point of a one-to-one relation"
-        + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.")]
-    public void VirtualEndPointWithCardinalityOneAndWrongPropertyType ()
-    {
-      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
-
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.One, typeof (OrderCollection));
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "The property type of a virtual end point of a one-to-many relation"
-        + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.")]
-    public void VirtualEndPointWithCardinalityManyAndWrongPropertyType ()
-    {
-      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
-
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (Company));
-    }
-
-    [Test]
     public void InitializeWithSortExpression ()
     {
       ReflectionBasedClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);

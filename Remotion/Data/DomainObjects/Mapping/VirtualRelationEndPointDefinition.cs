@@ -147,11 +147,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       var propertyTypeValidtionResult = propertyTypeValidationRule.Validate (this);
       if (!propertyTypeValidtionResult.IsValid)
         throw CreateMappingException (propertyTypeValidtionResult.Message);
-
-      var cardinalityMatchValidationRule = new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule();
-      var validationResult = cardinalityMatchValidationRule.Validate (this);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (validationResult.Message);
     }
 
     private void CheckSortExpression ()
