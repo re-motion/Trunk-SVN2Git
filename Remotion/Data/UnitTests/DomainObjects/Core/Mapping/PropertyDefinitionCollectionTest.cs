@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -42,6 +43,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name2", "Name", StorageClass.Persistent);
       _propertyDefinitionNonPersisted = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Name3", "Name", StorageClass.Transaction);
       _collection = new PropertyDefinitionCollection ();
+    }
+
+    [Test]
+    public void CreateForAllPropertyDefinitions ()
+    {
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", TestDomainProviderID, typeof (Customer), false);
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "Test", "Test", StorageClass.Persistent);
+      
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray();
+
+      Assert.That (propertyDefinitions.Length, Is.EqualTo (1));
+      Assert.That (propertyDefinitions[0], Is.SameAs (propertyDefinition));
     }
 
     [Test]
@@ -132,9 +147,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CopyConstructor ()
     {
-      _collection.Add (_propertyDefinition1);
+      var collection = new List<PropertyDefinition>();
+      collection.Add (_propertyDefinition1);
 
-      PropertyDefinitionCollection copiedCollection = new PropertyDefinitionCollection (_collection, false);
+      PropertyDefinitionCollection copiedCollection = new PropertyDefinitionCollection (collection, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_propertyDefinition1, copiedCollection[0]);

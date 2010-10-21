@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -34,15 +36,17 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       if (classDefinition.BaseClass != null)
       {
-        PropertyDefinitionCollection basePropertyDefinitions = classDefinition.BaseClass.GetPropertyDefinitions ();
+        var basePropertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition.BaseClass);
         foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
         {
-          if (basePropertyDefinitions.Contains (propertyDefinition.PropertyName))
+          var propertyName = propertyDefinition.PropertyName;
+          var basePropertyDefinition = basePropertyDefinitions.SingleOrDefault(pd=>pd.PropertyName==propertyName);
+          if (basePropertyDefinition!=null)
           {
             string message = string.Format("Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
                 classDefinition.ID,
-                propertyDefinition.PropertyName,
-                basePropertyDefinitions[propertyDefinition.PropertyName].ClassDefinition.ID);
+                propertyName,
+                basePropertyDefinition.ClassDefinition.ID);
             return new MappingValidationResult (false, message);
           }
         }

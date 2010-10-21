@@ -113,13 +113,13 @@ namespace Remotion.Data.DomainObjects.Mapping
     public void Validate()
     {
       s_log.InfoFormat ("Validating {0} class definitions...", _classDefinitions.Count);
-
-      SetClassDefinitionsReadOnly (); //TODO 3424: Move to ctor
-
+      
       ValidateClassDefinitions ();
       ValidateRelationDefinitions ();
       ValidatePersistenceMapping ();
-    }
+      
+      SetClassDefinitionsReadOnly (); //TODO 3424: Move to ctor ?
+  }
 
     /// <summary>
     /// Gets a flag whether type names in the configuration file should be resolved to their corresponding .NET <see cref="Type"/>.

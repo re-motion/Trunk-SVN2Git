@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,6 +28,11 @@ public class PropertyDefinitionCollection : CommonCollection
   // types
 
   // static members and constants
+
+  public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
+  {
+    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions.Cast<PropertyDefinition> ());
+  }
 
   // member fields
 
@@ -47,16 +54,14 @@ public class PropertyDefinitionCollection : CommonCollection
   }
 
   // standard constructor for collections
-  public PropertyDefinitionCollection (PropertyDefinitionCollection collection, bool makeCollectionReadOnly)  
+  public PropertyDefinitionCollection (IEnumerable<PropertyDefinition> collection, bool makeCollectionReadOnly)  
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 
     foreach (PropertyDefinition propertyDefinition in collection)
-    {
       Add (propertyDefinition);
-    }
-
-    this.SetIsReadOnly (makeCollectionReadOnly);
+    
+    SetIsReadOnly (makeCollectionReadOnly);
   }
 
   // methods and properties

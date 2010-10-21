@@ -18,18 +18,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   [Serializable]
   [DebuggerDisplay ("{GetType().Name} for {ClassType.FullName}")]
-  public abstract class ClassDefinition: SerializableMappingObject
+  public abstract class ClassDefinition : SerializableMappingObject
   {
     // types
 
@@ -38,16 +38,19 @@ namespace Remotion.Data.DomainObjects.Mapping
     // will be serialized; these are used to retrieve the "real" object at deserialization time.
 
     private readonly string _id;
-    
+
     private bool _isReadOnly;
 
     // nonserialized member fields
     [NonSerialized]
     private readonly string _entityName;
+
     [NonSerialized]
     private readonly string _storageProviderID;
+
     [NonSerialized]
     private readonly PropertyDefinitionCollection _propertyDefinitions;
+
     [NonSerialized]
     private readonly RelationDefinitionCollection _relationDefinitions;
 
@@ -56,8 +59,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<RelationDefinitionCollection> _cachedRelationDefinitions;
+
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> _cachedRelationEndPointDefinitions;
+
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
@@ -81,7 +86,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
           FindAllRelationEndPointDefinitions);
-      _cachedPropertyDefinitions = new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (FindAllPropertyDefinitions);
+      _cachedPropertyDefinitions =
+          new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (
+              () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this), true));
     }
 
     // methods and properties
@@ -98,8 +105,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
-      _propertyDefinitions.SetReadOnly ();
-      _relationDefinitions.SetReadOnly ();
+      _propertyDefinitions.SetReadOnly();
+      _relationDefinitions.SetReadOnly();
 
       _isReadOnly = true;
     }
@@ -123,10 +130,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       return false;
     }
 
-    public string[] GetAllConcreteEntityNames()
+    public string[] GetAllConcreteEntityNames ()
     {
       if (GetEntityName() != null)
-        return new[] {GetEntityName()};
+        return new[] { GetEntityName() };
 
       var allConcreteEntityNames = new List<string>();
       FillAllConcreteEntityNames (allConcreteEntityNames);
@@ -134,14 +141,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       return allConcreteEntityNames.ToArray();
     }
 
-    public ClassDefinitionCollection GetAllDerivedClasses()
+    public ClassDefinitionCollection GetAllDerivedClasses ()
     {
       var allDerivedClasses = new ClassDefinitionCollection (IsClassTypeResolved);
       FillAllDerivedClasses (allDerivedClasses);
       return allDerivedClasses;
     }
 
-    public ClassDefinition GetInheritanceRootClass()
+    public ClassDefinition GetInheritanceRootClass ()
     {
       if (BaseClass != null)
         return BaseClass.GetInheritanceRootClass();
@@ -149,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return this;
     }
 
-    public string GetEntityName()
+    public string GetEntityName ()
     {
       if (_entityName != null)
         return _entityName;
@@ -188,17 +195,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
       IRelationEndPointDefinition relationEndPointDefinition = GetMandatoryRelationEndPointDefinition (propertyName);
-      return relationEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+      return relationEndPointDefinition.GetMandatoryOppositeEndPointDefinition();
     }
 
-    public PropertyDefinitionCollection GetPropertyDefinitions()
+    public PropertyDefinitionCollection GetPropertyDefinitions ()
     {
-      CheckIsReadOnlyForCachedData ();
+      CheckIsReadOnlyForCachedData();
 
       return _cachedPropertyDefinitions.Value;
     }
 
-    public RelationDefinitionCollection GetRelationDefinitions()
+    public RelationDefinitionCollection GetRelationDefinitions ()
     {
       CheckIsReadOnlyForCachedData();
 
@@ -207,12 +214,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ICollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
     {
-      CheckIsReadOnlyForCachedData ();
+      CheckIsReadOnlyForCachedData();
 
       return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
     }
 
-    public IRelationEndPointDefinition[] GetMyRelationEndPointDefinitions()
+    public IRelationEndPointDefinition[] GetMyRelationEndPointDefinitions ()
     {
       var relationEndPointDefinitions = new ArrayList();
 
@@ -261,7 +268,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (endPointDefinition == null)
         return null;
 
-      return endPointDefinition.GetOppositeClassDefinition ();
+      return endPointDefinition.GetOppositeClassDefinition();
     }
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (string propertyName)
@@ -280,7 +287,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      CheckIsReadOnlyForCachedData ();
+      CheckIsReadOnlyForCachedData();
 
       IRelationEndPointDefinition value;
       _cachedRelationEndPointDefinitions.Value.TryGetValue (propertyName, out value);
@@ -363,7 +370,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract Type ClassType { get; }
 
     public abstract bool IsClassTypeResolved { get; }
-    
+
     public abstract ClassDefinition BaseClass { get; }
     public abstract ClassDefinitionCollection DerivedClasses { get; }
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
@@ -433,10 +440,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       var basePropertyDefinition = GetPropertyDefinition (args.PropertyDefinition.PropertyName);
       if (basePropertyDefinition != null)
       {
-        string definingClass = 
-            basePropertyDefinition.ClassDefinition == this 
-            ? "it" 
-            : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
+        string definingClass =
+            basePropertyDefinition.ClassDefinition == this
+                ? "it"
+                : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
 
         throw CreateMappingException (
             "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
@@ -487,7 +494,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       if (BaseClass != null)
       {
-        foreach (RelationDefinition baseRelation in BaseClass.GetRelationDefinitions ())
+        foreach (RelationDefinition baseRelation in BaseClass.GetRelationDefinitions())
         {
           if (!relations.Contains (baseRelation))
             relations.Add (baseRelation);
@@ -497,26 +504,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new RelationDefinitionCollection (relations, true);
     }
 
-    private PropertyDefinitionCollection FindAllPropertyDefinitions ()
-    {
-      var propertyDefinitions = new PropertyDefinitionCollection (_propertyDefinitions, false);
-
-      if (BaseClass != null)
-      {
-        foreach (PropertyDefinition basePropertyDefinition in BaseClass.GetPropertyDefinitions ())
-          propertyDefinitions.Add (basePropertyDefinition);
-      }
-
-      return new PropertyDefinitionCollection (propertyDefinitions, true);
-    }
-
-
     private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()
     {
       IEnumerable<IRelationEndPointDefinition> relationEndPointDefinitions = GetMyRelationEndPointDefinitions();
 
       if (BaseClass != null)
-        relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions ());
+        relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions());
 
       return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
     }
@@ -526,7 +519,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (!IsReadOnly)
         throw new InvalidOperationException ("ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.");
     }
-    
+
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)
