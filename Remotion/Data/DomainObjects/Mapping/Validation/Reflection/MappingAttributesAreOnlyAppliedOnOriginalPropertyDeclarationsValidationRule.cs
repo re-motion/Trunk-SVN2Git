@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var errorMessages = new StringBuilder();
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
+      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo);
         if (!validationResult.IsValid)

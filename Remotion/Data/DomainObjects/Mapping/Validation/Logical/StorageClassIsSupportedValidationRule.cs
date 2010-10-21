@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
+      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo);
         if (!validationResult.IsValid)
