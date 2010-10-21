@@ -122,11 +122,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     //TODO: Add constructor checks
     private void ValidateType ()
     {
-      var genericTypeValidationRule = new DomainObjectTypeIsNotGenericValidationRule();
-      var genericTypeValidationResult = genericTypeValidationRule.Validate (Type);
-      if (!genericTypeValidationResult.IsValid)
-        throw CreateMappingException (null, Type.GetGenericTypeDefinition(), genericTypeValidationResult.Message);
-
       var storageGroupValidationRule = new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ();
       var storageGroupValidationResult = storageGroupValidationRule.Validate (Type);
       if (!storageGroupValidationResult.IsValid)

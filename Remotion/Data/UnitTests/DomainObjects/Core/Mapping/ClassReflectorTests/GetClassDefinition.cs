@@ -203,20 +203,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Generic domain objects are not supported.\r\n"
-        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.GenericClass`1")]
-    public void GetClassDefinition_ForOpenGenericClass ()
-    {
-      Type type = GetTypeFromDomainWithErrors ("GenericClass`1");
-      Type closedGenericType = type.MakeGenericType (typeof (int));
-
-      var classReflector= new ClassReflector (closedGenericType, Configuration.NameResolver);
-
-      classReflector.GetClassDefinition (_classDefinitions);
-    }
-
-    [Test]
     public void GetClassDefinition_ForClassesWithSameClassID ()
     {
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
