@@ -51,15 +51,16 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (!mappingConfiguration.ResolveTypes)
           throw CreateArgumentException ("mappingConfiguration", "Argument 'mappingConfiguration' must have property 'ResolveTypes' set.");
 
-        try
-        {
-          mappingConfiguration.Validate();
-        }
-        catch (Exception ex)
-        {
-          throw CreateArgumentException (
-              ex, "mappingConfiguration", "The specified MappingConfiguration is invalid due to the following reason: '{0}'.", ex.Message);
-        }
+        // TODO 3423
+        //try
+        //{
+        //  mappingConfiguration.Validate();
+        //}
+        //catch (Exception ex)
+        //{
+        //  throw CreateArgumentException (
+        //      ex, "mappingConfiguration", "The specified MappingConfiguration is invalid due to the following reason: '{0}'.", ex.Message);
+        //}
       }
 
       s_mappingConfiguration.Value = mappingConfiguration;
@@ -113,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       s_log.InfoFormat ("Validating {0} class definitions...", _classDefinitions.Count);
 
-      SetClassDefinitionsReadOnly ();
+      SetClassDefinitionsReadOnly (); //TODO 3424: Move to ctor
 
       ValidateClassDefinitions ();
       ValidateRelationDefinitions ();
