@@ -70,16 +70,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _endPointDefinitions[0] = endPointDefinition1;
       _endPointDefinitions[1] = endPointDefinition2;
-
-      CheckEndPointDefinitions ();
-    }
-
-    private void CheckEndPointDefinitions ()
-    {
-      var validationRule = new RelationEndPointCombinationIsSupportedValidationRule();
-      var validationResult = validationRule.Validate (this);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (validationResult.Message);
     }
 
     // methods and properties

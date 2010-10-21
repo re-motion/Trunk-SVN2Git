@@ -257,7 +257,6 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ColumnDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfVirtualRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
