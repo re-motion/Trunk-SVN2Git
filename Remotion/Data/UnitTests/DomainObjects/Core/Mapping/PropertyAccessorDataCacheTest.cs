@@ -120,6 +120,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void GetMandatoryPropertyAccessorData_FullPropertyName ()
+    {
+      var data = _orderCache.GetMandatoryPropertyAccessorData (typeof (Order).FullName + ".OrderNumber");
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderSmell'.")]
+    public void GetMandatoryPropertyAccessorData_FullPropertyName_Unknown ()
+    {
+      _orderCache.GetMandatoryPropertyAccessorData (typeof (Order).FullName + ".OrderSmell");
+    }
+
+    [Test]
     public void GetMandatoryPropertyAccessorData_TypeAndShortName ()
     {
       var data = _orderCache.GetMandatoryPropertyAccessorData (typeof (Order), "OrderNumber");
