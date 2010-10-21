@@ -75,15 +75,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [Ignore ("TODO 3408")]
-    public void Parse_WithShortPropertyName_PrivateProperty ()
+    public void Parse_WithRealRelationEndPoint ()
     {
-      var sortExpression = "PrivateProperty";
+      var sortExpression = "Order";
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyAscending (_productPropertyDefinition) };
+      var expected = new[] { CreateSortedPropertyAscending (_orderPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "SortExpression 'OrderTicket' cannot be parsed: The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' is a "
+        + "virtual relation end point. SortExpressions can only contain relation end points if the object to be sorted contains the foreign key.")]
+    public void Parse_WithVirtualRelationEndPoint ()
+    {
+      var orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      var parser = new SortExpressionParser (orderClassDefinition, MappingConfiguration.Current.NameResolver);
+
+      var sortExpression = "OrderTicket";
+
+      parser.Parse (sortExpression);
     }
 
     [Test]

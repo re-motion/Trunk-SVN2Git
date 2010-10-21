@@ -102,29 +102,35 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private PropertyDefinition ParsePropertyName (string propertyName)
+    private PropertyDefinition ParsePropertyName (string fullOrShortPropertyName)
     {
-      var propertyDefinition = _classDefinition.GetPropertyDefinition (propertyName);
-      if (propertyDefinition == null)
-      {
-        propertyDefinition = Maybe
-            .ForValue (_classDefinition.ClassType.GetProperty (propertyName))
-            .Select (pi => new PropertyInfoAdapter (pi))
-            .Select (pi => _mappingNameResolver.GetPropertyName (pi))
-            .Select (name => _classDefinition.GetPropertyDefinition (name))
-            .ValueOrDefault();
-      }
+      // Try as full name first, only if that doesn't match, assume it must be a short name
+      var propertyAccessorData = 
+          _classDefinition.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName)
+          ?? _classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (_classDefinition.ClassType, fullOrShortPropertyName);
 
-      if (propertyDefinition == null)
+      if (propertyAccessorData == null)
       {
         var message = string.Format (
             "'{0}' is not a valid mapped property name. Expected a full property identifier or a property name that can be resolved by performing "
             + "Reflection on the '{1}' class.",
-            propertyName,
+            fullOrShortPropertyName,
             _classDefinition.ClassType.Name);
         throw new MappingException (message);
       }
-      return propertyDefinition;
+
+      if (propertyAccessorData.PropertyDefinition == null)
+      {
+        Assertion.IsNotNull (propertyAccessorData.RelationEndPointDefinition);
+
+        var message = string.Format (
+            "The property '{0}' is a virtual relation end point. SortExpressions can only contain relation end points if the object to be sorted "
+            + "contains the foreign key.",
+            propertyAccessorData.PropertyIdentifier);
+        throw new MappingException (message);
+      }
+
+      return propertyAccessorData.PropertyDefinition;
     }
   }
 }
