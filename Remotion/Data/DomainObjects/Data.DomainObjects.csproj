@@ -165,6 +165,8 @@
     <Compile Include="Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MixinPropertyFinder.cs" />
+    <Compile Include="Mapping\SortExpressions\SortedPropertySpecification.cs" />
+    <Compile Include="Mapping\SortExpressions\SortOrder.cs" />
     <Compile Include="Mapping\Validation\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IPersistenceMappingValidator.cs" />
@@ -172,7 +174,7 @@
     <Compile Include="Mapping\Validation\PersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Validation\RelationDefinitionValidator.cs" />
     <Compile Include="Mapping\PropertyAccessorDataCache.cs" />
-    <Compile Include="Mapping\SortExpressionParser.cs" />
+    <Compile Include="Mapping\SortExpressions\SortExpressionParser.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MappingReflectorBase.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
@@ -257,7 +259,7 @@
     <Compile Include="Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
-    <Compile Include="Mapping\SortExpressionDefinition.cs" />
+    <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />

@@ -14,13 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping
+namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 {
   /// <summary>
   /// Parses a <see cref="DBBidirectionalRelationAttribute.SortExpression"/> into a <see cref="SortExpressionDefinition"/>.
@@ -56,14 +55,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     }
 
-    private SortExpressionDefinition.SortedProperty ParseSortedPropertySpecification (string sortedPropertySpecification)
+    private SortedPropertySpecification ParseSortedPropertySpecification (string sortedPropertySpecification)
     {
       var splitSpecification = SplitSortedPropertySpecification (sortedPropertySpecification);
 
       var propertyDefinition = ParsePropertyName (splitSpecification.Item1);
       var sortOrder = ParseOrderSpecification (splitSpecification.Item2);
 
-      return new SortExpressionDefinition.SortedProperty (propertyDefinition, sortOrder);
+      return new SortedPropertySpecification (propertyDefinition, sortOrder);
     }
 
     private Tuple<string, string> SplitSortedPropertySpecification (string sortedPropertySpecification)
@@ -79,17 +78,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       return Tuple.Create (parts[0], parts.Length > 1 ? parts[1] : null);
     }
 
-    private SortExpressionDefinition.SortOrder ParseOrderSpecification (string orderSpecification)
+    private SortOrder ParseOrderSpecification (string orderSpecification)
     {
       if (orderSpecification == null)
-        return SortExpressionDefinition.SortOrder.Ascending;
+        return SortOrder.Ascending;
 
       switch (orderSpecification.ToLower ())
       {
         case "asc":
-          return SortExpressionDefinition.SortOrder.Ascending;
+          return SortOrder.Ascending;
         case "desc":
-          return SortExpressionDefinition.SortOrder.Descending;
+          return SortOrder.Descending;
         default:
           var message = string.Format ("'{0}' is not a valid sort order. Expected 'asc' or 'desc'.", orderSpecification);
           throw new MappingException (message);

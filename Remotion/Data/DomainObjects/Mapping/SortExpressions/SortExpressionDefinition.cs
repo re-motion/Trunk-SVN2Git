@@ -19,44 +19,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Text;
-using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping
+namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 {
   /// <summary>
   /// Defines how to sort a number of items in a <see cref="DomainObjectCollection"/>.
   /// </summary>
   public class SortExpressionDefinition
   {
-    public enum SortOrder { Ascending, Descending };
+    private readonly ReadOnlyCollection<SortedPropertySpecification> _sortedProperties;
 
-    public struct SortedProperty
-    {
-      public readonly PropertyDefinition PropertyDefinition;
-      public readonly SortOrder Order;
-
-      public SortedProperty (PropertyDefinition propertyDefinition, SortOrder order)
-      {
-        ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-        
-        PropertyDefinition = propertyDefinition;
-        Order = order;
-      }
-
-      public override string ToString ()
-      {
-        return PropertyDefinition.PropertyName + " " + (Order == SortOrder.Ascending ? "ASC" : "DESC");
-      }
-    }
-
-    private readonly ReadOnlyCollection<SortedProperty> _sortedProperties;
-
-    public SortExpressionDefinition (IEnumerable<SortedProperty> sortedProperties)
+    public SortExpressionDefinition (IEnumerable<SortedPropertySpecification> sortedProperties)
     {
       _sortedProperties = sortedProperties.ToList().AsReadOnly();
     }
 
-    public ReadOnlyCollection<SortedProperty> SortedProperties
+    public ReadOnlyCollection<SortedPropertySpecification> SortedProperties
     {
       get { return _sortedProperties; }
     }
@@ -64,6 +42,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override string ToString ()
     {
       return SeparatedStringBuilder.Build (", ", SortedProperties);
+    }
+
+    public IComparer<T> GetComparer<T> (Func<T, SortedPropertySpecification, object> propertyGetter)
+    {
+      throw new NotImplementedException ();
     }
   }
 }

@@ -331,8 +331,9 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationReflectorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SetUpFixture.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\SortExpressionDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\SortExpressionParserTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortedPropertySpecificationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionParserTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\BaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\BaseClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />

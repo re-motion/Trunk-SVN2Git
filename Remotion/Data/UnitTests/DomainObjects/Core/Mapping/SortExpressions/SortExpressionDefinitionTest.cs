@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
   [TestFixture]
   public class SortExpressionDefinitionTest : StandardMappingTest
@@ -44,8 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new SortExpressionDefinition (
               new[]
               {
-                  new SortExpressionDefinition.SortedProperty (_productPropertyDefinition, SortExpressionDefinition.SortOrder.Ascending),
-                  new SortExpressionDefinition.SortedProperty (_positionPropertyDefinition, SortExpressionDefinition.SortOrder.Descending),
+                  CreateSortedPropertyAscending (_productPropertyDefinition),
+                  CreateSortedPropertyDescending (_positionPropertyDefinition)
               });
 
       var result = sortExpressionDefinition.ToString();
@@ -54,6 +57,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product ASC, "
           + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Position DESC";
       Assert.That (result, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [Ignore ("TODO 3409")]
+    public void GetComparer_SingleSortedProperty_Ascending ()
+    {
+      var sortExpressionDefinition =
+          new SortExpressionDefinition (
+              new[]
+              {
+                  CreateSortedPropertyAscending (_productPropertyDefinition)
+              });
+
+      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
+          (dc, property) => dc.PropertyValues[property.PropertyDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
+
+      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
+      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
+      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
+
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (-1));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer3, dataContainer1), Is.EqualTo (0));
+      
+    }
+
+    private DataContainer CreateOrderItemDataContainer (string product)
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
+      return dataContainer;
+    }
+
+    private SortedPropertySpecification CreateSortedPropertyAscending (PropertyDefinition propertyDefinition)
+    {
+      return new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
+    }
+
+    private SortedPropertySpecification CreateSortedPropertyDescending (PropertyDefinition propertyDefinition)
+    {
+      return new SortedPropertySpecification (propertyDefinition, SortOrder.Descending);
     }
   }
 }

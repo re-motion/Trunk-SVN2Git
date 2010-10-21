@@ -17,9 +17,10 @@
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
   [TestFixture]
   public class SortExpressionParserTest : StandardMappingTest
@@ -257,14 +258,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result2.SortedProperties, Is.EqualTo (expected));
     }
 
-    private SortExpressionDefinition.SortedProperty CreateSortedPropertyAscending (PropertyDefinition productPropertyDefinition)
+    private SortedPropertySpecification CreateSortedPropertyAscending (PropertyDefinition propertyDefinition)
     {
-      return new SortExpressionDefinition.SortedProperty (productPropertyDefinition, SortExpressionDefinition.SortOrder.Ascending);
+      return new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
     }
 
-    private SortExpressionDefinition.SortedProperty CreateSortedPropertyDescending (PropertyDefinition productPropertyDefinition)
+    private SortedPropertySpecification CreateSortedPropertyDescending (PropertyDefinition propertyDefinition)
     {
-      return new SortExpressionDefinition.SortedProperty (productPropertyDefinition, SortExpressionDefinition.SortOrder.Descending);
+      return new SortedPropertySpecification (propertyDefinition, SortOrder.Descending);
     }
   }
 }
