@@ -105,17 +105,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
       Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (DateTime)));
     }
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction is supported.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute, "
-        + "property: None")]
-    public void GetMetadata_WithStorageClassNone ()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("None");
-
-      propertyReflector.GetMetadata ();
-    }
   }
 }

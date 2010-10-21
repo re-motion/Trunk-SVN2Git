@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -65,16 +64,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected virtual void ValidatePropertyInfo()
     {
-      CheckStorageClass();
       CheckSupportedPropertyAttributes();
-    }
-
-    private void CheckStorageClass()
-    {
-      var validationRule = new StorageClassIsSupportedValidationRule();
-      var validationResult = validationRule.Validate (PropertyInfo);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (null, PropertyInfo, validationResult.Message);
     }
 
     private void CheckSupportedPropertyAttributes()
