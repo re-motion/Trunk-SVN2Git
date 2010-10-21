@@ -409,6 +409,7 @@
     <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Reflection\TestDomain\ClassWithManyConstructorArguments.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
+    <Compile Include="Utilities\CalculationBasedComparerTest.cs" />
     <Compile Include="Utilities\PropertyRestorerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
