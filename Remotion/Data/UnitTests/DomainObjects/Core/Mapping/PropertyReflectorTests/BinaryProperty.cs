@@ -106,17 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (new byte[0], actual.DefaultValue);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The 'Remotion.Data.DomainObjects.BinaryPropertyAttribute' may be only applied to properties of type 'System.Byte[]'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests.BinaryProperty, property: Int32Property")]
-    public void GetMetadata_WithAttributeAppliedToInvalidProperty()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<BinaryProperty> ("Int32Property");
-
-      propertyReflector.GetMetadata();
-    }
-
     [BinaryProperty]
     private int Int32Property
     {

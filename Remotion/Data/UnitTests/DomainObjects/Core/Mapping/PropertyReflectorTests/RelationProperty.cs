@@ -58,19 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (null, actual.DefaultValue);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests.RelationProperty, "
-        + "property: Int32Property")]
-    public void GetMetadata_WithAttributeAppliedToInvalidProperty()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<RelationProperty> ("Int32Property");
-
-      propertyReflector.GetMetadata();
-    }
-
     [Mandatory]
     private int Int32Property
     {

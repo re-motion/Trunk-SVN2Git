@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointReflectorTests
 {
@@ -58,74 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           new RelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidProperties, "
-        + "property: Int32Property")]
-    public void GetMetadata_WithAttributeAppliedToInvalidProperty()
-    {
-      Type type = GetClassWithInvalidProperties();
-
-      PropertyInfo propertyInfo = type.GetProperty ("Int32Property", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector =
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
-
-      relationEndPointReflector.GetMetadata ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The 'Remotion.Data.DomainObjects.StringPropertyAttribute' may be only applied to properties of type 'System.String'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidProperties, "
-        + "property: PropertyWithStringAttribute")]
-    public void GetMetadata_WithStringAttributeAppliedToInvalidProperty()
-    {
-      Type type = GetClassWithInvalidProperties ();
-      PropertyInfo propertyInfo = type.GetProperty ("PropertyWithStringAttribute", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector =
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
-
-      relationEndPointReflector.GetMetadata ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The 'Remotion.Data.DomainObjects.BinaryPropertyAttribute' may be only applied to properties of type 'System.Byte[]'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidProperties, "
-        + "property: PropertyWithBinaryAttribute")]
-    public void GetMetadata_WithBinaryAttributeAppliedToInvalidProperty()
-    {
-      Type type = GetClassWithInvalidProperties ();
-      PropertyInfo propertyInfo = type.GetProperty ("PropertyWithBinaryAttribute", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector =
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
-
-      relationEndPointReflector.GetMetadata ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage =
-        "The classDefinition's class type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.BaseClass' is not assignable "
-        + "to the property's declaring type.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute, "
-        + "property: Int32")]
-    public void Initialize_WithPropertyInfoNotAssignableToTheClassDefinitionsType ()
-    {
-      Type classType = typeof (BaseClass);
-      Type declaringType = typeof (DerivedClassHavingAnOverriddenPropertyWithMappingAttribute);
-      PropertyInfo propertyInfo = declaringType.GetProperty ("Int32");
-
-      new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
-    }
-
-    private Type GetClassWithInvalidProperties ()
-    {
-      return typeof (ClassWithInvalidProperties);
     }
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)

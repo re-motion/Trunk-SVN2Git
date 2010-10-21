@@ -62,17 +62,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return StorageClassAttribute != null ? StorageClassAttribute.StorageClass : DefaultStorageClass; }
     }
 
-    protected virtual void ValidatePropertyInfo()
+    protected virtual void ValidatePropertyInfo ()
     {
-      CheckSupportedPropertyAttributes();
-    }
-
-    private void CheckSupportedPropertyAttributes()
-    {
-      var validationRule = new MappingAttributesAreSupportedForPropertyTypeValidationRule();
-      var validationResult = validationRule.Validate(PropertyInfo);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (null, PropertyInfo, validationResult.Message);
     }
 
     protected virtual string GetPropertyName ()

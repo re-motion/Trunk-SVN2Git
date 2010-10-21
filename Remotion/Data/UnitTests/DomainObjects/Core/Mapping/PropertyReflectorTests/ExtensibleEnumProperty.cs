@@ -74,18 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (TestExtensibleEnum.Values.Value1(), actual.DefaultValue);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "The 'Remotion.Data.DomainObjects.ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'Remotion.ExtensibleEnums.IExtensibleEnum'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests.ExtensibleEnumProperty, "
-        + "property: Int32Property")]
-    public void GetMetadata_WithAttributeAppliedToInvalidProperty ()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ExtensibleEnumProperty> ("Int32Property");
-
-      propertyReflector.GetMetadata ();
-    }
-
     // ReSharper disable UnusedMember.Local
     [ExtensibleEnumProperty]
     private int Int32Property

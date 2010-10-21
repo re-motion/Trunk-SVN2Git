@@ -106,18 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (string.Empty, actual.DefaultValue);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The 'Remotion.Data.DomainObjects.StringPropertyAttribute' may be only applied to properties of type 'System.String'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests.StringProperty, "
-        + "property: Int32Property")]
-    public void GetMetadata_WithAttributeAppliedToInvalidProperty()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<StringProperty> ("Int32Property");
-
-      propertyReflector.GetMetadata();
-    }
-
     [StringProperty]
     private int Int32Property
     {
