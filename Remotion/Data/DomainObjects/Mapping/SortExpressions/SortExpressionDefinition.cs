@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Text;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 {
@@ -31,6 +32,7 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 
     public SortExpressionDefinition (IEnumerable<SortedPropertySpecification> sortedProperties)
     {
+      ArgumentUtility.CheckNotNull ("sortedProperties", sortedProperties);
       _sortedProperties = sortedProperties.ToList().AsReadOnly();
     }
 
@@ -44,9 +46,12 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
       return SeparatedStringBuilder.Build (", ", SortedProperties);
     }
 
-    public IComparer<T> GetComparer<T> (Func<T, SortedPropertySpecification, object> propertyGetter)
+    public IComparer<T> GetComparer<T> (Func<T, PropertyDefinition, object> propertyGetter)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("propertyGetter", propertyGetter);
+
+      var allComparers = SortedProperties.Select (p => p.GetComparer (propertyGetter));
+      return new CompoundComparer<T> (allComparers);
     }
   }
 }

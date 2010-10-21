@@ -62,8 +62,9 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 
     public IComparer<T> GetComparer<T> (Func<T, PropertyDefinition, object> valueGetter)
     {
-      SortedPropertySpecification specification = this;
-      return new DelegateBasedComparer<T> ((x, y) => specification.ComparePropertyValues (valueGetter, x, y));
+      ArgumentUtility.CheckNotNull ("valueGetter", valueGetter);
+
+      return new DelegateBasedComparer<T> ((x, y) => ComparePropertyValues (valueGetter, x, y));
     }
 
     private int ComparePropertyValues<T> (Func<T, PropertyDefinition, object> valueGetter, T x, T y)

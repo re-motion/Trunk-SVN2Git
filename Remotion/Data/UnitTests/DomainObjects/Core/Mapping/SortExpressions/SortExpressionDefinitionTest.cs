@@ -60,33 +60,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
-    [Ignore ("TODO 3409")]
-    public void GetComparer_SingleSortedProperty_Ascending ()
+    public void GetComparer_Empty ()
     {
-      var sortExpressionDefinition =
-          new SortExpressionDefinition (
-              new[]
-              {
-                  CreateSortedPropertyAscending (_productPropertyDefinition)
-              });
+      var sortExpressionDefinition = new SortExpressionDefinition (new SortedPropertySpecification[0]);
 
       IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
-          (dc, property) => dc.PropertyValues[property.PropertyDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
+          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
 
       var dataContainer1 = CreateOrderItemDataContainer ("aaa");
       var dataContainer2 = CreateOrderItemDataContainer ("bbb");
       var dataContainer3 = CreateOrderItemDataContainer ("aaa");
 
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (0));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (0));
       Assert.That (comparer.Compare (dataContainer3, dataContainer1), Is.EqualTo (0));
-      
+    }
+
+    [Test]
+    public void GetComparer_SingleSortedProperty ()
+    {
+      var sortExpressionDefinition =
+          new SortExpressionDefinition (
+              new[]
+              {
+                  CreateSortedPropertyDescending (_productPropertyDefinition)
+              });
+
+      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
+          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
+
+      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
+      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
+      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
+
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
+      Assert.That (comparer.Compare (dataContainer3, dataContainer1), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetComparer_MultipleSortedProperties ()
+    {
+      var sortExpressionDefinition =
+          new SortExpressionDefinition (
+              new[]
+              {
+                  CreateSortedPropertyDescending (_productPropertyDefinition),
+                  CreateSortedPropertyAscending (_positionPropertyDefinition)
+              });
+
+      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
+          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
+
+      var dataContainer1 = CreateOrderItemDataContainer ("aaa", 1);
+      var dataContainer2 = CreateOrderItemDataContainer ("bbb", 2);
+      var dataContainer3 = CreateOrderItemDataContainer ("aaa", 1);
+      var dataContainer4 = CreateOrderItemDataContainer ("aaa", 2);
+
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
+      Assert.That (comparer.Compare (dataContainer1, dataContainer3), Is.EqualTo (0));
+      Assert.That (comparer.Compare (dataContainer1, dataContainer4), Is.EqualTo (-1));
     }
 
     private DataContainer CreateOrderItemDataContainer (string product)
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
       dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
+      return dataContainer;
+    }
+
+    private DataContainer CreateOrderItemDataContainer (string product, int position)
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
+      dataContainer.PropertyValues[_positionPropertyDefinition.PropertyName].Value = position;
       return dataContainer;
     }
 

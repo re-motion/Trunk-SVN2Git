@@ -58,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
       var specification3 = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Descending);
       var specification4 = new SortedPropertySpecification (_positionPropertyDefinition, SortOrder.Ascending);
 
+      Assert.That (specification1, Is.Not.EqualTo (null));
       Assert.That (specification1, Is.EqualTo (specification2));
       Assert.That (specification1, Is.Not.EqualTo (specification3));
       Assert.That (specification1, Is.Not.EqualTo (specification4));
