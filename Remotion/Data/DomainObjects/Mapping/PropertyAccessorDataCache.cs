@@ -84,6 +84,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyAccessorData FindPropertyAccessorData (Type typeToStartSearch, string shortPropertyName)
     {
+      ArgumentUtility.CheckNotNull ("typeToStartSearch", typeToStartSearch);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+
       Type currentType = typeToStartSearch;
       PropertyAccessorData propertyAccessorData = null;
       while (currentType != null && (propertyAccessorData = GetPropertyAccessorData (currentType, shortPropertyName)) == null)
