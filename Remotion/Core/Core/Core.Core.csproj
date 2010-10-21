@@ -129,6 +129,7 @@
     <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
+    <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
     <Compile Include="Collections\DictionaryExtensions.cs" />
