@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
   /// <b>ObjectID</b> supports values of type <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
   /// </remarks>
   [Serializable]
-  public sealed class ObjectID
+  public sealed class ObjectID : IComparable
   {
     // types
 
@@ -327,6 +327,42 @@ namespace Remotion.Data.DomainObjects
         _cachedHashCode = _classID.GetHashCode () ^ _value.GetHashCode ();
       
       return _cachedHashCode;
+    }
+
+    /// <summary>
+    /// Compares this <see cref="ObjectID"/> with another <see cref="ObjectID"/>and returns an integer that indicates whether the current instance 
+    /// precedes, follows, or occurs in the same position in the sort order as the other object.
+    /// </summary>
+    /// <param name="obj">An <see cref="ObjectID"/> to compare with this instance.</param>
+    /// <returns>
+    /// Less than zero if this instance is less than <paramref name="obj"/>; zero if this instance is equal to <paramref name="obj"/>; greater than 
+    /// zero if this instance is greater than <paramref name="obj"/>.
+    /// </returns>
+    /// <exception cref="T:System.ArgumentException">
+    /// 	<paramref name="obj"/> is not an <see cref="ObjectID"/>.
+    /// </exception>
+    /// <remarks>
+    /// If two <see cref="ObjectID"/> instances are compared that have different <see cref="Value"/> types, their <see cref="ClassID"/>s are compared
+    /// instead.
+    /// </remarks>
+    public int CompareTo (object obj)
+    {
+      ArgumentUtility.CheckNotNull ("obj", obj);
+
+      var other = obj as ObjectID;
+      if (other == null)
+        throw new ArgumentException ("The argument must be of type ObjectID.", "obj");
+
+      var leftValue = Value;
+      var rightValue = other.Value;
+
+      if (rightValue.GetType () != leftValue.GetType ())
+      {
+        leftValue = ClassID;
+        rightValue = other.ClassID;
+      }
+
+      return ((IComparable) leftValue).CompareTo (rightValue);
     }
 
     /// <summary>

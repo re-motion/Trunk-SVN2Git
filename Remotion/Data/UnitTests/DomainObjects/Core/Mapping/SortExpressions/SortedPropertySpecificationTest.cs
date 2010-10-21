@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
@@ -38,6 +39,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       _productPropertyDefinition = _orderItemClassDefinition.GetPropertyDefinition (typeof (OrderItem).FullName + ".Product");
       _positionPropertyDefinition = _orderItemClassDefinition.GetPropertyDefinition (typeof (OrderItem).FullName + ".Position");
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Cannot sort by property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty' - its property type ('Byte[]') does not implement IComparable.")]
+    public void Initialization_NoIComparableType ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      var propertyDefinition = classDefinition.GetPropertyDefinition (typeof (ClassWithAllDataTypes).FullName + ".BinaryProperty");
+      
+      new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
+    }
+
+    [Test]
+    public void Initialization_NotResolvedType ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (classDefinition, "BinaryProperty", null, StorageClass.Persistent, new FakeColumnDefinition ("T"));
+      Assert.That (fakePropertyDefinition.IsPropertyTypeResolved, Is.False);
+
+      var result = new SortedPropertySpecification (fakePropertyDefinition, SortOrder.Ascending);
+
+      Assert.That (result.PropertyDefinition, Is.SameAs (fakePropertyDefinition));
     }
 
     [Test]

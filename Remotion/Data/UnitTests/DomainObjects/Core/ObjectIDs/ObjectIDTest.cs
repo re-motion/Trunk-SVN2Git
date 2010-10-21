@@ -151,8 +151,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void EqualityOperatorWithBothNull ()
     {
 // ReSharper disable RedundantCast
+// ReSharper disable EqualExpressionComparison
       Assert.That ((ObjectID) null == (ObjectID) null, Is.True);
       Assert.That ((ObjectID) null != (ObjectID) null, Is.False);
+// ReSharper restore EqualExpressionComparison
 // ReSharper restore RedundantCast
     }
 
@@ -323,6 +325,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithInvalidType ()
     {
       new ObjectID ("Official", (byte) 1);
+    }
+
+    [Test]
+    public void CompareTo_String ()
+    {
+      var id1 = new ObjectID ("Official", "aaa");
+      var id2 = new ObjectID ("Official", "bbb");
+      var id3 = new ObjectID ("Official", "aaa");
+
+      Assert.That (id1.CompareTo (id2), Is.EqualTo (-1));
+      Assert.That (id2.CompareTo (id1), Is.EqualTo (1));
+      Assert.That (id1.CompareTo (id3), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CompareTo_Guid ()
+    {
+      var id1 = new ObjectID (typeof (Order), new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}"));
+      var id2 = new ObjectID (typeof (Order), new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C37}"));
+      var id3 = new ObjectID (typeof (Order), new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}"));
+
+      Assert.That (id1.CompareTo (id2), Is.EqualTo (-1));
+      Assert.That (id2.CompareTo (id1), Is.EqualTo (1));
+      Assert.That (id1.CompareTo (id3), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CompareTo_DifferentValueTypes ()
+    {
+      var id1 = new ObjectID (typeof (Order), new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}"));
+      var id2 = new ObjectID ("Official", "test");
+
+      Assert.That (id1.CompareTo (id2), Is.EqualTo (1));
+      Assert.That (id2.CompareTo (id1), Is.EqualTo (-1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The argument must be of type ObjectID.\r\nParameter name: obj")]
+    public void CompareTo_InvalidArgument ()
+    {
+      var id = new ObjectID ("Official", "aaa");
+
+      id.CompareTo ("test");
     }
   }
 }
