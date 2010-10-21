@@ -92,11 +92,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
-      {
-        CheckForMappingAttributes (propertyInfo);
         return false;
-      }
-
+      
       if (IsUnmanagedProperty (propertyInfo))
         return false;
 
@@ -104,16 +101,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return false;
 
       return true;
-    }
-
-    protected void CheckForMappingAttributes (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      var validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule();
-      var validationResult = validationRule.Validate (propertyInfo);
-      if (!validationResult.IsValid)
-        throw new MappingException (validationResult.Message);
     }
 
     protected bool IsUnmanagedProperty (PropertyInfo propertyInfo)

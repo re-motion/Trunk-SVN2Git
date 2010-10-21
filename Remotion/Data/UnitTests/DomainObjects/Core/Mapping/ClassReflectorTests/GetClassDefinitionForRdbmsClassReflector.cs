@@ -164,19 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (ClassWithOneSideRelationProperties)));
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n  "
-        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute, "
-        + "property: Int32")]
-    public void GetClassDefinition_ForDerivedClassHavingAnOverriddenPropertyWithMappingAttribute()
-    {
-      Type derivedClass = typeof (DerivedClassHavingAnOverriddenPropertyWithMappingAttribute);
-      ClassReflector classReflector = new RdbmsClassReflector (derivedClass, Configuration.NameResolver);
-
-      classReflector.GetClassDefinition (_classDefinitions);
-    }
-
     private ReflectionBasedClassDefinition CreateClassWithMixedPropertiesClassDefinition()
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",

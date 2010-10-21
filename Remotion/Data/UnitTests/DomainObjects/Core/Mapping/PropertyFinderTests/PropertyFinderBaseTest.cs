@@ -15,12 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
@@ -45,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
           Is.EqualTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseString"),
                       GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
@@ -65,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
           Is.EqualTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (ClassWithMixedProperties), "Int32"),
                       GetProperty (typeof (ClassWithMixedProperties), "String"),
@@ -82,26 +79,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithInterface))),
           Is.EqualTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (ClassWithInterface), "Property"),
                       GetProperty (typeof (ClassWithInterface), "ImplicitProperty"),
                       GetProperty (typeof (ClassWithInterface), "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.IInterfaceWithProperties.ExplicitManagedProperty")
                   }));
     }
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage =
-        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n  "
-        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute, "
-        + "property: Int32")]
-    public void FindPropertyInfos_ForDerivedClassHavingAnOverriddenPropertyWithMappingAttribute ()
-    {
-      Type type = typeof(DerivedClassHavingAnOverriddenPropertyWithMappingAttribute);
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (type, false);
-
-      propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (type));
-    }
+    
   }
 }
