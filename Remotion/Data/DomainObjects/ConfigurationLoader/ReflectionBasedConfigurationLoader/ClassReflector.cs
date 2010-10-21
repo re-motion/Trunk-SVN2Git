@@ -127,11 +127,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!genericTypeValidationResult.IsValid)
         throw CreateMappingException (null, Type.GetGenericTypeDefinition(), genericTypeValidationResult.Message);
 
-      var legacyCtorValidationRule = new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule();
-      var legacyCtorValidationResult = legacyCtorValidationRule.Validate (Type);
-      if (!legacyCtorValidationResult.IsValid)
-        throw CreateMappingException (null, Type, legacyCtorValidationResult.Message);
-
       var storageGroupValidationRule = new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ();
       var storageGroupValidationResult = storageGroupValidationRule.Validate (Type);
       if (!storageGroupValidationResult.IsValid)
