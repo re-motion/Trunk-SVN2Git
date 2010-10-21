@@ -97,29 +97,22 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (_classDefinitions == null)
           throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
 
+        ValidateClassDefinitions ();
+        ValidatePropertyDefinitions ();
+
         _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
         if (_relationDefinitions == null)
           throw new InvalidOperationException (string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
 
+        ValidateRelationDefinitions ();
+        ValidatePersistenceMapping ();
+
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
 
-        Validate();
+        SetClassDefinitionsReadOnly ();
       }
     }
-
-    // methods and properties
-
-    public void Validate()
-    {
-      s_log.InfoFormat ("Validating {0} class definitions...", _classDefinitions.Count);
-      
-      ValidateClassDefinitions ();
-      ValidateRelationDefinitions ();
-      ValidatePersistenceMapping ();
-      
-      SetClassDefinitionsReadOnly (); //TODO 3424: Move to ctor ?
-  }
 
     /// <summary>
     /// Gets a flag whether type names in the configuration file should be resolved to their corresponding .NET <see cref="Type"/>.
@@ -200,6 +193,17 @@ namespace Remotion.Data.DomainObjects.Mapping
         var classDefinitionValidationResults = classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
         if (classDefinitionValidationResults.Length > 0)
           throw CreateMappingException (classDefinitionValidationResults);
+      }
+    }
+
+    private void ValidatePropertyDefinitions ()
+    {
+      if (_classDefinitions.Count > 0)
+      {
+        var propertyDefinitionValidator = ClassDefinitionValidator.Create ();
+        var propertyDefinitionValidationResults = propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition> ()).ToArray ();
+        if (propertyDefinitionValidationResults.Length > 0)
+          throw CreateMappingException (propertyDefinitionValidationResults);
       }
     }
 

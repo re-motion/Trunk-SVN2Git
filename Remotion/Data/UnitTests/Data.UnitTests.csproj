@@ -511,6 +511,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValiadationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\PropertyDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRuleTest.cs" />

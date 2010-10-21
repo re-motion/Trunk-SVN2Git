@@ -26,24 +26,22 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
   /// <summary>
   /// Holds a read-only collection of class definition validation rules and exposes a Validate-method, which gets a list of 
-  /// class definitions to validate. Each validation rule is applied to each class definition and for every rule which is invalid a 
-  /// mapping validation result with the respective error message is returned.
+  /// class definitions to validate. Each validation rule is applied to all property definition for each class definition and for every rule which 
+  /// is invalid a mapping validation result with the respective error message is returned.
   /// </summary>
-  public class ClassDefinitionValidator : IClassDefinitionValidator
+  public class PropertyDefinitionValidator : IPropertyDefinitionValidator
   {
     private readonly ReadOnlyCollection<IClassDefinitionValidatorRule> _validationRules;
 
     public static ClassDefinitionValidator Create ()
     {
       return new ClassDefinitionValidator (
-          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule(),
-          new DomainObjectTypeIsNotGenericValidationRule(),
-          new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
-          new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule());
+        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
+        new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
+        new StorageClassIsSupportedValidationRule());
     }
 
-    public ClassDefinitionValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)
+    public PropertyDefinitionValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidatorRules", classDefinitionValidatorRules);
 

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -22,12 +24,11 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {
   [TestFixture]
-  public class ClassDefinitionValidatorTest
+  public class PropertyDefinitionValidatorTest
   {
     private ReflectionBasedClassDefinition _classDefinition1;
     private ReflectionBasedClassDefinition _classDefinition2;
@@ -57,25 +58,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [Test]
     public void Create ()
     {
-      var validator = ClassDefinitionValidator.Create();
+      var validator = PropertyDefinitionValidator.Create ();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
-      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof(DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule)));
-      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (DomainObjectTypeIsNotGenericValidationRule)));
-      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (InheritanceHierarchyFollowsClassHierarchyValidationRule)));
-      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (PropertyNamesAreUniqueWithinInheritanceTreeValidationRule)));
-      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule)));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (3));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
     }
 
     [Test]
     public void ValidateWithOneRuleAndClassDefinition_ValidResult ()
     {
-      var validator = new ClassDefinitionValidator (_validationRuleMock1);
+      var validator = new PropertyDefinitionValidator (_validationRuleMock1);
 
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition1)).Return (_fakeValidMappingValidationResult);
-      _validationRuleMock1.Replay();
+      _validationRuleMock1.Replay ();
 
-      var mappingValidationResults = validator.Validate (new[] { _classDefinition1 }).ToArray();
+      var mappingValidationResults = validator.Validate (new[] { _classDefinition1 }).ToArray ();
 
       _validationRuleMock1.VerifyAllExpectations ();
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (1));
@@ -85,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [Test]
     public void ValidateWithOneRuleAndClassDefinition_InvalidResult ()
     {
-      var validator = new ClassDefinitionValidator (_validationRuleMock1);
+      var validator = new PropertyDefinitionValidator (_validationRuleMock1);
 
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition1)).Return (_fakeInvalidMappingValidationResult);
       _validationRuleMock1.Replay ();
@@ -95,13 +94,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       _validationRuleMock1.VerifyAllExpectations ();
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (1));
       Assert.That (mappingValidationResults.Length, Is.EqualTo (1));
-      Assert.That (mappingValidationResults[0], Is.SameAs(_fakeInvalidMappingValidationResult));
+      Assert.That (mappingValidationResults[0], Is.SameAs (_fakeInvalidMappingValidationResult));
     }
 
     [Test]
     public void ValidateWithSeveralRulesAndClassDefinitions_ValidResult ()
     {
-      var validator = new ClassDefinitionValidator (_validationRuleMock1, _validationRuleMock2, _validationRuleMock3);
+      var validator = new PropertyDefinitionValidator (_validationRuleMock1, _validationRuleMock2, _validationRuleMock3);
 
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition1)).Return (_fakeValidMappingValidationResult);
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition2)).Return (_fakeValidMappingValidationResult);
@@ -124,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [Test]
     public void ValidateWithSeveralRulesAndClassDefinitions_InvalidResult ()
     {
-      var validator = new ClassDefinitionValidator (_validationRuleMock1, _validationRuleMock2, _validationRuleMock3);
+      var validator = new PropertyDefinitionValidator (_validationRuleMock1, _validationRuleMock2, _validationRuleMock3);
 
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition1)).Return (_fakeInvalidMappingValidationResult);
       _validationRuleMock1.Expect (mock => mock.Validate (_classDefinition2)).Return (_fakeInvalidMappingValidationResult);
@@ -152,5 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       Assert.That (mappingValidationResults[7], Is.SameAs (_fakeInvalidMappingValidationResult));
       Assert.That (mappingValidationResults[8], Is.SameAs (_fakeInvalidMappingValidationResult));
     }
+
+
   }
 }
