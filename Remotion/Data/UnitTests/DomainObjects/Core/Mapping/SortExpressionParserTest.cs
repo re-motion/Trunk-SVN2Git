@@ -101,13 +101,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "SortExpression 'UnknownProduct' cannot be parsed: 'UnknownProduct' is not a valid mapped property name. Expected a full property identifier "
-        + "or a property name that can be resolved by performing Reflection on the 'OrderItem' class.")]
+        "SortExpression 'UnknownProduct' cannot be parsed: 'UnknownProduct' is not a valid mapped property name. Expected the .NET property name of "
+        + "a property declared by the 'OrderItem' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a "
+        + "mixin or a derived class of 'OrderItem', the full unique re-store property identifier can be specified.")]
     public void Parse_WithUnknownPropertyName ()
     {
       var sortExpression = "UnknownProduct";
 
       _parser.Parse (sortExpression);
+    }
+
+    [Test]
+    public void Parse_WithDerivedProperty ()
+    {
+      var partnerClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Partner));
+      var parser = new SortExpressionParser (partnerClassDefinition);
+
+      var sortExpression = "Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor.NumberOfShops";
+
+      var result = parser.Parse (sortExpression);
+
+      var distributorClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Distributor));
+      var numberOfShopsPropertyDefinition = distributorClassDefinition.GetMandatoryPropertyDefinition (sortExpression);
+      var expected = new[] { CreateSortedPropertyAscending (numberOfShopsPropertyDefinition) };
+      Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
     [Test]

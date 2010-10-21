@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -98,15 +99,20 @@ namespace Remotion.Data.DomainObjects.Mapping
     private PropertyDefinition ParsePropertyName (string fullOrShortPropertyName)
     {
       // Try as full name first, only if that doesn't match, assume it must be a short name
-      var propertyAccessorData = 
+      // If that still doesn't produce a match, search all derived classes for a full name match. Derived classes are not searched for short names.
+      var propertyAccessorData =
           _classDefinition.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName)
-          ?? _classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (_classDefinition.ClassType, fullOrShortPropertyName);
+          ?? _classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (_classDefinition.ClassType, fullOrShortPropertyName)
+          ?? GetAllDerivedClassDefinitions (_classDefinition)
+              .Select (cd => cd.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName))
+              .FirstOrDefault (data => data != null);
 
       if (propertyAccessorData == null)
       {
         var message = string.Format (
-            "'{0}' is not a valid mapped property name. Expected a full property identifier or a property name that can be resolved by performing "
-            + "Reflection on the '{1}' class.",
+            "'{0}' is not a valid mapped property name. Expected the .NET property name of a property declared by the '{1}' class or its base classes. "
+            + "Alternatively, to resolve ambiguities or to use a property declared by a mixin or a derived class of '{1}', the full unique re-store "
+            + "property identifier can be specified.",
             fullOrShortPropertyName,
             _classDefinition.ClassType.Name);
         throw new MappingException (message);
@@ -124,6 +130,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
 
       return propertyAccessorData.PropertyDefinition;
+    }
+
+    private IEnumerable<ClassDefinition> GetAllDerivedClassDefinitions (ClassDefinition baseClassDefinition)
+    {
+      var directlyDerived = baseClassDefinition.DerivedClasses.Cast<ClassDefinition> ();
+      return directlyDerived.Concat (directlyDerived.SelectMany (cd => GetAllDerivedClassDefinitions (cd)));
     }
   }
 }
