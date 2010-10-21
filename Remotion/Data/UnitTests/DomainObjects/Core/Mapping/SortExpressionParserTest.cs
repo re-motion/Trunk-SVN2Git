@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _positionPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
       _orderPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Order");
 
-      _parser = new SortExpressionParser (_orderItemClassDefinition, MappingConfiguration.Current.NameResolver);
+      _parser = new SortExpressionParser (_orderItemClassDefinition);
     }
 
     [Test]
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Parse_WithVirtualRelationEndPoint ()
     {
       var orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      var parser = new SortExpressionParser (orderClassDefinition, MappingConfiguration.Current.NameResolver);
+      var parser = new SortExpressionParser (orderClassDefinition);
 
       var sortExpression = "OrderTicket";
 

@@ -15,12 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.FunctionalProgramming;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -31,15 +27,12 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class SortExpressionParser
   {
     private readonly ClassDefinition _classDefinition;
-    private readonly IMappingNameResolver _mappingNameResolver;
 
-    public SortExpressionParser (ClassDefinition classDefinition, IMappingNameResolver mappingNameResolver)
+    public SortExpressionParser (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
 
       _classDefinition = classDefinition;
-      _mappingNameResolver = mappingNameResolver;
     }
 
     public SortExpressionDefinition Parse (string sortExpression)
