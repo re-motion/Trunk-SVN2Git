@@ -136,16 +136,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyType = propertyType;
       _propertyTypeName = propertyTypeName;
       _sortExpression = sortExpression;
-
-      CheckSortExpression ();
-    }
-
-    private void CheckSortExpression ()
-    {
-      var validationRule = new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule();
-      var validationResult = validationRule.Validate (this);
-      if (!validationResult.IsValid)
-        throw CreateMappingException (validationResult.Message);
     }
 
     // methods and properties

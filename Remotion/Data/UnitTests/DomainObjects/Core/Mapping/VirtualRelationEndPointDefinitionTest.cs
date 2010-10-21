@@ -63,6 +63,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (typeof (OrderItem).AssemblyQualifiedName, endPoint.PropertyTypeName);
     }
 
+    public void InitializeWithSortExpression ()
+    {
+      ReflectionBasedClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);
+
+      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (customerDefinition, "Orders", false, CardinalityType.Many, typeof (OrderCollection), "OrderNumber desc");
+
+      Assert.AreEqual ("OrderNumber desc", endPointDefinition.SortExpression);
+    }
+
     [Test]
     public void IsAnonymous ()
     {
