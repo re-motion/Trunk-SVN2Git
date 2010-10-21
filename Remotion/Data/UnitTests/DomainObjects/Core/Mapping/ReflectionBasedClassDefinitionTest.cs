@@ -417,31 +417,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void ClassTypeIsNotDerivedFromBaseClassType ()
-    {
-      ReflectionBasedClassDefinition orderClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "Order", TestDomainProviderID, typeof (Order), false);
-
-      try
-      {
-        ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-            "Distributor", "Company", TestDomainProviderID, typeof (Distributor), false, orderClass);
-        Assert.Fail ("MappingException was expected.");
-      }
-      catch (MappingException ex)
-      {
-        string expectedMessage = string.Format (
-            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
-            typeof (Distributor).AssemblyQualifiedName,
-            "Distributor",
-            orderClass.ClassType.AssemblyQualifiedName,
-            orderClass.ID);
-
-        Assert.AreEqual (expectedMessage, ex.Message);
-      }
-    }
-
-    [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Property 'Name' cannot be added to class 'Company', because it already defines a property with the same name.")]
     public void AddDuplicateProperty ()

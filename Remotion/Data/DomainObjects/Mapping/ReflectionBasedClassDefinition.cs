@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -77,7 +75,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (baseClass != null)
       {
         _baseClass = baseClass;
-        CheckBaseClass ();
         baseClass.AddDerivedClass (this);
       }
     }
@@ -171,14 +168,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       var derivedClasses = new ClassDefinitionCollection (_derivedClasses, false);
       derivedClasses.Add (derivedClass);
       _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
-    }
-
-    private void CheckBaseClass ()
-    {
-      var inheritanceHierarchyValidationRule = new InheritanceHierarchyFollowsClassHierarchyValidationRule ();
-      var inheritanceHierarchyValidationResult = inheritanceHierarchyValidationRule.Validate (this);
-      if (!inheritanceHierarchyValidationResult.IsValid)
-        throw CreateMappingException (inheritanceHierarchyValidationResult.Message);
     }
 
     private MappingException CreateMappingException (string message, params object[] args)
