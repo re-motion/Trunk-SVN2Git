@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
@@ -24,50 +23,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ConstructionOfVirtualRelationEndPointDefinitionTest : MappingReflectionTestBase
   {
-    // types
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public ConstructionOfVirtualRelationEndPointDefinitionTest ()
-    {
-    }
-
-    // methods and properties
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Relation definition error: Virtual property 'Dummy' of class 'Company' is of type "
-            + "'Remotion.Data.DomainObjects.DomainObject',"
-            + " but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or"
-            + " 'Remotion.Data.DomainObjects.DomainObjectCollection' or must be"
-            + " 'Remotion.Data.DomainObjects.DomainObjectCollection'.")]
-    public void VirtualEndPointOfDomainObjectType ()
-    {
-      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
-
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.One, typeof (DomainObject));
-    }
-
-    [Test]
-    public void VirtualEndPointOfDomainObjectCollectionType ()
-    {
-      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
-
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (DomainObjectCollection));
-    }
-
-    [Test]
-    public void VirtualEndPointOfOrderCollectionType ()
-    {
-      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
-
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (OrderCollection));
-    }
-
+    //TODO 3421: move test to VirtualRelationEndPointDefinitionTest and remove this class
     [Test]
     public void InitializeWithSortExpression ()
     {

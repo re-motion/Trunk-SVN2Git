@@ -137,16 +137,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyTypeName = propertyTypeName;
       _sortExpression = sortExpression;
 
-      CheckPropertyType ();
       CheckSortExpression ();
-    }
-
-    private void CheckPropertyType ()
-    {
-      var propertyTypeValidationRule = new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule();
-      var propertyTypeValidtionResult = propertyTypeValidationRule.Validate (this);
-      if (!propertyTypeValidtionResult.IsValid)
-        throw CreateMappingException (propertyTypeValidtionResult.Message);
     }
 
     private void CheckSortExpression ()
