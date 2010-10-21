@@ -15,28 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Utilities;
 using System.Collections.Generic;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.Utilities
 {
-  [TestFixture]
-  public class CalculationBasedComparerTest
+  /// <summary>
+  /// Implements <see cref="IComparer{T}"/> by calling a <see cref="Comparison{T}"/> delegate.
+  /// </summary>
+  /// <typeparam name="T">The type of the objects to be compared.</typeparam>
+  public class DelegateBasedComparer<T> : IComparer<T>
   {
-    [Test]
-    public void Compare ()
+    private readonly Comparison<T> _comparison;
+
+    public DelegateBasedComparer (Comparison<T> comparison)
     {
-      var comparer = new CalculationBasedComparer<List<int>, int> (l => l.Count, Comparer<int>.Default);
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+      _comparison = comparison;
+    }
 
-      var l1 = new List<int> { 1 };
-      var l2 = new List<int> { 1, 2 };
-      var l3 = new List<int> { 1, 2 };
-
-      Assert.That (comparer.Compare (l1, l2), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (l2, l1), Is.EqualTo (1));
-      Assert.That (comparer.Compare (l2, l3), Is.EqualTo (0));
+    public int Compare (T x, T y)
+    {
+      return _comparison (x, y);
     }
   }
 }
