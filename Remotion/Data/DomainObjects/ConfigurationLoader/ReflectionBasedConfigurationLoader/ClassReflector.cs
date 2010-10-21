@@ -103,8 +103,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)
     {
-      ValidateType();
-
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
           GetID(),
           GetStorageSpecificIdentifier(),
@@ -117,15 +115,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
 
       return classDefinition;
-    }
-
-    //TODO: Add constructor checks
-    private void ValidateType ()
-    {
-      var storageGroupValidationRule = new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ();
-      var storageGroupValidationResult = storageGroupValidationRule.Validate (Type);
-      if (!storageGroupValidationResult.IsValid)
-        throw CreateMappingException (null, Type, storageGroupValidationResult.Message);
     }
 
     private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, MemberInfo[] propertyInfos)

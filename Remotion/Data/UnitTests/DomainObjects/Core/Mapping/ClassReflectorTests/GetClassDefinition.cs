@@ -181,20 +181,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "The domain object type cannot redefine the 'Remotion.Data.DomainObjects.StorageGroupAttribute' already defined on base type "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.BaseClassWithStorageGroupAttribute'.\r\n"
-        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.Derived2ClassWithStorageGroupAttribute")]
-    public void GetClassDefinition_ForDerivedClassWithRedefinedStorageGroupAttribute ()
-    {
-      Type type = GetTypeFromDomainWithErrors ("Derived2ClassWithStorageGroupAttribute");
-
-      var classReflector= new ClassReflector (type, Configuration.NameResolver);
-
-      classReflector.GetClassDefinition (_classDefinitions);
-    }
-
-    [Test]
     public void GetClassDefinition_ForClosedGenericClass ()
     {
       var classReflector= new ClassReflector (typeof (ClosedGenericClass), Configuration.NameResolver);
