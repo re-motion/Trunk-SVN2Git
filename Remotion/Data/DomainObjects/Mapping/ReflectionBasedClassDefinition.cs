@@ -179,11 +179,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       var inheritanceHierarchyValidationResult = inheritanceHierarchyValidationRule.Validate (this);
       if (!inheritanceHierarchyValidationResult.IsValid)
         throw CreateMappingException (inheritanceHierarchyValidationResult.Message);
-
-      var storageProviderValidationRule = new StorageProviderIDMatchesParentStorageProviderIDValiadationRule();
-      var storageProviderValidationResult = storageProviderValidationRule.Validate (this);
-      if (!storageProviderValidationResult.IsValid)
-        throw CreateMappingException (storageProviderValidationResult.Message);
     }
 
     private MappingException CreateMappingException (string message, params object[] args)

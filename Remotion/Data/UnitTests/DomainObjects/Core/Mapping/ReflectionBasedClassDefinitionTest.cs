@@ -417,16 +417,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Cannot derive class 'Customer' from base class 'Company' handled by different StorageProviders.")]
-    public void BaseClassWithDifferentStorageProvider ()
-    {
-      ReflectionBasedClassDefinition companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Company", "Company", "Provider 1", typeof (Company), false);
-      ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Company", "Provider 2", typeof (Customer), false, companyClass);
-    }
-
-    [Test]
     public void ClassTypeIsNotDerivedFromBaseClassType ()
     {
       ReflectionBasedClassDefinition orderClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
