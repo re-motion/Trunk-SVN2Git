@@ -16,7 +16,10 @@
 // 
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -54,6 +57,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _commandBuilder.AddCommandParameter (commandStub, "x", Color.Values.Red ());
 
       parameterMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetOrderClause ()
+    {
+      var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateOrderItemSortExpressionPositionAscProductDesc ();
+      
+      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", sortExpressionDefinition);
+
+      Assert.That (result, Is.EqualTo (" ORDER BY [Position] ASC, [Product] DESC"));
+    }
+
+    [Test]
+    public void GetOrderClause_Empty ()
+    {
+      var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateEmptySortExpression ();
+      
+      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", sortExpressionDefinition);
+
+      Assert.That (result, Is.EqualTo (string.Empty));
     }
   }
 }

@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
@@ -29,6 +31,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     public static SortedPropertySpecification CreateSortedPropertyDescending (PropertyDefinition propertyDefinition)
     {
       return new SortedPropertySpecification (propertyDefinition, SortOrder.Descending);
+    }
+
+    public static SortExpressionDefinition CreateOrderItemSortExpressionPositionAscProductDesc ()
+    {
+      var orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      var positionPropertyDefinition = orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
+      var productPropertyDefinition = orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
+
+      return new SortExpressionDefinition (
+          new[]
+          {
+              CreateSortedPropertyAscending (positionPropertyDefinition), 
+              CreateSortedPropertyDescending (productPropertyDefinition)
+          });
+    }
+
+    public static SortExpressionDefinition CreateEmptySortExpression ()
+    {
+      return new SortExpressionDefinition (new SortedPropertySpecification[0]);
     }
   }
 }

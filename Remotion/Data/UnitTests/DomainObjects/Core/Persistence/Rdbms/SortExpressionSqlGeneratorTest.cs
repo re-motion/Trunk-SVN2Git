@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var result = _generator.GenerateOrderByClauseString (sortExpression);
 
-      Assert.That (result, Is.Null);
+      Assert.That (result, Is.EqualTo (string.Empty));
     }
   }
 }

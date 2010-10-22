@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -130,6 +131,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       if (!string.IsNullOrEmpty (orderExpression))
         return " ORDER BY " + orderExpression;
+
+      return string.Empty;
+    }
+
+    protected string GetOrderClause (SortExpressionDefinition sortExpression)
+    {
+      var orderByClause = new SortExpressionSqlGenerator (Provider).GenerateOrderByClauseString (sortExpression);
+      if (!string.IsNullOrEmpty (orderByClause))
+        return " " + orderByClause;
 
       return string.Empty;
     }

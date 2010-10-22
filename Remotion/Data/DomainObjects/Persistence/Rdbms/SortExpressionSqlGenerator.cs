@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       var orderByExpressionString = GenerateOrderByExpressionString (sortExpression);
       if (string.IsNullOrEmpty (orderByExpressionString))
-        return null;
+        return string.Empty;
       else
         return "ORDER BY " + orderByExpressionString;
     }
