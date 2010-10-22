@@ -147,10 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CopyConstructor ()
     {
-      var collection = new List<PropertyDefinition>();
-      collection.Add (_propertyDefinition1);
-
-      PropertyDefinitionCollection copiedCollection = new PropertyDefinitionCollection (collection, false);
+      var copiedCollection = new PropertyDefinitionCollection (new[] {_propertyDefinition1}, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_propertyDefinition1, copiedCollection[0]);
