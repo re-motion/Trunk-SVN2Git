@@ -176,7 +176,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (foundRelationDefinition == null)
         return false;
 
-      return ((IList) foundRelationDefinition.EndPointDefinitions).Contains (relationEndPointDefinition);
+      return foundRelationDefinition.Contains (relationEndPointDefinition);
     }
 
     private void SetClassDefinitionsReadOnly ()

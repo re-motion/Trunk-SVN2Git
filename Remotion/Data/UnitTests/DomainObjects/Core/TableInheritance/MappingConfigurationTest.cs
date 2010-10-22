@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -30,13 +31,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   {
     [Test]
     [ExpectedException (typeof (MappingException))]
-    [Ignore("TODO 3413: use an MappingRelectorStub (Loader) an return class definition")]
+    [Ignore("TODO 3413: use an MappingRelectorStub (Loader) an return class definition. Remove")]
     public void Validate ()
     {
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
 
       var nullTypeDiscoveryService = new NullTypeDiscoveryService();
 
+      //IMappingLoader stub;
+      //stub.Stub (stub => stub.GetClassDefinitions).Returns (new ClassDefinition[]{personClass})
       var mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
       mappingConfiguration.ClassDefinitions.Add (personClass);
       //mappingConfiguration.Validate ();
