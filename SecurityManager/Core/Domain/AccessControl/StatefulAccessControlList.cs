@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [Mandatory]
     protected abstract SecurableClassDefinition MyClass { get; set; }
 
-    [DBBidirectionalRelation ("AccessControlList", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("AccessControlList", SortExpression = "Index ASC")]
     [Mandatory]
     public abstract ObjectList<StateCombination> StateCombinations { get; }
 

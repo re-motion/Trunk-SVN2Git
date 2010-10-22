@@ -23,8 +23,10 @@ using System.Reflection;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
@@ -360,8 +362,14 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetSortExpressionForRelation (IRelationEndPointDefinition relationEndPointDefinition)
     {
       var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
-      if (virtualEndPointDefinition != null)
-        return virtualEndPointDefinition.SortExpression;
+      if (virtualEndPointDefinition != null && virtualEndPointDefinition.SortExpression != null)
+      {
+        using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
+        {
+          var storageProvider = (RdbmsProvider) manager.GetMandatory (_startingClassDefinition.StorageProviderID);
+          return new SortExpressionSqlGenerator (storageProvider).GenerateOrderByExpressionString (virtualEndPointDefinition.SortExpression);
+        }
+      }
       else
         return null;
     }

@@ -119,7 +119,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract AccessControlList AccessControlList { get; set; }
 
-    [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "Index ASC")]
     protected abstract ObjectList<Permission> PermissionsInternal { get; }
 
     [StorageClassNone]

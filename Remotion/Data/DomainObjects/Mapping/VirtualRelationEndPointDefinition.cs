@@ -18,8 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -64,7 +63,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly string _propertyTypeName;
 
     [NonSerialized]
-    private readonly string _sortExpression;
+    private readonly string _sortExpressionText;
+
+    [NonSerialized]
+    private readonly DoubleCheckedLockingContainer<SortExpressionDefinition> _sortExpression;
 
     // construction and disposing
 
@@ -84,9 +86,9 @@ namespace Remotion.Data.DomainObjects.Mapping
         bool isMandatory,
         CardinalityType cardinality,
         Type propertyType,
-        string sortExpression)
+        string sortExpressionText)
         : this (
-            classDefinition, propertyName, isMandatory, cardinality, ArgumentUtility.CheckNotNull ("propertyType", propertyType), null, sortExpression
+            classDefinition, propertyName, isMandatory, cardinality, ArgumentUtility.CheckNotNull ("propertyType", propertyType), null, sortExpressionText
             )
     {
     }
@@ -97,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         bool isMandatory,
         CardinalityType cardinality,
         string propertyTypeName,
-        string sortExpression)
+        string sortExpressionText)
         : this (
             classDefinition,
             propertyName,
@@ -105,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             cardinality,
             null,
             ArgumentUtility.CheckNotNullOrEmpty ("propertyTypeName", propertyTypeName),
-            sortExpression)
+            sortExpressionText)
     {
     }
 
@@ -116,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         CardinalityType cardinality,
         Type propertyType,
         string propertyTypeName,
-        string sortExpression)
+        string sortExpressionText)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -135,7 +137,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyName = propertyName;
       _propertyType = propertyType;
       _propertyTypeName = propertyTypeName;
-      _sortExpression = sortExpression;
+      _sortExpressionText = sortExpressionText;
+      _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
     }
 
     // methods and properties
@@ -208,14 +211,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false; }
     }
 
-    public string SortExpression
+    public SortExpressionDefinition SortExpression
     {
-      get { return _sortExpression; }
+      get { return _sortExpression.Value; }
     }
 
-    private MappingException CreateMappingException (string message, params object[] args)
+    public string SortExpressionText
     {
-      return new MappingException (string.Format (message, args));
+      get { return _sortExpressionText; }
     }
 
     #region Serialization
@@ -242,5 +245,22 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     #endregion
+
+    private SortExpressionDefinition ParseSortExpression (string sortExpressionText)
+    {
+      if (sortExpressionText == null)
+        return null;
+
+      try
+      {
+        var parser = new SortExpressionParser (this.GetOppositeClassDefinition ());
+        return parser.Parse (sortExpressionText);
+      }
+      catch (MappingException ex)
+      {
+        var message = string.Format ("{0}.{1}: {2}", ClassDefinition.ClassType, PropertyInfo.Name, ex.Message);
+        throw new MappingException (message, ex);
+      }
+    }
   }
 }

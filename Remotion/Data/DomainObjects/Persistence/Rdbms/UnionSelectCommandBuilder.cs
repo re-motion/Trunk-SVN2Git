@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -105,9 +106,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return command;
     }
 
-    private string GetColumnsFromSortExpression (string sortExpression)
+    private string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
     {
-      if (string.IsNullOrEmpty (sortExpression))
+      if (sortExpression == null)
         return string.Empty;
 
       return ", " + Provider.GetColumnsFromSortExpression (sortExpression);

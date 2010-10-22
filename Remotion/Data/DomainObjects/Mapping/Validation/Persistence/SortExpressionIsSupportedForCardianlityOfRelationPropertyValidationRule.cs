@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       var relationEndPointDefinitionAsVirtualRelationEndPointDefintion = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (relationEndPointDefinitionAsVirtualRelationEndPointDefintion != null && 
           relationEndPointDefinitionAsVirtualRelationEndPointDefintion.Cardinality == CardinalityType.One && 
-          relationEndPointDefinitionAsVirtualRelationEndPointDefintion.SortExpression != null)
+          relationEndPointDefinitionAsVirtualRelationEndPointDefintion.SortExpressionText != null)
       {
         var message = string.Format(
             "Property '{0}' of class '{1}' must not specify a SortExpression, because cardinality is equal to 'one'.",

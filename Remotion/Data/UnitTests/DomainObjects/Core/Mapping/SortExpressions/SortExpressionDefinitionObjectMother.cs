@@ -51,5 +51,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     {
       return new SortExpressionDefinition (new SortedPropertySpecification[0]);
     }
+
+    public static SortExpressionDefinition ParseSortExpression (ClassDefinition classDefinition, string sortExpressionString)
+    {
+      if (sortExpressionString == null)
+        return null;
+
+      return new SortExpressionParser (classDefinition).Parse (sortExpressionString);
+    }
+
+    public static SortExpressionDefinition ParseSortExpression (Type domainObjectType, string sortExpressionString)
+    {
+      return ParseSortExpression (MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType), sortExpressionString);
+    }
   }
 }

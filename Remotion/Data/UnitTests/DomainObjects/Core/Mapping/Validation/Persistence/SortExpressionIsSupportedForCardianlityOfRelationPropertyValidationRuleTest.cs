@@ -97,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
         _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpression", "SortExpression1");
-      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpression", "SortExpression2");
+      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpressionText", "SortExpression1");
+      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpressionText", "SortExpression2");
       PrivateInvoke.SetNonPublicField (
           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
       
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
         _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpression", "SortExpression1");
+      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpressionText", "SortExpression1");
       PrivateInvoke.SetNonPublicField (
           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
         _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpression", "SortExpression2");
+      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpressionText", "SortExpression2");
       PrivateInvoke.SetNonPublicField (
           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
 

@@ -16,9 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
@@ -55,43 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetColumnsFromSortExpression ()
     {
-      RdbmsProvider rdbmsProvider = Provider;
-      Assert.AreEqual ("Column", rdbmsProvider.GetColumnsFromSortExpression ("Column"));
-      Assert.AreEqual ("Column", rdbmsProvider.GetColumnsFromSortExpression (" Column"));
-      Assert.AreEqual ("Asc", rdbmsProvider.GetColumnsFromSortExpression ("Asc"));
-      Assert.AreEqual ("Asc", rdbmsProvider.GetColumnsFromSortExpression (" Asc"));
-      Assert.AreEqual ("asc", rdbmsProvider.GetColumnsFromSortExpression (" asc"));
-      Assert.AreEqual ("[Asc]", rdbmsProvider.GetColumnsFromSortExpression ("[Asc]"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1, Column2"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("    Column1   ,    Column2   "));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1,Column2"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1 asc,Column2 desc"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1 asc, Column2 desc"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1 ASC, Column2 DESC"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1 \tASC, Column2  \nDESC"));
-      Assert.AreEqual ("Column1, Column2", rdbmsProvider.GetColumnsFromSortExpression ("Column1\tASC,\r\nColumn2\nDESC"));
-      Assert.AreEqual ("[ASC], [desc]", rdbmsProvider.GetColumnsFromSortExpression ("[ASC] ASC, [desc] DESC"));
-      Assert.AreEqual ("[Collate]", rdbmsProvider.GetColumnsFromSortExpression ("[Collate] asc"));
-      Assert.AreEqual ("AscColumnAsc1Asc, DescColumn2Desc", rdbmsProvider.GetColumnsFromSortExpression ("AscColumnAsc1Asc ASC, DescColumn2Desc DESC"));
-      Assert.IsNull (rdbmsProvider.GetColumnsFromSortExpression (null));
-      Assert.AreEqual (string.Empty, rdbmsProvider.GetColumnsFromSortExpression (string.Empty));
-    }
+      var complexSortExpression =
+          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "Number asc, OrderDate desc, Customer asc");
 
-    [Test]
-    [ExpectedException (typeof (ArgumentException), 
-        ExpectedMessage = "Collations cannot be used in sort expressions. Sort expression: 'Column1 collate German_PhoneBook_CI_AI'.\r\nParameter name: sortExpression")]
-    public void GetColumnsWithCollate ()
-    {
-      Provider.GetColumnsFromSortExpression ("Column1 collate German_PhoneBook_CI_AI");
+      Assert.That (Provider.GetColumnsFromSortExpression (complexSortExpression), Is.EqualTo ("[Number], [OrderDate], [CustomerID]"));
+      Assert.That (Provider.GetColumnsFromSortExpression (null), Is.Null);
+      Assert.That (Provider.GetColumnsFromSortExpression (SortExpressionDefinitionObjectMother.CreateEmptySortExpression()), Is.EqualTo (string.Empty));
     }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "Collations cannot be used in sort expressions. Sort expression: 'Column1\t\tcollate German_PhoneBook_CI_AI'.\r\nParameter name: sortExpression")]
-    public void GetColumnsWithCollateAfterMultipleTabs ()
-    {
-      Provider.GetColumnsFromSortExpression ("Column1\t\tcollate German_PhoneBook_CI_AI");
-    }
-
   }
 }

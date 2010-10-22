@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.AreSame (typeof (ObjectList<ClassWithManySideRelationProperties>), relationEndPointDefinition.PropertyType);
       Assert.AreEqual (CardinalityType.Many, relationEndPointDefinition.Cardinality);
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
-      Assert.AreEqual ("The Sort Expression", relationEndPointDefinition.SortExpression);
+      Assert.AreEqual ("The Sort Expression", relationEndPointDefinition.SortExpressionText);
     }
 
     [Test]

@@ -118,13 +118,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GenerateOrderByClauseString_EmptySortExpression_ReturnsNull ()
+    public void GenerateColumnListString_None_ReturnsEmptyString ()
     {
       var sortExpression = new SortExpressionDefinition (new SortedPropertySpecification[0]);
 
-      var result = _generator.GenerateOrderByClauseString (sortExpression);
+      var result = _generator.GenerateColumnListString (sortExpression);
 
       Assert.That (result, Is.EqualTo (string.Empty));
     }
+
+    [Test]
+    public void GenerateColumnListString_One ()
+    {
+      var sortExpression = new SortExpressionDefinition (
+          new[]
+          {
+              SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_orderNumberPropertyDefinition)
+          });
+
+      var result = _generator.GenerateColumnListString (sortExpression);
+
+      Assert.That (result, Is.EqualTo ("[OrderNo]"));
+    }
+
+    [Test]
+    public void GenerateColumnListString_Many ()
+    {
+      var sortExpression = new SortExpressionDefinition (
+          new[]
+          {
+              SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_orderNumberPropertyDefinition),
+              SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_deliveryDatePropertyDefinition),
+              SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_customerPropertyDefinition),
+          });
+
+      var result = _generator.GenerateColumnListString (sortExpression);
+
+      Assert.That (result, Is.EqualTo ("[OrderNo], [DeliveryDate], [CustomerID]"));
+    }
+
   }
 }

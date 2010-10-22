@@ -18,6 +18,8 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -35,12 +37,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "Order", 
           "CustomerID", 
           DomainObjectIDs.Customer1, 
-          "OrderNo asc");
+          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
 
       using (IDbCommand command = builder.Create ())
       {
         Assert.AreEqual (
-            "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID ORDER BY OrderNo asc;",
+            "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID ORDER BY [OrderNo] ASC;",
             command.CommandText);
       }
     }
@@ -75,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "Order",
           "CustomerID",
           DomainObjectIDs.Customer1,
-          "OrderNo asc");
+          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
     }
 
     [Test]
@@ -90,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
             "Order",
             "CustomerID",
             DomainObjectIDs.Customer1,
-            "OrderNo asc");
+            SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "OrderNumber asc"));
 
         using (IDbCommand command = builder.Create())
         {

@@ -23,16 +23,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class ReflectionBasedVirtualRelationEndPointDefinitionFactory
   {
-    private static PropertyInfo s_dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
+    private static readonly PropertyInfo s_dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
 
-    public static ReflectionBasedVirtualRelationEndPointDefinition CreateReflectionBasedVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, string propertyTypeName, string sortExpression)
+    public static ReflectionBasedVirtualRelationEndPointDefinition CreateReflectionBasedVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, string propertyTypeName, string sortExpressionString)
     {
-      return new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyTypeName, sortExpression, s_dummyPropertyInfo);
+      return new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyTypeName, sortExpressionString, s_dummyPropertyInfo);
     }
 
-    public static ReflectionBasedVirtualRelationEndPointDefinition CreateReflectionBasedVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType, string sortExpression)
+    public static ReflectionBasedVirtualRelationEndPointDefinition CreateReflectionBasedVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType, string sortExpressionString)
     {
-      return new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpression, s_dummyPropertyInfo);
+      return new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, s_dummyPropertyInfo);
     }
 
     public static ReflectionBasedVirtualRelationEndPointDefinition CreateReflectionBasedVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data.SqlClient;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
 
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       return new TracingDbConnection (new SqlConnection (), PersistenceListener);
     }
 
-    public override string GetColumnsFromSortExpression (string sortExpression)
+    public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
     {
       throw new NotImplementedException();
     }

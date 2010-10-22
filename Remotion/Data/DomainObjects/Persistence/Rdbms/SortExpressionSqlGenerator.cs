@@ -64,13 +64,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return sb.ToString ();
     }
 
+    public string GenerateColumnListString (SortExpressionDefinition sortExpression)
+    {
+      ArgumentUtility.CheckNotNull ("sortExpression", sortExpression);
+
+      var sb = new StringBuilder ();
+
+      for (int i = 0; i < sortExpression.SortedProperties.Count; ++i)
+      {
+        if (i > 0)
+          sb.Append (", ");
+
+        AppendColumnName (sb, sortExpression.SortedProperties[i]);
+      }
+
+      return sb.ToString ();
+      
+    }
+
     private void AppendOrderByExpression (StringBuilder sb, SortedPropertySpecification sortedPropertySpecification)
     {
-      sb.Append (_provider.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StorageProperty.Name));
+      AppendColumnName (sb, sortedPropertySpecification);
       if (sortedPropertySpecification.Order == SortOrder.Ascending)
         sb.Append (" ASC");
       else
         sb.Append (" DESC");
+    }
+
+    private void AppendColumnName (StringBuilder sb, SortedPropertySpecification sortedPropertySpecification)
+    {
+      sb.Append (_provider.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StorageProperty.Name));
     }
   }
 }

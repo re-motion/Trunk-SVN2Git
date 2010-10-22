@@ -137,6 +137,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected string GetOrderClause (SortExpressionDefinition sortExpression)
     {
+      // TODO 3411: Test this if block
+      if (sortExpression == null)
+        return string.Empty;
+
       var orderByClause = new SortExpressionSqlGenerator (Provider).GenerateOrderByClauseString (sortExpression);
       if (!string.IsNullOrEmpty (orderByClause))
         return " " + orderByClause;

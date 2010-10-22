@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       
       var builder = (SingleIDLookupCommandBuilder) _loaderHelper.GetCommandBuilderForRelatedIDLookup (Provider, "Order", relationProperty, DomainObjectIDs.Customer1);
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
-      Assert.That (builder.OrderExpression, Is.EqualTo ("OrderNo asc"));
+      Assert.That (builder.OrderExpression.ToString (), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber ASC"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
       Assert.That (builder.CheckedColumnName, Is.EqualTo ("CustomerID"));
       Assert.That (builder.ExpectedValue, Is.EqualTo (DomainObjectIDs.Customer1));

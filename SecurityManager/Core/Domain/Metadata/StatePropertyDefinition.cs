@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("StateProperty")]
     public abstract ObjectList<StatePropertyReference> References { get; }
 
-    [DBBidirectionalRelation ("StateProperty", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("StateProperty", SortExpression = "Index ASC")]
     [Mandatory]
     public abstract ObjectList<StateDefinition> DefinedStates { get; }
 

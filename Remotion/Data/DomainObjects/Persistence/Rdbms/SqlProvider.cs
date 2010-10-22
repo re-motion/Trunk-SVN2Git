@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Specialized;
-using System.Data;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -41,35 +39,14 @@ public class SqlProvider : RdbmsProvider
 
   // methods and properties
 
-  public override string GetColumnsFromSortExpression (string sortExpression)
+  public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
   {
     CheckDisposed ();
 
-    if (string.IsNullOrEmpty (sortExpression))
-      return sortExpression;
+    if (sortExpression == null)
+      return null;
 
-    // Collapse all whitespaces (space, tab, carrriage return, ...) to a single space
-    string formattedSortExpression = Regex.Replace (sortExpression, @"\s+", " ");
-
-    // Remove any leading or trailing whitespace
-    formattedSortExpression = formattedSortExpression.Trim ();
-
-    // Collate is not supported. If collate should be supported later, UnionSelectCommandBuilder must 
-    // add collate columns to select list (because it uses a UNION).
-    if (formattedSortExpression.IndexOf (" COLLATE", StringComparison.InvariantCultureIgnoreCase) >= 0)
-      throw CreateArgumentException ("sortExpression", "Collations cannot be used in sort expressions. Sort expression: '{0}'.", sortExpression);
-
-    // Space after "," must be removed to avoid the following regex " asc| desc" matching a column beginning with "asc" or "desc"
-    formattedSortExpression = Regex.Replace (formattedSortExpression, @" ?, ?", ",");
-    
-    // Remove sort orders
-    formattedSortExpression = Regex.Replace (formattedSortExpression, @" asc| desc", string.Empty, RegexOptions.IgnoreCase);
-    
-    // Add space after each "," for better readability of resulting SQL expression
-    formattedSortExpression = Regex.Replace (formattedSortExpression, @" ?, ?", ", ");
-
-    // Remove any leading or trailing whitespace
-    return formattedSortExpression.Trim ();
+    return new SortExpressionSqlGenerator (this).GenerateColumnListString (sortExpression);
   }
 
   public override string GetParameterName (string name)

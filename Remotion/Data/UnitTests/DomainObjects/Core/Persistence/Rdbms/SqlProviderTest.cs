@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetColumnsFromSortExpressionChecksForDisposal ()
     {
       Provider.Dispose ();
-      Provider.GetColumnsFromSortExpression ("StorageSpecificName asc");
+      Provider.GetColumnsFromSortExpression (null);
     }
 
     [Test]

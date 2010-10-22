@@ -103,8 +103,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       using (IDbCommand command = _builder.Create ())
       {
         string expectedCommandText =
-            "SELECT [ID], [ClassID], CreatedAt FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
-            + "UNION ALL SELECT [ID], [ClassID], CreatedAt FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID ORDER BY CreatedAt asc;";
+            "SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
+            + "UNION ALL SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID ORDER BY [CreatedAt] ASC;";
 
         Assert.IsNotNull (command);
         Assert.AreEqual (expectedCommandText, command.CommandText);

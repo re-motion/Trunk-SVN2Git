@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -79,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected abstract TracingDbConnection CreateConnection ();
 
-    public abstract string GetColumnsFromSortExpression (string sortExpression);
+    public abstract string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression);
 
     // methods and properties
 
@@ -193,7 +194,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      QueryCommandBuilder commandBuilder = new QueryCommandBuilder (this, query);
+      var commandBuilder = new QueryCommandBuilder (this, query);
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -206,7 +207,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      QueryCommandBuilder commandBuilder = new QueryCommandBuilder (this, query);
+      var commandBuilder = new QueryCommandBuilder (this, query);
       using (IDbCommand command = commandBuilder.Create())
       {
         try

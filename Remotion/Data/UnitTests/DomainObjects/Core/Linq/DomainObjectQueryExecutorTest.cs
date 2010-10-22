@@ -501,7 +501,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               "SELECT DISTINCT [t3].* "
               + "FROM (SELECT [t2].* "
               + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] WHERE ([q1].[ID] = [t3].[CustomerID]) "
-              + "ORDER BY OrderNo asc"));
+              + "ORDER BY [OrderNo] ASC"));
 
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -538,7 +538,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               +
               "FROM (SELECT [t2].* "
               + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] "
-              + "WHERE ([q1].[ID] = [t3].[CustomerID]) ORDER BY OrderNo asc"));
+              + "WHERE ([q1].[ID] = [t3].[CustomerID]) ORDER BY [OrderNo] ASC"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));

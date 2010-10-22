@@ -120,7 +120,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBColumn ("BaseSecurableClassID")]
     public abstract SecurableClassDefinition BaseClass { get; set; }
 
-    [DBBidirectionalRelation ("BaseClass", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("BaseClass", SortExpression = "Index ASC")]
     public abstract ObjectList<SecurableClassDefinition> DerivedClasses { get; }
 
     public void Touch ()
@@ -153,7 +153,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelation ("Class", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("Class", SortExpression = "Index ASC")]
     protected abstract ObjectList<AccessTypeReference> AccessTypeReferences { get; }
 
     [StorageClassNone]
@@ -191,7 +191,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("MyClass")]
     public abstract StatelessAccessControlList StatelessAccessControlList { get; set; }
 
-    [DBBidirectionalRelation ("MyClass", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("MyClass", SortExpression = "Index ASC")]
     public abstract ObjectList<StatefulAccessControlList> StatefulAccessControlLists { get; }
 
     public void AddAccessType (AccessTypeDefinition accessType)

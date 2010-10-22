@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         VirtualRelationEndPointDefinition expectedVirtualEndPointDefinition = (VirtualRelationEndPointDefinition) expectedEndPointDefinition;
         VirtualRelationEndPointDefinition actualVirtualEndPointDefinition = (VirtualRelationEndPointDefinition) actualEndPointDefinition;
 
-        Assert.AreEqual (expectedVirtualEndPointDefinition.SortExpression, actualVirtualEndPointDefinition.SortExpression, 
+        Assert.AreEqual (expectedVirtualEndPointDefinition.SortExpressionText, actualVirtualEndPointDefinition.SortExpressionText, 
           "SortExpression of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
           relationDefinition.ID,  
           expectedVirtualEndPointDefinition.PropertyName);
