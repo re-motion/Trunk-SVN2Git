@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -34,7 +35,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public static RelationDefinitionValidator Create ()
     {
-      return new RelationDefinitionValidator (new RelationEndPointCombinationIsSupportedValidationRule());
+      return new RelationDefinitionValidator (
+          new RelationEndPointCombinationIsSupportedValidationRule(),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)
@@ -43,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
       _validationRules = Array.AsReadOnly (relationDefinitionValidatorRules);
     }
-    
+
     public ReadOnlyCollection<IRelationDefinitionValidatorRule> ValidationRules
     {
       get { return _validationRules; }
