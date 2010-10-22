@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -21,11 +23,30 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// <summary>
   /// Validates that a relation end point defintion with cardinality one must not specify a sort expression.
   /// </summary>
-  public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationEndPointValidatorRule
+  public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule : IRelationDefinitionValidatorRule
   {
     public SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule ()
     {
       
+    }
+
+    public MappingValidationResult Validate (RelationDefinition relationDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
+
+      var errorMessages = new StringBuilder(2);
+      foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
+      {
+        var validationResult = Validate (endPointDefinition);
+        if (!validationResult.IsValid)
+          errorMessages.AppendLine (validationResult.Message);
+      }
+
+      var messages = errorMessages.ToString().Trim();
+      if (string.IsNullOrEmpty (messages))
+        return new MappingValidationResult (true);
+      else
+        return new MappingValidationResult (false, messages);
     }
 
     public MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -45,5 +66,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       }
       return new MappingValidationResult (true);
     }
+    
   }
 }
