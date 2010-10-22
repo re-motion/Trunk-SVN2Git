@@ -75,6 +75,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
+    //TODO RM-3371: remove
     private void ValidateVirtualEndPointPropertyInfo (ClassDefinitionCollection classDefinitions)
     {
       RelationEndPointReflector oppositeRelationEndPointReflector = CreateOppositeRelationEndPointReflector (classDefinitions);
@@ -88,6 +89,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
+    //TODO RM-3371: RelationEndPointPropertyTypeIsSupportedValidationRule,  see VirtualRelationEndPointPropertyTypeIsSupportedValidationRule
     protected override void ValidatePropertyInfo ()
     {
       base.ValidatePropertyInfo();
