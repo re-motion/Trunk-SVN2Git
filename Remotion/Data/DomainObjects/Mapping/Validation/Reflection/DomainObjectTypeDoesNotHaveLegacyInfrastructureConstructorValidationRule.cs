@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return Validate (classDefinition.ClassType);
     }
 
-    public MappingValidationResult Validate (Type type)
+    private MappingValidationResult Validate (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 

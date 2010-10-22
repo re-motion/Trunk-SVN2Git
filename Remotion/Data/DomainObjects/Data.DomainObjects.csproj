@@ -240,7 +240,6 @@
     <Compile Include="Mapping\ColumnDefinition.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidatorRule.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidatorRule.cs" />
-    <Compile Include="Mapping\Validation\IRelationEndPointValidatorRule.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\StorageClassIsSupportedValidationRule.cs" />

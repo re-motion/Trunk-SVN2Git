@@ -67,8 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void IsGenericType_IsNotDomainObjectBase ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
-      var validationResult = _validationRule.Validate (type);
+      var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = "Generic domain objects are not supported.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);

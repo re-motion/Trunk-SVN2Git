@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       return new MappingValidationResult (true);
     }
 
-    public MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 

@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
-    public MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 

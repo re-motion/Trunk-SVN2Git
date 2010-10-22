@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         return new MappingValidationResult (false, messages);
     }
 
-    public MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
+    private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
