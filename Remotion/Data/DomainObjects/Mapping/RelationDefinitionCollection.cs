@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,6 +28,11 @@ public class RelationDefinitionCollection : CommonCollection
   // types
 
   // static members and constants
+
+  public static IEnumerable<RelationDefinition> CreateForAllRelations (ClassDefinition classDefinition)
+  {
+    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationDefinitions.Cast<RelationDefinition> ());
+  }
 
   // member fields
 

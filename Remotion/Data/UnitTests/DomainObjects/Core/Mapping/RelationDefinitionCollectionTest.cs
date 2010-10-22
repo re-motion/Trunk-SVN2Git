@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -41,6 +43,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
       _collection = new RelationDefinitionCollection ();
+    }
+
+    [Test]
+    public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrderTicket", "OrderTicket", TestDomainProviderID, typeof (OrderTicket), false);
+
+      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
+
+      classDefinition.MyRelationDefinitions.Add (_relationDefinition);
+
+      var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(classDefinition).ToArray ();
+
+      Assert.That (relationDefinitions.Length, Is.EqualTo (1));
+      Assert.That (relationDefinitions[0], Is.SameAs (_relationDefinition));
+    }
+
+    [Test]
+    public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
+    {
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "BaseOrder", "BaseOrder", TestDomainProviderID, typeof (Order), false);
+      var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DerivedOrder", "DerivedOrder", TestDomainProviderID, typeof (Order), false, baseClassDefinition, new Type[0]);
+
+      var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+      var relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
+
+      baseClassDefinition.MyRelationDefinitions.Add (relationDefinition1);
+      derivedClassDefinition.MyRelationDefinitions.Add (relationDefinition2);
+
+      var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(derivedClassDefinition).ToArray ();
+
+      Assert.That (relationDefinitions.Length, Is.EqualTo (2));
+      Assert.That (relationDefinitions[0], Is.SameAs (relationDefinition2));
+      Assert.That (relationDefinitions[1], Is.SameAs (relationDefinition1));
     }
 
     [Test]
