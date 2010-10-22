@@ -97,11 +97,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CopyConstructor ()
+    public void CopyConstructor_RelationDefinitionCollection ()
     {
       _collection.Add (_relationDefinition);
 
       var copiedCollection = new RelationDefinitionCollection (_collection, false);
+
+      Assert.AreEqual (1, copiedCollection.Count);
+      Assert.AreSame (_relationDefinition, copiedCollection[0]);
+    }
+
+    [Test]
+    public void CopyConstructor_IEnumerableCollection ()
+    {
+      var copiedCollection = new RelationDefinitionCollection (new[] { _relationDefinition }, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_relationDefinition, copiedCollection[0]);

@@ -64,7 +64,7 @@ public class ClassDefinitionCollection : CommonCollection
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 
-    foreach (ClassDefinition classDefinition in collection)
+    foreach (var classDefinition in collection)
       Add (classDefinition);
 
     _areResolvedTypesRequired = areResolvedTypeRequired;

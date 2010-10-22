@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -40,11 +41,19 @@ public class RelationDefinitionCollection : CommonCollection
     ArgumentUtility.CheckNotNull ("collection", collection);
 
     foreach (RelationDefinition relationDefinition in collection)
-    {
       Add (relationDefinition);
-    }
+    
+    SetIsReadOnly (makeCollectionReadOnly);
+  }
 
-    this.SetIsReadOnly (makeCollectionReadOnly);
+  public RelationDefinitionCollection (IEnumerable<RelationDefinition> collection, bool makeCollectionReadOnly)
+  {
+    ArgumentUtility.CheckNotNull ("collection", collection);
+
+    foreach (var relationDefinition in collection)
+      Add (relationDefinition);
+
+    SetIsReadOnly (makeCollectionReadOnly);
   }
 
   // methods and properties
