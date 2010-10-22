@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyAscending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyAscending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyAscending (_orderPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_orderPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var distributorClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Distributor));
       var numberOfShopsPropertyDefinition = distributorClassDefinition.GetMandatoryPropertyDefinition (sortExpression);
-      var expected = new[] { CreateSortedPropertyAscending (numberOfShopsPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (numberOfShopsPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyAscending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyDescending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyDescending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      var expected = new[] { CreateSortedPropertyDescending (_productPropertyDefinition) };
+      var expected = new[] { SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition) };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
 
@@ -202,9 +202,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var expected = new[]
                      {
-                         CreateSortedPropertyAscending (_productPropertyDefinition), 
-                         CreateSortedPropertyAscending (_positionPropertyDefinition),
-                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_orderPropertyDefinition)
                      };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
@@ -218,9 +218,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var expected = new[]
                      {
-                         CreateSortedPropertyAscending (_productPropertyDefinition), 
-                         CreateSortedPropertyAscending (_positionPropertyDefinition),
-                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_orderPropertyDefinition)
                      };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
@@ -234,9 +234,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var expected = new[]
                      {
-                         CreateSortedPropertyAscending (_productPropertyDefinition), 
-                         CreateSortedPropertyAscending (_positionPropertyDefinition),
-                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_orderPropertyDefinition)
                      };
       Assert.That (result.SortedProperties, Is.EqualTo (expected));
     }
@@ -251,21 +251,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var expected = new[]
                      {
-                         CreateSortedPropertyAscending (_productPropertyDefinition), 
-                         CreateSortedPropertyAscending (_positionPropertyDefinition),
-                         CreateSortedPropertyDescending (_orderPropertyDefinition)
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition), 
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition),
+                         SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_orderPropertyDefinition)
                      };
       Assert.That (result2.SortedProperties, Is.EqualTo (expected));
-    }
-
-    private SortedPropertySpecification CreateSortedPropertyAscending (PropertyDefinition propertyDefinition)
-    {
-      return new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
-    }
-
-    private SortedPropertySpecification CreateSortedPropertyDescending (PropertyDefinition propertyDefinition)
-    {
-      return new SortedPropertySpecification (propertyDefinition, SortOrder.Descending);
     }
   }
 }

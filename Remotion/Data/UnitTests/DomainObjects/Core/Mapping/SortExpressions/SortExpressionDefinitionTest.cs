@@ -47,8 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           new SortExpressionDefinition (
               new[]
               {
-                  CreateSortedPropertyAscending (_productPropertyDefinition),
-                  CreateSortedPropertyDescending (_positionPropertyDefinition)
+                  SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_productPropertyDefinition),
+                  SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_positionPropertyDefinition)
               });
 
       var result = sortExpressionDefinition.ToString();
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           new SortExpressionDefinition (
               new[]
               {
-                  CreateSortedPropertyDescending (_productPropertyDefinition)
+                  SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition)
               });
 
       IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
@@ -105,8 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           new SortExpressionDefinition (
               new[]
               {
-                  CreateSortedPropertyDescending (_productPropertyDefinition),
-                  CreateSortedPropertyAscending (_positionPropertyDefinition)
+                  SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition),
+                  SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition)
               });
 
       IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
@@ -136,16 +136,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
       dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
       dataContainer.PropertyValues[_positionPropertyDefinition.PropertyName].Value = position;
       return dataContainer;
-    }
-
-    private SortedPropertySpecification CreateSortedPropertyAscending (PropertyDefinition propertyDefinition)
-    {
-      return new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
-    }
-
-    private SortedPropertySpecification CreateSortedPropertyDescending (PropertyDefinition propertyDefinition)
-    {
-      return new SortedPropertySpecification (propertyDefinition, SortOrder.Descending);
     }
   }
 }

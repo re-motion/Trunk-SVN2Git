@@ -332,6 +332,7 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortedPropertySpecificationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionParserTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\BaseClass.cs" />
@@ -523,6 +524,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />
