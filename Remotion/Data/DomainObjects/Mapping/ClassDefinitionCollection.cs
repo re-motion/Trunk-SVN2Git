@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -56,7 +57,18 @@ public class ClassDefinitionCollection : CommonCollection
       Add (classDefinition);
 
     _areResolvedTypesRequired = collection.AreResolvedTypesRequired;
-    this.SetIsReadOnly (makeCollectionReadOnly);
+    SetIsReadOnly (makeCollectionReadOnly);
+  }
+
+  public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOly, bool areResolvedTypeRequired)
+  {
+    ArgumentUtility.CheckNotNull ("collection", collection);
+
+    foreach (ClassDefinition classDefinition in collection)
+      Add (classDefinition);
+
+    _areResolvedTypesRequired = areResolvedTypeRequired;
+    SetIsReadOnly (makeCollectionReadOly);
   }
 
   // methods and properties

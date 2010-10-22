@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CopyConstructor ()
+    public void CopyConstructor_ClassefinitionCollection ()
     {
       _collection.Add (_classDefinition);
 
@@ -147,6 +147,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_classDefinition, copiedCollection[0]);
       Assert.AreEqual (_collection.AreResolvedTypesRequired, copiedCollection.AreResolvedTypesRequired);
+    }
+
+    [Test]
+    public void CopyConstructor_IEnumerableCollection ()
+    {
+      var copiedCollection = new ClassDefinitionCollection (new[] { _classDefinition }, false, true);
+
+      Assert.AreEqual (1, copiedCollection.Count);
+      Assert.AreSame (_classDefinition, copiedCollection[0]);
+      Assert.AreEqual (true, copiedCollection.AreResolvedTypesRequired);
     }
 
     [Test]
