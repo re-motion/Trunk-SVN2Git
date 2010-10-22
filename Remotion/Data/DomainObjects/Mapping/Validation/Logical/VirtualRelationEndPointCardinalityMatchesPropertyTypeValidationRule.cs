@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -21,11 +23,32 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   /// <summary>
   /// Validates that the virtual relation end point cardinality matches the property type.
   /// </summary>
-  public class VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule : IRelationEndPointValidatorRule
+  public class VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule : IRelationDefinitionValidatorRule
   {
     public VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule ()
     {
       
+    }
+
+    public MappingValidationResult Validate (RelationDefinition relationDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
+
+      var errorMessages = new List<string>();
+      foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
+      {
+        var validationResult = Validate (endPointDefinition);
+        if (!validationResult.IsValid)
+        {
+          if(!errorMessages.Contains(validationResult.Message))
+            errorMessages.Add (validationResult.Message);
+        }
+      }
+
+      if (errorMessages.Count==0)
+        return new MappingValidationResult (true);
+      else
+        return new MappingValidationResult (false, String.Join("\r\n", errorMessages.ToArray()));
     }
 
     public MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
