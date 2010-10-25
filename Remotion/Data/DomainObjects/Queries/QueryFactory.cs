@@ -43,8 +43,8 @@ namespace Remotion.Data.DomainObjects.Queries
     // customizers via IoC
     private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry = 
         new DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> (CreateNodeTypeRegistry);
-    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerRegistry> s_methodCallTransformerRegistry = 
-        new DoubleCheckedLockingContainer<IMethodCallTransformerRegistry> (CreateMethodCallTransformerRegistry);
+    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerProvider> s_methodCallTransformerProvider = 
+        new DoubleCheckedLockingContainer<IMethodCallTransformerProvider> (CreateMethodCallTransformerProvider);
     private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry = 
         new DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> (CreateResultOperatorHandlerRegistry);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return new DomainObjectQueryable<T> (
           ObjectFactory.Create<DefaultSqlPreparationStage> (
-              ParamList.Create (s_methodCallTransformerRegistry.Value, s_resultOperatorHandlerRegistry.Value, generator)),
+              ParamList.Create (s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value, generator)),
           ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
           ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
           s_methodCallExpressionNodeTypeRegistry.Value);
@@ -270,7 +270,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return nodeTypeRegistry;
     }
 
-    private static IMethodCallTransformerRegistry CreateMethodCallTransformerRegistry ()
+    private static IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()
     {
       var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
       var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
@@ -280,7 +280,7 @@ namespace Remotion.Data.DomainObjects.Queries
       foreach (var customNodeType in customTransformers)
         methodInfoBasedRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      return new MethodCallTransformerRegistry (methodInfoBasedRegistry, nameBasedRegistry);
+      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, nameBasedRegistry);
     }
 
     private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()

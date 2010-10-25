@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var toStringMethod = ToStringMethodCallTransformer.SupportedMethods[0];
       var nodeTypeRegistry = CallCreateMethodCallTransformerRegistry ();
 
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Registries[0]).GetItem (toStringMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
+      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (toStringMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
     }
 
     [Test]
@@ -372,8 +372,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var nodeTypeRegistry = CallCreateMethodCallTransformerRegistry ();
 
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Registries[0]).GetItem (customMethod1), Is.SameAs (customTransformer1));
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Registries[0]).GetItem (customMethod2), Is.SameAs (customTransformer2));
+      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod1), Is.SameAs (customTransformer1));
+      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) nodeTypeRegistry.Providers[0]).GetItem (customMethod2), Is.SameAs (customTransformer2));
     }
 
     [Test]
@@ -382,7 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var existingMethod = typeof (object).GetMethod ("ToString");
       var defaultRegistry = CallCreateMethodCallTransformerRegistry ();
 
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) defaultRegistry.Registries[0]).GetItem (existingMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
+      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) defaultRegistry.Providers[0]).GetItem (existingMethod), Is.TypeOf (typeof (ToStringMethodCallTransformer)));
 
       var customTransformer = MockRepository.GenerateStub<IMethodCallTransformer> ();
       var customizer = CreateCustomizerStub (
@@ -393,7 +393,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var registryWithOverrides = CallCreateMethodCallTransformerRegistry ();
 
-      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) registryWithOverrides.Registries[0]).GetItem(existingMethod), Is.SameAs (customTransformer));
+      Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) registryWithOverrides.Providers[0]).GetItem(existingMethod), Is.SameAs (customTransformer));
     }
 
     [Test]
@@ -452,9 +452,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       return (MethodCallExpressionNodeTypeRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateNodeTypeRegistry");
     }
 
-    private MethodCallTransformerRegistry CallCreateMethodCallTransformerRegistry ()
+    private CompoundMethodCallTransformerProvider CallCreateMethodCallTransformerRegistry ()
     {
-      return (MethodCallTransformerRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateMethodCallTransformerRegistry");
+      return (CompoundMethodCallTransformerProvider) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateMethodCallTransformerProvider");
     }
 
     private ResultOperatorHandlerRegistry CallCreateResultOperatorHandlerRegistry ()

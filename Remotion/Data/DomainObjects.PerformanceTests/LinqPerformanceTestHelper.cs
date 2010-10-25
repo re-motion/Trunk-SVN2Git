@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   public class LinqPerformanceTestHelper<T>
   {
     private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
-    private readonly MethodCallTransformerRegistry _methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+    private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault ();
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
 
     private readonly Func<IQueryable<T>> _queryGenerator;
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public bool GenerateQueryModelAndSQL ()
     {
       var generator = new UniqueIdentifierGenerator ();
-      var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerRegistry, _resultOperatorHandlerRegistry, generator);
+      var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
       var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver (), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
       var mappingResolutionContext = new MappingResolutionContext ();

@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// transformations that occur during the mapping resolution phase</param>
     /// <param name="sqlGenerationStage">An implementation of <see cref="ISqlGenerationStage"/> which provides entry points for all sql text 
     /// generation that occur during the SQL generation process.</param>
-    /// <param name="nodeTypeRegistry">Registry, which maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
+    /// <param name="nodeTypeRegistry">Registry that maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
     /// to the respective <see cref="IExpressionNode"/> types.</param>
     /// </remarks>
     public DomainObjectQueryable (

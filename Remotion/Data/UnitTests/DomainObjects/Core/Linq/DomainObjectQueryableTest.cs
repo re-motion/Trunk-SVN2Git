@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [SetUp]
     public void SetUp ()
     {
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      var methodCallTransformerRegistry = CompoundMethodCallTransformerProvider.CreateDefault ();
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator ();
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       var generator = new UniqueIdentifierGenerator();
       var sqlPreparationStage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
+          CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
       var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       
