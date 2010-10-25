@@ -27,18 +27,24 @@ namespace Remotion.Data.DomainObjects.Mapping
     public static IRelationEndPointDefinition GetOppositeEndPointDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      Assertion.IsNotNull (relationEndPointDefinition.RelationDefinition, "Only fully initialized end points can be used.");
+
       return relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
     }
 
     public static IRelationEndPointDefinition GetMandatoryOppositeEndPointDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      Assertion.IsNotNull (relationEndPointDefinition.RelationDefinition, "Only fully initialized end points can be used.");
+
       return relationEndPointDefinition.RelationDefinition.GetMandatoryOppositeRelationEndPointDefinition (relationEndPointDefinition);
     }
 
     public static ClassDefinition GetOppositeClassDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      Assertion.IsNotNull (relationEndPointDefinition.RelationDefinition, "Only fully initialized end points can be used.");
+
       return relationEndPointDefinition.RelationDefinition.GetOppositeClassDefinition (relationEndPointDefinition);
     }
   }

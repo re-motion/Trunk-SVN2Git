@@ -15,81 +15,145 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
   public class VirtualRelationEndPointDefinitionTest : MappingReflectionTestBase
   {
-    // types
+    private ClassDefinition _customerClassDefinition;
+    private VirtualRelationEndPointDefinition _customerOrdersEndPoint;
 
-    // static members and constants
-
-    // member fields
-
-    private VirtualRelationEndPointDefinition _customerEndPoint;
-    private RelationEndPointDefinition _orderEndPoint;
-
-    // construction and disposing
-
-    public VirtualRelationEndPointDefinitionTest ()
-    {
-    }
-
-    // methods and properties
+    private ClassDefinition _orderClassDefinition;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+      _customerClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Customer",
+          "Customer",
+          "TestDomain",
+          typeof (Customer),
+          false);
+      _customerOrdersEndPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          _customerClassDefinition,
+          "Orders",
+          false,
+          CardinalityType.Many,
+          typeof (OrderCollection),
+          "OrderNumber desc");
 
-      _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders");
-
-      _orderEndPoint = (RelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
-          "Order", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer");
+      _orderClassDefinition = ClassDefinitionFactory.CreateOrderDefinition ();
     }
 
     [Test]
     public void InitializeWithPropertyType ()
     {
-      VirtualRelationEndPointDefinition endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(ClassDefinitionFactory.CreateOrderDefinition (), "VirtualEndPoint", true, CardinalityType.One, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem, Remotion.Data.UnitTests", null);
+      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(
+          _orderClassDefinition,
+          "VirtualEndPoint",
+          true,
+          CardinalityType.One,
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem, Remotion.Data.UnitTests",
+          null);
 
       Assert.IsTrue (endPoint.IsPropertyTypeResolved);
       Assert.AreSame (typeof (OrderItem), endPoint.PropertyType);
       Assert.AreEqual (typeof (OrderItem).AssemblyQualifiedName, endPoint.PropertyTypeName);
     }
 
+    [Test]
     public void InitializeWithSortExpression ()
     {
-      ReflectionBasedClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);
+      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          _customerClassDefinition,
+          "Orders",
+          false,
+          CardinalityType.Many,
+          typeof (OrderCollection),
+          "OrderNumber desc");
 
-      VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (customerDefinition, "Orders", false, CardinalityType.Many, typeof (OrderCollection), "OrderNumber desc");
-
-      Assert.AreEqual ("OrderNumber desc", endPointDefinition.SortExpression);
+      Assert.AreEqual ("OrderNumber desc", endPointDefinition.SortExpressionText);
     }
 
     [Test]
     public void IsAnonymous ()
     {
-      Assert.IsFalse (_customerEndPoint.IsAnonymous);
+      Assert.IsFalse (_customerOrdersEndPoint.IsAnonymous);
     }
 
     [Test]
-    public void RelationDefinitionNull ()
+    public void RelationDefinition_Null ()
     {
-      VirtualRelationEndPointDefinition definition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(FakeMappingConfiguration.Current.ClassDefinitions["Order"], "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
-
-      Assert.IsNull (definition.RelationDefinition);
+      Assert.IsNull (_customerOrdersEndPoint.RelationDefinition);
     }
 
     [Test]
-    public void RelationDefinitionNotNull ()
+    public void RelationDefinition_NonNull ()
     {
-      Assert.IsNotNull (_customerEndPoint.RelationDefinition);
+      _customerOrdersEndPoint.SetRelationDefinition (new RelationDefinition ("Test", _customerOrdersEndPoint, _customerOrdersEndPoint));
+      Assert.IsNotNull (_customerOrdersEndPoint.RelationDefinition);
+    }
+
+    [Test]
+    public void SortExpression_Null ()
+    {
+      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          _orderClassDefinition,
+          "OrderItems",
+          false,
+          CardinalityType.Many,
+          typeof (ObjectList<OrderItem>),
+          null);
+      Assert.That (endPoint.SortExpressionText, Is.Null);
+
+      Assert.That (endPoint.SortExpression, Is.Null);
+    }
+
+    [Test]
+    public void SortExpression_NonNull ()
+    {
+      var endPoint = CreateFullVirtualEndPoint ("Product asc");
+      
+      Assert.That (endPoint.SortExpression, Is.Not.Null);
+      Assert.That (endPoint.SortExpression.ToString(), Is.EqualTo ("Product ASC"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber: SortExpression 'Product asc asc' cannot be "
+        + "parsed: Expected one or two parts (a property name and an optional identifier), found 3 parts instead.")]
+    public void SortExpression_Error ()
+    {
+      var endPoint = CreateFullVirtualEndPoint ("Product asc asc");
+      Dev.Null = endPoint.SortExpression;
+    }
+
+    private ReflectionBasedVirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
+    {
+      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          _orderClassDefinition,
+          "OrderItems",
+          false,
+          CardinalityType.Many,
+          typeof (ObjectList<OrderItem>),
+          sortExpressionString);
+      var orderItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OrderItem));
+      var oppositeProperty = ReflectionBasedPropertyDefinitionFactory.Create (orderItemClassDefinition, "Order", typeof (ObjectID));
+      orderItemClassDefinition.MyPropertyDefinitions.Add (oppositeProperty);
+      var productProperty = ReflectionBasedPropertyDefinitionFactory.Create (orderItemClassDefinition, "Product", typeof (string));
+      orderItemClassDefinition.MyPropertyDefinitions.Add (productProperty);
+      var oppositeEndPoint = new RelationEndPointDefinition (orderItemClassDefinition, "Order", false);
+      var relationDefinition = new RelationDefinition ("test", endPoint, oppositeEndPoint);
+      orderItemClassDefinition.SetReadOnly ();
+      Assert.That (endPoint.RelationDefinition, Is.SameAs (relationDefinition));
+      return endPoint;
     }
   }
 }

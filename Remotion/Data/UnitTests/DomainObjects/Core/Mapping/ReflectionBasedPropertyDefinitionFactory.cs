@@ -40,6 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return new FakeColumnDefinition (name);
     }
 
+    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, Type propertyType)
+    {
+      return Create (classDefinition, propertyName, propertyType, null, null, StorageClass.Persistent, classDefinition.ClassType.GetProperty (propertyName), GetFakeStorageProperty (propertyName));
+    }
+
     public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
     {
       return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, null, null, StorageClass.Persistent);
