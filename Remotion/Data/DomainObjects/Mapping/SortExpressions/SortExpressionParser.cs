@@ -17,12 +17,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 {
   /// <summary>
-  /// Parses a <see cref="DBBidirectionalRelationAttribute.SortExpression"/> into a <see cref="SortExpressionDefinition"/>.
+  /// Parses a <see cref="BidirectionalRelationAttribute.SortExpression"/> into a <see cref="SortExpressionDefinition"/>.
   /// </summary>
   public class SortExpressionParser
   {

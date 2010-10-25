@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects
   /// <list type="bullet">
   ///   <item>
   ///     When loading the collection from the database (via loading an object in a root transaction), the order of items is defined
-  ///     by the sort order of the relation (see <see cref="DBBidirectionalRelationAttribute.SortExpression"/>). If there is no sort
+  ///     by the sort order of the relation (see <see cref="BidirectionalRelationAttribute.SortExpression"/>). If there is no sort
   ///     order, the order of items is undefined.
   ///   </item>
   ///   <item>

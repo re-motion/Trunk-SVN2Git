@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public class BidirectionalRelationAttribute: Attribute, IMappingAttribute
   {
     private readonly string _oppositeProperty;
+    private string _sortExpression;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BidirectionalRelationAttribute"/> class with the name of the oppsite property.
@@ -42,5 +43,39 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       get { return _oppositeProperty; }
     }
+
+    /// <summary>
+    /// Gets or sets an expression used to sort the relation when it is loaded from the data source. This is only valid on collection-valued properties.
+    /// </summary>
+    /// <remarks>The <see cref="SortExpression"/> consists of a comma-separated list of property names, each optionally followed by a direction 
+    /// specification ("asc" or "desc"; the default is "asc"). The property name should be the ordinary .NET property name. To resolve ambiguities or 
+    /// to sort by properties declared by subclasses of the related class, the unique re-store property identifier can be used instead.</remarks>
+    /// <example>
+    /// <para>
+    /// On an OrderItems property: <c>Position</c>>
+    /// </para>
+    /// <para>
+    /// On an OrderItems property: <c>Product asc, Quantity desc</c>
+    /// </para>
+    /// <para>
+    /// On a Persons property, where some Persons are Customers which have a CustomerType property: <c>TestDomain.Customer.CustomerType</c>
+    /// </para>
+    /// <para>
+    /// In the last example, the unique re-store property identifier was used because the CustomerType property is only available on a subclass 
+    /// (Customer) of the related class (Person).
+    /// </para>
+    /// </example>
+    public string SortExpression
+    {
+      get { return _sortExpression; }
+      set
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+        value = value.Trim ();
+        ArgumentUtility.CheckNotNullOrEmpty ("value", value);
+        _sortExpression = StringUtility.EmptyToNull (value);
+      }
+    }
+
   }
 }
