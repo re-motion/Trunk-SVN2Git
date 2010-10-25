@@ -211,14 +211,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false; }
     }
 
-    public SortExpressionDefinition SortExpression
-    {
-      get { return _sortExpression.Value; }
-    }
-
     public string SortExpressionText
     {
       get { return _sortExpressionText; }
+    }
+
+    public SortExpressionDefinition GetSortExpression ()
+    {
+      return _sortExpression.Value;
     }
 
     #region Serialization

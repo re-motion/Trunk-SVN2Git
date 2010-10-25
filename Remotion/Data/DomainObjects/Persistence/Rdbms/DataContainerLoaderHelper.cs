@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           entityName,
           relationProperty.StorageProperty.Name,
           relatedID,
-          oppositeRelationEndPointDefinition.SortExpression);
+          oppositeRelationEndPointDefinition.GetSortExpression());
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,

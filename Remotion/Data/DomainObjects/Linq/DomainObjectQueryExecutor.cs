@@ -362,10 +362,10 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetSortExpressionForRelation (IRelationEndPointDefinition relationEndPointDefinition)
     {
       var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
-      if (virtualEndPointDefinition != null && virtualEndPointDefinition.SortExpression != null)
+      if (virtualEndPointDefinition != null && virtualEndPointDefinition.GetSortExpression() != null)
       {
         var generator = new SortExpressionSqlGenerator (SqlDialect.Instance); // TODO: Change when more than this dialect is to be supported
-        return generator.GenerateOrderByExpressionString (virtualEndPointDefinition.SortExpression);
+        return generator.GenerateOrderByExpressionString (virtualEndPointDefinition.GetSortExpression());
       }
       else
         return null;

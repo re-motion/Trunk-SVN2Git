@@ -366,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         Assert.IsNull (actual.RelationDefinition);
 
       if (expected.GetType () == typeof (VirtualRelationEndPointDefinition))
-        Assert.AreEqual (((VirtualRelationEndPointDefinition) expected).SortExpression, ((VirtualRelationEndPointDefinition) actual).SortExpression);
+        Assert.AreEqual (((VirtualRelationEndPointDefinition) expected).GetSortExpression(), ((VirtualRelationEndPointDefinition) actual).GetSortExpression());
     }
 
     private void AreEqual (PropertyDefinition expected, PropertyDefinition actual)

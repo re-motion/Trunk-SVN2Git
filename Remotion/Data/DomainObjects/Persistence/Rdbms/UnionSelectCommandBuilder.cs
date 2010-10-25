@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) _classDefinition.GetMandatoryOppositeEndPointDefinition (_propertyDefinition.PropertyName);
 
-      string columnsFromSortExpression = GetColumnsFromSortExpression (oppositeRelationEndPointDefinition.SortExpression);
+      string columnsFromSortExpression = GetColumnsFromSortExpression (oppositeRelationEndPointDefinition.GetSortExpression());
 
       var commandTextStringBuilder = new StringBuilder ();
       string selectTemplate = "SELECT {0}, {1}{2} FROM {3} WHERE {4}";
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                   whereClauseBuilder);
       }
 
-      commandTextStringBuilder.Append (GetOrderClause (oppositeRelationEndPointDefinition.SortExpression));
+      commandTextStringBuilder.Append (GetOrderClause (oppositeRelationEndPointDefinition.GetSortExpression()));
       commandTextStringBuilder.Append (";");
       
       command.CommandText = commandTextStringBuilder.ToString ();

@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void SortExpression_Null ()
+    public void GetSortExpression_Null ()
     {
       var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
           _orderClassDefinition,
@@ -113,26 +113,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null);
       Assert.That (endPoint.SortExpressionText, Is.Null);
 
-      Assert.That (endPoint.SortExpression, Is.Null);
+      Assert.That (endPoint.GetSortExpression(), Is.Null);
     }
 
     [Test]
-    public void SortExpression_NonNull ()
+    public void GetSortExpression_NonNull ()
     {
       var endPoint = CreateFullVirtualEndPoint ("Product asc");
       
-      Assert.That (endPoint.SortExpression, Is.Not.Null);
-      Assert.That (endPoint.SortExpression.ToString(), Is.EqualTo ("Product ASC"));
+      Assert.That (endPoint.GetSortExpression(), Is.Not.Null);
+      Assert.That (endPoint.GetSortExpression().ToString(), Is.EqualTo ("Product ASC"));
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber: SortExpression 'Product asc asc' cannot be "
         + "parsed: Expected one or two parts (a property name and an optional identifier), found 3 parts instead.")]
-    public void SortExpression_Error ()
+    public void GetSortExpression_Error ()
     {
       var endPoint = CreateFullVirtualEndPoint ("Product asc asc");
-      Dev.Null = endPoint.SortExpression;
+      Dev.Null = endPoint.GetSortExpression();
     }
 
     private ReflectionBasedVirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
