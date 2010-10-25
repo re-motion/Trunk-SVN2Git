@@ -132,7 +132,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (sortExpression == null)
         return string.Empty;
 
-      var orderByClause = new SortExpressionSqlGenerator (Provider).GenerateOrderByClauseString (sortExpression);
+      var generator = Provider.GetSortExpressionSqlGenerator();
+      var orderByClause = generator.GenerateOrderByClauseString (sortExpression);
       return " " + orderByClause;
     }
 

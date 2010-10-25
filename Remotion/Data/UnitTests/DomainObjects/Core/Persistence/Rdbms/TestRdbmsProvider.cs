@@ -33,10 +33,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       return new TracingDbConnection (new SqlConnection (), PersistenceListener);
     }
-
-    public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

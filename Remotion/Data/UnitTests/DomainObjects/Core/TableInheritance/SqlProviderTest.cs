@@ -16,10 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
@@ -51,16 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       Assert.AreEqual (DomainObjectIDs.Person, loadedDataContainers[1].ID);
       Assert.AreEqual (DomainObjectIDs.PersonForUnidirectionalRelationTest, loadedDataContainers[2].ID);
       Assert.AreEqual (DomainObjectIDs.Customer, loadedDataContainers[3].ID);
-    }
-
-    [Test]
-    public void GetColumnsFromSortExpression ()
-    {
-      var complexSortExpression =
-          SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "Number asc, OrderDate desc, Customer asc");
-
-      Assert.That (Provider.GetColumnsFromSortExpression (complexSortExpression), Is.EqualTo ("[Number], [OrderDate], [CustomerID]"));
-      Assert.That (Provider.GetColumnsFromSortExpression (null), Is.EqualTo (string.Empty));
     }
   }
 }

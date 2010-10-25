@@ -81,8 +81,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected abstract TracingDbConnection CreateConnection ();
 
-    public abstract string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression);
-
     // methods and properties
 
     /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
@@ -104,6 +102,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
       return _dialect.GetParameterName (name);
+    }
+
+    public SortExpressionSqlGenerator GetSortExpressionSqlGenerator ()
+    {
+      return new SortExpressionSqlGenerator (_dialect);
     }
 
     public virtual void Connect ()

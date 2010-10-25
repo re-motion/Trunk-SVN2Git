@@ -26,7 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class SortExpressionSqlGeneratorTest : SqlProviderBaseTest
+  public class SortExpressionSqlGeneratorTest : StandardMappingTest
   {
     private SortExpressionSqlGenerator _generator;
     private ClassDefinition _orderClassDefinition;
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp ();
 
-      _generator = new SortExpressionSqlGenerator (Provider);
+      _generator = new SortExpressionSqlGenerator (SqlDialect.Instance);
       _orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
     
       _orderNumberPropertyDefinition = _orderClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");

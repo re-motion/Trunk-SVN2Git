@@ -364,11 +364,8 @@ namespace Remotion.Data.DomainObjects.Linq
       var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (virtualEndPointDefinition != null && virtualEndPointDefinition.SortExpression != null)
       {
-        using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
-        {
-          var storageProvider = (RdbmsProvider) manager.GetMandatory (_startingClassDefinition.StorageProviderID);
-          return new SortExpressionSqlGenerator (storageProvider).GenerateOrderByExpressionString (virtualEndPointDefinition.SortExpression);
-        }
+        var generator = new SortExpressionSqlGenerator (SqlDialect.Instance); // TODO: Change when more than this dialect is to be supported
+        return generator.GenerateOrderByExpressionString (virtualEndPointDefinition.SortExpression);
       }
       else
         return null;

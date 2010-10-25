@@ -27,13 +27,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class SortExpressionSqlGenerator
   {
-    private readonly RdbmsProvider _provider;
+    private readonly ISqlDialect _dialect;
 
-    public SortExpressionSqlGenerator (RdbmsProvider provider)
+    public SortExpressionSqlGenerator (ISqlDialect dialect)
     {
-      ArgumentUtility.CheckNotNull ("provider", provider);
-      
-      _provider = provider;
+      ArgumentUtility.CheckNotNull ("dialect", dialect);
+
+      _dialect = dialect;
     }
 
     public string GenerateOrderByClauseString (SortExpressionDefinition sortExpression)
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private void AppendColumnName (StringBuilder sb, SortedPropertySpecification sortedPropertySpecification)
     {
-      sb.Append (_provider.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StorageProperty.Name));
+      sb.Append (_dialect.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StorageProperty.Name));
     }
   }
 }

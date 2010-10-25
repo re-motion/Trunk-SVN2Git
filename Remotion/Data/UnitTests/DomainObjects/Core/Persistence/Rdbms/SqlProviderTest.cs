@@ -90,14 +90,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDisposedException))]
-    public void GetColumnsFromSortExpressionChecksForDisposal ()
-    {
-      Provider.Dispose ();
-      Provider.GetColumnsFromSortExpression (null);
-    }
-
-    [Test]
     public void GetTypeConversionServices()
     {
       Assert.AreSame (ProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);

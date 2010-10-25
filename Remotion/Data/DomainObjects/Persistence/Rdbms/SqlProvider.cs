@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -38,16 +37,6 @@ public class SqlProvider : RdbmsProvider
   }
 
   // methods and properties
-
-  public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
-  {
-    CheckDisposed ();
-
-    if (sortExpression == null)
-      return string.Empty;
-
-    return new SortExpressionSqlGenerator (this).GenerateColumnListString (sortExpression);
-  }
 
   protected override TracingDbConnection CreateConnection ()
   {
