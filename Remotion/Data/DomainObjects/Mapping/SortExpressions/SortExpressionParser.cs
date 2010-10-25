@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 {
@@ -101,47 +100,16 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 
     private PropertyDefinition ParsePropertyName (string fullOrShortPropertyName)
     {
-      // TODO 3411: Refactor not to use PropertyAccessorData
+      // Try as full name first, only if that doesn't match, assume it must be a short name
+      // If that still doesn't produce a match, search all derived classes for a full name match. Derived classes are not searched for short names.
+      var propertyAccessorData =
+          _classDefinition.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName)
+          ?? _classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (_classDefinition.ClassType, fullOrShortPropertyName)
+          ?? GetAllDerivedClassDefinitions (_classDefinition)
+              .Select (cd => cd.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName))
+              .FirstOrDefault (data => data != null);
 
-      //// Try as full name first, only if that doesn't match, assume it must be a short name
-      //// If that still doesn't produce a match, search all derived classes for a full name match. Derived classes are not searched for short names.
-      //var propertyAccessorData =
-      //    _classDefinition.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName)
-      //    ?? _classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (_classDefinition.ClassType, fullOrShortPropertyName)
-      //    ?? GetAllDerivedClassDefinitions (_classDefinition)
-      //        .Select (cd => cd.PropertyAccessorDataCache.GetPropertyAccessorData (fullOrShortPropertyName))
-      //        .FirstOrDefault (data => data != null);
-
-      //if (propertyAccessorData == null)
-      //{
-      //  var message = string.Format (
-      //      "'{0}' is not a valid mapped property name. Expected the .NET property name of a property declared by the '{1}' class or its base classes. "
-      //      + "Alternatively, to resolve ambiguities or to use a property declared by a mixin or a derived class of '{1}', the full unique re-store "
-      //      + "property identifier can be specified.",
-      //      fullOrShortPropertyName,
-      //      _classDefinition.ClassType.Name);
-      //  throw new MappingException (message);
-      //}
-
-      //if (propertyAccessorData.PropertyDefinition == null)
-      //{
-      //  Assertion.IsNotNull (propertyAccessorData.RelationEndPointDefinition);
-
-      //  var message = string.Format (
-      //      "The property '{0}' is a virtual relation end point. SortExpressions can only contain relation end points if the object to be sorted "
-      //      + "contains the foreign key.",
-      //      propertyAccessorData.PropertyIdentifier);
-      //  throw new MappingException (message);
-      //}
-
-      // TODO 3411: Temporary solution
-      var allClassDefinitions = _classDefinition.CreateSequence (cd => cd.BaseClass)
-          .Concat (GetAllDerivedClassDefinitions (_classDefinition));
-      var propertyDefinition = allClassDefinitions
-          .Select (cd => GetPropertyDefinitionFromClass (fullOrShortPropertyName, cd))
-          .FirstOrDefault (pd => pd != null);
-
-      if (propertyDefinition == null)
+      if (propertyAccessorData == null)
       {
         var message = string.Format (
             "'{0}' is not a valid mapped property name. Expected the .NET property name of a property declared by the '{1}' class or its base classes. "
@@ -152,13 +120,18 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
         throw new MappingException (message);
       }
 
-      return propertyDefinition;
-    }
+      if (propertyAccessorData.PropertyDefinition == null)
+      {
+        Assertion.IsNotNull (propertyAccessorData.RelationEndPointDefinition);
 
-    private PropertyDefinition GetPropertyDefinitionFromClass (string fullOrShortPropertyName, ClassDefinition classDefinition)
-    {
-      return classDefinition.MyPropertyDefinitions[fullOrShortPropertyName]
-          ?? classDefinition.MyPropertyDefinitions[classDefinition.ClassType.FullName + "." + fullOrShortPropertyName];
+        var message = string.Format (
+            "The property '{0}' is a virtual relation end point. SortExpressions can only contain relation end points if the object to be sorted "
+            + "contains the foreign key.",
+            propertyAccessorData.PropertyIdentifier);
+        throw new MappingException (message);
+      }
+
+      return propertyAccessorData.PropertyDefinition;
     }
 
     private IEnumerable<ClassDefinition> GetAllDerivedClassDefinitions (ClassDefinition baseClassDefinition)

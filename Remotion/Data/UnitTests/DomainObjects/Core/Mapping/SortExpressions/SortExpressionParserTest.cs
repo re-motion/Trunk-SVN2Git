@@ -88,9 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "SortExpression 'OrderTicket' cannot be parsed: 'OrderTicket' is not a valid mapped property name. Expected the .NET property name of a "
-        + "property declared by the 'Order' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin "
-        + "or a derived class of 'Order', the full unique re-store property identifier can be specified.")]
+        "SortExpression 'OrderTicket' cannot be parsed: The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' is a "
+        + "virtual relation end point. SortExpressions can only contain relation end points if the object to be sorted contains the foreign key.")]
     public void Parse_WithVirtualRelationEndPoint ()
     {
       var orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
