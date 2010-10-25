@@ -43,16 +43,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
+    private readonly DataContainerLoader _dataContainerLoader;
+    private readonly ISqlDialect _dialect;
+
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    private readonly DataContainerLoader _dataContainerLoader;
-
+    
     // construction and disposing
 
-    protected RdbmsProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener)
+    protected RdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
         : base (definition, persistenceListener)
     {
       _dataContainerLoader = new DataContainerLoader (this);
+      _dialect = dialect;
     }
 
     protected override void Dispose (bool disposing)
@@ -76,13 +79,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // abstract methods and properties
 
-    public abstract string GetParameterName (string name);
-
     protected abstract TracingDbConnection CreateConnection ();
 
     public abstract string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression);
 
     // methods and properties
+
+    /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
+    public virtual string StatementDelimiter
+    {
+      get { return _dialect.StatementDelimiter; }
+    }
+
+    /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
+    public virtual string DelimitIdentifier (string identifier)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("identifier", identifier);
+
+      return _dialect.DelimitIdentifier (identifier);
+    }
+
+    public virtual string GetParameterName (string name)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      return _dialect.GetParameterName (name);
+    }
 
     public virtual void Connect ()
     {
@@ -507,10 +529,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ValueConverter (this, TypeConversionProvider);
     }
 
-    /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
-    public abstract string DelimitIdentifier (string identifier);
 
-    /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
-    public abstract string StatementDelimiter { get; }
-  }
+    }
 }

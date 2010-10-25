@@ -30,12 +30,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   {
     private TestRdbmsProvider _provider;
     private RdbmsProviderDefinition _definition;
+    private ISqlDialect _dialectStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
       _definition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (TestRdbmsProvider), TestDomainConnectionString);
-      _provider = new TestRdbmsProvider (_definition, NullPersistenceListener.Instance);
+      _dialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _provider = new TestRdbmsProvider (_definition, _dialectStub, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
@@ -70,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
       connectionStub.Replay ();
 
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, NullPersistenceListener.Instance);
+      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -105,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
       connectionStub.Replay ();
 
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, NullPersistenceListener.Instance);
+      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -139,6 +141,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       _provider.Dispose ();
       _provider.CreateDbCommand ();
+    }
+
+    [Test]
+    public void StatementDelimiter_UsesDialect ()
+    {
+      _dialectStub.Stub (stub => stub.StatementDelimiter).Return ("&");
+
+      var result = _provider.StatementDelimiter;
+      Assert.That (result, Is.EqualTo ("&"));
+    }
+
+    [Test]
+    public void DelimitIdentifier_UsesDialect ()
+    {
+      _dialectStub.Stub (stub => stub.DelimitIdentifier ("xy")).Return ("!xy!");
+
+      var result = _provider.DelimitIdentifier ("xy");
+      Assert.That (result, Is.EqualTo ("!xy!"));
+    }
+
+    [Test]
+    public void GetParameterName_UsesDialect ()
+    {
+      _dialectStub.Stub (stub => stub.GetParameterName ("xy")).Return ("#1");
+
+      var result = _provider.GetParameterName ("xy");
+      Assert.That (result, Is.EqualTo ("#1"));
     }
   }
 }

@@ -14,29 +14,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class TestRdbmsProvider : RdbmsProvider
+  /// <summary>
+  /// Defines the <see cref="ISqlDialect"/> for MS SQL Server.
+  /// </summary>
+  public class SqlDialect : ISqlDialect
   {
-    public TestRdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
-      : base (definition, dialect, persistenceListener)
+    public static readonly SqlDialect Instance = new SqlDialect ();
+
+    protected SqlDialect ()
     {
     }
 
-    protected override TracingDbConnection CreateConnection ()
+    public virtual string GetParameterName (string name)
     {
-      return new TracingDbConnection (new SqlConnection (), PersistenceListener);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      if (name.StartsWith ("@"))
+        return name;
+      else
+        return "@" + name;
     }
 
-    public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
+    public virtual string DelimitIdentifier (string identifier)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNullOrEmpty ("identifier", identifier);
+
+      return "[" + identifier + "]";
+    }
+
+    public virtual string StatementDelimiter
+    {
+      get { return ";"; }
     }
   }
 }

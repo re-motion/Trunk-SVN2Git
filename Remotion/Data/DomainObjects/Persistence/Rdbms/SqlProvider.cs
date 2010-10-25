@@ -33,7 +33,7 @@ public class SqlProvider : RdbmsProvider
   // construction and disposing
 
   public SqlProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener)
-    : base (definition, persistenceListener)
+    : base (definition, SqlDialect.Instance, persistenceListener)
   {
   }
 
@@ -47,16 +47,6 @@ public class SqlProvider : RdbmsProvider
       return string.Empty;
 
     return new SortExpressionSqlGenerator (this).GenerateColumnListString (sortExpression);
-  }
-
-  public override string GetParameterName (string name)
-  {
-    CheckDisposed ();
-    
-    if (name.StartsWith ("@"))
-      return name;
-    else
-      return "@" + name;
   }
 
   protected override TracingDbConnection CreateConnection ()
@@ -84,14 +74,6 @@ public class SqlProvider : RdbmsProvider
     }
   }
 
-  public override string DelimitIdentifier (string identifier)
-  {
-    return "[" + identifier + "]";
-  }
-
-  public override string StatementDelimiter
-  {
-    get { return ";"; }
-  }
+  
 }
 }

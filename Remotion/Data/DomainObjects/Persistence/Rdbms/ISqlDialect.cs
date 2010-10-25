@@ -14,29 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Tracing;
-
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class TestRdbmsProvider : RdbmsProvider
+  /// <summary>
+  /// Provides a common interface for classes defining the specifics of a SQL dialect. Used by <see cref="RdbmsProvider"/>.
+  /// </summary>
+  public interface ISqlDialect
   {
-    public TestRdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
-      : base (definition, dialect, persistenceListener)
-    {
-    }
-
-    protected override TracingDbConnection CreateConnection ()
-    {
-      return new TracingDbConnection (new SqlConnection (), PersistenceListener);
-    }
-
-    public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
-    {
-      throw new NotImplementedException();
-    }
+    string GetParameterName (string name);
+    /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
+    string DelimitIdentifier (string identifier);
+    /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
+    string StatementDelimiter { get; }
   }
 }

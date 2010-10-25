@@ -20,12 +20,20 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
   public class SqlProviderTest : SqlProviderBaseTest
   {
+    [Test]
+    public void Dialect ()
+    {
+      var dialect = PrivateInvoke.GetNonPublicField (Provider, typeof (RdbmsProvider), "_dialect");
+      Assert.That (dialect, Is.SameAs (SqlDialect.Instance));
+    }
+
     [Test]
     public void IsConnectedFalse ()
     {
@@ -61,13 +69,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void GetIDColumnTypeName ()
     {
       Assert.That (Provider.GetIDColumnTypeName (), Is.EqualTo ("uniqueidentifier"));
-    }
-
-    [Test]
-    public void GetParameterName ()
-    {
-      Assert.AreEqual ("@parameter", Provider.GetParameterName ("parameter"));
-      Assert.AreEqual ("@parameter", Provider.GetParameterName ("@parameter"));
     }
 
     [Test]

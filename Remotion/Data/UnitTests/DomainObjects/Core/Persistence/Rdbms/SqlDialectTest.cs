@@ -15,28 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  public class TestRdbmsProvider : RdbmsProvider
+  [TestFixture]
+  public class SqlDialectTest
   {
-    public TestRdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
-      : base (definition, dialect, persistenceListener)
+    private SqlDialect _dialect;
+
+    [SetUp]
+    public void SetUp ()
     {
+      _dialect = SqlDialect.Instance;
     }
 
-    protected override TracingDbConnection CreateConnection ()
+    [Test]
+    public void StatementDelimiter ()
     {
-      return new TracingDbConnection (new SqlConnection (), PersistenceListener);
+      Assert.That (_dialect.StatementDelimiter, Is.EqualTo (";"));
     }
 
-    public override string GetColumnsFromSortExpression (SortExpressionDefinition sortExpression)
+    [Test]
+    public void DelimitIdentifier ()
     {
-      throw new NotImplementedException();
+      Assert.That (_dialect.DelimitIdentifier ("x"), Is.EqualTo ("[x]"));
+    }
+
+    [Test]
+    public void GetParameterName ()
+    {
+      Assert.That (_dialect.GetParameterName ("parameter"), Is.EqualTo ("@parameter"));
+      Assert.That (_dialect.GetParameterName ("@parameter"), Is.EqualTo ("@parameter"));
     }
   }
 }
