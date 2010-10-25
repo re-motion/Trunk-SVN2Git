@@ -34,7 +34,11 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      if (propertyDefinition.IsPropertyTypeResolved && !typeof (IComparable).IsAssignableFrom (propertyDefinition.PropertyType))
+      var underlyingType = propertyDefinition.IsPropertyTypeResolved
+        ? Nullable.GetUnderlyingType (propertyDefinition.PropertyType) ?? propertyDefinition.PropertyType 
+        : null;
+
+      if (underlyingType != null && !typeof (IComparable).IsAssignableFrom (underlyingType))
       {
         var message = string.Format (
             "Cannot sort by property '{0}' - its property type ('{1}') does not implement IComparable.",

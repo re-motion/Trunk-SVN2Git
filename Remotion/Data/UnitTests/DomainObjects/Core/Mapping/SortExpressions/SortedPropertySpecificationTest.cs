@@ -32,24 +32,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     private PropertyDefinition _productPropertyDefinition;
     private PropertyDefinition _positionPropertyDefinition;
 
+    private ClassDefinition _customerClassDefinition;
+    private PropertyDefinition _customerSincePropertyDefinition;
+    private PropertyDefinition _customerTypePropertyDefinition;
+
     public override void SetUp ()
     {
       base.SetUp ();
       _orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      _productPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
+      _positionPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
 
-      _productPropertyDefinition = _orderItemClassDefinition.GetPropertyDefinition (typeof (OrderItem).FullName + ".Product");
-      _positionPropertyDefinition = _orderItemClassDefinition.GetPropertyDefinition (typeof (OrderItem).FullName + ".Position");
+      _customerClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer));
+      _customerSincePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".CustomerSince");
+      _customerTypePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".Type");
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Cannot sort by property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty' - its property type ('Byte[]') does not implement IComparable.")]
+        "Cannot sort by property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty' - its property type "
+        + "('Byte[]') does not implement IComparable.")]
     public void Initialization_NoIComparableType ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
       var propertyDefinition = classDefinition.GetPropertyDefinition (typeof (ClassWithAllDataTypes).FullName + ".BinaryProperty");
       
       new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
+    }
+
+    [Test]
+    public void Initialization_IComparableType_Nullable ()
+    {
+      Assert.That (Nullable.GetUnderlyingType (_customerSincePropertyDefinition.PropertyType), Is.Not.Null);
+      new SortedPropertySpecification (_customerSincePropertyDefinition, SortOrder.Ascending);
     }
 
     [Test]
@@ -129,10 +144,58 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
       Assert.That (comparer.Compare (dataContainer1, dataContainer3), Is.EqualTo (0));
     }
 
+    [Test]
+    public void GetComparer_NonExistingProperty_Nullable ()
+    {
+      var specification = new SortedPropertySpecification (_customerSincePropertyDefinition, SortOrder.Ascending);
+
+      var comparer = specification.GetComparer<DataContainer> ((dc, property) => 
+          dc.ClassDefinition == property.ClassDefinition 
+          ? dc[property.PropertyName] 
+          : null);
+
+      var dataContainer1 = CreateCustomerDataContainer (new DateTime(2010, 01, 02), Customer.CustomerType.Gold);
+      var dataContainer2 = CreatePartnerDataContainer ();
+
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
+    }
+
+    [Test]
+    public void GetComparer_NonExistingProperty_NonNullable ()
+    {
+      var specification = new SortedPropertySpecification (_customerTypePropertyDefinition, SortOrder.Ascending);
+
+      var comparer = specification.GetComparer<DataContainer> ((dc, property) =>
+          dc.ClassDefinition == property.ClassDefinition
+          ? dc[property.PropertyName]
+          : null);
+
+      var dataContainer1 = CreateCustomerDataContainer (new DateTime (2010, 01, 02), Customer.CustomerType.Gold);
+      var dataContainer2 = CreatePartnerDataContainer ();
+
+      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
+      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
+    }
+
     private DataContainer CreateOrderItemDataContainer (string product)
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
       dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
+      return dataContainer;
+    }
+
+    private DataContainer CreateCustomerDataContainer (DateTime customerSince, Customer.CustomerType customerType)
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Customer1);
+      dataContainer.PropertyValues[_customerSincePropertyDefinition.PropertyName].Value = customerSince;
+      dataContainer.PropertyValues[_customerTypePropertyDefinition.PropertyName].Value = customerType;
+      return dataContainer;
+    }
+
+    private DataContainer CreatePartnerDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Partner1);
       return dataContainer;
     }
   }
