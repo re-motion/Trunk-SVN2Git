@@ -127,25 +127,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return id.StorageProviderID == _provider.ID;
     }
 
-    protected string GetOrderClause (string orderExpression)
-    {
-      if (!string.IsNullOrEmpty (orderExpression))
-        return " ORDER BY " + orderExpression;
-
-      return string.Empty;
-    }
-
     protected string GetOrderClause (SortExpressionDefinition sortExpression)
     {
-      // TODO 3411: Test this if block
       if (sortExpression == null)
         return string.Empty;
 
       var orderByClause = new SortExpressionSqlGenerator (Provider).GenerateOrderByClauseString (sortExpression);
-      if (!string.IsNullOrEmpty (orderByClause))
-        return " " + orderByClause;
-
-      return string.Empty;
+      return " " + orderByClause;
     }
 
     protected ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)

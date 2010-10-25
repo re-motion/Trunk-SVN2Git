@@ -48,16 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GenerateOrderByExpressionString_None_ReturnsEmptyString ()
-    {
-      var sortExpression = new SortExpressionDefinition (new SortedPropertySpecification[0]);
-
-      var result = _generator.GenerateOrderByExpressionString (sortExpression);
-
-      Assert.That (result, Is.EqualTo (string.Empty));
-    }
-
-    [Test]
     public void GenerateOrderByExpressionString_One_Ascending ()
     {
       var sortExpression = new SortExpressionDefinition (
@@ -102,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GenerateOrderByClauseString_Many ()
+    public void GenerateOrderByClauseString ()
     {
       var sortExpression = new SortExpressionDefinition (
           new[]
@@ -115,16 +105,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _generator.GenerateOrderByClauseString (sortExpression);
 
       Assert.That (result, Is.EqualTo ("ORDER BY [OrderNo] ASC, [DeliveryDate] DESC, [CustomerID] ASC"));
-    }
-
-    [Test]
-    public void GenerateColumnListString_None_ReturnsEmptyString ()
-    {
-      var sortExpression = new SortExpressionDefinition (new SortedPropertySpecification[0]);
-
-      var result = _generator.GenerateColumnListString (sortExpression);
-
-      Assert.That (result, Is.EqualTo (string.Empty));
     }
 
     [Test]

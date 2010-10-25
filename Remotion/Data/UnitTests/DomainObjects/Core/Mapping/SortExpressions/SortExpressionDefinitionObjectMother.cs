@@ -47,11 +47,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           });
     }
 
-    public static SortExpressionDefinition CreateEmptySortExpression ()
-    {
-      return new SortExpressionDefinition (new SortedPropertySpecification[0]);
-    }
-
     public static SortExpressionDefinition ParseSortExpression (ClassDefinition classDefinition, string sortExpressionString)
     {
       if (sortExpressionString == null)

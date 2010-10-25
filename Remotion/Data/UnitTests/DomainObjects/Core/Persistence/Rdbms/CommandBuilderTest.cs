@@ -70,11 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GetOrderClause_Empty ()
+    public void GetOrderClause_Null ()
     {
-      var sortExpressionDefinition = SortExpressionDefinitionObjectMother.CreateEmptySortExpression ();
-      
-      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", sortExpressionDefinition);
+      var result = PrivateInvoke.InvokeNonPublicMethod (_commandBuilder, "GetOrderClause", null);
 
       Assert.That (result, Is.EqualTo (string.Empty));
     }

@@ -41,10 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("sortExpression", sortExpression);
 
       var orderByExpressionString = GenerateOrderByExpressionString (sortExpression);
-      if (string.IsNullOrEmpty (orderByExpressionString))
-        return string.Empty;
-      else
-        return "ORDER BY " + orderByExpressionString;
+      return "ORDER BY " + orderByExpressionString;
     }
 
     public string GenerateOrderByExpressionString (SortExpressionDefinition sortExpression)

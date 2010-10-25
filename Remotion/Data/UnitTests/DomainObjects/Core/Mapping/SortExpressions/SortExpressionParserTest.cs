@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       var result = _parser.Parse (sortExpression);
 
-      Assert.That (result.SortedProperties, Is.Empty);
+      Assert.That (result, Is.Null);
     }
 
     [Test]

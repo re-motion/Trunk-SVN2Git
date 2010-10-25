@@ -42,11 +42,14 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 
       try
       {
-        var sortedProperties = from s in sortExpression.Split (',')
-                               let specs = s.Trim()
-                               where !string.IsNullOrEmpty (specs)
-                               select ParseSortedPropertySpecification (specs);
-        return new SortExpressionDefinition (sortedProperties);
+        var sortedProperties = (from s in sortExpression.Split (',')
+                                let specs = s.Trim()
+                                where !string.IsNullOrEmpty (specs)
+                                select ParseSortedPropertySpecification (specs)).ToList();
+        if (sortedProperties.Count == 0)
+          return null;
+        else
+          return new SortExpressionDefinition (sortedProperties);
       }
       catch (MappingException ex)
       {

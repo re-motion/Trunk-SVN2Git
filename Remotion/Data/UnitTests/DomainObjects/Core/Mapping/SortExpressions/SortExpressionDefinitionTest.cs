@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -21,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
@@ -41,6 +43,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentEmptyException), ExpectedMessage = 
+        "A SortExpressionDefinition must contain at least one sorted property.\r\nParameter name: sortedProperties")]
+    public void Initialization_Empty ()
+    {
+      new SortExpressionDefinition (new SortedPropertySpecification[0]);
+    }
+
+    [Test]
     public new void ToString ()
     {
       var sortExpressionDefinition =
@@ -57,23 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product ASC, "
           + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Position DESC";
       Assert.That (result, Is.EqualTo (expected));
-    }
-
-    [Test]
-    public void GetComparer_Empty ()
-    {
-      var sortExpressionDefinition = new SortExpressionDefinition (new SortedPropertySpecification[0]);
-
-      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
-          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
-
-      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
-      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
-      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (0));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (0));
-      Assert.That (comparer.Compare (dataContainer3, dataContainer1), Is.EqualTo (0));
     }
 
     [Test]

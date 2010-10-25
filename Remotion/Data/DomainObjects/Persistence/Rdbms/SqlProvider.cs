@@ -44,7 +44,7 @@ public class SqlProvider : RdbmsProvider
     CheckDisposed ();
 
     if (sortExpression == null)
-      return null;
+      return string.Empty;
 
     return new SortExpressionSqlGenerator (this).GenerateColumnListString (sortExpression);
   }

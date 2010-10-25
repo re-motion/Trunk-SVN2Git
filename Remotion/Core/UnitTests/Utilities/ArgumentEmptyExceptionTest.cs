@@ -25,11 +25,20 @@ namespace Remotion.UnitTests.Utilities
   public class ArgumentEmptyExceptionTest
   {
     [Test]
-    public void Initialize ()
+    public void Initialize_Parameter ()
     {
       var exception = new ArgumentEmptyException ("TheParameter");
 
       Assert.That (exception.Message, Is.EqualTo ("Parameter 'TheParameter' cannot be empty.\r\nParameter name: TheParameter"));
+      Assert.That (exception.ParamName, Is.EqualTo ("TheParameter"));
+    }
+
+    [Test]
+    public void Initialize_MessageAndParameter ()
+    {
+      var exception = new ArgumentEmptyException ("TheParameter", "Message");
+
+      Assert.That (exception.Message, Is.EqualTo ("Message\r\nParameter name: TheParameter"));
       Assert.That (exception.ParamName, Is.EqualTo ("TheParameter"));
     }
   }

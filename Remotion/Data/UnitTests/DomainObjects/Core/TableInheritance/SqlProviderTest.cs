@@ -60,8 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           SortExpressionDefinitionObjectMother.ParseSortExpression (typeof (Order), "Number asc, OrderDate desc, Customer asc");
 
       Assert.That (Provider.GetColumnsFromSortExpression (complexSortExpression), Is.EqualTo ("[Number], [OrderDate], [CustomerID]"));
-      Assert.That (Provider.GetColumnsFromSortExpression (null), Is.Null);
-      Assert.That (Provider.GetColumnsFromSortExpression (SortExpressionDefinitionObjectMother.CreateEmptySortExpression()), Is.EqualTo (string.Empty));
+      Assert.That (Provider.GetColumnsFromSortExpression (null), Is.EqualTo (string.Empty));
     }
   }
 }

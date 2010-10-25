@@ -31,6 +31,11 @@ namespace Remotion.Utilities
     {
     }
 
+    public ArgumentEmptyException ([InvokerParameterName] string paramName, string message)
+      : base (message, paramName)
+    {
+    }
+
     public ArgumentEmptyException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
