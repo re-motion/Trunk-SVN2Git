@@ -65,15 +65,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             "Only relation end points with a property type of '{0}' can contain the foreign key.",
             typeof (DomainObject));
       }
-
-      if (!ReflectionUtility.IsObjectList (PropertyInfo.PropertyType) && !string.IsNullOrEmpty (GetSortExpression()))
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "Only relation end points with a property type of '{0}' can have a sort expression.",
-            typeof (ObjectList<>));
-      }
     }
 
     private bool ContainsKey ()

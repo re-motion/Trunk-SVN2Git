@@ -138,20 +138,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       relationEndPointReflector.GetMetadata ();
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Only relation end points with a property type of 'Remotion.Data.DomainObjects.ObjectList`1[T]' can have a sort expression.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide, "
-        + "property: NonCollectionPropertyHavingASortExpressionLeftSide")]
-    public void GetMetadata_WithNonCollectionPropertyHavingASortExpression ()
-    {
-      Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
-      PropertyInfo propertyInfo = type.GetProperty ("NonCollectionPropertyHavingASortExpressionLeftSide");
-      RdbmsRelationEndPointReflector relationEndPointReflector = new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
-
-      relationEndPointReflector.GetMetadata ();
-    }
-
     private Type GetClassWithInvalidBidirectionalRelationLeftSide ()
     {
       return typeof (ClassWithInvalidBidirectionalRelationLeftSide);
