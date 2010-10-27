@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,6 +27,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   [TestFixture]
   public class LinqPropertyRedirectionAttributeTest
   {
+    [Test]
+    public void Initialization ()
+    {
+      var attribute = new LinqPropertyRedirectionAttribute (typeof (Order), "OrderNumber");
+      
+      var expected = Is.EqualTo (typeof (Order).GetProperty ("OrderNumber"));
+      Assert.That (attribute.GetMappedProperty(), expected);
+    }
+
+    [Test]
+    public void Initialization_NonPublicProperty ()
+    {
+      var attribute = new LinqPropertyRedirectionAttribute (typeof (ClassWithNonPublicProperties), "PrivateGetSet");
+      
+      var expected = typeof (ClassWithNonPublicProperties).GetProperty ("PrivateGetSet", BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (attribute.GetMappedProperty(), Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The member redirects LINQ queries to 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Hugo', which does not exist.")]
+    public void Initialization_NonExistingProperty ()
+    {
+      new LinqPropertyRedirectionAttribute (typeof (Order), "Hugo").GetMappedProperty ();
+    }
+
     [Test]
     public void GetTargetProperty_NonRedirected ()
     {
@@ -58,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.SelfRedirected' redirects LINQ queries "
+        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.SelfRedirected': The member redirects LINQ queries "
         + "to itself.")]
     public void GetTargetProperty_InfiniteRedirection ()
     {
@@ -69,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToNonexistent' redirects LINQ queries "
-        + "to the property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.Nonexistent', which does not exist.")]
+        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToNonexistent': The member redirects LINQ "
+        + "queries to 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.Nonexistent', which does not exist.")]
     public void GetTargetProperty_RedirectionToNonExistentProperty ()
     {
       var property = typeof (ClassWithInvalidRedirectedProperties).GetProperty ("RedirectedToNonexistent");
@@ -80,10 +107,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToPropertyWithOtherType' "
+        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToPropertyWithOtherType': The member "
         + "redirects LINQ queries to the property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.PropertyWithOtherType', which has a "
-        + "different return type.")]
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.PropertyWithOtherType', which has a different "
+        + "return type.")]
     public void GetTargetProperty_RedirectionToPropertyWithOtherType ()
     {
       var property = typeof (ClassWithInvalidRedirectedProperties).GetProperty ("RedirectedToPropertyWithOtherType");

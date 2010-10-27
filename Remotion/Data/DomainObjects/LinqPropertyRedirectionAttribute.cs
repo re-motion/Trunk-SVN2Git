@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -31,7 +32,7 @@ namespace Remotion.Data.DomainObjects
   /// That way, a public unmapped property that acts as a wrapper for a protected mapped property can still be used in queries.
   /// </remarks>
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public class LinqPropertyRedirectionAttribute : Attribute
+  public class LinqPropertyRedirectionAttribute : Attribute, IMethodCallTransformerAttribute
   {
     /// <summary>
     /// Gets the target property the given <see cref="PropertyInfo"/> redirects to, or the given <see cref="PropertyInfo"/> if no
@@ -50,28 +51,27 @@ namespace Remotion.Data.DomainObjects
 
       while ((attribute = AttributeUtility.GetCustomAttribute<LinqPropertyRedirectionAttribute> (propertyInfo, false)) != null)
       {
-        var redirected = attribute.DeclaringType.GetProperty (attribute.MappedPropertyName);
-        if (redirected == null)
+        PropertyInfo redirected;
+        try
         {
-          var message = string.Format (
-              "The property '{0}.{1}' redirects LINQ queries to the property '{2}.{3}', which does not exist.", 
-              propertyInfo.DeclaringType, 
-              propertyInfo.Name,
-              attribute.DeclaringType,
-              attribute.MappedPropertyName);
-          throw new MappingException (message);
+          redirected = attribute.GetMappedProperty ();
         }
-        
+        catch (MappingException ex)
+        {
+          var message = string.Format ("'{0}.{1}': {2}", propertyInfo.DeclaringType, propertyInfo.Name, ex.Message);
+          throw new MappingException (message, ex);
+        }
+
         if (redirected.Equals (propertyInfo))
         {
-          var message = string.Format ("The property '{0}.{1}' redirects LINQ queries to itself.", propertyInfo.DeclaringType, propertyInfo.Name);
+          var message = string.Format ("'{0}.{1}': The member redirects LINQ queries to itself.", propertyInfo.DeclaringType, propertyInfo.Name);
           throw new MappingException (message);
         }
 
         if (redirected.PropertyType != propertyInfo.PropertyType)
         {
           var message = string.Format (
-              "The property '{0}.{1}' redirects LINQ queries to the property '{2}.{3}', which has a different return type.",
+              "'{0}.{1}': The member redirects LINQ queries to the property '{2}.{3}', which has a different return type.",
               propertyInfo.DeclaringType, 
               propertyInfo.Name,
               redirected.DeclaringType,
@@ -119,6 +119,27 @@ namespace Remotion.Data.DomainObjects
     public string MappedPropertyName
     {
       get { return _mappedPropertyName; }
+    }
+
+    /// <summary>
+    /// Gets the property to which the attribute's target is redirected, throwing an exception if the property does not exist.
+    /// </summary>
+    /// <returns>The property to which the attribute's target is redirected.</returns>
+    /// <exception cref="MappingException">The property does not exist.</exception>
+    public PropertyInfo GetMappedProperty ()
+    {
+      var mappedProperty = DeclaringType.GetProperty (MappedPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      if (mappedProperty == null)
+      {
+        var message = string.Format ("The member redirects LINQ queries to '{0}.{1}', which does not exist.", DeclaringType, MappedPropertyName);
+        throw new MappingException (message);
+      }
+      return mappedProperty;
+    }
+
+    public IMethodCallTransformer GetTransformer ()
+    {
+      throw new NotImplementedException ("TODO 3454");
     }
   }
 }

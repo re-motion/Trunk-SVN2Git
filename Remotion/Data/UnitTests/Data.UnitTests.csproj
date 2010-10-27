@@ -860,6 +860,7 @@
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithInvalidRedirectedProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ClassWithNonPublicProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithSerializationCallbacks.cs" />
     <Compile Include="DomainObjects\Core\Serialization\SerializationCallbackTest.cs" />
