@@ -18,7 +18,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Logging;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -49,15 +51,9 @@ public class ClassDefinitionCollection : CommonCollection
 
   // standard constructor for collections
 
-  public ClassDefinitionCollection (ClassDefinitionCollection collection, bool makeCollectionReadOnly)  
+  public ClassDefinitionCollection (ClassDefinitionCollection collection, bool makeCollectionReadOnly) 
+    : this(collection.Cast<ClassDefinition>(), makeCollectionReadOnly, collection._areResolvedTypesRequired)
   {
-    ArgumentUtility.CheckNotNull ("collection", collection);
-
-    foreach (ClassDefinition classDefinition in collection)
-      Add (classDefinition);
-
-    _areResolvedTypesRequired = collection.AreResolvedTypesRequired;
-    SetIsReadOnly (makeCollectionReadOnly);
   }
 
   public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOly, bool areResolvedTypeRequired)

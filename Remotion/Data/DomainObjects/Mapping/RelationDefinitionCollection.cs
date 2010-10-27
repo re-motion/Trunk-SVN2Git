@@ -44,13 +44,8 @@ public class RelationDefinitionCollection : CommonCollection
 
   // standard constructor for collections
   public RelationDefinitionCollection (RelationDefinitionCollection collection, bool makeCollectionReadOnly)  
+    : this(collection.Cast<RelationDefinition>(), makeCollectionReadOnly)
   {
-    ArgumentUtility.CheckNotNull ("collection", collection);
-
-    foreach (RelationDefinition relationDefinition in collection)
-      Add (relationDefinition);
-    
-    SetIsReadOnly (makeCollectionReadOnly);
   }
 
   public RelationDefinitionCollection (IEnumerable<RelationDefinition> collection, bool makeCollectionReadOnly)
