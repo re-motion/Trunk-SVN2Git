@@ -50,17 +50,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         if (!mappingConfiguration.ResolveTypes)
           throw CreateArgumentException ("mappingConfiguration", "Argument 'mappingConfiguration' must have property 'ResolveTypes' set.");
-
-        // TODO 3423
-        //try
-        //{
-        //  mappingConfiguration.Validate();
-        //}
-        //catch (Exception ex)
-        //{
-        //  throw CreateArgumentException (
-        //      ex, "mappingConfiguration", "The specified MappingConfiguration is invalid due to the following reason: '{0}'.", ex.Message);
-        //}
       }
 
       s_mappingConfiguration.Value = mappingConfiguration;
@@ -106,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
 
-        SetClassDefinitionsReadOnly ();
+        SetMappingReadOnly ();
       }
     }
 
@@ -175,10 +164,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return foundRelationDefinition.Contains (relationEndPointDefinition);
     }
 
-    private void SetClassDefinitionsReadOnly ()
+    private void SetMappingReadOnly ()
     {
       foreach (ClassDefinition classDefinition in _classDefinitions)
         classDefinition.SetReadOnly ();
+      _classDefinitions.SetReadOnly();
+      _relationDefinitions.SetReadOnly();
     }
 
     private void ValidateClassDefinitions ()

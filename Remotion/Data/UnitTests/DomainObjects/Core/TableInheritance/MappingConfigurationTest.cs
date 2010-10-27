@@ -16,61 +16,16 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   [TestFixture]
   public class MappingConfigurationTest : TableInheritanceMappingTest
   {
-    [Test]
-    [ExpectedException (typeof (MappingException))]
-    [Ignore("TODO 3413: use an MappingRelectorStub (Loader) an return class definition. Remove")]
-    public void Validate ()
-    {
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
-
-      var nullTypeDiscoveryService = new NullTypeDiscoveryService();
-
-      //IMappingLoader stub;
-      //stub.Stub (stub => stub.GetClassDefinitions).Returns (new ClassDefinition[]{personClass})
-      var mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
-      mappingConfiguration.ClassDefinitions.Add (personClass);
-      //mappingConfiguration.Validate ();
-    }
-
-    [Test]
-    [Ignore("TODO 3423: Remove?")]
-    public void SetCurrentValidates ()
-    {
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
-
-      var nullTypeDiscoveryService = new NullTypeDiscoveryService ();
-      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (nullTypeDiscoveryService));
-      mappingConfiguration.ClassDefinitions.Add (personClass);
-
-      try
-      {
-        MappingConfiguration.SetCurrent (mappingConfiguration);
-        Assert.Fail ("ArgumentException was expected.");
-      }
-      catch (ArgumentException ex)
-      {
-        Assert.AreNotSame (mappingConfiguration, MappingConfiguration.Current);
-        Assert.IsInstanceOfType (typeof (MappingException), ex.InnerException);
-
-        string expectedMessage = string.Format (
-            "The specified MappingConfiguration is invalid due to the following reason: '{0}'.\r\nParameter name: mappingConfiguration",
-            ex.InnerException.Message);
-      }
-    }
-
     [Test]
     public void TableInheritanceMapping ()
     {

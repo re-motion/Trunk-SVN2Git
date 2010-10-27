@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
@@ -194,6 +195,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_classDefinition);
       Assert.IsTrue (_collection.Contains (_classDefinition.ID));
+    }
+
+    [Test]
+    public void SetReadOnly ()
+    {
+      Assert.That (_collection.IsReadOnly, Is.False);
+
+      _collection.SetReadOnly ();
+
+      Assert.That (_collection.IsReadOnly, Is.True);
     }
     
   }

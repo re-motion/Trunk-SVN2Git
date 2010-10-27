@@ -500,6 +500,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />

@@ -63,6 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actualRelationDefinitionCollection, Is.EqualTo(_relationDefinitionCollection));
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
+      Assert.That (configuration.ClassDefinitions.IsReadOnly, Is.True);
+      Assert.That (configuration.RelationDefinitions.IsReadOnly, Is.True);
     }
 
     [Test]

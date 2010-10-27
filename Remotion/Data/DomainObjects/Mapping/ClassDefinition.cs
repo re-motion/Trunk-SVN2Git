@@ -107,6 +107,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       _propertyDefinitions.SetReadOnly();
       _relationDefinitions.SetReadOnly();
+      DerivedClasses.SetReadOnly();
 
       _isReadOnly = true;
     }

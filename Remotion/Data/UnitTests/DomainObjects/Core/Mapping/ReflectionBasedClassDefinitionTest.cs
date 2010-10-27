@@ -92,11 +92,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
       Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.False);
       Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.False);
-
+      
       actual.SetReadOnly();
 
       Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.True);
       Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.True);
+      Assert.That (actual.DerivedClasses.IsReadOnly, Is.True);
     }
 
     [Test]

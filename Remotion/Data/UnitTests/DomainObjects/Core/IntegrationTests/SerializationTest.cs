@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -88,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.AreSame (partnerToPersonRelationDefinition, deserializedPartnerObjects[7]);
 
-      IRelationEndPointDefinition[] deserializedRelationEndPoints = (IRelationEndPointDefinition[]) deserializedPartnerObjects[8];
+      var deserializedRelationEndPoints = (ReadOnlyCollection<IRelationEndPointDefinition>) deserializedPartnerObjects[8];
       Assert.IsFalse (ReferenceEquals (partnerToPersonRelationDefinition.EndPointDefinitions, deserializedRelationEndPoints));
-      Assert.AreEqual (partnerToPersonRelationDefinition.EndPointDefinitions.Length, deserializedRelationEndPoints.Length);
-      for (int i = 0; i < partnerToPersonRelationDefinition.EndPointDefinitions.Length; i++)
+      Assert.AreEqual (partnerToPersonRelationDefinition.EndPointDefinitions.Count, deserializedRelationEndPoints.Count);
+      for (int i = 0; i < partnerToPersonRelationDefinition.EndPointDefinitions.Count; i++)
         Assert.AreSame (partnerToPersonRelationDefinition.EndPointDefinitions[i], deserializedRelationEndPoints[i]);
     }
 

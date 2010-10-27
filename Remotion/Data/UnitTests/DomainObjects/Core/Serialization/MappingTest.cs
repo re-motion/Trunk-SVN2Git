@@ -342,9 +342,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     private void AreEqual (RelationDefinition expected, RelationDefinition actual)
     {
       Assert.AreEqual (expected.ID, actual.ID);
-      Assert.AreEqual (expected.EndPointDefinitions.Length, actual.EndPointDefinitions.Length);
+      Assert.AreEqual (expected.EndPointDefinitions.Count, actual.EndPointDefinitions.Count);
 
-      for (int i = 0; i < expected.EndPointDefinitions.Length; i++)
+      for (int i = 0; i < expected.EndPointDefinitions.Count; i++)
         AreEqual (expected.EndPointDefinitions[i], actual.EndPointDefinitions[i]);
     }
 

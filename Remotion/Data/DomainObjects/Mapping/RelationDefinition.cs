@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -111,9 +112,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    public IRelationEndPointDefinition[] EndPointDefinitions
+    public ReadOnlyCollection<IRelationEndPointDefinition> EndPointDefinitions
     {
-      get { return _endPointDefinitions; }
+      get { return new ReadOnlyCollection<IRelationEndPointDefinition> (_endPointDefinitions); }
     }
 
     public IRelationEndPointDefinition GetEndPointDefinition (string classID, string propertyName)

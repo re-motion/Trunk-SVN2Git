@@ -173,6 +173,7 @@
     <Compile Include="Mapping\Validation\IPersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Validation\IPropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
+    <Compile Include="Mapping\Validation\Logical\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.cs" />
     <Compile Include="Mapping\Validation\PersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Validation\PropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\RelationDefinitionValidator.cs" />

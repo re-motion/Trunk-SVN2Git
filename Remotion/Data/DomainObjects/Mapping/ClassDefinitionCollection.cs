@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Logging;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -37,7 +36,7 @@ public class ClassDefinitionCollection : CommonCollection
 
   private Hashtable _types = new Hashtable ();
   private bool _areResolvedTypesRequired;
-
+  
   // construction and disposing
 
   public ClassDefinitionCollection () : this (true)
@@ -69,6 +68,11 @@ public class ClassDefinitionCollection : CommonCollection
   }
 
   // methods and properties
+
+  public void SetReadOnly ()
+  {
+    SetIsReadOnly (true);
+  }
 
   public ClassDefinitionCollection GetInheritanceRootClasses ()
   {
@@ -214,5 +218,7 @@ public class ClassDefinitionCollection : CommonCollection
   {
     return new InvalidOperationException (string.Format (message, args));
   }
+
+  
 }
 }

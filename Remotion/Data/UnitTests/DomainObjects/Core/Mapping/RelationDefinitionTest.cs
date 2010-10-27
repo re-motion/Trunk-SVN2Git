@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -39,6 +40,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
       _customerEndPoint = (VirtualRelationEndPointDefinition) _customerToOrder.EndPointDefinitions[0];
       _orderEndPoint = (RelationEndPointDefinition) _customerToOrder.EndPointDefinitions[1];
+    }
+
+    [Test]
+    public void EndPointDefinitionsAreReturnedAsReadOnlyCollection ()
+    {
+      RelationDefinition relation = new RelationDefinition ("RelationID", _customerEndPoint, _orderEndPoint);
+
+      Assert.That (relation.EndPointDefinitions, Is.TypeOf (typeof (ReadOnlyCollection<IRelationEndPointDefinition>)));
+      Assert.That (relation.EndPointDefinitions.Count, Is.EqualTo(2));
+      Assert.That (relation.EndPointDefinitions[0], Is.SameAs(_customerEndPoint));
+      Assert.That (relation.EndPointDefinitions[1], Is.SameAs (_orderEndPoint));
     }
 
     [Test]

@@ -33,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class MappingReflectorTest : MappingReflectionTestBase
   {
     [Test]
-    [Ignore ("TODO 3413: use an MappingRelectorStub (Loader) an return class definition")]
     public void ProveThatRelationsAboveTheInheritanceRootAreSupported ()
     {
       var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
@@ -46,8 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               });
       MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
       var mappingConfiguration = new MappingConfiguration (reflector);
-      //mappingConfiguration.Validate ();
-
+      
       Assert.That (mappingConfiguration.RelationDefinitions[0].ID, 
         Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1->"
                    +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
