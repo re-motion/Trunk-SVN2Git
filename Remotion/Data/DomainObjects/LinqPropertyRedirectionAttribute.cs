@@ -18,7 +18,9 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -56,11 +58,37 @@ namespace Remotion.Data.DomainObjects
       public Expression Transform (MethodCallExpression methodCallExpression)
       {
         ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+        MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
-        throw new NotImplementedException ();
+        MemberExpression memberAccess;
+        try
+        {
+          memberAccess = Expression.MakeMemberAccess (methodCallExpression.Object, MappedProperty);
+        }
+        catch (ArgumentException ex)
+        {
+          var message = string.Format (
+              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. {3}",
+              FormattingExpressionTreeVisitor.Format (methodCallExpression),
+              MappedProperty.DeclaringType,
+              MappedProperty.Name,
+              ex.Message);
+          throw new NotSupportedException (message, ex);
+        }
+
+        if (!methodCallExpression.Type.IsAssignableFrom (memberAccess.Type))
+        {
+          var message = string.Format (
+              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. The property has an incompatible return type.",
+                FormattingExpressionTreeVisitor.Format (methodCallExpression),
+                MappedProperty.DeclaringType,
+                MappedProperty.Name);
+          throw new NotSupportedException (message);
+        }
+
+        return memberAccess;
       }
     }
-
 
     /// <summary>
     /// Gets the target property the given <see cref="PropertyInfo"/> redirects to, or the given <see cref="PropertyInfo"/> if no
