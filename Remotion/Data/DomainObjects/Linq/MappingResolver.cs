@@ -63,12 +63,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       var property = joinInfo.MemberInfo as PropertyInfo;
-      IRelationEndPointDefinition leftEndPointDefinition = null;
-      if (property != null)
-      {
-        property = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-        leftEndPointDefinition = classDefinition.ResolveRelationEndPoint (new PropertyInfoAdapter (property));
-      }
+      var leftEndPointDefinition = property != null ? classDefinition.ResolveRelationEndPoint (new PropertyInfoAdapter (property)) : null;
 
       if (leftEndPointDefinition == null)
       {
@@ -127,8 +122,6 @@ namespace Remotion.Data.DomainObjects.Linq
                 originatingEntity.Type.Name,
                 memberInfo.Name));
       }
-
-      property = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return originatingEntity.GetColumn (property.PropertyType, "ID", true);

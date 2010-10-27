@@ -273,6 +273,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private static IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()
     {
       var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
+      var attributeBaseProvider = new AttributeBasedMethodCallTransformerProvider ();
       var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
@@ -280,7 +281,7 @@ namespace Remotion.Data.DomainObjects.Queries
       foreach (var customNodeType in customTransformers)
         methodInfoBasedRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, nameBasedRegistry);
+      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, attributeBaseProvider, nameBasedRegistry);
     }
 
     private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()

@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -90,10 +91,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void MethodCallTransformer_Transform_PublicToPrivateProperty ()
+    {
+      var instance = Expression.Constant (null, typeof (ClassWithNonPublicProperties));
+      var call = Expression.Call (instance, typeof (ClassWithNonPublicProperties).GetProperty ("PublicGetSet").GetGetMethod ());
+
+      var privateProperty = typeof (ClassWithNonPublicProperties).GetProperty ("PrivateGetSet", BindingFlags.Instance | BindingFlags.NonPublic);
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (privateProperty);
+      var result = transformer.Transform (call);
+
+      var expected = Expression.MakeMemberAccess (instance, privateProperty);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
+    public void MethodCallTransformer_Transform_ConvertRequired ()
+    {
+      var instance = Expression.Constant (null, typeof (TargetClassForPersistentMixin));
+      var call = Expression.Call (instance, typeof (TargetClassForPersistentMixin).GetProperty ("RedirectedPersistentProperty").GetGetMethod ());
+
+      var mixinProperty = typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty");
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (mixinProperty);
+      var result = transformer.Transform (call);
+
+      var expected = Expression.MakeMemberAccess (Expression.Convert (instance, typeof (IMixinAddingPersistentProperties)), mixinProperty);
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
         "The method call 'null.get_Position()' cannot be redirected to the property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. Property 'Int32 OrderNumber' is not defined for type "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'")]
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. No coercion operator is defined between types "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' and 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.")]
     public void MethodCallTransformer_Transform_InvalidType ()
     {
       var instance = Expression.Constant (null, typeof (OrderItem));
@@ -117,68 +146,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetTargetProperty_NonRedirected ()
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The method call 'null.get_OrderNumber()' cannot be redirected to the property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. The method would redirect to itself.")]
+    public void MethodCallTransformer_Transform_RedirectionToSelf ()
     {
-      var property = typeof (Order).GetProperty ("OrderNumber");
+      var instance = Expression.Constant (null, typeof (Order));
+      var call = Expression.Call (instance, typeof (Order).GetProperty ("OrderNumber").GetGetMethod ());
 
-      var redirected = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      Assert.That (redirected, Is.SameAs (property));
-    }
-
-    [Test]
-    public void GetTargetProperty_SimpleRedirected ()
-    {
-      var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
-
-      var redirected = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      Assert.That (redirected, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void GetTargetProperty_TwiceRedirected ()
-    {
-      var property = typeof (Order).GetProperty ("RedirectedRedirectedOrderNumber");
-
-      var redirected = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      Assert.That (redirected, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.SelfRedirected': The member redirects LINQ queries "
-        + "to itself.")]
-    public void GetTargetProperty_InfiniteRedirection ()
-    {
-      var property = typeof (ClassWithInvalidRedirectedProperties).GetProperty ("SelfRedirected");
-
-      LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToNonexistent': The member redirects LINQ "
-        + "queries to 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.Nonexistent', which does not exist.")]
-    public void GetTargetProperty_RedirectionToNonExistentProperty ()
-    {
-      var property = typeof (ClassWithInvalidRedirectedProperties).GetProperty ("RedirectedToNonexistent");
-
-      LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.RedirectedToPropertyWithOtherType': The member "
-        + "redirects LINQ queries to the property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRedirectedProperties.PropertyWithOtherType', which has a different "
-        + "return type.")]
-    public void GetTargetProperty_RedirectionToPropertyWithOtherType ()
-    {
-      var property = typeof (ClassWithInvalidRedirectedProperties).GetProperty ("RedirectedToPropertyWithOtherType");
-
-      LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      transformer.Transform (call);
     }
   }
 }

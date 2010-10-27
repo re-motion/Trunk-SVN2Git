@@ -22,6 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [TestDomain]
   public class ClassWithNonPublicProperties : DomainObject
   {
+    public virtual int PublicGetSet { get; set; }
     public virtual int PublicGetProtectedSet { get; protected set; }
     protected virtual int ProtectedGetSet { get; set; }
     

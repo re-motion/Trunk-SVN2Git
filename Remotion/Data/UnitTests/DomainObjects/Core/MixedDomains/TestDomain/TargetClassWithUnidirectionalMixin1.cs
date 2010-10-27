@@ -26,10 +26,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [TestDomain]
   public class TargetClassWithUnidirectionalMixin1 : SimpleDomainObject<TargetClassWithUnidirectionalMixin1>
   {
-    [LinqPropertyRedirection (typeof (MixinAddingUnidirectionalRelation1), "Computer")]
     [StorageClassNone]
     public Computer RedirectedComputer
     {
+      [LinqPropertyRedirection (typeof (MixinAddingUnidirectionalRelation1), "Computer")]
       get { throw new NotImplementedException (); }
     }
   }

@@ -222,20 +222,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveMemberExpression_RedirectedProperty ()
-    {
-      var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
-
-      Assert.That (sqlColumnExpression, Is.Not.Null);
-      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
-      Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
-    }
-
-    [Test]
     public void ResolveMemberExpression_MixedRelationProperty ()
     {
       var property = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
@@ -252,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
         ExpectedMessage = "The member 'Order.OriginalCustomer' does not have a queryable database mapping.")]
-    public void ResolvememberExpression_NotAMappedMember ()
+    public void ResolveMemberExpression_NotAMappedMember ()
     {
       var property = typeof (Order).GetProperty ("OriginalCustomer");
       var entityExpression = new SqlEntityDefinitionExpression (

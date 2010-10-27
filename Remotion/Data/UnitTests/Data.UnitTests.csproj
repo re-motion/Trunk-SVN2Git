@@ -362,7 +362,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassNotDerivedFromDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithAllDataTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithGuidKey.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithInvalidRedirectedProperties.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithInvalidRelation.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithKeyOfInvalidType.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
@@ -860,7 +859,6 @@
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
-    <Compile Include="DomainObjects\TestDomain\ClassWithInvalidRedirectedProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithNonPublicProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithSerializationCallbacks.cs" />

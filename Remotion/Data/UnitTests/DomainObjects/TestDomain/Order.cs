@@ -45,16 +45,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public abstract int OrderNumber { get; set; }
 
     [StorageClassNone]
-    [LinqPropertyRedirection (typeof (Order), "OrderNumber")]
     public int RedirectedOrderNumber
     {
+      [LinqPropertyRedirection (typeof (Order), "OrderNumber")]
       get { return OrderNumber; }
     }
 
     [StorageClassNone]
-    [LinqPropertyRedirection (typeof (Order), "RedirectedOrderNumber")]
     public int RedirectedRedirectedOrderNumber
     {
+      [LinqPropertyRedirection (typeof (Order), "RedirectedOrderNumber")]
       get { return RedirectedOrderNumber; }
     }
     
@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public abstract OrderTicket OrderTicket { get; set; }
 
     [StorageClassNone]
-    [LinqPropertyRedirection (typeof (Order), "OrderTicket")]
     public OrderTicket RedirectedOrderTicket
     {
+      [LinqPropertyRedirection (typeof (Order), "OrderTicket")]
       get { return OrderTicket; }
     }
 
@@ -84,9 +84,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public virtual ObjectList<OrderItem> OrderItems { get; set; }
 
     [StorageClassNone]
-    [LinqPropertyRedirection (typeof (Order), "OrderItems")]
     public ObjectList<OrderItem> RedirectedOrderItems
     {
+      [LinqPropertyRedirection (typeof (Order), "OrderItems")]
       get { return OrderItems; }
     }
 

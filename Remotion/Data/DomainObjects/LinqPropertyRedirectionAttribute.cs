@@ -26,7 +26,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Allows a property to be redirected in the scope of LINQ queries.
+  /// Allows a property or method to be redirected to a different property in the scope of LINQ queries. To redirect a property, apply the attribute 
+  /// to the property's get accessor.
   /// </summary>
   /// <remarks>
   /// Usually, LINQ queries can only be performed on properties that are mapped to a database columns. Trying to use them on
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects
   /// useful to enable LINQ queries on such properties if they can be redirected to another property that is mapped to a column.
   /// That way, a public unmapped property that acts as a wrapper for a protected mapped property can still be used in queries.
   /// </remarks>
-  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
   public class LinqPropertyRedirectionAttribute : Attribute, IMethodCallTransformerAttribute
   {
     /// <summary>
@@ -60,12 +61,24 @@ namespace Remotion.Data.DomainObjects
         ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
         MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
 
-        MemberExpression memberAccess;
+        if (methodCallExpression.Method.Equals (MappedProperty.GetGetMethod (true)))
+        {
+          var message = string.Format (
+              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. The method would redirect to itself.",
+                FormattingExpressionTreeVisitor.Format (methodCallExpression),
+                MappedProperty.DeclaringType,
+                MappedProperty.Name);
+          throw new NotSupportedException (message);
+        }
+
+        Expression instance;
         try
         {
-          memberAccess = Expression.MakeMemberAccess (methodCallExpression.Object, MappedProperty);
+          instance = methodCallExpression.Object.Type == MappedProperty.DeclaringType
+                         ? methodCallExpression.Object
+                         : Expression.Convert (methodCallExpression.Object, MappedProperty.DeclaringType);
         }
-        catch (ArgumentException ex)
+        catch (InvalidOperationException ex)
         {
           var message = string.Format (
               "The method call '{0}' cannot be redirected to the property '{1}.{2}'. {3}",
@@ -75,6 +88,8 @@ namespace Remotion.Data.DomainObjects
               ex.Message);
           throw new NotSupportedException (message, ex);
         }
+
+        var memberAccess = Expression.MakeMemberAccess (instance, MappedProperty);
 
         if (!methodCallExpression.Type.IsAssignableFrom (memberAccess.Type))
         {
@@ -88,57 +103,6 @@ namespace Remotion.Data.DomainObjects
 
         return memberAccess;
       }
-    }
-
-    /// <summary>
-    /// Gets the target property the given <see cref="PropertyInfo"/> redirects to, or the given <see cref="PropertyInfo"/> if no
-    /// <see cref="LinqPropertyRedirectionAttribute"/> is specified.
-    /// </summary>
-    /// <param name="propertyInfo">The property info whose target property should be retrieved.</param>
-    /// <returns>The target property if the given <paramref name="propertyInfo"/> has the <see cref="LinqPropertyRedirectionAttribute"/> applied; 
-    /// otherwise, the <paramref name="propertyInfo"/> itself. The target property is evaluated recursively, i.e., if the target it itself redirected,
-    /// the target's target is returned, and so on.
-    /// </returns>
-    public static PropertyInfo GetTargetProperty (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      LinqPropertyRedirectionAttribute attribute;
-
-      while ((attribute = AttributeUtility.GetCustomAttribute<LinqPropertyRedirectionAttribute> (propertyInfo, false)) != null)
-      {
-        PropertyInfo redirected;
-        try
-        {
-          redirected = attribute.GetMappedProperty ();
-        }
-        catch (MappingException ex)
-        {
-          var message = string.Format ("'{0}.{1}': {2}", propertyInfo.DeclaringType, propertyInfo.Name, ex.Message);
-          throw new MappingException (message, ex);
-        }
-
-        if (redirected.Equals (propertyInfo))
-        {
-          var message = string.Format ("'{0}.{1}': The member redirects LINQ queries to itself.", propertyInfo.DeclaringType, propertyInfo.Name);
-          throw new MappingException (message);
-        }
-
-        if (redirected.PropertyType != propertyInfo.PropertyType)
-        {
-          var message = string.Format (
-              "'{0}.{1}': The member redirects LINQ queries to the property '{2}.{3}', which has a different return type.",
-              propertyInfo.DeclaringType, 
-              propertyInfo.Name,
-              redirected.DeclaringType,
-              redirected.Name);
-          throw new MappingException (message);
-        }
-
-        propertyInfo = redirected;
-      }
-
-      return propertyInfo;
     }
 
     private readonly Type _declaringType;
