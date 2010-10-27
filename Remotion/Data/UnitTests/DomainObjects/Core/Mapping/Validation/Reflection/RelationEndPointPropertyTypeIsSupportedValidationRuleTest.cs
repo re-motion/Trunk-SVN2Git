@@ -18,18 +18,17 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using
-    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
-        ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
 {
   [TestFixture]
-  public class ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest : ValidationRuleTestBase
+  public class RelationEndPointPropertyTypeIsSupportedValidationRuleTest : ValidationRuleTestBase
   {
-    private ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule _validationRule;
-    private ClassDefinition _classDefinition;
+    private RelationEndPointPropertyTypeIsSupportedValidationRule _validationRule;
+    private ReflectionBasedClassDefinition _classDefinition;
     private RelationDefinition _relationDefinition;
     private VirtualRelationEndPointDefinition _endPoint1;
     private RelationEndPointDefinition _endPoint2;
@@ -37,15 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule();
+      _validationRule = new RelationEndPointPropertyTypeIsSupportedValidationRule();
       _classDefinition = new ReflectionBasedClassDefinition (
           "ID",
           "EntityName",
           "SPID",
-          typeof (ForeignKeyIsSupportedClass),
+          typeof (RelationEndPointPropertyClass),
           false,
           null,
-          new PersistentMixinFinderMock (typeof (ForeignKeyIsSupportedClass), new Type[0]));
+          new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
       _relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
@@ -65,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var endPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
@@ -73,115 +72,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    public void PropertyWithNoDbBidirectionalRelationAttribute ()
+    public void NoBidirectionalRelation_PropertyTypeNoDomainObject ()
     {
       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition,
-          "PropertyWithNoDbBidirectionalRelationAttribute",
+          "PropertyWithoutBidirectionalAttribute",
           false,
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("PropertyWithNoDbBidirectionalRelationAttribute"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
-    }
-
-    [Test]
-    public void NoCollectionProperty_ContainsForeignKeyIsTrue ()
-    {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
-          _classDefinition,
-          "NoCollectionProperty_ContainsForeignKey",
-          false,
-          CardinalityType.One,
-          typeof (string),
-          null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
-    }
-
-    [Test]
-    public void NoCollectionProperty_ContainsForeignKeyIsFalse ()
-    {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
-          _classDefinition,
-          "NoCollectionProperty_ContainsNoForeignKey",
-          false,
-          CardinalityType.One,
-          typeof (string),
-          null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsNoForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
-    }
-
-    [Test]
-    public void CollectionProperty_ContainsForeignKeyIsTrue ()
-    {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
-          _classDefinition,
-          "CollectionProperty_ContainsForeignKey",
-          false,
-          CardinalityType.One,
-          typeof (string),
-          null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      var expectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    [Test]
-    public void CollectionProperty_ContainsForeignKeyIsTrue_BothEndPoints ()
-    {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
-          _classDefinition,
-          "CollectionProperty_ContainsForeignKey",
-          false,
-          CardinalityType.One,
-          typeof (string),
-          null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
+          typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithoutBidirectionalAttribute"));
       PrivateInvoke.SetNonPublicField (
           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.";
+      var expectedMessage = "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
-    public void CollectionProperty_ContainsForeignKeyIsFalse ()
+    public void NoBidirectionalRelation_PropertyTypeDomainObject ()
     {
       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition,
-          "CollectionProperty_ContainsNoForeignKey",
+          "DomainObjectPropertyWithoutBidirectionalAttribute",
           false,
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsNoForeignKey"));
+          typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithoutBidirectionalAttribute"));
       PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+
+      var validationResult = _validationRule.Validate (_relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void BidirectionalRelation_PropertyTypeDomainObject ()
+    {
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+          _classDefinition,
+          "DomainObjectPropertyWithBidirectionalAttribute",
+          false,
+          CardinalityType.One,
+          typeof (string),
+          null,
+          typeof (RelationEndPointPropertyClass).GetProperty ("DomainObjectPropertyWithBidirectionalAttribute"));
+      PrivateInvoke.SetNonPublicField (
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+
+      var validationResult = _validationRule.Validate (_relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void BidirectionalRelation_PropertyTypeNoDomainObject ()
+    {
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+          _classDefinition,
+          "PropertyWithBidirectionalAttribute",
+          false,
+          CardinalityType.One,
+          typeof (string),
+          null,
+          typeof (RelationEndPointPropertyClass).GetProperty ("PropertyWithBidirectionalAttribute"));
+      PrivateInvoke.SetNonPublicField (
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 

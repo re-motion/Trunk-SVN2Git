@@ -41,7 +41,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
           new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
           new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
-          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule());
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)

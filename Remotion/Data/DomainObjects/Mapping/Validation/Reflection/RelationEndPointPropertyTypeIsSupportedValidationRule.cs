@@ -14,15 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Text;
+using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
-  /// <summary>
-  /// Validates that a foreign key is not defined for a virtual relation end point.
-  /// </summary>
-  public class ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule : IRelationDefinitionValidatorRule
+  public class RelationEndPointPropertyTypeIsSupportedValidationRule : IRelationDefinitionValidatorRule
   {
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
     {
@@ -46,10 +44,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       if (relationEndPointAsReflectionBasedVirtualRelationEndPoint != null)
       {
         var propertyInfo = relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo;
-        var relationAttribute = (DBBidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (propertyInfo, typeof (DBBidirectionalRelationAttribute), true);
-        if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
+        var relationAttribute = (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (propertyInfo, typeof (BidirectionalRelationAttribute), true);
+        if (relationAttribute == null && !typeof (DomainObject).IsAssignableFrom (propertyInfo.PropertyType))
         {
-          var message = string.Format ("Only relation end points with a property type of '{0}' can contain the foreign key.", typeof (DomainObject));
+          var message = string.Format ("The property type of an uni-directional relation property must be assignable to {0}.", typeof (DomainObject));
           return new MappingValidationResult (false, message);
         }
       }

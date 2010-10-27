@@ -74,16 +74,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    //TODO RM-3371: RelationEndPointPropertyTypeIsSupportedValidationRule,  see VirtualRelationEndPointPropertyTypeIsSupportedValidationRule
+    //TODO RM-3371: Remove
     protected override void ValidatePropertyInfo ()
     {
       base.ValidatePropertyInfo();
-
-      if (!IsBidirectionalRelation && !typeof (DomainObject).IsAssignableFrom (PropertyInfo.PropertyType))
-      {
-        throw CreateMappingException (
-            null, PropertyInfo, "The property type of an uni-directional relation property must be assignable to {0}.", typeof (DomainObject).FullName);
-      }
     }
 
     protected void ValidateOppositePropertyInfo (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)

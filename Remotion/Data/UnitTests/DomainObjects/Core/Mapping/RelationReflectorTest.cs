@@ -342,9 +342,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage =
-        "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation, "
-        + "property: LeftSide")]
+        "Relation definition error for end point: Class 'ClassWithInvalidUnidirectionalRelation' has no property "
+        +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation.LeftSide'.")]
     public void GetMetadata_WithUnidirectionalCollectionProperty ()
     {
       var type = typeof (ClassWithInvalidUnidirectionalRelation);
@@ -362,9 +361,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException),
         ExpectedMessage =
         "Opposite relation property 'Invalid' could not be found on type "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationRightSide'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide, "
-        + "property: InvalidOppositePropertyNameLeftSide")]
+        +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationRightSide'.\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide, "
+        +"property: InvalidOppositePropertyNameLeftSide")]
     public void GetMetadata_WithInvalidOppositePropertyName ()
     {
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();

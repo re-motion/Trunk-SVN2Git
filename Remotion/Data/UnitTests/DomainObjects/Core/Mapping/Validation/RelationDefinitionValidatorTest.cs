@@ -61,12 +61,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       var validator = RelationDefinitionValidator.Create();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (6));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RelationEndPointCombinationIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule)));
       Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule)));
       Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (VirtualRelationEndPointPropertyTypeIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule)));
+      Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (RelationEndPointPropertyTypeIsSupportedValidationRule)));
     }
 
     [Test]
