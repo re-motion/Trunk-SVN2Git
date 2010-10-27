@@ -54,7 +54,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (relationEndPointReflector.IsVirtualEndRelationEndpoint())
       {
-        ValidateVirtualEndPointPropertyInfo (classDefinitions);
         return null;
       }
       else
@@ -72,20 +71,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         relationDefinitions.Add (relationDefinition);
 
         return relationDefinition;
-      }
-    }
-
-    //TODO RM-3371: remove
-    private void ValidateVirtualEndPointPropertyInfo (ClassDefinitionCollection classDefinitions)
-    {
-      RelationEndPointReflector oppositeRelationEndPointReflector = CreateOppositeRelationEndPointReflector (classDefinitions);
-      if (oppositeRelationEndPointReflector.IsVirtualEndRelationEndpoint())
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "A bidirectional relation can only have one virtual relation end point.",
-            BidirectionalRelationAttribute.GetType().FullName);
       }
     }
 
