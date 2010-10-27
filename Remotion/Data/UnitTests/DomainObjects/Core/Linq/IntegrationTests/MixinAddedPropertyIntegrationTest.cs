@@ -18,10 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -116,6 +113,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           from related in ((IMixinAddingPersistentProperties) o).CollectionProperty1Side
           select related;
       CheckQueryResult (query, DomainObjectIDs.RelationTargetForPersistentMixin3);
+    }
+
+    [Test]
+    public void MixedProperties_AccessedViaCastProperty ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where o.MixedMembers.PersistentProperty == 99
+          select o;
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
+    }
+
+    [Test]
+    public void MixedProperties_AccessedViaCastExtensionMethod ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+          where o.GetMixedMembers().PersistentProperty == 99
+          select o;
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
   }
 }

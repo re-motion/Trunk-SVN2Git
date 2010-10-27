@@ -43,5 +43,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       [LinqPropertyRedirection (typeof (IMixinAddingPersistentProperties), "PersistentProperty")]
       get { return ((IMixinAddingPersistentProperties) this).PersistentProperty; }
     }
+
+    [StorageClassNone]
+    public IMixinAddingPersistentProperties MixedMembers
+    {
+      [LinqCastMethod]
+      get { return (IMixinAddingPersistentProperties) this; }
+    }
+  }
+
+  public static class TargetClassForPersistentMixinExtensions
+  {
+    [LinqCastMethod]
+    public static IMixinAddingPersistentProperties GetMixedMembers (this TargetClassForPersistentMixin that)
+    {
+      return (IMixinAddingPersistentProperties) that;
+    }
   }
 }
