@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -34,6 +35,33 @@ namespace Remotion.Data.DomainObjects
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public class LinqPropertyRedirectionAttribute : Attribute, IMethodCallTransformerAttribute
   {
+    /// <summary>
+    /// Implements the transformations required to map a member onto another property.
+    /// </summary>
+    public class MethodCallTransformer : IMethodCallTransformer
+    {
+      private readonly PropertyInfo _mappedProperty;
+
+      public MethodCallTransformer (PropertyInfo mappedProperty)
+      {
+        ArgumentUtility.CheckNotNull ("mappedProperty", mappedProperty);
+        _mappedProperty = mappedProperty;
+      }
+
+      public PropertyInfo MappedProperty
+      {
+        get { return _mappedProperty; }
+      }
+
+      public Expression Transform (MethodCallExpression methodCallExpression)
+      {
+        ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
+
+        throw new NotImplementedException ();
+      }
+    }
+
+
     /// <summary>
     /// Gets the target property the given <see cref="PropertyInfo"/> redirects to, or the given <see cref="PropertyInfo"/> if no
     /// <see cref="LinqPropertyRedirectionAttribute"/> is specified.
@@ -139,7 +167,17 @@ namespace Remotion.Data.DomainObjects
 
     public IMethodCallTransformer GetTransformer ()
     {
-      throw new NotImplementedException ("TODO 3454");
+      PropertyInfo mappedProperty;
+      try
+      {
+        mappedProperty = GetMappedProperty ();
+      }
+      catch (MappingException ex)
+      {
+        throw new InvalidOperationException (ex.Message, ex);
+      }
+      
+      return new MethodCallTransformer (mappedProperty);
     }
   }
 }

@@ -54,6 +54,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetTransformer ()
+    {
+      var attribute = new LinqPropertyRedirectionAttribute (typeof (Order), "OrderNumber");
+
+      var transformer = attribute.GetTransformer ();
+
+      Assert.That (transformer, Is.TypeOf (typeof (LinqPropertyRedirectionAttribute.MethodCallTransformer)));
+      Assert.That (((LinqPropertyRedirectionAttribute.MethodCallTransformer) transformer).MappedProperty, 
+          Is.SameAs (typeof (Order).GetProperty ("OrderNumber")));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The member redirects LINQ queries to 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Hugo', which does not exist.")]
+    public void GetTransformer_NonExistingProperty ()
+    {
+      var attribute = new LinqPropertyRedirectionAttribute (typeof (Order), "Hugo");
+      attribute.GetTransformer ();
+    }
+
+    [Test]
     public void GetTargetProperty_NonRedirected ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
