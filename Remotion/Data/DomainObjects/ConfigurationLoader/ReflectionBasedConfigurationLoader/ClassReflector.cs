@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
@@ -28,8 +27,7 @@ using TypeUtility=Remotion.Utilities.TypeUtility;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// The <see cref="ClassReflector"/> is used to build a <see cref="ReflectionBasedClassDefinition"/> and the <see cref="RelationDefinition"/> 
-  /// objects for a type.
+  /// The <see cref="ClassReflector"/> is used to build a <see cref="ReflectionBasedClassDefinition"/>.
   /// </summary>
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="ClassReflector"/>'s constructor signature. </remarks>
   public class ClassReflector
@@ -64,26 +62,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       classDefinitions.Add (classDefinition);
 
       return classDefinition;
-    }
-
-    public List<RelationDefinition> GetRelationDefinitions (
-        ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
-
-      List<RelationDefinition> relations = new List<RelationDefinition>();
-      ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
-
-      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, PersistentMixinFinder))
-      {
-        RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo, NameResolver);
-        RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions, relationDefinitions);
-        if (relationDefinition != null)
-          relations.Add (relationDefinition);
-      }
-
-      return relations;
     }
 
     protected MappingException CreateMappingException (Exception innerException, Type type, string message, params object[] args)
@@ -188,12 +166,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       PropertyFinder propertyFinder = new PropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
-    }
-
-    private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
-    {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
-      return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }
 }

@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {elapsed}."))
       {
         var relationDefinitions = new RelationDefinitionCollection();
-        foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))
+        foreach (var classReflector in CreateClassReflectorsForRelations (classDefinitions))
           classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
 
         return
@@ -73,10 +73,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
              select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
     }
 
-    private IEnumerable<ClassReflector> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
+    private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
     {
       return from classDefinition in classDefinitions.Cast<ClassDefinition>()
-             select ClassReflector.CreateClassReflector (classDefinition.ClassType, NameResolver);
+             select ClassReflectorForRelations.CreateClassReflector (classDefinition.ClassType, NameResolver);
     }
 
     private Type[] GetDomainObjectTypesSorted ()
