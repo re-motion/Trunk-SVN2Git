@@ -64,10 +64,11 @@ public class ClassDefinitionCollection : CommonCollection
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 
+    _areResolvedTypesRequired = areResolvedTypeRequired;
+
     foreach (var classDefinition in collection)
       Add (classDefinition);
 
-    _areResolvedTypesRequired = areResolvedTypeRequired;
     SetIsReadOnly (makeCollectionReadOly);
   }
 

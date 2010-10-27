@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
@@ -26,18 +28,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
     }
 
-    public ClassDefinitionCollection GetClassDefinitions ()
+    public IEnumerable<ClassDefinition> GetClassDefinitions ()
     {
-      ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
-      classDefinitionCollection.Add (
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Fake", "Fake", "Fake", typeof (Company), false));
-
-      return classDefinitionCollection;
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Fake", "Fake", "Fake", typeof (Company), false);
+      return new[] { classDefinition };
     }
 
-    public RelationDefinitionCollection GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
+    public IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
     {
-      return new RelationDefinitionCollection();
+      return new RelationDefinition[0];
     }
 
     public bool ResolveTypes

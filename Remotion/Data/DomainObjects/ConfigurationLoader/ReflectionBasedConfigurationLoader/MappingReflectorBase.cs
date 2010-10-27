@@ -19,21 +19,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Logging;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  public abstract class MappingReflectorBase: IMappingLoader
+  public abstract class MappingReflectorBase : IMappingLoader
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflectorBase));
 
     private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver();
 
-    protected abstract IEnumerable<Type> GetDomainObjectTypes();
+    protected abstract IEnumerable<Type> GetDomainObjectTypes ();
 
-    public ClassDefinitionCollection GetClassDefinitions()
+    public IEnumerable<ClassDefinition> GetClassDefinitions ()
     {
       s_log.Info ("Reflecting class definitions...");
 
@@ -43,11 +43,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         foreach (ClassReflector classReflector in CreateClassReflectors())
           classReflector.GetClassDefinition (classDefinitions);
 
-        return classDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count));
+        return
+            classDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count)).Cast
+                <ClassDefinition>();
       }
     }
 
-    public RelationDefinitionCollection GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
+    public IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       s_log.InfoFormat ("Reflecting relation definitions of {0} class definitions...", classDefinitions.Count);
@@ -58,11 +60,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))
           classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
 
-        return relationDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count));
+        return
+            relationDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count)).
+                Cast<RelationDefinition>();
       }
     }
 
-    private IEnumerable<ClassReflector> CreateClassReflectors()
+    private IEnumerable<ClassReflector> CreateClassReflectors ()
     {
       var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (GetDomainObjectTypesSorted());
       return from domainObjectClass in inheritanceHierarchyFilter.GetLeafTypes()
@@ -77,7 +81,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private Type[] GetDomainObjectTypesSorted ()
     {
-      return GetDomainObjectTypes ().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray();
+      return GetDomainObjectTypes().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray();
     }
 
     bool IMappingLoader.ResolveTypes

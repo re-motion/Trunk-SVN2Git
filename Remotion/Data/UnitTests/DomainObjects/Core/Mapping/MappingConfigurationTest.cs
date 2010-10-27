@@ -30,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private MockRepository _mockRepository;
     private IMappingLoader _mockMappingLoader;
-    private readonly ClassDefinitionCollection _classDefinitionCollection = new ClassDefinitionCollection();
-    private readonly RelationDefinitionCollection _relationDefinitionCollection = new RelationDefinitionCollection();
+    private readonly ClassDefinition[] _classDefinitionCollection = new ClassDefinition[0];
+    private readonly RelationDefinition[] _relationDefinitionCollection = new RelationDefinition[0];
     private ReflectionBasedNameResolver _nameResolver;
 
     public override void SetUp()
@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize()
     {
-      Expect.Call (_mockMappingLoader.GetClassDefinitions ()).Return (_classDefinitionCollection);
-      Expect.Call (_mockMappingLoader.GetRelationDefinitions (_classDefinitionCollection)).Return (_relationDefinitionCollection);
+      Expect.Call (_mockMappingLoader.GetClassDefinitions ()).Return ( _classDefinitionCollection );
+      Expect.Call (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
       Expect.Call (_mockMappingLoader.ResolveTypes).Return (true);
       Expect.Call (_mockMappingLoader.NameResolver).Return (_nameResolver);
 
@@ -59,38 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.VerifyAll();
 
-      Assert.That (actualClassDefinitionCollection, Is.SameAs (_classDefinitionCollection));
-      Assert.That (actualRelationDefinitionCollection, Is.SameAs (_relationDefinitionCollection));
+      Assert.That (actualClassDefinitionCollection, Is.EqualTo(_classDefinitionCollection));
+      Assert.That (actualRelationDefinitionCollection, Is.EqualTo(_relationDefinitionCollection));
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IMappingLoader.GetClassDefinitions() evaluated and returned null.")]
-    public void Initialize_WithGetClassDefinitionsEvaluatesNull()
-    {
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (null);
-
-      _mockRepository.ReplayAll();
-
-      new MappingConfiguration (_mockMappingLoader);
-    
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null.")]
-    public void Initialize_WithGetRelationDefinitionsEvaluatesNull ()
-    {
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (_classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (_classDefinitionCollection)).Return (null);
-
-      _mockRepository.ReplayAll ();
-
-      new MappingConfiguration (_mockMappingLoader);
-
-      _mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -99,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       try
       {
         SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_classDefinitionCollection);
-        SetupResult.For (_mockMappingLoader.GetRelationDefinitions (_classDefinitionCollection)).Return (_relationDefinitionCollection);
+        SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
         SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
         SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
 
@@ -122,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetCurrentRejectsUnresolvedTypes()
     {
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (_classDefinitionCollection)).Return (_relationDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (false);
       SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
 

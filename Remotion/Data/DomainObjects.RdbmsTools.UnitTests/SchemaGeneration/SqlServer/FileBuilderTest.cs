@@ -117,8 +117,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
       SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
-      SetupResult.For (mappingLoaderStub.GetClassDefinitions ()).Return (classDefinitionCollection);
-      SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinitionCollection());
+      SetupResult.For (mappingLoaderStub.GetClassDefinitions ()).Return (new ClassDefinition[0]);
+      SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
       mockRepository.ReplayAll();
 
       FileBuilderBase.Build (typeof (FileBuilder), new MappingConfiguration (mappingLoaderStub), StorageConfiguration, "TestDirectory");

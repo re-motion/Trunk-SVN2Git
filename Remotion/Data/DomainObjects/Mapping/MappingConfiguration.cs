@@ -93,17 +93,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = loader.GetClassDefinitions();
-        if (_classDefinitions == null)
-          throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
-
+        _classDefinitions = new ClassDefinitionCollection(loader.GetClassDefinitions(),true, true);
+        
         ValidateClassDefinitions ();
         ValidatePropertyDefinitions ();
 
-        _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
-        if (_relationDefinitions == null)
-          throw new InvalidOperationException (string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
-
+        _relationDefinitions = new RelationDefinitionCollection(loader.GetRelationDefinitions (_classDefinitions), true);
+        
         ValidateRelationDefinitions ();
         ValidatePersistenceMapping ();
 

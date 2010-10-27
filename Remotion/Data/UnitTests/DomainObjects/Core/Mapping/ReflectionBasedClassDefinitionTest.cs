@@ -1149,7 +1149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           .Return (new[] { typeof (Base), typeof (Shadower) });
 
       var mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
-      ClassDefinition classDefinition1 = mappingReflector.GetClassDefinitions()[typeof (Shadower)];
+      ClassDefinition classDefinition1 = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true)[typeof (Shadower)];
       ClassDefinition classDefinition2 = classDefinition1.BaseClass;
 
       var propertyDefinition1 =
