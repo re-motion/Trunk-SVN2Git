@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
@@ -60,11 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       var validator = RelationDefinitionValidator.Create();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (4));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RelationEndPointCombinationIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule)));
       Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule)));
       Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (VirtualRelationEndPointPropertyTypeIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule)));
     }
 
     [Test]

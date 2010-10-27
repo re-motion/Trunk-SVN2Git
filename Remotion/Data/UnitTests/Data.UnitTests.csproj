@@ -490,6 +490,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule\NonAbstractClassWithoutLegacyConstructor.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\GenericTypeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\NonGenericTypeDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule\ForeignKeyIsSupportedClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\BaseMappingAttributesClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\DerivedMappingAttributesCheckClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithInvalidPropertyAttributes.cs" />
@@ -500,7 +501,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />

@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -53,18 +54,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return !ContainsKey();
     }
 
-    protected override void ValidatePropertyInfo ()
+    protected override void ValidatePropertyInfo () //TODO: 3371: Remove
     {
       base.ValidatePropertyInfo();
-
-      if (ReflectionUtility.IsObjectList (PropertyInfo.PropertyType) && ContainsKey())
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "Only relation end points with a property type of '{0}' can contain the foreign key.",
-            typeof (DomainObject));
-      }
     }
 
     private bool ContainsKey ()

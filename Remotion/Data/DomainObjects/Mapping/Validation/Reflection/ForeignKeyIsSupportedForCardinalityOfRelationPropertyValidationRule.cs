@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
+  /// <summary>
+  /// Validates that a foreign key is not defined for a virtual relation end point.
+  /// </summary>
   public class ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule : IRelationDefinitionValidatorRule
   {
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
@@ -45,13 +47,18 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      var relationAttribute = (DBBidirectionalRelationAttribute)
-          AttributeUtility.GetCustomAttribute (relationEndPointDefinition.PropertyInfo, typeof (DBBidirectionalRelationAttribute), true);
-      if (relationAttribute != null && relationAttribute.ContainsForeignKey && relationEndPointDefinition.IsVirtual)
+      var relationEndPointAsReflectionBasedVirtualRelationEndPoint = relationEndPointDefinition as ReflectionBasedVirtualRelationEndPointDefinition;
+      if (relationEndPointAsReflectionBasedVirtualRelationEndPoint != null)
       {
-        var message = string.Format ("Only relation end points with a property type of '{0}' can contain the foreign key.", typeof (DomainObject));
-        return new MappingValidationResult (false, message);
+        var propertyInfo = relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo;
+        var relationAttribute = (DBBidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (propertyInfo, typeof (DBBidirectionalRelationAttribute), true);
+        if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
+        {
+          var message = string.Format ("Only relation end points with a property type of '{0}' can contain the foreign key.", typeof (DomainObject));
+          return new MappingValidationResult (false, message);
+        }
       }
+
       return new MappingValidationResult (true);
     }
   }

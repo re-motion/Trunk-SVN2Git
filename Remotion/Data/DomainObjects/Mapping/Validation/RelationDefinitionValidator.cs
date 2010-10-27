@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -39,7 +40,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new RelationEndPointCombinationIsSupportedValidationRule(),
           new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
           new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
-          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule());
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)

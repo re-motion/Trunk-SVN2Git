@@ -124,25 +124,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide, "
-        + "property: CollectionPropertyContainsKeyLeftSide")]
-    public void GetMetadata_WithCollectionPropertyContainingTheKey ()
-    {
-      Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
-      PropertyInfo propertyInfo = type.GetProperty ("CollectionPropertyContainsKeyLeftSide");
-      RdbmsRelationEndPointReflector relationEndPointReflector = new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
-
-      relationEndPointReflector.GetMetadata ();
-    }
-
-    private Type GetClassWithInvalidBidirectionalRelationLeftSide ()
-    {
-      return typeof (ClassWithInvalidBidirectionalRelationLeftSide);
-    }
-
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false);
