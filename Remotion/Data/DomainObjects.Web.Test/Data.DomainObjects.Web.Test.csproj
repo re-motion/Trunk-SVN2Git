@@ -83,6 +83,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
+      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
+      <Name>Data.Linq.SqlBackend</Name>
+    </ProjectReference>
     <Reference Include="Castle.Core, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Castle.Core.dll</HintPath>

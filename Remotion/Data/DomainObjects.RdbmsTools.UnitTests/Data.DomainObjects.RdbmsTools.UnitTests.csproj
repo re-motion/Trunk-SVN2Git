@@ -155,6 +155,10 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
+      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
+      <Name>Data.Linq.SqlBackend</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProvider.sql" />
