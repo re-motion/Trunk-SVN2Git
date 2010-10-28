@@ -101,6 +101,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return oppositeRelationEndPointReflector.GetMetadata ();
     }
 
+    //TODO 3424: create rule ??
     private AnonymousRelationEndPointDefinition CreateOppositeAnonymousRelationEndPointDefinition (ClassDefinitionCollection classDefinitions)
     {
       try

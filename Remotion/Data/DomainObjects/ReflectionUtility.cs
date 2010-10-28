@@ -231,5 +231,15 @@ namespace Remotion.Data.DomainObjects
 
       return type.Assembly == typeof (DomainObject).Assembly;
     }
+
+    /// <summary>
+    /// Checks if a property type is a relation property.
+    /// </summary>
+    /// <param name="propertyType"></param>
+    /// <returns>true if the given property type is a relation property.</returns>
+    public static bool IsRelationProperty (Type propertyType)
+    {
+      return (typeof (DomainObject).IsAssignableFrom (propertyType));
+    }
   }
 }

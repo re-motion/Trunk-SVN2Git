@@ -357,6 +357,12 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfDomainObjectWithoutStorageClassNone\ClassWithInvalidPropertyType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeToDomainObjectAboveTheInheritanceRoot\InheritanceRootClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeToDomainObjectAboveTheInheritanceRoot\ClassAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot\ClassWithInvalidProperty.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObject\ClassWithInvalidProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\AbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Ceo.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ClassDerivedFromSimpleDomainObject.cs" />
@@ -501,6 +507,10 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestMappingConfiguration.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectWithoutStorageClassNone\ClassWithInvalidPropertyType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedPropertyTypesIntegrationTests.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedRelationsIntegrationTests.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\ValidationIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
@@ -1187,9 +1197,6 @@
     </Compile>
     <Compile Include="DomainObjects\SetupFixture.cs" />
     <Compile Include="DomainObjects\Factories\StandardConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionCollectionTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ReflectionBasedClassDefinitionTest.cs">
       <SubType>Code</SubType>
     </Compile>

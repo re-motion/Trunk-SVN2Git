@@ -47,18 +47,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           _classDefinition,
           propertyInfo,
           GetPropertyName(),
-          IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType,
+          ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
           StorageClass,
           new ColumnDefinition (storageSpecificIdentifier, propertyInfo));
     }
 
+    //TODO: create persistence rule: PropertyTypeIsSupportedByStorageProvider
     private void CheckValidPropertyType()
     {
       if (StorageClass == StorageClass.Persistent)
       {
-        Type nativePropertyType = IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType;
+        Type nativePropertyType = ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType;
 
         if (!IsTypeSupportedByStorageProvider (nativePropertyType))
           throw CreateMappingException (null, PropertyInfo, "The property type {0} is not supported.", nativePropertyType);
@@ -78,7 +79,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (PropertyInfo, true);
       if (attribute != null)
         return attribute.Identifier;
-      if (IsRelationProperty())
+      if (ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType))
         return PropertyInfo.Name + "ID";
       return PropertyInfo.Name;
     }
@@ -100,11 +101,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (attribute != null)
         return attribute.MaximumLength;
       return null;
-    }
-
-    private bool IsRelationProperty ()
-    {
-      return (typeof (DomainObject).IsAssignableFrom (PropertyInfo.PropertyType));
     }
   }
 }
