@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObject
 {
   [DBTable]
+  [ClassID ("PropertyTypeOfObjectList_DomainObject_ClassWithInvalidProperty")]
   public class ClassWithInvalidProperty : DomainObject
   {
     public ObjectList<DomainObject> InvalidProperty1 { get; set; }

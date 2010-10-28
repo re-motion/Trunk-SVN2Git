@@ -19,10 +19,15 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -97,6 +102,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.AreEqual (Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
           ReflectionUtility.GetConfigFileDirectory());
     }
-    
+
+    [Test]
+    public void IsDomainObjectBase_DomainObjectBase ()
+    {
+      Assert.That (ReflectionUtility.IsDomainObjectBase (typeof (DomainObject)), Is.True);
+    }
+
+    [Test]
+    public void IsDomainObjectBase_NoDomainObjectBase ()
+    {
+      Assert.That (ReflectionUtility.IsDomainObjectBase (typeof (string)), Is.False);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_BaseTypeIsDomainObjectBase ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (AbstractClass)), Is.True);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_BaseTypeIsNoDomainObjectBase_ClassHasStorageGroupAttributeApplied ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (Derived2ClassWithStorageGroupAttribute)), Is.True);
+    }
+
+    [Test]
+    public void IsInheritanceRoot_BaseTypeIsNoDomainObjectBase_DomainObject ()
+    {
+      Assert.That (ReflectionUtility.IsInheritanceRoot (typeof (DomainObject)), Is.False);
+    }
+
+    [Test]
+    public void IsRelationProperty_DomainObjectIsNotAssignableFromPropertyType ()
+    {
+      Assert.That (ReflectionUtility.IsRelationProperty (typeof (string)), Is.False);
+    }
+
+    [Test]
+    public void IsRelationProperty_DomainObjectIsAssignableFromPropertyType ()
+    {
+      Assert.That (ReflectionUtility.IsRelationProperty (typeof (AbstractClass)), Is.True);
+    }
+
+    [Test]
+    public void IsTypeSupportedByStorageProvider_UnsupportedType ()
+    {
+      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof(object), "DefaultStorageProvider"), Is.False);
+    }
+
+    [Test]
+    public void IsTypeSupportedByStorageProvider_SupportedType ()
+    {
+      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof (string), "DefaultStorageProvider"), Is.True);
+    }
+
   }
 }

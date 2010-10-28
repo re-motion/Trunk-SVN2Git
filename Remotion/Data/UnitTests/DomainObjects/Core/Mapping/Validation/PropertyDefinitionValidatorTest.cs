@@ -60,10 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       var validator = PropertyDefinitionValidator.Create ();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (3));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (4));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
       Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
       Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (PropertyTypeIsSupportedValidationRule)));
     }
 
     [Test]

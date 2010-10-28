@@ -31,5 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
 
     [StorageClass (StorageClass.None)]
     public string PropertyWithStorageClassNone { get; set; }
+
+    [StorageClass (StorageClass.Persistent)]
+    public object PropertyWithTypeObjectWithStorageClassPersistent { get; set; }
+
+    [StorageClass (StorageClass.Persistent)]
+    public OtherDerivedValidationHierarchyClass RelationPropertyWithStorageClassPersistent { get; set; }
   }
 }

@@ -32,6 +32,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // static members and constants
 
+    public static bool IsTypeSupported (Type propertyType)
+    {
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+
+      return propertyType.IsValueType 
+          || propertyType == typeof (string) 
+          || propertyType == typeof (byte[]) 
+          || propertyType == typeof (Type)
+          || propertyType == typeof (ObjectID) 
+          || ExtensibleEnumUtility.IsExtensibleEnumType (propertyType);
+    }
+
     private static bool AreValuesDifferent (object value1, object value2)
     {
       return !object.Equals (value1, value2);
@@ -76,12 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
-      if (!definition.PropertyType.IsValueType
-          && definition.PropertyType != typeof (string)
-          && definition.PropertyType != typeof (byte[]) 
-          && definition.PropertyType != typeof (Type)
-          && definition.PropertyType != typeof (ObjectID)
-          && !ExtensibleEnumUtility.IsExtensibleEnumType (definition.PropertyType))
+      if (!IsTypeSupported (definition.PropertyType))
       {
         var message = string.Format ("The property '{0}' (declared on class '{1}') is invalid because its values cannot be copied. Only value types, "
             + "strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is '{2}'.",

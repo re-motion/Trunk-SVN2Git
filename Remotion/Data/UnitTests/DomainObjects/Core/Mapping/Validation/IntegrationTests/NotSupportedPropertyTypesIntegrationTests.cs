@@ -24,8 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   public class NotSupportedPropertyTypesIntegrationTests : ValidationIntegrationTestBase
   {
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "The property type System.Object is not supported.\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectWithoutStorageClassNone.ClassWithInvalidPropertyType, property: InvalidProperty")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "The property type System.Object is not supported.")]
     public void PropertyTypeOfObjectWithoutStorageClassNone ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectWithoutStorageClassNone");
@@ -49,9 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), 
+    [ExpectedException (typeof (MappingException),
       ExpectedMessage = "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.DomainObjects.DomainObject] is not supported.\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObject.ClassWithInvalidProperty, property: InvalidProperty1")]
+      + "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] is not supported.")]
     public void PropertyTypeOfObjectList_DomainObject ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObject");
@@ -59,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     [Test]
     [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] is not supported.\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassWithInvalidProperty, property: InvalidProperty")]
+      ExpectedMessage = "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] is not supported.")]
     public void PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot");

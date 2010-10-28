@@ -39,8 +39,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     public ReflectionBasedPropertyDefinition GetMetadata ()
     {
-      CheckValidPropertyType();
-
       PropertyInfo propertyInfo = PropertyInfo;
       var storageSpecificIdentifier = GetStorageSpecificIdentifier();
       return new ReflectionBasedPropertyDefinition (
@@ -52,25 +50,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           GetMaxLength(),
           StorageClass,
           new ColumnDefinition (storageSpecificIdentifier, propertyInfo));
-    }
-
-    //TODO: create persistence rule: PropertyTypeIsSupportedByStorageProvider
-    private void CheckValidPropertyType()
-    {
-      if (StorageClass == StorageClass.Persistent)
-      {
-        Type nativePropertyType = ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType;
-
-        if (!IsTypeSupportedByStorageProvider (nativePropertyType))
-          throw CreateMappingException (null, PropertyInfo, "The property type {0} is not supported.", nativePropertyType);
-      }
-    }
-
-    private bool IsTypeSupportedByStorageProvider (Type type)
-    {
-      StorageProviderDefinition storageProviderDefinition =
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_classDefinition.StorageProviderID);
-      return storageProviderDefinition.TypeProvider.IsTypeSupported (type);
     }
 
     //TODO: Move adding of "ID" to RdbmsPropertyReflector

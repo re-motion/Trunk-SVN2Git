@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -236,10 +237,22 @@ namespace Remotion.Data.DomainObjects
     /// Checks if a property type is a relation property.
     /// </summary>
     /// <param name="propertyType"></param>
-    /// <returns>true if the given property type is a relation property.</returns>
+    /// <returns>true if the given type is a relation property.</returns>
     public static bool IsRelationProperty (Type propertyType)
     {
       return (typeof (DomainObject).IsAssignableFrom (propertyType));
+    }
+
+    /// <summary>
+    /// Checks if a property type is supported by the storage provider.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="storageProviderID"></param>
+    /// <returns>true if the given type is supported by the storage provider.</returns>
+    public static bool IsTypeSupportedByStorageProvider (Type type, string storageProviderID)
+    {
+      var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
+      return storageProviderDefinition.TypeProvider.IsTypeSupported (type);
     }
   }
 }

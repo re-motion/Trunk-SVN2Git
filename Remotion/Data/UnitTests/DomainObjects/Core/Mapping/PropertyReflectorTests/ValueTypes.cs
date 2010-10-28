@@ -95,18 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (null, actual.DefaultValue);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The property type System.Object is not supported.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests.ValueTypes, "
-        + "property: ObjectProperty")]
-    public void GetMetadata_WithInvalidPropertyType()
-    {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ValueTypes> ("ObjectProperty");
-
-      propertyReflector.GetMetadata();
-    }
-
     public object ObjectProperty
     {
       get { return null; }

@@ -39,7 +39,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule(),
           new NonAbstractClassHasEntityNameValidationRule(),
           new StorageProviderIDMatchesParentStorageProviderIDValiadationRule(),
-          new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule());
+          new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
+          new PropertyTypeIsSupportedByStorageProviderValidationRule());
     }
 
     public PersistenceMappingValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)

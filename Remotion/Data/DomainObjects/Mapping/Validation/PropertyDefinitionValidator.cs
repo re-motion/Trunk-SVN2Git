@@ -38,7 +38,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
       return new ClassDefinitionValidator (
         new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
         new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
-        new StorageClassIsSupportedValidationRule());
+        new StorageClassIsSupportedValidationRule(),
+        new PropertyTypeIsSupportedValidationRule());
     }
 
     public PropertyDefinitionValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)
