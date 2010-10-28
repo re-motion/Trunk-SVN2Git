@@ -21,6 +21,10 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -88,6 +92,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         MappingConfiguration.SetCurrent (null);
       }
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Generic domain objects are not supported.")]
+    public void ClassDefinitionsAreValidated ()
+    {
+      var type = typeof (GenericTypeDomainObject<string>);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+      var classDefinitionCollection = new[] { classDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction are supported.")]
+    public void PropertyDefinitionsAreValidated ()
+    {
+      var type = typeof (DerivedValidationDomainObjectClass);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
+      var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      var classDefinitionCollection = new[] { classDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.")]
+    public void RelationDefinitionsAreValidated ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ID",
+          "EntityName",
+          "SPID",
+          typeof (RelationEndPointPropertyClass),
+          false,
+          null,
+          new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
+      var relationDefinition =
+          FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+      var classDefinitionCollection = new[] { classDefinition };
+      var relationDefinitionCollection = new[] { relationDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitionCollection);
+
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "Neither class 'NonAbstractClassHasEntityNameDomainObject' nor its base classes specify an entity name. "
+      +"Make class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass, "
+      +"Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' abstract or apply a DBTable attribute to it or one of its base classes.")]
+    public void PersistenceMappingIsValidated ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "NonAbstractClassHasEntityNameDomainObject",
+          null,
+          "NonAbstractClassHasEntityNameStorageProviderID",
+          typeof (DerivedValidationDomainObjectClass),
+          false);
+      var classDefinitionCollection = new[] { classDefinition };
+      
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
     }
 
     [Test]

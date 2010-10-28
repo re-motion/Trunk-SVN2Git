@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (storageClassAttribute != null && storageClassAttribute.StorageClass != StorageClass.Persistent
           && storageClassAttribute.StorageClass != StorageClass.Transaction)
       {
-        var message = "Only StorageClass.Persistent and StorageClass.Transaction is supported.";
+        var message = "Only StorageClass.Persistent and StorageClass.Transaction are supported.";
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
