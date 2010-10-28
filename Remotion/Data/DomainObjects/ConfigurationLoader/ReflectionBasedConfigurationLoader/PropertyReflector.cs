@@ -39,7 +39,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     public ReflectionBasedPropertyDefinition GetMetadata ()
     {
-      ValidatePropertyInfo();
       CheckValidPropertyType();
 
       PropertyInfo propertyInfo = PropertyInfo;

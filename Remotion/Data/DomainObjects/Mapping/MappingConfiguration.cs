@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       if (_classDefinitions.Count > 0)
       {
-        var propertyDefinitionValidator = ClassDefinitionValidator.Create ();
+        var propertyDefinitionValidator = PropertyDefinitionValidator.Create ();
         var propertyDefinitionValidationResults = propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition> ()).ToArray ();
         if (propertyDefinitionValidationResults.Length > 0)
           throw CreateMappingException (propertyDefinitionValidationResults);

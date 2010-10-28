@@ -40,7 +40,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     public IRelationEndPointDefinition GetMetadata ()
     {
-      ValidatePropertyInfo();
       if (IsVirtualEndRelationEndpoint())
         return CreateVirtualRelationEndPointDefinition (ClassDefinition);
       else

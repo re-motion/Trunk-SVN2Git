@@ -49,7 +49,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
-      ValidatePropertyInfo();
       RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo, NameResolver);
 
       if (relationEndPointReflector.IsVirtualEndRelationEndpoint())
@@ -72,12 +71,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
         return relationDefinition;
       }
-    }
-
-    //TODO RM-3371: Remove
-    protected override void ValidatePropertyInfo ()
-    {
-      base.ValidatePropertyInfo();
     }
 
     protected void ValidateOppositePropertyInfo (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)

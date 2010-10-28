@@ -62,10 +62,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return StorageClassAttribute != null ? StorageClassAttribute.StorageClass : DefaultStorageClass; }
     }
 
-    protected virtual void ValidatePropertyInfo () //TODO 3371: Remove ?
-    {
-    }
-
     protected virtual string GetPropertyName ()
     {
       return _nameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));

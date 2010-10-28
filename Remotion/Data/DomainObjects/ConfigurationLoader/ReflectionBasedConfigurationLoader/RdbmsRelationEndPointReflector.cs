@@ -54,11 +54,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return !ContainsKey();
     }
 
-    protected override void ValidatePropertyInfo () //TODO: 3371: Remove
-    {
-      base.ValidatePropertyInfo();
-    }
-
     private bool ContainsKey ()
     {
       if (!IsBidirectionalRelation)
