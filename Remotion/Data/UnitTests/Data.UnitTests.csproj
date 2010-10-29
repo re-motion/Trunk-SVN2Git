@@ -358,6 +358,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfDomainObjectWithoutStorageClassNone\ClassWithInvalidPropertyType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional\ClassWithInvalidPropertyType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional\DerivedDomainObjectClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeToDomainObjectAboveTheInheritanceRoot\InheritanceRootClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeToDomainObjectAboveTheInheritanceRoot\ClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
