@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
@@ -69,9 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.ClassOutOfInheritanceHierarchy, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of class 'BaseValidationDomainObjectClass' is not derived from type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass, Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' of base class 'BaseOfBaseValidationDomainObjectClass'.";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+         @"Type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.ClassOutOfInheritanceHierarchy, Remotion.Data.UnitTests, Version=.*, Culture=.*, PublicKeyToken=.*' of class 'BaseValidationDomainObjectClass' is not derived from type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass, Remotion.Data.UnitTests, Version=.*, Culture=.*, PublicKeyToken=.*' of base class 'BaseOfBaseValidationDomainObjectClass'\.";
+      var regex = new Regex (expectedMessage);
+      Assert.That (validationResult.IsValid, Is.False);
+      Assert.That (regex.IsMatch (validationResult.Message), Is.True);
     }
-
   }
 }

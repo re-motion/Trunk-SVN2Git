@@ -155,9 +155,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "Neither class 'NonAbstractClassHasEntityNameDomainObject' nor its base classes specify an entity name. "
-      +"Make class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass, "
-      +"Remotion.Data.UnitTests, Version=1.13.60.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' abstract or apply a DBTable attribute to it or one of its base classes.")]
+      ExpectedMessage = @"Neither class 'NonAbstractClassHasEntityNameDomainObject' nor its base classes specify an entity name\. "
+      + @"Make class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass, "
+      + @"Remotion.Data.UnitTests, Version=.*, Culture=.*, PublicKeyToken=.*' abstract or apply a DBTable attribute to it or one of its base classes.",
+      MatchType = MessageMatch.Regex)]
     public void PersistenceMappingIsValidated ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
