@@ -31,8 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     public void ValidateMapping (string testDomainNamespaceSuffix)
     {
-      var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."
-                                + testDomainNamespaceSuffix; //TODO: add root namspace
+      var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."+ testDomainNamespaceSuffix;
       new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType().Assembly)));
     }
 

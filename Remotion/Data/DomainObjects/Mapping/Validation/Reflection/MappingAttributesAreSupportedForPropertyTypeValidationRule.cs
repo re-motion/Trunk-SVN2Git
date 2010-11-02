@@ -120,7 +120,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]> ());
       attributeConstraints.Add (typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum> ());
       attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute> ());
-      attributeConstraints.Add (typeof (DBBidirectionalRelationAttribute), CreateAttributeConstraintForRelationProperty<DBBidirectionalRelationAttribute>());
     }
 
     private AttributeConstraint CreateAttributeConstraintForValueTypeProperty<TAttribute, TProperty> ()

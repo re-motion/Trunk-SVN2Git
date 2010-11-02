@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -34,21 +35,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
 
-      var errorMessages = new List<string>();
+      var errorMessages = new StringBuilder ();
       foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
         {
-          if(!errorMessages.Contains(validationResult.Message))
-            errorMessages.Add (validationResult.Message);
+          if (!validationResult.IsValid)
+            errorMessages.AppendLine (validationResult.Message);
         }
       }
 
-      if (errorMessages.Count==0)
-        return new MappingValidationResult (true);
-      else
-        return new MappingValidationResult (false, String.Join("\r\n", errorMessages.ToArray()));
+      var messages = errorMessages.ToString ().Trim ();
+      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)

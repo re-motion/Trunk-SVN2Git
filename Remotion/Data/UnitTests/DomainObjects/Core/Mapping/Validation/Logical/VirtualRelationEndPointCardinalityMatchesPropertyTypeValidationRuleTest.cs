@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
          _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (DomainObject));
       PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
       
       var validationResult = _validationRule.Validate (_relationDefinition);
 
@@ -125,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (BaseOfBaseValidationDomainObjectClass));
       PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
