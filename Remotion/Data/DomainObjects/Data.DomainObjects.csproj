@@ -167,6 +167,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MixinPropertyFinder.cs" />
     <Compile Include="LinqCastMethodAttribute.cs" />
+    <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Mapping\SortExpressions\SortedPropertySpecification.cs" />
     <Compile Include="Mapping\SortExpressions\SortOrder.cs" />
     <Compile Include="Mapping\Validation\ClassDefinitionValidator.cs" />

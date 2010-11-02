@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
@@ -102,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
+      var fetchQueryModelBuilders = RemoveTrailingFetchRequests(queryModel);
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
@@ -165,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
+      var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Collection);
       return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
@@ -221,8 +220,6 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var command = CreateSqlCommand (queryModel, queryType == QueryType.Collection); // check result for DomainObjects unless it's a scalar query
       
-      CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
-
       var statement = command.CommandText;
       if (!string.IsNullOrEmpty (sortExpression))
       {
@@ -392,26 +389,6 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
-    /// </summary>
-    private void CheckNoResultOperatorsAfterFetch (IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
-    {
-      foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
-      {
-        if (fetchQueryModelBuilder.ResultOperatorPosition < fetchQueryModelBuilder.SourceItemQueryModel.ResultOperators.Count)
-        {
-          string message = "This query provider does not support result operators occurring after fetch requests. The objects on which the fetching "
-                           +
-                           "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
-                           +
-                           "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
-                           + "memory.";
-          throw new InvalidOperationException (message);
-        }
-      }
-    }
-
-    /// <summary>
     /// Transforms and resolves <see cref="QueryModel"/> to build a <see cref="SqlStatement"/> which represents an AST to generate query text.
     /// </summary>
     /// <param name="queryModel">The <see cref="QueryModel"/> which should be transformed.</param>
@@ -432,6 +409,17 @@ namespace Remotion.Data.DomainObjects.Linq
       var commandBuilder = new SqlCommandBuilder();
       _generationStage.GenerateTextForOuterSqlStatement (commandBuilder, sqlStatement);
       return commandBuilder.GetCommand();
+    }
+
+    private static ICollection<FetchQueryModelBuilder> RemoveTrailingFetchRequests (QueryModel queryModel)
+    {
+      var result = new List<FetchQueryModelBuilder> ();
+      for (int i = queryModel.ResultOperators.Count - 1; i >= 0 && queryModel.ResultOperators[i] is FetchRequestBase; --i)
+      {
+        result.Add (new FetchQueryModelBuilder (queryModel.ResultOperators[i] as FetchRequestBase, queryModel, i));
+        queryModel.ResultOperators.RemoveAt (i);
+      }
+      return result;
     }
   }
 }

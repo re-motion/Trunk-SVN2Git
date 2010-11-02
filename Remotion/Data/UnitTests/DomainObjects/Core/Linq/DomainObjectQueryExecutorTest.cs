@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -130,11 +131,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteScalar_WithFetches ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order>().Count());
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order>().Max());
       QueryModel queryModel = ParseQuery (expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
-      queryModel.ResultOperators.Insert (0, fetchRequest);
+      queryModel.ResultOperators.Add (fetchRequest);
 
       var mockQuery = QueryFactory.CreateScalarQuery (
           "test",
@@ -153,6 +154,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                   Arg.Is (QueryType.Scalar)))
           .WhenCalled (mi =>
           {
+            var actualQueryModel = (QueryModel) mi.Arguments[1];
+            Assert.That (actualQueryModel.ResultOperators, List.Not.Contains (fetchRequest));
+            
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count(), Is.EqualTo (1));
             Assert.That (rs.Single().FetchRequest, Is.SameAs (fetchRequest));
@@ -165,6 +169,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.EqualTo (1));
 
       executorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void ExecuteScalar_WithFetches_LeavesNonTrailingFetches ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order> ().Max ());
+      QueryModel queryModel = ParseQuery (expression);
+
+      var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
+      queryModel.ResultOperators.Insert (0, fetchRequest);
+
+      var mockQuery = QueryFactory.CreateScalarQuery (
+          "test",
+          DomainObjectIDs.Order1.StorageProviderID,
+          "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
+          new QueryParameterCollection ());
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      executorMock
+          .Expect (
+              mock => mock.CreateQuery (
+                  Arg<string>.Is.Anything,
+                  Arg.Is (queryModel),
+                  Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything,
+                  Arg.Is (QueryType.Scalar)))
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[1];
+            Assert.That (actualQueryModel.ResultOperators, List.Contains (fetchRequest));
+
+            var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
+            Assert.That (rs.Count (), Is.EqualTo (0));
+          })
+          .Return (mockQuery);
+
+      executorMock.Replay ();
+
+      executorMock.ExecuteScalar<int> (queryModel);
+
+      executorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -296,6 +341,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                   Arg.Is (QueryType.Collection)))
           .WhenCalled (mi =>
           {
+            var actualQueryModel = (QueryModel) mi.Arguments[1];
+            Assert.That (actualQueryModel.ResultOperators, List.Not.Contains (fetchRequest));
+
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count (), Is.EqualTo (1));
             Assert.That (rs.Single ().FetchRequest, Is.SameAs (fetchRequest));
@@ -308,6 +356,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1) }));
 
       executorMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void ExecuteCollection_WithFetches_LeavesNonTrailingFetches ()
+    {
+      var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
+      _order1QueryModel.ResultOperators.Add (fetchRequest);
+      _order1QueryModel.ResultOperators.Add (new DistinctResultOperator());
+
+      var mockQuery = QueryFactory.CreateCollectionQuery (
+          "test",
+          DomainObjectIDs.Order1.StorageProviderID,
+          "SELECT [o].* FROM [Order] [o] WHERE [o].[OrderNo] = 1",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      executorMock
+          .Expect (
+              mock => mock.CreateQuery (
+                  Arg<string>.Is.Anything,
+                  Arg.Is (_order1QueryModel),
+                  Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything,
+                  Arg.Is (QueryType.Collection)))
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[1];
+            Assert.That (actualQueryModel.ResultOperators, List.Contains (fetchRequest));
+
+            var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
+            Assert.That (rs.Count (), Is.EqualTo (0));
+          })
+          .Return (mockQuery);
+
+      executorMock.Replay ();
+
+      executorMock.ExecuteCollection<Order> (_order1QueryModel).ToArray ();
+
+      executorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -419,24 +507,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           fetchQuery.Value.StorageProviderID,
           Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
       Assert.That (fetchQuery.Value.QueryType, Is.EqualTo (QueryType.Collection));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support result operators occurring after "
-                                                                              +
-                                                                              "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
-                                                                              +
-                                                                              "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
-                                                                              + "execute all subsequent result operators in memory.")]
-    public void CreateQuery_EagerFetchQueries_BeforeOtherResultOperators ()
-    {
-      var queryable = (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Take (1);
-      var queryModel = ParseQuery (queryable.Expression);
-      var relationMember = typeof (Order).GetProperty ("OrderItems");
-      var fetchRequest = new FetchManyRequest (relationMember);
-      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
-
-      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
     }
 
     [Test]

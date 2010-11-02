@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
@@ -409,6 +410,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
 
       Assert.That (nodeTypeRegistry.GetItem (typeof (CountResultOperator)), Is.TypeOf (typeof (CountResultOperatorHandler)));
+    }
+
+    [Test]
+    public void CreateResultOperatorHandlerRegistry_RegistersFetchTransformer ()
+    {
+      var nodeTypeRegistry = CallCreateResultOperatorHandlerRegistry ();
+
+      Assert.That (nodeTypeRegistry.GetItem (typeof (FetchOneRequest)), Is.TypeOf (typeof (FetchResultOperatorHandler)));
+      Assert.That (nodeTypeRegistry.GetItem (typeof (FetchManyRequest)), Is.TypeOf (typeof (FetchResultOperatorHandler)));
     }
 
     [Test]

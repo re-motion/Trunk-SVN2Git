@@ -158,10 +158,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support result operators occurring after "
-        + "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
-        + "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
-        + "execute all subsequent result operators in memory.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "There was an error preparing or resolving query "
+        + "'from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select [o] => Fetch (Order.OrderItems) => Take(1)' for "
+        + "SQL generation. The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. "
+        + "must go before the fetch operators.\r\n\r\n"
+        + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
+        + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'.")]
     public void EagerFetching_WithResultOperator_AfterFetch ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -170,8 +173,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    .FetchMany (o => o.OrderItems)
                    .Take (1);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      query.ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "There was an error preparing or resolving query "
+        + "'from Order o in {DomainObjectQueryable<Order> => Fetch (Order.OrderItems)} where ([o].OrderNumber = 1) select [o]' for SQL generation. "
+        + "The fetch query operator methods must be the last query operators in a LINQ query. All calls to Where, Select, Take, etc. must go before "
+        + "the fetch operators.\r\n\r\n"
+        + "E.g., instead of 'QueryFactory.CreateLinqQuery<Order>().FetchMany (o => o.OrderItems).Where (o => o.OrderNumber > 1)', "
+        + "write 'QueryFactory.CreateLinqQuery<Order>().Where (o => o.OrderNumber > 1).FetchMany (o => o.OrderItems)'.")]
+    public void EagerFetching_WithFetch_InASubQuery ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Order>()
+                   .FetchMany (o => o.OrderItems)
+                   .Where (o => o.OrderNumber == 1);
+      query.ToArray ();
     }
 
     [Test]

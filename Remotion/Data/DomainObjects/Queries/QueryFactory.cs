@@ -288,6 +288,9 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
 
+      var handler = new FetchResultOperatorHandler ();
+      resultOperatorHandlerRegistry.Register (handler.SupportedResultOperatorType, handler);
+
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
       var customHandlers = customizers.SelectMany (c => c.GetCustomResultOperatorHandlers());
       foreach (var customNodeType in customHandlers)
