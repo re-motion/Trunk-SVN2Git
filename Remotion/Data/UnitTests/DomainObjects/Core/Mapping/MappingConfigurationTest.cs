@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
       var classDefinitionCollection = new[] { classDefinition };
       var relationDefinitionCollection = new[] { relationDefinition };
 
@@ -228,10 +228,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"]));
+              FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"]));
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
+              +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"]));
     }
 
     [Test]
@@ -239,20 +241,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].
+              FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].
                   EndPointDefinitions[0]));
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].
+              FakeMappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].
                   EndPointDefinitions[1]));
 
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
+              +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
                   0]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
+              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
+              +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[
                   1]));
     }
 

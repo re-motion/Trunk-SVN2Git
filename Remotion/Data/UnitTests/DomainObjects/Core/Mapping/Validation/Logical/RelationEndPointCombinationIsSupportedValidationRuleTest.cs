@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
       _customerEndPoint = (VirtualRelationEndPointDefinition) _customerToOrder.EndPointDefinitions[0];
       _orderEndPoint = (RelationEndPointDefinition) _customerToOrder.EndPointDefinitions[1];
     }
@@ -69,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' "
-        +"cannot have two anonymous end points.";
+      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
+        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two anonymous end points.";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
@@ -82,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' "
-        + "cannot have two virtual end points.";
+      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
+        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two virtual end points.";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' "
-        + "cannot have two non-virtual end points.";
+      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
+        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two non-virtual end points.";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
   }

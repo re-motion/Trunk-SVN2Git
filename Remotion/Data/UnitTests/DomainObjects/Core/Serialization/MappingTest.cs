@@ -129,8 +129,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationEndPointDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
-      RelationEndPointDefinition endPointDefinition = (RelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("OrderTicket", "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      RelationDefinition relationDefinition = 
+        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket->"
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
+      RelationEndPointDefinition endPointDefinition = (RelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("OrderTicket", 
+        "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
       RelationEndPointDefinition deserializedEndPointDefinition = (RelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
       Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
@@ -170,8 +173,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void VirtualRelationEndPointDefinitionInMapping ()
     {
-      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
-      VirtualRelationEndPointDefinition endPointDefinition = (VirtualRelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("Order", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      RelationDefinition relationDefinition = 
+        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket->"
+       +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"];
+      VirtualRelationEndPointDefinition endPointDefinition = (VirtualRelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("Order", 
+        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
 
       VirtualRelationEndPointDefinition deserializedEndPointDefinition = (VirtualRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
       Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
@@ -210,19 +216,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void AnonymousRelationEndPointDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"];
-      AnonymousRelationEndPointDefinition endPointDefinition = (AnonymousRelationEndPointDefinition) relationDefinition.GetOppositeEndPointDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      RelationDefinition relationDefinition = 
+        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Location->"
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"];
+      AnonymousRelationEndPointDefinition endPointDefinition = (AnonymousRelationEndPointDefinition) relationDefinition.GetOppositeEndPointDefinition ("Location", 
+        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
 
       AnonymousRelationEndPointDefinition deserializedEndPointDefinition = (AnonymousRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
       Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration."
-        + "OrderTicket.Order' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), 
+      ExpectedMessage = "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket"
+      +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationDefinition_NotInMapping ()
     {
-      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order");
+      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory (
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order");
       RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
       Assert.IsFalse (ReferenceEquals (relationDefinition, deserializedRelationDefinition));
@@ -232,7 +243,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      RelationDefinition relationDefinition = 
+        MappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket->"
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
       RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
       Assert.AreSame (relationDefinition, deserializedRelationDefinition);

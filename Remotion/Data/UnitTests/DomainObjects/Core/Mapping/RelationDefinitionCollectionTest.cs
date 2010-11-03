@@ -41,7 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
+      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
       _collection = new RelationDefinitionCollection ();
     }
 
@@ -51,7 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", TestDomainProviderID, typeof (OrderTicket), false);
 
-      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
+      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"];
 
       classDefinition.MyRelationDefinitions.Add (_relationDefinition);
 
@@ -69,8 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedOrder", "DerivedOrder", TestDomainProviderID, typeof (Order), false, baseClassDefinition, new Type[0]);
 
-      var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      var relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
+      var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+      var relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
 
       baseClassDefinition.MyRelationDefinitions.Add (relationDefinition1);
       derivedClassDefinition.MyRelationDefinitions.Add (relationDefinition2);
@@ -93,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void RelationDefinitionIndexer ()
     {
       _collection.Add (_relationDefinition);
-      Assert.AreSame (_relationDefinition, _collection["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"]);
+      Assert.AreSame (_relationDefinition, _collection["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"]);
     }
 
     [Test]
@@ -107,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsRelationDefinitionIDTrue ()
     {
       _collection.Add (_relationDefinition);
-      Assert.IsTrue (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"));
+      Assert.IsTrue (_collection.Contains ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"));
     }
 
     [Test]

@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (Computer).FullName + ".Employee");
       Assert.IsNotNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (Computer).FullName + ".Employee", relation.ID);
+      Assert.AreEqual (typeof (Computer) + "->" + typeof (Computer).FullName + ".Employee", relation.ID);
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (Employee).FullName + ".Computer");
       Assert.IsNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (Computer).FullName + ".Employee", relation.ID);
+      Assert.AreEqual (typeof (Computer)+"->"+typeof (Computer).FullName + ".Employee", relation.ID);
     }
 
     [Test]
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2");
       Assert.IsNotNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
+      Assert.AreEqual (typeof (RelationTargetForPersistentMixin).FullName+"->"+typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty");
       Assert.IsNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
+      Assert.AreEqual (typeof (RelationTargetForPersistentMixin)+"->"+typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
     }
 
     [Test]

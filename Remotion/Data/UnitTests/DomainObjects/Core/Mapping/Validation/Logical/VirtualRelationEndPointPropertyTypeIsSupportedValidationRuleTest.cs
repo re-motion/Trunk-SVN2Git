@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _relationDefinition =
          FakeMappingConfiguration.Current.RelationDefinitions[
-             "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+             "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
       _endPoint1 = (VirtualRelationEndPointDefinition) _relationDefinition.EndPointDefinitions[0];
       _endPoint2 = (RelationEndPointDefinition) _relationDefinition.EndPointDefinitions[1];
     }

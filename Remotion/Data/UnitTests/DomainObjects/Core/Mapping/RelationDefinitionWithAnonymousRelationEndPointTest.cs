@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client");
+      _relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client");
       _clientEndPoint = (AnonymousRelationEndPointDefinition) _relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) _relation.EndPointDefinitions[1];
     }

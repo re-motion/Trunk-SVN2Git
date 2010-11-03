@@ -101,10 +101,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private string GetRelationID ()
     {
       string propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));
-      if (IsMixedProperty || (ClassDefinition.BaseClass == null && ClassDefinition.ClassType != PropertyInfo.DeclaringType))
-        return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
-      else
-        return propertyName;
+      return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
     }
 
     private IRelationEndPointDefinition CreateOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)
