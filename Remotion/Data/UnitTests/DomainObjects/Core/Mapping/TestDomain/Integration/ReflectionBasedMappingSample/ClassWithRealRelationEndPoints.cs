@@ -21,9 +21,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [DBTable]
   [TestDomain]
   [Instantiable]
-  public abstract class ClassWithManySideRelationProperties : ClassWithManySideRelationPropertiesNotInMapping
+  public abstract class ClassWithRealRelationEndPoints : ClassWithManySideRelationPropertiesNotInMapping
   {
-    protected ClassWithManySideRelationProperties ()
+    protected ClassWithRealRelationEndPoints ()
     {
     }
 

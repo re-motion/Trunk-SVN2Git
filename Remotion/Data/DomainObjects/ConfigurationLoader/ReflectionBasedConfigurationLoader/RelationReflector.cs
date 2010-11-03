@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
-
+      
       RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo, NameResolver);
 
       if (relationEndPointReflector.IsVirtualEndRelationEndpoint())
@@ -70,6 +70,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         relationDefinitions.Add (relationDefinition);
 
         return relationDefinition;
+
+
+        // var firstEndPoint = relationEndPointReflector.GetMetadata ();
+        // var secondEndPoint = CreateOppositeEndPointDefinition (classDefinitions));
+        //  string relationID = GetRelationID (firstEndPoint, secondEndPoint);
+        //var relationDefinition = new RelationDefinition (relationID, firstEndPoint, secondEndPoint);
+     
+        //
       }
     }
 
@@ -82,6 +90,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       ValidateOppositePropertyInfoBidirectionalRelationAttribute (oppositePropertyInfo);
     }
+
+    //private string GetRelationID (IRelationEndPointDefinition first, IRelationEndPointDefinition second)
+    //{
+    //  IRelationEndPointDefinition nameGivingEndPoint;// = first.IsReal -> first else second
+    //  string propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
+    //  return string.Format ("{0}->{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
+    //}
 
     private string GetRelationID ()
     {

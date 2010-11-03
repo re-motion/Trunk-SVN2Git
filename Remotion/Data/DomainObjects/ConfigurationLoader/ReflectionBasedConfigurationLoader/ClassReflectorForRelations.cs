@@ -61,6 +61,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions, relationDefinitions);
         if (relationDefinition != null)
           relations.Add (relationDefinition);
+        
+        // RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
+        // if (!relationDefs.Contains (relationDefinition)
+        // {
+        //   relationDefs.Add (relationDefinition);
+        //   RelationReflector.AddRelationDefinitionToClassDefinitions (relationDefiniiton)
+        // }
       }
 
       return relations;

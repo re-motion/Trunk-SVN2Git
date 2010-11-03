@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class RelationReflectorTest : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _classWithManySideRelationPropertiesClassDefinition;
+    private ReflectionBasedClassDefinition _classWithRealRelationEndPoints;
     private ReflectionBasedClassDefinition _classWithOneSideRelationPropertiesClassDefinition;
     private ReflectionBasedClassDefinition _classWithBothEndPointsOnSameClassClassDefinition;
     private ClassDefinitionCollection _classDefinitions;
@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public override void SetUp ()
     {
       base.SetUp ();
-      _classWithManySideRelationPropertiesClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties));
+      _classWithRealRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
       _classWithOneSideRelationPropertiesClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties));
       _classWithBothEndPointsOnSameClassClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
 
       _classDefinitions = new ClassDefinitionCollection
                             {
-                                _classWithManySideRelationPropertiesClassDefinition,
+                                _classWithRealRelationEndPoints,
                                 _classWithOneSideRelationPropertiesClassDefinition,
                                 _classWithBothEndPointsOnSameClassClassDefinition
                             };
@@ -56,46 +56,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsMixedProperty_False ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
       Assert.That (relationReflector.IsMixedProperty, Is.False);
     }
 
     [Test]
     public void DeclaringMixin_Null ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
       Assert.That (relationReflector.DeclaringMixin, Is.Null);
     }
 
     [Test]
     public void DomainObjectTypeDeclaringProperty ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
-      Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (ClassWithManySideRelationProperties)));
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
+      Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (ClassWithRealRelationEndPoints)));
     }
 
     [Test]
     public void GetMetadata_RealSide_ID ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.ID, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithManySideRelationProperties.Unidirectional"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"));
     }
 
     [Test]
     public void GetMetadata_Unidirectional_AddedToRightClassDefinition ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
-      Assert.That (_classWithManySideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Contains (actualRelationDefinition));
+      Assert.That (_classWithRealRelationEndPoints.MyRelationDefinitions, List.Contains (actualRelationDefinition));
       Assert.That (_classWithOneSideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Not.Contains (actualRelationDefinition));
 
       Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
@@ -105,24 +105,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Unidirectional_EndPoint0 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
-      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
+      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
 
     [Test]
     public void GetMetadata_Unidirectional_EndPoint1 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (AnonymousRelationEndPointDefinition)));
@@ -134,10 +134,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Unidirectional_RelationAlreadyInRelationDefinitionCollection ()
     {
-      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
-      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "Unidirectional");
+      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
+      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "Unidirectional");
 
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
@@ -151,10 +151,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_BidirectionalOneToOne_AddedToBothClassDefinitions ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
-      Assert.That (_classWithManySideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Contains (actualRelationDefinition));
+      Assert.That (_classWithRealRelationEndPoints.MyRelationDefinitions, List.Contains (actualRelationDefinition));
       Assert.That (_classWithOneSideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Contains (actualRelationDefinition));
 
       Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
@@ -164,24 +164,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_BidirectionalOneToOne_EndPoint0 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
-      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
+      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToOne_EndPoint1 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (VirtualRelationEndPointDefinition)));
@@ -190,17 +190,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithOneSideRelationPropertiesClassDefinition));
       Assert.That (oppositeEndPointDefinition.PropertyName, Is.EqualTo (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToOne"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithManySideRelationProperties)));
+      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ClassWithRealRelationEndPoints)));
       Assert.That (oppositeEndPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToOne_RelationAlreadyInRelationDefinitionCollection ()
     {
-      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
-      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
+      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
+      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne");
 
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
@@ -224,11 +224,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_BidirectionalOneToMany_AddedToBothClassDefinitions ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToMany");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
-      Assert.That (_classWithManySideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Contains (actualRelationDefinition));
+      Assert.That (_classWithRealRelationEndPoints.MyRelationDefinitions, List.Contains (actualRelationDefinition));
       Assert.That (_classWithOneSideRelationPropertiesClassDefinition.MyRelationDefinitions, List.Contains (actualRelationDefinition));
 
       Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
@@ -238,24 +238,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_BidirectionalOneToMany_EndPoint0 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToMany");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
-      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithRealRelationEndPoints.MyPropertyDefinitions[0]));
+      Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithRealRelationEndPoints));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToMany_EndPoint1 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToMany");
+      var relationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (VirtualRelationEndPointDefinition)));
@@ -263,17 +263,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_classWithOneSideRelationPropertiesClassDefinition));
       Assert.That (oppositeEndPointDefinition.PropertyName, Is.EqualTo (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithOneSideRelationProperties.BidirectionalOneToMany"));
-      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithManySideRelationProperties>)));
+      Assert.That (oppositeEndPointDefinition.PropertyType, Is.SameAs (typeof (ObjectList<ClassWithRealRelationEndPoints>)));
       Assert.That (oppositeEndPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
 
     [Test]
     public void GetMetadata_BidirectionalOneToMany_RelationAlreadyInRelationDefinitionCollection ()
     {
-      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToMany");
-      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
-          typeof (ClassWithManySideRelationProperties), "BidirectionalOneToMany");
+      var expectedRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
+      var actualRelationReflector = CreateRelationReflectorForProperty (_classWithRealRelationEndPoints,
+          typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany");
 
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);

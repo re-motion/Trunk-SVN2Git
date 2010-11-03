@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void IsVirtualEndRelationEndpoint_WithoutAttribute ()
     {
-      PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("NoAttribute");
+      PropertyInfo propertyInfo = typeof (ClassWithRealRelationEndPoints).GetProperty ("NoAttribute");
       RelationEndPointReflector relationEndPointReflector =
-          new RelationEndPointReflector (CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties)), propertyInfo, Configuration.NameResolver);
+          new RelationEndPointReflector (CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints)), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }

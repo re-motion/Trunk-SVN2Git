@@ -26,20 +26,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     }
 
     [DBBidirectionalRelation ("BaseBidirectionalOneToOne")]
-    public abstract ClassWithManySideRelationProperties BaseBidirectionalOneToOne { get; set; }
+    public abstract ClassWithRealRelationEndPoints BaseBidirectionalOneToOne { get; set; }
 
     [DBBidirectionalRelation ("BaseBidirectionalOneToMany", SortExpression = "The Sort Expression")]
-    public abstract ObjectList<ClassWithManySideRelationProperties> BaseBidirectionalOneToMany { get; }
+    public abstract ObjectList<ClassWithRealRelationEndPoints> BaseBidirectionalOneToMany { get; }
 
     [DBBidirectionalRelation ("BasePrivateBidirectionalOneToOne")]
-    private ClassWithManySideRelationProperties BasePrivateBidirectionalOneToOne
+    private ClassWithRealRelationEndPoints BasePrivateBidirectionalOneToOne
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
     [DBBidirectionalRelation ("BasePrivateBidirectionalOneToMany", SortExpression = "The Sort Expression")]
-    private ObjectList<ClassWithManySideRelationProperties> BasePrivateBidirectionalOneToMany
+    private ObjectList<ClassWithRealRelationEndPoints> BasePrivateBidirectionalOneToMany
     {
       get { throw new NotImplementedException (); }
     }
