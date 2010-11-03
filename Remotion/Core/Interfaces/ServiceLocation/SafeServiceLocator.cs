@@ -37,7 +37,7 @@ namespace Remotion.ServiceLocation
     // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
     static class NestedSafeServiceLocator
     {
-        // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit
+        // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the field as lazy as possible.
 // ReSharper disable EmptyConstructor
         static NestedSafeServiceLocator()
         {
