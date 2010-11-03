@@ -20,7 +20,6 @@ namespace Remotion.Context
   {
     public const string DataDomainObjectsClientTransactionScope = "Rm.CTS";
     public const string MixinsMixinConfigurationActiveConfiguration = "Rm.MC";
-    public const string MixinsObjectInstantiationScope = "Rm.MOIS";
     public const string SecuritySecurityFreeSection = "Rm.SFS";
     public const string SecurityRevisionBasedAccessTypeCacheProviderRevision = "Rm.SRBATCP";
     public const string WebExecutionEngineWxeContextCurrent = "Rm.WxeCtx";
