@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
-      Type type = typeof (ClassWithManySideRelationPropertiesNotInMapping);
+      Type type = typeof (ClassWithRealRelationEndPointsNotInMapping);
       PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     private PropertyDefinition GetPropertyDefinition (string propertyName)
     {
       return _classDefinition.MyPropertyDefinitions[
-          string.Format ("{0}.{1}", typeof (ClassWithManySideRelationPropertiesNotInMapping).FullName, propertyName)];
+          string.Format ("{0}.{1}", typeof (ClassWithRealRelationEndPointsNotInMapping).FullName, propertyName)];
     }
   }
 }

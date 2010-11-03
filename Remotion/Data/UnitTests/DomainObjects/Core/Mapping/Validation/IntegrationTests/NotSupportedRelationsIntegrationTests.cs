@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     }
 
     [Test]
-    [Ignore("TODO 3424")]
+    //[Ignore("TODO 3424")]
     public void BidirectionalRelationWithInvalidPropertyReferences ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
