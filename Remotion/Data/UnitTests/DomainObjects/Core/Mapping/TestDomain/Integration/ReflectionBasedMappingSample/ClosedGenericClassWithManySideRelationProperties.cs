@@ -22,10 +22,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [DBTable]
   [TestDomain]
   [Instantiable]
-  public abstract class ClosedGenericClassWithManySideRelationProperties
-      : GenericClassWithManySideRelationPropertiesNotInMapping<ClosedGenericClassWithOneSideRelationProperties>
+  public abstract class ClosedGenericClassWithRealRelationEndPoints
+      : GenericClassWithRealRelationEndPointsNotInMapping<ClosedGenericClassWithOneSideRelationProperties>
   {
-    protected ClosedGenericClassWithManySideRelationProperties ()
+    protected ClosedGenericClassWithRealRelationEndPoints ()
     {
     }
 

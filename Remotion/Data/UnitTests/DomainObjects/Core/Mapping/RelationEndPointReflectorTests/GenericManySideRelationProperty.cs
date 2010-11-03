@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
           "ClosedGenericClassWithManySideRelationProperties",
           "TestDomain",
-          typeof (ClosedGenericClassWithManySideRelationProperties),
+          typeof (ClosedGenericClassWithRealRelationEndPoints),
           false);
     }
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
-      Type type = typeof (ClosedGenericClassWithManySideRelationProperties);
+      Type type = typeof (ClosedGenericClassWithRealRelationEndPoints);
       PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       return new PropertyReflector (_classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     private PropertyDefinition GetPropertyDefinition (string propertyName)
     {
       return _classDefinition.MyPropertyDefinitions[
-          string.Format ("{0}.{1}", typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName, propertyName)];
+          string.Format ("{0}.{1}", typeof (GenericClassWithRealRelationEndPointsNotInMapping<>).FullName, propertyName)];
     }
   }
 }

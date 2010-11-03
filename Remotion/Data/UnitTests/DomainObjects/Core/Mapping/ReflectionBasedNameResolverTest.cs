@@ -74,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetPropertyName_ForPropertyInGenericType ()
     {
       _propertyInformationStub.Stub (stub => stub.Name).Return ("BaseUnidirectional");
-      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>));
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (GenericClassWithRealRelationEndPointsNotInMapping<>));
       string name = _resolver.GetPropertyName (_propertyInformationStub);
-      Assert.That (name, Is.EqualTo (typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>).FullName + ".BaseUnidirectional"));
+      Assert.That (name, Is.EqualTo (typeof (GenericClassWithRealRelationEndPointsNotInMapping<>).FullName + ".BaseUnidirectional"));
     }
    
   }

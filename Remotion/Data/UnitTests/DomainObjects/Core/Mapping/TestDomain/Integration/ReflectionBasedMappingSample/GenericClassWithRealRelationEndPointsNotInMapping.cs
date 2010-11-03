@@ -18,9 +18,9 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
-  public abstract class GenericClassWithManySideRelationPropertiesNotInMapping<T> : DomainObject where T : DomainObject
+  public abstract class GenericClassWithRealRelationEndPointsNotInMapping<T> : DomainObject where T : DomainObject
   {
-    protected GenericClassWithManySideRelationPropertiesNotInMapping ()
+    protected GenericClassWithRealRelationEndPointsNotInMapping ()
     {
     }
 
