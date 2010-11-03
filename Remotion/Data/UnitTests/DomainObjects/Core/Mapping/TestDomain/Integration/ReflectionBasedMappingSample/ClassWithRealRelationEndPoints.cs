@@ -28,18 +28,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     }
 
     [DBBidirectionalRelation ("NoAttribute")]
-    public abstract ClassWithOneSideRelationProperties NoAttribute { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints NoAttribute { get; set; }
 
     [Mandatory]
     [DBBidirectionalRelation ("NotNullable")]
-    public abstract ClassWithOneSideRelationProperties NotNullable { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints NotNullable { get; set; }
 
-    public abstract ClassWithOneSideRelationProperties Unidirectional { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints Unidirectional { get; set; }
 
     [DBBidirectionalRelation ("BidirectionalOneToOne", ContainsForeignKey = true)]
-    public abstract ClassWithOneSideRelationProperties BidirectionalOneToOne { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BidirectionalOneToOne { get; set; }
 
     [DBBidirectionalRelation ("BidirectionalOneToMany")]
-    public abstract ClassWithOneSideRelationProperties BidirectionalOneToMany { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BidirectionalOneToMany { get; set; }
   }
 }

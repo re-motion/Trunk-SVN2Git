@@ -489,7 +489,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithManySideRelationPropertiesNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithMixedProperties.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithMixedPropertiesNotInMapping.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithVirtualRelationEndPoints.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithOneSideRelationPropertiesNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithMixedProperties.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />

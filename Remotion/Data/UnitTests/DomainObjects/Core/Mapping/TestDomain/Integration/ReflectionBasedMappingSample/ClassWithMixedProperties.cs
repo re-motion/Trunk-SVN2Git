@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       }
     }
 
-    public abstract ClassWithOneSideRelationProperties UnidirectionalOneToOne { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints UnidirectionalOneToOne { get; set; }
 
     private string PrivateString
     {

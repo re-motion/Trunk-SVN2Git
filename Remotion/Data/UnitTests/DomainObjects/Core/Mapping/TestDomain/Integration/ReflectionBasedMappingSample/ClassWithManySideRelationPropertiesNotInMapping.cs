@@ -25,29 +25,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     {
     }
 
-    public abstract ClassWithOneSideRelationProperties BaseUnidirectional { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BaseUnidirectional { get; set; }
 
     [DBBidirectionalRelation ("BaseBidirectionalOneToOne", ContainsForeignKey = true)]
-    public abstract ClassWithOneSideRelationProperties BaseBidirectionalOneToOne { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BaseBidirectionalOneToOne { get; set; }
 
     [DBBidirectionalRelation ("BaseBidirectionalOneToMany")]
-    public abstract ClassWithOneSideRelationProperties BaseBidirectionalOneToMany { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BaseBidirectionalOneToMany { get; set; }
 
-    private ClassWithOneSideRelationProperties BasePrivateUnidirectional
+    private ClassWithVirtualRelationEndPoints BasePrivateUnidirectional
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
     [DBBidirectionalRelation ("BasePrivateBidirectionalOneToOne", ContainsForeignKey = true)]
-    private ClassWithOneSideRelationProperties BasePrivateBidirectionalOneToOne
+    private ClassWithVirtualRelationEndPoints BasePrivateBidirectionalOneToOne
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
     [DBBidirectionalRelation ("BasePrivateBidirectionalOneToMany")]
-    private ClassWithOneSideRelationProperties BasePrivateBidirectionalOneToMany
+    private ClassWithVirtualRelationEndPoints BasePrivateBidirectionalOneToMany
     {
       get { throw new NotImplementedException (); }
       set { throw new NotImplementedException (); }

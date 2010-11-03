@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     [Test]
     public void GetClassDefinition_ForClassWithOneSideRelationProperties()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithOneSideRelationProperties), Configuration.NameResolver);
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
       ClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
       Assert.AreEqual (1, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (ClassWithOneSideRelationProperties)));
+      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (ClassWithVirtualRelationEndPoints)));
     }
 
     private ReflectionBasedClassDefinition CreateClassWithMixedPropertiesClassDefinition()
@@ -193,10 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
     private ReflectionBasedClassDefinition CreateClassWithOneSideRelationPropertiesClassDefinition()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithOneSideRelationProperties",
-          "ClassWithOneSideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",
+          "ClassWithVirtualRelationEndPoints",
           c_testDomainProviderID,
-          typeof (ClassWithOneSideRelationProperties),
+          typeof (ClassWithVirtualRelationEndPoints),
           false);
 
       return classDefinition;

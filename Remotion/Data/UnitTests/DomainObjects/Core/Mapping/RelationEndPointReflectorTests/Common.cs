@@ -30,11 +30,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     [Test]
     public void CreateRelationEndPointReflector()
     {
-      PropertyInfo propertyInfo = typeof (ClassWithOneSideRelationProperties).GetProperty ("NoAttribute");
+      PropertyInfo propertyInfo = typeof (ClassWithVirtualRelationEndPoints).GetProperty ("NoAttribute");
       Assert.IsInstanceOfType (
           typeof (RdbmsRelationEndPointReflector), 
           RelationEndPointReflector.CreateRelationEndPointReflector (
-              CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties)), propertyInfo, Configuration.NameResolver));
+              CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints)), propertyInfo, Configuration.NameResolver));
     }
 
     [Test]

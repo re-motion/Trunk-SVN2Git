@@ -70,10 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
       PropertyFinder propertyFinder =
-          new PropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new ReflectionBasedNameResolver());
+          new PropertyFinder (typeof (ClassWithVirtualRelationEndPoints), true, new ReflectionBasedNameResolver());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))),
+          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints))),
           Is.Empty);
     }
 

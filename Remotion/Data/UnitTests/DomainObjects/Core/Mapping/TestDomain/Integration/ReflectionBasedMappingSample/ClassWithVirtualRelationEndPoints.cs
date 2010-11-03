@@ -21,10 +21,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [DBTable]
   [TestDomain]
   [Instantiable]
-  //ClassWithVirtualRelationEndPoints
-  public abstract class ClassWithOneSideRelationProperties : ClassWithOneSideRelationPropertiesNotInMapping
+  public abstract class ClassWithVirtualRelationEndPoints : ClassWithOneSideRelationPropertiesNotInMapping
   {
-    protected ClassWithOneSideRelationProperties ()
+    protected ClassWithVirtualRelationEndPoints ()
     {
     }
 

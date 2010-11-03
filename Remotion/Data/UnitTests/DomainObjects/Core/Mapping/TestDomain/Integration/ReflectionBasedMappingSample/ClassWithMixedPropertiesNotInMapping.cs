@@ -27,9 +27,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
 
     public abstract string BaseString { get; set; }
 
-    public abstract ClassWithOneSideRelationProperties BaseUnidirectionalOneToOne { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints BaseUnidirectionalOneToOne { get; set; }
 
-    private ClassWithOneSideRelationProperties BasePrivateUnidirectionalOneToOne
+    private ClassWithVirtualRelationEndPoints BasePrivateUnidirectionalOneToOne
     {
       get { throw new NotImplementedException (); }
       set { throw new NotImplementedException (); }

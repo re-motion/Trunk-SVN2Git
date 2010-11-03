@@ -63,10 +63,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new ReflectionBasedNameResolver ());
+      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithVirtualRelationEndPoints), true, new ReflectionBasedNameResolver ());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))),
+          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints))),
           Is.EquivalentTo (
               new PropertyInfo[]
                   {
@@ -74,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
                       GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToMany"),
                       GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToOne"),
                       GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToMany"),
-                      GetProperty (typeof (ClassWithOneSideRelationProperties), "NoAttribute"),
-                      GetProperty (typeof (ClassWithOneSideRelationProperties), "NotNullable"),
-                      GetProperty (typeof (ClassWithOneSideRelationProperties), "BidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithOneSideRelationProperties), "BidirectionalOneToMany")
+                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NoAttribute"),
+                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NotNullable"),
+                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne"),
+                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany")
                   }));
     }
 
