@@ -17,5 +17,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
     void EnsureDataAvailable ();
     void Unload ();
+    void CommitOriginalContents ();
   }
 }

@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
-    private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
+    private readonly ICollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
@@ -58,6 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _changeDetectionStrategy = changeDetectionStrategy;
     }
 
+    // No loading
     public DomainObjectCollection OppositeDomainObjects
     {
       get { return _oppositeDomainObjects; }
@@ -79,6 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // Causes collection to be loaded
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
       get 
@@ -88,6 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // No loading
     public DomainObjectCollection OriginalCollectionReference
     {
       get { return _originalCollectionReference; }
@@ -103,16 +106,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _data.IsDataAvailable; }
     }
 
+    // No loading
     public override bool HasChanged
     {
       get { return OriginalCollectionReference != OppositeDomainObjects || _data.HasDataChanged (_changeDetectionStrategy); }
     }
 
+    // No loading
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
     }
 
+    // No loading
     public void Unload ()
     {
       if (IsDataAvailable)
@@ -122,11 +128,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // Causes collection to be loaded
     public override void EnsureDataAvailable ()
     {
       _data.EnsureDataAvailable ();
     }
 
+    // Causes collection to be loaded // TODO: Very implicit
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
@@ -141,6 +149,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       bidirectionalModification.NotifyAndPerform ();
     }
 
+    // Causes collection to be loaded
     public override void SetValueFrom (RelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
@@ -158,6 +167,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Touch ();
     }
 
+    // No loading
     public override void Commit ()
     {
       if (HasChanged)
@@ -169,6 +179,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
+    // No loading
     public override void Rollback ()
     {
       if (HasChanged)
@@ -194,11 +205,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
+    // No loading
     public override void Touch ()
     {
       _hasBeenTouched = true;
     }
 
+    // Causes collection to be loaded // TODO: Bug!
     public override void CheckMandatory ()
     {
       if (_oppositeDomainObjects.Count == 0)
@@ -212,6 +225,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // No loading
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
@@ -220,43 +234,49 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataStrategy;
     }
 
+    // Causes collection to be loaded
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _data.CollectionData);
+      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _data.CollectionData); // indirect EnsureDataAvailable
     }
 
+    // Causes collection to be loaded // TODO: Collection is only loaded from within the command, this probably should be done earlier
     public override IDataManagementCommand CreateDeleteCommand ()
     {
       return new AdHocCommand
           {
             BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete (),
-            PerformHandler = () => { _data.CollectionData.Clear (); Touch (); },
+            PerformHandler = () => { _data.CollectionData.Clear (); Touch (); }, // indirect EnsureDataAvailable (IN THE command!)
             EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ()
           };
     }
 
+    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _data.CollectionData);
+      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _data.CollectionData); // indirect EnsureDataAvailable
     }
 
+    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count);
+      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count); // indirect EnsureDataAvailable
     }
 
+    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _data.CollectionData);
+        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _data.CollectionData); // indirect EnsureDataAvailable
       else
-        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData);
+        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData); // indirect EnsureDataAvailable
     }
 
+    // Causes collection to be loaded
     public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
