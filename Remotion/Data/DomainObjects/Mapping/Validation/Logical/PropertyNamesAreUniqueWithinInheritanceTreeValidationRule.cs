@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq;
+using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -33,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var errorMessages = new StringBuilder ();
       if (classDefinition.BaseClass != null)
       {
         var basePropertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition.BaseClass);
@@ -46,11 +48,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                 classDefinition.ID,
                 propertyName,
                 basePropertyDefinition.ClassDefinition.ID);
-            return new MappingValidationResult (false, message);
+            errorMessages.AppendLine (message);
           }
         }
       }
-      return new MappingValidationResult (true);
+      
+      var messages = errorMessages.ToString ().Trim ();
+      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
   }
 }

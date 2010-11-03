@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Reflection;
+using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -27,20 +29,21 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   {
     public StorageClassIsSupportedValidationRule ()
     {
-      
     }
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var errorMessages = new StringBuilder();
       foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo);
         if (!validationResult.IsValid)
-          return validationResult;
+          errorMessages.AppendLine (validationResult.Message);
       }
-      return new MappingValidationResult (true);
+      var messages = errorMessages.ToString().Trim();
+      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
     private MappingValidationResult Validate (PropertyInfo propertyInfo)
@@ -52,12 +55,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (storageClassAttribute != null && storageClassAttribute.StorageClass != StorageClass.Persistent
           && storageClassAttribute.StorageClass != StorageClass.Transaction)
       {
-        var message = "Only StorageClass.Persistent and StorageClass.Transaction are supported.";
+        var message = string.Format (
+            "Only StorageClass.Persistent and StorageClass.Transaction are supported for property '{0}' of class '{1}'.",
+            propertyInfo.Name,
+            propertyInfo.DeclaringType);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
     }
-
-    
   }
 }

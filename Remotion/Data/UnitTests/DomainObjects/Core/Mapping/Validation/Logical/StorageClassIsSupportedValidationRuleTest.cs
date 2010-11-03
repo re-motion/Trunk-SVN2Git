@@ -87,7 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_classDefinition);
 
-      var expectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction are supported.";
+      var expectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction are supported for property 'PropertyWithStorageClassNone' "
+        +"of class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'.";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
