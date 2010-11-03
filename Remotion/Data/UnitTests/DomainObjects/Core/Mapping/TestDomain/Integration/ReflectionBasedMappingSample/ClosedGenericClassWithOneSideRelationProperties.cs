@@ -21,10 +21,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [DBTable]
   [TestDomain]
   [Instantiable]
-  public abstract class ClosedGenericClassWithOneSideRelationProperties
-      : GenericClassWithOneSideRelationPropertiesNotInMapping<ClosedGenericClassWithRealRelationEndPoints>
+  public abstract class ClosedGenericClassWithVirtualRelationEndPoints
+      : GenericClassWithVirtualRelationEndPointsNotInMapping<ClosedGenericClassWithRealRelationEndPoints>
   {
-    protected ClosedGenericClassWithOneSideRelationProperties ()
+    protected ClosedGenericClassWithVirtualRelationEndPoints ()
     {
     }
   }

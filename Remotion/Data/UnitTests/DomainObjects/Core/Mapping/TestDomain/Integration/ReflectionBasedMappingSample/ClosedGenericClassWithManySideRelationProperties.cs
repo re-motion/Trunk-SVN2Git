@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [TestDomain]
   [Instantiable]
   public abstract class ClosedGenericClassWithRealRelationEndPoints
-      : GenericClassWithRealRelationEndPointsNotInMapping<ClosedGenericClassWithOneSideRelationProperties>
+      : GenericClassWithRealRelationEndPointsNotInMapping<ClosedGenericClassWithVirtualRelationEndPoints>
   {
     protected ClosedGenericClassWithRealRelationEndPoints ()
     {
