@@ -20,12 +20,18 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Holds data originally stored in a <see cref="DomainObjectCollection"/>. Used by <see cref="LazyLoadableCollectionEndPointData"/> to store
+  /// Holds data originally stored in a <see cref="DomainObjectCollection"/>. Used by <see cref="ChangeCachingCollectionDataDecorator"/> to store
   /// the original values of the collection.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// This class by default delegates (read-only) to the actual value collection, until it is instructed to make a copy (<see cref="CopyOnWrite"/>). 
   /// After that, it will delegate to the copy, until it is instructed to go back to the actual value collection.
+  /// </para>
+  /// <para>
+  /// Changes via <see cref="GetDataStore"/> are forbidden because <see cref="ChangeCachingCollectionDataDecorator"/> must be able to rely on the
+  /// fact that the original collection never changes.
+  /// </para>
   /// </remarks>
   [Serializable]
   public class OriginalDomainObjectCollectionData : ReadOnlyCollectionDataDecorator
@@ -49,11 +55,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       WrappedData = _actualData;
     }
 
-    // TODO: Extremely dangerous API, should throw instead
     public override IDomainObjectCollectionData GetDataStore ()
     {
-      CopyOnWrite ();
-      return base.GetDataStore();
+      throw new InvalidOperationException ("The original collection of a relation must not be changed; therefore, the GetDataStore method cannot be used.");
     }
   }
 }

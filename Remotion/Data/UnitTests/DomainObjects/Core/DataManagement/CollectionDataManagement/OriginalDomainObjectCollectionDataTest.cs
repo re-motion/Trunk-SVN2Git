@@ -116,13 +116,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The original collection of a relation must not be changed; therefore, the GetDataStore method cannot be used.")]
     public void GetDataStore ()
     {
-      var dataStore = _originalData.GetDataStore ();
-      dataStore.Add (_domainObject3);
-
-      Assert.That (_originalData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
-      Assert.That (_actualData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      _originalData.GetDataStore ();
     }
 
     [Test]
