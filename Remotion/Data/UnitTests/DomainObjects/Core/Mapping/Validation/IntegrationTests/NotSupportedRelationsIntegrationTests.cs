@@ -55,13 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites");
     }
 
-    [Test]
-    [Ignore("TODO 3424: no mapping exception is thrown !??")]
-    public void OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnTheOneSite ()
-    {
-      ValidateMapping ("NotSupportedRelations.OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnOneSite");
-    }
-
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), 

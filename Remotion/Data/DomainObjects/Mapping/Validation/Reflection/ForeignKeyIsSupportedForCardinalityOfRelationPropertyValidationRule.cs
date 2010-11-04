@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Text;
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -42,16 +42,18 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      var relationEndPointAsReflectionBasedVirtualRelationEndPoint = relationEndPointDefinition as ReflectionBasedVirtualRelationEndPointDefinition;
-      if (relationEndPointAsReflectionBasedVirtualRelationEndPoint != null)
+      if (relationEndPointDefinition.IsAnonymous)
+        return new MappingValidationResult (true);
+
+      if (!relationEndPointDefinition.IsPropertyInfoResolved)
+        throw new InvalidOperationException (relationEndPointDefinition.ClassDefinition.ID + " " + relationEndPointDefinition.PropertyName);
+
+      var propertyInfo = relationEndPointDefinition.PropertyInfo;
+      var relationAttribute = AttributeUtility.GetCustomAttribute<DBBidirectionalRelationAttribute> (propertyInfo, true);
+      if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
       {
-        var propertyInfo = relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo;
-        var relationAttribute = (DBBidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (propertyInfo, typeof (DBBidirectionalRelationAttribute), true);
-        if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
-        {
-          var message = string.Format ("Only relation end points with a property type of '{0}' can contain the foreign key.", typeof (DomainObject));
-          return new MappingValidationResult (false, message);
-        }
+        var message = string.Format ("Only relation end points with a property type of '{0}' can contain the foreign key.", typeof (DomainObject));
+        return new MappingValidationResult (false, message);
       }
 
       return new MappingValidationResult (true);

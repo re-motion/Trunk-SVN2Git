@@ -22,6 +22,7 @@ using
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
         ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
 {
@@ -58,6 +59,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       PrivateInvoke.SetNonPublicField (
           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, _endPoint2 });
+    }
+
+    [Test]
+    public void RelationDefinitionWithAnonymousEndPointDefinitions ()
+    {
+      var endPoint1Stub = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+      var endPoint2Stub = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+      var relationDefinition = new RelationDefinition ("Test", endPoint1Stub, endPoint2Stub);
+
+      endPoint1Stub.Stub (stub => stub.IsAnonymous).Return (true);
+      endPoint2Stub.Stub (stub => stub.IsAnonymous).Return (true);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void PropertyInfoIsNotResolved ()
+    {
+      var endPoint1Stub = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      var endPoint2Stub = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      var relationDefinition = new RelationDefinition ("Test", endPoint1Stub, endPoint2Stub);
+
+      endPoint1Stub.Stub (stub => stub.IsAnonymous).Return (false);
+      endPoint2Stub.Stub (stub => stub.IsAnonymous).Return (false);
+      endPoint1Stub.Stub (stub => stub.IsPropertyInfoResolved).Return (false);
+      endPoint1Stub.Stub (stub => stub.ClassDefinition).Return (_classDefinition);
+      endPoint1Stub.Stub (stub => stub.PropertyName).Return ("Test");
+      
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
