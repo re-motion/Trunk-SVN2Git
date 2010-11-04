@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
-    private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
+    private readonly ICollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
@@ -296,7 +296,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
-      _data = info.GetValue<LazyLoadableCollectionEndPointData> ();
+      _data = (ICollectionEndPointData) info.GetValue<IFlattenedSerializable> ();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
@@ -307,7 +307,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeDomainObjects);
       info.AddHandle (_originalCollectionReference);
       info.AddBoolValue (_hasBeenTouched);
-      info.AddValue (_data);
+      info.AddValue ((IFlattenedSerializable) _data);
       info.AddHandle (_changeDetectionStrategy);
     }
 
