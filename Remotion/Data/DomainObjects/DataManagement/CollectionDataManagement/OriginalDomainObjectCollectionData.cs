@@ -49,6 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       WrappedData = _actualData;
     }
 
+    // TODO: Extremely dangerous API, should throw instead
     public override IDomainObjectCollectionData GetDataStore ()
     {
       CopyOnWrite ();
