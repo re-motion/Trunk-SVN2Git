@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 {
   /// <summary>
   /// Validates that a relation end point defintion with cardinality one must not specify a sort expression.
