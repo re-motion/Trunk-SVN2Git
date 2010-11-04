@@ -176,6 +176,7 @@
     <Compile Include="Mapping\Validation\IPropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.cs" />

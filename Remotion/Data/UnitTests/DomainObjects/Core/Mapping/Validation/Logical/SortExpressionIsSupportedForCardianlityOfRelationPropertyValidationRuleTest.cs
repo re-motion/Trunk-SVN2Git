@@ -18,12 +18,11 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
   [TestFixture]
   public class SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest : ValidationRuleTestBase

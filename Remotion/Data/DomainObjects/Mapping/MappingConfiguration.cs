@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         ValidatePropertyDefinitions ();
 
         _relationDefinitions = new RelationDefinitionCollection(loader.GetRelationDefinitions (_classDefinitions), true);
-        
+
         ValidateRelationDefinitions ();
         ValidatePersistenceMapping ();
 

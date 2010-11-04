@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
     [DBBidirectionalRelation ("BidirectionalOneToOne")]
     public abstract ClassWithManySideRelationProperties BidirectionalOneToOne { get; set; }
 
-    [DBBidirectionalRelation ("BidirectionalOneToMany", SortExpression = "The Sort Expression")]
+    [DBBidirectionalRelation ("BidirectionalOneToMany")]
     public abstract ObjectList<ClassWithManySideRelationProperties> BidirectionalOneToMany { get; }
   }
 }

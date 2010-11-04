@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //SortExpressionParser (used for VirtualRelationEndPointDefinitions)
     [Test]
     //[ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore("TODO 3424: SortExpression is parsed when VirtualRelationEndPointDefinition.GetSortExpression is called => create rule for it?")]
+    //[Ignore("TODO 3424: SortExpression is parsed when VirtualRelationEndPointDefinition.GetSortExpression is called => create rule for it?")]
     public void OneToManyBidirectionalRelationWithInvalidSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");
@@ -119,9 +119,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
     }
 
+    //SortExpressionIsValidValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore("TODO 3424: there is no exception or rule to check this!?")]
+    [Ignore ("TODO 3424: PropertyAccessorCache calls ClassDefinition.GetPropertyDefinitions -> ClassDefinition must be read-only!")]
     public void BidirectionalRelationAttributeOnWrongPropertyType ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationAttributeOnWrongPropertyType");

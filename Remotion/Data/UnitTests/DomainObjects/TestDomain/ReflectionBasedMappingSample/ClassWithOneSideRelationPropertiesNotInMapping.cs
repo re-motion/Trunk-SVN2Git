@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
     [DBBidirectionalRelation ("BaseBidirectionalOneToOne")]
     public abstract ClassWithManySideRelationProperties BaseBidirectionalOneToOne { get; set; }
 
-    [DBBidirectionalRelation ("BaseBidirectionalOneToMany", SortExpression = "The Sort Expression")]
+    [DBBidirectionalRelation ("BaseBidirectionalOneToMany")]
     public abstract ObjectList<ClassWithManySideRelationProperties> BaseBidirectionalOneToMany { get; }
 
     [DBBidirectionalRelation ("BasePrivateBidirectionalOneToOne")]
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
       set { throw new NotImplementedException(); }
     }
 
-    [DBBidirectionalRelation ("BasePrivateBidirectionalOneToMany", SortExpression = "The Sort Expression")]
+    [DBBidirectionalRelation ("BasePrivateBidirectionalOneToMany")]
     private ObjectList<ClassWithManySideRelationProperties> BasePrivateBidirectionalOneToMany
     {
       get { throw new NotImplementedException (); }
