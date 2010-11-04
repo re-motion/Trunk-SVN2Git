@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBBidirectionalRelation ("Distributor")]
     private ClassWithoutRelatedClassIDColumn ClassWithoutRelatedClassIDColumn
     {
-      get { return (ClassWithoutRelatedClassIDColumn) GetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor.ClassWithoutRelatedClassIDColumn"); }
-      set { SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor.ClassWithoutRelatedClassIDColumn", value); }
+      get { return Properties[typeof (Distributor), "ClassWithoutRelatedClassIDColumn"].GetValue<ClassWithoutRelatedClassIDColumn> (); }
+      set { Properties[typeof (Distributor), "ClassWithoutRelatedClassIDColumn"].SetValue (value); }
     }
   }
 }

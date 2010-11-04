@@ -40,27 +40,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<TestDomainBase> (id, includeDeleted);
     }
 
+    [NonSerialized]
     public bool CtorCalled;
 
+    [NonSerialized]
     public bool OnReferenceInitializingCalledBeforeCtor;
+    [NonSerialized]
     public bool OnReferenceInitializingCalled;
+    [NonSerialized]
     public ClientTransaction OnReferenceInitializingTx;
+    [NonSerialized]
     public ObjectID OnReferenceInitializingID;
+    [NonSerialized]
     public ClientTransaction OnReferenceInitializingBindingTransaction;
 
+    [NonSerialized]
     public bool OnLoadedCalled;
+    [NonSerialized]
     public ClientTransaction OnLoadedTx;
+    [NonSerialized]
     public LoadMode OnLoadedLoadMode;
+    [NonSerialized]
     public int OnLoadedCallCount;
 
+    [NonSerialized]
     public bool OnUnloadingCalled;
+    [NonSerialized]
     public ClientTransaction OnUnloadingTx;
+    [NonSerialized]
     public DateTime OnUnloadingDateTime;
+    [NonSerialized]
     public StateType UnloadingState;
 
+    [NonSerialized]
     public bool OnUnloadedCalled;
+    [NonSerialized]
     public ClientTransaction OnUnloadedTx;
+    [NonSerialized]
     public DateTime OnUnloadedDateTime;
+    [NonSerialized]
     public StateType UnloadedState;
 
     protected TestDomainBase()

@@ -17,19 +17,12 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration
 {
   [Serializable]
   public abstract class TestDomainBase : DomainObject
   {
-    public static event EventHandler StaticLoadHandler;
-    public event EventHandler ProtectedLoaded;
-    public static event EventHandler StaticInitializationHandler;
-
     public static TestDomainBase GetObject (ObjectID id)
     {
       return GetObject<TestDomainBase> (id);
@@ -40,152 +33,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       return GetObject<TestDomainBase> (id, includeDeleted);
     }
 
-    public bool CtorCalled;
-
-    public bool OnReferenceInitializingCalledBeforeCtor;
-    public bool OnReferenceInitializingCalled;
-    public ClientTransaction OnReferenceInitializingTx;
-    public ObjectID OnReferenceInitializingID;
-    public ClientTransaction OnReferenceInitializingBindingTransaction;
-
-    public bool OnLoadedCalled;
-    public ClientTransaction OnLoadedTx;
-    public LoadMode OnLoadedLoadMode;
-    public int OnLoadedCallCount;
-
-    public bool OnUnloadingCalled;
-    public ClientTransaction OnUnloadingTx;
-    public DateTime OnUnloadingDateTime;
-    public StateType UnloadingState;
-
-    public bool OnUnloadedCalled;
-    public ClientTransaction OnUnloadedTx;
-    public DateTime OnUnloadedDateTime;
-    public StateType UnloadedState;
-
     protected TestDomainBase()
     {
-      CtorCalled = true;
-      OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;
     }
 
     protected TestDomainBase (SerializationInfo info, StreamingContext context)
       : base (info, context)
     {
-    }
-
-    [StorageClassNone]
-    public DataContainer InternalDataContainer
-    {
-      get 
-      {
-        var transaction = HasBindingTransaction ? GetBindingTransaction () : ClientTransaction.Current;
-        return GetInternalDataContainerForTransaction (transaction);
-      }
-    }
-
-    public DataContainer GetInternalDataContainerForTransaction (ClientTransaction transaction)
-    {
-      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");
-      return dataManager.GetDataContainerWithLazyLoad (ID);
-    }
-
-    public DomainObject GetRelatedObject (string propertyName)
-    {
-      return (DomainObject) Properties[propertyName].GetValueWithoutTypeCheck ();
-    }
-
-    public DomainObjectCollection GetRelatedObjects (string propertyName)
-    {
-      return (DomainObjectCollection) Properties[propertyName].GetValueWithoutTypeCheck ();
-    }
-
-    public DomainObject GetOriginalRelatedObject (string propertyName)
-    {
-      return (DomainObject) Properties[propertyName].GetOriginalValueWithoutTypeCheck ();
-    }
-
-    public DomainObjectCollection GetOriginalRelatedObjects (string propertyName)
-    {
-      return (DomainObjectCollection) Properties[propertyName].GetOriginalValueWithoutTypeCheck ();
-    }
-
-    public void SetRelatedObject (string propertyName, DomainObject newRelatedObject)
-    {
-      Properties[propertyName].SetValueWithoutTypeCheck (newRelatedObject);
-    }
-
-    public new void Delete ()
-    {
-      base.Delete();
-    }
-
-    [StorageClassNone]
-    public new PropertyIndexer Properties
-    {
-      get { return base.Properties; }
-    }
-
-    [StorageClassNone]
-    public bool NeedsLoadModeDataContainerOnly
-    {
-      get { return (bool) PrivateInvoke.GetNonPublicField (this, typeof (DomainObject), "_needsLoadModeDataContainerOnly"); }
-    }
-
-    protected override void OnReferenceInitializing ()
-    {
-      base.OnReferenceInitializing ();
-
-      OnReferenceInitializingCalled = true;
-      OnReferenceInitializingTx = ClientTransaction.Current;
-      OnReferenceInitializingID = ID;
-      OnReferenceInitializingBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
-
-      if (StaticInitializationHandler != null)
-        StaticInitializationHandler (this, EventArgs.Empty);
-    }
-
-    protected override void OnLoaded (LoadMode loadMode)
-    {
-      base.OnLoaded (loadMode);
- 
-      OnLoadedCalled = true;
-      OnLoadedTx = ClientTransaction.Current;
-      OnLoadedLoadMode = loadMode;
-      ++OnLoadedCallCount;
-      
-      if (ProtectedLoaded != null)
-        ProtectedLoaded (this, EventArgs.Empty);
-      if (StaticLoadHandler != null)
-        StaticLoadHandler (this, EventArgs.Empty);
-    }
-
-    protected override void OnUnloading ()
-    {
-      base.OnUnloading ();
-      OnUnloadingCalled = true;
-      OnUnloadingTx = ClientTransaction.Current;
-
-      OnUnloadingDateTime = DateTime.Now;
-      while (DateTime.Now == OnUnloadingDateTime)
-      {
-      }
-
-      UnloadingState = State;
-    }
-
-    protected override void OnUnloaded ()
-    {
-      base.OnUnloading ();
-      OnUnloadedCalled = true;
-      OnUnloadedTx = ClientTransaction.Current;
-
-      OnUnloadedDateTime = DateTime.Now;
-      while (DateTime.Now == OnUnloadedDateTime)
-      {
-      }
-
-      UnloadedState = State;
     }
   }
 }

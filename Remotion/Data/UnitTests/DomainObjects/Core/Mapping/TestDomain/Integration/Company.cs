@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     [DBBidirectionalRelation ("Company")]
     private ClassWithoutRelatedClassIDColumnAndDerivation ClassWithoutRelatedClassIDColumnAndDerivation
     {
-      get { return (ClassWithoutRelatedClassIDColumnAndDerivation) GetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation"); }
-      set { SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation", value); }
+      get { return Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"].GetValue<ClassWithoutRelatedClassIDColumnAndDerivation>(); }
+      set { Properties[typeof (Company), "ClassWithoutRelatedClassIDColumnAndDerivation"].SetValue (value); }
     }
   }
 }
