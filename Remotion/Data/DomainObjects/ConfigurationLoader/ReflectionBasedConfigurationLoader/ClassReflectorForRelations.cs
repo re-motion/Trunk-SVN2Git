@@ -46,31 +46,35 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
 
-    public List<RelationDefinition> GetRelationDefinitions (
-        ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
+    public void GetRelationDefinitions (ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
-      List<RelationDefinition> relations = new List<RelationDefinition> ();
       ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
       foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, PersistentMixinFinder))
       {
         RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo, NameResolver);
-        RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions, relationDefinitions);
-        if (relationDefinition != null)
-          relations.Add (relationDefinition);
-        
-        // RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
-        // if (!relationDefs.Contains (relationDefinition)
-        // {
-        //   relationDefs.Add (relationDefinition);
-        //   RelationReflector.AddRelationDefinitionToClassDefinitions (relationDefiniiton)
-        // }
+        RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
+        if (!relationDefinitions.Contains (relationDefinition.ID))
+        {
+          relationDefinitions.Add (relationDefinition);
+          AddRelationDefinitionToClassDefinitions (relationDefinition);
+        }
       }
+    }
 
-      return relations;
+    private void AddRelationDefinitionToClassDefinitions (RelationDefinition relationDefinition)
+    {
+      IRelationEndPointDefinition endPoint1 = relationDefinition.EndPointDefinitions[0];
+      IRelationEndPointDefinition endPoint2 = relationDefinition.EndPointDefinitions[1];
+
+      if (!endPoint1.IsAnonymous)
+        endPoint1.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
+
+      if (endPoint1.ClassDefinition != endPoint2.ClassDefinition && !endPoint2.IsAnonymous)
+        endPoint2.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
     }
 
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)

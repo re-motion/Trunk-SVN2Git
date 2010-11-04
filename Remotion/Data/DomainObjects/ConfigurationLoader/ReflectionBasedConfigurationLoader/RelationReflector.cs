@@ -44,41 +44,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
     }
 
-    public RelationDefinition GetMetadata (ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
+    public RelationDefinition GetMetadata (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
       
       RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo, NameResolver);
 
-      if (relationEndPointReflector.IsVirtualEndRelationEndpoint())
-      {
-        return null;
-      }
-      else
-      {
-        string relationID = GetRelationID();
-        if (relationDefinitions.Contains (relationID))
-          return relationDefinitions[relationID];
-
-        var relationDefinition = new RelationDefinition (
-            relationID,
-            relationEndPointReflector.GetMetadata (),
-            CreateOppositeEndPointDefinition (classDefinitions));
-
-        AddRelationDefinitionToClassDefinitions (relationDefinition);
-        relationDefinitions.Add (relationDefinition);
-
-        return relationDefinition;
-
-
-        // var firstEndPoint = relationEndPointReflector.GetMetadata ();
-        // var secondEndPoint = CreateOppositeEndPointDefinition (classDefinitions));
-        //  string relationID = GetRelationID (firstEndPoint, secondEndPoint);
-        //var relationDefinition = new RelationDefinition (relationID, firstEndPoint, secondEndPoint);
-     
-        //
-      }
+      var firstEndPoint = relationEndPointReflector.GetMetadata ();
+      var secondEndPoint = CreateOppositeEndPointDefinition (classDefinitions);
+      var relationID = GetRelationID (firstEndPoint, secondEndPoint);
+      return new RelationDefinition (relationID, firstEndPoint, secondEndPoint);
     }
 
     protected void ValidateOppositePropertyInfo (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)
@@ -91,17 +66,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ValidateOppositePropertyInfoBidirectionalRelationAttribute (oppositePropertyInfo);
     }
 
-    //private string GetRelationID (IRelationEndPointDefinition first, IRelationEndPointDefinition second)
-    //{
-    //  IRelationEndPointDefinition nameGivingEndPoint;// = first.IsReal -> first else second
-    //  string propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
-    //  return string.Format ("{0}->{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
-    //}
-
-    private string GetRelationID ()
+    private string GetRelationID (IRelationEndPointDefinition first, IRelationEndPointDefinition second)
     {
-      string propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));
-      return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
+      bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
+      var nameGivingEndPoint = isFirstEndPointReal ? first : second;
+      var propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
+      return string.Format ("{0}->{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
     }
 
     private IRelationEndPointDefinition CreateOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)
@@ -143,19 +113,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       return RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, oppositePropertyInfo, NameResolver);
     }
-
-    private void AddRelationDefinitionToClassDefinitions (RelationDefinition relationDefinition)
-    {
-      IRelationEndPointDefinition endPoint1 = relationDefinition.EndPointDefinitions[0];
-      IRelationEndPointDefinition endPoint2 = relationDefinition.EndPointDefinitions[1];
-
-      if (!endPoint1.IsAnonymous)
-        endPoint1.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
-
-      if (endPoint1.ClassDefinition != endPoint2.ClassDefinition && !endPoint2.IsAnonymous)
-        endPoint2.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
-    }
-
 
     private void ValidateOppositePropertyInfoDeclaringType (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)
     {

@@ -56,21 +56,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       var classReflector = new ClassReflectorForRelations (typeof (ClosedGenericClassWithRealRelationEndPoints), Configuration.NameResolver);
 
-      List<RelationDefinition> actualList = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
+      classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
       _relationDefinitionChecker.Check (expectedDefinitions, _relationDefinitions);
-      Assert.That (actualList, Is.EqualTo (_relationDefinitions));
     }
 
     [Test]
     public void GetRelationDefinitions_ForOneSide ()
     {
+      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition ());
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition ());
+
       var classReflector = new ClassReflectorForRelations (typeof (ClosedGenericClassWithVirtualRelationEndPoints), Configuration.NameResolver);
 
-      var actual = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
+      classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual (0, actual.Count);
+      _relationDefinitionChecker.Check (expectedDefinitions, _relationDefinitions);
     }
 
 

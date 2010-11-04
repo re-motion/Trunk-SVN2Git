@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.V
   [ClassID ("OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass2")]
   public class InvalidRelationClass2 : DomainObject
   {
-    [DBBidirectionalRelation ("RelationProperty1", SortExpression = "Test")]
-    public ObjectList<InvalidRelationClass1> RelationProperty2 { get; set; }
+    [DBBidirectionalRelation ("RelationProperty1")]
+    public InvalidRelationClass1 RelationProperty2 { get; set; }
   }
 }

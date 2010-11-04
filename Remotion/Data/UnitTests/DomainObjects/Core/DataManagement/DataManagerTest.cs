@@ -870,16 +870,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage = 
-        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official' of domain object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be null.")]
+    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
+        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be null.")]
     public void CheckMandatoryRelations_RelationsNotOk ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
       _dataManager.CheckMandatoryRelations (dataContainer);
     }

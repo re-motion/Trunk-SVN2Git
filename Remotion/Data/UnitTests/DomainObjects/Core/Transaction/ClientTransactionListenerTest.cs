@@ -441,8 +441,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, order));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPointID, null));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderTicketEndPointID, false));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPointID, null));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (

@@ -41,8 +41,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore("TODO 3424: relations without foreign key are not added to the mapping")]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
+      +"InvalidRelationClass2.RelationProperty1' cannot have two virtual end points.\r\n"
+      +"Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
+      +"InvalidRelationClass1.RelationProperty2' cannot have two virtual end points.")]
     public void OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites ()
     {
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites");
@@ -75,8 +82,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule
     [Test]
-    [ExpectedException(typeof(MappingException), ExpectedMessage = "")]
-    [Ignore ("TODO 3424: relations without foreign key are not added to the mapping")]
+    [ExpectedException (typeof (MappingException),
+      ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
+      +"ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass2.RelationProperty2' "
+      +"cannot have two virtual end points.\r\n"
+      + "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
+      +"ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' cannot "
+      +"have two virtual end points.\r\n"
+      + "Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' of class "
+      +"'OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass1' must not specify a SortExpression, because cardinality is "
+      +"equal to 'one'.\r\n"
+      +"Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' of class "
+      +"'OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass1' must not specify a SortExpression, because cardinality is "
+      +"equal to 'one'.")]
     public void OneToOneBidirectionalRelationWithSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression");
@@ -84,8 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //SortExpressionParser (used for VirtualRelationEndPointDefinitions)
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore ("TODO 3424: relations without foreign key are not added to the mapping")]
+    //[ExpectedException (typeof (MappingException), ExpectedMessage = "")]
+    [Ignore("TODO 3424: SortExpression is parsed when VirtualRelationEndPointDefinition.GetSortExpression is called => create rule for it?")]
     public void OneToManyBidirectionalRelationWithInvalidSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");
@@ -106,14 +128,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore("TODO 3424")]
+    [Ignore("TODO 3424: there is no exception or rule to check this!?")]
     public void BidirectionalRelationAttributeOnWrongPropertyType ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationAttributeOnWrongPropertyType");
     }
 
+    //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoDeclaringType (first condition)
     [Test]
-    //[Ignore("TODO 3424")]
+    [ExpectedException (typeof (MappingException),
+      ExpectedMessage = "The declaring type 'BaseRelationClass2' does not match the type of the opposite relation propery 'RelationProperty1' "
+      + "declared on type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "BidirectionalRelationWithInvalidPropertyReferences.InvalidRelationClass1'.\r\n"
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2, property: RelationProperty3")]
     public void BidirectionalRelationWithInvalidPropertyReferences ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
