@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -38,26 +37,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       _id = new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
     }
 
-    [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.RelationEndPointID' in Assembly "
-        + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
-    public void RelationEndPointIDIsNotSerializable ()
-    {
-      Serializer.SerializeAndDeserialize (_id);
-    }
 
     [Test]
-    public void RelationEndPointIDIsFlattenedSerializable ()
+    public void RelationEndPointID_IsSerializable ()
     {
-      RelationEndPointID deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_id);
+      RelationEndPointID deserializedEndPoint = Serializer.SerializeAndDeserialize (_id);
       Assert.That (deserializedEndPoint, Is.Not.Null);
       Assert.That (deserializedEndPoint, Is.Not.SameAs (_id));
+
+      Assert.That (deserializedEndPoint, Is.EqualTo (_id));
     }
 
     [Test]
     public void RelationEndPointID_Content ()
     {
-      RelationEndPointID deserializedID = FlattenedSerializer.SerializeAndDeserialize (_id);
+      RelationEndPointID deserializedID = Serializer.SerializeAndDeserialize (_id);
       Assert.That (deserializedID.ObjectID, Is.EqualTo (DomainObjectIDs.Computer1));
       Assert.That (deserializedID.Definition, Is.SameAs (_id.Definition));
     }
@@ -65,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationEndPointID_GetHashCode ()
     {
-      RelationEndPointID deserializedID = FlattenedSerializer.SerializeAndDeserialize (_id);
+      RelationEndPointID deserializedID = Serializer.SerializeAndDeserialize (_id);
       Assert.That (deserializedID.GetHashCode (), Is.EqualTo (_id.GetHashCode ()));
     }
   }

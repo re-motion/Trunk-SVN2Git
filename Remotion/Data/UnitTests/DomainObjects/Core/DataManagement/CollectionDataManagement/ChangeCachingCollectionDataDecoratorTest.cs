@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void Serializable ()
     {
       var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
-      var stateUpdateListenerStub = MockRepository.GenerateStub<ICollectionDataStateUpdateListener>();
+      var stateUpdateListenerStub = new FakeCollectionDataStateUpdateListener();
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, stateUpdateListenerStub);
 
       WarmUpCache (decorator);

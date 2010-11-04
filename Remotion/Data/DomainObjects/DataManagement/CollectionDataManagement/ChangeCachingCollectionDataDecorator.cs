@@ -29,9 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
     private readonly OriginalDomainObjectCollectionData _originalData;
-    
-    [NonSerialized] // Fixed up by LazyLoadableCollectionEndPointData, see CollectionEndPoint.FixupAssociatedEndPoint for explanation
-    private ICollectionDataStateUpdateListener _stateUpdateListener;
+    private readonly ICollectionDataStateUpdateListener _stateUpdateListener;
 
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
@@ -134,12 +132,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private void RaiseStateUpdatedNotification (bool? newChangedState)
     {
       _stateUpdateListener.StateUpdated (newChangedState);
-    }
-
-    internal void FixupStateUpdateListener  (ICollectionDataStateUpdateListener listener)
-    {
-      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
-      _stateUpdateListener = listener;
     }
   }
 }

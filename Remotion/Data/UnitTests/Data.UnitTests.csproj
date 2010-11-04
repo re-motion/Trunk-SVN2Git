@@ -204,6 +204,7 @@
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\FakeCollectionDataStateUpdateListener.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />

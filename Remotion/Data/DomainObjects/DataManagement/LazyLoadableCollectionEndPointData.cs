@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -27,7 +26,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// and allowing that data to be unloaded. When the <see cref="LazyLoadableCollectionEndPointData"/> is accessed and its data is empty, 
   /// it loads the data from a <see cref="ClientTransaction"/>.
   /// </summary>
-  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable, ICollectionEndPointData, ICollectionDataStateUpdateListener
+  [Serializable]
+  public class LazyLoadableCollectionEndPointData : ICollectionEndPointData, ICollectionDataStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
@@ -132,33 +132,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       RaiseChangeStateNotification (newChangedState);
     }
-
-    #region Serialization
-
-    protected LazyLoadableCollectionEndPointData (FlattenedDeserializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
-      _endPointID = info.GetValueForHandle<RelationEndPointID> ();
-
-      _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
-
-      // Fixup; see CollectionEndPoint.FixupAssociatedEndPoint for explanation
-      if (_collectionData != null)
-        _collectionData.FixupStateUpdateListener (this);
-    }
-
-    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      info.AddHandle (_clientTransaction);
-      info.AddHandle (_endPointID);
-
-      info.AddValue (_collectionData);
-    }
-
-    #endregion
   }
 }

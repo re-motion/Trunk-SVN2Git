@@ -16,13 +16,20 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public sealed class RelationEndPointID : IFlattenedSerializable
+  /// <summary>
+  /// Identifies a relation end point on a given object (<see cref="ObjectID"/>) of a given kind (<see cref="Definition"/>).
+  /// </summary>
+  /// <remarks>
+  /// This type implements custom serialization. It serializes the class definition ID, the relation end point name, and the objectID.
+  /// </remarks>
+  [Serializable]
+  public sealed class RelationEndPointID : ISerializable
   {
     public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
     {
@@ -124,24 +131,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
     #region Serialization
 
     // ReSharper disable UnusedMember.Local
-    private RelationEndPointID (FlattenedDeserializationInfo info)
+    private RelationEndPointID (SerializationInfo info, StreamingContext context)
     {
-      var classDefinitionID = info.GetValueForHandle<string> ();
-      var propertyName = info.GetValueForHandle<string> ();
+      var classDefinitionID = info.GetString ("classDefinitionID");
+      var propertyName = info.GetString ("propertyName");
       
       _definition =
           MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
-      _objectID = info.GetValueForHandle<ObjectID> ();
+      _objectID = (ObjectID) info.GetValue ("objectID", typeof (ObjectID));
 
       _cachedHashCode = CalculateHashCode ();
     }
     // ReSharper restore UnusedMember.Local
 
-    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
     {
-      info.AddHandle (_definition.ClassDefinition.ID);
-      info.AddHandle (_definition.PropertyName);
-      info.AddHandle (_objectID);
+      info.AddValue ("classDefinitionID", _definition.ClassDefinition.ID);
+      info.AddValue ("propertyName", _definition.PropertyName);
+      info.AddValue ("objectID", _objectID);
     }
 
     #endregion

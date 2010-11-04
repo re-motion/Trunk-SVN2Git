@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -287,9 +286,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void FlattenedSerializable_Loaded ()
+    public void Serializable_Loaded ()
     {
-      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (_loadedData);
+      var data = new LazyLoadableCollectionEndPointData (ClientTransaction.CreateRootTransaction (), _endPointID, new[] { _domainObject1 });
+      
+      var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
@@ -300,19 +301,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void FlattenedSerializable_Unloaded ()
+    public void Serializable_Unloaded ()
     {
-      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (_unloadedData);
+      var data = new LazyLoadableCollectionEndPointData (ClientTransaction.CreateRootTransaction (), _endPointID, null);
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
 
       Assert.That (deserializedInstance.IsDataAvailable, Is.False);
-      StubLoadRelatedObjects (_domainObject2, _domainObject3);
-
-      Assert.That (deserializedInstance.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
-      Assert.That (deserializedInstance.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedInstance.CollectionData, "_stateUpdateListener"), Is.Not.Null);
     }
 
     [Test]
