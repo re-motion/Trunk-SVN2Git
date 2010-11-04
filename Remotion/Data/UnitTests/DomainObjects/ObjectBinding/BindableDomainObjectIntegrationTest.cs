@@ -29,6 +29,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void BindableDomainObjectIsDomainObject ()
     {
-      Assert.That (typeof (DomainObject).IsAssignableFrom (typeof (SampleBindableDomainObject)), Is.True);
+      Assert.That (ReflectionUtility.IsDomainObject (typeof (SampleBindableDomainObject)), Is.True);
     }
 
     [Test]

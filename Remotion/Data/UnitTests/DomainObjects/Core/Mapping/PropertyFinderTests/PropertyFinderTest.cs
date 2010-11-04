@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
           Is.EqualTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseString"),
                       GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),

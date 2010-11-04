@@ -47,6 +47,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private bool IsVirtualRelationEndPoint (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
+      if (!ReflectionUtility.IsRelationType (propertyInfo.PropertyType))
+        return false;
       RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, NameResolver);
       return relationEndPointReflector.IsVirtualEndRelationEndpoint ();
     }

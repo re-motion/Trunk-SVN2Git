@@ -30,6 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
         +"The 'Remotion.Data.DomainObjects.ExtensibleEnumPropertyAttribute' may be only applied to properties of type "
         +"'Remotion.ExtensibleEnums.IExtensibleEnum'.\r\n"
         +"The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
+        +"'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.\r\n"
+        + "The 'Remotion.Data.DomainObjects.DBBidirectionalRelationAttribute' may be only applied to properties assignable to types "
         +"'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.")]
     public void AttributesOnUnsupportedTypes ()
     {

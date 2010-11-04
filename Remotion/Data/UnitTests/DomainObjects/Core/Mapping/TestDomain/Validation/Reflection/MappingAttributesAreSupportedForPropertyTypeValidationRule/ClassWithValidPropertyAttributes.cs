@@ -33,5 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
 
     [Mandatory]
     public DomainObject MandatoryProperty { get; set; }
+
+    [DBBidirectionalRelation("Length")]
+    public DomainObject BidirectionalRelationProperty { get; set; }
   }
 }

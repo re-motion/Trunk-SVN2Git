@@ -42,12 +42,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!base.FindPropertiesFilter (classDefinition, propertyInfo))
         return false;
 
-      return IsRelationEndPoint (propertyInfo);
+      return ReflectionUtility.IsRelationType (propertyInfo.PropertyType);
     }
-
-    private bool IsRelationEndPoint (PropertyInfo propertyInfo)
-    {
-      return typeof (DomainObject).IsAssignableFrom (propertyInfo.PropertyType) || ReflectionUtility.IsObjectList (propertyInfo.PropertyType);
-    }
+    
   }
 }

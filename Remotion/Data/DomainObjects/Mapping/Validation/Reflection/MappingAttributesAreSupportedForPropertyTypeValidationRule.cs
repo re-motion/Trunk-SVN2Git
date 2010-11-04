@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Remotion.ExtensibleEnums;
@@ -95,12 +96,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       foreach (Attribute attribute in AttributeUtility.GetCustomAttributes<Attribute> (propertyInfo, true))
       {
-        AttributeConstraint constraint;
-        if (AttributeConstraints.TryGetValue (attribute.GetType (), out constraint))
-        {
-          if (!Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
-            return new MappingValidationResult (false, constraint.Message);
-        }
+        var constraint = GetAttributeConstraint (attribute.GetType ());
+        if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
+          return new MappingValidationResult (false, constraint.Message);
       }
       return new MappingValidationResult (true);
     }
@@ -112,6 +110,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return type.IsAssignableFrom (propertyInfo.PropertyType);
     }
 
+    private AttributeConstraint GetAttributeConstraint (Type attributeType)
+    {
+      return (AttributeConstraints.Where (c => c.Key.IsAssignableFrom (attributeType)).Select (c => c.Value)).FirstOrDefault();
+    }
+
     private void AddAttributeConstraints (Dictionary<Type, AttributeConstraint> attributeConstraints)
     {
       ArgumentUtility.CheckNotNull ("attributeConstraints", attributeConstraints);
@@ -120,6 +123,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]> ());
       attributeConstraints.Add (typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum> ());
       attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute> ());
+      attributeConstraints.Add (typeof (DBBidirectionalRelationAttribute), CreateAttributeConstraintForRelationProperty<DBBidirectionalRelationAttribute>());
     }
 
     private AttributeConstraint CreateAttributeConstraintForValueTypeProperty<TAttribute, TProperty> ()

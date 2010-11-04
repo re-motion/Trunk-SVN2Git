@@ -150,6 +150,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
+    public void InvalidPropertyWithBidirectionalRelationAttribute ()
+    {
+      var propertyInfo = _invalidType.GetProperty ("StringPropertyWithMandatoryPropertyAttribute");
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
+
+      var validationResult = _validtionRule.Validate (_classDefinition);
+
+      AssertMappingValidationResult (validationResult, false,
+        "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
+        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
+    }
+
+    [Test]
+    public void ValidValidPropertyWithBidirectionalRelationAttribute ()
+    {
+      var propertyInfo = _validType.GetProperty ("BidirectionalRelationProperty");
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
+
+      var validationResult = _validtionRule.Validate (_classDefinition);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void InvalidValidPropertyWithBidirectionalRelationAttribute ()
+    {
+      var propertyInfo = _invalidType.GetProperty ("StringPropertyWithBidirectionalRelationAttribute");
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetReadOnly ();
+
+      var validationResult = _validtionRule.Validate (_classDefinition);
+
+      AssertMappingValidationResult (validationResult, false,
+        "The 'Remotion.Data.DomainObjects.DBBidirectionalRelationAttribute' may be only applied to properties assignable to types "
+        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
+    }
+
+    [Test]
     public void SeveralInvalidProperties ()
     {
       var propertyInfo1 = _invalidType.GetProperty ("StringPropertyWithMandatoryPropertyAttribute");

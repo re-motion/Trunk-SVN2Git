@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Linq
         return Expression.Constant (true);
       else if (checkedExpression.Type.IsAssignableFrom (desiredType))
       {
-        if (!typeof (DomainObject).IsAssignableFrom (checkedExpression.Type))
+        if (!ReflectionUtility.IsDomainObject (checkedExpression.Type))
         {
           var message = string.Format (
               "No database-level type check can be added for the expression '{0}'." +

@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       var storageAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, true);
       if (storageAttribute != null && storageAttribute.StorageClass == StorageClass.Persistent)
       {
-        var nativePropertyType = ReflectionUtility.IsRelationProperty (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
+        var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
 
         if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, storageProviderID))
         {

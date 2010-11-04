@@ -97,7 +97,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
             {
               newValue = bindableDeserialized.GetProperty (property);
             }
-            if (value != null && typeof (DomainObject).IsAssignableFrom (property.PropertyType))
+            if (value != null && ReflectionUtility.IsDomainObject (property.PropertyType))
               Assert.AreEqual (((DomainObject) value).ID, ((DomainObject) newValue).ID);
             else
               Assert.AreEqual (value, newValue);

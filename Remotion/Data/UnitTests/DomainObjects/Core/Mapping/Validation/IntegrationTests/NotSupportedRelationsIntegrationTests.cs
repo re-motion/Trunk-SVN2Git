@@ -97,10 +97,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression");
     }
 
-    //SortExpressionParser (used for VirtualRelationEndPointDefinitions)
+    //SortExpressionIsValidValidationRule
     [Test]
-    //[ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    //[Ignore("TODO 3424: SortExpression is parsed when VirtualRelationEndPointDefinition.GetSortExpression is called => create rule for it?")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
+    [Ignore("TODO 3424: PropertyAccessorCache calls ClassDefinition.GetPropertyDefinitions -> ClassDefinition must be read-only!")]
     public void OneToManyBidirectionalRelationWithInvalidSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");
@@ -118,16 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
     }
-
-    //SortExpressionIsValidValidationRule
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore ("TODO 3424: PropertyAccessorCache calls ClassDefinition.GetPropertyDefinitions -> ClassDefinition must be read-only!")]
-    public void BidirectionalRelationAttributeOnWrongPropertyType ()
-    {
-      ValidateMapping ("NotSupportedRelations.BidirectionalRelationAttributeOnWrongPropertyType");
-    }
-
+    
     //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoDeclaringType (first condition)
     [Test]
     [ExpectedException (typeof (MappingException),

@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           _classDefinition,
           propertyInfo,
           GetPropertyName(),
-          ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
+          ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
           StorageClass,
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (PropertyInfo, true);
       if (attribute != null)
         return attribute.Identifier;
-      if (ReflectionUtility.IsRelationProperty (PropertyInfo.PropertyType))
+      if (ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType))
         return PropertyInfo.Name + "ID";
       return PropertyInfo.Name;
     }
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (PropertyInfo.PropertyType.IsValueType)
         return null;
 
-      if (typeof (DomainObject).IsAssignableFrom (PropertyInfo.PropertyType))
+      if (ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType))
         return true;
 
       return IsNullableFromAttribute();

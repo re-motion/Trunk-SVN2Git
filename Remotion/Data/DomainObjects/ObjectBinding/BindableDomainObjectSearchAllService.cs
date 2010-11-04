@@ -61,9 +61,9 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     private Type GetDomainObjectType (IBusinessObjectReferenceProperty property)
     {
-      if (typeof (DomainObject).IsAssignableFrom (property.PropertyType))
+      if (ReflectionUtility.IsDomainObject (property.PropertyType))
         return property.PropertyType;
-      else if (property.IsList && typeof (DomainObject).IsAssignableFrom (property.ListInfo.ItemType))
+      else if (property.IsList && ReflectionUtility.IsDomainObject (property.ListInfo.ItemType))
         return property.ListInfo.ItemType;
       else
         return null;
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     private IQuery GetQuery (Type type)
     {
-      if (!typeof (DomainObject).IsAssignableFrom (type))
+      if (!ReflectionUtility.IsDomainObject (type))
         throw new ArgumentException ("This service only supports queries for DomainObject types.", "type");
       if (!BindableDomainObjectProvider.IsBindableObjectImplementation (type))
       {

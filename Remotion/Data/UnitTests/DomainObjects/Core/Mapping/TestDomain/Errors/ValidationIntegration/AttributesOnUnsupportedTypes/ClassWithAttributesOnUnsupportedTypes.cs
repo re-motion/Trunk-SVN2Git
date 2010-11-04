@@ -34,5 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.V
 
     [Mandatory]
     public string StringPropertyWithMandatoryPropertyAttribute { get; set; }
+
+    [DBBidirectionalRelation ("Length")]
+    public string StringPropertyWithBidirectionalRelationAttribute { get; set; }
   }
 }

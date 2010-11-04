@@ -136,13 +136,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsRelationProperty_DomainObjectIsNotAssignableFromPropertyType ()
     {
-      Assert.That (ReflectionUtility.IsRelationProperty (typeof (string)), Is.False);
+      Assert.That (ReflectionUtility.IsDomainObject (typeof (string)), Is.False);
     }
 
     [Test]
     public void IsRelationProperty_DomainObjectIsAssignableFromPropertyType ()
     {
-      Assert.That (ReflectionUtility.IsRelationProperty (typeof (AbstractClass)), Is.True);
+      Assert.That (ReflectionUtility.IsDomainObject (typeof (AbstractClass)), Is.True);
     }
 
     [Test]

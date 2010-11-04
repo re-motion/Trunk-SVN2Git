@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
     private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
-      var nativePropertyType = ReflectionUtility.IsRelationProperty (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
+      var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
       if (!PropertyValue.IsTypeSupported(nativePropertyType))
       {
           var message = string.Format ("The property type {0} is not supported.", nativePropertyType);

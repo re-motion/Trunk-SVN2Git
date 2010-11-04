@@ -187,6 +187,30 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Checks if a property type is a domain object.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the given type is a domain object.</returns>
+    public static bool IsDomainObject (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return (typeof (DomainObject).IsAssignableFrom (type));
+    }
+
+    /// <summary>
+    /// Checks if a property type is a relation property.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the given type is a relation property.</returns>
+    public static bool IsRelationType (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return IsDomainObject (type) || IsObjectList (type);
+    }
+
+    /// <summary>
     /// Returns the type parameter of the <see cref="ObjectList{T}"/>.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> for which to return the type parameter. Must not be <see langword="null" />.</param>
@@ -210,7 +234,7 @@ namespace Remotion.Data.DomainObjects
     /// type has the <see cref="StorageGroupAttribute"/> applied.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to be analyzed</param>
-    /// <returns>true if the given type is the inheritance root.</returns>
+    /// <returns><see langword="true" /> if the given type is the inheritance root.</returns>
     public static bool IsInheritanceRoot (Type type)
     {
       if (IsDomainObjectBase (type.BaseType))
@@ -224,23 +248,13 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Checks if the given type is the domain object base.
     /// </summary>
-    /// <param name="type">The <see cref="Type"/> to be analyzed.</param>
-    /// <returns>true if the given type is the domain object base.</returns>
+    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the given type is the domain object base.</returns>
     public static bool IsDomainObjectBase (Type type)
     {
-      //TODO: argument check
+      ArgumentUtility.CheckNotNull ("type", type);
 
       return type.Assembly == typeof (DomainObject).Assembly;
-    }
-
-    /// <summary>
-    /// Checks if a property type is a relation property.
-    /// </summary>
-    /// <param name="propertyType"></param>
-    /// <returns>true if the given type is a relation property.</returns>
-    public static bool IsRelationProperty (Type propertyType)
-    {
-      return (typeof (DomainObject).IsAssignableFrom (propertyType));
     }
 
     /// <summary>
@@ -248,7 +262,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="type"></param>
     /// <param name="storageProviderID"></param>
-    /// <returns>true if the given type is supported by the storage provider.</returns>
+    /// <returns><see langword="true" /> if the given type is supported by the storage provider.</returns>
     public static bool IsTypeSupportedByStorageProvider (Type type, string storageProviderID)
     {
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);

@@ -380,7 +380,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot\ClassWithInvalidProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectList_DomainObject\ClassWithInvalidProperty.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationAttributeOnWrongPropertyType\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite\InvalidRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\BaseRelationClass1.cs" />
