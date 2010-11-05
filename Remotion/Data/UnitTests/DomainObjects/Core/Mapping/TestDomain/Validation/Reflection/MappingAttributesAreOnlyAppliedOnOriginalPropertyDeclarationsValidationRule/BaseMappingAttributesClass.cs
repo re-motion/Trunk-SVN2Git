@@ -26,5 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
     public abstract int Property2 { get; set; }
 
     public abstract int Property3 { get; set; }
+
+    [StorageClassNone]
+    public int Property4 { get; set; }
   }
 }

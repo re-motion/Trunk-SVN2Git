@@ -295,6 +295,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyAccessorDataCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\AllMappingPropertiesFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\PropertyFinderBaseMixinsIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\PropertyFinderBaseTest.cs" />
