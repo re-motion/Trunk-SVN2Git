@@ -117,11 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
 
-      var data = GetEndPointData (endPoint);
-
-      strategyMock.Expect (mock => mock.HasDataChanged (
-          Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects),
-          Arg.Is (data.OriginalCollectionData))).Return (true);
+      strategyMock
+          .Expect (mock => mock.HasDataChanged (
+              Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects),
+              Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OriginalOppositeDomainObjectsContents)))
+          .Return (true);
       strategyMock.Replay();
 
       var result = endPoint.HasChanged;

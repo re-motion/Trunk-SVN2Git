@@ -56,10 +56,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void Initialization_OriginalDataPointsToActualData ()
+    public void OriginalData_IsReadOnly ()
     {
-      Assert.That (_decorator.OriginalData, Is.TypeOf (typeof (OriginalDomainObjectCollectionData)));
-      var originalData = (OriginalDomainObjectCollectionData) _decorator.OriginalData;
+      Assert.That (_decorator.OriginalData.IsReadOnly, Is.True);
+      Assert.That (_decorator.OriginalData, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
+
+      var originalData = (ReadOnlyCollectionDataDecorator) _decorator.OriginalData;
+      Assert.That (originalData.IsGetDataStoreAllowed, Is.False);
+    }
+
+    [Test]
+    public void OriginalData_PointsToActualData_AfterInitialization ()
+    {
+      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) _decorator.OriginalData);
 
       var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
       Assert.That (originalDataStore, Is.SameAs (_decorator));
@@ -68,7 +78,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_UsesStrategy ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
+      _strategyMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decorator), Arg<IDomainObjectCollectionData>.Is.Anything))
+               .Return (true)
+               .WhenCalled (mi => CheckOriginalDataMatches (_decorator.OriginalData, (IDomainObjectCollectionData) mi.Arguments[1]))
+               .Repeat.Once ();
       _strategyMock.Replay ();
 
       var result = _decorator.HasChanged (_strategyMock);
@@ -80,7 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_RaisesStateChangedNotification ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
+      _strategyMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decorator), Arg<IDomainObjectCollectionData>.Is.Anything))
+          .Return (true)
+          .Repeat.Once ();
       _strategyMock.Replay ();
 
       _decorator.HasChanged (_strategyMock);
@@ -93,7 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_CachesData ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true).Repeat.Once();
+      _strategyMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decorator), Arg<IDomainObjectCollectionData>.Is.Anything))
+          .Return (true)
+          .Repeat.Once();
       _strategyMock.Replay ();
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
 
@@ -133,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_strategyMock.GetMockRepository ().Ordered ())
       {
-        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (true);
-        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _decorator.OriginalData)).Return (false);
+        _strategyMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (true);
+        _strategyMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (false);
       }
       _strategyMock.Replay ();
 
@@ -340,15 +357,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator)
     {
-      StubStrategyMock (decorator, decorator.OriginalData);
+      StubStrategyMock (decorator);
 
       decorator.HasChanged (_strategyMock);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
     }
 
-    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, IDomainObjectCollectionData originalData)
+    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator)
     {
-      _strategyMock.Stub (mock => mock.HasDataChanged (decorator, originalData)).Return (false);
+      _strategyMock.Stub (mock => mock.HasDataChanged (Arg.Is (decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (false);
       _strategyMock.Replay ();
     }
 
@@ -368,6 +385,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       action (decorator, domainObject1);
 
       Assert.That (decorator.OriginalData.ToArray (), Is.EqualTo (new[] { domainObject1, domainObject2 }));
+    }
+
+    private void CheckOriginalDataMatches (IDomainObjectCollectionData expected, IDomainObjectCollectionData actual)
+    {
+      var expectedInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) expected);
+      var actualInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) actual);
+      Assert.That (actualInner, Is.SameAs (expectedInner));
     }
   }
 }

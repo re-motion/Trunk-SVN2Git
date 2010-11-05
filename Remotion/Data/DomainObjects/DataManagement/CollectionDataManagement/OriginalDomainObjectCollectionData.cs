@@ -28,18 +28,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// This class by default delegates (read-only) to the actual value collection, until it is instructed to make a copy (<see cref="CopyOnWrite"/>). 
   /// After that, it will delegate to the copy, until it is instructed to go back to the actual value collection.
   /// </para>
-  /// <para>
-  /// Changes via <see cref="IDomainObjectCollectionData.GetDataStore"/> are forbidden because <see cref="ChangeCachingCollectionDataDecorator"/> must be able to rely on the
-  /// fact that the original collection never changes.
-  /// </para>
   /// </remarks>
   [Serializable]
-  public class OriginalDomainObjectCollectionData : ReadOnlyCollectionDataDecorator
+  public class OriginalDomainObjectCollectionData : DomainObjectCollectionDataDecoratorBase
   {
     private readonly IDomainObjectCollectionData _actualData;
 
     public OriginalDomainObjectCollectionData (IDomainObjectCollectionData actualData)
-        : base (ArgumentUtility.CheckNotNull ("actualData", actualData), false)
+        : base (ArgumentUtility.CheckNotNull ("actualData", actualData))
     {
       _actualData = actualData;
     }

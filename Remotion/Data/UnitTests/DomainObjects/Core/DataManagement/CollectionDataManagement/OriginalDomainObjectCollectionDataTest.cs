@@ -56,12 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void Initialization_SetsUpReadOnly ()
-    {
-      Assert.That (_originalData.IsReadOnly, Is.True);
-    }
-
-    [Test]
     public void CopyOnWrite_SetsUpCopy ()
     {
       _originalData.CopyOnWrite ();
@@ -71,13 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _actualData.Add (_domainObject3);
 
       Assert.That (_originalData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-    }
-
-    [Test]
-    public void CopyOnWrite_SetsUpCopy_ReadOnly ()
-    {
-      _originalData.CopyOnWrite ();
-      Assert.That (_originalData.IsReadOnly);
     }
 
     [Test]
@@ -104,23 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _actualData.Add (_domainObject3);
       Assert.That (_originalData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
-    }
-
-    [Test]
-    public void RevertToActualData_ReadOnly ()
-    {
-      _originalData.CopyOnWrite ();
-      _originalData.RevertToActualData ();
-      
-      Assert.That (_originalData.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "This collection is read-only and does not support accessing its underlying data store.")]
-    public void GetDataStore ()
-    {
-      _originalData.GetDataStore ();
     }
 
     [Test]

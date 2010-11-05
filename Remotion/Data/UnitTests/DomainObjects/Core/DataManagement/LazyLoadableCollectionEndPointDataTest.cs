@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasDataChanged_Loaded ()
     {
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (_loadedData.CollectionData, _loadedData.OriginalCollectionData))
+          .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedData.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasDataChanged_Loaded_Cached ()
     {
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (_loadedData.CollectionData, _loadedData.OriginalCollectionData))
+          .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedData.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
           .Return (true)
           .Repeat.Once();
       _changeDetectionStrategyMock.Replay ();
@@ -109,10 +109,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (_loadedData.CollectionData, _loadedData.OriginalCollectionData))
+            .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedData.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
             .Return (true);
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (_loadedData.CollectionData, _loadedData.OriginalCollectionData))
+            .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedData.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
             .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();
@@ -332,12 +332,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (_loadedData.CollectionData, _loadedData.OriginalCollectionData))
+            .Expect (mock => mock.HasDataChanged (
+                Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.CollectionData),
+                Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
             .Return (true);
         _changeDetectionStrategyMock
             .Expect (mock => mock.HasDataChanged (
                 Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.CollectionData),
-                Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.CollectionData)))
+                Arg<IDomainObjectCollectionData>.List.Equal (_loadedData.OriginalCollectionData)))
             .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();

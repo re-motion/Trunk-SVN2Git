@@ -25,6 +25,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <see cref="DomainObjectCollection"/> instance. The result of the comparison is cached until the <see cref="OnDataChanged"/> method is
   /// called or a modifying method is called on <see cref="ChangeCachingCollectionDataDecorator"/>.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// This class also manages the <see cref="OriginalData"/> associated with the changed data. It manages the copy-on-write functionality of that
+  /// data structure, and it is the only class that can change that original data.
+  /// </para>
+  /// </remarks>
   [Serializable]
   public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
@@ -47,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public IDomainObjectCollectionData OriginalData
     {
-      get { return _originalData; }
+      get { return new ReadOnlyCollectionDataDecorator (_originalData, false); }
     }
 
     public bool IsCacheUpToDate
@@ -59,7 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       if (!_isCacheUpToDate)
       {
-        var hasChanged = strategy.HasDataChanged (this, _originalData);
+        var hasChanged = strategy.HasDataChanged (this, OriginalData);
         SetCachedHasChangedFlag (hasChanged);
       }
 
