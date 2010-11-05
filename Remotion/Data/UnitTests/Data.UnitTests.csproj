@@ -586,6 +586,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\RelationDefinitionValidatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\SortExpressionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionTest.cs" />

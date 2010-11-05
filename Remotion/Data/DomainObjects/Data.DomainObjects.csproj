@@ -176,6 +176,7 @@
     <Compile Include="Mapping\Validation\IPersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Validation\IPropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
+    <Compile Include="Mapping\Validation\ISortExpressionValidator.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
@@ -270,6 +271,7 @@
     <Compile Include="Mapping\IStorageProperty.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
+    <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
