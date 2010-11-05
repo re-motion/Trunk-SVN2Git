@@ -85,5 +85,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       ValidateMapping ("NotSupportedPersistenceMapping.MappingAttributeAppliedOnOverriddenProperty");
     }
+
+    //EntityNameMatchesParentEntityNameValidationRule
+    [Test]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "Class 'SameEntityNamesInInheritanceHierarchy_DerivedClass' must not specify an entity name 'DerivedName' which is different "
+      +"from inherited entity name 'BaseName'.")]
+    public void SameEntityNamesInInheritanceHierarchy ()
+    {
+      ValidateMapping ("NotSupportedPersistenceMapping.SameEntityNamesInInheritanceHierarchy");
+    }
+  
   }
 }

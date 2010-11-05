@@ -364,6 +364,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedDomainObjectTypes\GenericDomainObject\GenericDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\ConcreteClassAboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\ConcreteClassAboveInheritanceRoot\InheritanceRootClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\SameEntityNamesInInheritanceHierarchy\BaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\SameEntityNamesInInheritanceHierarchy\DerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\DuplicatedStorageGroupAttributeInInheritanceHierarchy\BaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\DuplicatedStorageGroupAttributeInInheritanceHierarchy\DerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\DuplicatedStorageGroupAttributeInInheritanceHierarchy\DerivedDerivedClass.cs" />
