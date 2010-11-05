@@ -99,8 +99,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //SortExpressionIsValidValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "")]
-    [Ignore("TODO 3424: PropertyAccessorCache calls ClassDefinition.GetPropertyDefinitions -> ClassDefinition must be read-only!")]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToManyBidirectionalRelationWithInvalidSortExpression.InvalidRelationClass2.RelationProperty2: SortExpression 'InvalidProperty' cannot "
+      +"be parsed: 'InvalidProperty' is not a valid mapped property name. Expected the .NET property name of a property declared by the "
+      +"'InvalidRelationClass1' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or a "
+      +"derived class of 'InvalidRelationClass1', the full unique re-store property identifier can be specified.")]
     public void OneToManyBidirectionalRelationWithInvalidSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");

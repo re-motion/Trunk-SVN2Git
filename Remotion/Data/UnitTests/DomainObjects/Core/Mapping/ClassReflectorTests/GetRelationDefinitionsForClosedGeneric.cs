@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
               false),
           CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
-              false, "The Sort Expression"));
+              false, "BaseUnidirectional"));
     }
 
     private RelationEndPointDefinition CreateRelationEndPointDefinition (string propertyName, bool isMandatory)

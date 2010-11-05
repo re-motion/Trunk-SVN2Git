@@ -1088,7 +1088,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               CardinalityType.Many,
               typeof (OrderCollection),
-              "OrderNo asc");
+              "OrderNumber asc");
 
       ClassDefinition orderClass = _classDefinitions[typeof (Order)];
 

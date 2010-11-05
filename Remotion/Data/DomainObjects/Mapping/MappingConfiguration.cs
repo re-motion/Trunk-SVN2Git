@@ -15,15 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Utilities;
 using Remotion.Logging;
-using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -37,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private static readonly DoubleCheckedLockingContainer<MappingConfiguration> s_mappingConfiguration =
         new DoubleCheckedLockingContainer<MappingConfiguration> (
-            () => new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader ()));
+            () => new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader()));
 
     public static MappingConfiguration Current
     {
@@ -82,20 +81,22 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = new ClassDefinitionCollection(loader.GetClassDefinitions(),true, true);
-        
-        ValidateClassDefinitions ();
-        ValidatePropertyDefinitions ();
+        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions(), true, true);
 
-        _relationDefinitions = new RelationDefinitionCollection(loader.GetRelationDefinitions (_classDefinitions), true);
+        ValidateClassDefinitions();
+        ValidatePropertyDefinitions();
 
-        ValidateRelationDefinitions ();
-        ValidatePersistenceMapping ();
+        _relationDefinitions = new RelationDefinitionCollection (loader.GetRelationDefinitions (_classDefinitions), true);
+
+        ValidateRelationDefinitions();
+        ValidatePersistenceMapping();
 
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
 
-        SetMappingReadOnly ();
+        SetMappingReadOnly();
+
+        ValidateSortExpression();
       }
     }
 
@@ -167,7 +168,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private void SetMappingReadOnly ()
     {
       foreach (ClassDefinition classDefinition in _classDefinitions)
-        classDefinition.SetReadOnly ();
+        classDefinition.SetReadOnly();
       _classDefinitions.SetReadOnly();
       _relationDefinitions.SetReadOnly();
     }
@@ -177,9 +178,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_classDefinitions.Count > 0)
       {
         var classDefinitionValidator = ClassDefinitionValidator.Create();
-        var classDefinitionValidationResults = classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
-        if (classDefinitionValidationResults.Length > 0)
-          throw CreateMappingException (classDefinitionValidationResults);
+        AnalyzeMappingValidationResults (classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
       }
     }
 
@@ -187,10 +186,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       if (_classDefinitions.Count > 0)
       {
-        var propertyDefinitionValidator = PropertyDefinitionValidator.Create ();
-        var propertyDefinitionValidationResults = propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition> ()).ToArray ();
-        if (propertyDefinitionValidationResults.Length > 0)
-          throw CreateMappingException (propertyDefinitionValidationResults);
+        var propertyDefinitionValidator = PropertyDefinitionValidator.Create();
+        AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
       }
     }
 
@@ -199,9 +196,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_relationDefinitions.Count > 0)
       {
         var relationDefinitionValidator = RelationDefinitionValidator.Create();
-        var relationDefinitionValidationResults = relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()).ToArray();
-        if (relationDefinitionValidationResults.Length > 0)
-          throw CreateMappingException (relationDefinitionValidationResults);
+        AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
       }
     }
 
@@ -210,10 +205,24 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_classDefinitions.Count > 0)
       {
         var persistenceMappingValidator = PersistenceMappingValidator.Create();
-        var persistenceMappingValidationResults = persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()).ToArray();
-        if (persistenceMappingValidationResults.Length > 0)
-          throw CreateMappingException (persistenceMappingValidationResults);
+        AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
       }
+    }
+
+    private void ValidateSortExpression ()
+    {
+      if (_relationDefinitions.Count > 0)
+      {
+        var sortExpressionValidator = SortExpressionValidator.Create();
+        AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
+      }
+    }
+
+    private void AnalyzeMappingValidationResults (IEnumerable<MappingValidationResult> mappingValidationResults)
+    {
+      var mappingValidationResultsArray = mappingValidationResults.ToArray();
+      if (mappingValidationResultsArray.Any())
+        throw CreateMappingException (mappingValidationResultsArray);
     }
 
     private MappingException CreateMappingException (IEnumerable<MappingValidationResult> mappingValidationResults)
@@ -225,4 +234,3 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
   }
 }
-

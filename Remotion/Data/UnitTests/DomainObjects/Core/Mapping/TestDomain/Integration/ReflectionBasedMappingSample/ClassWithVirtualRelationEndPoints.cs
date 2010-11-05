@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     [DBBidirectionalRelation ("BidirectionalOneToOne")]
     public abstract ClassWithRealRelationEndPoints BidirectionalOneToOne { get; set; }
 
-    [DBBidirectionalRelation ("BidirectionalOneToMany", SortExpression = "The Sort Expression")]
+    [DBBidirectionalRelation ("BidirectionalOneToMany", SortExpression = "NoAttribute")]
     public abstract ObjectList<ClassWithRealRelationEndPoints> BidirectionalOneToMany { get; }
   }
 }
