@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -31,19 +32,31 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       
     }
 
+    //Test 3: Same using Mixins for Test 1
+    //Test 4: Same using Mixins for Test 2
+    //Test 5: Mixin Overrides Property on TargetType
+    //All cases with Same Attribute on both Properties 
+    //All cases with attribute only override
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var errorMessages = new StringBuilder();
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
+      if (!classDefinition.IsClassTypeResolved)
+        throw new InvalidOperationException ("Class type of '" + classDefinition.ID + "' is not resolved.");
+
+      var errorMessages = new StringBuilder ();
+      bool isInheritanceRoot = classDefinition.BaseClass == null;
+      var propertyFinder = new AllMappingPropertiesFinder (classDefinition.ClassType, isInheritanceRoot, new ReflectionBasedNameResolver());
+      var propertyInfos = propertyFinder.FindPropertyInfos ((ReflectionBasedClassDefinition)classDefinition);
+
+      foreach (var propertyInfo in propertyInfos)
       {
-        var validationResult = Validate (propertyDefinition.PropertyInfo);
+        var validationResult = Validate (propertyInfo);
         if (!validationResult.IsValid)
           errorMessages.AppendLine (validationResult.Message);
       }
 
-      var messages = errorMessages.ToString().Trim();
+      var messages = errorMessages.ToString ().Trim ();
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
@@ -58,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         {
           var message =
               string.Format (
-                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n  Type: {1}, property: {2}",
+                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\nType: {1}, property: {2}",
                   mappingAttributes[0].GetType().FullName,
                   propertyInfo.DeclaringType.FullName,
                   propertyInfo.Name);

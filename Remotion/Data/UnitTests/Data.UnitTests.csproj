@@ -536,7 +536,10 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRule\NonGenericTypeDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule\ForeignKeyIsSupportedClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\BaseMappingAttributesClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\ClassUsingMixinPropertiesNoInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\DerivedMappingAttributesCheckClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\InheritanceRootDerivedMappingAttributesClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\MixinAddingProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithInvalidPropertyAttributes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithValidPropertyAttributes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRule\RelationEndPointPropertyClass.cs" />

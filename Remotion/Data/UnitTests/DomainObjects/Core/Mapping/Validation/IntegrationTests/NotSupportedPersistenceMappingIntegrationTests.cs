@@ -74,8 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedPersistenceMapping.ConcreteClassAboveInheritanceRoot");
     }
 
+    //MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule
     [Test]
-    //[Ignore("TODO 3424")]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's "
+      +"base definition.\r\n"
+      + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"MappingAttributeAppliedOnOverriddenProperty.DerivedClass, property: Property")]
     public void MappingAttributeAppliedOnOverriddenProperty ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.MappingAttributeAppliedOnOverriddenProperty");

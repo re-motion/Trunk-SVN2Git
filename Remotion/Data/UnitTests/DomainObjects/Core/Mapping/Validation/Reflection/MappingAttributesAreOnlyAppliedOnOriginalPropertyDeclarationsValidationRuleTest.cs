@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
@@ -34,14 +35,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
+    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Class type of 'Test' is not resolved.")]
+    public void ClassDefinitionWithUnresolvedClassType ()
+    {
+      var type = typeof (BaseMappingAttributesClass);
+      var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
+          "Test", "Test", "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
+
+      _validationRule.Validate (classDefinition);
+    }
+
+    [Test]
     public void OriginalPropertyDeclaration ()
     {
       var type = typeof (BaseMappingAttributesClass);
-      var propertyInfo = type.GetProperty ("Property1");
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
-      var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -49,67 +57,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    public void NonOriginalPropertyDeclarationWithoutMappingAttribute ()
-    {
-      var type = typeof (DerivedClassWithMappingAttribute);
-      var propertyInfo = type.GetProperty ("Property2");
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
-      var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      classDefinition.SetReadOnly ();
-
-      var validationResult = _validationRule.Validate (classDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
-    }
-
-    [Test]
-    public void NonOriginalPropertyDeclarationWithMappingAttribute ()
-    {
-      var type = typeof (DerivedClassWithMappingAttribute);
-      var propertyInfo = type.GetProperty ("Property1");
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
-      var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      classDefinition.SetReadOnly ();
-
-      var validationResult = _validationRule.Validate (classDefinition);
-
-      var expectedMessage = 
-        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n  "
-        +"Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute, "
-        +"property: Property1";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    [Test]
-    public void NonOriginalPropertiesDeclarationWithMappingAttribute ()
+    public void NonOriginalPropertiesDeclarationWithMappingAttribute_NoInheritanceRoot ()
     {
       var type = typeof (DerivedClassWithMappingAttribute);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
       
-      var propertyInfo1 = type.GetProperty ("Property1");
-      var propertyDefinition1 = new TestablePropertyDefinition (classDefinition, propertyInfo1, 20, StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
-
-      var propertyInfo2 = type.GetProperty ("Property3");
-      var propertyDefinition2 = new TestablePropertyDefinition (classDefinition, propertyInfo2, 20, StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
-      
-      classDefinition.SetReadOnly ();
-
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessages = new StringBuilder();
       expectedMessages.AppendLine(
-        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n  "
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
         + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute, "
         + "property: Property1");
       expectedMessages.AppendLine (
-        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n  "
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
         + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute, "
         + "property: Property3");
       AssertMappingValidationResult (validationResult, false, expectedMessages.ToString().Trim());
+    }
+
+    [Test]
+    public void NonOriginalPropertiesDeclarationWithMappingAttribute_InheritanceRoot ()
+    {
+      var type = typeof (InheritanceRootDerivedMappingAttributesClass);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+
+      var validationResult = _validationRule.Validate (classDefinition);
+
+      var expectedMessages = new StringBuilder ();
+      expectedMessages.AppendLine (
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
+        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass, "
+        + "property: Property1");
+      expectedMessages.AppendLine (
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
+        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass, "
+        + "property: Property3");
+      AssertMappingValidationResult (validationResult, false, expectedMessages.ToString ().Trim ());
+    }
+
+    [Test]
+    [Ignore ("TODO 3424: Utilities.ReflectionUtility.IsOriginalDeclaration does not work for Mixins")]
+    public void NonOriginalPropertiesDeclarationWithMappingAttributeOnMixin_NoInheritanceRoot ()
+    {
+      var type = typeof (ClassUsingMixinPropertiesNoInheritanceRoot);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "ClassUsingMixinPropertiesNoInheritanceRoot",
+          "ClassUsingMixinPropertiesNoInheritanceRoot",
+          "DefaultStorageProvider",
+          type,
+          false,
+          null,
+          new PersistentMixinFinder (type, true));
+      
+      var validationResult = _validationRule.Validate (classDefinition);
+
+      var expectedMessages = new StringBuilder ();
+      expectedMessages.AppendLine (
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
+        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass, "
+        + "property: Property1");
+      expectedMessages.AppendLine (
+        "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n"
+        + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass, "
+        + "property: Property3");
+      AssertMappingValidationResult (validationResult, false, expectedMessages.ToString ().Trim ());
     }
   }
 }

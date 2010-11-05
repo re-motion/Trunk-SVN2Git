@@ -51,12 +51,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
       var properties = propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute)));
 
-      Assert.That (properties.Length, Is.EqualTo (3));
+      Assert.That (properties.Length, Is.EqualTo (4));
       Assert.That (
           properties,
           Is.EqualTo (
               new[]
               {
+                  GetProperty (typeof (BaseMappingAttributesClass), "Property1"),
                   GetProperty (typeof (BaseMappingAttributesClass), "Property4"),
                   GetProperty (typeof (DerivedClassWithMappingAttribute), "Property1"),
                   GetProperty (typeof (DerivedClassWithMappingAttribute), "Property3")
