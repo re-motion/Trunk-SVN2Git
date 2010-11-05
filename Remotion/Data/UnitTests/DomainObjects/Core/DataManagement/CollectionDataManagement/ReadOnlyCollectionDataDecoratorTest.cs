@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub);
+      _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub, true);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -102,12 +102,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
     
     [Test]
-    public void GetDataStore ()
+    public void GetDataStore_Allowed ()
     {
-      var fakeData = new DomainObjectCollectionData ();
+      var decorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub, true);
 
+      var fakeData = new DomainObjectCollectionData ();
       _wrappedDataStub.Stub (stub => stub.GetDataStore ()).Return (fakeData);
-      Assert.That (_readOnlyDecorator.GetDataStore (), Is.SameAs (fakeData));
+
+      Assert.That (decorator.GetDataStore (), Is.SameAs (fakeData));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This collection is read-only and does not support accessing its underlying data store.")]
+    public void GetDataStore_Disallowed ()
+    {
+      var decorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub, false);
+
+      decorator.GetDataStore();
     }
 
     [Test]
@@ -181,9 +193,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Serializable ()
     {
-      var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }));
+      var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }), false);
       var result = Serializer.SerializeAndDeserialize (decorator);
       Assert.That (result.Count, Is.EqualTo (3));
+      Assert.That (result.IsGetDataStoreAllowed, Is.False);
     }
 
     private void StubInnerData (params DomainObject[] contents)

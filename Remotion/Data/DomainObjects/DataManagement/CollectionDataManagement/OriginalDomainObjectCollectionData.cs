@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// After that, it will delegate to the copy, until it is instructed to go back to the actual value collection.
   /// </para>
   /// <para>
-  /// Changes via <see cref="GetDataStore"/> are forbidden because <see cref="ChangeCachingCollectionDataDecorator"/> must be able to rely on the
+  /// Changes via <see cref="IDomainObjectCollectionData.GetDataStore"/> are forbidden because <see cref="ChangeCachingCollectionDataDecorator"/> must be able to rely on the
   /// fact that the original collection never changes.
   /// </para>
   /// </remarks>
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private readonly IDomainObjectCollectionData _actualData;
 
     public OriginalDomainObjectCollectionData (IDomainObjectCollectionData actualData)
-        : base (ArgumentUtility.CheckNotNull ("actualData", actualData))
+        : base (ArgumentUtility.CheckNotNull ("actualData", actualData), false)
     {
       _actualData = actualData;
     }
@@ -53,11 +53,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public void RevertToActualData ()
     {
       WrappedData = _actualData;
-    }
-
-    public override IDomainObjectCollectionData GetDataStore ()
-    {
-      throw new InvalidOperationException ("The original collection of a relation must not be changed; therefore, the GetDataStore method cannot be used.");
     }
   }
 }

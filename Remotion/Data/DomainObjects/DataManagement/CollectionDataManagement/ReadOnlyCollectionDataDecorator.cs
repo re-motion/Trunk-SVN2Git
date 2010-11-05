@@ -21,14 +21,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <summary>
   /// This class acts as a read-only decorator for another <see cref="IDomainObjectCollectionData"/> object. Every modifying method 
   /// of the <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
-  /// Note that modifications are still possible via <see cref="IDomainObjectCollectionData.GetDataStore"/>.
+  /// Modifications are still possible via <see cref="IDomainObjectCollectionData.GetDataStore"/> unless the <see cref="IsGetDataStoreAllowed"/>
+  /// flag is <see langword="false" />.
   /// </summary>
   [Serializable]
   public class ReadOnlyCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
-    public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
-      : base (wrappedData)
+    private readonly bool _isGetDataStoreAllowed;
+
+    public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData, bool isGetDataStoreAllowed)
+        : base (wrappedData)
     {
+      _isGetDataStoreAllowed = isGetDataStoreAllowed;
+    }
+
+    public bool IsGetDataStoreAllowed
+    {
+      get { return _isGetDataStoreAllowed; }
     }
 
     public override bool IsReadOnly
@@ -59,6 +68,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public override void Replace (int index, DomainObject newDomainObject)
     {
       throw new NotSupportedException ("Cannot replace an item in a read-only collection.");
+    }
+
+    public override IDomainObjectCollectionData GetDataStore ()
+    {
+      if (IsGetDataStoreAllowed)
+        return base.GetDataStore ();
+      else
+        throw new InvalidOperationException ("This collection is read-only and does not support accessing its underlying data store.");
     }
   }
 }

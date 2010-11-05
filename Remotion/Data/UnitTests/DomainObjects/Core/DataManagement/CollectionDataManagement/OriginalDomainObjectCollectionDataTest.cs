@@ -116,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The original collection of a relation must not be changed; therefore, the GetDataStore method cannot be used.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "This collection is read-only and does not support accessing its underlying data store.")]
     public void GetDataStore ()
     {
       _originalData.GetDataStore ();

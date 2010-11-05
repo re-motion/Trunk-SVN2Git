@@ -571,7 +571,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var clonedCollection = associatedCollection.Clone (true);
 
       // clone is always stand-alone, even when source is associated with end point
-      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (clonedCollection);
+      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (clonedCollection, true);
     }
 
     [Test]

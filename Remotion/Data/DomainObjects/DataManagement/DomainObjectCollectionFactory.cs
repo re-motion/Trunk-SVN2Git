@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
       ArgumentUtility.CheckNotNull ("content", content);
 
-      var dataStrategy = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (content));
+      var dataStrategy = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (content), true);
       return CreateCollection (collectionType, dataStrategy);
     }
 

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -64,25 +65,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "with this collection type.\r\nParameter name: dataStrategy")]
     public void Initialization_WithData_InvalidRequiredItemType ()
     {
-      var givenData = new ModificationCheckingCollectionDataDecorator (null, new DomainObjectCollectionData ());
-      new ObjectList<Customer> (givenData);
+      var dataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      dataStub.Stub (stub => stub.RequiredItemType).Return (null);
+
+      new ObjectList<Customer> (dataStub);
     }
 
     [Test]
     public void Initialization_WithData_NoRequiredItemType_ReadOnly ()
     {
-      var givenData = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData ());
-      var collection = new ObjectList<Customer> (givenData);
+      var dataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      dataStub.Stub (stub => stub.RequiredItemType).Return (null);
+      dataStub.Stub (stub => stub.IsReadOnly).Return (true);
+
+      var collection = new ObjectList<Customer> (dataStub);
 
       var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
-      Assert.That (actualData, Is.SameAs (givenData));
+      Assert.That (actualData, Is.SameAs (dataStub));
+      Assert.That (actualData.RequiredItemType, Is.Null);
     }
 
     [Test]
     public void Initialization_WithData_DerivedRequiredItemType ()
     {
-      var givenData = new ModificationCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData ());
-      var collection = new ObjectList<DomainObject> (givenData);
+      var dataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      dataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
+      
+      var collection = new ObjectList<DomainObject> (dataStub);
 
       Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Order)));
     }

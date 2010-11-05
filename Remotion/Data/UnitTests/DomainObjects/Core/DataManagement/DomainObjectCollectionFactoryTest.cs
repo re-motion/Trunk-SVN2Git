@@ -153,9 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var collection = _factory.CreateReadOnlyCollection (typeof (OrderCollection), new Order[0]);
 
-      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (collection);
+      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (collection, true);
     }
-
+    
     private void CheckDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedData)
     {
       var data = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
