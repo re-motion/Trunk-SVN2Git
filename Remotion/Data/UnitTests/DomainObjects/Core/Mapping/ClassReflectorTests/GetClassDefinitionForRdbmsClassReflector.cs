@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 {
@@ -59,6 +60,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttribute", actual.ID);
       Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttributeTable", actual.MyEntityName);
+    }
+
+    [Test]
+    public void GetClassDefinition_ForClassWithHasStorageGroupAttributeDefinedItselfAndInBaseClass ()
+    {
+      var classReflector = new RdbmsClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
+
+      var actual = classReflector.GetClassDefinition (_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreEqual ("DerivedClassWithStorageGroupAttribute", actual.ID);
     }
 
     [Test]

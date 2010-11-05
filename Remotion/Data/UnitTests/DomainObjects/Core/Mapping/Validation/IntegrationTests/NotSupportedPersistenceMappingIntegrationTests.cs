@@ -51,8 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedPersistenceMapping.SameClassNameInInheritanceHierarchy");
     }
 
+    //StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule
     [Test]
-    [Ignore("TODO 3424: exception thrown in class reflector")]
+    [ExpectedException (typeof (MappingException), 
+      ExpectedMessage = "The domain object type cannot redefine the 'Remotion.Data.DomainObjects.StorageGroupAttribute' already defined on base type "
+      +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.BaseClass'.")]
     public void DuplicatedStorageGroupAttributeInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.DuplicatedStorageGroupAttributeInInheritanceHierarchy");
@@ -71,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     }
 
     [Test]
-    [Ignore("TODO 3424")]
+    //[Ignore("TODO 3424")]
     public void MappingAttributeAppliedOnOverriddenProperty ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.MappingAttributeAppliedOnOverriddenProperty");

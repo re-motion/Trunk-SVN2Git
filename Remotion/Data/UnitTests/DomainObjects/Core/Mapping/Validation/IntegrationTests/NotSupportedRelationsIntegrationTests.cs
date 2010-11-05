@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       + "BidirectionalRelationWithInvalidPropertyReferences.InvalidRelationClass1'.\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2, property: RelationProperty3")]
-    public void BidirectionalRelationWithInvalidPropertyReferences ()
+    public void BidirectionalRelationWithInvalidPropertyReferences () //TODO 3424: check alo other cases
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
     }
