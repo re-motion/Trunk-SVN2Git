@@ -360,6 +360,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\AttributesOnUnsupportedTypes\ClassWithAttributesOnUnsupportedTypes.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedDomainObjectTypes\DomainObjectWithLegacyInfrastructureConstructor\DomainObjectWithLegacyConstructor.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedDomainObjectTypes\GenericDomainObject\GenericDomainObject.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\ConcreteClassAboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\ConcreteClassAboveInheritanceRoot\InheritanceRootClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPersistenceMapping\DuplicatedStorageGroupAttributeInInheritanceHierarchy\BaseClass.cs" />
@@ -550,6 +552,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectWithoutStorageClassNone\ClassWithInvalidPropertyType.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\AttributesOnUnsupportedTypesIntegrationTests.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedDomainObjectTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedPersistenceMappingIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedPropertyTypesIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedRelationsIntegrationTests.cs" />

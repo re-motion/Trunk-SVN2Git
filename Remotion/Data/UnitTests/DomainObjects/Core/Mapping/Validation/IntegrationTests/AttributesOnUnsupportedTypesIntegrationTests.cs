@@ -23,6 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   [TestFixture]
   public class AttributesOnUnsupportedTypesIntegrationTests : ValidationIntegrationTestBase
   {
+    //MappingAttributesAreSupportedForPropertyTypeValidationRule
     [Test]
     [ExpectedException(typeof(MappingException), 
       ExpectedMessage = "The 'Remotion.Data.DomainObjects.StringPropertyAttribute' may be only applied to properties of type 'System.String'.\r\n"
