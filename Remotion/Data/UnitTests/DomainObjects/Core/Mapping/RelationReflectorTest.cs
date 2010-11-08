@@ -305,8 +305,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ExpectedMessage =
         "Opposite relation property 'Invalid' could not be found on type "
         +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationRightSide'.\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide, "
-        +"property: InvalidOppositePropertyNameLeftSide")]
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide\r\n"
+        +"Property: InvalidOppositePropertyNameLeftSide")]
     public void GetMetadata_WithInvalidOppositePropertyName ()
     {
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
@@ -323,9 +323,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException),
         ExpectedMessage = "The declaring type 'TargetClass2ForMixinAddingBidirectionalRelationTwice' does not match the type of the opposite relation "
-        + "propery 'VirtualSide' declared on type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-        + "RelationTargetForMixinAddingBidirectionalRelationTwice'.\r\nDeclaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        + "TestDomain.Errors.MixinAddingBidirectionalRelationTwice, property: RealSide")]
+        + "propery 'VirtualSide' declared on type 'RelationTargetForMixinAddingBidirectionalRelationTwice'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.MixinAddingBidirectionalRelationTwice\r\n"
+        + "Property: RealSide")]
     public void GetMetadata_WithInvalidOppositePropertyType_CausedByMixin ()
     {
       Type type = GetTargetClass2ForMixinAddingBidirectionalRelationTwice ();

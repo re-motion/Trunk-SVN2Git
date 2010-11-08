@@ -25,11 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1.RelationProperty2' cannot have two non-virtual end points.\r\n"
+      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1.RelationProperty2' "
+      +"cannot have two non-virtual end points.\r\n"
       + "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
       +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites."
@@ -39,26 +39,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites");
     }
 
+    //TODO: Split rule into RdbmsXXXValidationRule and XXXValidationRule. Instantiate RdbmsXXXValidationRule via factory from XXXValidationRule. Compare with rdbmsRelationReflector.
     //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
-      +"InvalidRelationClass2.RelationProperty1' cannot have two virtual end points.\r\n"
-      +"Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
-      +"InvalidRelationClass1.RelationProperty2' cannot have two virtual end points.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      // "The bidirectional one-to-one relation between property 'RelationProperty1', declared on type 'InvalidRelationClass1', and property 'RelationProperty2', 
+      // declared on type 'InvalidRelationClass2', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the 'DBBidirectionalRelationAttribute'.\r\n
+      // Declaring Type: x.y.InvalidRelationClass1\r\n"
+      // Property: RelationProperty1\r\n
+      // Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      //+ "OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      //+ "TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites\r\n"
+      // ---------\r\n
+      //+ "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      //+ "OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      //+ "TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
+      //+ "InvalidRelationClass1.RelationProperty2' cannot have two virtual end points."
+      "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      + "TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
+      + "InvalidRelationClass2.RelationProperty1' cannot have two virtual end points.\r\n"
+      + "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      + "TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
+      + "InvalidRelationClass1.RelationProperty2' cannot have two virtual end points.")]
     public void OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites ()
     {
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites");
     }
 
+    //TODO: Many to many
+
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.")]
     public void OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnTheManySite ()
     {
       ValidateMapping ("NotSupportedRelations.OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnManySite");
@@ -75,20 +90,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-      +"ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass2.RelationProperty2' "
-      +"cannot have two virtual end points.\r\n"
-      + "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-      +"ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' cannot "
-      +"have two virtual end points.\r\n"
-      + "Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' of class "
-      +"'OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass1' must not specify a SortExpression, because cardinality is "
-      +"equal to 'one'.\r\n"
-      +"Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' of class "
       +"'OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass1' must not specify a SortExpression, because cardinality is "
       +"equal to 'one'.")]
@@ -99,12 +102,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //SortExpressionIsValidValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToManyBidirectionalRelationWithInvalidSortExpression.InvalidRelationClass2.RelationProperty2: SortExpression 'InvalidProperty' cannot "
-      +"be parsed: 'InvalidProperty' is not a valid mapped property name. Expected the .NET property name of a property declared by the "
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+       "SortExpression 'InvalidProperty' cannot be parsed: 'InvalidProperty' is not a valid mapped property name. Expected the .NET property name of a property declared by the "
       +"'InvalidRelationClass1' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or a "
-      +"derived class of 'InvalidRelationClass1', the full unique re-store property identifier can be specified.")]
+      +"derived class of 'InvalidRelationClass1', the full unique re-store property identifier can be specified.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToManyBidirectionalRelationWithInvalidSortExpression.InvalidRelationClass2'\r\nProperty: 'RelationProperty2'")]
     public void OneToManyBidirectionalRelationWithInvalidSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");
@@ -112,26 +115,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoBidirectionalRelationAttribute (first condition)
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Opposite relation property 'RelationProperty1' declared on type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass1' "
-      +"does not define a matching 'Remotion.Data.DomainObjects.DBBidirectionalRelationAttribute'.\r\n"
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2, property: RelationProperty2")]
+      + "BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
+      + "Property: RelationProperty2")]
     public void BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
     }
     
+    //TODO 3424: check error message
     //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoDeclaringType (first condition)
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "The declaring type 'BaseRelationClass2' does not match the type of the opposite relation propery 'RelationProperty1' "
-      + "declared on type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      + "BidirectionalRelationWithInvalidPropertyReferences.InvalidRelationClass1'.\r\n"
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "The declaring type 'BaseRelationClass2' does not match the type of the opposite relation propery 'RelationProperty1' "
+      + "declared on type 'InvalidRelationClass1'.\r\n\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2, property: RelationProperty3")]
-    public void BidirectionalRelationWithInvalidPropertyReferences () //TODO 3424: check alo other cases
+      + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2\r\n"
+      + "Property: RelationProperty3")]
+    public void BidirectionalRelationWithInvalidPropertyReferences () //TODO 3424: check  other cases
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
     }

@@ -258,7 +258,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
       catch (MappingException ex)
       {
-        var message = string.Format ("{0}.{1}: {2}", ClassDefinition.ClassType, PropertyInfo.Name, ex.Message);
+        var message = string.Format ("{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'", ex.Message, ClassDefinition.ClassType, PropertyInfo.Name);
         throw new MappingException (message, ex);
       }
     }

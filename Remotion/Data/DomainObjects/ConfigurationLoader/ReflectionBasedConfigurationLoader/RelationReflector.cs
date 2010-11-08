@@ -124,10 +124,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           throw CreateMappingException (
               null,
               PropertyInfo,
-              "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.",
+              "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
               DeclaringDomainObjectTypeForProperty.Name,
               BidirectionalRelationAttribute.OppositeProperty,
-              oppositePropertyInfo.DeclaringType.FullName);
+              oppositePropertyInfo.DeclaringType.Name);
         }
       }
       else
@@ -138,10 +138,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         throw CreateMappingException (
             null,
             PropertyInfo,
-            "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.",
+            "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
             DeclaringDomainObjectTypeForProperty.Name,
             BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.FullName);
+            oppositePropertyInfo.DeclaringType.Name);
       }
     }
 
@@ -155,10 +155,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         throw CreateMappingException (
             null,
             PropertyInfo,
-            "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.",
+            "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.\r\n",
             BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.FullName,
-            BidirectionalRelationAttribute.GetType().FullName);
+            oppositePropertyInfo.DeclaringType.Name,
+            BidirectionalRelationAttribute.GetType().Name);
       }
 
       if (!PropertyInfo.Name.Equals (oppositeBidirectionalRelationAttribute.OppositeProperty, StringComparison.Ordinal))
@@ -166,10 +166,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         throw CreateMappingException (
             null,
             PropertyInfo,
-            "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.",
+            "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n",
             BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.FullName,
-            BidirectionalRelationAttribute.GetType().FullName);
+            oppositePropertyInfo.DeclaringType.Name,
+            BidirectionalRelationAttribute.GetType().Name);
       }
     }
   }

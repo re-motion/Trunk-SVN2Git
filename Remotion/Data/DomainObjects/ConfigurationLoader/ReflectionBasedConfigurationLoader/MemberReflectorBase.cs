@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       StringBuilder messageBuilder = new StringBuilder();
       messageBuilder.AppendFormat (message, args);
       messageBuilder.AppendLine();
-      messageBuilder.AppendFormat ("Declaring type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name);
+      messageBuilder.AppendFormat ("Declaring type: {0}\r\nProperty: {1}", propertyInfo.DeclaringType, propertyInfo.Name);
 
       return new MappingException (messageBuilder.ToString(), innerException);
     }

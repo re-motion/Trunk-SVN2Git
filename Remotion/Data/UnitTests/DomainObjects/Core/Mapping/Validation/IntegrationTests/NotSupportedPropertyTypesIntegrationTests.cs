@@ -36,7 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-        +"PropertyTypeOfDomainObjectWithoutStorageClassNone.ClassWithInvalidPropertyType, property: InvalidProperty"
+        +"PropertyTypeOfDomainObjectWithoutStorageClassNone.ClassWithInvalidPropertyType\r\n"
+        +"Property: InvalidProperty"
         )]
     public void PropertyTypeOfDomainObjectWithoutStorageClassNone ()
     {
@@ -49,7 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
         "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."
         +"NotSupportedPropertyTypes.PropertyTypeToDomainObjectAboveTheInheritanceRoot.ClassAboveInheritanceRoot'.\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."+
-        "PropertyTypeToDomainObjectAboveTheInheritanceRoot.InheritanceRootClass, property: InvalidProperty"
+        "PropertyTypeToDomainObjectAboveTheInheritanceRoot.InheritanceRootClass\r\n"
+        +"Property: InvalidProperty"
         )]
     public void PropertyTypeToDomainObjectAboveTheInheritanceRoot ()
     {
