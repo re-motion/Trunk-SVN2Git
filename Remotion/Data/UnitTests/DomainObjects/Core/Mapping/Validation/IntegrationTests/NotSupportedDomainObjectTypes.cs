@@ -25,7 +25,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     //DomainObjectTypeIsNotGenericValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Generic domain objects are not supported.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Generic domain objects are not supported.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedDomainObjectTypes."
+      +"GenericDomainObject.GenericDomainObject`1[T]'")]
     public void GenericDomainObjectType ()
     {
       ValidateMapping ("NotSupportedDomainObjectTypes.GenericDomainObject");

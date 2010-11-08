@@ -95,7 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Generic domain objects are not supported.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Generic domain objects are not supported.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+      +"DomainObjectTypeIsNotGenericValidationRule.GenericTypeDomainObject`1[System.String]'")]
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
