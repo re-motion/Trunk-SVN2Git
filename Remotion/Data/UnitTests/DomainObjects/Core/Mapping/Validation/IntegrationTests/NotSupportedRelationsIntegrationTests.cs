@@ -26,14 +26,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      "The relation between property 'RelationProperty2', declared on type 'InvalidRelationClass1', and property 'RelationProperty1' declared on type "
+      +"'InvalidRelationClass2', contains two non-virtual end points. One of the two properties must set 'ContainsForeignKey' to 'false' on the "
+      +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1\r\n"
+      +"Property: RelationProperty2\r\n"
+      +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1.RelationProperty2' "
-      +"cannot have two non-virtual end points.\r\n"
-      + "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites."
+      +"InvalidRelationClass1.RelationProperty2\r\n"
+      +"The relation between property 'RelationProperty1', declared on type 'InvalidRelationClass2', and property 'RelationProperty2' declared on type "
+      +"'InvalidRelationClass1', contains two non-virtual end points. One of the two properties must set 'ContainsForeignKey' to 'false' on the "
+      +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2\r\n"
+      +"Property: RelationProperty1\r\n"
+      +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
       +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites."
-      +"InvalidRelationClass2.RelationProperty1' cannot have two non-virtual end points.")]
+      +"InvalidRelationClass2.RelationProperty1")]
     public void OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites()
     {
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites");

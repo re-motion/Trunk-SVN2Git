@@ -117,8 +117,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
-        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two non-virtual end points.";
+      var expectedMessage = "The relation between property 'Customer', declared on type 'Order', and property 'Customer' declared on type 'Order', "
+        +"contains two non-virtual end points. One of the two properties must set 'ContainsForeignKey' to 'false' on the "
+        +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        + "Property: Customer\r\n"
+        + "Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core."
+        + "Mapping.TestDomain.Integration.Order.Customer";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
   }

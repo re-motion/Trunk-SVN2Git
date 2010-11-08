@@ -77,7 +77,17 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
       {
-        var message = string.Format ("Relation '{0}' cannot have two non-virtual end points.", relationDefinition.ID);
+        var message = string.Format (
+             "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two non-virtual end points. "
+             + "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.\r\n\r\nDeclaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+             endPointDefinition1.PropertyInfo.Name,
+             endPointDefinition1.ClassDefinition.ClassType.Name,
+             endPointDefinition2.PropertyInfo.Name,
+             endPointDefinition2.ClassDefinition.ClassType.Name,
+             typeof (DBBidirectionalRelationAttribute).Name,
+             endPointDefinition1.ClassDefinition.ClassType.FullName,
+             endPointDefinition1.PropertyInfo.Name,
+             relationDefinition.ID);
         return new MappingValidationResult (false, message);
       }
 
