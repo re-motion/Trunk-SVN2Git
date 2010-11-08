@@ -76,7 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.";
+      var expectedMessage = "The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -130,7 +132,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
+      var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from "
+        +"'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -148,8 +153,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'."
-        +"\r\nThe property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.";
+      var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from "
+        +"'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'\r\n"
+        +"The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
 
     }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Remotion.Utilities;
 
@@ -28,14 +27,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   {
     public VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule ()
     {
-      
     }
 
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
 
-      var errorMessages = new StringBuilder ();
+      var errorMessages = new StringBuilder();
       foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
       {
         var validationResult = Validate (endPointDefinition);
@@ -46,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         }
       }
 
-      var messages = errorMessages.ToString ().Trim ();
+      var messages = errorMessages.ToString().Trim();
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
@@ -57,20 +55,28 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       var endPointDefinitionAsVirtualRelationEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (endPointDefinitionAsVirtualRelationEndPointDefinition != null)
       {
-        if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.One && 
+        if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.One &&
             !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
         {
           var message = "The property type of a virtual end point of a one-to-one relation"
-                      + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.";
+                        + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
+                        + string.Format (
+                            "Declaring type: '{0}'\r\nProperty: '{1}'",
+                            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+                            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
           return new MappingValidationResult (false, message);
         }
 
-        if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many && 
-            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) && 
+        if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) &&
             ! endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObjectCollection)))
         {
           var message = "The property type of a virtual end point of a one-to-many relation"
-                      + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
+                        + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
+                        + string.Format (
+                            "Declaring type: '{0}'\r\nProperty: '{1}'",
+                            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+                            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
           return new MappingValidationResult (false, message);
         }
       }
