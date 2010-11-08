@@ -60,12 +60,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             if (!myPropertyDefinition.StorageProperty.Equals (basePropertyDefinition.StorageProperty))
             {
               var message = string.Format ("Property '{0}' of class '{1}' must not define storage specific name '{2}',"
-                  + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-                  myPropertyDefinition.PropertyName,
-                  classDefinition.ID,
+                  + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.\r\n\r\n"
+                  +"Declaring type: {5}\r\nProperty: {6}",
+                  myPropertyDefinition.PropertyInfo.Name,
+                  classDefinition.ClassType.Name,
                   myPropertyDefinition.StorageProperty.Name,
-                  basePropertyDefinition.ClassDefinition.ID,
-                  basePropertyDefinition.PropertyName);
+                  basePropertyDefinition.ClassDefinition.ClassType.Name,
+                  basePropertyDefinition.PropertyInfo.Name,
+                  classDefinition.ClassType.Name,
+                  myPropertyDefinition.PropertyInfo.Name);
               return new MappingValidationResult (false, message);
             }
           }

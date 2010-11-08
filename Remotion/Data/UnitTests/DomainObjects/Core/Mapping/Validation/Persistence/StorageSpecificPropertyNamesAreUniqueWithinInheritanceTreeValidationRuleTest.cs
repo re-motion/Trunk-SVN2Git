@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
@@ -111,9 +112,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Property 'FirstName2' of class 'StorageSpecificPropertyNamesDerivedDomainObject' must not define storage specific name 'FirstName', "
-          + "because class 'StorageSpecificPropertyNamesDerivedDomainObject' in same inheritance hierarchy already defines property 'FirstName1' "
-          + "with the same storage specific name.";
+          "Property 'FakeProperty' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'FirstName', because class "
+          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific "
+          +"name.\r\n\r\n"
+          +"Declaring type: DerivedValidationDomainObjectClass\r\n"
+          +"Property: FakeProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -151,9 +154,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'FirstName2' of class 'StorageSpecificPropertyNamesDerivedBase2DomainObject' must not define storage specific name 'FirstName', "
-          + "because class 'StorageSpecificPropertyNamesDerivedBase1DomainObject' in same inheritance hierarchy already defines property 'FirstName1' "
-          + "with the same storage specific name.";
+          "Property 'FakeProperty' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'FirstName', because class "
+          +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific name.\r\n\r\n"
+          +"Declaring type: DerivedValidationDomainObjectClass\r\n"
+          +"Property: FakeProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -185,9 +189,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'FirstName1' of class 'StorageSpecificPropertyNamesDerivedDomainObject' must not define storage specific name 'FirstName', "
-          + "because class 'StorageSpecificPropertyNamesDerivedBase2DomainObject' in same inheritance hierarchy already defines property 'FirstName2' "
-          + "with the same storage specific name.";
+          "Property 'FakeProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'FirstName', because class "
+          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific name.\r\n\r\n"
+          +"Declaring type: OtherDerivedValidationHierarchyClass\r\n"
+          +"Property: FakeProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
