@@ -61,12 +61,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
       {
         var message = string.Format(
-            "Relation definition error: Virtual property '{0}' of class '{1}' is of type '{2}', but must be derived from '{3}' or '{4}' or must be '{4}'.",
-            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyName,
-            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ID,
-            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType,
-            typeof(DomainObject).FullName,
-            typeof(DomainObjectCollection).FullName);
+            "Virtual property '{0}' of class '{1}' is of type '{2}', but must be derived from '{3}' or '{4}' or must be '{4}'.\r\n\r\n"
+            +"Declaring type: '{5}'\r\nProperty: '{6}'",
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.Name,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.Name,
+            typeof(DomainObject).Name,
+            typeof(DomainObjectCollection).Name,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);

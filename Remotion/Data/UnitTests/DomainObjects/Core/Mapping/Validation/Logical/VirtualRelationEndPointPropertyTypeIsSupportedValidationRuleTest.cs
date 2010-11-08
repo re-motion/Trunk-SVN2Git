@@ -119,9 +119,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Relation definition error: Virtual property 'Property' of class 'Order' is "
-                           +"of type 'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                           +"'Remotion.Data.DomainObjects.DomainObjectCollection' or must be 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
+      var expectedMessage = "Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or "
+        +"'DomainObjectCollection' or must be 'DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -137,9 +138,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Relation definition error: Virtual property 'Property' of class 'Order' is "
-                           + "of type 'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                           + "'Remotion.Data.DomainObjects.DomainObjectCollection' or must be 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
+      var expectedMessage = "Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or "
+        +"'DomainObjectCollection' or must be 'DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -158,12 +160,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Relation definition error: Virtual property 'Property' of class 'Order' is "
-                           + "of type 'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                           + "'Remotion.Data.DomainObjects.DomainObjectCollection' or must be 'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n"
-                           + "Relation definition error: Virtual property 'PropertyWithStorageClassNone' of class 'Order' is "
-                           + "of type 'System.String', but must be derived from 'Remotion.Data.DomainObjects.DomainObject' or "
-                           + "'Remotion.Data.DomainObjects.DomainObjectCollection' or must be 'Remotion.Data.DomainObjects.DomainObjectCollection'.";
+      var expectedMessage = "Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or "
+        +"'DomainObjectCollection' or must be 'DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'\r\n"
+        +"Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or 'DomainObjectCollection' "
+        +"or must be 'DomainObjectCollection'.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }
