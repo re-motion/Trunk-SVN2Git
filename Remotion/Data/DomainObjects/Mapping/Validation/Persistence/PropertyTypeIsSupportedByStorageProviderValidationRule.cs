@@ -31,19 +31,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var errorMessages = new StringBuilder ();
+      var errorMessages = new StringBuilder();
       foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
       {
-        var validationResult = Validate (propertyDefinition.PropertyInfo, classDefinition.StorageProviderID);
+        var validationResult = Validate (propertyDefinition.PropertyInfo, classDefinition);
         if (!validationResult.IsValid)
           errorMessages.AppendLine (validationResult.Message);
       }
 
-      var messages = errorMessages.ToString ().Trim ();
+      var messages = errorMessages.ToString().Trim();
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo, string storageProviderID)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
@@ -52,9 +52,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
 
-        if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, storageProviderID))
+        if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageProviderID))
         {
-          var message = string.Format("The property type {0} is not supported.", nativePropertyType);
+          var message = string.Format (
+              "The property type {0} is not supported.\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
+              nativePropertyType,
+              classDefinition.ClassType.FullName,
+              propertyInfo.Name);
           return new MappingValidationResult (false, message);
         }
       }
