@@ -78,7 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_classDefinition);
 
-      var expectedMessage = "The property type System.Object is not supported.";
+      var expectedMessage = "The property type System.Object is not supported.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        +"Property: PropertyWithTypeObjectWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

@@ -25,7 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     //PropertyTypeIsSupportedValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "The property type System.Object is not supported.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "The property type System.Object is not supported.\r\n\r\n"
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+      +"PropertyTypeOfObjectWithoutStorageClassNone.ClassWithInvalidPropertyType\r\n"
+      +"Property: InvalidProperty")]
     public void PropertyTypeOfObjectWithoutStorageClassNone ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectWithoutStorageClassNone");
