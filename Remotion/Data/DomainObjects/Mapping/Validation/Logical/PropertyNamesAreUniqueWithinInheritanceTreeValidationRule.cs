@@ -44,10 +44,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           var basePropertyDefinition = basePropertyDefinitions.SingleOrDefault(pd=>pd.PropertyName==propertyName);
           if (basePropertyDefinition!=null)
           {
-            string message = string.Format("Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
-                classDefinition.ID,
-                propertyName,
-                basePropertyDefinition.ClassDefinition.ID);
+            string message = string.Format("Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the "
+              +"same name.\r\n\r\n"
+              +"Declaring type: {3}\r\nProperty: {4}",
+                classDefinition.ClassType.Name,
+                propertyDefinition.PropertyInfo.Name,
+                basePropertyDefinition.ClassDefinition.ClassType.Name,
+                classDefinition.ClassType.FullName,
+                propertyDefinition.PropertyInfo.Name);
             errorMessages.AppendLine (message);
           }
         }
