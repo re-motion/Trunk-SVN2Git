@@ -55,8 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = 
-        "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
-              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.";
+        "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer argument). "
+        +"The reflection-based mapping does not use this constructor any longer and requires it to be removed.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule.NonAbstractClassWithLegacyConstructor";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -106,8 +108,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-        "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
-              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.";
+        "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer argument). "
+        +"The reflection-based mapping does not use this constructor any longer and requires it to be removed.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule.AbstractClassWithAttributeAndWithLegacyCtor";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

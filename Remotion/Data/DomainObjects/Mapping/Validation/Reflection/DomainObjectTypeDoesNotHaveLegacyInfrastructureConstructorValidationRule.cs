@@ -48,9 +48,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         ConstructorInfo legacyLoadConstructor = type.GetConstructor (flags, null, new[] { typeof (DataContainer) }, null);
         if (legacyLoadConstructor != null)
         {
-         string message = 
+         string message = string.Format(
            "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
-              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.";
+              + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.\r\n\r\n"
+              +"Declaring type: {0}", type.FullName);
           return new MappingValidationResult (false, message);
         }
       }
