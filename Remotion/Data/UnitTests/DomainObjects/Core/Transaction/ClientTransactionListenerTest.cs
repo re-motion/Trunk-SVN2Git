@@ -434,7 +434,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.NewObject ();
       var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderTicket");
-      var orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderItems");
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 
@@ -442,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, order));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderTicketEndPointID, false));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPointID, null));
+        // There is no state update for the OrderItems end point because the items are empty
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (

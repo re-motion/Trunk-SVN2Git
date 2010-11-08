@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </para>
   /// </remarks>
   [Serializable]
-  public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
+  public class ChangeCachingCollectionDataDecorator : ObservableCollectionDataDecorator
   {
     private readonly OriginalDomainObjectCollectionData _originalData;
     private readonly ICollectionDataStateUpdateListener _stateUpdateListener;
@@ -78,52 +78,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return this;
     }
 
-    public override void Clear ()
-    {
-      _originalData.CopyOnWrite ();
-      base.Clear ();
-      OnDataChanged ();
-    }
-
-    public override void Insert (int index, DomainObject domainObject)
-    {
-      _originalData.CopyOnWrite ();
-      base.Insert (index, domainObject);
-      OnDataChanged ();
-    }
-
-    public override bool Remove (DomainObject domainObject)
-    {
-      _originalData.CopyOnWrite ();
-      var found = base.Remove (domainObject);
-      if (found)
-        OnDataChanged ();
-      return found;
-    }
-
-    public override bool Remove (ObjectID objectID)
-    {
-      _originalData.CopyOnWrite ();
-      var found = base.Remove (objectID);
-      if (found)
-        OnDataChanged ();
-      return found;
-    }
-
-    public override void Replace (int index, DomainObject value)
-    {
-      _originalData.CopyOnWrite ();
-      base.Replace (index, value);
-      OnDataChanged ();
-    }
-
     public void Commit ()
     {
       _originalData.RevertToActualData ();
       SetCachedHasChangedFlag (false);
     }
 
-    private void OnDataChanged ()
+    protected override void OnDataChanging (OperationKind operation, DomainObject affectedObject, int index)
+    {
+      _originalData.CopyOnWrite ();
+    }
+
+    protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
     {
       _isCacheUpToDate = false;
       RaiseStateUpdatedNotification (null);
