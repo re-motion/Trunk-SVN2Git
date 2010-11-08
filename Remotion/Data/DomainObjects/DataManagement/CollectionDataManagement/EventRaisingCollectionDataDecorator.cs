@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
@@ -25,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// an <see cref="IDomainObjectCollectionEventRaiser"/> instance before and after the modification.
   /// </summary>
   [Serializable]
-  public class EventRaisingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
+  public class EventRaisingCollectionDataDecorator : ObservableCollectionDataDecoratorBase
   {
     private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
 
@@ -41,83 +40,33 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _eventRaiser; }
     }
 
-    public override void Clear ()
+    protected override void OnDataChanging (OperationKind operation, DomainObject affectedObject, int index)
     {
-      var removedObjects = new Stack<DomainObject> (); // holds the removed objects in order to raise 
-
-      int index = 0;
-      foreach (var domainObject in this)
+      switch (operation)
       {
-        _eventRaiser.BeginRemove (index, domainObject);
-        removedObjects.Push (domainObject);
-        ++index;
+        case OperationKind.Insert:
+          _eventRaiser.BeginAdd (index, affectedObject);
+          break;
+        case OperationKind.Remove:
+          _eventRaiser.BeginRemove (index, affectedObject);
+          break;
+        default:
+          throw new InvalidOperationException ("Invalid operation: " + operation);
       }
+    }
 
-      Assertion.IsTrue (index == Count);
-
-      WrappedData.Clear ();
-
-      foreach (var domainObject in removedObjects)
+    protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
+    {
+      switch (operation)
       {
-        --index;
-        _eventRaiser.EndRemove (index, domainObject);
-      }
-
-      Assertion.IsTrue (index == 0);
-    }
-
-    public override void Insert (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      _eventRaiser.BeginAdd (index, domainObject);
-      WrappedData.Insert (index, domainObject);
-      _eventRaiser.EndAdd (index, domainObject);
-    }
-
-    public override bool Remove (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      
-      int index = IndexOf (domainObject.ID);
-      if (index == -1)
-        return false;
-
-      _eventRaiser.BeginRemove (index, domainObject);
-      WrappedData.Remove (domainObject);
-      _eventRaiser.EndRemove (index, domainObject);
-
-      return true;
-    }
-
-    public override bool Remove (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      int index = IndexOf (objectID);
-      if (index == -1)
-        return false;
-      
-      var domainObject = GetObject (objectID);
-      _eventRaiser.BeginRemove (index, domainObject);
-      WrappedData.Remove (objectID);
-      _eventRaiser.EndRemove (index, domainObject);
-      
-      return true;
-    }
-
-    public override void Replace (int index, DomainObject value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-
-      var oldDomainObject = GetObject (index);
-      if (oldDomainObject != value)
-      {
-        _eventRaiser.BeginRemove (index, oldDomainObject);
-        _eventRaiser.BeginAdd (index, value);
-        WrappedData.Replace (index, value);
-        _eventRaiser.EndRemove (index, oldDomainObject);
-        _eventRaiser.EndAdd (index, value);
+        case OperationKind.Insert:
+          _eventRaiser.EndAdd (index, affectedObject);
+          break;
+        case OperationKind.Remove:
+          _eventRaiser.EndRemove (index, affectedObject);
+          break;
+        default:
+          throw new InvalidOperationException ("Invalid operation: " + operation);
       }
     }
   }

@@ -203,6 +203,9 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TestableObservableCollectionDataDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\FakeCollectionDataStateUpdateListener.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\OriginalDomainObjectCollectionDataTest.cs" />
