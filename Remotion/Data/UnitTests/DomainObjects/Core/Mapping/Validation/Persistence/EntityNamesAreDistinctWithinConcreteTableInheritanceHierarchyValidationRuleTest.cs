@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -86,8 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       var validationResult = _validationRule.Validate (baseOfBaseClass);
 
-      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'EntityNamesAreDistinctBaseOfBaseDomainObject'"
-              + " specify the same entity name 'SameEntityName', which is not allowed.";
+      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
+        +"specify the same entity name 'SameEntityName', which is not allowed.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -160,8 +162,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       var validationResult = _validationRule.Validate (baseOfBaseClass);
 
-      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'EntityNamesAreDistinctBaseOfBaseDomainObject'"
-              + " specify the same entity name 'SameEntityName', which is not allowed.";
+      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
+        +"specify the same entity name 'SameEntityName', which is not allowed.\r\n\r\n"
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
