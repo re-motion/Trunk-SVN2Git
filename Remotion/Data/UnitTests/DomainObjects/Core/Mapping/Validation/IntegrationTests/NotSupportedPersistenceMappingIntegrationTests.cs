@@ -86,9 +86,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //EntityNameMatchesParentEntityNameValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "Class 'SameEntityNamesInInheritanceHierarchy_DerivedClass' must not specify an entity name 'DerivedName' which is different "
-      +"from inherited entity name 'BaseName'.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Class 'DerivedClass' must not specify an entity name 'DerivedName' which is different from inherited entity name 'BaseName'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"SameEntityNamesInInheritanceHierarchy.DerivedClass")]
     public void SameEntityNamesInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.SameEntityNamesInInheritanceHierarchy");

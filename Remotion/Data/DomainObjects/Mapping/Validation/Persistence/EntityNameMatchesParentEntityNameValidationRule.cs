@@ -36,10 +36,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
           && classDefinition.MyEntityName != classDefinition.BaseClass.GetEntityName())
       {
         string message = string.Format(
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
-            classDefinition.ID,
+            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.\r\n\r\nDeclaring type: '{3}",
+            classDefinition.ClassType.Name,
             classDefinition.MyEntityName,
-            classDefinition.BaseClass.GetEntityName());
+            classDefinition.BaseClass.GetEntityName(),
+            classDefinition.ClassType.FullName);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);
