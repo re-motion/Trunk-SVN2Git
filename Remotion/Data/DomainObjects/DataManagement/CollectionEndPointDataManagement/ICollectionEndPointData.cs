@@ -1,7 +1,6 @@
-using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
   /// Defines an interface for classes storing the data for a <see cref="CollectionEndPoint"/>. Used by <see cref="CollectionEndPoint"/> as

@@ -21,12 +21,14 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
 {
   [TestFixture]
   public class ChangeCachingCollectionDataDecoratorTest : StandardMappingTest

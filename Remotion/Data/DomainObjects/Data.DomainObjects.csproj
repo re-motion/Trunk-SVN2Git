@@ -192,10 +192,10 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecorator.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\ChangeCachingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ICollectionDataStateUpdateListener.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\OriginalDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\OriginalDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\Commands\AdHocCommand.cs" />
     <Compile Include="DataManagement\Commands\DeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\ExpandedCommand.cs" />
@@ -204,10 +204,10 @@
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
-    <Compile Include="DataManagement\ICollectionEndPointData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointData.cs" />
     <Compile Include="DataManagement\IDataManager.cs" />
     <Compile Include="DataManagement\IRelationEndPointMapReadOnlyView.cs" />
-    <Compile Include="DataManagement\LazyLoadableCollectionEndPointData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\LazyLoadableCollectionEndPointData.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\EndPointExtensions.cs" />
@@ -225,7 +225,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\DomainObjectCollectionFactory.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ModificationCheckingCollectionDataDecorator.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\EndPointDelegatingCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\EndPointDelegatingCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />

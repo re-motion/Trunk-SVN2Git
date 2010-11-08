@@ -18,11 +18,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
   /// Implements the <see cref="IDomainObjectCollectionData"/> by forwarding all requests to an implementation of 

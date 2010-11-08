@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
   /// Holds data originally stored in a <see cref="DomainObjectCollection"/>. Used by <see cref="ChangeCachingCollectionDataDecorator"/> to store
