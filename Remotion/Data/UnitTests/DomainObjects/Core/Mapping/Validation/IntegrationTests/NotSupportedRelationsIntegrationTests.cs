@@ -73,7 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.")]
+      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"+
+      "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnManySite.InvalidRelationClass2'\r\nProperty: 'RelationProperty2'")]
     public void OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnTheManySite ()
     {
       ValidateMapping ("NotSupportedRelations.OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnManySite");
@@ -81,8 +83,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2'\r\nProperty: 'RelationProperty2'")]
     public void OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites ()
     {
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites");
