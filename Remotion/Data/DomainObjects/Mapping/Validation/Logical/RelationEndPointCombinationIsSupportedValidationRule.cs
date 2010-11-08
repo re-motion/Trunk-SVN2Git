@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -25,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   {
     public RelationEndPointCombinationIsSupportedValidationRule ()
     {
-      
     }
 
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
@@ -37,19 +37,47 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       if (endPointDefinition1.IsAnonymous && endPointDefinition2.IsAnonymous)
       {
-        var message = string.Format("Relation '{0}' cannot have two anonymous end points.", relationDefinition.ID);
+        var message = string.Format ("Relation '{0}' cannot have two anonymous end points.", relationDefinition.ID);
         return new MappingValidationResult (false, message);
       }
 
       if (endPointDefinition1.IsVirtual && endPointDefinition2.IsVirtual)
       {
-        var message = string.Format ("Relation '{0}' cannot have two virtual end points.", relationDefinition.ID);
+        string message;
+        var endPointDefinition1AsVirtualRelationEndPoíntDefinition = endPointDefinition1 as VirtualRelationEndPointDefinition;
+        var endPointDefinition2AsVirtualRelationEndPointDefinition = endPointDefinition2 as VirtualRelationEndPointDefinition;
+        if (endPointDefinition1AsVirtualRelationEndPoíntDefinition != null && endPointDefinition2AsVirtualRelationEndPointDefinition != null)
+        {
+          message = string.Format (
+              "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two virtual end points. "
+              + "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.\r\n\r\nDeclaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition.PropertyInfo.Name,
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition.ClassDefinition.ClassType.Name,
+              endPointDefinition2AsVirtualRelationEndPointDefinition.PropertyInfo.Name,
+              endPointDefinition2AsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.Name,
+              typeof (DBBidirectionalRelationAttribute).Name,
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition.ClassDefinition.ClassType.FullName,
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition.PropertyInfo.Name,
+              relationDefinition.ID);
+        }
+        else
+        {
+          message = string.Format (
+              "Relation '{0}' cannot have two virtual end points.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
+              relationDefinition.ID,
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition != null
+                  ? endPointDefinition1AsVirtualRelationEndPoíntDefinition.ClassDefinition.ClassType.FullName
+                  : endPointDefinition2AsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+              endPointDefinition1AsVirtualRelationEndPoíntDefinition != null
+                  ? endPointDefinition1AsVirtualRelationEndPoíntDefinition.PropertyInfo.Name
+                  : endPointDefinition2AsVirtualRelationEndPointDefinition.PropertyInfo.Name);
+        }
         return new MappingValidationResult (false, message);
       }
 
       if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
       {
-        var message = string.Format("Relation '{0}' cannot have two non-virtual end points.", relationDefinition.ID);
+        var message = string.Format ("Relation '{0}' cannot have two non-virtual end points.", relationDefinition.ID);
         return new MappingValidationResult (false, message);
       }
 

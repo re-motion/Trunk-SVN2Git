@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -82,8 +83,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
-        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two virtual end points.";
+      var expectedMessage = "The relation between property 'OrderNumber', declared on type 'Customer', and property 'OrderNumber' declared on type "
+        +"'Customer', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the "
+        +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\n"
+        + "Property: OrderNumber\r\n"
+        + "Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core."
+        +"Mapping.TestDomain.Integration.Order.Customer";
+      AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
+    }
+
+    [Test]
+    public void TwoVirtualRelationEndPoint_OneEndPointIsAnonymous ()
+    {
+      var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
+      PrivateInvoke.SetNonPublicField (
+          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { _customerEndPoint, anonymousEndPointDefinition });
+
+      var mappingValidationResult = _validationRule.Validate (_customerToOrder);
+
+      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests."
+        +"DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two virtual end points.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\n"
+        + "Property: OrderNumber";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
