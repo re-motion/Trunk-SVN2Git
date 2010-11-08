@@ -91,10 +91,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1.RelationProperty1' of class "
-      +"'OneToManyBidirectionalRelation_SortExpressionOnTheOneSite_InvalidRelationClass1' must not specify a SortExpression, because cardinality is "
-      +"equal to 'one'.")]
+      "Property 'RelationProperty1' of class 'InvalidRelationClass1' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "OneToOneBidirectionalRelationWithSortExpression.InvalidRelationClass1'\r\nProperty: 'RelationProperty1'")]
     public void OneToOneBidirectionalRelationWithSortExpression ()
     {
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelationWithSortExpression");

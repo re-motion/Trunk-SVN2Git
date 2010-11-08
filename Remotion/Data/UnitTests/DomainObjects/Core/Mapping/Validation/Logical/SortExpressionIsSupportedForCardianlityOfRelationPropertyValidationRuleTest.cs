@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -104,8 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Property 'Property' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n"
-        +"Property 'PropertyWithStorageClassNone' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.";
+      var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
+        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'\r\n"
+        + "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
+        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -122,7 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Property 'Property' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.";
+      var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
+       + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -139,7 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var validationResult = _validationRule.Validate (_relationDefinition);
 
-      var expectedMessage = "Property 'PropertyWithStorageClassNone' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.";
+      var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
+       + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }
