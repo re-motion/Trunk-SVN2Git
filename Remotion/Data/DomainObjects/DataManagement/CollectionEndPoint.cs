@@ -78,6 +78,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         _oppositeDomainObjects = value;
         Touch ();
+
+        RaiseStateUpdateNotification (HasChanged);
       }
     }
 
@@ -287,6 +289,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return from oppositeDomainObject in OppositeDomainObjects.Cast<DomainObject> ()
              let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, oppositeEndPointDefinition)
              select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+    }
+
+    private void RaiseStateUpdateNotification (bool hasChanged)
+    {
+      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, hasChanged);
     }
 
     #region Serialization

@@ -719,6 +719,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void OppositeDomainObjects_Set_CauseTransactionListenerNotification ()
+    {
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
+
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
+      var newOppositeCollection = new OrderCollection (delegatingData);
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
+
+      listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, true));
+
+      _customerEndPoint.OppositeDomainObjects = _customerEndPoint.OriginalCollectionReference;
+
+      listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, false));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead."
         + "\r\nParameter name: value")]
@@ -792,7 +808,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }
-
 
     private LazyLoadableCollectionEndPointData GetEndPointData (CollectionEndPoint endPoint)
     {
