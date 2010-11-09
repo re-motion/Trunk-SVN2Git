@@ -669,16 +669,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, bool hasChanged)
     {
-      StubStrategyMock (decorator, hasChanged);
+      _strategyStrictMock.Stub (mock => mock.HasDataChanged (Arg.Is (decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (hasChanged);
+      _strategyStrictMock.Replay ();
 
       decorator.HasChanged (_strategyStrictMock);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
-    }
-
-    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, bool hasChanged)
-    {
-      _strategyStrictMock.Stub (mock => mock.HasDataChanged (Arg.Is (decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (hasChanged);
-      _strategyStrictMock.Replay ();
     }
 
     private void CallOnDataChanged (ChangeCachingCollectionDataDecorator decorator)
