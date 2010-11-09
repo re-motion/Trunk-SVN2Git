@@ -71,8 +71,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         {
           var message =
               string.Format (
-                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\nType: {1}, property: {2}",
-                  mappingAttributes[0].GetType().FullName,
+                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\nDeclaration type: {1}\r\nProperty: {2}",
+                  mappingAttributes[0].GetType().Name,
                   propertyInfo.DeclaringType.FullName,
                   propertyInfo.Name);
           return new MappingValidationResult (false, message);

@@ -37,9 +37,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         if (classDefinition.GetEntityName () == null && !classDefinition.IsAbstract)
         {
           string message = string.Format("Neither class '{0}' nor its base classes specify an entity name. "
-            +"Make class '{1}' abstract or apply a DBTable attribute to it or one of its base classes.",
-              classDefinition.ID,
-              classDefinition.ClassType.AssemblyQualifiedName);
+            +"Make class '{0}' abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
+            +"Declaring type: '{1}'",
+              classDefinition.ClassType.Name,
+              classDefinition.ClassType.FullName);
           return new MappingValidationResult (false, message);
         }
       }

@@ -62,11 +62,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //NonAbstractClassHasEntityNameValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = @"Neither class 'ConcreteClassAboveInheritanceRoot_ConcreteClassAboveInheritanceRoot' nor its base classes specify an entity name\. "
-      +@"Make class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
-      +@"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot, Remotion.Data.UnitTests, Version=.*, Culture=.*, PublicKeyToken=.*' abstract or "
-      +@"apply a DBTable attribute to it or one of its base classes\.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Neither class 'ClassAboveInheritanceRoot' nor its base classes specify an entity name. Make class 'ClassAboveInheritanceRoot' abstract or apply "
+      +"a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot'")]
     public void ConcreteClassAboveInheritanceRoot ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.ConcreteClassAboveInheritanceRoot");
@@ -75,10 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "The 'Remotion.Data.DomainObjects.StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's "
-      +"base definition.\r\n"
-      + "Type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
-      +"MappingAttributeAppliedOnOverriddenProperty.DerivedClass, property: Property")]
+      ExpectedMessage = "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
+      + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"MappingAttributeAppliedOnOverriddenProperty.DerivedClass\r\nProperty: Property")]
     public void MappingAttributeAppliedOnOverriddenProperty ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.MappingAttributeAppliedOnOverriddenProperty");
