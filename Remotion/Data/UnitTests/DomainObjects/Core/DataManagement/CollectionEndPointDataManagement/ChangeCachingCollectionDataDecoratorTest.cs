@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Clear_InvalidatesCache ()
     {
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Clear ();
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _wrappedData.Clear ();
 
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Clear ();
@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Insert_InvalidatesCache ()
     {
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove_Object_InvalidatesCache_IfTrue ()
     {
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Remove (_domainObject);
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _wrappedData.Clear ();
 
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Remove (_domainObject);
@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove_ID_InvalidatesCache_IfTrue ()
     {
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Remove (_domainObject.ID);
@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _wrappedData.Clear ();
 
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       _decoratorWithRealData.Remove (DomainObjectIDs.Order1);
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Replace_InvalidatesCache ()
     {
-      WarmUpCache (_decoratorWithRealData);
+      WarmUpCache (_decoratorWithRealData, false);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
@@ -351,13 +351,258 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        @"The original collection already contains a domain object with ID 'Order\|.*'\.", MatchType = MessageMatch.Regex)]
+    public void RegisterOriginalItem_ItemAlreadyExists_InOriginal ()
+    {
+      var underlyingOriginalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
+
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      underlyingOriginalData.Add (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (domainObject.ID), Is.Null);
+      Assert.That (_decoratorWithRealData.OriginalData.GetObject (domainObject.ID), Is.Not.Null);
+
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+    }
+
+    [Test]
+    public void RegisterOriginalItem_CollectionUnchanged_ItemAddedToBothLists ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (1), Is.SameAs (domainObject));
+      Assert.That (_decoratorWithRealData.OriginalData.GetObject (1), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void RegisterOriginalItem_CollectionUnchanged_ChangeFlagRetained ()
+    {
+      WarmUpCache (_decoratorWithRealData, false);
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.False);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)).Repeat.Never ();
+      _stateUpdateListenerMock.Replay ();
+
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      _stateUpdateListenerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RegisterOriginalItem_CollectionUnchanged_OriginalCollectionNotCopied ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
+
+      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
+      Assert.That (originalDataStore, Is.SameAs (_decoratorWithRealData));
+    }
+
+    [Test]
+    public void RegisterOriginalItem_OriginalDataCopiedd_ItemAddedToBothCollections ()
+    {
+      Assert.That (_decoratorWithRealData.Count, Is.GreaterThan (0));
+      _decoratorWithRealData.Clear ();
+      
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (0), Is.SameAs (domainObject));
+      Assert.That (_decoratorWithRealData.OriginalData.GetObject (1), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void RegisterOriginalItem_OriginalDataCopied_ChangeFlagRetained ()
+    {
+      Assert.That (_decoratorWithRealData.Count, Is.GreaterThan (0));
+      _decoratorWithRealData.Clear ();
+
+      WarmUpCache (_decoratorWithRealData, true);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.True);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)).Repeat.Never ();
+      _stateUpdateListenerMock.Replay ();
+
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void RegisterOriginalItem_CurrentCollectionAlreadyContainsItem_ItemAddedToOriginalCollection ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.Add (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (1), Is.SameAs (domainObject));
+
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (1), Is.SameAs (domainObject));
+      Assert.That (_decoratorWithRealData.OriginalData.GetObject (1), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void RegisterOriginalItem_CurrentCollectionAlreadyContainsItem_ChangeStateInvalidated ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.Add (domainObject);
+
+      WarmUpCache (_decoratorWithRealData, true);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.True);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Replay ();
+
+      _decoratorWithRealData.RegisterOriginalItem (domainObject);
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        @"The original collection does not contain a domain object with ID 'Order\|.*'\.", MatchType = MessageMatch.Regex)]
+    public void UnregisterOriginalItem_ItemNotExists_InOriginal ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.Add (domainObject);
+
+      Assert.That (_decoratorWithRealData.GetObject (domainObject.ID), Is.Not.Null);
+      Assert.That (_decoratorWithRealData.OriginalData.GetObject (domainObject.ID), Is.Null);
+
+      _decoratorWithRealData.UnregisterOriginalItem (domainObject.ID);
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_CollectionUnchanged_ItemRemovedFromBothLists ()
+    {
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.True);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.True);
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.False);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.False);
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_CollectionUnchanged_ChangeFlagRetained ()
+    {
+      WarmUpCache (_decoratorWithRealData, false);
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.False);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)).Repeat.Never ();
+      _stateUpdateListenerMock.Replay ();
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_CollectionUnchanged_OriginalCollectionNotCopied ()
+    {
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
+          (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
+
+      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
+      Assert.That (originalDataStore, Is.SameAs (_decoratorWithRealData));
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_OriginalDataCopied_ItemRemovedFromBothCollections ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.Add (domainObject);
+
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.True);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.True);
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.False);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.False);
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_OriginalDataCopied_ChangeFlagRetained ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _decoratorWithRealData.Add (domainObject);
+
+      WarmUpCache (_decoratorWithRealData, true);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.True);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)).Repeat.Never ();
+      _stateUpdateListenerMock.Replay ();
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_CurrentCollectionDoesNotContainItem_ItemRemovedFromOriginalCollection ()
+    {
+      _decoratorWithRealData.Remove (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.False);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.True);
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      Assert.That (_decoratorWithRealData.ContainsObjectID (_domainObject.ID), Is.False);
+      Assert.That (_decoratorWithRealData.OriginalData.ContainsObjectID (_domainObject.ID), Is.False);
+    }
+
+    [Test]
+    public void UnregisterOriginalItem_CurrentCollectionAlreadyContainsItem_ChangeStateInvalidated ()
+    {
+      _decoratorWithRealData.Remove (_domainObject.ID);
+
+      WarmUpCache (_decoratorWithRealData, true);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.True);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Replay ();
+
+      _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
     public void Serializable ()
     {
       var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
       var stateUpdateListenerStub = new FakeCollectionDataStateUpdateListener();
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, stateUpdateListenerStub);
 
-      WarmUpCache (decorator);
+      WarmUpCache (decorator, false);
 
       Assert.That (decorator.Count, Is.EqualTo (1));
       Assert.That (decorator.IsCacheUpToDate, Is.True);
@@ -370,17 +615,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (deserializedDecorator.HasChanged (_strategyStrictMock), Is.False);
     }
 
-    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator)
+    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, bool hasChanged)
     {
-      StubStrategyMock (decorator);
+      StubStrategyMock (decorator, hasChanged);
 
       decorator.HasChanged (_strategyStrictMock);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
     }
 
-    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator)
+    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, bool hasChanged)
     {
-      _strategyStrictMock.Stub (mock => mock.HasDataChanged (Arg.Is (decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (false);
+      _strategyStrictMock.Stub (mock => mock.HasDataChanged (Arg.Is (decorator), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (hasChanged);
       _strategyStrictMock.Replay ();
     }
 

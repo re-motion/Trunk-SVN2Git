@@ -85,11 +85,99 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       SetCachedHasChangedFlag (false);
     }
 
+    /// <summary>
+    /// Registers the given <paramref name="domainObject"/> as an original item of this collection. This means the item is added to the 
+    /// <see cref="OriginalData"/> collection, and it is also added to this <see cref="ChangeCachingCollectionDataDecorator"/> collection. If the 
+    /// <see cref="OriginalData"/> collection already contains the item, an exception is thrown. If this collection already contains the item, it is
+    /// only added to the <see cref="OriginalData"/>.
+    /// </summary>
+    /// <param name="domainObject">The <see cref="DomainObject"/> to be registered.</param>
+    public void RegisterOriginalItem (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      if (_originalData.ContainsObjectID (domainObject.ID))
+      {
+        var message = string.Format ("The original collection already contains a domain object with ID '{0}'.", domainObject.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      if (!WrappedData.ContainsObjectID (domainObject.ID))
+      {
+        // Standard case: Neither collection contains the item; the item is added to both, and the state cache stays valid
+
+        // Add the item to the WrappedData collection. That way:
+        // - The state cache will not be invalidated.
+        // - If the original collection has not yet been copied, it will automatically contain the item.
+        WrappedData.Add (domainObject);
+
+        // If the original collection has been copied, we must add the item manually.
+        if (!_originalData.ContainsObjectID (domainObject.ID))
+          _originalData.Add (domainObject);
+      }
+      else
+      {
+        // Special case: The current collection already contains the item
+
+        // We must add the item to the original collection only and raise a potential state change notification
+        _originalData.Add (domainObject);
+        OnChangeStateUnclear ();
+      }
+
+      Assertion.IsTrue (ContainsObjectID (domainObject.ID));
+      Assertion.IsTrue (_originalData.ContainsObjectID (domainObject.ID));
+    }
+
+    /// <summary>
+    /// Unregisters the item with the given <paramref name="objectID"/> as an original item of this collection. This means the item is removed from 
+    /// the <see cref="OriginalData"/> collection, and it is also removed from this <see cref="ChangeCachingCollectionDataDecorator"/> collection. If 
+    /// the <see cref="OriginalData"/> collection does not contain the item, an exception is thrown. If this collection does not contain the item, it 
+    /// is only removed from the <see cref="OriginalData"/>.
+    /// </summary>
+    /// <param name="objectID">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> to be unregistered.</param>
+    public void UnregisterOriginalItem (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (!_originalData.ContainsObjectID (objectID))
+      {
+        var message = string.Format ("The original collection does not contain a domain object with ID '{0}'.", objectID);
+        throw new InvalidOperationException (message);
+      }
+
+      if (WrappedData.ContainsObjectID (objectID))
+      {
+        // Standard case: Both collections contain the item; the item is removed from both, and the state cache stays valid
+
+        // Remove the item from the WrappedData collection. That way:
+        // - The state cache will not be invalidated.
+        // - If the original collection has not yet been copied, it will automatically not contain the item.
+        WrappedData.Remove (objectID);
+
+        // If the original collection has been copied, we must remove the item manually.
+        if (_originalData.ContainsObjectID (objectID))
+          _originalData.Remove (objectID);
+      }
+      else
+      {
+        // Special case: The current collection does not contain the item
+
+        // We must remove the item to the original collection only and raise a potential state change notification
+        _originalData.Remove (objectID);
+        OnChangeStateUnclear ();
+      }
+    }
+
     protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
+    {
+      OnChangeStateUnclear();
+      base.OnDataChanged (operation, affectedObject, index);
+    }
+
+    private void OnChangeStateUnclear ()
     {
       _isCacheUpToDate = false;
       RaiseStateUpdatedNotification (null);
-      base.OnDataChanged (operation, affectedObject, index);
     }
 
     private void SetCachedHasChangedFlag (bool hasChanged)
