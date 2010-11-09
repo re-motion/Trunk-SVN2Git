@@ -394,6 +394,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\BaseRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\InvalidRelationClass2.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\ManyToManyBidirectionalRelation\InvalidRelationClass1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\ManyToManyBidirectionalRelation\InvalidRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites\InvalidRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnManySite\InvalidRelationClass1.cs" />
@@ -549,6 +551,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\MixinAddingProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithInvalidPropertyAttributes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithValidPropertyAttributes.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRule\RelationEndPointPropertyClass1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRule\RelationEndPointPropertyClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRule\RelationEndPointPropertyClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithStorageGroupAttribute.cs" />
@@ -566,6 +570,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />

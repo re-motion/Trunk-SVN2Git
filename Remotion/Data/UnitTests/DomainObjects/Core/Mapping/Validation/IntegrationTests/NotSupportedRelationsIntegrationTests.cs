@@ -80,7 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites");
     }
 
-    //TODO: Many to many integration test
+    [Test]
+    [Ignore("TODO 3424")]
+    public void ManyToManyBidirectionalRelation ()
+    {
+      ValidateMapping ("NotSupportedRelations.ManyToManyBidirectionalRelation");
+    }
 
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
@@ -128,13 +133,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToManyBidirectionalRelationWithInvalidSortExpression");
     }
 
-    //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoBidirectionalRelationAttribute (first condition)
+    //RelationEndPointDeclarationsDoNotMatchValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-      "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      + "BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
-      + "Property: RelationProperty2")]
+    //[ExpectedException (typeof (MappingException), ExpectedMessage =
+    //  "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+    //  + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+    //  + "BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
+    //  + "Property: RelationProperty2")]
+    [Ignore("TODO 3424")]
     public void BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
@@ -149,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
       + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2\r\n"
       + "Property: RelationProperty3")]
-    public void BidirectionalRelationWithInvalidPropertyReferences () //TODO 3424: check  other cases
+    public void BidirectionalRelationWithInvalidPropertyReferences ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
     }

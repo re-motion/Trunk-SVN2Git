@@ -33,19 +33,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
 
-      var errorMessages = new StringBuilder(2);
       foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          errorMessages.AppendLine (validationResult.Message);
+          return validationResult;
       }
 
-      var messages = errorMessages.ToString().Trim();
-      if (string.IsNullOrEmpty (messages))
-        return new MappingValidationResult (true);
-      else
-        return new MappingValidationResult (false, messages);
+      return new MappingValidationResult (true);
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)

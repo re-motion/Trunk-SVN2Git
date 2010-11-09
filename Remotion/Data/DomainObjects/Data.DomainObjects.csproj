@@ -181,8 +181,10 @@
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\ISortExpressionValidator.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Logical\RdbmsRelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.cs" />
     <Compile Include="Mapping\Validation\PersistenceMappingValidator.cs" />

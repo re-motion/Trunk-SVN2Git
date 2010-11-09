@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
         ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -31,10 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
   {
     private ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule _validationRule;
     private ClassDefinition _classDefinition;
-    private RelationDefinition _relationDefinition;
-    private VirtualRelationEndPointDefinition _endPoint1;
-    private RelationEndPointDefinition _endPoint2;
-
+    
     [SetUp]
     public void SetUp ()
     {
@@ -47,18 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           false,
           null,
           new PersistentMixinFinderMock (typeof (ForeignKeyIsSupportedClass), new Type[0]));
-      _relationDefinition =
-          FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _endPoint1 = (VirtualRelationEndPointDefinition) _relationDefinition.EndPointDefinitions[0];
-      _endPoint2 = (RelationEndPointDefinition) _relationDefinition.EndPointDefinitions[1];
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, _endPoint2 });
     }
 
     [Test]
@@ -99,10 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NoReflectionBasedVirtualRelationEndPointDefinition ()
     {
       var endPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -118,10 +101,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("PropertyWithNoDbBidirectionalRelationAttribute"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -137,10 +119,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -156,10 +137,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsNoForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -175,10 +155,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
@@ -197,10 +176,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
@@ -219,10 +197,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsNoForeignKey"));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }

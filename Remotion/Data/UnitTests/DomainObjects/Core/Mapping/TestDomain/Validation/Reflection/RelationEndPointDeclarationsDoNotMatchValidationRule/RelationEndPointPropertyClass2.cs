@@ -15,19 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointDeclarationsDoNotMatchValidationRule
 {
-  /// <summary>
-  /// Validates that a relation has valid relation endpoint combinations.
-  /// </summary>
-  public abstract class RelationEndPointCombinationIsSupportedValidationRule : IRelationDefinitionValidatorRule
+  public class RelationEndPointPropertyClass2 : DomainObject
   {
-    protected RelationEndPointCombinationIsSupportedValidationRule ()
-    {
-    }
+    public RelationEndPointPropertyClass1 RelationPopertyWithoutBidirectionalRelationAttribute { get; set; }
 
-    public abstract MappingValidationResult Validate (RelationDefinition relationDefinition);
-  
+    [DBBidirectionalRelation ("RelationProperty2")]
+    public RelationEndPointPropertyClass1 RelationPopertyWithNonMatchingPropertyName { get; set; }
+
+    [DBBidirectionalRelation ("RelationProperty2")]
+    public RelationEndPointPropertyClass1 RelationProperty2 { get; set; }
   }
 }

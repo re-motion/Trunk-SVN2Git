@@ -30,37 +30,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   {
     private VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule _validationRule;
     private ClassDefinition _classDefinition;
-    private RelationDefinition _relationDefinition;
-    private VirtualRelationEndPointDefinition _endPoint1;
-    private RelationEndPointDefinition _endPoint2;
-
+    
     [SetUp]
     public void SetUp ()
     {
       _validationRule = new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule();
       _classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _relationDefinition =
-         FakeMappingConfiguration.Current.RelationDefinitions[
-             "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _endPoint1 = (VirtualRelationEndPointDefinition) _relationDefinition.EndPointDefinitions[0];
-      _endPoint2 = (RelationEndPointDefinition) _relationDefinition.EndPointDefinitions[1];
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, _endPoint2 });
     }
 
     [Test]
     public void NoVirtualRelationEndPointDefinition ()
     {
       var endPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -71,10 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (DomainObject));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint1 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
         +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
@@ -87,10 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -100,10 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -113,10 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>), null);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -127,10 +107,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", typeof (BaseOfBaseValidationDomainObjectClass));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from "
         +"'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
@@ -138,30 +117,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
         +"Property: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
-    [Test]
-    public void OnePropertyEndPointTypeWhichIsNotDerivedFromDomainObjectCollection_And_OnePropertyEndPointTypeWhicIsNotDerivedFromDomainObject ()
-    {
-      var endPointDefinition1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
-      var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-         _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_propertyType", typeof (BaseOfBaseValidationDomainObjectClass));
-      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_propertyType", typeof (DomainObject));
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      var expectedMessage = "The property type of a virtual end point of a one-to-many relation must be or be derived from "
-        +"'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
-        +"Property: 'OrderNumber'\r\n"
-        +"The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
-        +"Property: 'OrderNumber'";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
-
-    }
+    
   }
 }

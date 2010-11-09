@@ -36,12 +36,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
     public static RelationDefinitionValidator Create ()
     {
       return new RelationDefinitionValidator (
-          new RelationEndPointCombinationIsSupportedValidationRule(),
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule(),
           new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
           new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
           new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
           new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
-          new RelationEndPointPropertyTypeIsSupportedValidationRule());
+          new RelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new RelationEndPointDeclarationsDoNotMatchValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)

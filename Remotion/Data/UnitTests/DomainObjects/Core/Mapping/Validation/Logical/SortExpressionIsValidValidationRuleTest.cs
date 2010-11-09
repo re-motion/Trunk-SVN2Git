@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -28,9 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   public class SortExpressionIsValidValidationRuleTest : ValidationRuleTestBase
   {
     private SortExpressionIsValidValidationRule _validationRule;
-    private RelationDefinition _relationDefinition;
-    private VirtualRelationEndPointDefinition _endPoint1;
-    private RelationEndPointDefinition _endPoint2;
     private ClassDefinition _classDefinition;
 
     [SetUp]
@@ -38,18 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       _validationRule = new SortExpressionIsValidValidationRule();
       _classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _relationDefinition =
-          FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _endPoint1 = (VirtualRelationEndPointDefinition) _relationDefinition.EndPointDefinitions[0];
-      _endPoint2 = (RelationEndPointDefinition) _relationDefinition.EndPointDefinitions[1];
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, _endPoint2 });
     }
 
     [Test]
@@ -57,11 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
        var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber desc", typeof (Customer).GetProperty ("Orders"));
-      endPointDefinition.SetRelationDefinition (_relationDefinition);
-       PrivateInvoke.SetNonPublicField (
-           _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint2 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+      endPointDefinition.SetRelationDefinition (relationDefinition);
+      
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -71,11 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber", typeof (Customer).GetProperty ("Orders"));
-      endPointDefinition.SetRelationDefinition (_relationDefinition);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint2 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+      endPointDefinition.SetRelationDefinition (relationDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -85,11 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "Test", typeof (Customer).GetProperty ("Orders"));
-      endPointDefinition.SetRelationDefinition (_relationDefinition);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, _endPoint2 });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+      endPointDefinition.SetRelationDefinition (relationDefinition);
 
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "SortExpression 'Test' cannot be parsed: 'Test' is not a valid mapped property name. Expected the .NET property name of a "+
         "property declared by the 'Order' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or "

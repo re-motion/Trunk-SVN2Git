@@ -56,14 +56,39 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new RelationDefinition (relationID, firstEndPoint, secondEndPoint);
     }
 
+    //TODO 3424: create rule
     protected void ValidateOppositePropertyInfo (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)
     {
       ArgumentUtility.CheckNotNull ("oppositePropertyInfo", oppositePropertyInfo);
       ArgumentUtility.CheckNotNull ("classDefintions", classDefintions);
 
-      ValidateOppositePropertyInfoDeclaringType (oppositePropertyInfo, classDefintions);
+      Type oppositeDomainObjectType = GetDomainObjectTypeFromRelationProperty (oppositePropertyInfo);
+      if (classDefintions.Contains (DeclaringDomainObjectTypeForProperty))
+      {
+        if (DeclaringDomainObjectTypeForProperty != oppositeDomainObjectType)
+        {
+          throw CreateMappingException (
+              null,
+              PropertyInfo,
+              "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
+              DeclaringDomainObjectTypeForProperty.Name,
+              BidirectionalRelationAttribute.OppositeProperty,
+              oppositePropertyInfo.DeclaringType.Name);
+        }
+      }
+      else
+      {
+        if (DeclaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
+          return;
 
-      ValidateOppositePropertyInfoBidirectionalRelationAttribute (oppositePropertyInfo);
+        throw CreateMappingException (
+            null,
+            PropertyInfo,
+            "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
+            DeclaringDomainObjectTypeForProperty.Name,
+            BidirectionalRelationAttribute.OppositeProperty,
+            oppositePropertyInfo.DeclaringType.Name);
+      }
     }
 
     private string GetRelationID (IRelationEndPointDefinition first, IRelationEndPointDefinition second)
@@ -96,6 +121,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
+    //TODO 3424: create rule ??
     private RelationEndPointReflector CreateOppositeRelationEndPointReflector (ClassDefinitionCollection classDefinitions)
     {
       PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo();
@@ -112,65 +138,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
 
       return RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, oppositePropertyInfo, NameResolver);
-    }
-
-    private void ValidateOppositePropertyInfoDeclaringType (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)
-    {
-      Type oppositeDomainObjectType = GetDomainObjectTypeFromRelationProperty (oppositePropertyInfo);
-      if (classDefintions.Contains (DeclaringDomainObjectTypeForProperty))
-      {
-        if (DeclaringDomainObjectTypeForProperty != oppositeDomainObjectType)
-        {
-          throw CreateMappingException (
-              null,
-              PropertyInfo,
-              "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
-              DeclaringDomainObjectTypeForProperty.Name,
-              BidirectionalRelationAttribute.OppositeProperty,
-              oppositePropertyInfo.DeclaringType.Name);
-        }
-      }
-      else
-      {
-        if (DeclaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
-          return;
-
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
-            DeclaringDomainObjectTypeForProperty.Name,
-            BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.Name);
-      }
-    }
-
-    private void ValidateOppositePropertyInfoBidirectionalRelationAttribute (PropertyInfo oppositePropertyInfo)
-    {
-      BidirectionalRelationAttribute oppositeBidirectionalRelationAttribute =
-          (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (oppositePropertyInfo, BidirectionalRelationAttribute.GetType(), true);
-
-      if (oppositeBidirectionalRelationAttribute == null)
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.\r\n",
-            BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.Name,
-            BidirectionalRelationAttribute.GetType().Name);
-      }
-
-      if (!PropertyInfo.Name.Equals (oppositeBidirectionalRelationAttribute.OppositeProperty, StringComparison.Ordinal))
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n",
-            BidirectionalRelationAttribute.OppositeProperty,
-            oppositePropertyInfo.DeclaringType.Name,
-            BidirectionalRelationAttribute.GetType().Name);
-      }
     }
   }
 }

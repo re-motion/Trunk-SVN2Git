@@ -15,19 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations.
+    ManyToManyBidirectionalRelation
 {
-  /// <summary>
-  /// Validates that a relation has valid relation endpoint combinations.
-  /// </summary>
-  public abstract class RelationEndPointCombinationIsSupportedValidationRule : IRelationDefinitionValidatorRule
+  [DBTable]
+  [ClassID ("ManyToManyBidirectionalRelation_InvalidRelationClass2")]
+  public class InvalidRelationClass2 : DomainObject
   {
-    protected RelationEndPointCombinationIsSupportedValidationRule ()
-    {
-    }
-
-    public abstract MappingValidationResult Validate (RelationDefinition relationDefinition);
-  
+    [DBBidirectionalRelation("RelationProperty")]
+    public ObjectList<InvalidRelationClass1> RelationProperty { get; set; }
   }
 }

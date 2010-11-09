@@ -24,7 +24,7 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
   [TestFixture]
-  public class RelationEndPointCombinationIsSupportedValidationRuleTest : ValidationRuleTestBase
+  public class RdbmsRelationEndPointCombinationIsSupportedValidationRuleTest : ValidationRuleTestBase
   {
     private RelationEndPointCombinationIsSupportedValidationRule _validationRule;
 
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new RelationEndPointCombinationIsSupportedValidationRule();
+      _validationRule = new RdbmsRelationEndPointCombinationIsSupportedValidationRule();
 
       _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _customerToOrder =

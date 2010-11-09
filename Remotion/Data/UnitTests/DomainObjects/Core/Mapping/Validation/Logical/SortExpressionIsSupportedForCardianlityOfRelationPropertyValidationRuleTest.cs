@@ -30,37 +30,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   {
     private SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule _validationRule;
     private ClassDefinition _classDefinition;
-    private RelationDefinition _relationDefinition;
-    private VirtualRelationEndPointDefinition _endPoint1;
-    private RelationEndPointDefinition _endPoint2;
 
     [SetUp]
     public void SetUp ()
     {
       _validationRule = new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule();
       _classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _relationDefinition =
-         FakeMappingConfiguration.Current.RelationDefinitions[
-             "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _endPoint1 = (VirtualRelationEndPointDefinition) _relationDefinition.EndPointDefinitions[0];
-      _endPoint2 = (RelationEndPointDefinition) _relationDefinition.EndPointDefinitions[1];
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { _endPoint1, _endPoint2 });
     }
 
     [Test]
     public void NoVirtualRelationEndPointDefinition ()
     {
       var endPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
-      
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -70,10 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -83,69 +66,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition, endPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
-    public void CardinalityOne_And_BothEndPointDefinitionsHaveSortExpression ()
+    public void CardinalityOne_And_EndPointDefinitionsHaveSortExpression ()
     {
-      var endPointDefinition1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpressionText", "SortExpression1");
-      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpressionText", "SortExpression2");
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
+      PrivateInvoke.SetNonPublicField (endPointDefinition, "_sortExpressionText", "SortExpression1");
+      var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
-      var validationResult = _validationRule.Validate (_relationDefinition);
+      var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'\r\n"
-        + "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
-    [Test]
-    public void CardinalityOne_And_LeftEndPointDefinitionsHasSortExpression ()
-    {
-      var endPointDefinition1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition1, "_sortExpressionText", "SortExpression1");
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
-       + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    [Test]
-    public void CardinalityOne_And_RightEndPointDefinitionsHasSortExpression ()
-    {
-      var endPointDefinition1 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      var endPointDefinition2 = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
-        _classDefinition, "PropertyWithStorageClassNone", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
-      PrivateInvoke.SetNonPublicField (endPointDefinition2, "_sortExpressionText", "SortExpression2");
-      PrivateInvoke.SetNonPublicField (
-          _relationDefinition, "_endPointDefinitions", new IRelationEndPointDefinition[] { endPointDefinition1, endPointDefinition2 });
-
-      var validationResult = _validationRule.Validate (_relationDefinition);
-
-      var expectedMessage = "Property 'OrderNumber' of class 'Order' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
-       + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'OrderNumber'";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
+    
   }
 }
