@@ -32,10 +32,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return new MappingValidationResult (false, validationResult.Message);
+          return MappingValidationResult.CreateInvalidResult(validationResult.Message);
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
       if (relationEndPointDefinition.IsAnonymous)
-        return new MappingValidationResult (true);
+        return MappingValidationResult.CreateValidResult();
 
       if (!relationEndPointDefinition.IsPropertyInfoResolved)
       {
@@ -61,10 +61,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             typeof (DomainObject),
             relationEndPointDefinition.ClassDefinition.ClassType.FullName,
             relationEndPointDefinition.PropertyInfo != null ? relationEndPointDefinition.PropertyInfo.Name : string.Empty);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult(message);
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

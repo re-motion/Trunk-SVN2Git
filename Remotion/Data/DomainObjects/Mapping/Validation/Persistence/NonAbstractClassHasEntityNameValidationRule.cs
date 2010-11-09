@@ -41,10 +41,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             +"Declaring type: '{1}'",
               classDefinition.ClassType.Name,
               classDefinition.ClassType.FullName);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

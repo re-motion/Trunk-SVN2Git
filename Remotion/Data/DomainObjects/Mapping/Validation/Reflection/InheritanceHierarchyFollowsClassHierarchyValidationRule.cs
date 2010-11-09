@@ -36,9 +36,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             classDefinition.ID,
             classDefinition.BaseClass.ClassType.AssemblyQualifiedName,
             classDefinition.BaseClass.ID);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult(message);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

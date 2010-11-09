@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       }
 
       var messages = errorMessages.ToString().Trim();
-      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
+      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
     }
 
   //  //TODO 3424: adapt error message (Declaration type and property
@@ -119,9 +119,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var constraint = GetAttributeConstraint (attribute.GetType ());
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
-          return new MappingValidationResult (false, constraint.Message);
+          return MappingValidationResult.CreateInvalidResult(constraint.Message);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private bool IsPropertyTypeSupported (PropertyInfo propertyInfo, Type type)

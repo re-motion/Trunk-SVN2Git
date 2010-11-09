@@ -34,10 +34,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return new MappingValidationResult (false, validationResult.Message);
+          return MappingValidationResult.CreateInvalidResult(validationResult.Message);
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
                   oppositeProperty.DeclaringType.Name,
                   relationAttribute.GetType ().Name,
                   relationEndPointDefinition.ClassDefinition.ClassType.FullName);
-              return new MappingValidationResult (false, message);
+              return MappingValidationResult.CreateInvalidResult(message);
             }
 
             if (!relationEndPointDefinition.PropertyInfo.Name.Equals (oppositeRelationAttribute.OppositeProperty, StringComparison.Ordinal))
@@ -80,13 +80,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
                       oppositeProperty.DeclaringType.Name,
                       relationAttribute.GetType ().Name,
                       relationEndPointDefinition.ClassDefinition.ClassType.FullName);
-              return new MappingValidationResult (false, message);
+              return MappingValidationResult.CreateInvalidResult(message);
             }
           }
         }
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private PropertyInfo GetOppositePropertyInfo (Type type, string oppositeProperty)

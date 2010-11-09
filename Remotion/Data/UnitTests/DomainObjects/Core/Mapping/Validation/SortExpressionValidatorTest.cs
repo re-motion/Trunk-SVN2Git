@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
 
       _validationRuleMock = MockRepository.GenerateStrictMock<IRelationDefinitionValidatorRule> ();
-      _fakeValidMappingValidationResult = new MappingValidationResult (true);
-      _fakeInvalidMappingValidationResult = new MappingValidationResult (false, "Test");
+      _fakeValidMappingValidationResult = MappingValidationResult.CreateValidResult();
+      _fakeInvalidMappingValidationResult = MappingValidationResult.CreateInvalidResult("Test");
     }
 
     [Test]

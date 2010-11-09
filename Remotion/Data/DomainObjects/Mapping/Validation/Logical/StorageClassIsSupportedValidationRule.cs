@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         }
       }
       var messages = errorMessages.ToString().Trim();
-      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
+      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
     }
 
     private MappingValidationResult Validate (PropertyInfo propertyInfo)
@@ -66,9 +66,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             propertyInfo.DeclaringType.Name,
             propertyInfo.DeclaringType.FullName,
             propertyInfo.Name);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult (message);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult ();
     }
   }
 }

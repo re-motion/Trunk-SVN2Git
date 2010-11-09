@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         if (endPointDefinition1.IsAnonymous && endPointDefinition2.IsAnonymous)
         {
           var message = string.Format ("Relation '{0}' cannot have two anonymous end points.", relationDefinition.ID);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
 
         if (endPointDefinition1.IsVirtual && endPointDefinition2.IsVirtual)
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                     ? endPointDefinition1AsVirtualRelationEndPoíntDefinition.PropertyInfo.Name
                     : endPointDefinition2AsVirtualRelationEndPointDefinition.PropertyInfo.Name);
           }
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
 
         if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
@@ -84,10 +84,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
               endPointDefinition1.ClassDefinition.ClassType.FullName,
               endPointDefinition1.PropertyInfo.Name,
               relationDefinition.ID);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
 
-        return new MappingValidationResult (true);
+        return MappingValidationResult.CreateValidResult();
       }
     }
   }

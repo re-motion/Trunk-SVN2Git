@@ -41,12 +41,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
           string message = string.Format("At least two classes in different inheritance branches derived from abstract class '{0}'"
               + " specify the same entity name '{1}', which is not allowed.\r\n\r\nDeclaring type: '{2}'",
               classDefinition.ClassType.Name, entityName, classDefinition.ClassType.FullName);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
 
         allDistinctConcreteEntityNames.Add (entityName, null);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

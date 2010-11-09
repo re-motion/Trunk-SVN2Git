@@ -40,12 +40,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
         return ValidateStorageSpecificPropertyNames (classDefinition);
       
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult ValidateStorageSpecificPropertyNames (ClassDefinition classDefinition)
     {
-      var mappingValidationResult = new MappingValidationResult(true);
+      var mappingValidationResult = MappingValidationResult.CreateValidResult();
       foreach (PropertyDefinition myPropertyDefinition in classDefinition.MyPropertyDefinitions)
       {
         if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
                   basePropertyDefinition.PropertyInfo.Name,
                   classDefinition.ClassType.Name,
                   myPropertyDefinition.PropertyInfo.Name);
-              return new MappingValidationResult (false, message);
+              return MappingValidationResult.CreateInvalidResult(message);
             }
           }
 

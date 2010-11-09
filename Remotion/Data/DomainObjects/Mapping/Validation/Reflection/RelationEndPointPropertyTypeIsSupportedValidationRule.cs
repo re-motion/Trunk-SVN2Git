@@ -30,10 +30,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return new MappingValidationResult (false, validationResult.Message);
+          return MappingValidationResult.CreateInvalidResult(validationResult.Message);
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -53,11 +53,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
              typeof (DomainObject),
              relationEndPointAsReflectionBasedVirtualRelationEndPoint.ClassDefinition.ClassType.FullName,
              relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo.Name);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

@@ -41,9 +41,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             classDefinition.MyEntityName,
             classDefinition.BaseClass.GetEntityName(),
             classDefinition.ClassType.FullName);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult(message);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

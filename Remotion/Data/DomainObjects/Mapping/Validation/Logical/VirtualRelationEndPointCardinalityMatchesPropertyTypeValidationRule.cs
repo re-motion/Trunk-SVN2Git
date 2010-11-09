@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         }
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                             "Declaring type: '{0}'\r\nProperty: '{1}'",
                             endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
                             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
 
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
@@ -75,10 +75,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                             "Declaring type: '{0}'\r\nProperty: '{1}'",
                             endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
                             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
-          return new MappingValidationResult (false, message);
+          return MappingValidationResult.CreateInvalidResult(message);
         }
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

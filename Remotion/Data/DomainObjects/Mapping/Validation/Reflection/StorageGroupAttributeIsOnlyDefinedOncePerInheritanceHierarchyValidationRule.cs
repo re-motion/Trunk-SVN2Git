@@ -51,9 +51,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             typeof (StorageGroupAttribute).Name,
             baseType.Name,
             type.FullName);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult(message);
       }
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     

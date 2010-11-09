@@ -24,19 +24,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class MappingValidationResult
   {
-    //TODO 3424
-    //static CreateValidResult ();
-    //static CreateInvalidResult (message)
+    public static MappingValidationResult CreateValidResult ()
+    {
+      return new MappingValidationResult (true, string.Empty);
+    }
+
+    public static MappingValidationResult CreateInvalidResult (string message)
+    {
+      return new MappingValidationResult (false, message);
+    }
     
     private readonly bool _isValid;
     private readonly string _message;
 
-    public MappingValidationResult (bool isValid)
-    {
-      _isValid = isValid;
-    }
-
-    public MappingValidationResult (bool isValid, string message)
+    protected MappingValidationResult (bool isValid, string message)
     {
       ArgumentUtility.CheckNotNull ("message", message);
 

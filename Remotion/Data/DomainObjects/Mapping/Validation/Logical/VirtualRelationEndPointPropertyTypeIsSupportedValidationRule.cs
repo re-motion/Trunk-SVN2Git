@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           return validationResult;
       }
 
-      return new MappingValidationResult (true);
+      return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult Validate (IRelationEndPointDefinition relationEndPointDefinition)
@@ -65,10 +65,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             typeof(DomainObjectCollection).Name,
             endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
-        return new MappingValidationResult (false, message);
+        return MappingValidationResult.CreateInvalidResult(message);
       }
-      return new MappingValidationResult (true);
+      return  MappingValidationResult.CreateValidResult();
     }
-   
   }
 }

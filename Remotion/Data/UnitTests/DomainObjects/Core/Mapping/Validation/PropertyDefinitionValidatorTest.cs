@@ -51,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidatorRule> ();
       _validationRuleMock3 = MockRepository.GenerateStrictMock<IClassDefinitionValidatorRule> ();
 
-      _fakeValidMappingValidationResult = new MappingValidationResult (true);
-      _fakeInvalidMappingValidationResult = new MappingValidationResult (false, "Test");
+      _fakeValidMappingValidationResult = MappingValidationResult.CreateValidResult();
+      _fakeInvalidMappingValidationResult = MappingValidationResult.CreateInvalidResult("Test");
     }
 
     [Test]

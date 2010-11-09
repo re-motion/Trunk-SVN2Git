@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       }
       
       var messages = errorMessages.ToString ().Trim ();
-      return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
+      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
     }
   }
 }
