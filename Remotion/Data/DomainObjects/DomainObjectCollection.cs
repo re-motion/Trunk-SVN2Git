@@ -617,6 +617,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
+      // For associated collections, _dataStrategy.GetDataStore() will usually return the ChangeCachingDomainObjectCollectionData.
       return new ModificationCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore ());
     }
 

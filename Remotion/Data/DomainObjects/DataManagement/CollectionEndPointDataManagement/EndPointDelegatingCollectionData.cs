@@ -78,6 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData GetDataStore ()
     {
+      // This will usually return the ChangeCachingDomainObjectCollectionData
       return _endPointData.CollectionData.GetDataStore();
     }
 
