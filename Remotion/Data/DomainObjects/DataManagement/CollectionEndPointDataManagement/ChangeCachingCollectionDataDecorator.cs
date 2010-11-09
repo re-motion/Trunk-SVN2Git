@@ -28,14 +28,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   /// <remarks>
   /// <para>
-  /// This class also manages the <see cref="OriginalData"/> associated with the changed data. It manages the copy-on-write functionality of that
-  /// data structure, and it is the only class that can change that original data.
+  /// This class also manages the <see cref="OriginalData"/> associated with the changed data. The original data collection is a 
+  /// <see cref="CopyOnWriteDomainObjectCollectionData"/> and is exposed only through a read-only wrapper. As a result, the 
+  /// <see cref="ChangeCachingCollectionDataDecorator"/> class is the only class that can change that original data.
   /// </para>
   /// </remarks>
   [Serializable]
   public class ChangeCachingCollectionDataDecorator : ObservableCollectionDataDecorator
   {
-    private readonly OriginalDomainObjectCollectionData _originalData;
+    private readonly CopyOnWriteDomainObjectCollectionData _originalData;
     private readonly ICollectionDataStateUpdateListener _stateUpdateListener;
 
     private bool _isCacheUpToDate;
@@ -48,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
-      _originalData = new OriginalDomainObjectCollectionData (this);
+      _originalData = new CopyOnWriteDomainObjectCollectionData (this);
       _stateUpdateListener = stateUpdateListener;
     }
 
@@ -80,19 +81,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Commit ()
     {
-      _originalData.RevertToActualData ();
+      _originalData.RevertToCopiedData();
       SetCachedHasChangedFlag (false);
-    }
-
-    protected override void OnDataChanging (OperationKind operation, DomainObject affectedObject, int index)
-    {
-      _originalData.CopyOnWrite ();
     }
 
     protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
     {
       _isCacheUpToDate = false;
       RaiseStateUpdatedNotification (null);
+      base.OnDataChanged (operation, affectedObject, index);
     }
 
     private void SetCachedHasChangedFlag (bool hasChanged)

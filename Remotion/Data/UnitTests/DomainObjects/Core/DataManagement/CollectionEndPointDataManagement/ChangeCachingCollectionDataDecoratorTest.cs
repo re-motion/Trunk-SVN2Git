@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void OriginalData_PointsToActualData_AfterInitialization ()
     {
-      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
           (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
 
       var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
@@ -135,6 +135,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       CallOnDataChanged (_decoratorWithRealData);
 
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
+    }
+
+    [Test]
+    public void OnDataChanged_RaisesEvent ()
+    {
+      ObservableCollectionDataDecorator.DataChangeEventArgs eventArgs = null;
+      _decoratorWithRealData.CollectionChanged += (sender, args) => { eventArgs = args; };
+      
+      CallOnDataChanged (_decoratorWithRealData);
+
+      Assert.That (eventArgs, Is.Not.Null);
     }
 
     [Test]
@@ -393,9 +404,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private void CheckOriginalDataMatches (IDomainObjectCollectionData expected, IDomainObjectCollectionData actual)
     {
-      var expectedInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+      var expectedInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
           (ReadOnlyCollectionDataDecorator) expected);
-      var actualInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<OriginalDomainObjectCollectionData> (
+      var actualInner = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
           (ReadOnlyCollectionDataDecorator) actual);
       Assert.That (actualInner, Is.SameAs (expectedInner));
     }
