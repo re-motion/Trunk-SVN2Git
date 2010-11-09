@@ -23,18 +23,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 {
   /// <summary>
   /// Implements lazy-loading support for the <see cref="CollectionEndPoint"/> class by wrapping the data kept by a <see cref="CollectionEndPoint"/> 
-  /// and allowing that data to be unloaded. When the <see cref="LazyLoadableCollectionEndPointData"/> is accessed and its data is empty, 
+  /// and allowing that data to be unloaded. When the <see cref="LazyLoadingCollectionEndPointDataKeeper"/> is accessed and its data is empty, 
   /// it loads the data from a <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class LazyLoadableCollectionEndPointData : ICollectionEndPointData, ICollectionDataStateUpdateListener
+  public class LazyLoadingCollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
 
     private ChangeCachingCollectionDataDecorator _collectionData;
 
-    public LazyLoadableCollectionEndPointData (
+    public LazyLoadingCollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
         IEnumerable<DomainObject> initialContents)

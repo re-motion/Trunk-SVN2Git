@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private Order _owningOrder;
 
     private ICollectionEndPoint _collectionEndPointMock;
-    private ICollectionEndPointData _endPointDataStub;
+    private ICollectionEndPointDataKeeper _endPointDataKeeperStub;
     private IDomainObjectCollectionData _dataStoreStub;
     private IDataManagementCommand _nestedCommandMock;
     private ExpandedCommand _expandedCommandFake;
@@ -64,9 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
-      _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData>();
-      _endPointDataStub.Stub (stub => stub.CollectionData).Return (_dataStoreStub);
-      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataStub);
+      _endPointDataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
+      _endPointDataKeeperStub.Stub (stub => stub.CollectionData).Return (_dataStoreStub);
+      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataKeeperStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -119,11 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void IsDataAvailable ()
     {
-      _endPointDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
+      _endPointDataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (true);
       Assert.That (_data.IsDataAvailable, Is.True);
 
-      _endPointDataStub.BackToRecord();
-      _endPointDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      _endPointDataKeeperStub.BackToRecord();
+      _endPointDataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (false);
       _dataStoreStub.Replay ();
 
       Assert.That (_data.IsDataAvailable, Is.False);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _data.EnsureDataAvailable();
 
-      _endPointDataStub.AssertWasCalled (mock => mock.EnsureDataAvailable());
+      _endPointDataKeeperStub.AssertWasCalled (mock => mock.EnsureDataAvailable());
     }
 
     [Test]
@@ -465,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var data = new EndPointDelegatingCollectionData (endPointStub, _endPointDataStub);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _endPointDataKeeperStub);
 
       using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
       {

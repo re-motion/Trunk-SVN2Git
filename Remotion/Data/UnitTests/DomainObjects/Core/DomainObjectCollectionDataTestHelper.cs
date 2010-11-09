@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) data;
     }
     
-    public static ICollectionEndPointData GetData (EndPointDelegatingCollectionData delegatingData)
+    public static ICollectionEndPointDataKeeper GetDataKeeper (EndPointDelegatingCollectionData delegatingData)
     {
-      var data = (ICollectionEndPointData) PrivateInvoke.GetNonPublicField (delegatingData, "_endPointData");
+      var data = (ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (delegatingData, "_endPointDataKeeper");
       return data;
     }
 
@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
-      var endPointData = GetData (delegator);
-      Assert.That (endPointData, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_data")));
+      var dataKeeper = GetDataKeeper (delegator);
+      Assert.That (dataKeeper, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")));
     }
 
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
-      var endPointData = GetData (delegator);
-      Assert.That (endPointData, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_data")));
+      var endPointDataKeeper = GetDataKeeper (delegator);
+      Assert.That (endPointDataKeeper, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")));
       if (expectedDataStore != null)
-        Assert.That (endPointData.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
+        Assert.That (endPointDataKeeper.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)

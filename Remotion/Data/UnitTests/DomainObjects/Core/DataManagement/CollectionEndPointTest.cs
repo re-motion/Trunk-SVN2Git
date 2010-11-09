@@ -809,9 +809,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }
 
-    private LazyLoadableCollectionEndPointData GetEndPointData (CollectionEndPoint endPoint)
+    private LazyLoadingCollectionEndPointDataKeeper GetEndPointData (CollectionEndPoint endPoint)
     {
-      return (LazyLoadableCollectionEndPointData) PrivateInvoke.GetNonPublicField (endPoint, "_data");
+      return (LazyLoadingCollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
     }
   }
 }

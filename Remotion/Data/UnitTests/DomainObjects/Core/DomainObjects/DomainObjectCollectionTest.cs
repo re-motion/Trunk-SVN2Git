@@ -795,7 +795,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPointDataStub = new LazyLoadableCollectionEndPointData (
+      var endPointDataStub = new LazyLoadingCollectionEndPointDataKeeper (
           ClientTransactionMock, 
           endPointID, 
           new DomainObject[0]);

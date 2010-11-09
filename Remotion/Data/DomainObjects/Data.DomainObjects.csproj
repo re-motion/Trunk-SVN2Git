@@ -206,10 +206,10 @@
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
-    <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\IDataManager.cs" />
     <Compile Include="DataManagement\IRelationEndPointMapReadOnlyView.cs" />
-    <Compile Include="DataManagement\CollectionEndPointDataManagement\LazyLoadableCollectionEndPointData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\LazyLoadingCollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\EndPointExtensions.cs" />

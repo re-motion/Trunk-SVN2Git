@@ -31,9 +31,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
-    private readonly ICollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
+    private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
-    private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
+    private DomainObjectCollection _oppositeDomainObjects; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
 
     private bool _hasBeenTouched;
@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       
-      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContentsOrNull);
+      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, initialContentsOrNull);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get 
       { 
         var collectionType = Definition.PropertyType;
-        return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _data.OriginalCollectionData);
+        return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
       }
     }
 
@@ -106,13 +106,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool IsDataAvailable
     {
-      get { return _data.IsDataAvailable; }
+      get { return _dataKeeper.IsDataAvailable; }
     }
 
     // No loading
     public override bool HasChanged
     {
-      get { return OriginalCollectionReference != OppositeDomainObjects || _data.HasDataChanged (_changeDetectionStrategy); }
+      get { return OriginalCollectionReference != OppositeDomainObjects || _dataKeeper.HasDataChanged (_changeDetectionStrategy); }
     }
 
     // No loading
@@ -127,14 +127,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (IsDataAvailable)
       {
         ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
-        _data.Unload();
+        _dataKeeper.Unload();
       }
     }
 
     // Causes collection to be loaded
     public override void EnsureDataAvailable ()
     {
-      _data.EnsureDataAvailable ();
+      _dataKeeper.EnsureDataAvailable ();
     }
 
     // Causes collection to be loaded // TODO: Very implicit
@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      _data.CollectionData.ReplaceContents (sourceCollectionEndPoint._data.CollectionData);
+      _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint._dataKeeper.CollectionData);
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        _data.CommitOriginalContents ();
+        _dataKeeper.CommitOriginalContents ();
         _originalCollectionReference = _oppositeDomainObjects;
       }
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _data));
+      var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataKeeper));
 
       return dataStrategy;
     }
@@ -241,7 +241,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _data.CollectionData); // indirect EnsureDataAvailable
+      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
     }
 
     // Causes collection to be loaded // TODO: Collection is only loaded from within the command, this probably should be done earlier
@@ -250,7 +250,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new AdHocCommand
           {
             BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete (),
-            PerformHandler = () => { _data.CollectionData.Clear (); Touch (); }, // indirect EnsureDataAvailable (IN THE command!)
+            PerformHandler = () => { _dataKeeper.CollectionData.Clear (); Touch (); }, // indirect EnsureDataAvailable (IN THE command!)
             EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ()
           };
     }
@@ -259,7 +259,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _data.CollectionData); // indirect EnsureDataAvailable
+      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
     }
 
     // Causes collection to be loaded
@@ -274,9 +274,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _data.CollectionData); // indirect EnsureDataAvailable
+        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
       else
-        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData); // indirect EnsureDataAvailable
+        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
     }
 
     // Causes collection to be loaded
@@ -304,7 +304,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
-      _data = info.GetValue<ICollectionEndPointData> ();
+      _dataKeeper = info.GetValue<ICollectionEndPointDataKeeper> ();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
@@ -315,7 +315,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeDomainObjects);
       info.AddHandle (_originalCollectionReference);
       info.AddBoolValue (_hasBeenTouched);
-      info.AddValue (_data);
+      info.AddValue (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
     }
 
@@ -345,8 +345,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField ("_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
       associatedEndPointField.SetValue (endPointDelegatingData, this);
 
-      var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointData", BindingFlags.NonPublic | BindingFlags.Instance);
-      endPointDataField.SetValue (endPointDelegatingData, _data);
+      var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointDataKeeper", BindingFlags.NonPublic | BindingFlags.Instance);
+      endPointDataField.SetValue (endPointDelegatingData, _dataKeeper);
     }
 
     #endregion

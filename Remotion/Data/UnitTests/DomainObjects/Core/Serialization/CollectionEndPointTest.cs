@@ -134,8 +134,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           deserializedCheckingDecorator);
 
       Assert.That (deserializedDelegatingData.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedDelegatingData, "_endPointData"), 
-          Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_data")));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedDelegatingData, "_endPointDataKeeper"), 
+          Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_dataKeeper")));
     }
 
     [Test]

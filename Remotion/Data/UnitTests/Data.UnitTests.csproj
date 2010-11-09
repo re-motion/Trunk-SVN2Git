@@ -220,7 +220,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiserTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TestDomainObjectCollectionDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DerivedOrderCollection.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\LazyLoadableCollectionEndPointDataTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\LazyLoadingCollectionEndPointDataKeeperTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointExtensionsTest.cs" />
