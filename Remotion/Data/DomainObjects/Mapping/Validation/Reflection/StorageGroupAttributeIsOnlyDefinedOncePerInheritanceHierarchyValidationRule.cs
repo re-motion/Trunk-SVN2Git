@@ -47,9 +47,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           baseType = baseType.BaseType;
 
         var message = string.Format (
-            "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.",
-            typeof (StorageGroupAttribute),
-            baseType);
+            "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.\r\n\r\nDeclaration type: '{2}'",
+            typeof (StorageGroupAttribute).Name,
+            baseType.Name,
+            type.FullName);
         return new MappingValidationResult (false, message);
       }
       return new MappingValidationResult (true);

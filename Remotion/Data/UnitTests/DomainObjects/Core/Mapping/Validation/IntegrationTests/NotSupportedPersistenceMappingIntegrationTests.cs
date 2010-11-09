@@ -52,9 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "The domain object type cannot redefine the 'Remotion.Data.DomainObjects.StorageGroupAttribute' already defined on base type "
-      +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
-      +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.BaseClass'.")]
+      ExpectedMessage = "The domain object type cannot redefine the 'StorageGroupAttribute' already defined on base type 'BaseClass'.\r\n\r\n"
+      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.DerivedDerivedClass'")]
     public void DuplicatedStorageGroupAttributeInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.DuplicatedStorageGroupAttributeInInheritanceHierarchy");
