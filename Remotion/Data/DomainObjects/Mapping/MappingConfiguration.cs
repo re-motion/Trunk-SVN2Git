@@ -228,8 +228,12 @@ namespace Remotion.Data.DomainObjects.Mapping
     private MappingException CreateMappingException (IEnumerable<MappingValidationResult> mappingValidationResults)
     {
       var messages = new StringBuilder();
-      foreach (var validationResult in mappingValidationResults)
+      foreach (var validationResult in mappingValidationResults){
+        if (messages.Length > 0)
+          messages.AppendLine (new string ('-', 10));
         messages.AppendLine (validationResult.Message);
+      }
+
       return new MappingException (messages.ToString().Trim());
     }
   }

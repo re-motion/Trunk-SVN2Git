@@ -69,6 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
       +"PropertyTypeOfObjectList_DomainObject.ClassWithInvalidProperty\r\n"
       +"Property: InvalidProperty1\r\n"
+      +"----------\r\n"
       +"The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
       +"ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] "
       +"is not supported.\r\n\r\n"

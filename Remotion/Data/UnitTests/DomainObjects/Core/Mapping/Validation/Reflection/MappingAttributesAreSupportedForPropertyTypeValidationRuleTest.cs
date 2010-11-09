@@ -206,7 +206,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       var expectedMessages = new StringBuilder();
       expectedMessages.AppendLine ("The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.");
+      expectedMessages.AppendLine (new string('-', 10));
       expectedMessages.AppendLine("The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.");
+      expectedMessages.AppendLine (new string ('-', 10));
       expectedMessages.AppendLine ("The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.");
 
       var validationResult = _validtionRule.Validate (_classDefinition);

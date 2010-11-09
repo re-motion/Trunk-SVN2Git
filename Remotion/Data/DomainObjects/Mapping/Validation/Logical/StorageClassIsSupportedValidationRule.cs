@@ -40,7 +40,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo);
         if (!validationResult.IsValid)
+        {
+          if (errorMessages.Length > 0)
+            errorMessages.AppendLine (new string ('-', 10));
           errorMessages.AppendLine (validationResult.Message);
+        }
       }
       var messages = errorMessages.ToString().Trim();
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);

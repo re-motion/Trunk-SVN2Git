@@ -25,11 +25,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     //MappingAttributesAreSupportedForPropertyTypeValidationRule
     [Test]
-    [ExpectedException(typeof(MappingException), 
-      ExpectedMessage = "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.\r\n"
+    [ExpectedException(typeof(MappingException), ExpectedMessage = 
+         "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.\r\n"
+        +"----------\r\n" 
         +"The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.\r\n"
+        + "----------\r\n"
         +"The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.\r\n"
+        + "----------\r\n"
         +"The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n"
+        + "----------\r\n"
         + "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.")]
     public void AttributesOnUnsupportedTypes ()
     {

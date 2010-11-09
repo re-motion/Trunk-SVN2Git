@@ -36,7 +36,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       {
         var validationResult = Validate (propertyDefinition.PropertyInfo, classDefinition);
         if (!validationResult.IsValid)
+        {
+          if (errorMessages.Length > 0)
+            errorMessages.AppendLine (new string ('-', 10));
           errorMessages.AppendLine (validationResult.Message);
+        }
       }
 
       var messages = errorMessages.ToString().Trim();

@@ -52,6 +52,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                 basePropertyDefinition.ClassDefinition.ClassType.Name,
                 classDefinition.ClassType.FullName,
                 propertyDefinition.PropertyInfo.Name);
+            if(errorMessages.Length>0)
+              errorMessages.AppendLine (new string ('-', 10));
             errorMessages.AppendLine (message);
           }
         }

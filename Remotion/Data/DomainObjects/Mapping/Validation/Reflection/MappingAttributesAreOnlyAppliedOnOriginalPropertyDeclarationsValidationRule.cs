@@ -53,7 +53,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (propertyInfo);
         if (!validationResult.IsValid)
+        {
+          if (errorMessages.Length > 0)
+            errorMessages.AppendLine (new string ('-', 10));
           errorMessages.AppendLine (validationResult.Message);
+        }
       }
 
       var messages = errorMessages.ToString ().Trim ();

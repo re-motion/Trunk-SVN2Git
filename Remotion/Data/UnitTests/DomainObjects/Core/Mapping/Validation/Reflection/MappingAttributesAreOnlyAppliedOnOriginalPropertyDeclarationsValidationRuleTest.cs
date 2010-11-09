@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       expectedMessages.AppendLine(
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute\r\n"
-        + "Property: Property1");
+        + "Property: Property1\r\n"+new string('-', 10));
       expectedMessages.AppendLine (
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute\r\n"
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       expectedMessages.AppendLine (
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
-        + "Property: Property1");
+        + "Property: Property1\r\n"+new string('-', 10));
       expectedMessages.AppendLine (
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
