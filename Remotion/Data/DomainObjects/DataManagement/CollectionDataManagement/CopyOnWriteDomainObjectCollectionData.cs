@@ -47,9 +47,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _copiedData.CollectionChanging += delegate { CopyOnWrite(); };
     }
 
+    public bool IsContentsCopied
+    {
+      get { return WrappedData != _copiedData; }
+    }
+
     public void CopyOnWrite ()
     {
-      if (WrappedData == _copiedData)
+      if (!IsContentsCopied)
         WrappedData = new DomainObjectCollectionData (WrappedData);
     }
     

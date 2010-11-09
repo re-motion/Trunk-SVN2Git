@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
@@ -89,7 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     /// Registers the given <paramref name="domainObject"/> as an original item of this collection. This means the item is added to the 
     /// <see cref="OriginalData"/> collection, and it is also added to this <see cref="ChangeCachingCollectionDataDecorator"/> collection. If the 
     /// <see cref="OriginalData"/> collection already contains the item, an exception is thrown. If this collection already contains the item, it is
-    /// only added to the <see cref="OriginalData"/>.
+    /// only added to the <see cref="OriginalData"/>. This operation may invalidate the state cache.
     /// </summary>
     /// <param name="domainObject">The <see cref="DomainObject"/> to be registered.</param>
     public void RegisterOriginalItem (DomainObject domainObject)
@@ -106,13 +108,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       {
         // Standard case: Neither collection contains the item; the item is added to both, and the state cache stays valid
 
-        // Add the item to the WrappedData collection. That way:
-        // - The state cache will not be invalidated.
-        // - If the original collection has not yet been copied, it will automatically contain the item.
+        // Add the item to the WrappedData collection. That way, if the original collection has not yet been copied, it will automatically contain the 
+        // item and the state cache remains valid.
         WrappedData.Add (domainObject);
 
-        // If the original collection has been copied, we must add the item manually.
-        if (!_originalData.ContainsObjectID (domainObject.ID))
+        // If the original collection has been copied, we must add the item manually. The state cache still remains valid because we always add
+        // the item at the end. If the collections were equal before, they remain equal now. If they were different before, they remain different.
+        if (_originalData.IsContentsCopied)
           _originalData.Add (domainObject);
       }
       else
@@ -132,7 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     /// Unregisters the item with the given <paramref name="objectID"/> as an original item of this collection. This means the item is removed from 
     /// the <see cref="OriginalData"/> collection, and it is also removed from this <see cref="ChangeCachingCollectionDataDecorator"/> collection. If 
     /// the <see cref="OriginalData"/> collection does not contain the item, an exception is thrown. If this collection does not contain the item, it 
-    /// is only removed from the <see cref="OriginalData"/>.
+    /// is only removed from the <see cref="OriginalData"/>. This operation may invalidate the state cache.
     /// </summary>
     /// <param name="objectID">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> to be unregistered.</param>
     public void UnregisterOriginalItem (ObjectID objectID)
@@ -147,16 +149,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       if (WrappedData.ContainsObjectID (objectID))
       {
-        // Standard case: Both collections contain the item; the item is removed from both, and the state cache stays valid
+        // Standard case: Both collections contain the item; the item is removed from bothd
 
-        // Remove the item from the WrappedData collection. That way:
-        // - The state cache will not be invalidated.
-        // - If the original collection has not yet been copied, it will automatically not contain the item.
+        // Remove the item from the WrappedData collection. That way, if the original collection has not yet been copied, it will automatically not 
+        // contain the item and the state cache remains valid.
         WrappedData.Remove (objectID);
 
-        // If the original collection has been copied, we must remove the item manually.
-        if (_originalData.ContainsObjectID (objectID))
+        // If the original collection has been copied, we must remove the item manually and invalidate the state cache: Collections previously 
+        // different because the item was in different places might now be the same.
+        if (_originalData.IsContentsCopied)
+        {
           _originalData.Remove (objectID);
+          OnChangeStateUnclear ();
+        }
       }
       else
       {
@@ -166,6 +171,37 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         _originalData.Remove (objectID);
         OnChangeStateUnclear ();
       }
+    }
+
+    /// <summary>
+    /// Sorts the data in this <see cref="ChangeCachingCollectionDataDecorator"/> and the data in the <see cref="OriginalData"/> collection
+    /// using the given <paramref name="comparer"/>. This operation causes the change state to be invalidated if the original data is not the same
+    /// as the current data.
+    /// </summary>
+    /// <param name="comparer">The comparer to use for sorting the data.</param>
+    public void SortOriginalAndCurrent (IComparer<DomainObject> comparer)
+    {
+      ArgumentUtility.CheckNotNull ("comparer", comparer);
+
+      Sort (WrappedData, comparer);
+
+      // If the original collection has been copied, we must sort it manually. This might cause the change state cache to be wrong, so it is 
+      // invalidated.
+      if (_originalData.IsContentsCopied)
+      {
+        Sort (_originalData, comparer);
+        OnChangeStateUnclear ();
+      }
+    }
+
+    private static void Sort (IDomainObjectCollectionData collectionData, IComparer<DomainObject> comparer)
+    {
+      ArgumentUtility.CheckNotNull ("collectionData", collectionData);
+      ArgumentUtility.CheckNotNull ("comparer", comparer);
+
+      var items = collectionData.ToArray ();
+      Array.Sort (items, comparer);
+      collectionData.ReplaceContents (items);
     }
 
     protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)

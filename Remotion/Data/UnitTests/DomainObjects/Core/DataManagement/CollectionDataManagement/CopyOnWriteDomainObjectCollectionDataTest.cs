@@ -93,6 +93,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsContentsCopied_False ()
+    {
+      Assert.That (_copyOnWriteData.IsContentsCopied, Is.False);
+    }
+
+    [Test]
+    public void IsContentsCopied_True ()
+    {
+      _copyOnWriteData.CopyOnWrite ();
+      Assert.That (_copyOnWriteData.IsContentsCopied, Is.True);
+    }
+
+    [Test]
     public void RevertToCopiedData ()
     {
       _copyOnWriteData.CopyOnWrite ();
