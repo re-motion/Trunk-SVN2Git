@@ -208,6 +208,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TestableObservableCollectionDataDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\FakeCollectionDataStateUpdateListener.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\OriginalDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />
