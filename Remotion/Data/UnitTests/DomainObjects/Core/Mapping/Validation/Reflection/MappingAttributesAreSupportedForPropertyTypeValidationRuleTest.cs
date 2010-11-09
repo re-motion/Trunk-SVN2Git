@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false, 
-        "The 'Remotion.Data.DomainObjects.StringPropertyAttribute' may be only applied to properties of type 'System.String'.");
+        "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.");
     }
 
     [Test]
@@ -90,8 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       var validationResult = _validtionRule.Validate (_classDefinition);
 
-      AssertMappingValidationResult (validationResult, false,
-        "The 'Remotion.Data.DomainObjects.BinaryPropertyAttribute' may be only applied to properties of type 'System.Byte[]'.");
+      AssertMappingValidationResult (validationResult, false, "The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.");
     }
 
     [Test]
@@ -117,8 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       var validationResult = _validtionRule.Validate (_classDefinition);
 
-      AssertMappingValidationResult (validationResult, false,
-        "The 'Remotion.Data.DomainObjects.ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'Remotion.ExtensibleEnums.IExtensibleEnum'.");
+      AssertMappingValidationResult (validationResult, false, "The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.");
     }
 
     [Test]
@@ -144,9 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       var validationResult = _validtionRule.Validate (_classDefinition);
 
-      AssertMappingValidationResult (validationResult, false,
-        "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-        +"'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
+      AssertMappingValidationResult (validationResult, false, 
+        "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.");
     }
 
     [Test]
@@ -160,8 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false,
-        "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
+        "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.");
     }
 
     [Test]
@@ -188,8 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false,
-        "The 'Remotion.Data.DomainObjects.DBBidirectionalRelationAttribute' may be only applied to properties assignable to types "
-        + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
+        "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.");
     }
 
     [Test]
@@ -210,15 +205,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetReadOnly ();
 
       var expectedMessages = new StringBuilder();
-      expectedMessages.AppendLine (
-          "The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-          + "'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.");
-      expectedMessages.AppendLine("The 'Remotion.Data.DomainObjects.ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'Remotion.ExtensibleEnums.IExtensibleEnum'.");
-      expectedMessages.AppendLine ("The 'Remotion.Data.DomainObjects.BinaryPropertyAttribute' may be only applied to properties of type 'System.Byte[]'.");
+      expectedMessages.AppendLine ("The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.");
+      expectedMessages.AppendLine("The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.");
+      expectedMessages.AppendLine ("The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.");
 
       var validationResult = _validtionRule.Validate (_classDefinition);
-      AssertMappingValidationResult (validationResult, false,
-       expectedMessages.ToString().Trim());
+
+      AssertMappingValidationResult (validationResult, false,expectedMessages.ToString().Trim());
     }
   }
 }

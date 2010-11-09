@@ -26,14 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //MappingAttributesAreSupportedForPropertyTypeValidationRule
     [Test]
     [ExpectedException(typeof(MappingException), 
-      ExpectedMessage = "The 'Remotion.Data.DomainObjects.StringPropertyAttribute' may be only applied to properties of type 'System.String'.\r\n"
-        +"The 'Remotion.Data.DomainObjects.BinaryPropertyAttribute' may be only applied to properties of type 'System.Byte[]'.\r\n"
-        +"The 'Remotion.Data.DomainObjects.ExtensibleEnumPropertyAttribute' may be only applied to properties of type "
-        +"'Remotion.ExtensibleEnums.IExtensibleEnum'.\r\n"
-        +"The 'Remotion.Data.DomainObjects.MandatoryAttribute' may be only applied to properties assignable to types "
-        +"'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.\r\n"
-        + "The 'Remotion.Data.DomainObjects.DBBidirectionalRelationAttribute' may be only applied to properties assignable to types "
-        +"'Remotion.Data.DomainObjects.DomainObject' or 'Remotion.Data.DomainObjects.ObjectList`1[T]'.")]
+      ExpectedMessage = "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.\r\n"
+        +"The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.\r\n"
+        +"The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.\r\n"
+        +"The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n"
+        + "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.")]
     public void AttributesOnUnsupportedTypes ()
     {
       ValidateMapping ("AttributesOnUnsupportedTypes");

@@ -90,6 +90,23 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return string.IsNullOrEmpty (messages) ? new MappingValidationResult (true) : new MappingValidationResult (false, messages);
     }
 
+  //  //TODO 3424: adapt error message (Declaration type and property
+  //  // StringPropertyAttribute
+  //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
+  //  {
+  //    override string GetMEssage()
+  //  }
+
+  //  protected MappingValidationResultValidate (PropertyInfo pi)
+  //{ 
+  //    var attr = AttributeUtility.GetCustomAttributes<TAttribute> (pi, true))
+  //    if (attr != null && !IsPropertyTypeSupported (pi))
+  //    {
+  //        return new MappingValidationResult (false, GetMessage (pi));
+  //    }
+  //    return new MappingValidationResult (true);
+  //  }
+
     private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -130,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         where TAttribute : Attribute
     {
       return new AttributeConstraint (
-          string.Format ("The '{0}' may be only applied to properties of type '{1}'.", typeof (TAttribute).FullName, typeof (TProperty).FullName),
+          string.Format ("The '{0}' may be only applied to properties of type '{1}'.", typeof (TAttribute).Name, typeof (TProperty).Name),
           typeof (TProperty));
     }
 
@@ -140,9 +157,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return new AttributeConstraint (
           string.Format (
               "The '{0}' may be only applied to properties assignable to types '{1}' or '{2}'.",
-              typeof (TAttribute),
-              typeof (DomainObject),
-              typeof (ObjectList<>)),
+              typeof (TAttribute).Name,
+              typeof (DomainObject).Name,
+              typeof (ObjectList<>).Name),
           typeof (DomainObject),
           typeof (ObjectList<>));
     }

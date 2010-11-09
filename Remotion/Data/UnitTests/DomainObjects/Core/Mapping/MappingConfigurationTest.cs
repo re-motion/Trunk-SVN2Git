@@ -135,7 +135,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.")]
+      ExpectedMessage = "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.\r\n\r\n"
+      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer'\r\n"
+      +"Property: 'OrderNumber'")]
     public void RelationDefinitionsAreValidated ()
     {
       var classDefinition = new ReflectionBasedClassDefinition (

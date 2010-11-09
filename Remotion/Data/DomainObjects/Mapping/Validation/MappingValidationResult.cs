@@ -24,6 +24,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class MappingValidationResult
   {
+    //TODO 3424
+    //static CreateValidResult ();
+    //static CreateInvalidResult (message)
+    
     private readonly bool _isValid;
     private readonly string _message;
 
