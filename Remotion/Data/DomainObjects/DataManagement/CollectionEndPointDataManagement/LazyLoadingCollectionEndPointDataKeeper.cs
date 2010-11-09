@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
@@ -31,8 +32,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
-
-    private ChangeCachingCollectionDataDecorator _collectionData;
+    
+    private readonly ChangeCachingCollectionDataDecorator _collectionData;
+    private bool _isDataAvailable;
 
     public LazyLoadingCollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -45,8 +47,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
 
-      if (initialContents != null)
-        SetContents (initialContents);
+      var wrappedData = new DomainObjectCollectionData (initialContents ?? Enumerable.Empty<DomainObject> ());
+      _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
+      _isDataAvailable = initialContents != null;
     }
 
     public ClientTransaction ClientTransaction
@@ -61,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public bool IsDataAvailable
     {
-      get { return _collectionData != null; }
+      get { return _isDataAvailable; }
     }
 
     public IDomainObjectCollectionData CollectionData
@@ -69,8 +72,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get
       {
         EnsureDataAvailable ();
-
-        Assertion.IsNotNull (_collectionData);
         return _collectionData;
       }
     }
@@ -80,17 +81,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get
       {
         EnsureDataAvailable ();
-
         return _collectionData.OriginalData;
       }
     }
 
     public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
-      if (!IsDataAvailable)
-        return false; // if we are unloaded, we're definitely unchanged
-      else
-        return _collectionData.HasChanged (changeDetectionStrategy);
+      return _collectionData.HasChanged (changeDetectionStrategy);
     }
 
     public void EnsureDataAvailable ()
@@ -98,29 +95,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (!IsDataAvailable)
       {
         var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
-        SetContents (contents);
 
+        // TODO: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
+        // foreign keys' reflections to be registered in this collection via RegisterOriginalObject. No ReplaceContents/Commit required.
+        _collectionData.ReplaceContents (contents);
+        _collectionData.Commit (); // makes original collection identical to current
+
+        _isDataAvailable = true;
+
+        // TODO: This will also change: the change state changes in the course of the RegisterOriginalObject calls, it's not necessarily false.
         RaiseChangeStateNotification (false);
       }
     }
 
     public void Unload ()
     {
-      _collectionData = null;
-
-      RaiseChangeStateNotification (false);
+      _isDataAvailable = false;
     }
 
     public void CommitOriginalContents ()
     {
-      if (IsDataAvailable)
-        _collectionData.Commit ();
-    }
-
-    private void SetContents (IEnumerable<DomainObject> initialContents)
-    {
-      var dataStore = new DomainObjectCollectionData (initialContents);
-      _collectionData = new ChangeCachingCollectionDataDecorator (dataStore, this);
+      _collectionData.Commit ();
     }
 
     private void RaiseChangeStateNotification (bool? newChangedState)

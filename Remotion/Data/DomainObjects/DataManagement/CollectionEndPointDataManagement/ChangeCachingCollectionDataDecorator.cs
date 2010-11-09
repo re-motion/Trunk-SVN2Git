@@ -69,7 +69,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       if (!_isCacheUpToDate)
       {
-        var hasChanged = strategy.HasDataChanged (this, OriginalData);
+        // If the original data still points to this collection, we don't ask the strategy - we know we aren't changed.
+        var hasChanged = _originalData.IsContentsCopied ? strategy.HasDataChanged (this, OriginalData) : false;
         SetCachedHasChangedFlag (hasChanged);
       }
 

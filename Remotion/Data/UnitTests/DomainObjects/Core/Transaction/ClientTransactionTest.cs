@@ -544,17 +544,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       Assert.IsFalse (ClientTransactionMock.IsDiscarded);
 
-			object orderTimestamp = order.InternalDataContainer.Timestamp;
-			object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
-			object newOrderTicketTimestamp = newOrderTicket.InternalDataContainer.Timestamp;
+      object orderTimestamp = order.InternalDataContainer.Timestamp;
+      object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
+      object newOrderTicketTimestamp = newOrderTicket.InternalDataContainer.Timestamp;
 
       ClientTransactionMock.Commit ();
 
       Assert.IsFalse (ClientTransactionMock.IsDiscarded);
 
-			Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
-			Assert.AreEqual (oldOrderTicketTimestamp, oldOrderTicket.InternalDataContainer.Timestamp);
-			Assert.AreEqual (newOrderTicketTimestamp, newOrderTicket.InternalDataContainer.Timestamp);
+      Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
+      Assert.AreEqual (oldOrderTicketTimestamp, oldOrderTicket.InternalDataContainer.Timestamp);
+      Assert.AreEqual (newOrderTicketTimestamp, newOrderTicket.InternalDataContainer.Timestamp);
     }
 
     [Test]
@@ -570,20 +570,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.Commit ();
 
-			object orderTimestamp = order.InternalDataContainer.Timestamp;
-			object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
-			object newOrderTicketTimestamp = newOrderTicket.InternalDataContainer.Timestamp;
-			object oldOrderOfNewOrderTicketTimestamp = oldOrderOfNewOrderTicket.InternalDataContainer.Timestamp;
+      object orderTimestamp = order.InternalDataContainer.Timestamp;
+      object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
+      object newOrderTicketTimestamp = newOrderTicket.InternalDataContainer.Timestamp;
+      object oldOrderOfNewOrderTicketTimestamp = oldOrderOfNewOrderTicket.InternalDataContainer.Timestamp;
 
       order.OrderTicket = oldOrderTicket;
       oldOrderOfNewOrderTicket.OrderTicket = newOrderTicket;
 
       ClientTransactionMock.Commit ();
 
-			Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
-			Assert.IsFalse (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp));
-			Assert.IsFalse (newOrderTicketTimestamp.Equals (newOrderTicket.InternalDataContainer.Timestamp));
-			Assert.AreEqual (oldOrderOfNewOrderTicketTimestamp, oldOrderOfNewOrderTicket.InternalDataContainer.Timestamp);
+      Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
+      Assert.IsFalse (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp));
+      Assert.IsFalse (newOrderTicketTimestamp.Equals (newOrderTicket.InternalDataContainer.Timestamp));
+      Assert.AreEqual (oldOrderOfNewOrderTicketTimestamp, oldOrderOfNewOrderTicket.InternalDataContainer.Timestamp);
     }
 
     [Test]
@@ -1041,7 +1041,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       listenerMock.ObjectsLoaded (null, null);
       LastCall.IgnoreArguments ();
       listenerMock.VirtualRelationEndPointStateUpdated (null, null, null);
-      LastCall.IgnoreArguments ();
+      LastCall.IgnoreArguments ().Repeat.Any ();
 
       mockRepository.ReplayAll ();
 

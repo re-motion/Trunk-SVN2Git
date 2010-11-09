@@ -564,7 +564,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, orderItemsEndPoint));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (ClientTransactionMock, orderItemsEndPoint.ID, false));
       }
 
       _mockRepository.ReplayAll ();

@@ -113,9 +113,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void HasChanged_UsesStrategy ()
+    public void HasChanged_FastPathFalse ()
     {
       var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+      strategyMock.Replay ();
+
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+
+      var result = endPoint.HasChanged;
+
+      strategyMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (false));
+    }
+
+    [Test]
+    public void HasChanged_UsesStrategy_IfRequired ()
+    {
+      var strategyMock = new MockRepository ().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
 
       strategyMock
@@ -123,7 +137,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
               Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects),
               Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OriginalOppositeDomainObjectsContents)))
           .Return (true);
-      strategyMock.Replay();
+      strategyMock.Replay ();
+
+      endPoint.OppositeDomainObjects.Add (_order2);
 
       var result = endPoint.HasChanged;
 

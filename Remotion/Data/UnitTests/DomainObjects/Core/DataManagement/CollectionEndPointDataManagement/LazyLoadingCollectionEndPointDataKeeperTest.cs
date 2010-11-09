@@ -72,12 +72,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void HasDataChanged_Loaded ()
+    public void HasDataChanged ()
     {
       _changeDetectionStrategyMock
           .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.OriginalCollectionData)))
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
+
+      _loadedDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
       var result = _loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
@@ -86,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void HasDataChanged_Loaded_Cached ()
+    public void HasDataChanged_Cached ()
     {
       _changeDetectionStrategyMock
           .Expect (mock => mock.HasDataChanged (Arg.Is (_loadedDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.OriginalCollectionData)))
@@ -94,6 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Repeat.Once();
       _changeDetectionStrategyMock.Replay ();
 
+      _loadedDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+ 
       var result1 = _loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
       var result2 = _loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
@@ -104,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void HasDataChanged_Loaded_Cache_InvalidatedOnModifyingOperations ()
+    public void HasDataChanged_Cache_InvalidatedOnModifyingOperations ()
     {
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
@@ -116,6 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
             .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();
+
+      _loadedDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
       var result1 = _loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
@@ -129,15 +135,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void HasDataChanged_Unloaded_AlwaysFalse ()
+    public void HasDataChanged_Unloaded_DoesNotLoadData ()
     {
-      _changeDetectionStrategyMock.Replay ();
-
-      var result = _unloadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
-
-      _changeDetectionStrategyMock.AssertWasNotCalled (
-          mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
-      Assert.That (result, Is.EqualTo (false));
+      _unloadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
       Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
     }
@@ -251,18 +251,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Unload_CausesStateUpdate ()
-    {
-      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.True);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransactionMock);
-      _loadedDataKeeper.Unload ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransactionMock, _endPointID, false));
-      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.False);
-    }
-
-    [Test]
     public void Unload_CausesDataStoreToBeReloaded ()
     {
       Assert.That (_loadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
@@ -336,13 +324,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
                 Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.CollectionData),
                 Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.OriginalCollectionData)))
             .Return (true);
-        _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (
-                Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.CollectionData),
-                Arg<IDomainObjectCollectionData>.List.Equal (_loadedDataKeeper.OriginalCollectionData)))
-            .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();
+
+      _loadedDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
       Assert.That (_loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.True);
 
@@ -352,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CommitOriginalContents_Unloaded_DoesNothing ()
+    public void CommitOriginalContents_Unloaded_DoesNotLoadData ()
     {
       _unloadedDataKeeper.CommitOriginalContents ();
 
@@ -360,7 +345,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void ChangeCachingDataStore_GetsListener ()
+    public void StateUpdates_RoutedToTransactionEventSink ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransactionMock);
       _loadedDataKeeper.CollectionData.Clear();

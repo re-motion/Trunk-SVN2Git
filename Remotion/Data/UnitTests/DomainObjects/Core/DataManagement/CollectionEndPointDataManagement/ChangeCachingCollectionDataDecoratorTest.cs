@@ -73,6 +73,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void HasChanged_FastAnswer ()
+    {
+      _strategyStrictMock.Replay ();
+
+      var result = _decoratorWithRealData.HasChanged (_strategyStrictMock);
+
+      _strategyStrictMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything));
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
     public void HasChanged_UsesStrategy ()
     {
       _strategyStrictMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything))
@@ -80,6 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
                .WhenCalled (mi => CheckOriginalDataMatches (_decoratorWithRealData.OriginalData, (IDomainObjectCollectionData) mi.Arguments[1]))
                .Repeat.Once ();
       _strategyStrictMock.Replay ();
+
+      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
 
       var result = _decoratorWithRealData.HasChanged (_strategyStrictMock);
       
@@ -90,16 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasChanged_RaisesStateChangedNotification ()
     {
-      _strategyStrictMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything))
-          .Return (true)
-          .Repeat.Once ();
-      _strategyStrictMock.Replay ();
-
       _decoratorWithRealData.HasChanged (_strategyStrictMock);
-
-      _strategyStrictMock.VerifyAllExpectations ();
-
-      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (true));
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
     }
 
     [Test]
@@ -109,6 +115,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Return (true)
           .Repeat.Once();
       _strategyStrictMock.Replay ();
+
+      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
+
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
 
       var result1 = _decoratorWithRealData.HasChanged (_strategyStrictMock);
@@ -162,6 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         _strategyStrictMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything)).Return (false);
       }
       _strategyStrictMock.Replay ();
+
+      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
 
       var result1 = _decoratorWithRealData.HasChanged (_strategyStrictMock);
       CallOnDataChanged (_decoratorWithRealData);
