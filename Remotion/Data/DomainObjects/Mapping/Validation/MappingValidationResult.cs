@@ -26,11 +26,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     public static MappingValidationResult CreateValidResult ()
     {
-      return new MappingValidationResult (true, string.Empty);
+      return new MappingValidationResult (true, null);
     }
 
     public static MappingValidationResult CreateInvalidResult (string message)
     {
+      ArgumentUtility.CheckNotNull ("message", message);
+
       return new MappingValidationResult (false, message);
     }
     
@@ -39,8 +41,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     protected MappingValidationResult (bool isValid, string message)
     {
-      ArgumentUtility.CheckNotNull ("message", message);
-
       _isValid = isValid;
       _message = message;
     }
