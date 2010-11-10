@@ -394,6 +394,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\BaseRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelationWithInvalidPropertyReferences\InvalidRelationClass2.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch\InvalidRelationClass1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch\InvalidRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\ManyToManyBidirectionalRelation\InvalidRelationClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\ManyToManyBidirectionalRelation\InvalidRelationClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedRelations\OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites\InvalidRelationClass1.cs" />

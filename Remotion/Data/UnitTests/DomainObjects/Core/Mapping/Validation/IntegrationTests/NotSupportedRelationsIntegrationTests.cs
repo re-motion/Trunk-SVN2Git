@@ -52,7 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites");
     }
 
-    //TODO: Split rule into RdbmsXXXValidationRule and abstract XXXValidationRule. Instantiate RdbmsXXXValidationRule via factory from XXXValidationRule. Compare with rdbmsRelationReflector.
     //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
@@ -146,6 +145,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     public void BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
+    }
+
+    //RelationEndPointDeclarationsDoNotMatchValidationRule
+    [Test]
+    //[ExpectedException(typeof(MappingException), ExpectedMessage = "")]
+    [Ignore ("TODO 3424")]
+    public void BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch ()
+    {
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch");
     }
     
     //TODO 3424: check error message
