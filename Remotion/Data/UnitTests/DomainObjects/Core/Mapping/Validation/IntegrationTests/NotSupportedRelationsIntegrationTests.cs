@@ -142,12 +142,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //RelationEndPointDeclarationsDoNotMatchValidationRule
     [Test]
-    //[ExpectedException (typeof (MappingException), ExpectedMessage =
-    //  "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-    //  + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-    //  + "BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2\r\n"
-    //  + "Property: RelationProperty2")]
-    [Ignore("TODO 3424")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2'")]
     public void BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
