@@ -81,7 +81,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions(), true, true);
+        _resolveTypes = loader.ResolveTypes;
+        _nameResolver = loader.NameResolver;
+
+        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions (), true, true);
 
         ValidateClassDefinitions();
         ValidatePropertyDefinitions();
@@ -89,10 +92,12 @@ namespace Remotion.Data.DomainObjects.Mapping
         _relationDefinitions = new RelationDefinitionCollection (loader.GetRelationDefinitions (_classDefinitions), true);
 
         ValidateRelationDefinitions();
-        ValidatePersistenceMapping();
 
-        _resolveTypes = loader.ResolveTypes;
-        _nameResolver = loader.NameResolver;
+        // TODO: Peristence mapping:
+        // foreach (root in classDefinitions.GetInheritanceRootClasses())
+        //   root.StorageProviderDefinition.PersistenceMappingBuilder.SetPersistenceMapping (root);
+
+        ValidatePersistenceMapping ();
 
         SetMappingReadOnly();
 
