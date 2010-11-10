@@ -40,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.Order.Customer"];
       _customerEndPoint = (VirtualRelationEndPointDefinition) _customerToOrder.EndPointDefinitions[0];
       _orderEndPoint = (RelationEndPointDefinition) _customerToOrder.EndPointDefinitions[1];
     }
@@ -147,15 +148,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
-        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order' has no association with class 'Customer' "
+        "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
+        +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order' has no association with class 'Customer' "
         + "and property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders'.")]
     public void GetMandatoryOppositeRelationEndPointDefinitionWithNotAssociatedRelationDefinitionID ()
     {
       RelationDefinition orderToOrderItem =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
-              +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"];
 
       IRelationEndPointDefinition wrongEndPointDefinition =
           orderToOrderItem.GetMandatoryOppositeRelationEndPointDefinition (
@@ -170,40 +171,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       RelationDefinition relationDefinition =
           MappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.OrderItem.Order"
               ];
 
       Assert.IsFalse (
           relationDefinition.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[0]));
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
+                  +"Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[0]));
       Assert.IsFalse (
           relationDefinition.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[1]));
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
+                  +"Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[1]));
 
       Assert.IsTrue (
           relationDefinition.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
-                                                               +
-                                                               "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"
-                  ].EndPointDefinitions[0]));
+              MappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[0]));
       Assert.IsTrue (
           relationDefinition.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
-                                                               +
-                                                               "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"
-                  ].EndPointDefinitions[1]));
+              MappingConfiguration.Current.RelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[1]));
     }
 
     [Test]
     public void RelationType_OneToOne ()
     {
       RelationDefinition relationDefinition =
-          MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer"
-                                                           +
-                                                           "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer.Employee"
-              ];
+          MappingConfiguration.Current.RelationDefinitions[
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          +"TestDomain.Integration.Computer.Employee"];
       Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
     }
 
@@ -211,10 +212,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void RelationType_OneMany ()
     {
       RelationDefinition relationDefinition =
-          MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
-                                                           +
-                                                           "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"
-              ];
+          MappingConfiguration.Current.RelationDefinitions[
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          +"TestDomain.Integration.OrderItem.Order"];
       Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.OneToMany));
     }
 
@@ -222,10 +222,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void RelationType_Unidirectional ()
     {
       RelationDefinition relationDefinition =
-          MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location->"
-                                                           +
-                                                           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"
-              ];
+          MappingConfiguration.Current.RelationDefinitions[
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          +"TestDomain.Integration.Location.Client"];
       Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.Unidirectional));
     }
   }

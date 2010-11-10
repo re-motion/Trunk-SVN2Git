@@ -32,7 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp ();
 
       RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
+        +"Integration.Order.Customer"];
 
       _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
           "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders");
@@ -63,9 +64,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CorrespondsToForVirtualEndPoint ()
     {
-      Assert.IsTrue (_customerEndPoint.CorrespondsTo ("Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
+      Assert.IsTrue (_customerEndPoint.CorrespondsTo ("Customer", 
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
       Assert.IsFalse (_customerEndPoint.CorrespondsTo ("Customer", "NonExistingProperty"));
-      Assert.IsFalse (_customerEndPoint.CorrespondsTo ("OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
+      Assert.IsFalse (_customerEndPoint.CorrespondsTo ("OrderTicket", 
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
     }
 
     [Test]

@@ -83,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (actualRelationDefinition.ID, Is.EqualTo (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"));
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"));
     }
 
     [Test]

@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1\r\n"
       +"Property: RelationProperty2\r\n"
       +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass1:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
       +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites."
       +"InvalidRelationClass1.RelationProperty2\r\n"
       +"----------\r\n"
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2\r\n"
       +"Property: RelationProperty1\r\n"
       +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      +"OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
       +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites."
       +"InvalidRelationClass2.RelationProperty1")]
     public void OneToOneBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites()
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1\r\n"
     +"Property: RelationProperty2\r\n"
     +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-    +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+    +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
     +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
     +"InvalidRelationClass2.RelationProperty1\r\n"
     +"----------\r\n"
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass2\r\n"
     +"Property: RelationProperty1\r\n"
     +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-    +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+    +"OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites.InvalidRelationClass1:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
     +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites."
     +"InvalidRelationClass1.RelationProperty2")]
     public void OneToOneBidirectionalRelation_ContainsForeignKeyIsFalseOnBothSites ()

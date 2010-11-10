@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
       var nameGivingEndPoint = isFirstEndPointReal ? first : second;
       var propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
-      return string.Format ("{0}->{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
+      return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
     }
 
     private IRelationEndPointDefinition CreateOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)

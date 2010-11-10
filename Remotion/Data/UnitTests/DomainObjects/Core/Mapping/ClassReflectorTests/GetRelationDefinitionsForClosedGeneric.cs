@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints->" +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseUnidirectional",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseUnidirectional",
               false),
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints->" +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne", 
               false),
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints->" +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
               false),

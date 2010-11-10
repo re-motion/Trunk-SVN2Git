@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -29,8 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     private RelationEndPointCombinationIsSupportedValidationRule _validationRule;
 
     private ClassDefinition _orderClass;
-    private VirtualRelationEndPointDefinition _customerEndPoint;
-    private RelationEndPointDefinition _orderEndPoint;
     private RelationDefinition _customerToOrder;
 
     [SetUp]
@@ -41,16 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _customerEndPoint = (VirtualRelationEndPointDefinition) _customerToOrder.EndPointDefinitions[0];
-      _orderEndPoint = (RelationEndPointDefinition) _customerToOrder.EndPointDefinitions[1];
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      PrivateInvoke.SetNonPublicField (
-          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { _customerEndPoint, _orderEndPoint });
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.Order.Customer"];
     }
 
     [Test]
@@ -65,31 +54,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void TwoAnonymousRelationEndPoints ()
     {
       var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
-      PrivateInvoke.SetNonPublicField (
-          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { anonymousEndPointDefinition, anonymousEndPointDefinition });
+      var relationDefinition = new RelationDefinition ("Test", anonymousEndPointDefinition, anonymousEndPointDefinition);
 
-      var mappingValidationResult = _validationRule.Validate (_customerToOrder);
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
-        +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two anonymous end points.";
+      var expectedMessage = "Relation 'Test' cannot have two anonymous end points.";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
     [Test]
     public void TwoVirtualRelationEndPoints ()
     {
-      PrivateInvoke.SetNonPublicField (
-          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { _customerEndPoint, _customerEndPoint });
+      var virtualEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+          _orderClass, "OrderNumber", false, CardinalityType.One, typeof (int), "", typeof (Order).GetProperty ("OrderNumber"));
+      var relationDefinition = new RelationDefinition ("Test", virtualEndPointDefinition, virtualEndPointDefinition);
 
-      var mappingValidationResult = _validationRule.Validate (_customerToOrder);
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "The relation between property 'OrderNumber', declared on type 'Customer', and property 'OrderNumber' declared on type "
-        +"'Customer', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the "
-        +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\n"
-        + "Property: OrderNumber\r\n"
-        + "Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core."
-        +"Mapping.TestDomain.Integration.Order.Customer";
+      var expectedMessage = "The relation between property 'OrderNumber', declared on type 'Order', and property 'OrderNumber' declared on type "
+                            + "'Order', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the "
+                            + "'DBBidirectionalRelationAttribute'.\r\n\r\n"
+                            + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+                            + "Property: OrderNumber\r\n"
+                            + "Relation ID: Test";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
@@ -97,33 +84,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void TwoVirtualRelationEndPoint_OneEndPointIsAnonymous ()
     {
       var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
-      PrivateInvoke.SetNonPublicField (
-          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { _customerEndPoint, anonymousEndPointDefinition });
+      var virtualEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+          _orderClass, "OrderNumber", false, CardinalityType.One, typeof (int), "", typeof (Order).GetProperty ("OrderNumber"));
+      var relationDefinition = new RelationDefinition ("Test", virtualEndPointDefinition, anonymousEndPointDefinition);
+      
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
 
-      var mappingValidationResult = _validationRule.Validate (_customerToOrder);
-
-      var expectedMessage = "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests."
-        +"DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer' cannot have two virtual end points.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\n"
-        + "Property: OrderNumber";
+      var expectedMessage = "Relation 'Test' cannot have two virtual end points.\r\n\r\n"
+                            + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+                            + "Property: OrderNumber";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
 
     [Test]
     public void TwoNonVirtualRelationEndPoints ()
     {
-      PrivateInvoke.SetNonPublicField (
-          _customerToOrder, "_endPointDefinitions", new IRelationEndPointDefinition[] { _orderEndPoint, _orderEndPoint });
+      var relationDefinition = new RelationDefinition ("Test", _customerToOrder.EndPointDefinitions[1], _customerToOrder.EndPointDefinitions[1]);
 
-      var mappingValidationResult = _validationRule.Validate (_customerToOrder);
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "The relation between property 'Customer', declared on type 'Order', and property 'Customer' declared on type 'Order', "
-        +"contains two non-virtual end points. One of the two properties must set 'ContainsForeignKey' to 'false' on the "
-        +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
-        + "Property: Customer\r\n"
-        + "Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order->Remotion.Data.UnitTests.DomainObjects.Core."
-        + "Mapping.TestDomain.Integration.Order.Customer";
+        +"contains two non-virtual end points. One of the two properties must set 'ContainsForeignKey' to 'false' on the 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        +"Property: Customer\r\n"
+        +"Relation ID: Test";
       AssertMappingValidationResult (mappingValidationResult, false, expectedMessage);
     }
   }

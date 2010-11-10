@@ -71,80 +71,80 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       //assert that the relation definitions have been added to the correct class definitions
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions, 
-        List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+        List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseUnidirectional"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-        List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+        List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseUnidirectional"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-            List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+            List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-           List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+           List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateUnidirectional"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateUnidirectional"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          + "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          + "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Not.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne"]));
       
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany"]));
     }
 
@@ -170,59 +170,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       //assert that the relation definitions have been added to the correct class definitions
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+          List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-            List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+            List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-           List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+           List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->" +
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          + "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          + "->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+              List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne"]));
 
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions,
-                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany"]));
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
-                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+                List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany"]));
     }
 
@@ -360,8 +360,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateNoAttributeRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints"
-          +"->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
+          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NoAttribute", 
               false),
           CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.NoAttribute",
@@ -371,7 +371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateNotNullableRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.NotNullable",
               true),
@@ -382,7 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseUnidirectional",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseUnidirectional", 
               false),
@@ -392,7 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBasePrivateUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateUnidirectional",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateUnidirectional",
               false),
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateUnidirectionalRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.Unidirectional", false),
           CreateAnonymousRelationEndPointDefinition());
@@ -411,7 +411,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToOne", 
               false),
@@ -422,7 +422,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBasePrivateBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToOne", 
               false),
@@ -433,7 +433,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToOne", 
               false),
@@ -444,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseBidirectionalOneToMany", 
               false),
@@ -455,7 +455,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBasePrivateBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"+
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"+
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BasePrivateBidirectionalOneToMany",
               false),
@@ -466,7 +466,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints->"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany",
               false),

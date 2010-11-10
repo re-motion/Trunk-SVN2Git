@@ -47,10 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var mappingConfiguration = new MappingConfiguration (reflector);
       
       Assert.That (mappingConfiguration.RelationDefinitions[0].ID, 
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1->"
+        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
                    +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
       Assert.That (mappingConfiguration.RelationDefinitions[1].ID, 
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2->"
+        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
                    +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
     }
 
