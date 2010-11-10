@@ -49,7 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-        +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order' has no association with "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+        +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems' has no association with "
         + "class 'Order' and property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer'.")]
     public void GetMandatoryOppositeEndPointDefinition_Failure ()
     {

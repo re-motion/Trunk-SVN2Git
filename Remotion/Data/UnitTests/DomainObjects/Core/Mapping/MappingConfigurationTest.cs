@@ -150,7 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              +"TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
       var classDefinitionCollection = new[] { classDefinition };
       var relationDefinitionCollection = new[] { relationDefinition };
 
@@ -236,11 +237,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              +"TestDomain.Integration.OrderItem.Order"]));
+              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              + "TestDomain.Integration.Order.OrderItems"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"]));
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"]));
     }
 
     [Test]
@@ -250,23 +253,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              +"TestDomain.Integration.OrderItem.Order"].
+              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              + "TestDomain.Integration.Order.OrderItems"].
                   EndPointDefinitions[0]));
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              +"TestDomain.Integration.OrderItem.Order"].
+              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+              + "TestDomain.Integration.Order.OrderItems"].
                   EndPointDefinitions[1]));
 
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[0]));
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"]
+              .EndPointDefinitions[0]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order"].EndPointDefinitions[1]));
+              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"+
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"].EndPointDefinitions[1]));
     }
 
     [Test]

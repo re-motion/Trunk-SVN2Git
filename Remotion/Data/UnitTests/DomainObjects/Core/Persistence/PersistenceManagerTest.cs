@@ -205,7 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         string expectedMessage = string.Format (
             "Cannot load related DataContainer of object 'ClassWithValidRelations|{0}|System.Guid'"
             + " over mandatory relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations:"
-            +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional'.", dataContainer.ID.Value);
+            +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional->"
+            + "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional'.", 
+            dataContainer.ID.Value);
 
         Assert.AreEqual (expectedMessage, e.Message);
       }
@@ -234,7 +236,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
         string expectedMessage = string.Format (
             "Cannot load related DataContainer of object 'Distributor|{0}|System.Guid'"
             + " over mandatory relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner:"
-            +"Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson'.", dataContainer.ID.Value);
+            + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson->Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany'.",
+            dataContainer.ID.Value);
 
         Assert.AreEqual (expectedMessage, e.Message);
       }
@@ -243,8 +246,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Cannot load related DataContainer of object 'ClassWithGuidKey|672c8754-c617-4b7a-890c-bfef8ac86564|System.Guid' over mandatory relation "
-        +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations:Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        +"ClassWithValidRelations.ClassWithGuidKeyNonOptional'.")]
+        +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations:"
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional->"
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional'.")]
     public void LoadRelatedDataContainerByNonOptionalNullIDVirtual ()
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
@@ -258,7 +262,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Cannot load related DataContainer of object 'Partner|a65b123a-6e17-498e-a28e-946217c0ae30|System.Guid' over mandatory relation "
-        +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo:Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company'.")]
+        +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo:Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company->"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo'.")]
     public void LoadRelatedDataContainerByNonOptionalNullIDVirtualWithInheritance ()
     {
       DataContainer dataContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.PartnerWithoutCeo);
@@ -287,7 +292,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Cannot load related DataContainer of object 'ClassWithGuidKey|672c8754-c617-4b7a-890c-bfef8ac86564|System.Guid' over mandatory relation "
         +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations:"
-        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional'.")]
+        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional->"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional'.")]
     public void LoadRelatedDataContainerOverInvalidNonOptionalRelation ()
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
@@ -295,7 +301,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer classWithGuidKey = _persistenceManager.LoadDataContainer (id);
 
       _persistenceManager.LoadRelatedDataContainer (
-          classWithGuidKey, new RelationEndPointID (classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
+          classWithGuidKey, new RelationEndPointID (classWithGuidKey.ID, 
+            "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
     }
 
     [Test]
@@ -342,7 +349,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "A DataContainerCollection cannot be loaded for a relation with a non-virtual end point, relation: "
-        +"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order:Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer', "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order:Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer->Remotion.Data."
+        +"UnitTests.DomainObjects.TestDomain.Customer.Orders', "
         +"property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer'. Check your mapping configuration.")]
     public void LoadRelatedDataContainersForNonVirtualEndPoint ()
     {
@@ -352,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
        "Collection for mandatory relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:"
-       +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
+       + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
        + "(property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems', object: 'Order|f4016f41-f4e4-429e-b8d1-659c8c480a67|System.Guid') contains no items.")]
     public void LoadEmptyRelatedDataContainersForMandatoryRelation ()
     {
@@ -372,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Cannot load a single related data container for one-to-many relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:"
-        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order'.")]
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void LoadRelatedDataContainerForOneToManyRelation ()
     {
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
@@ -383,7 +391,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "Cannot load multiple related data containers for one-to-one relation 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
-        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'.")]
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'.")]
     public void LoadRelatedDataContainersForOneToOneRelation ()
     {
       _persistenceManager.LoadRelatedDataContainers (new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));

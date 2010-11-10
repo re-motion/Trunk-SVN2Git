@@ -33,7 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       RelationDefinition customerToOrder = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
-        +"Integration.Order.Customer"];
+        + "Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
+        + "Integration.Customer.Orders"];
 
       _customerEndPoint = (VirtualRelationEndPointDefinition) customerToOrder.GetEndPointDefinition (
           "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders");

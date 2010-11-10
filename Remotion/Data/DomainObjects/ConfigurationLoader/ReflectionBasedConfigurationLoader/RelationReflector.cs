@@ -94,9 +94,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private string GetRelationID (IRelationEndPointDefinition first, IRelationEndPointDefinition second)
     {
       bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
-      var nameGivingEndPoint = isFirstEndPointReal ? first : second;
-      var propertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
-      return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, propertyName);
+      var endPoints = isFirstEndPointReal ? new { Left = first, Right = second } : new { Left = second, Right = first };
+      var nameGivingEndPoint = endPoints.Left;
+      var leftPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
+      if (endPoints.Right.IsAnonymous)
+      {
+        return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName);
+      }
+      else
+      {
+        var rightPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (endPoints.Right.PropertyInfo));
+        return string.Format ("{0}:{1}->{2}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName, rightPropertyName);
+      }
     }
 
     private IRelationEndPointDefinition CreateOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)

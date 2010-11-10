@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (actualRelationDefinition.ID,
           Is.EqualTo (typeof (RelationTargetForPersistentMixin).FullName + ":" +
-          typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2"));
+          typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2->" + typeof (MixinAddingPersistentProperties) + ".VirtualRelationProperty"));
     }
 
     [Test]

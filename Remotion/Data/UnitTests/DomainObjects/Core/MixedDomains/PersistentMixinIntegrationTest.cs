@@ -16,12 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
@@ -40,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void ClassDefinitionIncludesPersistentPropertiesFromDerivedMixin ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (TargetClassForDerivedPersistentMixin));
-      Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (DerivedMixinAddingSimplePersistentProperties).FullName + ".AdditionalPersistentProperty"));
+      Assert.IsNotNull (
+          classDefinition.GetPropertyDefinition (typeof (DerivedMixinAddingSimplePersistentProperties).FullName + ".AdditionalPersistentProperty"));
       Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (MixinAddingSimplePersistentProperties).FullName + ".PersistentProperty"));
     }
 
@@ -59,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (Computer).FullName + ".Employee");
       Assert.IsNotNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (Computer) + ":" + typeof (Computer).FullName + ".Employee", relation.ID);
+      Assert.AreEqual (typeof (Computer) + ":" + typeof (Computer).FullName + ".Employee->" + typeof (Employee) + ".Computer", relation.ID);
     }
 
     [Test]
@@ -70,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (Employee).FullName + ".Computer");
       Assert.IsNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (Computer)+":"+typeof (Computer).FullName + ".Employee", relation.ID);
+      Assert.AreEqual (typeof (Computer) + ":" + typeof (Computer).FullName + ".Employee->" + typeof (Employee).FullName + ".Computer", relation.ID);
     }
 
     [Test]
@@ -81,8 +82,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (MixinAddingPersistentProperties).FullName + ".RelationProperty");
       Assert.IsNotNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (string.Format ("{0}:{1}.RelationProperty", typeof (TargetClassForPersistentMixin).FullName,
-          typeof (MixinAddingPersistentProperties).FullName), relation.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.RelationProperty->{2}.RelationProperty1",
+              typeof (TargetClassForPersistentMixin).FullName,
+              typeof (MixinAddingPersistentProperties).FullName, 
+              typeof (RelationTargetForPersistentMixin).FullName),
+          relation.ID);
     }
 
     [Test]
@@ -93,8 +99,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty1");
       Assert.IsNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (string.Format ("{0}:{1}.RelationProperty", typeof (TargetClassForPersistentMixin).FullName,
-         typeof (MixinAddingPersistentProperties).FullName), relation.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.RelationProperty->{2}.RelationProperty1",
+              typeof (TargetClassForPersistentMixin).FullName,
+              typeof (MixinAddingPersistentProperties).FullName,
+              typeof (RelationTargetForPersistentMixin).FullName),
+          relation.ID);
     }
 
     [Test]
@@ -105,7 +116,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2");
       Assert.IsNotNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (RelationTargetForPersistentMixin).FullName+":"+typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
+      Assert.AreEqual (
+          typeof (RelationTargetForPersistentMixin).FullName + ":" + typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2->"
+          + typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty",
+          relation.ID);
     }
 
     [Test]
@@ -116,7 +130,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       var relation = classDefinition.GetRelationDefinition (typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty");
       Assert.IsNull (relationProperty);
       Assert.IsNotNull (relation);
-      Assert.AreEqual (typeof (RelationTargetForPersistentMixin)+":"+typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2", relation.ID);
+      Assert.AreEqual (
+          typeof (RelationTargetForPersistentMixin) + ":" + typeof (RelationTargetForPersistentMixin).FullName + ".RelationProperty2->"
+          + typeof (MixinAddingPersistentProperties).FullName + ".VirtualRelationProperty",
+          relation.ID);
     }
 
     [Test]
@@ -132,10 +149,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       Assert.IsNotNull (relation1);
       Assert.IsNotNull (relation2);
       Assert.AreNotSame (relation1, relation2);
-      Assert.AreEqual (string.Format ("{0}:{1}.Computer", typeof (TargetClassWithTwoUnidirectionalMixins).FullName,
-         typeof (MixinAddingUnidirectionalRelation1).FullName), relation1.ID);
-      Assert.AreEqual (string.Format ("{0}:{1}.Computer", typeof (TargetClassWithTwoUnidirectionalMixins).FullName,
-         typeof (MixinAddingUnidirectionalRelation2).FullName), relation2.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.Computer",
+              typeof (TargetClassWithTwoUnidirectionalMixins).FullName,
+              typeof (MixinAddingUnidirectionalRelation1).FullName),
+          relation1.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.Computer",
+              typeof (TargetClassWithTwoUnidirectionalMixins).FullName,
+              typeof (MixinAddingUnidirectionalRelation2).FullName),
+          relation2.ID);
     }
 
     [Test]
@@ -152,10 +177,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       Assert.IsNotNull (relation1);
       Assert.IsNotNull (relation2);
       Assert.AreNotSame (relation1, relation2);
-      Assert.AreEqual (string.Format ("{0}:{1}.Computer", typeof (TargetClassWithUnidirectionalMixin1).FullName,
-         typeof (MixinAddingUnidirectionalRelation1).FullName), relation1.ID);
-      Assert.AreEqual (string.Format ("{0}:{1}.Computer", typeof (TargetClassWithUnidirectionalMixin2).FullName,
-         typeof (MixinAddingUnidirectionalRelation1).FullName), relation2.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.Computer",
+              typeof (TargetClassWithUnidirectionalMixin1).FullName,
+              typeof (MixinAddingUnidirectionalRelation1).FullName),
+          relation1.ID);
+      Assert.AreEqual (
+          string.Format (
+              "{0}:{1}.Computer",
+              typeof (TargetClassWithUnidirectionalMixin2).FullName,
+              typeof (MixinAddingUnidirectionalRelation1).FullName),
+          relation2.ID);
     }
 
     [Test]
@@ -170,20 +203,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The mixin configuration for domain object type "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin' was changed after the mapping "
+        +
+        "'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin' was changed after the mapping "
         + "information was built.", MatchType = MessageMatch.Contains)]
     public void DynamicChangeInPersistentMixinConfigurationThrowsInNewObject ()
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        StubStorageTargetClassForPersistentMixin.NewObject ();
+        StubStorageTargetClassForPersistentMixin.NewObject();
       }
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The mixin configuration for domain object type "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin' was changed after the mapping "
+        +
+        "'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin' was changed after the mapping "
         + "information was built.", MatchType = MessageMatch.Contains)]
     public void DynamicChangeInPersistentMixinConfigurationThrowsInGetObject ()
     {
@@ -196,15 +231,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void DynamicChangeInNonPersistentMixinConfigurationDoesntMatter ()
     {
-      StubStorageTargetClassForPersistentMixin.NewObject ();
+      StubStorageTargetClassForPersistentMixin.NewObject();
       StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID (typeof (StubStorageTargetClassForPersistentMixin), 12));
     }
 
     [Test]
     public void UnidirectionalRelationProperty ()
     {
-      var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
+      var tc = TargetClassForPersistentMixin.NewObject();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.UnidirectionalRelationProperty = relationTarget;
       Assert.AreSame (relationTarget, mixin.UnidirectionalRelationProperty);
@@ -213,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void RelationPropertyRealSide ()
     {
-      var  tc = TargetClassForPersistentMixin.NewObject ();
+      var tc = TargetClassForPersistentMixin.NewObject();
       var relationTarget = RelationTargetForPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.RelationProperty = relationTarget;
@@ -224,8 +259,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void VirtualRelationProperty ()
     {
-      var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
+      var tc = TargetClassForPersistentMixin.NewObject();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.VirtualRelationProperty = relationTarget;
       Assert.AreSame (relationTarget, mixin.VirtualRelationProperty);
@@ -235,9 +270,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void CollectionProperty1Side ()
     {
-      var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
-      var relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
+      var tc = TargetClassForPersistentMixin.NewObject();
+      var relationTarget1 = RelationTargetForPersistentMixin.NewObject();
+      var relationTarget2 = RelationTargetForPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.CollectionProperty1Side.Add (relationTarget1);
       mixin.CollectionProperty1Side.Add (relationTarget2);
@@ -250,9 +285,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void CollectionPropertyNSide ()
     {
-      var tc1 = TargetClassForPersistentMixin.NewObject ();
-      var tc2 = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
+      var tc1 = TargetClassForPersistentMixin.NewObject();
+      var tc2 = TargetClassForPersistentMixin.NewObject();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject();
       var mixin1 = Mixin.Get<MixinAddingPersistentProperties> (tc1);
       var mixin2 = Mixin.Get<MixinAddingPersistentProperties> (tc2);
       mixin1.CollectionPropertyNSide = relationTarget;
@@ -277,7 +312,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void TargetClassAboveInheritanceRoot ()
     {
-      var tc = InheritanceRootInheritingPersistentMixin.NewObject ();
+      var tc = InheritanceRootInheritingPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentPropertiesAboveInheritanceRoot> (tc);
       mixin.PersistentProperty = 10;
       Assert.AreEqual (10, mixin.PersistentProperty);
@@ -286,9 +321,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void RelationOnTargetClassAboveInheritanceRoot ()
     {
-      var tc = InheritanceRootInheritingPersistentMixin.NewObject ();
+      var tc = InheritanceRootInheritingPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentPropertiesAboveInheritanceRoot> (tc);
-      var relationTarget = RelationTargetForPersistentMixinAboveInheritanceRoot.NewObject ();
+      var relationTarget = RelationTargetForPersistentMixinAboveInheritanceRoot.NewObject();
       mixin.PersistentRelationProperty = relationTarget;
       Assert.That (mixin.PersistentRelationProperty, Is.SameAs (relationTarget));
     }
@@ -308,10 +343,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void BaseClassReceivingTwoReferencesToDerivedClass ()
     {
-      var tc = TargetClassReceivingTwoReferencesToDerivedClass.NewObject ();
+      var tc = TargetClassReceivingTwoReferencesToDerivedClass.NewObject();
       var mixin1 = Mixin.Get<MixinAddingTwoReferencesToDerivedClass1> (tc);
       var mixin2 = Mixin.Get<MixinAddingTwoReferencesToDerivedClass2> (tc);
-      var relationTarget = DerivedClassWithTwoBaseReferencesViaMixins.NewObject ();
+      var relationTarget = DerivedClassWithTwoBaseReferencesViaMixins.NewObject();
       mixin1.MyDerived1.Add (relationTarget);
       mixin2.MyDerived2.Add (relationTarget);
       Assert.That (relationTarget.MyBase1, Is.SameAs (tc));

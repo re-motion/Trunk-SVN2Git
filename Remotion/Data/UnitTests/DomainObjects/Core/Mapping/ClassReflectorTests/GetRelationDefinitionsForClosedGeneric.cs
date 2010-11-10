@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -126,8 +127,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToOneRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" 
+          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne->"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne", 
               false),
           CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne", 
@@ -137,8 +139,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     private RelationDefinition CreateBaseBidirectionalOneToManyRelationDefinition ()
     {
       return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" 
+          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany->"
+          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
           CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
               false),
           CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
