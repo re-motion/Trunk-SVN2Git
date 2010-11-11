@@ -230,6 +230,21 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Returns the domain object type of the given property.
+    /// </summary>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
+    /// <returns>the domain object type of the given property.</returns>
+    public static Type GetDomainObjectTypeFromProperty (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      if (ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
+        return ReflectionUtility.GetObjectListTypeParameter (propertyInfo.PropertyType);
+      else
+        return propertyInfo.PropertyType;
+    }
+
+    /// <summary>
     /// Checks if the given type is the inheritance root. A type is the inheritance root if it is either the domain object base or if the
     /// type has the <see cref="StorageGroupAttribute"/> applied.
     /// </summary>

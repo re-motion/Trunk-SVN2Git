@@ -81,10 +81,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _resolveTypes = loader.ResolveTypes;
-        _nameResolver = loader.NameResolver;
-
-        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions (), true, true);
+        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions(), true, true);
 
         ValidateClassDefinitions();
         ValidatePropertyDefinitions();
@@ -97,7 +94,10 @@ namespace Remotion.Data.DomainObjects.Mapping
         // foreach (root in classDefinitions.GetInheritanceRootClasses())
         //   root.StorageProviderDefinition.PersistenceMappingBuilder.SetPersistenceMapping (root);
 
-        ValidatePersistenceMapping ();
+        ValidatePersistenceMapping();
+
+        _resolveTypes = loader.ResolveTypes;
+        _nameResolver = loader.NameResolver;
 
         SetMappingReadOnly();
 
