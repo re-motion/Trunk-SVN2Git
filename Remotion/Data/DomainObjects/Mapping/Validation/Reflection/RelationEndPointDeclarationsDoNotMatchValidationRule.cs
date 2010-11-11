@@ -51,13 +51,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             AttributeUtility.GetCustomAttribute (relationEndPointDefinition.PropertyInfo, typeof (BidirectionalRelationAttribute), true);
         if (relationAttribute != null)
         {
-          // TODO 3424: Use this code instead of GetOppositePropertyInfo
-          //var oppositeProperty = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
-
-          var oppositePropertyDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (relationEndPointDefinition.PropertyInfo);
-          var oppositeProperty = GetOppositePropertyInfo (oppositePropertyDomainObjectType, relationAttribute.OppositeProperty);
-          
-          // TODO 3424: Leave this null check
+          var oppositeProperty = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
           if (oppositeProperty != null)
           {
             var oppositeRelationAttribute =
@@ -93,10 +87,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       return MappingValidationResult.CreateValidResult();
     }
-
-    private PropertyInfo GetOppositePropertyInfo (Type type, string oppositeProperty)
-    {
-      return type.GetProperty (oppositeProperty, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-    }
+   
   }
 }
