@@ -229,7 +229,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = true;
     }
 
-    // Causes collection to be loaded // TODO: Bug!
+    // Causes collection to be loaded // TODO: Should this be the case?
     public override void CheckMandatory ()
     {
       if (_oppositeDomainObjects.Count == 0)
