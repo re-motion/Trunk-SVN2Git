@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected PropertyInfo GetOppositePropertyInfo ()
     {
-      Type type = GetDomainObjectTypeFromRelationProperty (PropertyInfo);
+      Type type = ReflectionUtility.GetDomainObjectTypeFromProperty (PropertyInfo);
       PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo (type);
       
       if (oppositePropertyInfo == null)
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             PropertyInfo,
             "Opposite relation property '{0}' could not be found on type '{1}'.",
             BidirectionalRelationAttribute.OppositeProperty,
-            GetDomainObjectTypeFromRelationProperty (PropertyInfo));
+            ReflectionUtility.GetDomainObjectTypeFromProperty (PropertyInfo));
       }
 
       return oppositePropertyInfo;
@@ -120,16 +120,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private PropertyInfo GetOppositePropertyInfo (Type type)
     {
       return type.GetProperty (BidirectionalRelationAttribute.OppositeProperty, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-    }
-
-    protected Type GetDomainObjectTypeFromRelationProperty (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      if (ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
-        return ReflectionUtility.GetObjectListTypeParameter (propertyInfo.PropertyType);
-      else
-        return propertyInfo.PropertyType;
     }
 
     private void CheckClassDefinitionType ()

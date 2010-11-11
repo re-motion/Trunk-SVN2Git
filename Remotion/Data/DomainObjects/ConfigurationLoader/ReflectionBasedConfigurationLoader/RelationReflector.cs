@@ -39,7 +39,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     protected RelationReflector (
         ReflectionBasedClassDefinition classDefinition,
         PropertyInfo propertyInfo,
-        Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
+        Type bidirectionalRelationAttributeType,
+        IMappingNameResolver nameResolver)
         : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType, nameResolver)
     {
     }
@@ -47,10 +48,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public RelationDefinition GetMetadata (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      
-      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo, NameResolver);
 
-      var firstEndPoint = relationEndPointReflector.GetMetadata ();
+      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          ClassDefinition, PropertyInfo, NameResolver);
+
+      var firstEndPoint = relationEndPointReflector.GetMetadata();
       var secondEndPoint = CreateOppositeEndPointDefinition (classDefinitions);
       var relationID = GetRelationID (firstEndPoint, secondEndPoint);
       return new RelationDefinition (relationID, firstEndPoint, secondEndPoint);
@@ -62,7 +64,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("oppositePropertyInfo", oppositePropertyInfo);
       ArgumentUtility.CheckNotNull ("classDefintions", classDefintions);
 
-      Type oppositeDomainObjectType = GetDomainObjectTypeFromRelationProperty (oppositePropertyInfo);
+      Type oppositeDomainObjectType = ReflectionUtility.GetDomainObjectTypeFromProperty (oppositePropertyInfo);
       if (classDefintions.Contains (DeclaringDomainObjectTypeForProperty))
       {
         if (DeclaringDomainObjectTypeForProperty != oppositeDomainObjectType)
@@ -98,9 +100,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var nameGivingEndPoint = endPoints.Left;
       var leftPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
       if (endPoints.Right.IsAnonymous)
-      {
         return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName);
-      }
       else
       {
         var rightPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (endPoints.Right.PropertyInfo));
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return CreateOppositeAnonymousRelationEndPointDefinition (classDefinitions);
 
       RelationEndPointReflector oppositeRelationEndPointReflector = CreateOppositeRelationEndPointReflector (classDefinitions);
-      return oppositeRelationEndPointReflector.GetMetadata ();
+      return oppositeRelationEndPointReflector.GetMetadata();
     }
 
     //TODO 3424: create rule ??
@@ -139,7 +139,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ReflectionBasedClassDefinition classDefinition;
       try
       {
-        classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (GetDomainObjectTypeFromRelationProperty (PropertyInfo));
+        classDefinition =
+            (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (ReflectionUtility.GetDomainObjectTypeFromProperty (PropertyInfo));
       }
       catch (MappingException e)
       {
