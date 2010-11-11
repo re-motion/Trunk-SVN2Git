@@ -106,6 +106,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Initialize_DataKeeper_Comparer_Null ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "OrderItems");
+      Assert.That (((VirtualRelationEndPointDefinition) endPointID.Definition).GetSortExpression (), Is.Null);
+
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
+      var dataKeeper = GetEndPointDataKeeper (endPoint);
+
+      Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Null);
+    }
+
+    [Test]
+    public void Initialize_DataKeeper_Comparer_NotNull_AccessesPropertyValueWithoutNotifications ()
+    {
+      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).GetSortExpression (), Is.Not.Null);
+      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).SortExpressionText, Is.EqualTo ("OrderNumber asc"));
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
+      var dataKeeper = GetEndPointDataKeeper (endPoint);
+
+      Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Not.Null);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      // _order1 has OrderNumber 1, _order2 has 3
+      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order1, _order2), Is.EqualTo (-1));
+      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order1), Is.EqualTo (1));
+      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order2), Is.EqualTo (0));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void ChangeOriginalOppositeDomainObjects ()
     {
@@ -323,12 +353,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnsureDataAvailable ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      endPoint.Unload ();
+      Assert.That (endPoint.IsDataAvailable, Is.False);
 
-      _customerEndPoint.EnsureDataAvailable ();
+      endPoint.EnsureDataAvailable ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+    }
+
+    [Test]
+    public void MarkDataAvailable ()
+    {
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      endPoint.Unload ();
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+
+      endPoint.MarkDataAvailable ();
+
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1 }));
+      Assert.That (endPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1 }));
+      Assert.That (endPoint.HasChanged, Is.False);
+    }
+
+    [Test]
+    public void MarkDataAvailable_WithChangedEndPoint ()
+    {
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      endPoint.OppositeDomainObjects.Add (_order2);
+
+      endPoint.Unload ();
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+
+      endPoint.MarkDataAvailable ();
+
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _order2 }));
+      Assert.That (endPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1 }));
+      Assert.That (endPoint.HasChanged, Is.True);
     }
 
     [Test]
@@ -625,6 +689,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.SetValueFrom (source);
     }
+
+    [Test]
+    [Ignore ("TODO 3406")]
+    public void RegisterOriginalObject ()
+    {
+      _customerEndPoint.RegisterOriginalObject (_order2);
+
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.OppositeDomainObjects, List.Contains (_order2));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, List.Contains (_order2));
+    }
+
+    [Test]
+    [Ignore ("TODO 3406")]
+    public void UnregisterOriginalObject ()
+    {
+      _customerEndPoint.UnregisterOriginalObject (_order1);
+
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.OppositeDomainObjects, List.Not.Contains (_order1));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, List.Not.Contains (_order1));
+    }
+
     
     [Test]
     public void CreateRemoveCommand ()
@@ -634,7 +721,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
 
-      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
+      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -647,7 +734,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
-      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
+      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -660,7 +747,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
-      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
+      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -673,7 +760,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
       Assert.That (command.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
 
-      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
+      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -825,7 +912,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }
 
-    private LazyLoadingCollectionEndPointDataKeeper GetEndPointData (CollectionEndPoint endPoint)
+    private LazyLoadingCollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
       return (LazyLoadingCollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
     }

@@ -51,7 +51,7 @@ insert into [TableInheritance_Person] (ID, ClassID, [ClientID], [CreatedBy], [Cr
     values ('{B969AFCB-2CDA-45ff-8490-EB52A86D5464}', 'TI_Person', null, 'UnitTests','2006/1/4', '', 'PersonWithSameIDAsOrganizationalUnit', '1980/6/9', null)
     
 insert into [TableInheritance_Person] (ID, ClassID, [ClientID], [CreatedBy], [CreatedAt], [FirstName], [LastName], [DateOfBirth], [Photo])
-    values ('{084010C4-82E5-4b0d-AE9F-A953303C03A4}', 'TI_Person', '{F7AD91EF-AC75-4fe3-A427-E40312B12917}', 'UnitTests', '2006/1/3', 'Max',
+    values ('{084010C4-82E5-4b0d-AE9F-A953303C03A4}', 'TI_Person', '{F7AD91EF-AC75-4fe3-A427-E40312B12917}', 'UnitTests', '2006/1/4', 'Max',
     'PersonForUnidirectionalRelationTest', '1980/6/9', null)
 
 

@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   select domainBase;
       
       var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
-      CheckQueryResult (query, domainObjectIDs.PersonForUnidirectionalRelationTest, domainObjectIDs.Person);
+      CheckQueryResult (query, domainObjectIDs.Person);
     }
   }
 }

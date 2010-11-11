@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -15,6 +16,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
     void EnsureDataAvailable ();
+    void MarkDataAvailable ();
     void Unload ();
     void CommitOriginalContents ();
   }

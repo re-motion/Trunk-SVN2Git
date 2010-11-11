@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -23,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
@@ -41,6 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private LazyLoadingCollectionEndPointDataKeeper _loadedDataKeeper;
     private LazyLoadingCollectionEndPointDataKeeper _unloadedDataKeeper;
 
+    private DelegateBasedComparer<DomainObject> _comparer123;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -53,21 +57,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _loadedDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, new[] { _domainObject1 });
-      _unloadedDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null);
+      _loadedDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null, new[] { _domainObject1 });
+      _unloadedDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null, null);
+
+      _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
-    
+
     [Test]
-    public void Initialization_Null ()
+    public void Initialization_NullContents ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null);
+      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null, null);
       Assert.That (data.IsDataAvailable, Is.False);
     }
 
     [Test]
-    public void Initialization_NotNull ()
+    public void Initialization_NonNullContents ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, new[] { _domainObject1, _domainObject2 });
+      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null, new[] { _domainObject1, _domainObject2 });
       Assert.That (data.IsDataAvailable, Is.True);
     }
 
@@ -188,6 +194,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void EnsureDataAvailable_Unloaded_WithSortComparer ()
+    {
+      _clientTransactionMock
+          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
+          .Return (new[] { _domainObject3, _domainObject1, _domainObject2 });
+      _clientTransactionMock.Replay ();
+
+      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, _comparer123, null);
+      Assert.That (dataKeeper.IsDataAvailable, Is.False);
+
+      dataKeeper.EnsureDataAvailable ();
+
+      Assert.That (dataKeeper.IsDataAvailable, Is.True);
+      Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
+      Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
+    }
+
+    [Test]
+    public void MarkDataAvailable_Loaded ()
+    {
+      _clientTransactionMock.Replay ();
+      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.True);
+
+      _loadedDataKeeper.MarkDataAvailable ();
+
+      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.True);
+      _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
+    }
+
+    [Test]
+    public void MarkDataAvailable_Unloaded ()
+    {
+      _clientTransactionMock.Replay ();
+
+      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
+
+      _unloadedDataKeeper.MarkDataAvailable ();
+
+      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
+      _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
+    }
+
+    [Test]
+    public void MarkDataAvailable_Unloaded_WithSortComparer ()
+    {
+      _clientTransactionMock.Replay ();
+
+      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (
+          _clientTransactionMock, _endPointID, _comparer123, new[] { _domainObject3, _domainObject1, _domainObject2 });
+      dataKeeper.Unload();
+
+      Assert.That (dataKeeper.IsDataAvailable, Is.False);
+
+      dataKeeper.MarkDataAvailable ();
+
+      Assert.That (dataKeeper.IsDataAvailable, Is.True);
+      Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
+      Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
+
+      _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
+    }
+
+    [Test]
     public void DataStore_Loaded ()
     {
       _clientTransactionMock.Replay ();
@@ -276,7 +345,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Serializable_Loaded ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, new[] { _domainObject1 });
+      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
       
       var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
@@ -291,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Serializable_Unloaded ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null);
+      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, null);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
@@ -361,5 +430,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _clientTransactionMock.Replay ();
     }
+
+    private int Compare123 (DomainObject x, DomainObject y)
+    {
+      if (x == y)
+        return 0;
+
+      if (x == _domainObject1)
+        return -1;
+
+      if (x == _domainObject3)
+        return 1;
+
+      if (y == _domainObject1)
+        return 1;
+
+      return -1;
+    }
+
   }
 }

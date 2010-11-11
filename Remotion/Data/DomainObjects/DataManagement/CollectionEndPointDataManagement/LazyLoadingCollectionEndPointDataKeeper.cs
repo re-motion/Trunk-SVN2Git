@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -32,13 +33,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
+    private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
     
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
     private bool _isDataAvailable;
-
+    
     public LazyLoadingCollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
+        IComparer<DomainObject> sortExpressionBasedComparer,
         IEnumerable<DomainObject> initialContents)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -46,6 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
+      _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
       var wrappedData = new DomainObjectCollectionData (initialContents ?? Enumerable.Empty<DomainObject> ());
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
@@ -60,6 +64,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public RelationEndPointID EndPointID
     {
       get { return _endPointID; }
+    }
+
+    public IComparer<DomainObject> SortExpressionBasedComparer
+    {
+      get { return _sortExpressionBasedComparer; }
     }
 
     public bool IsDataAvailable
@@ -96,16 +105,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       {
         var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
 
-        // TODO: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
+        // TODO 3407: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
         // foreign keys' reflections to be registered in this collection via RegisterOriginalObject. No ReplaceContents/Commit required.
         _collectionData.ReplaceContents (contents);
         _collectionData.Commit (); // makes original collection identical to current
 
-        _isDataAvailable = true;
+        MarkDataAvailable ();
 
-        // TODO: This will also change: the change state changes in the course of the RegisterOriginalObject calls, it's not necessarily false.
+        // TODO 3407: This will also change: the change state is not necessarily false after the change described above.
         RaiseChangeStateNotification (false);
       }
+    }
+
+    public void MarkDataAvailable ()
+    {
+      if (_sortExpressionBasedComparer != null)
+        _collectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
+
+      _isDataAvailable = true;
     }
 
     public void Unload ()

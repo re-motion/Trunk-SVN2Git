@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 using System.Reflection;
 
@@ -46,8 +47,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-      
-      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, initialContentsOrNull);
+
+      var sortExpressionBasedComparer = CreateComparer (((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression(), clientTransaction);
+      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();
@@ -57,6 +59,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
+    }
+
+    private static IComparer<DomainObject> CreateComparer (SortExpressionDefinition sortExpression, ClientTransaction clientTransaction)
+    {
+      if (sortExpression == null)
+        return null;
+
+      return clientTransaction.GetSortExpressionComparer (sortExpression);
     }
 
     // No loading
@@ -135,6 +145,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void EnsureDataAvailable ()
     {
       _dataKeeper.EnsureDataAvailable ();
+    }
+
+    public void MarkDataAvailable ()
+    {
+      _dataKeeper.MarkDataAvailable ();
     }
 
     // Causes collection to be loaded // TODO: Very implicit
@@ -235,6 +250,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataKeeper));
 
       return dataStrategy;
+    }
+
+    // TODO 3406
+    // No loading
+    public void RegisterOriginalObject (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      // _dataKeeper.RegisterOriginalObject (dominObject);
+    }
+
+    // TODO 3406
+    // No loading
+    public void UnregisterOriginalObject (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      // _dataKeeper.UnregisterOriginalObject (dominObject);
     }
 
     // Causes collection to be loaded

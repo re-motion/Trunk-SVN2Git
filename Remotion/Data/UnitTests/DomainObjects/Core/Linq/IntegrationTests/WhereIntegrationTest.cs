@@ -365,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void TableInheritance_AccessingPropertyFromBaseClass ()
     {
       var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.ClassWithUnidirectionalRelation> ()
-                  where c.DomainBase.CreatedAt == new DateTime (2006, 01, 03)
+                  where c.DomainBase.CreatedAt == new DateTime (2006, 01, 04)
                   select c;
       CheckQueryResult (query, new TableInheritance.DomainObjectIDs ().ClassWithUnidirectionalRelation);
     }

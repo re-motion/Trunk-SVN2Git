@@ -25,8 +25,6 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
   /// </summary>
   public sealed class SortedPropertySpecification
   {
-    private static readonly Comparer<object> s_valueComparer = Comparer<object>.Default;
-
     public readonly PropertyDefinition PropertyDefinition;
     public readonly SortOrder Order;
 
@@ -77,18 +75,36 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
     {
       ArgumentUtility.CheckNotNull ("valueGetter", valueGetter);
 
-      return new DelegateBasedComparer<T> ((x, y) => ComparePropertyValues (valueGetter, x, y));
+      return new InternalComparer<T> (PropertyDefinition, Order, valueGetter);
     }
 
-    private int ComparePropertyValues<T> (Func<T, PropertyDefinition, object> valueGetter, T x, T y)
+    [Serializable]
+    private class InternalComparer<T> : IComparer<T>
     {
-      var valueX = valueGetter (x, PropertyDefinition); 
-      var valueY = valueGetter (y, PropertyDefinition); 
+      private readonly PropertyDefinition _propertyDefinition;
+      private readonly SortOrder _order;
+      private readonly Func<T, PropertyDefinition, object> _valueGetter;
 
-      if (Order == SortOrder.Ascending)
-        return s_valueComparer.Compare (valueX, valueY);
-      else
-        return -s_valueComparer.Compare (valueX, valueY);
+      public InternalComparer (PropertyDefinition propertyDefinition, SortOrder order, Func<T, PropertyDefinition, object> valueGetter)
+      {
+        ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+        ArgumentUtility.CheckNotNull ("valueGetter", valueGetter);
+
+        _propertyDefinition = propertyDefinition;
+        _order = order;
+        _valueGetter = valueGetter;
+      }
+
+      public int Compare (T x, T y)
+      {
+        var valueX = _valueGetter (x, _propertyDefinition);
+        var valueY = _valueGetter (y, _propertyDefinition);
+
+        if (_order == SortOrder.Ascending)
+          return Comparer<object>.Default.Compare (valueX, valueY);
+        else
+          return -Comparer<object>.Default.Compare (valueX, valueY);
+      }
     }
   }
 }

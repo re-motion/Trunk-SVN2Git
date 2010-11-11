@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -74,6 +75,16 @@ namespace Remotion.UnitTests.Utilities
       stubComparer4.Stub (stub => stub.Compare (1, 2)).Return (-1);
 
       Assert.That (compoundComparer.Compare (1, 2), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var compoundComparer = new CompoundComparer<int> (Comparer<int>.Default);
+      
+      var result = Serializer.SerializeAndDeserialize (compoundComparer);
+
+      Assert.That (result.Compare (7, 4), Is.EqualTo (1));
     }
   }
 }

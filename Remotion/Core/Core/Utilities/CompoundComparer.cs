@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,6 +26,7 @@ namespace Remotion.Utilities
   /// <see cref="Enumerable.OrderBy{TSource,TKey}(System.Collections.Generic.IEnumerable{TSource},System.Func{TSource,TKey})"/> and
   /// <see cref="Enumerable.ThenBy{TSource,TKey}(System.Linq.IOrderedEnumerable{TSource},System.Func{TSource,TKey})"/> work.
   /// </summary>
+  [Serializable]
   public class CompoundComparer<T> : IComparer<T>
   {
     private readonly IComparer<T>[] _comparers;
