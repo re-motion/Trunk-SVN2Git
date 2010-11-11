@@ -140,7 +140,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       +"Property: 'OrderNumber'\r\n"
       +"----------\r\n"
       +"Opposite relation property 'Orders' declared on type 'Order' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'")]
+      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+      +"----------\r\n"
+      +"The type 'Order' does not match the type of the opposite relation propery 'Orders' declared on type 'Order'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'")]
     public void RelationDefinitionsAreValidated ()
     {
       var classDefinition = new ReflectionBasedClassDefinition (

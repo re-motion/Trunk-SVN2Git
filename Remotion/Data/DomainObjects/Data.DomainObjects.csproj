@@ -190,6 +190,7 @@
     <Compile Include="Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.cs" />
     <Compile Include="Mapping\Validation\PersistenceMappingValidator.cs" />
     <Compile Include="Mapping\Validation\PropertyDefinitionValidator.cs" />
+    <Compile Include="Mapping\Validation\Reflection\RelationEndPointTypesAreConsistentValidationRule.cs" />
     <Compile Include="Mapping\Validation\RelationDefinitionValidator.cs" />
     <Compile Include="Mapping\PropertyAccessorDataCache.cs" />
     <Compile Include="Mapping\SortExpressions\SortExpressionParser.cs" />

@@ -21,7 +21,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 {
   /// <summary>
-  /// Validates that the end point property declaration matches the opposite end point property declaration.
+  /// Validates that a matching <see cref="BidirectionalRelationAttribute"/> is defined on both end points and that the corresponding defined opposite
+  /// property names do match.
   /// </summary>
   public class RelationEndPointNamesAreConsistentValidationRule : IRelationDefinitionValidatorRule
   {
