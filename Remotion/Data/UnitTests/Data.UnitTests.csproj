@@ -934,6 +934,7 @@
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
+    <Compile Include="DomainObjects\TestDomain\ClassWithMixedProperty.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithNonPublicProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithSerializationCallbacks.cs" />
@@ -953,6 +954,7 @@
     <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\AboveInheritanceRootClass.cs" />
     <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\StorageGroupClass.cs" />
     <Compile Include="DomainObjects\TestDomain\IOrder.cs" />
+    <Compile Include="DomainObjects\TestDomain\MixinAddingProperty.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithExtensibleEnumProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnum.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnumExtensions.cs" />

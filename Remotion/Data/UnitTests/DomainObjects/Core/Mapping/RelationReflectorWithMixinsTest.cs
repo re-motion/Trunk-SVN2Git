@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void DomainObjectTypeDeclaringProperty_OriginalMixinTargetNull ()
     {
       var mockRepository = new MockRepository ();
-      var mixinFinderMock = mockRepository.StrictMock<IPersistentMixinFinder> ();
+      var mixinFinderMock = mockRepository.Stub<IPersistentMixinFinder> ();
 
       Expect.Call (mixinFinderMock.GetPersistentMixins ()).Return (new[] { typeof (MixinAddingPersistentProperties) });
       Expect.Call (mixinFinderMock.FindOriginalMixinTarget (typeof (MixinAddingPersistentProperties))).Return (null);

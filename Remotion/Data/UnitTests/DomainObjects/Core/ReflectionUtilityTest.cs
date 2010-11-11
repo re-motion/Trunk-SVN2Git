@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
@@ -155,6 +155,79 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void IsTypeSupportedByStorageProvider_SupportedType ()
     {
       Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof (string), "DefaultStorageProvider"), Is.True);
+    }
+
+    [Test]
+    public void GetDeclaringDomainObjectTypeForProperty_NoMixedProperty ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "Test",
+          "Test",
+          "DefaultStorageProvider",
+          typeof (ClassWithMixedProperty),
+          true,
+          null,
+          new PersistentMixinFinder (typeof (ClassWithMixedProperty)));
+      var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
+
+      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, classDefinition);
+
+      Assert.That (result, Is.SameAs(typeof (ClassWithMixedProperty)));
+    }
+
+    [Test]
+    public void GetDeclaringDomainObjectTypeForProperty_MixedProperty ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "Test",
+          "Test",
+          "DefaultStorageProvider",
+          typeof (ClassWithMixedProperty),
+          true,
+          null,
+          new PersistentMixinFinder (typeof (ClassWithMixedProperty)));
+      var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
+
+      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, classDefinition);
+
+      Assert.That (result, Is.SameAs (typeof (ClassWithMixedProperty)));
+    }
+
+    [Test]
+    public void IsMixedProperty_NoMixedProperty_ReturnsFalse ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "Test",
+          "Test",
+          "DefaultStorageProvider",
+          typeof (ClassWithMixedProperty),
+          true,
+          null,
+          new PersistentMixinFinder (typeof (ClassWithMixedProperty)));
+      var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
+
+      var result = ReflectionUtility.IsMixedProperty (property, classDefinition);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void IsMixedProperty_MixedProperty_ReturnsTrue ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition (
+          "Test",
+          "Test",
+          "DefaultStorageProvider",
+          typeof (ClassWithMixedProperty),
+          true,
+          null,
+          new PersistentMixinFinder (typeof (ClassWithMixedProperty), true));
+
+      var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
+
+      var result = ReflectionUtility.IsMixedProperty (property, classDefinition);
+
+      Assert.That (result, Is.True);
     }
 
   }

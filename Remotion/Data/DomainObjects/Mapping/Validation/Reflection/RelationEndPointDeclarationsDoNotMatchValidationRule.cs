@@ -51,8 +51,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             AttributeUtility.GetCustomAttribute (relationEndPointDefinition.PropertyInfo, typeof (BidirectionalRelationAttribute), true);
         if (relationAttribute != null)
         {
-          var oppositePropertyDomainObjectType = ReflectionUtility.GetDomainObjectTypeFromProperty (relationEndPointDefinition.PropertyInfo);
+          // TODO 3424: Use this code instead of GetOppositePropertyInfo
+          //var oppositeProperty = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
+
+          var oppositePropertyDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (relationEndPointDefinition.PropertyInfo);
           var oppositeProperty = GetOppositePropertyInfo (oppositePropertyDomainObjectType, relationAttribute.OppositeProperty);
+          
+          // TODO 3424: Leave this null check
           if (oppositeProperty != null)
           {
             var oppositeRelationAttribute =

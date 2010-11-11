@@ -62,6 +62,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (DBBidirectionalRelationAttribute.ContainsForeignKey)
         return true;
 
+      // TODO 3424: 1. Get rid of the call to GetOppositePropertyInfo (use typeof (DomainObject).IsAssignableFrom (PropertyInfo.PropertyType) instead)
       return ReflectionUtility.IsObjectList (GetOppositePropertyInfo().PropertyType);
     }
 

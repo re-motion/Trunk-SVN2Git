@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -36,7 +37,7 @@ namespace Remotion.Data.DomainObjects
     /// Returns the directory of the current executing assembly.
     /// </summary>
     /// <returns>The path of the current executing assembly</returns>
-    public static string GetConfigFileDirectory()
+    public static string GetConfigFileDirectory ()
     {
       return GetAssemblyDirectory (typeof (DomainObject).Assembly);
     }
@@ -159,7 +160,7 @@ namespace Remotion.Data.DomainObjects
 
       Type originalDeclaringType = Utilities.ReflectionUtility.GetOriginalDeclaringType (propertyInfo);
       if (originalDeclaringType.IsGenericType)
-        return GetPropertyName (originalDeclaringType.GetGenericTypeDefinition (), propertyInfo.Name);
+        return GetPropertyName (originalDeclaringType.GetGenericTypeDefinition(), propertyInfo.Name);
       else
         return GetPropertyName (originalDeclaringType, propertyInfo.Name);
     }
@@ -230,18 +231,56 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns the domain object type of the given property.
+    /// Gets the type of the related object (the type of the <see cref="DomainObject"/>) for a relation <paramref name="propertyInfo"/>.
     /// </summary>
     /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
     /// <returns>the domain object type of the given property.</returns>
-    public static Type GetDomainObjectTypeFromProperty (PropertyInfo propertyInfo)
+    public static Type GetRelatedObjectTypeFromRelationProperty (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      if (ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
-        return ReflectionUtility.GetObjectListTypeParameter (propertyInfo.PropertyType);
+      if (IsObjectList (propertyInfo.PropertyType))
+        return GetObjectListTypeParameter (propertyInfo.PropertyType);
       else
         return propertyInfo.PropertyType;
+    }
+
+    /// <summary>
+    /// Gets the declaring domain object type for the given property.
+    /// </summary>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
+    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
+    /// <returns>the declaring domain object type for the given property.</returns>
+    public static Type GetDeclaringDomainObjectTypeForProperty (PropertyInfo propertyInfo, ReflectionBasedClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      if (IsMixedProperty (propertyInfo, classDefinition))
+      {
+        var originalMixinTarget =
+            classDefinition.PersistentMixinFinder.FindOriginalMixinTarget (classDefinition.GetPersistentMixin (propertyInfo.DeclaringType));
+        if (originalMixinTarget == null)
+          throw new InvalidOperationException (
+              string.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
+        return originalMixinTarget;
+      }
+      else
+        return propertyInfo.DeclaringType;
+    }
+
+    /// <summary>
+    /// Checks if the given <see cref="PropertyInfo"/> on the given <see cref="ClassDefinition"/> is a mixed property.
+    /// </summary>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
+    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
+    /// <returns><see langword="true" /> if the given <see cref="PropertyInfo"/> is a mixed property.</returns>
+    public static bool IsMixedProperty (PropertyInfo propertyInfo, ReflectionBasedClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      return classDefinition.GetPersistentMixin (propertyInfo.DeclaringType) != null;
     }
 
     /// <summary>

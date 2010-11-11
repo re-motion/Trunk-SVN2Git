@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       BidirectionalRelationAttribute =
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
       DeclaringMixin = ClassDefinition.GetPersistentMixin (PropertyInfo.DeclaringType);
-      DeclaringDomainObjectTypeForProperty = GetDeclaringDomainObjectTypeForProperty ();
-
+      DeclaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (PropertyInfo, ClassDefinition);
+      
       CheckClassDefinitionType ();
     }
 
@@ -46,6 +46,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
     public Type DeclaringMixin { get; private set; }
 
+    /// <summary>
+    /// Gives the type of DomainObject that originally declared the property.
+    /// There are four cases:
+    /// - If the <see cref="ClassDefinition"/>'s type itself declares the property, this returns the 
+    ///   <see cref="ClassDefinition"/>'s type.
+    /// - If a base class of the <see cref="ClassDefinition"/>'s type declares the property, this returns the base class. This can only 
+    ///   happen if the <see cref="ClassDefinition"/> is the inheritance root and the base class is above the inheritance root. (The 
+    ///   <see cref="ClassReflectorForRelations"/> will only create <see cref="RelationReflectorBase"/> objects for properties declared above the
+    ///   <see cref="ClassDefinition"/>'s type if the <see cref="ClassDefinition"/> is an inheritance root.)
+    /// - If a mixin applied to the <see cref="ClassDefinition"/>'s type declares the property, this returns the <see cref="ClassDefinition"/>'s type.
+    /// - If a mixin applied to a base class of the <see cref="ClassDefinition"/>'s type declares the property, this returns the base class. Again,
+    ///   this can only happen if the <see cref="ClassDefinition"/> is an inheritance root.
+    /// </summary>
     public Type DeclaringDomainObjectTypeForProperty { get; private set; }
 
     protected bool IsBidirectionalRelation
@@ -58,22 +71,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return DeclaringMixin != null; }
     }
 
-    private Type GetDeclaringDomainObjectTypeForProperty ()
-    {
-      if (IsMixedProperty)
-      {
-        var originalMixinTarget = ClassDefinition.PersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin);
-        if (originalMixinTarget == null)
-          throw new InvalidOperationException (string.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
-        return originalMixinTarget;
-      }
-      else
-        return PropertyInfo.DeclaringType;
-    }
-
     protected PropertyInfo GetOppositePropertyInfo ()
     {
-      Type type = ReflectionUtility.GetDomainObjectTypeFromProperty (PropertyInfo);
+      Type type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
       PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo (type);
       
       if (oppositePropertyInfo == null)
@@ -82,6 +82,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (oppositePropertyInfo == null)
         oppositePropertyInfo = GetOppositePropertyInfoFromBaseTypes (type); // property defined on base type?
 
+      // TODO 3424: 3. Return null instead (after refactoring RdbmsRelationEndPointReflector.ContainsKey)
       if (oppositePropertyInfo == null)
       {
         throw CreateMappingException (
@@ -89,7 +90,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
             PropertyInfo,
             "Opposite relation property '{0}' could not be found on type '{1}'.",
             BidirectionalRelationAttribute.OppositeProperty,
-            ReflectionUtility.GetDomainObjectTypeFromProperty (PropertyInfo));
+            ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo));
       }
 
       return oppositePropertyInfo;
