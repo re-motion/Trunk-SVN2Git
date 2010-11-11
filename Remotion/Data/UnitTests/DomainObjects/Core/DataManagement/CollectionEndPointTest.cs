@@ -691,7 +691,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 3406")]
     public void RegisterOriginalObject ()
     {
       _customerEndPoint.RegisterOriginalObject (_order2);
@@ -702,16 +701,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 3406")]
     public void UnregisterOriginalObject ()
     {
-      _customerEndPoint.UnregisterOriginalObject (_order1);
+      _customerEndPoint.UnregisterOriginalObject (_order1.ID);
 
       Assert.That (_customerEndPoint.HasChanged, Is.False);
       Assert.That (_customerEndPoint.OppositeDomainObjects, List.Not.Contains (_order1));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, List.Not.Contains (_order1));
     }
-
     
     [Test]
     public void CreateRemoveCommand ()

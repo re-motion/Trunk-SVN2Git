@@ -14,6 +14,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IDomainObjectCollectionData CollectionData { get; }
     IDomainObjectCollectionData OriginalCollectionData { get; }
 
+    void RegisterOriginalObject (DomainObject domainObject);
+    void UnregisterOriginalObject (ObjectID objectID);
+
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
     void EnsureDataAvailable ();
     void MarkDataAvailable ();

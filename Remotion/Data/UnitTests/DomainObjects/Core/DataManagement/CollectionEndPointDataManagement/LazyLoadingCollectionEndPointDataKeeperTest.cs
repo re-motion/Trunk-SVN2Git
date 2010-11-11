@@ -76,6 +76,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, null, new[] { _domainObject1, _domainObject2 });
       Assert.That (data.IsDataAvailable, Is.True);
     }
+    
+    [Test]
+    public void RegisterOriginalObject ()
+    {
+      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+
+      _loadedDataKeeper.RegisterOriginalObject (_domainObject2);
+
+      Assert.That (_loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
+    }
+
+    [Test]
+    public void UnregisterOriginalObject ()
+    {
+      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), List.Contains (_domainObject1));
+      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject1));
+      
+      _loadedDataKeeper.UnregisterOriginalObject (_domainObject1.ID);
+
+      Assert.That (_loadedDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject1));
+      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject1));
+    }
 
     [Test]
     public void HasDataChanged ()

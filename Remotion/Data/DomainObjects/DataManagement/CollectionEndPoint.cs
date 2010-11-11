@@ -243,22 +243,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataStrategy;
     }
 
-    // TODO 3406
     // No loading
     public void RegisterOriginalObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      // _dataKeeper.RegisterOriginalObject (dominObject);
+      _dataKeeper.RegisterOriginalObject (domainObject);
     }
 
-    // TODO 3406
     // No loading
-    public void UnregisterOriginalObject (DomainObject domainObject)
+    public void UnregisterOriginalObject (ObjectID objectID)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      // _dataKeeper.UnregisterOriginalObject (dominObject);
+      _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
     // Causes collection to be loaded

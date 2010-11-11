@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -94,8 +93,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
+    public void RegisterOriginalObject (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      _collectionData.RegisterOriginalItem (domainObject);
+    }
+
+    public void UnregisterOriginalObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      _collectionData.UnregisterOriginalItem (objectID);
+    }
+
     public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
+      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       return _collectionData.HasChanged (changeDetectionStrategy);
     }
 
