@@ -48,13 +48,5 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
     {
       return SeparatedStringBuilder.Build (", ", SortedProperties);
     }
-
-    public IComparer<T> GetComparer<T> (Func<T, PropertyDefinition, object> propertyGetter)
-    {
-      ArgumentUtility.CheckNotNull ("propertyGetter", propertyGetter);
-
-      var allComparers = SortedProperties.Select (p => p.GetComparer (propertyGetter));
-      return new CompoundComparer<T> (allComparers);
-    }
   }
 }

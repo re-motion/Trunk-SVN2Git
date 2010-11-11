@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -67,68 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product ASC, "
           + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Position DESC";
       Assert.That (result, Is.EqualTo (expected));
-    }
-
-    [Test]
-    public void GetComparer_SingleSortedProperty ()
-    {
-      var sortExpressionDefinition =
-          new SortExpressionDefinition (
-              new[]
-              {
-                  SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition)
-              });
-
-      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
-          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
-
-      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
-      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
-      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (dataContainer3, dataContainer1), Is.EqualTo (0));
-    }
-
-    [Test]
-    public void GetComparer_MultipleSortedProperties ()
-    {
-      var sortExpressionDefinition =
-          new SortExpressionDefinition (
-              new[]
-              {
-                  SortExpressionDefinitionObjectMother.CreateSortedPropertyDescending (_productPropertyDefinition),
-                  SortExpressionDefinitionObjectMother.CreateSortedPropertyAscending (_positionPropertyDefinition)
-              });
-
-      IComparer<DataContainer> comparer = sortExpressionDefinition.GetComparer<DataContainer> (
-          (dc, property) => dc.PropertyValues[property.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
-
-      var dataContainer1 = CreateOrderItemDataContainer ("aaa", 1);
-      var dataContainer2 = CreateOrderItemDataContainer ("bbb", 2);
-      var dataContainer3 = CreateOrderItemDataContainer ("aaa", 1);
-      var dataContainer4 = CreateOrderItemDataContainer ("aaa", 2);
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (dataContainer1, dataContainer3), Is.EqualTo (0));
-      Assert.That (comparer.Compare (dataContainer1, dataContainer4), Is.EqualTo (-1));
-    }
-
-    private DataContainer CreateOrderItemDataContainer (string product)
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
-      dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
-      return dataContainer;
-    }
-
-    private DataContainer CreateOrderItemDataContainer (string product, int position)
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
-      dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
-      dataContainer.PropertyValues[_positionPropertyDefinition.PropertyName].Value = position;
-      return dataContainer;
     }
   }
 }

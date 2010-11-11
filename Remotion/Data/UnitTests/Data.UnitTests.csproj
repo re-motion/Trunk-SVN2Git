@@ -209,6 +209,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\FakeCollectionDataStateUpdateListener.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionDataTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SortedPropertyComparerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExpandedCommandTest.cs" />

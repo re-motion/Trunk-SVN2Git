@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
@@ -23,6 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
   /// <summary>
   /// Defines how a property is to be sorted.
   /// </summary>
+  [Serializable]
   public sealed class SortedPropertySpecification
   {
     public readonly PropertyDefinition PropertyDefinition;
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       var underlyingType = propertyDefinition.IsPropertyTypeResolved
-        ? Nullable.GetUnderlyingType (propertyDefinition.PropertyType) ?? propertyDefinition.PropertyType 
+        ? Nullable.GetUnderlyingType (propertyDefinition.PropertyType) ?? propertyDefinition.PropertyType
         : null;
 
       if (underlyingType != null && !typeof (IComparable).IsAssignableFrom (underlyingType))
@@ -56,55 +56,19 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
 
       if (obj.GetType () != GetType ())
         return false;
-      
+
       var other = (SortedPropertySpecification) obj;
       return PropertyDefinition == other.PropertyDefinition && Order == other.Order;
     }
 
     public override int GetHashCode ()
     {
-      return (PropertyDefinition.GetHashCode () << 1) ^ Order.GetHashCode();
+      return (PropertyDefinition.GetHashCode () << 1) ^ Order.GetHashCode ();
     }
 
     public override string ToString ()
     {
       return PropertyDefinition.PropertyName + " " + (Order == SortOrder.Ascending ? "ASC" : "DESC");
-    }
-
-    public IComparer<T> GetComparer<T> (Func<T, PropertyDefinition, object> valueGetter)
-    {
-      ArgumentUtility.CheckNotNull ("valueGetter", valueGetter);
-
-      return new InternalComparer<T> (PropertyDefinition, Order, valueGetter);
-    }
-
-    [Serializable]
-    private class InternalComparer<T> : IComparer<T>
-    {
-      private readonly PropertyDefinition _propertyDefinition;
-      private readonly SortOrder _order;
-      private readonly Func<T, PropertyDefinition, object> _valueGetter;
-
-      public InternalComparer (PropertyDefinition propertyDefinition, SortOrder order, Func<T, PropertyDefinition, object> valueGetter)
-      {
-        ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-        ArgumentUtility.CheckNotNull ("valueGetter", valueGetter);
-
-        _propertyDefinition = propertyDefinition;
-        _order = order;
-        _valueGetter = valueGetter;
-      }
-
-      public int Compare (T x, T y)
-      {
-        var valueX = _valueGetter (x, _propertyDefinition);
-        var valueY = _valueGetter (y, _propertyDefinition);
-
-        if (_order == SortOrder.Ascending)
-          return Comparer<object>.Default.Compare (valueX, valueY);
-        else
-          return -Comparer<object>.Default.Compare (valueX, valueY);
-      }
     }
   }
 }

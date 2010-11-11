@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -51,6 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       _numberOfCallsToLoadDataContainer = 0;
       _numberOfCallsToLoadRelatedObject = 0;
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return (IClientTransactionListener) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "TransactionEventSink"); }
     }
 
     protected override DomainObject LoadObject (ObjectID id)

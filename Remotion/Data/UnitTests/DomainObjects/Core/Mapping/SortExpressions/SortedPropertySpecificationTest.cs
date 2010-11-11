@@ -17,10 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
@@ -113,90 +113,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
-    public void GetComparer_Ascending ()
-    {
-      var specification = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Ascending);
-
-      var comparer = specification.GetComparer<DataContainer> ((dc, property) => dc[property.PropertyName]);
-
-      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
-      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
-      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer1, dataContainer3), Is.EqualTo (0));
-    }
-
-    [Test]
-    public void GetComparer_Descending ()
-    {
-      var specification = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Descending);
-
-      var comparer = specification.GetComparer<DataContainer> ((dc, property) => dc[property.PropertyName]);
-
-      var dataContainer1 = CreateOrderItemDataContainer ("aaa");
-      var dataContainer2 = CreateOrderItemDataContainer ("bbb");
-      var dataContainer3 = CreateOrderItemDataContainer ("aaa");
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
-      Assert.That (comparer.Compare (dataContainer1, dataContainer3), Is.EqualTo (0));
-    }
-
-    [Test]
-    public void GetComparer_NonExistingProperty_Nullable ()
-    {
-      var specification = new SortedPropertySpecification (_customerSincePropertyDefinition, SortOrder.Ascending);
-
-      var comparer = specification.GetComparer<DataContainer> ((dc, property) => 
-          dc.ClassDefinition == property.ClassDefinition 
-          ? dc[property.PropertyName] 
-          : null);
-
-      var dataContainer1 = CreateCustomerDataContainer (new DateTime(2010, 01, 02), Customer.CustomerType.Gold);
-      var dataContainer2 = CreatePartnerDataContainer ();
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
-    }
-
-    [Test]
-    public void GetComparer_NonExistingProperty_NonNullable ()
+    public void Serialization ()
     {
       var specification = new SortedPropertySpecification (_customerTypePropertyDefinition, SortOrder.Ascending);
 
-      var comparer = specification.GetComparer<DataContainer> ((dc, property) =>
-          dc.ClassDefinition == property.ClassDefinition
-          ? dc[property.PropertyName]
-          : null);
+      var result = Serializer.SerializeAndDeserialize (specification);
 
-      var dataContainer1 = CreateCustomerDataContainer (new DateTime (2010, 01, 02), Customer.CustomerType.Gold);
-      var dataContainer2 = CreatePartnerDataContainer ();
-
-      Assert.That (comparer.Compare (dataContainer1, dataContainer2), Is.EqualTo (1));
-      Assert.That (comparer.Compare (dataContainer2, dataContainer1), Is.EqualTo (-1));
-    }
-
-    private DataContainer CreateOrderItemDataContainer (string product)
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
-      dataContainer.PropertyValues[_productPropertyDefinition.PropertyName].Value = product;
-      return dataContainer;
-    }
-
-    private DataContainer CreateCustomerDataContainer (DateTime customerSince, Customer.CustomerType customerType)
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Customer1);
-      dataContainer.PropertyValues[_customerSincePropertyDefinition.PropertyName].Value = customerSince;
-      dataContainer.PropertyValues[_customerTypePropertyDefinition.PropertyName].Value = customerType;
-      return dataContainer;
-    }
-
-    private DataContainer CreatePartnerDataContainer ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Partner1);
-      return dataContainer;
+      Assert.That (result.PropertyDefinition, Is.EqualTo (_customerTypePropertyDefinition));
+      Assert.That (result.Order, Is.EqualTo (SortOrder.Ascending));
     }
   }
 }

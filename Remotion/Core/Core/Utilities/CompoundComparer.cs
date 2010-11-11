@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Remotion.Utilities
@@ -41,6 +42,11 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("comparers", comparers);
 
       _comparers = comparers.ToArray();
+    }
+
+    public ReadOnlyCollection<IComparer<T>> Comparers
+    {
+      get { return Array.AsReadOnly (_comparers); }
     }
 
     public int Compare (T x, T y)

@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Utilities;
 using System.Reflection;
 
@@ -48,8 +47,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
-      var sortExpressionBasedComparer = CreateComparer (((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression(), clientTransaction);
-      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);
+      // TODO 3406: Inject DataKeeper from the outside
+      _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();
@@ -59,14 +58,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
-    }
-
-    private static IComparer<DomainObject> CreateComparer (SortExpressionDefinition sortExpression, ClientTransaction clientTransaction)
-    {
-      if (sortExpression == null)
-        return null;
-
-      return clientTransaction.GetSortExpressionComparer (sortExpression);
     }
 
     // No loading
@@ -327,6 +318,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void RaiseStateUpdateNotification (bool hasChanged)
     {
       ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, hasChanged);
+    }
+
+    private ICollectionEndPointDataKeeper CreateDataKeeper (
+        ClientTransaction clientTransaction, 
+        RelationEndPointID id, 
+      IEnumerable<DomainObject> initialContentsOrNull)
+    {
+      var sortExpression = ((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression ();
+      var sortExpressionBasedComparer = sortExpression == null 
+          ? null 
+          : SortedPropertyComparer.CreateCompoundComparer (sortExpression.SortedProperties, clientTransaction.DataManager);
+      return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);
     }
 
     #region Serialization

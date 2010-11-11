@@ -1405,19 +1405,5 @@ public class ClientTransaction
   {
     throw new NotImplementedException();
   }
-
-  public IComparer<DomainObject> GetSortExpressionComparer (SortExpressionDefinition sortExpression)
-  {
-    ArgumentUtility.CheckNotNull ("sortExpression", sortExpression);
-    return sortExpression.GetComparer<DomainObject> (GetPropertyValueWithoutEvents);
-  }
-
-  private object GetPropertyValueWithoutEvents (DomainObject domainObject, PropertyDefinition propertyDefinition)
-  {
-    // We always sort by the current property values in the DataContainer, even when we sort the original collection
-    var dataContainer = DataManager.GetDataContainerWithLazyLoad (domainObject.ID);
-    var propertyValue = dataContainer.PropertyValues[propertyDefinition.PropertyName];
-    return propertyValue.GetValueWithoutEvents (ValueAccess.Current);
-  }
 }
 }
