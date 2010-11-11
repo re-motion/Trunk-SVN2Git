@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -24,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that the end point property declaration matches the opposite end point property declaration.
   /// </summary>
-  public class RelationEndPointDeclarationsDoNotMatchValidationRule : IRelationDefinitionValidatorRule
+  public class RelationEndPointNamesAreConsistentValidationRule : IRelationDefinitionValidatorRule
   {
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
     {

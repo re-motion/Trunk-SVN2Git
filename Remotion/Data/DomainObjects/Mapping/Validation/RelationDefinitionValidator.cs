@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
           new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
           new RelationEndPointPropertyTypeIsSupportedValidationRule(),
-          new RelationEndPointDeclarationsDoNotMatchValidationRule());
+          new RelationEndPointNamesAreConsistentValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)

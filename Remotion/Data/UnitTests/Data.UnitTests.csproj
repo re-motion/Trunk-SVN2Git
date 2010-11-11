@@ -553,8 +553,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule\MixinAddingProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithInvalidPropertyAttributes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule\ClassWithValidPropertyAttributes.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRule\RelationEndPointPropertyClass1.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointDeclarationsDoNotMatchValidationRule\RelationEndPointPropertyClass2.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRule\RelationEndPointPropertyClass1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRule\RelationEndPointPropertyClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRule\RelationEndPointPropertyClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\BaseClassWithStorageGroupAttribute.cs" />

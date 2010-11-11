@@ -18,21 +18,21 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointDeclarationsDoNotMatchValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
 {
   [TestFixture]
-  public class RelationEndPointDeclarationsDoNotMatchValidationRuleTest : ValidationRuleTestBase
+  public class RelationEndPointNamesAreConsistentValidationRuleTest : ValidationRuleTestBase
   {
-    private RelationEndPointDeclarationsDoNotMatchValidationRule _validationRule;
+    private RelationEndPointNamesAreConsistentValidationRule _validationRule;
     private ReflectionBasedClassDefinition _classDefinition1;
     private ReflectionBasedClassDefinition _classDefinition2;
     
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new RelationEndPointDeclarationsDoNotMatchValidationRule();
+      _validationRule = new RelationEndPointNamesAreConsistentValidationRule();
       _classDefinition1 = new ReflectionBasedClassDefinition (
           "ID",
           "EntityName",
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var expectedMessage = "Opposite relation property 'RelationPopertyWithoutBidirectionalRelationAttribute' declared on type "
                             + "'RelationEndPointPropertyClass2' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
                             +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-                            +"RelationEndPointDeclarationsDoNotMatchValidationRule.RelationEndPointPropertyClass1'";
+                            +"RelationEndPointNamesAreConsistentValidationRule.RelationEndPointPropertyClass1'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var expectedMessage = "Opposite relation property 'RelationPopertyWithNonMatchingPropertyName' declared on type 'RelationEndPointPropertyClass2' "
         +"defines a 'DBBidirectionalRelationAttribute' whose opposite property does not match.\r\n\r\n"
         +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"RelationEndPointDeclarationsDoNotMatchValidationRule.RelationEndPointPropertyClass1'";
+        +"RelationEndPointNamesAreConsistentValidationRule.RelationEndPointPropertyClass1'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }
