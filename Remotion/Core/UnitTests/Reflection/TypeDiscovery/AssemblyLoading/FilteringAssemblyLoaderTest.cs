@@ -189,10 +189,10 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
         process.WaitForExit ();
         Assert.That (process.ExitCode, Is.EqualTo (0), output);
 
-        CheckLog (
+        CheckLogRegEx (
           output,
-            "WARN : The assembly 'DelaySignAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b' (loaded in the context of "
-            + "'DelaySignAssembly.dll') triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not "
+            @"WARN : The assembly 'DelaySignAssembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=.*' \(loaded in the context of "
+            + @"'DelaySignAssembly.dll'\) triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not "
             + "been completed?");
       }
       finally
@@ -374,6 +374,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     private void CheckLog (string fullLog, string expectedLogMessage)
     {
       Assert.That (fullLog, NUnit.Framework.SyntaxHelpers.Text.Contains (expectedLogMessage));
+    }
+
+    private void CheckLogRegEx (string fullLog, string expectedLogRegEx)
+    {
+      Assert.That (fullLog, NUnit.Framework.SyntaxHelpers.Text.Matches (expectedLogRegEx));
     }
   }
 }

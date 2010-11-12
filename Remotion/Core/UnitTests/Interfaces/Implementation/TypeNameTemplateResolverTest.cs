@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Implementation;
+using Remotion.Text;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
 {
@@ -47,7 +49,9 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
       const string typeName = "Name, Version = <version>, PublicKeyToken = <publicKeyToken>";
-      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", TypeNameTemplateResolver.ResolveToTypeName (typeName));
+      var token = typeof (FrameworkVersion).Assembly.GetName().GetPublicKeyToken();
+      var expectedTokenString = SeparatedStringBuilder.Build ("", token.Select (b => b.ToString ("x2")));
+      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = " + expectedTokenString, TypeNameTemplateResolver.ResolveToTypeName (typeName));
     }
 
     [Test]
