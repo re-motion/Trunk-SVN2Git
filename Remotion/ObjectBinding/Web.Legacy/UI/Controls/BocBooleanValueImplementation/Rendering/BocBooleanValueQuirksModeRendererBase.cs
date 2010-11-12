@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web.UI;
-using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Web;
@@ -27,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// <summary>
   /// Base class for the renderers in the same namespace. Contains common constants and methods.
   /// <seealso cref="BocBooleanValueRenderer"/>
-  /// <seealso cref="BocCheckboxRenderer"/>
+  /// <seealso cref="BocCheckBoxRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
   public abstract class BocBooleanValueQuirksModeRendererBase<T> : BocQuirksModeRendererBase<T>

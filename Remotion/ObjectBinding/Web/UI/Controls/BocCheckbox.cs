@@ -107,16 +107,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderer.Render (CreateRenderingContext(writer));
     }
 
-    protected virtual IBocCheckboxRenderer CreateRenderer ()
+    protected virtual IBocCheckBoxRenderer CreateRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocCheckboxRenderer> ();
+      return ServiceLocator.GetInstance<IBocCheckBoxRenderer> ();
     }
 
-    protected virtual BocCheckboxRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    protected virtual BocCheckBoxRenderingContext CreateRenderingContext (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      return new BocCheckboxRenderingContext (Context, writer, this);
+      return new BocCheckBoxRenderingContext (Context, writer, this);
     }
 
     /// <summary>

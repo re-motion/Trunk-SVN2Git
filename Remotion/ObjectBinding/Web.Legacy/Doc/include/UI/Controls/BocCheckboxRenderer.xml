@@ -15,7 +15,7 @@
  ! You should have received a copy of the GNU Lesser General Public License
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-<BocCheckboxRenderer>
+<BocCheckBoxRenderer>
   <Class>
     <remarks>
       <h4 class="dtH4">Standards Conformance</h4>
@@ -60,4 +60,4 @@
       </para>
     </remarks>
   </Class>
-</BocCheckboxRenderer>
+</BocCheckBoxRenderer>

@@ -31,7 +31,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   [TestFixture]
-  public class BocCheckboxRendererTest : RendererTestBase
+  public class BocCheckBoxRendererTest : RendererTestBase
   {
     private const string c_postbackEventReference = "postbackEventReference";
     private const string c_trueDescription = "Wahr";
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
 
     private IBocCheckBox _checkbox;
     private string _startupScript;
-    private BocCheckboxRenderer _renderer;
+    private BocCheckBoxRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
           _checkbox.DefaultTrueDescription,
           _checkbox.DefaultFalseDescription);
-      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckboxRenderer), _startUpScriptKey, _startupScript));
+      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckBoxRenderer), _startUpScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_checkbox, string.Empty)).Return (c_postbackEventReference);
 
@@ -224,8 +224,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
-      _renderer.Render (new BocCheckboxRenderingContext(HttpContext, Html.Writer, _checkbox));
+      _renderer = new BocCheckBoxRenderer (MockRepository.GenerateStub<IResourceUrlFactory>());
+      _renderer.Render (new BocCheckBoxRenderingContext(HttpContext, Html.Writer, _checkbox));
 
       var document = Html.GetResultDocument();
 

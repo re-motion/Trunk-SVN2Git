@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -23,7 +22,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Base class for the renderers in the same namespace. Contains common constants and methods.
   /// <seealso cref="BocBooleanValueRenderer"/>
-  /// <seealso cref="BocCheckboxRenderer"/>
+  /// <seealso cref="BocCheckBoxRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>

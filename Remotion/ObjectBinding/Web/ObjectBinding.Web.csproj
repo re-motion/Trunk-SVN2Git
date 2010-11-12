@@ -176,9 +176,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderingContext.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxRenderingContext.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRenderer.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckBoxRenderer.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
@@ -209,7 +209,7 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactory.cs" />
-    <Compile Include="UI\Controls\BocCheckbox.cs">
+    <Compile Include="UI\Controls\BocCheckBox.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\BocBooleanValueBase.cs" />
@@ -359,7 +359,7 @@
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererBase.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxRenderer.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRenderer.cs" />

@@ -332,7 +332,7 @@
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckBoxRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocCheckBoxMock.cs" />
@@ -402,9 +402,9 @@
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubTextBox.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRendererTest.cs" />

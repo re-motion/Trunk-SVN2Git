@@ -86,7 +86,7 @@
     <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckBoxQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnQuirksModeRendererBase.cs" />
@@ -152,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\include\UI\Controls\BocBooleanValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocCheckboxRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocCheckBoxRenderer.xml" />
     <Content Include="Doc\include\UI\Controls\BocDateTimeValueRenderer.xml" />
     <Content Include="Doc\include\UI\Controls\BocEnumValueRenderer.xml" />
     <Content Include="Doc\include\UI\Controls\BocListRenderer.xml" />

@@ -32,7 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   [TestFixture]
-  public class BocCheckboxQuirksModeRendererTest : RendererTestBase
+  public class BocCheckBoxQuirksModeRendererTest : RendererTestBase
   {
     private const string c_postbackEventReference = "postbackEventReference";
     private const string c_trueDescription = "Wahr";
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
 
     private IBocCheckBox _checkbox;
     private string _startupScript;
-    private BocCheckboxQuirksModeRenderer _renderer;
+    private BocCheckBoxQuirksModeRenderer _renderer;
     private IResourceUrlFactory _resourceUrlFactory;
 
     [SetUp]
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
           _checkbox.DefaultTrueDescription,
           _checkbox.DefaultFalseDescription);
-      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckboxQuirksModeRenderer), _startUpScriptKey, _startupScript));
+      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckBoxQuirksModeRenderer), _startUpScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_checkbox, string.Empty)).Return (c_postbackEventReference);
 
@@ -229,8 +229,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocBooleanValu
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxQuirksModeRenderer (_resourceUrlFactory);
-      _renderer.Render (new BocCheckboxRenderingContext (HttpContext, Html.Writer, _checkbox));
+      _renderer = new BocCheckBoxQuirksModeRenderer (_resourceUrlFactory);
+      _renderer.Render (new BocCheckBoxRenderingContext (HttpContext, Html.Writer, _checkbox));
 
       var document = Html.GetResultDocument();
 

@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (
           typeof (IBocBooleanValueResourceSetFactory),
           new BocBooleanValueResourceSetFactory (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
-      _instances.Add (typeof (IBocCheckboxRenderer), new BocCheckboxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
+      _instances.Add (typeof (IBocCheckBoxRenderer), new BocCheckBoxRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
       _instances.Add (typeof (IBocEnumValueRenderer), new BocEnumValueRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue())));
 
       _instances.Add (typeof (IClientScriptBehavior), new ClientScriptBehavior());

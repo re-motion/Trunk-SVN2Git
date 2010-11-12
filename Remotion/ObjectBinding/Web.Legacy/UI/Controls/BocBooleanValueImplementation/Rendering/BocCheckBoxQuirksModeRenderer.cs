@@ -23,7 +23,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
-using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -32,15 +31,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
-  public class BocCheckboxQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocCheckBox>, IBocCheckboxRenderer
+  /// <include file='doc\include\UI\Controls\BocCheckBoxRenderer.xml' path='BocCheckBoxRenderer/Class'/>
+  public class BocCheckBoxQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocCheckBox>, IBocCheckBoxRenderer
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
 
-    private static readonly string s_startUpScriptKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Startup";
+    private static readonly string s_startUpScriptKey = typeof (BocCheckBoxQuirksModeRenderer).FullName + "_Startup";
 
-    public BocCheckboxQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
+    public BocCheckBoxQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory) 
       : base(resourceUrlFactory)
     { 
     }
@@ -49,17 +48,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string scriptFileKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (BocCheckBoxQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
+        var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckBoxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      string styleFileKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Style";
+      string styleFileKey = typeof (BocCheckBoxQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
+        var styleUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckBoxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -67,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
     /// <summary>
     /// Renders an image and label in readonly mode, a checkbox and label in edit mode.
     /// </summary>
-    public void Render (BocCheckboxRenderingContext renderingContext)
+    public void Render (BocCheckBoxRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -108,12 +107,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       renderingContext.Writer.RenderEndTag ();
     }
 
-    private bool DetermineClientScriptLevel (BocCheckboxRenderingContext renderingContext)
+    private bool DetermineClientScriptLevel (BocCheckBoxRenderingContext renderingContext)
     {
       return !renderingContext.Control.IsDesignMode;
     }
     
-    private void PrepareScripts (BocCheckboxRenderingContext renderingContext, HtmlInputCheckBox checkBoxControl, Label labelControl)
+    private void PrepareScripts (BocCheckBoxRenderingContext renderingContext, HtmlInputCheckBox checkBoxControl, Label labelControl)
     {
       string checkBoxScript;
       string labelScript;
@@ -135,7 +134,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       labelControl.Attributes.Add ("onclick", labelScript);
     }
 
-    private string GetScriptParameters (BocCheckboxRenderingContext renderingContext)
+    private string GetScriptParameters (BocCheckBoxRenderingContext renderingContext)
     {
       string label = renderingContext.Control.IsDescriptionEnabled ? "document.getElementById ('" + renderingContext.Control.LabelID + "')" : "null";
       string checkBox = "document.getElementById ('" + renderingContext.Control.CheckboxID + "')";
@@ -150,24 +149,24 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       return script;
     }
 
-    private void RegisterStartupScriptIfNeeded (BocCheckboxRenderingContext renderingContext)
+    private void RegisterStartupScriptIfNeeded (BocCheckBoxRenderingContext renderingContext)
     {
-      if (renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocCheckboxQuirksModeRenderer), s_startUpScriptKey))
+      if (renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocCheckBoxQuirksModeRenderer), s_startUpScriptKey))
         return;
 
       string startupScript = string.Format (
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
           renderingContext.Control.DefaultTrueDescription,
           renderingContext.Control.DefaultFalseDescription);
-      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocCheckboxQuirksModeRenderer), s_startUpScriptKey, startupScript);
+      renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (BocCheckBoxQuirksModeRenderer), s_startUpScriptKey, startupScript);
     }
 
-    private void PrepareImage (BocCheckboxRenderingContext renderingContext, Image imageControl, string description)
+    private void PrepareImage (BocCheckBoxRenderingContext renderingContext, Image imageControl, string description)
     {
       string imageUrl = ResourceUrlResolver.GetResourceUrl (
           renderingContext.Control,
           renderingContext.HttpContext,
-          typeof (BocCheckboxQuirksModeRenderer),
+          typeof (BocCheckBoxQuirksModeRenderer),
           ResourceType.Image,
           renderingContext.Control.Value.Value ? c_trueIcon : c_falseIcon);
 
@@ -177,7 +176,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       imageControl.Style["vertical-align"] = "middle";
     }
 
-    private void PrepareLabel (BocCheckboxRenderingContext renderingContext, string description, Label labelControl)
+    private void PrepareLabel (BocCheckBoxRenderingContext renderingContext, string description, Label labelControl)
     {
       if (renderingContext.Control.IsDescriptionEnabled)
       {
@@ -188,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
       }
     }
 
-    private string GetDescription (BocCheckboxRenderingContext renderingContext)
+    private string GetDescription (BocCheckBoxRenderingContext renderingContext)
     {
       string trueDescription = null;
       string falseDescription = null;

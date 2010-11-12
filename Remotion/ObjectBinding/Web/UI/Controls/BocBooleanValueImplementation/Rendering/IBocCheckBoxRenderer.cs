@@ -23,10 +23,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// <summary>
   /// Defines the API for rendering a <see cref="BocCheckBox"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (BocCheckboxRenderer), Lifetime = LifetimeKind.Singleton)]
-  public interface IBocCheckboxRenderer
+  [ConcreteImplementation (typeof (BocCheckBoxRenderer), Lifetime = LifetimeKind.Singleton)]
+  public interface IBocCheckBoxRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
-    void Render (BocCheckboxRenderingContext renderingContext);
+    void Render (BocCheckBoxRenderingContext renderingContext);
   }
 }
