@@ -14,17 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations.
-    BidirectionalRelationWithInvalidPropertyReferences
+    BidirectionalRelation_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot
 {
   [DBTable]
-  [ClassID ("BidirectionalRelationWithInvalidPropertyReferences_BaseRelationClass2")]
-  public class BaseRelationClass2 : DomainObject
+  [ClassID ("BidirectionalRelationWithInvalidPropertyReferences_BaseRelationClass1")]
+  public class BaseRelationClass1 : DomainObject
   {
-    [DBBidirectionalRelation("RelationProperty1")]
-    public InvalidRelationClass1 RelationProperty3 { get; set; }
+
   }
 }

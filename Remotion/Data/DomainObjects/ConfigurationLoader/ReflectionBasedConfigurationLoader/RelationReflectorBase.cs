@@ -120,7 +120,15 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo GetOppositePropertyInfo (Type type)
     {
-      return type.GetProperty (BidirectionalRelationAttribute.OppositeProperty, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var property = type.GetProperty (BidirectionalRelationAttribute.OppositeProperty, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      if (property != null)
+      {
+        if (Utilities.ReflectionUtility.IsOriginalDeclaration (property))
+          return property;
+        else
+          return GetOppositePropertyInfo (type.BaseType);
+      }
+      return null;
     }
 
     private void CheckClassDefinitionType ()

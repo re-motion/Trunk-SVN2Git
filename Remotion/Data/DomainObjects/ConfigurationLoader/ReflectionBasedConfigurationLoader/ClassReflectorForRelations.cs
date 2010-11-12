@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, PersistentMixinFinder))
       {
-        RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo, NameResolver);
+        RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
         if (!relationDefinitions.Contains (relationDefinition.ID))
         {

@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite");
     }
 
-    //RelationEndPointNamesAreConsistentValidationRule
+    //Exception thrown in RelationReflectorBase.GetOppositePropertyInfo
     [Test]
     //[ExpectedException(typeof(MappingException), ExpectedMessage = "")]
     [Ignore ("TODO 3424")]
@@ -159,19 +159,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch");
     }
-    
-    //Exception is thrown in RelationReflector.ValidateOppositePropertyInfoDeclaringType (first condition) //TODO
+
+    //RelationEndPointTypesAreConsistentValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "The declaring type 'BaseRelationClass2' does not match the type of the opposite relation propery 'RelationProperty1' "
-      + "declared on type 'InvalidRelationClass1'.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
-      + "BidirectionalRelationWithInvalidPropertyReferences.BaseRelationClass2\r\n"
-      + "Property: RelationProperty3")]
-    [Ignore("TODO 3424")]
-    public void BidirectionalRelationWithInvalidPropertyReferences ()
+      "The type 'BaseRelationClass2' does not match the type of the opposite relation propery 'RelationProperty1' declared on type 'InvalidRelationClass1'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      + "BidirectionalRelation_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.BaseRelationClass2'")]
+    public void BidirectionalRelation_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot ()
     {
-      ValidateMapping ("NotSupportedRelations.BidirectionalRelationWithInvalidPropertyReferences");
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot");
     }
   }
 }

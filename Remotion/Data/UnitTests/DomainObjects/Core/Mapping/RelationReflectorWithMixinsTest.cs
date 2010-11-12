@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = propertyReflector.GetMetadata ();
 
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver (), new ReflectionBasedRelationEndPointDefinitionFactory());
     }
 
     private PropertyInfo EnsurePropertyDefinitionExisitsOnClassDefinition (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)
