@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// Adds class and style attributes found in the <see cref="RenderingContext{TControl}.Control"/> 
     /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
-    /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>
+    /// <param name="renderingContext">The <see cref="RenderingContext{TControl}"/>.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
     /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
     protected void AddAttributesToRender (RenderingContext<TControl> renderingContext)

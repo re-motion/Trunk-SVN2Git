@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocRenderingContext<TControl> : RenderingContext<TControl>
     where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    public BocRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, IBocRenderableControl control)
+    protected BocRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, TControl control)
         : base(httpContext, writer, control)
     {
     }

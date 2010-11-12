@@ -19,9 +19,7 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
-using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
@@ -38,18 +36,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     { 
     }
 
-    protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
-    {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
-    }
-
     /// <summary>
     /// Adds class and style attributes found in the <see cref="RenderingContext{TControl}.Control"/> 
     /// to the <paramref name="renderingContext"/> so that they are rendered in the next begin tag.
     /// </summary>
-    /// <param name="renderingContext">The <see cref="IRenderingContext"/>.</param>
+    /// <param name="renderingContext">The <see cref="RenderingContext{TControl}"/>.</param>
     /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
     /// without changing the contents of the actual style.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
