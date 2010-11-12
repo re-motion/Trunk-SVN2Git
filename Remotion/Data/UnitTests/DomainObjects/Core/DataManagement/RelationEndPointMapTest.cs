@@ -310,6 +310,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterRealObjectEndPoint_RegistersOppositeVirtualObjectEndPoint ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      foreignKeyDataContainer.PropertyValues[id.Definition.PropertyName].Value = DomainObjectIDs.Order1;
+
+      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      var expectedOppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var oppositeEndPoint = (VirtualObjectEndPoint) _map[expectedOppositeEndPointID];
+      Assert.That (oppositeEndPoint, Is.Not.Null);
+      Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
     public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");

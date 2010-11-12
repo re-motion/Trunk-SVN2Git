@@ -158,8 +158,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       set
       {
         CheckNotDiscarded ();
-        CheckForRelationProperty ();
-
         SetValueInternal (value);
       }
     }
@@ -316,11 +314,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _value = _originalValue;
 
       _hasBeenTouched = false;
-    }
-
-    internal void SetRelationValue (ObjectID id)
-    {
-      SetValueInternal (id);
     }
 
     internal void Discard ()

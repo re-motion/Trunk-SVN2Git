@@ -140,6 +140,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer);
       Add (objectEndPoint);
 
+      var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
+      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+
+      if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && objectEndPoint.OppositeObjectID != null)
+      {
+        var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, objectEndPoint.ObjectID);
+      }
+      
       return objectEndPoint;
     }
 
@@ -277,18 +286,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                   select endPointID;
 
       foreach (var realEndPointID in realObjectEndPointIDs)
-      {
-        var realObjectEndPoint = RegisterRealObjectEndPoint (realEndPointID, dataContainer);
-
-        var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
-        Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
-        {
-          var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
-        }
-      }
+        RegisterRealObjectEndPoint (realEndPointID, dataContainer);
     }
 
     private void CheckCardinality (

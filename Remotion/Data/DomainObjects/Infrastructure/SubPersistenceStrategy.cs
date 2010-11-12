@@ -235,15 +235,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var parentDataContainer = DataContainer.CreateNew (dataContainer.ID);
 
-      parentDataContainer.SetPropertyValuesFrom (dataContainer);
-      if (dataContainer.HasBeenMarkedChanged)
-        parentDataContainer.MarkAsChanged();
-      parentDataContainer.SetTimestamp (dataContainer.Timestamp);
       parentDataContainer.SetDomainObject (dataContainer.DomainObject);
 
       _parentTransaction.DataManager.RegisterDataContainer (parentDataContainer);
 
-      Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
+      parentDataContainer.SetPropertyValuesFrom (dataContainer);
+      if (dataContainer.HasBeenMarkedChanged)
+        parentDataContainer.MarkAsChanged();
+      parentDataContainer.SetTimestamp (dataContainer.Timestamp);
     }
 
     private void PersistChangedDataContainer (DataContainer dataContainer)

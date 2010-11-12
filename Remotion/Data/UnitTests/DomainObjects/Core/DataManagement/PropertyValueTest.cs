@@ -522,7 +522,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The relation property 'test' cannot be set directly.")]
     public void SetRelationPropertyDirectly ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -530,6 +529,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;
+
+      Assert.That (propertyValue.Value, Is.EqualTo (DomainObjectIDs.Customer1));
     }
 
     [Test]
