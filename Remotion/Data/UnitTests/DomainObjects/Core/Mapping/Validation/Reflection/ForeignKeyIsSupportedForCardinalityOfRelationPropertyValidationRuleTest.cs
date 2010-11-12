@@ -61,19 +61,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void PropertyInfoIsNotResolved ()
+    public void RelationDefinitionPropertyInfoIsNotResolved ()
     {
       var endPoint1Stub = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
       var endPoint2Stub = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
       var relationDefinition = new RelationDefinition ("Test", endPoint1Stub, endPoint2Stub);
 
-      endPoint1Stub.Stub (stub => stub.IsAnonymous).Return (false);
-      endPoint2Stub.Stub (stub => stub.IsAnonymous).Return (false);
       endPoint1Stub.Stub (stub => stub.IsPropertyInfoResolved).Return (false);
-      endPoint1Stub.Stub (stub => stub.ClassDefinition).Return (_classDefinition);
-      endPoint1Stub.Stub (stub => stub.PropertyName).Return ("Test");
-      
+      endPoint2Stub.Stub (stub => stub.IsPropertyInfoResolved).Return (false);
+
       var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);

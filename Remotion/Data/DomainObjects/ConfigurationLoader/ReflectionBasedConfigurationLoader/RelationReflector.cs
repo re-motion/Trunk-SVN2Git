@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
       var endPoints = isFirstEndPointReal ? new { Left = first, Right = second } : new { Left = second, Right = first };
-      var nameGivingEndPoint = endPoints.Left;
+      var nameGivingEndPoint = endPoints.Left.PropertyInfo!=null ? endPoints.Left : endPoints.Right;
       var leftPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
       if (endPoints.Right.IsAnonymous)
         return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName);
@@ -70,13 +70,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!IsBidirectionalRelation)
         return CreateOppositeAnonymousRelationEndPointDefinition (classDefinitions);
 
-      PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo ();
-      
-      // TODO 3424: 4. If oppositePropertyInfo == null, return new PropertyNotFoundRelationEndPoint (info that used to be in exception) => after inlining this method and changing GetOppositePropertyInfo to return null
-      // TODO 3424: 5. Add new rule: if an end point is a PropertyNotFoundRelationEndPoint, return a validation error
-
-      var oppositeClassDefinition = GetOppositeClassDefinition (classDefinitions, oppositePropertyInfo);
-      return _endPointDefinitionFactory.CreateEndPoint (oppositeClassDefinition, oppositePropertyInfo, NameResolver);
+      PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo();
+      if (oppositePropertyInfo == null)
+      {
+        var oppositeClassDefinition = GetOppositeClassDefinition (classDefinitions, null);
+        return new PropertyNotFoundRelationEndPointDefinition (oppositeClassDefinition, BidirectionalRelationAttribute.OppositeProperty);
+      }
+      else
+      {
+        var oppositeClassDefinition = GetOppositeClassDefinition (classDefinitions, oppositePropertyInfo);
+        return _endPointDefinitionFactory.CreateEndPoint (oppositeClassDefinition, oppositePropertyInfo, NameResolver);
+      }
     }
 
     private AnonymousRelationEndPointDefinition CreateOppositeAnonymousRelationEndPointDefinition (ClassDefinitionCollection classDefinitions)
@@ -84,8 +88,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var oppositeClassDefinition = GetOppositeClassDefinition (classDefinitions, null);
       return new AnonymousRelationEndPointDefinition (oppositeClassDefinition);
     }
-
-    // TODO 3424: 2. Inline this method
 
     private ReflectionBasedClassDefinition GetOppositeClassDefinition (ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
     {

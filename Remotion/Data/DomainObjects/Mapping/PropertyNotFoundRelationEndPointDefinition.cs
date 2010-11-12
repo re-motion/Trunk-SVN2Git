@@ -70,12 +70,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyInfo PropertyInfo
     {
-      get { throw new NotImplementedException(); }
+      get { return null; }
     }
 
     public bool IsPropertyInfoResolved
     {
-      get { throw new NotImplementedException(); }
+      get { return false; }
     }
 
     public bool IsMandatory
@@ -90,12 +90,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public bool IsVirtual
     {
-      get { throw new NotImplementedException(); }
+      get { return false;  }
     }
 
     public bool IsAnonymous
     {
-      get { throw new NotImplementedException(); }
+      get { return false;  }
     }
 
     public bool CorrespondsTo (string classID, string propertyName)

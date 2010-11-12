@@ -47,6 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_propertyNotFoundEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
       Assert.That (_propertyNotFoundEndPointDefinition.PropertyName, Is.EqualTo ("TestProperty"));
+      Assert.That (_propertyNotFoundEndPointDefinition.IsVirtual, Is.False);
+      Assert.That (_propertyNotFoundEndPointDefinition.IsAnonymous, Is.False);
+      Assert.That (_propertyNotFoundEndPointDefinition.IsPropertyInfoResolved, Is.False);
     }
 
     [Test]

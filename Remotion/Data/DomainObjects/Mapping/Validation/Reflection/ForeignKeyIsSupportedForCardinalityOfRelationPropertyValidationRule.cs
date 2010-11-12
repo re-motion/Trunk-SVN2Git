@@ -46,10 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         return MappingValidationResult.CreateValidResult();
 
       if (!relationEndPointDefinition.IsPropertyInfoResolved)
-      {
-        throw new InvalidOperationException (
-            relationEndPointDefinition.ClassDefinition.ID + "." + relationEndPointDefinition.PropertyName + " is not resolved.");
-      }
+        return MappingValidationResult.CreateValidResult ();
 
       var propertyInfo = relationEndPointDefinition.PropertyInfo;
       var relationAttribute = AttributeUtility.GetCustomAttribute<DBBidirectionalRelationAttribute> (propertyInfo, true);

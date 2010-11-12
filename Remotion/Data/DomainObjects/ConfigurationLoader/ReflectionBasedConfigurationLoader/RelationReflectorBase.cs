@@ -82,17 +82,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (oppositePropertyInfo == null)
         oppositePropertyInfo = GetOppositePropertyInfoFromBaseTypes (type); // property defined on base type?
 
-      // TODO 3424: 3. Return null instead (after refactoring RdbmsRelationEndPointReflector.ContainsKey)
-      if (oppositePropertyInfo == null)
-      {
-        throw CreateMappingException (
-            null,
-            PropertyInfo,
-            "Opposite relation property '{0}' could not be found on type '{1}'.",
-            BidirectionalRelationAttribute.OppositeProperty,
-            ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo));
-      }
-
       return oppositePropertyInfo;
     }
 

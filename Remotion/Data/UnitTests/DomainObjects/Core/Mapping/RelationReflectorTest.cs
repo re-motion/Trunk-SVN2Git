@@ -353,12 +353,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage =
-            "Opposite relation property 'Invalid' could not be found on type "
-            + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationRightSide'.\r\n"
-            + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide\r\n"
-            + "Property: InvalidOppositePropertyNameLeftSide")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Relation definition error for end point: Class 'ClassWithInvalidBidirectionalRelationLeftSide' has no property 'Remotion.Data.UnitTests."
+        +"DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide.InvalidOppositePropertyNameLeftSide'.")]
     public void GetMetadata_WithInvalidOppositePropertyName ()
     {
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();

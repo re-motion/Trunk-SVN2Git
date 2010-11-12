@@ -59,6 +59,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }
 
+    [Test]
+    public void IsVirtualRelationEndPoint_UnidirectionalRelation()
+    {
+      Type type = typeof (ClassWithRealRelationEndPoints);
+
+      PropertyInfo propertyInfo = type.GetProperty ("Unidirectional");
+      var relationEndPointReflector =
+          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
+
+      Assert.IsFalse(relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+    }
+
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false);
