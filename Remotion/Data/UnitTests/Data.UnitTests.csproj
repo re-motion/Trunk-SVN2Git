@@ -307,6 +307,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\PropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\RelationPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\StubPropertyFinderBase.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\PropertyNotFoundRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\BaseTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\BinaryProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\Common.cs" />
@@ -575,6 +576,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedRelationsIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\ValidationIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForPropertyNotFoundRelationEndPointsValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />

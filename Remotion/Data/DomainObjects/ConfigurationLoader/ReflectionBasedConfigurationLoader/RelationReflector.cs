@@ -92,49 +92,48 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private RelationEndPointReflector CreateOppositeRelationEndPointReflector (ClassDefinitionCollection classDefinitions)
     {
       PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo ();
-      //TODO 3424: create rule. In the rule, get the oppositePropertyInfo via endPoint.GetOppositeEndPointDefinition().PropertyInfo (if not null)
+      
+      //Type oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
+      //bool isPropertyDeclaredByThisClassDefinition = DeclaringDomainObjectTypeForProperty == ClassDefinition.ClassType;
+      //if (isPropertyDeclaredByThisClassDefinition)
+      //{
+      //  // Case where property is declared on this ClassDefinition => it is declared below/on the inheritance root
+      //  // In this case, the opposite property's return type must exactly match this ClassDefinition's type.
+      //  if (ClassDefinition.ClassType != oppositeDomainObjectType)
+      //  {
+      //    throw CreateMappingException (
+      //        null,
+      //        PropertyInfo,
+      //        "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
+      //        DeclaringDomainObjectTypeForProperty.Name,
+      //        BidirectionalRelationAttribute.OppositeProperty,
+      //        oppositePropertyInfo.DeclaringType.Name);
+      //  }
+      //}
+      //else
+      //{
+      //  // Case where property is not declared on this ClassDefinition => it must be declared above the inheritance root
+      //  // In this case, the opposite property's return type must be assignable to the type declaring the property. This enables the following 
+      //  // scenario:
+      //  // - ClassAboveInheritanceRoot has a relation property P1 to RelationTarget
+      //  // - RelationTarget has a relation property P2 back to the InheritanceRoot derived from ClassAboveInheritanceRoot
+      //  // In that case, when reflecting P1, DeclaringDomainObjectTypeForProperty will be ClassAboveInheritanceRoot, oppositeDomainObjectType will be
+      //  // InheritanceRoot. ClassAboveInheritanceRoot is assignable from InheritanceRoo, so the check passes.
 
-      Type oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
-      bool isPropertyDeclaredByThisClassDefinition = DeclaringDomainObjectTypeForProperty == ClassDefinition.ClassType;
-      if (isPropertyDeclaredByThisClassDefinition)
-      {
-        // Case where property is declared on this ClassDefinition => it is declared below/on the inheritance root
-        // In this case, the opposite property's return type must exactly match this ClassDefinition's type.
-        if (ClassDefinition.ClassType != oppositeDomainObjectType)
-        {
-          throw CreateMappingException (
-              null,
-              PropertyInfo,
-              "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
-              DeclaringDomainObjectTypeForProperty.Name,
-              BidirectionalRelationAttribute.OppositeProperty,
-              oppositePropertyInfo.DeclaringType.Name);
-        }
-      }
-      else
-      {
-        // Case where property is not declared on this ClassDefinition => it must be declared above the inheritance root
-        // In this case, the opposite property's return type must be assignable to the type declaring the property. This enables the following 
-        // scenario:
-        // - ClassAboveInheritanceRoot has a relation property P1 to RelationTarget
-        // - RelationTarget has a relation property P2 back to the InheritanceRoot derived from ClassAboveInheritanceRoot
-        // In that case, when reflecting P1, DeclaringDomainObjectTypeForProperty will be ClassAboveInheritanceRoot, oppositeDomainObjectType will be
-        // InheritanceRoot. ClassAboveInheritanceRoot is assignable from InheritanceRoo, so the check passes.
-
-        // This is the only case where the two sides of a bidirectional relation can point to subclasses of each other.
-        // (The scenario this was actually needed for is to allow for generic base classes above the inheritance root defining relation properties.)
-        if (!DeclaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
-        {
-          Assertion.IsTrue (DeclaringDomainObjectTypeForProperty.IsAssignableFrom (ClassDefinition.ClassType));
-          throw CreateMappingException (
-              null,
-              PropertyInfo,
-              "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
-              DeclaringDomainObjectTypeForProperty.Name,
-              BidirectionalRelationAttribute.OppositeProperty,
-              oppositePropertyInfo.DeclaringType.Name);
-        }
-      }
+      //  // This is the only case where the two sides of a bidirectional relation can point to subclasses of each other.
+      //  // (The scenario this was actually needed for is to allow for generic base classes above the inheritance root defining relation properties.)
+      //  if (!DeclaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
+      //  {
+      //    Assertion.IsTrue (DeclaringDomainObjectTypeForProperty.IsAssignableFrom (ClassDefinition.ClassType));
+      //    throw CreateMappingException (
+      //        null,
+      //        PropertyInfo,
+      //        "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n",
+      //        DeclaringDomainObjectTypeForProperty.Name,
+      //        BidirectionalRelationAttribute.OppositeProperty,
+      //        oppositePropertyInfo.DeclaringType.Name);
+      //  }
+      //}
 
       // TODO 3424: 4. If oppositePropertyInfo == null, return new PropertyNotFoundRelationEndPoint (info that used to be in exception) => after inlining this method and changing GetOppositePropertyInfo to return null
       // TODO 3424: 5. Add new rule: if an end point is a PropertyNotFoundRelationEndPoint, return a validation error
@@ -148,6 +147,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       // TODO 3424: Validation rule => use InvalidClassDefinition if classDefinitions[...] is null
       try
       {
+        // TODO 3424: This chooses the wrong opposite class definition if PropertyInfo points to a derived class of the class defining the opposite property
         return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo));
       }
       catch (MappingException e)

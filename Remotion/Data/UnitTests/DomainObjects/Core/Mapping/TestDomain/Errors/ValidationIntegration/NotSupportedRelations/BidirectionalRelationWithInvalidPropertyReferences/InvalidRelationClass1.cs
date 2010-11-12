@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.V
   [ClassID ("BidirectionalRelationWithInvalidPropertyReferences_InvalidRelationClass1")]
   public class InvalidRelationClass1 : BaseRelationClass1
   {
-    [DBBidirectionalRelation("RelationProperty3")]
+    [DBBidirectionalRelation("RelationProperty3", ContainsForeignKey = true)]
     public InvalidRelationClass2 RelationProperty1 { get; set; }
   }
 }

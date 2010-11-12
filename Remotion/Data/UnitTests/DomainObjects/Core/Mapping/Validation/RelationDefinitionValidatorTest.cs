@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       var validator = RelationDefinitionValidator.Create();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (8));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (9));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RdbmsRelationEndPointCombinationIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule)));
       Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule)));
@@ -69,6 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (RelationEndPointPropertyTypeIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[6], Is.TypeOf (typeof (RelationEndPointNamesAreConsistentValidationRule)));
       Assert.That (validator.ValidationRules[7], Is.TypeOf (typeof (RelationEndPointTypesAreConsistentValidationRule)));
+      Assert.That (validator.ValidationRules[8], Is.TypeOf (typeof (CheckForPropertyNotFoundRelationEndPointsValidationRule)));
     }
 
     [Test]

@@ -321,30 +321,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "The declaring type 'TargetClass2ForMixinAddingBidirectionalRelationTwice' does not match the type of the opposite relation "
-        + "propery 'VirtualSide' declared on type 'RelationTargetForMixinAddingBidirectionalRelationTwice'.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.MixinAddingBidirectionalRelationTwice\r\n"
-        + "Property: RealSide")]
-    public void GetMetadata_WithInvalidOppositePropertyType_CausedByMixin ()
-    {
-      Type type = GetTargetClass2ForMixinAddingBidirectionalRelationTwice ();
-      Type mixinType = GetMixinAddingBidirectionalRelationTwice ();
-
-      var propertyInfo = mixinType.GetProperty ("RealSide");
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type, mixinType);
-
-      var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, Configuration.NameResolver);
-      classDefinition.MyPropertyDefinitions.Add (propertyReflector.GetMetadata ());
-
-      var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
-      _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetRelationTargetForMixinAddingBidirectionalRelationTwice ()));
-
-      relationReflector.GetMetadata (_classDefinitions);
-    }
-    
-    [Test]
     [ExpectedException (typeof (ArgumentTypeException),
         ExpectedMessage =
         "The classDefinition's class type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.BaseClass' is not assignable "
