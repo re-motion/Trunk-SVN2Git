@@ -35,28 +35,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectWithoutStorageClassNone");
     }
 
-    //Exception is thrown in MappingConfiguration (DomainObject class is not added to the mapping) 
+    //CheckForTypeNotFoundClassDefinitionValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-        +"PropertyTypeOfDomainObjectWithoutStorageClassNone.ClassWithInvalidPropertyType\r\n"
-        +"Property: InvalidProperty"
-        )]
+        "The relation property 'InvalidProperty' has return type 'DomainObject', which is not a part of the mapping. Relation properties must not point "
+        +"to classes above the inheritance root.\r\n\r\n"
+        +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+        +"PropertyTypeOfDomainObjectWithoutStorageClassNone.ClassWithInvalidPropertyType'")]
     public void PropertyTypeOfDomainObjectWithoutStorageClassNone ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfDomainObjectWithoutStorageClassNone");
     }
 
-    //Exception is thrown in MappingConfiguration (classes above inheritance hierarchy are not added to the mapping) 
+    //CheckForTypeNotFoundClassDefinitionValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."
-        +"NotSupportedPropertyTypes.PropertyTypeToDomainObjectAboveTheInheritanceRoot.ClassAboveInheritanceRoot'.\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."+
-        "PropertyTypeToDomainObjectAboveTheInheritanceRoot.InheritanceRootClass\r\n"
-        +"Property: InvalidProperty"
-        )]
+        "The relation property 'InvalidProperty' has return type 'ClassAboveInheritanceRoot', which is not a part of the mapping. Relation properties "
+        +"must not point to classes above the inheritance root.\r\n\r\n"
+        +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+        +"PropertyTypeToDomainObjectAboveTheInheritanceRoot.InheritanceRootClass'")]
     public void PropertyTypeToDomainObjectAboveTheInheritanceRoot ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeToDomainObjectAboveTheInheritanceRoot");

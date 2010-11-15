@@ -40,7 +40,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new DomainObjectTypeIsNotGenericValidationRule(),
           new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
           new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule());
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule(),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule());
     }
 
     public ClassDefinitionValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)

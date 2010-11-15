@@ -14,14 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations.
+    RelationPropertyTypeNotInMapping
 {
-  public class ClassNotInMapping : DomainObject
+  [DBTable]
+  [ClassID ("BidirectionalRelation_RelationPropertyTypeNotInMapping_InvalidRelationClass1")]
+  public class InvalidRelationClass1 : DomainObject
   {
-    [DBBidirectionalRelation ("BidirectionalRelationProperty")]
-    public Class1 RelationProperty { get; set; }
+    [DBBidirectionalRelation("RelationProperty", ContainsForeignKey = true)]
+    public ClassNotInMapping RelationProperty { get; set; }
   }
 }

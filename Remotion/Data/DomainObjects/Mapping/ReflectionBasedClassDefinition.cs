@@ -61,9 +61,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
-      if (!classType.IsSubclassOf (typeof (DomainObject)))
-        throw CreateMappingException ("Type '{0}' of class '{1}' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.", classType, ID);
-
+      
       _classType = classType;
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;

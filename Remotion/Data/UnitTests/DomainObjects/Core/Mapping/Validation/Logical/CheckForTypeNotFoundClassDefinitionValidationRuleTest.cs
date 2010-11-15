@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   public class CheckForTypeNotFoundClassDefinitionValidationRuleTest : ValidationRuleTestBase
   {
     private CheckForTypeNotFoundClassDefinitionValidationRule _validationRule;
-    
+
     [SetUp]
     public void SetUp ()
     {
@@ -56,14 +56,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void RelationDefinitionWithTypeNotFoundClassDefinition ()
     {
-      var classDefinition = new TypeNotFoundClassDefinition ("Test", "Test", "DefaultStorageProviderID", typeof (ClassOutOfInheritanceHierarchy));
-      var endPoint = new AnonymousRelationEndPointDefinition (classDefinition);
+      var classDefinition = new TypeNotFoundClassDefinition (
+          "Test",
+          "Test",
+          "DefaultStorageProviderID",
+          typeof (ClassOutOfInheritanceHierarchy),
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
+      var endPoint = new ReflectionBasedVirtualRelationEndPointDefinition (
+          classDefinition,
+          "RelationProperty",
+          false,
+          CardinalityType.One,
+          typeof (ClassNotInMapping),
+          null,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.ClassOutOfInheritanceHierarchy'.";
+      var expectedMessage =
+          "The relation property 'Property' has return type 'String', which is not a part of the mapping. Relation properties must not point to classes above the inheritance root.\r\n\r\n"
+          + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
+
+    
   }
 }

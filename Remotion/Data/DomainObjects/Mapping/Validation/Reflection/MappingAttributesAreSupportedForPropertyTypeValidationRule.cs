@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
     }
 
-  //  //TODO 3424: adapt error message (Declaration type and property
+  //  //TODO 3424:
   //  // StringPropertyAttribute
   //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
   //  {

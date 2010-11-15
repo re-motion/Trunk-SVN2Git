@@ -291,32 +291,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       classReflector.GetRelationDefinitions (new ClassDefinitionCollection(), _relationDefinitions);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints'.",
-        MatchType = MessageMatch.Contains)]
-    public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForBidirectionalRelation ()
-    {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), Configuration.NameResolver);
-      ClassDefinitionCollection classDefinitions = new ClassDefinitionCollection();
-      classDefinitions.Add (CreateClassWithRealRelationEndPointsClassDefinition());
-      classReflector.GetRelationDefinitions (classDefinitions, _relationDefinitions);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage =
-        "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints'.",
-        MatchType = MessageMatch.Contains)]
-    public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForUnidirectionalRelation ()
-    {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithMixedProperties), Configuration.NameResolver);
-      ClassDefinitionCollection classDefinitions = new ClassDefinitionCollection();
-      classDefinitions.Add (CreateClassWithMixedPropertiesClassDefinition());
-      classReflector.GetRelationDefinitions (classDefinitions, _relationDefinitions);
-    }
-
     private ClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",

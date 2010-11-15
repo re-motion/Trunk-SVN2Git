@@ -15,37 +15,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class TypeNotFoundClassDefinition : ClassDefinition
+  public class TypeNotFoundClassDefinition : ReflectionBasedClassDefinition
   {
-    private readonly Type _classType;
+    private readonly PropertyInfo _relationProperty;
 
-    public TypeNotFoundClassDefinition (string id, string entityName, string storageProviderID, Type classType)
-        : base(id, entityName, storageProviderID)
+    public TypeNotFoundClassDefinition (string id, string entityName, string storageProviderID, Type classType, PropertyInfo relationProperty)
+        : base(id, entityName, storageProviderID, classType, false, null, new PersistentMixinFinder(classType))
     {
-      ArgumentUtility.CheckNotNull ("classType", classType);
-     
-      _classType = classType;
+      ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
+
+      _relationProperty = relationProperty;
     }
 
-    public override Type ClassType
+    public PropertyInfo RelationProperty
     {
-      get { return _classType; }
+      get { return _relationProperty; }
     }
 
     public override bool IsClassTypeResolved
     {
       get { return false; }
-    }
-
-    public override ClassDefinition BaseClass
-    {
-      get { return null; }
     }
 
     public override ClassDefinitionCollection DerivedClasses
@@ -66,11 +62,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
     {
       throw new NotImplementedException();
-    }
-
-    public override bool IsAbstract
-    {
-      get { return false; }
     }
 
     public override ReflectionBasedClassDefinitionValidator GetValidator ()

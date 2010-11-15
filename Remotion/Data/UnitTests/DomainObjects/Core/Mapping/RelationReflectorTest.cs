@@ -552,14 +552,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector."
-      + "RelatedPropertyTypeIsNotInMapping.ClassNotInMapping'.\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1\r\n"
-      + "Property: BidirectionalRelationProperty")]
-    public void GetMetadata_RelatedPropertyTypeIsNotInMapping_BidirectionalRelation ()
+    public void GetMetadata_RelatedPropertyTypeIsNotInMapping ()
     {
       var originatingProperty = typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1).GetProperty ("BidirectionalRelationProperty");
+      var oppositeProperty = typeof (ClassNotInMapping).GetProperty ("RelationProperty");
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
           "Class1",
@@ -572,32 +568,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = new ClassDefinitionCollection { originatingClass };
 
       var endPointFactoryMock = MockRepository.GenerateMock<IRelationEndPointDefinitionFactory> ();
+      var fakeEndPoint1 = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      var fakeEndPoint2 = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      fakeEndPoint1.Stub (stub => stub.PropertyInfo).Return (originatingProperty);
+      fakeEndPoint2.Stub (stub => stub.PropertyInfo).Return (oppositeProperty);
+      fakeEndPoint1.Stub (stub => stub.ClassDefinition).Return (originatingClass);
 
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver, endPointFactoryMock);
-      relationReflector.GetMetadata (classDefinitions);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException),
-      ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector."
-      + "RelatedPropertyTypeIsNotInMapping.ClassNotInMapping'.\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1\r\n"
-      + "Property: UnidirectionalRelationProperty")]
-    public void GetMetadata_RelatedPropertyTypeIsNotInMapping_UnidirectionalRelation ()
-    {
-      var originatingProperty = typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1).GetProperty ("UnidirectionalRelationProperty");
-      var originatingClass = new ReflectionBasedClassDefinition (
-          "Class1",
-          "Class1",
-          "DefaultStorageProvider",
-          typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1),
-          false,
-          null,
-          new PersistentMixinFinder (typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1)));
-
-      var classDefinitions = new ClassDefinitionCollection { originatingClass };
-
-      var endPointFactoryMock = MockRepository.GenerateMock<IRelationEndPointDefinitionFactory> ();
+      endPointFactoryMock.Expect (mock => mock.CreateEndPoint (originatingClass, originatingProperty, _nameResolver)).Return (fakeEndPoint1);
+      endPointFactoryMock.Expect (
+          mock =>
+          mock.CreateEndPoint (
+              Arg<ReflectionBasedClassDefinition>.Matches(cd=>cd.GetType() == typeof(TypeNotFoundClassDefinition)),
+              Arg<PropertyInfo>.Matches (pi => pi.Name == "RelationProperty"),
+              Arg.Is (_nameResolver)))
+          .Return (fakeEndPoint2);
+      endPointFactoryMock.Replay ();
 
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver, endPointFactoryMock);
       relationReflector.GetMetadata (classDefinitions);

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -30,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      _classType = typeof(string);
-      _classDefinition = new TypeNotFoundClassDefinition ("Test", "Test", "DefaultStoarageProvider", _classType);
+      _classType = typeof(ClassNotInMapping);
+      _classDefinition = new TypeNotFoundClassDefinition ("Test", "Test", "DefaultStoarageProvider", _classType, typeof(string).GetProperty("Length"));
     }
 
     [Test]

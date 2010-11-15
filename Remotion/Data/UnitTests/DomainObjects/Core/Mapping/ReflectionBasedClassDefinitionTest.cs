@@ -414,24 +414,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassNotDerivedFromDomainObject' of class 'Company' is not derived from "
-        + "'Remotion.Data.DomainObjects.DomainObject'.")]
-    public void ClassTypeWithInvalidDerivation ()
-    {
-      ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Company", "Company", "TestDomain", typeof (ClassNotDerivedFromDomainObject), false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Type 'Remotion.Data.DomainObjects.DomainObject' of class 'Company' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.")]
-    public void ClassTypeDomainObject ()
-    {
-      ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (DomainObject), false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Property 'Name' cannot be added to class 'Company', because it already defines a property with the same name.")]
     public void AddDuplicateProperty ()
     {

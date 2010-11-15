@@ -44,7 +44,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new RelationEndPointPropertyTypeIsSupportedValidationRule(),
           new RelationEndPointNamesAreConsistentValidationRule(),
           new RelationEndPointTypesAreConsistentValidationRule(),
-          new CheckForPropertyNotFoundRelationEndPointsValidationRule());
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule(),
+          new CheckForTypeNotFoundClassDefinitionValidationRule());
     }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)

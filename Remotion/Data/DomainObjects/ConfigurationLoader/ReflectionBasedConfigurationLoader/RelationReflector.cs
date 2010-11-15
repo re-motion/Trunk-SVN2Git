@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         PropertyInfo propertyInfo,
         IMappingNameResolver nameResolver,
         IRelationEndPointDefinitionFactory endPointDefinitionFactory)
-      : base (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
+        : base (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinitionFactory", endPointDefinitionFactory);
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       bool isFirstEndPointReal = !first.IsVirtual && !first.IsAnonymous;
       var endPoints = isFirstEndPointReal ? new { Left = first, Right = second } : new { Left = second, Right = first };
-      var nameGivingEndPoint = endPoints.Left.PropertyInfo!=null ? endPoints.Left : endPoints.Right;
+      var nameGivingEndPoint = endPoints.Left.PropertyInfo != null ? endPoints.Left : endPoints.Right;
       var leftPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
       if (endPoints.Right.IsAnonymous)
         return string.Format ("{0}:{1}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName);
@@ -89,28 +90,24 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new AnonymousRelationEndPointDefinition (oppositeClassDefinition);
     }
 
-    private ReflectionBasedClassDefinition GetOppositeClassDefinition (ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
+    private ReflectionBasedClassDefinition GetOppositeClassDefinition (
+        ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
     {
-      // TODO 3424: Validation rule => use TypeNotFoundClassDefinition if classDefinitions[...] is null
-      try
+      var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
+      var oppositeClassDefinition = classDefinitions[type];
+      if (oppositeClassDefinition == null)
       {
-        var oppositeClassDefinition = classDefinitions.GetMandatory (ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo));
-
-        if (optionalOppositePropertyInfo != null)
-        {
-          while (oppositeClassDefinition.BaseClass != null && oppositeClassDefinition.ClassType != optionalOppositePropertyInfo.DeclaringType)
-          {
-            oppositeClassDefinition = oppositeClassDefinition.BaseClass;
-          }
-        }
-
-        return (ReflectionBasedClassDefinition) oppositeClassDefinition;
+        return new TypeNotFoundClassDefinition (
+            type.Name, type.Name, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name, type, PropertyInfo);
       }
-      catch (MappingException e)
+
+      if (optionalOppositePropertyInfo != null)
       {
-        // This is the case where the PropertyInfo's related object type is a DomainObject type above the inheritance root.
-        throw CreateMappingException (null, PropertyInfo, e.Message);
+        while (oppositeClassDefinition.BaseClass != null && oppositeClassDefinition.ClassType != optionalOppositePropertyInfo.DeclaringType)
+          oppositeClassDefinition = oppositeClassDefinition.BaseClass;
       }
+
+      return (ReflectionBasedClassDefinition) oppositeClassDefinition;
     }
   }
 }
