@@ -14,39 +14,36 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Web;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
   public class DatePickerPageQuirksModeRenderer : IDatePickerPageRenderer
   {
-    public DatePickerPageQuirksModeRenderer ()
+    private readonly IResourceUrlFactory _resourceUrlFactory;
+
+    public DatePickerPageQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
     {
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, DatePickerPage page, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      var newPage = PageWrapper.CastOrCreate (page);
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageQuirksModeRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            newPage,
-            context,
-            typeof (DatePickerPageQuirksModeRenderer),
-            ResourceType.Html,
-            "DatePicker.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageQuirksModeRenderer), ResourceType.Html, "DatePicker.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
     }
-    
+
+    protected IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory; }
+    }
   }
 }

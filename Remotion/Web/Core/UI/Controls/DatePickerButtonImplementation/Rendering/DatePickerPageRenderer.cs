@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
@@ -31,7 +30,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, DatePickerPage page, HttpContextBase context)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
