@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
-      _derivedClasses = new ClassDefinitionCollection (new ClassDefinitionCollection (true), true);
+      _derivedClasses = new ClassDefinitionCollection (Enumerable.Empty<ClassDefinition>(), true, true);
       _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
       _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
 
@@ -163,9 +163,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void AddDerivedClass (ClassDefinition derivedClass)
     {
-      var derivedClasses = new ClassDefinitionCollection (_derivedClasses, false);
-      derivedClasses.Add (derivedClass);
-      _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
+      _derivedClasses = new ClassDefinitionCollection (
+          _derivedClasses.Cast<ClassDefinition>().Concat (new[] { derivedClass }),
+          true,
+          _derivedClasses.AreResolvedTypesRequired);
     }
 
     private MappingException CreateMappingException (string message, params object[] args)

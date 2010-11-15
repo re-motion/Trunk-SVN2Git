@@ -139,18 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CopyConstructor_ClassefinitionCollection ()
-    {
-      _collection.Add (_classDefinition);
-
-      var copiedCollection = new ClassDefinitionCollection (_collection, false);
-
-      Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_classDefinition, copiedCollection[0]);
-      Assert.AreEqual (_collection.AreResolvedTypesRequired, copiedCollection.AreResolvedTypesRequired);
-    }
-
-    [Test]
     public void CopyConstructor_IEnumerableCollection ()
     {
       var copiedCollection = new ClassDefinitionCollection (new[] { _classDefinition }, false, true);

@@ -48,14 +48,7 @@ public class ClassDefinitionCollection : CommonCollection
     _areResolvedTypesRequired = areResolvedTypesRequired;
   }
 
-  // standard constructor for collections
-
-  public ClassDefinitionCollection (ClassDefinitionCollection collection, bool makeCollectionReadOnly) 
-    : this(collection.Cast<ClassDefinition>(), makeCollectionReadOnly, collection._areResolvedTypesRequired)
-  {
-  }
-
-  public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOly, bool areResolvedTypeRequired)
+  public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOnly, bool areResolvedTypeRequired)
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 
@@ -64,7 +57,7 @@ public class ClassDefinitionCollection : CommonCollection
     foreach (var classDefinition in collection)
       Add (classDefinition);
 
-    SetIsReadOnly (makeCollectionReadOly);
+    SetIsReadOnly (makeCollectionReadOnly);
   }
 
   // methods and properties
