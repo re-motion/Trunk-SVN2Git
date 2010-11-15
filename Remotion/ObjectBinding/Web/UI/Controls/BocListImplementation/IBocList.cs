@@ -38,14 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
         IBocListSortingOrderProvider,
         IResourceDispatchTarget
   {
-    /// <summary> Is raised when the sorting order of the <see cref="BocList"/> is about to change. </summary>
-    /// <remarks> Will only be raised, if the change was caused by an UI action. </remarks>
-    event BocListSortingOrderChangeEventHandler SortingOrderChanging;
-
-    /// <summary> Is raised when the sorting order of the <see cref="BocList"/> has changed. </summary>
-    /// <remarks> Will only be raised, if the change was caused by an UI action. </remarks>
-    event BocListSortingOrderChangeEventHandler SortingOrderChanged;
-
     new bool IsReadOnly { get; }
 
     new IList Value { get; }
@@ -56,50 +48,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     ///   Gets a flag set <see langword="true"/> if the <see cref="IBusinessObjectBoundControl.Value"/> is sorted before it is displayed.
     /// </summary>
     bool HasSortingKeys { get; }
-
-    /// <summary> Gets the user independent column definitions. </summary>
-    /// <remarks> Behavior undefined if set after initialization phase or changed between postbacks. </remarks>
-    BocColumnDefinitionCollection FixedColumns { get; }
-
-    /// <summary> Gets the predefined column definition sets that the user can choose from at run-time. </summary>
-    BocListViewCollection AvailableViews { get; }
-
-    /// <summary>
-    ///   Gets or sets the selected <see cref="BocListView"/> used to
-    ///   supplement the <see cref="FixedColumns"/>.
-    /// </summary>
-    BocListView SelectedView { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to show the asterisks in the title row for columns having 
-    ///   edit mode controls.
-    /// </summary>
-    bool ShowEditModeRequiredMarkers { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to show an exclamation mark in front of each control with 
-    ///   an validation error.
-    /// </summary>
-    bool ShowEditModeValidationMarkers { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to render validation messages and client side validators.
-    /// </summary>
-    bool DisableEditModeValidationMessages { get; }
-
-    /// <summary> Gets or sets a flag that enables the <see cref="EditModeValidator"/>. </summary>
-    bool EnableEditModeValidator { get; }
-
-    /// <summary> 
-    ///   Gets or sets the <see cref="EditableRowDataSourceFactory"/> used to create the data souce for the edit mode
-    ///   controls.
-    /// </summary>
-    EditableRowDataSourceFactory EditModeDataSourceFactory { get; }
-
-    /// <summary> 
-    ///   Gets or sets the <see cref="EditableRowControlFactory"/> used to create the controls for the edit mode.
-    /// </summary>
-    EditableRowControlFactory EditModeControlFactory { get; }
 
     /// <summary> 
     ///   Gets or sets a flag that determines wheter an empty list will still render its headers 
@@ -114,67 +62,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// </summary>
     /// <value> <see langword="false"/> to hide the headers and the addtional column sets if the list is empty. </value>
     bool ShowEmptyListEditMode { get; }
-
-    /// <summary> 
-    ///   Gets or sets a flag that determines wheter an empty list will still render its option and list menus. 
-    ///   (read-only mode only).
-    /// </summary>
-    /// <value> <see langword="false"/> to hide the option and list menus if the list is empty. </value>
-    bool ShowMenuForEmptyListReadOnlyMode { get; }
-
-    /// <summary> 
-    ///   Gets or sets a flag that determines wheter an empty list will still render its option and list menus
-    ///   (edit mode only).
-    /// </summary>
-    /// <value> <see langword="false"/> to hide the option and list menus if the list is empty. </value>
-    bool ShowMenuForEmptyListEditMode { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that indicates whether the control automatically generates a column 
-    ///   for each property of the bound object.
-    /// </summary>
-    /// <value> <see langword="true"/> show all properties of the bound business object. </value>
-    bool ShowAllProperties { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that indicates whether to display an icon in front of the first value 
-    ///   column.
-    /// </summary>
-    /// <value> <see langword="true"/> to enable the icon. </value>
-    bool EnableIcon { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to to enable cleint side sorting.
-    /// </summary>
-    /// <value> <see langword="true"/> to enable the sorting buttons. </value>
-    bool EnableSorting { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to display the sorting order index 
-    ///   after each sorting button.
-    /// </summary>
-    /// <remarks> 
-    ///   Only displays the index if more than one column is included in the sorting.
-    /// </remarks>
-    /// <value> 
-    ///   <see langword="NaBooleanEnum.True"/> to show the sorting order index after the button. 
-    ///   Defaults to <see langword="null"/>, which is interpreted as <see langword="true"/>.
-    /// </value>
-    bool? ShowSortingOrder { get; }
-
-    bool? EnableMultipleSorting { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to display the options menu.
-    /// </summary>
-    /// <value> <see langword="true"/> to show the options menu. </value>
-    bool ShowOptionsMenu { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that determines whether to display the list menu.
-    /// </summary>
-    /// <value> <see langword="true"/> to show the list menu. </value>
-    bool ShowListMenu { get; }
 
     /// <summary> Gets or sets a value that determines if the row menu is being displayed. </summary>
     /// <value> <see cref="Controls.RowMenuDisplay.Undefined"/> is interpreted as <see cref="Controls.RowMenuDisplay.Disabled"/>. </value>
@@ -344,53 +231,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// </param>
     /// <returns></returns>
     string GetCustomCellPostBackClientEvent (int columnIndex, int listIndex, string customCellArgument);
-
-    /// <summary>
-    ///   Sorts the <see cref="BocList.Value"/>'s <see cref="IBusinessObject"/> instances using the sorting keys
-    ///   and returns the sorted <see cref="IBusinessObject"/> instances as a new array. The original values remain
-    ///   untouched.
-    /// </summary>
-    /// <returns> 
-    ///   An <see cref="IBusinessObject"/> array sorted by the sorting keys or <see langword="null"/> if the list is
-    ///   not sorted.
-    /// </returns>
-    IBusinessObject[] GetSortedRows ();
-
-    /// <summary> Is raised when a data row is rendered. </summary>
-    event BocListDataRowRenderEventHandler DataRowRender;
-
-    void ClearSelectedRows ();
-
-    /// <summary> Gets indices for the rows selected in the <see cref="BocList"/>. </summary>
-    /// <returns> An array of <see cref="int"/> values. </returns>
-    int[] GetSelectedRows ();
-
-    /// <summary> Is raised before the changes to the editable row are saved. </summary>
-    event BocListEditableRowChangesEventHandler EditableRowChangesSaving;
-
-    /// <summary> Is raised after the changes to the editable row have been saved. </summary>
-    event BocListItemEventHandler EditableRowChangesSaved;
-
-    /// <summary> Is raised before the changes to the editable row are canceled. </summary>
-    event BocListEditableRowChangesEventHandler EditableRowChangesCanceling;
-
-    /// <summary> Is raised after the changes to the editable row have been canceled. </summary>
-    event BocListItemEventHandler EditableRowChangesCanceled;
-
-    /// <summary> Is raised when a column type <see cref="BocCustomColumnDefinition"/> is clicked on. </summary>
-    event BocCustomCellClickEventHandler CustomCellClick;
-
-    /// <summary> Is raised when a column with a command of type <see cref="CommandType.Event"/> is clicked. </summary>
-    event BocListItemCommandClickEventHandler ListItemCommandClick;
-
-    /// <summary> Is raised when a menu item with a command of type <see cref="CommandType.Event"/> is clicked. </summary>
-    event WebMenuItemClickEventHandler MenuItemClick;
-
-    void ApplyStyle (Style s);
-    void CopyBaseAttributes (WebControl controlSrc);
-    void MergeStyle (Style s);
-    void RenderBeginTag (HtmlTextWriter writer);
-    void RenderEndTag (HtmlTextWriter writer);
     IResourceManager GetResourceManager ();
     string GetListItemCommandArgument (int columnIndex, int originalRowIndex);
     BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);

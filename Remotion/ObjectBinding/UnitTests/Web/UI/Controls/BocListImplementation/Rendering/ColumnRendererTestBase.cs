@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       Initialize();
 
-      List.FixedColumns.Add (Column);
+      Column.OwnerControl = List;
       List.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments ().Do ((Func<string, string>) (url => url.TrimStart ('~')));
     }
   }

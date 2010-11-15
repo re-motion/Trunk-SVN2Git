@@ -124,9 +124,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       var stubColumnDefinition1 = new StubColumnDefinition();
       var stubColumnDefinition2 = new StubColumnDefinition();
       var stubColumnDefinition3 = new StubColumnDefinition();
-      List.FixedColumns.Add (stubColumnDefinition1);
-      List.FixedColumns.Add (stubColumnDefinition2);
-      List.FixedColumns.Add (stubColumnDefinition3);
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
 

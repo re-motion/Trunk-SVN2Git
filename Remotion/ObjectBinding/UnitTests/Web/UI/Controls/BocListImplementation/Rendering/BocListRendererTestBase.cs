@@ -82,8 +82,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       List.Stub (list => list.Value).Return (((TypeWithReference) BusinessObject).ReferenceList);
 
-      List.Stub (list => list.FixedColumns).Return (new BocColumnDefinitionCollection (List));
-      
       List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
 
       var listMenuStub = MockRepository.GenerateStub<IListMenu>();

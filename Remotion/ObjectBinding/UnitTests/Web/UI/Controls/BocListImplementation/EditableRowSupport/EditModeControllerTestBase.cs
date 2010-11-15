@@ -103,7 +103,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _bocList.EditableRowChangesSaved += Boclist_EditableRowChangesSaved;
       _bocList.EditableRowChangesSaving += Boclist_EditableRowChangesSaving;
 
-      _bocList.FixedColumns.AddRange (_columns);
       _bocList.LoadUnboundValue (_values, false);
     }
 

@@ -70,9 +70,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocList.ID = "BocList";
       NamingContainer.Controls.Add (_bocList);
 
-      _bocList.FixedColumns.Add (_typeWithStringFirstValueSimpleColumn);
-      _bocList.FixedColumns.Add (_typeWithStringSecondValueSimpleColumn);
-
       _bocList.LoadUnboundValue (_values, false);
       _bocList.SwitchListIntoEditMode();
 
