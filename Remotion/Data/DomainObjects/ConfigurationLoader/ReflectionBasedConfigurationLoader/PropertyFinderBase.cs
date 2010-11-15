@@ -76,7 +76,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (classDefinition));
 
-      // TODO: mixins are only checked on the top level, we get all inherited mixins anyway
+      // Mixins are currently only checked when the current type equals the classDefinition's type. This means we do not check for mixins when we
+      // are above the inheritance root (where _type will be a base of classDefinition.ClassType).
+      // TODO: Substitute this implicit rule with an includeMixins ctor parameter.
       if (_type == classDefinition.ClassType)
       {
         var mixinPropertyFinder = new MixinPropertyFinder (GetType(), classDefinition.PersistentMixinFinder, IncludeBaseProperties, NameResolver);
