@@ -183,8 +183,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.RelationPropertyTypeNotInMapping");
     }
 
+    //RelationEndPointCombinationIsSupportedValidationRule
     [Test]
-    [Ignore("TODO 3424")]
+    [ExpectedException(typeof(MappingException), ExpectedMessage = 
+      "The relation between property 'RelationProperty', declared on type 'InvalidRelationClass1', and property 'RelationProperty' declared on type "
+      +"'InvalidRelationClass2', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the "
+      +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"ManyToManyBidirectionalRelation.InvalidRelationClass1\r\n"
+      +"Property: RelationProperty\r\n"
+      +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"ManyToManyBidirectionalRelation.InvalidRelationClass2:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."
+      +"NotSupportedRelations.ManyToManyBidirectionalRelation.InvalidRelationClass2.RelationProperty->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+      +"TestDomain.Errors.ValidationIntegration.NotSupportedRelations.ManyToManyBidirectionalRelation.InvalidRelationClass1.RelationProperty\r\n"
+      +"----------\r\n"
+      +"The relation between property 'RelationProperty', declared on type 'InvalidRelationClass2', and property 'RelationProperty' declared on type "
+      +"'InvalidRelationClass1', contains two virtual end points. One of the two properties must set 'ContainsForeignKey' to 'true' on the "
+      +"'DBBidirectionalRelationAttribute'.\r\n\r\n"
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"ManyToManyBidirectionalRelation.InvalidRelationClass2\r\n"
+      +"Property: RelationProperty\r\n"
+      +"Relation ID: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations."
+      +"ManyToManyBidirectionalRelation.InvalidRelationClass1:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
+      +"ValidationIntegration.NotSupportedRelations.ManyToManyBidirectionalRelation.InvalidRelationClass1.RelationProperty->Remotion.Data.UnitTests."
+      +"DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedRelations.ManyToManyBidirectionalRelation.InvalidRelationClass2.RelationProperty")]
     public void ManyToManyBidirectionalRelation ()
     {
       ValidateMapping ("NotSupportedRelations.ManyToManyBidirectionalRelation");

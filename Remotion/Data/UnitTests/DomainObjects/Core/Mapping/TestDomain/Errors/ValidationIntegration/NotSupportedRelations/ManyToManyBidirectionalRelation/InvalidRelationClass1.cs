@@ -25,6 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.V
   public class InvalidRelationClass1 : DomainObject
   {
     [DBBidirectionalRelation ("RelationProperty")]
-    public InvalidRelationClass2 RelationProperty { get; set; }
+    public ObjectList<InvalidRelationClass2> RelationProperty { get; set; }
   }
 }
