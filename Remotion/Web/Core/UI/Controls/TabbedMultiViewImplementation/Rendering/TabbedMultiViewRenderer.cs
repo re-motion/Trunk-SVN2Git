@@ -37,6 +37,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      ArgumentUtility.CheckNotNull ("control", control);
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 

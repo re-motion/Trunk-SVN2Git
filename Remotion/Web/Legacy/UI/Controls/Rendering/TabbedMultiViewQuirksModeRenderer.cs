@@ -39,6 +39,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      ArgumentUtility.CheckNotNull ("control", control);
 
       string key = typeof (TabbedMultiViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
