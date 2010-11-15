@@ -491,7 +491,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private RelationDefinitionCollection FindAllRelationDefinitions ()
     {
-      var relations = new RelationDefinitionCollection (_relationDefinitions, false);
+      var relations = new RelationDefinitionCollection (_relationDefinitions.Cast<RelationDefinition>(), false);
 
       if (BaseClass != null)
       {
@@ -502,7 +502,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
 
-      return new RelationDefinitionCollection (relations, true);
+      return new RelationDefinitionCollection (relations.Cast<RelationDefinition>(), true);
     }
 
     private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()

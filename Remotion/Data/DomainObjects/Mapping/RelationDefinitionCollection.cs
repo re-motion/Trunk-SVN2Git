@@ -43,10 +43,6 @@ public class RelationDefinitionCollection : CommonCollection
   }
 
   // standard constructor for collections
-  public RelationDefinitionCollection (RelationDefinitionCollection collection, bool makeCollectionReadOnly)  
-    : this(collection.Cast<RelationDefinition>(), makeCollectionReadOnly)
-  {
-  }
 
   public RelationDefinitionCollection (IEnumerable<RelationDefinition> collection, bool makeCollectionReadOnly)
   {
