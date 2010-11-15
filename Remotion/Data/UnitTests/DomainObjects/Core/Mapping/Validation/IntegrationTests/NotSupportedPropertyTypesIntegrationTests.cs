@@ -26,10 +26,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //PropertyTypeIsSupportedValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-      "The property type System.Object is not supported.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-      +"PropertyTypeOfObjectWithoutStorageClassNone.ClassWithInvalidPropertyType\r\n"
-      +"Property: InvalidProperty")]
+      "The property type 'Object' is not supported. If you meant to declare a relation, 'Object' must be derived from 'DomainObject'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+      +"PropertyTypeOfObjectWithoutStorageClassNone.ClassWithInvalidPropertyType'\r\n"
+      +"Property: 'InvalidProperty'")]
     public void PropertyTypeOfObjectWithoutStorageClassNone ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectWithoutStorageClassNone");
@@ -61,18 +61,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //PropertyTypeIsSupportedValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.DomainObjects.DomainObject] is not supported.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-      +"PropertyTypeOfObjectList_DomainObject.ClassWithInvalidProperty\r\n"
-      +"Property: InvalidProperty1\r\n"
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "The property type 'ObjectList`1' is not supported. If you meant to declare a relation, 'ObjectList`1' must be derived from 'DomainObject'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+      +"PropertyTypeOfObjectList_DomainObject.ClassWithInvalidProperty'\r\n"
+      +"Property: 'InvalidProperty1'\r\n"
       +"----------\r\n"
-      +"The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-      +"ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] "
-      +"is not supported.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-      +"PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassWithInvalidProperty\r\n"
-      +"Property: InvalidProperty")]
+      +"The property type 'ObjectList`1' is not supported. If you meant to declare a relation, 'ObjectList`1' must be derived from 'DomainObject'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+      +"PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassWithInvalidProperty'\r\n"
+      +"Property: 'InvalidProperty'")]
     public void PropertyTypeOfObjectList_DomainObject ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObject");
@@ -81,12 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //PropertyTypeIsSupportedValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-      "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-      +"ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassAboveInheritanceRoot] is not "
-      +"supported.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-      +"PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassWithInvalidProperty\r\n"
-      +"Property: InvalidProperty")]
+      "The property type 'ObjectList`1' is not supported. If you meant to declare a relation, 'ObjectList`1' must be derived from 'DomainObject'.\r\n\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+      +"PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot.ClassWithInvalidProperty'\r\n"
+      +"Property: 'InvalidProperty'")]
     public void PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectList_DomainObjectAboveInheritanceRoot");
@@ -95,12 +91,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //PropertyTypeIsSupportedValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-       "The property type Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors."
-       +"ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional.DerivedDomainObjectClass] "
-       +"is not supported.\r\n\r\n"
-       +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
-       +"PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional.ClassWithInvalidPropertyType\r\n"
-       +"Property: InvalidProperty")]
+       "The property type 'ObjectList`1' is not supported. If you meant to declare a relation, 'ObjectList`1' must be derived from 'DomainObject'.\r\n\r\n"
+       +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes."
+       +"PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional.ClassWithInvalidPropertyType'\r\n"
+       +"Property: 'InvalidProperty'")]
     public void PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional ()
     {
       ValidateMapping ("NotSupportedPropertyTypes.PropertyTypeOfObjectList_DerivedDomainObject_Unidirectional");

@@ -59,8 +59,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageProviderID))
         {
           var message = string.Format (
-              "The property type {0} is not supported.\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
-              nativePropertyType,
+              "The property type '{0}' is not supported by this storage provider.\r\n\r\n"
+              +"Declaring type: '{1}'\r\nProperty: '{2}'",
+              nativePropertyType.Name,
               classDefinition.ClassType.FullName,
               propertyInfo.Name);
           return MappingValidationResult.CreateInvalidResult (message);
