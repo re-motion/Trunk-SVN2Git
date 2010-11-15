@@ -20,9 +20,9 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// <see cref="BocColumnRenderer"/> holds a <see cref="BocColumnDefinition"/>, it's corresponding <see cref="BocColumnRenderer"/> and other 
-  /// information needed to render a <see cref="BocList"/> column. It exposes methods which delegate to the <see cref="BocColumnRenderer"/> 
-  /// to render a title cell, data cell or a data column declaration. 
+  /// <see cref="BocColumnRenderer"/> holds a <see cref="BocColumnDefinition"/>, its corresponding <see cref="IBocColumnRenderer"/> and other 
+  /// information needed to render a <see cref="BocList"/> column. It exposes methods which delegate to the <see cref="IBocColumnRenderer"/> 
+  /// to render the title cell, data cell, and the data column declaration. 
   /// </summary>
   public class BocColumnRenderer
   {
