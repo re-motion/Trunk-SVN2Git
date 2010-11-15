@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private ReflectionBasedClassDefinition GetOppositeClassDefinition (ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
     {
-      // TODO 3424: Validation rule => use InvalidClassDefinition if classDefinitions[...] is null
+      // TODO 3424: Validation rule => use TypeNotFoundClassDefinition if classDefinitions[...] is null
       try
       {
         var oppositeClassDefinition = classDefinitions.GetMandatory (ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo));
@@ -109,7 +109,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       catch (MappingException e)
       {
         // This is the case where the PropertyInfo's related object type is a DomainObject type above the inheritance root.
-        // TODO 3424: Tests missing for bidirectional and unidirectional case
         throw CreateMappingException (null, PropertyInfo, e.Message);
       }
     }

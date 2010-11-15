@@ -528,6 +528,8 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Supplier.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\TestDomainAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\TestDomainBase.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedPropertyTypeIsNotInMapping\Class1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedPropertyTypeIsNotInMapping\ClassNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot\Class1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot\Class2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot\ClassAboveInheritanceRoot.cs" />
@@ -578,6 +580,7 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule\DerivedClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestMappingConfiguration.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ValidationIntegration\NotSupportedPropertyTypes\PropertyTypeOfObjectWithoutStorageClassNone\ClassWithInvalidPropertyType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TypeNotFoundClassDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\AttributesOnUnsupportedTypesIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedDomainObjectTypes.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedPersistenceMappingIntegrationTests.cs" />
@@ -586,6 +589,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\ValidationIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForPropertyNotFoundRelationEndPointsValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForTypeNotFoundClassDefinitionValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />

@@ -175,6 +175,7 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
+    <Compile Include="Mapping\TypeNotFoundClassDefinition.cs" />
     <Compile Include="Mapping\PropertyNotFoundRelationEndPointDefinition.cs" />
     <Compile Include="Mapping\SortExpressions\SortedPropertySpecification.cs" />
     <Compile Include="Mapping\SortExpressions\SortOrder.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\ISortExpressionValidator.cs" />
     <Compile Include="Mapping\Validation\Logical\CheckForPropertyNotFoundRelationEndPointsValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Logical\CheckForTypeNotFoundClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\RdbmsRelationEndPointCombinationIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
