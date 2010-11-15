@@ -20,7 +20,7 @@ using Remotion.Implementation;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Defines the API for rendering a <see cref="BocCustomColumnDefinition"/>.
+  /// Marker interface for the renderer responsible for rendering a <see cref="BocCustomColumnDefinition"/>.
   /// </summary>
   [ConcreteImplementation (typeof (BocCustomColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocCustomColumnRenderer : IBocColumnRenderer

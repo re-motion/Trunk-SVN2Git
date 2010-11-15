@@ -19,6 +19,9 @@ using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  /// <summary>
+  /// Interface for classes responsible for rendering the table block of a <see cref="IBocList"/> control.
+  /// </summary>
   [ConcreteImplementation (typeof (BocListTableBlockRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListTableBlockRenderer
   {

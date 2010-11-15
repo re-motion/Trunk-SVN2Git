@@ -19,7 +19,10 @@ using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  [ConcreteImplementation(typeof(BocSelectorColumnRenderer), Lifetime = LifetimeKind.Singleton)]
+  /// <summary>
+  /// Interface for classes that render the selector column of <see cref="IBocList"/> controls.
+  /// </summary>
+  [ConcreteImplementation (typeof (BocSelectorColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocSelectorColumnRenderer
   {
     /// <summary>

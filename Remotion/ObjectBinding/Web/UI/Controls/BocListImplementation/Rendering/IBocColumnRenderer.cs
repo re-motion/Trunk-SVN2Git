@@ -19,7 +19,7 @@ using System;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Interface for classes able to render table cells from a column definition derived from <see cref="BocColumnDefinition"/>.
+  /// Interface for classes responsible for rendering table cells from a column definition derived from <see cref="BocColumnDefinition"/>.
   /// </summary>
   public interface IBocColumnRenderer : INullObject
   {

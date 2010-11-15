@@ -19,7 +19,10 @@ using Remotion.Implementation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  [ConcreteImplementation(typeof(BocRowRenderer), Lifetime = LifetimeKind.Singleton)]
+  /// <summary>
+  /// Interface for classes responsible for rendering a single row of the table in a <see cref="IBocList"/> control.
+  /// </summary>
+  [ConcreteImplementation (typeof (BocRowRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocRowRenderer
   {
     /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>

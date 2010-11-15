@@ -20,7 +20,7 @@ using Remotion.Implementation;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Interface for classes able to render the menu block of a <see cref="IBocList"/> control.
+  /// Interface for classes responsible for rendering the menu block of a <see cref="IBocList"/> control.
   /// </summary>
   [ConcreteImplementation (typeof (BocListMenuBlockRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocListMenuBlockRenderer

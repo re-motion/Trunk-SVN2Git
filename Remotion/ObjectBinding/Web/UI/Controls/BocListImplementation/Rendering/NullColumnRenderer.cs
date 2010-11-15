@@ -18,6 +18,9 @@ using System;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
+  /// <summary>
+  /// Null-object implementation of <see cref="IBocColumnRenderer"/>.
+  /// </summary>
   public class NullColumnRenderer : IBocColumnRenderer
   {
     public bool IsNull

@@ -24,7 +24,7 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// <see cref="BocColumnRendererArrayBuilder"/> is responsible to create a collection of <see cref="BocColumnRenderer"/>s for the given
+  /// <see cref="BocColumnRendererArrayBuilder"/> is responsible for creating a collection of <see cref="BocColumnRenderer"/>s for the given
   /// <see cref="BocColumnDefinition"/>s. It exposes several properties which must be set to ensure that the right column renderers
   /// are created and the correct sorting information gets prepared.
   /// </summary>

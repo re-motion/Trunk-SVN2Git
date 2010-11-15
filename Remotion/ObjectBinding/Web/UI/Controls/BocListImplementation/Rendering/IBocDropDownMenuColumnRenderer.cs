@@ -20,7 +20,7 @@ using Remotion.Implementation;
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
-  /// Defines the API for rendering a <see cref="BocDropDownMenuColumnDefinition"/>.
+  /// Marker interface for the renderer responsible for rendering a <see cref="BocDropDownMenuColumnDefinition"/>.
   /// </summary>
   [ConcreteImplementation (typeof (BocDropDownMenuColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IBocDropDownMenuColumnRenderer : IBocColumnRenderer
