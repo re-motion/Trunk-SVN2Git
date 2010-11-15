@@ -27,6 +27,8 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   public interface IWebButtonRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+    
+    [Obsolete ("The Render method is not supported in version 1.13.83.", true)]
     void Render (WebButtonRenderingContext renderingContext);
   }
 }

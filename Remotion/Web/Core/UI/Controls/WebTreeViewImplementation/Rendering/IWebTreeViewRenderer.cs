@@ -26,6 +26,8 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   public interface IWebTreeViewRenderer
   {
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+
+    [Obsolete ("The Render method is not supported in version 1.13.83.", true)]
     void Render (WebTreeViewRenderingContext renderingContext);
   }
 }
