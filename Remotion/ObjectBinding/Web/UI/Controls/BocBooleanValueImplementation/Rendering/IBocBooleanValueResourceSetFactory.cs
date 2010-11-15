@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
-using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -28,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   [ConcreteImplementation (typeof(BocBooleanValueResourceSetFactory), Lifetime = LifetimeKind.Singleton)]
   public interface IBocBooleanValueResourceSetFactory
   {
-    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control);
+    BocBooleanValueResourceSet CreateResourceSet (IBocBooleanValue control);
   }
 }

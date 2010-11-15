@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
@@ -44,23 +43,22 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control)
+    public BocBooleanValueResourceSet CreateResourceSet (IBocBooleanValue control)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
       
-      return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control);
+      return control.CreateResourceSet() ?? CreateDefaultResourceSet (control);
     }
 
-    private BocBooleanValueResourceSet CreateDefaultResourceSet (HttpContextBase context, IBocBooleanValue control)
+    private BocBooleanValueResourceSet CreateDefaultResourceSet (IBocBooleanValue control)
     {
       IResourceManager resourceManager = control.GetResourceManager();
 
       BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
           c_defaultResourceGroup,
-          GetResourceUrl (control, context, c_trueIcon),
-          GetResourceUrl (control, context, c_falseIcon),
-          GetResourceUrl (control, context, c_nullIcon),
+          GetResourceUrl (c_trueIcon),
+          GetResourceUrl (c_falseIcon),
+          GetResourceUrl (c_nullIcon),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.TrueDescription),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.FalseDescription),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.NullDescription)
@@ -69,9 +67,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
       return resourceSet;
     }
 
-    private string GetResourceUrl (IBocBooleanValue control, HttpContextBase context, string icon)
+    private string GetResourceUrl (string icon)
     {
-      return ResourceUrlResolver.GetResourceUrl (control, context, typeof (BocBooleanValueQuirksModeResourceSetFactory), ResourceType.Image, icon);
+      return _resourceUrlFactory.CreateResourceUrl (typeof (BocBooleanValueQuirksModeResourceSetFactory), ResourceType.Image, icon).GetUrl ();
     }
   }
 }

@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      var resourceSet = _resourceSetFactory.CreateResourceSet (renderingContext.HttpContext, renderingContext.Control);
+      var resourceSet = _resourceSetFactory.CreateResourceSet (renderingContext.Control);
 
       AddAttributesToRender (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
