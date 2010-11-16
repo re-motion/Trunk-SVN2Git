@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class ClassDefinitionValidator : IClassDefinitionValidator
   {
-    private readonly ReadOnlyCollection<IClassDefinitionValidatorRule> _validationRules;
+    private readonly ReadOnlyCollection<IClassDefinitionValidationRule> _validationRules;
 
     public static ClassDefinitionValidator Create ()
     {
@@ -44,14 +44,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule());
     }
 
-    public ClassDefinitionValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)
+    public ClassDefinitionValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidatorRules", classDefinitionValidatorRules);
+      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);
 
-      _validationRules = Array.AsReadOnly (classDefinitionValidatorRules);
+      _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
     }
 
-    public ReadOnlyCollection<IClassDefinitionValidatorRule> ValidationRules
+    public ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules
     {
       get { return _validationRules; }
     }

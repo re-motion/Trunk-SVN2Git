@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   /// <summary>
   /// Validates that each defined property definition in a class is not already defined in a base class.
   /// </summary>
-  public class PropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidatorRule
+  public class PropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IClassDefinitionValidationRule
   {
     public PropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {

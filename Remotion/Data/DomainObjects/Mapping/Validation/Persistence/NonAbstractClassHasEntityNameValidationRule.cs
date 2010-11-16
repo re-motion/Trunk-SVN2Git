@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// <summary>
   /// Validates that each non-abstract class in the mapping can resolve it's entity-name.
   /// </summary>
-  public class NonAbstractClassHasEntityNameValidationRule : IClassDefinitionValidatorRule
+  public class NonAbstractClassHasEntityNameValidationRule : IClassDefinitionValidationRule
   {
     public NonAbstractClassHasEntityNameValidationRule ()
     {

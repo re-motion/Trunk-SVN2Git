@@ -17,9 +17,9 @@
 namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
   /// <summary>
-  /// Defines the API for the class definition mapping validator rules.
+  /// Defines the API for the class definition mapping validation rules.
   /// </summary>
-  public interface IClassDefinitionValidatorRule
+  public interface IClassDefinitionValidationRule
   {
     MappingValidationResult Validate (ClassDefinition classDefinition);
   }

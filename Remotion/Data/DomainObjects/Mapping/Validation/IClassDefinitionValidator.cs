@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public interface IClassDefinitionValidator
   {
-    ReadOnlyCollection<IClassDefinitionValidatorRule> ValidationRules { get; }
+    ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules { get; }
 
     IEnumerable<MappingValidationResult> Validate (IEnumerable<ClassDefinition> classDefinitions);
   }

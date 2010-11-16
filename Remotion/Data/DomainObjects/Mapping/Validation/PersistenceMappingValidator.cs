@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class PersistenceMappingValidator : IPersistenceMappingValidator
   {
-    private readonly ReadOnlyCollection<IClassDefinitionValidatorRule> _validationRules;
+    private readonly ReadOnlyCollection<IClassDefinitionValidationRule> _validationRules;
 
     public static PersistenceMappingValidator Create ()
     {
@@ -43,14 +43,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new PropertyTypeIsSupportedByStorageProviderValidationRule());
     }
 
-    public PersistenceMappingValidator (params IClassDefinitionValidatorRule[] classDefinitionValidatorRules)
+    public PersistenceMappingValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidatorRules", classDefinitionValidatorRules);
+      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);
 
-      _validationRules = Array.AsReadOnly (classDefinitionValidatorRules);
+      _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
     }
 
-    public ReadOnlyCollection<IClassDefinitionValidatorRule> ValidationRules
+    public ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules
     {
       get { return _validationRules; }
     }

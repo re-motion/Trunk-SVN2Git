@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that the StorageGroupAttribute is not defined twice in the class hierarchy.
   /// </summary>
-  public class StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule : IClassDefinitionValidatorRule
+  public class StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule : IClassDefinitionValidationRule
   {
     public StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule ()
     {

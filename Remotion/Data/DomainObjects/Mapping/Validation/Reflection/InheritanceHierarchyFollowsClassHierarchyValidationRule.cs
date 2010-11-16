@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that the type of a class defintion is derived from base type.
   /// </summary>
-  public class InheritanceHierarchyFollowsClassHierarchyValidationRule : IClassDefinitionValidatorRule
+  public class InheritanceHierarchyFollowsClassHierarchyValidationRule : IClassDefinitionValidationRule
   {
     public InheritanceHierarchyFollowsClassHierarchyValidationRule ()
     {

@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that a class definition type is a sub-class of domain object. 
   /// </summary>
-  public class ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule : IClassDefinitionValidatorRule
+  public class ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule : IClassDefinitionValidationRule
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {

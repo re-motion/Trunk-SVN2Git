@@ -35,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     private ReflectionBasedClassDefinition _classDefinition3;
     private MappingValidationResult _fakeValidMappingValidationResult;
     private MappingValidationResult _fakeInvalidMappingValidationResult;
-    private IClassDefinitionValidatorRule _validationRuleMock1;
-    private IClassDefinitionValidatorRule _validationRuleMock2;
-    private IClassDefinitionValidatorRule _validationRuleMock3;
+    private IClassDefinitionValidationRule _validationRuleMock1;
+    private IClassDefinitionValidationRule _validationRuleMock2;
+    private IClassDefinitionValidationRule _validationRuleMock3;
 
     [SetUp]
     public void SetUp ()
@@ -47,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
       _classDefinition3 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
 
-      _validationRuleMock1 = MockRepository.GenerateStrictMock<IClassDefinitionValidatorRule> ();
-      _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidatorRule> ();
-      _validationRuleMock3 = MockRepository.GenerateStrictMock<IClassDefinitionValidatorRule> ();
+      _validationRuleMock1 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
+      _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
+      _validationRuleMock3 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
 
       _fakeValidMappingValidationResult = MappingValidationResult.CreateValidResult();
       _fakeInvalidMappingValidationResult = MappingValidationResult.CreateInvalidResult("Test");

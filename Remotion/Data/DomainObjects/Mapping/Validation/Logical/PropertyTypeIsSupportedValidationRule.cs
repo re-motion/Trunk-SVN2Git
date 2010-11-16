@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   /// <summary>
   /// Validates that a property type is supported.
   /// </summary>
-  public class PropertyTypeIsSupportedValidationRule : IClassDefinitionValidatorRule
+  public class PropertyTypeIsSupportedValidationRule : IClassDefinitionValidationRule
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
