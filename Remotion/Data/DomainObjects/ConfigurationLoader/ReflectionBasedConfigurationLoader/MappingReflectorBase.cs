@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         foreach (ClassReflector classReflector in CreateClassReflectors())
           classReflector.GetClassDefinition (classDefinitions);
 
-        return
-            classDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count)).Cast
-                <ClassDefinition>();
+        return classDefinitions
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))
+            .Cast<ClassDefinition>();
       }
     }
 
@@ -60,9 +60,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         foreach (var classReflector in CreateClassReflectorsForRelations (classDefinitions))
           classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
 
-        return
-            relationDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count)).
-                Cast<RelationDefinition>();
+        return relationDefinitions
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count))
+            .Cast<RelationDefinition>();
       }
     }
 
