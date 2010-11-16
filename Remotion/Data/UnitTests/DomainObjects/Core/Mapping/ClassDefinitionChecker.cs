@@ -61,8 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           expectedDefinition.ID);
 
       Assert.AreEqual (
-          StorageEntityTestHelper.GetMyEntityName(expectedDefinition),
-          StorageEntityTestHelper.GetMyEntityName(actualDefinition),
+          StorageModelTestHelper.GetEntityName(expectedDefinition),
+          StorageModelTestHelper.GetEntityName(actualDefinition),
           "EntityName of class definition '{0}' does not match.",
           expectedDefinition.ID);
 
@@ -200,8 +200,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (expectedDefinition.StorageClass == StorageClass.Persistent)
       {
         Assert.AreEqual (
-            expectedDefinition.StoragePropertyDefinition.Name,
-            actualDefinition.StoragePropertyDefinition.Name,
+            StorageModelTestHelper.GetColumnName(expectedDefinition),
+            StorageModelTestHelper.GetColumnName(actualDefinition),
             "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
             expectedDefinition.PropertyName,
             classDefinition.ID);

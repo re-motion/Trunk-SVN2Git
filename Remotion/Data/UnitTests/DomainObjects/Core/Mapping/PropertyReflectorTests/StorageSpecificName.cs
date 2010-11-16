@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTests
 {
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.NoAttribute",
           actual.PropertyName);
-      Assert.AreEqual ("NoAttribute", actual.StoragePropertyDefinition.Name);
+      Assert.AreEqual ("NoAttribute", StorageModelTestHelper.GetColumnName(actual));
     }
 
     [Test]
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.StorageSpecificName",
           actual.PropertyName);
-      Assert.AreEqual ("CustomName", actual.StoragePropertyDefinition.Name);
+      Assert.AreEqual ("CustomName", StorageModelTestHelper.GetColumnName(actual));
     }
   }
 }

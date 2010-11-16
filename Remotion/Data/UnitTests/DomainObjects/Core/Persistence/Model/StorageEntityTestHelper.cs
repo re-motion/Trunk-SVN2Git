@@ -20,13 +20,20 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model
 {
-  public class StorageEntityTestHelper
+  public class StorageModelTestHelper
   {
-    public static string GetMyEntityName (ClassDefinition classDefinition)
+    public static string GetEntityName (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null;
+    }
+
+    public static string GetColumnName (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      return propertyDefinition.StoragePropertyDefinition.Name;
     }
   }
 }

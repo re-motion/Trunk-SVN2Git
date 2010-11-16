@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 

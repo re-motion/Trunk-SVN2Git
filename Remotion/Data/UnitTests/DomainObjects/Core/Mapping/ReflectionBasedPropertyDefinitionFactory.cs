@@ -18,6 +18,8 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -88,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       IStoragePropertyDefinition columnDefinition = null;
       if (storageClass == StorageClass.Persistent)
-        columnDefinition = new ColumnDefinition (columnName, propertyInfo);
+        columnDefinition = new RdbmsColumnDefinition (columnName, propertyInfo);
 
       return Create (
           classDefinition, fullPropertyName, propertyType, isNullable, maxLength, storageClass, propertyInfo, columnDefinition);

@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         Assert.IsNull (actual.BaseClass);
 
       Assert.AreEqual (expected.ClassType, actual.ClassType);
-      Assert.AreEqual (StorageEntityTestHelper.GetMyEntityName(expected), StorageEntityTestHelper.GetMyEntityName(actual));
+      Assert.AreEqual (StorageModelTestHelper.GetEntityName(expected), StorageModelTestHelper.GetEntityName(actual));
       Assert.AreEqual (expected.StorageProviderID, actual.StorageProviderID);
 
       Assert.AreEqual (expected.DerivedClasses.Count, actual.DerivedClasses.Count);
@@ -394,7 +394,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       else
         Assert.IsNull (actual.ClassDefinition);
 
-      Assert.AreEqual (expected.StoragePropertyDefinition.Name, actual.StoragePropertyDefinition.Name);
+      Assert.AreEqual (StorageModelTestHelper.GetColumnName(expected), StorageModelTestHelper.GetColumnName(actual));
       Assert.AreEqual (expected.DefaultValue, actual.DefaultValue);
       Assert.AreEqual (expected.IsNullable, actual.IsNullable);
       Assert.AreEqual (expected.MaxLength, actual.MaxLength);

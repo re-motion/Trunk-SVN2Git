@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping

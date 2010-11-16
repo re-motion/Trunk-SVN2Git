@@ -16,28 +16,28 @@
 // 
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class ColumnDefinitionTest
+  public class RdbmsColumnDefinitionTest
   {
-    private ColumnDefinition _columnDefinition;
+    private RdbmsColumnDefinition _rdbmsColumnDefinition;
     public string DummyProperty { get; set; }
     public string OtherProperty { get; set; }
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new ColumnDefinition ("Name", GetType().GetProperty ("DummyProperty"));
+      _rdbmsColumnDefinition = new RdbmsColumnDefinition ("Name", GetType().GetProperty ("DummyProperty"));
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_columnDefinition.PropertyInfo.Name, Is.EqualTo ("DummyProperty"));
+      Assert.That (_rdbmsColumnDefinition.Name, Is.EqualTo ("Name"));
+      Assert.That (_rdbmsColumnDefinition.PropertyInfo.Name, Is.EqualTo ("DummyProperty"));
     }
 
   }

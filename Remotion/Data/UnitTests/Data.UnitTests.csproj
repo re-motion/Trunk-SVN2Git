@@ -262,7 +262,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\RdbmsColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeColumnDefinition.cs" />

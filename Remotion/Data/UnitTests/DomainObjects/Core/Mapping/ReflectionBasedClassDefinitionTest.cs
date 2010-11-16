@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
-      Assert.That (StorageEntityTestHelper.GetMyEntityName(actual), Is.EqualTo ("OrderTable"));
+      Assert.That (StorageModelTestHelper.GetEntityName(actual), Is.EqualTo ("OrderTable"));
       Assert.That (actual.GetViewName(), Is.EqualTo ("OrderView"));
       Assert.That (actual.StorageProviderID, Is.EqualTo ("StorageProvider"));
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));

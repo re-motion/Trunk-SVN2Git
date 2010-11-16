@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class ColumnDefinition : IStoragePropertyDefinition
+  public class RdbmsColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
     private readonly PropertyInfo _propertyInfo;
 
-    public ColumnDefinition (string name, PropertyInfo propertyInfo)
+    public RdbmsColumnDefinition (string name, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);

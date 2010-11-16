@@ -262,7 +262,7 @@
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
-    <Compile Include="Mapping\ColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\RdbmsColumnDefinition.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidatorRule.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
@@ -283,7 +283,7 @@
     <Compile Include="Mapping\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.cs" />
-    <Compile Include="Mapping\IStoragePropertyDefinition.cs" />
+    <Compile Include="Persistence\Model\IStoragePropertyDefinition.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
     <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />

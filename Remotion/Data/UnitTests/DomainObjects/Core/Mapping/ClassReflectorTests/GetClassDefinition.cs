@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", StorageEntityTestHelper.GetMyEntityName (actual));
+      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", StorageModelTestHelper.GetEntityName (actual));
     }
 
     [Test]
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttribute", actual.ID);
-      Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttributeTable", StorageEntityTestHelper.GetMyEntityName (actual));
+      Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttributeTable", StorageModelTestHelper.GetEntityName (actual));
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
-      Assert.AreEqual ("ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttributeTable", StorageEntityTestHelper.GetMyEntityName (actual));
+      Assert.AreEqual ("ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttributeTable", StorageModelTestHelper.GetEntityName (actual));
     }
 
     [Test]

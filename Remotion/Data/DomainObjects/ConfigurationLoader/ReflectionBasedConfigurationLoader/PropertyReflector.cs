@@ -19,6 +19,7 @@ using System.Reflection;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -49,7 +50,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsNullable(),
           GetMaxLength(),
           StorageClass,
-          new ColumnDefinition (storageSpecificIdentifier, propertyInfo));
+          new RdbmsColumnDefinition (storageSpecificIdentifier, propertyInfo));
     }
 
     //TODO: Move adding of "ID" to RdbmsPropertyReflector

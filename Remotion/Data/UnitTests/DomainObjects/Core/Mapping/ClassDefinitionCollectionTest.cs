@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           _classDefinition.ID,
-          StorageEntityTestHelper.GetMyEntityName(_classDefinition),
+          StorageModelTestHelper.GetEntityName(_classDefinition),
           _classDefinition.StorageProviderID,
           _classDefinition.ClassType,
           false,

@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -166,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               (ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition,
               _propertyDefinition1.PropertyName,
-              _propertyDefinition1.StoragePropertyDefinition.Name);
+              StorageModelTestHelper.GetColumnName(_propertyDefinition1));
 
       Assert.IsFalse (_collection.Contains (copy));
     }
