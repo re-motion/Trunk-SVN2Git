@@ -23,7 +23,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="UnionViewDefinition"/> represents a union view in a relational database.
+  /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>
   public class UnionViewDefinition : IEntityDefinition
   {

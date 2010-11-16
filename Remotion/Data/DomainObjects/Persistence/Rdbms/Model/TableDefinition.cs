@@ -23,7 +23,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="TableDefinition"/> represents a table definition in a relational database.
+  /// <see cref="TableDefinition"/> defines a table in a relational database.
   /// </summary>
   public class TableDefinition : IEntityDefinition
   {
