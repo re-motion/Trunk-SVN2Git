@@ -31,6 +31,7 @@ public class PropertyDefinitionCollection : CommonCollection
 
   public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
   {
+    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
     return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions.Cast<PropertyDefinition> ());
   }
 

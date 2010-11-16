@@ -31,6 +31,7 @@ public class RelationDefinitionCollection : CommonCollection
 
   public static IEnumerable<RelationDefinition> CreateForAllRelations (ClassDefinition classDefinition)
   {
+    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
     return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationDefinitions.Cast<RelationDefinition> ());
   }
 
