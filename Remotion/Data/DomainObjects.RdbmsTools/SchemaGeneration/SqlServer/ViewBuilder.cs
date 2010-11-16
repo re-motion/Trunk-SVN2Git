@@ -116,21 +116,21 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           FileBuilder.DefaultSchema);
     }
 
-    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<IStoragePropertyDefinition, PropertyDefinition>> groupedPropertyDefinitions)
+    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<string , PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
 
       foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
       {
-        var storageProperty = propertyDefinitionGroup.Key;
+        var storagePropertyName = propertyDefinitionGroup.Key;
 
         if (propertyDefinitionGroup.Any (
                 propertyDefinition => IsPartOfInheritanceBranch (classDefinitionForUnionSelect, propertyDefinition.ClassDefinition)))
         {
-          stringBuilder.AppendFormat (", [{0}]", storageProperty.Name);
+          stringBuilder.AppendFormat (", [{0}]", storagePropertyName);
 
           if (TableBuilder.HasClassIDColumn (propertyDefinitionGroup.First ()))
-            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storageProperty.Name));
+            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storagePropertyName));
         }
         else
         {
@@ -143,18 +143,18 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       return stringBuilder.ToString();
     }
 
-    private string GetColumnList (IEnumerable<IGrouping<IStoragePropertyDefinition, PropertyDefinition>> groupedPropertyDefinitions)
+    private string GetColumnList (IEnumerable<IGrouping<string , PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
       foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
       {
-        var storageProperty = propertyDefinitionGroup.Key;
+        var storagePropertyName = propertyDefinitionGroup.Key;
         var propertyDefinition = propertyDefinitionGroup.First ();
 
-        stringBuilder.AppendFormat (", [{0}]", storageProperty.Name);
+        stringBuilder.AppendFormat (", [{0}]", storagePropertyName);
 
         if (TableBuilder.HasClassIDColumn (propertyDefinition))
-          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storageProperty.Name));
+          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storagePropertyName));
       }
       return stringBuilder.ToString();
     }

@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       return false;
     }
 
-    protected IEnumerable<IGrouping<IStoragePropertyDefinition, PropertyDefinition>> GetGroupedPropertyDefinitions (ClassDefinition classDefinition)
+    protected IEnumerable<IGrouping<string , PropertyDefinition>> GetGroupedPropertyDefinitions (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -204,7 +204,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       FillAllPropertyDefinitionsFromDerivedClasses (classDefinition, allPropertyDefinitions);
 
-      return allPropertyDefinitions.GroupBy (propertyDefinition => propertyDefinition.StoragePropertyDefinition);
+      return allPropertyDefinitions.GroupBy (propertyDefinition => propertyDefinition.StoragePropertyDefinition.Name);
     }
 
     private void FillAllPropertyDefinitionsFromBaseClasses (ClassDefinition classDefinition, List<PropertyDefinition> allPropertyDefinitions)

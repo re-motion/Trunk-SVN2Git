@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -22,69 +23,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ColumnDefinitionTest
   {
+    private ColumnDefinition _columnDefinition;
     public string DummyProperty { get; set; }
     public string OtherProperty { get; set; }
 
-    [Test]
-    public void Equals_True ()
+    [SetUp]
+    public void SetUp ()
     {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-
-      Assert.IsTrue (definition1.Equals (definition2));
+      _columnDefinition = new ColumnDefinition ("Name", GetType().GetProperty ("DummyProperty"));
     }
 
     [Test]
-    public void Equals_DifferentName_False ()
+    public void Initialization ()
     {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Some Other Name", GetType ().GetProperty ("DummyProperty"));
-
-      Assert.IsFalse (definition1.Equals (definition2));
+      Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
+      Assert.That (_columnDefinition.PropertyInfo.Name, Is.EqualTo ("DummyProperty"));
     }
 
-    [Test]
-    public void Equals_DifferentProperty_False ()
-    {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Name", GetType ().GetProperty ("OtherProperty"));
-
-      Assert.IsFalse (definition1.Equals (definition2));
-    }
-
-    [Test]
-    public void Equals_Null_False ()
-    {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-
-      Assert.IsFalse (definition1.Equals (null));
-    }
-
-    [Test]
-    public void GetHashCode_EqualsTrue ()
-    {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-
-      Assert.AreEqual (definition1.GetHashCode(), definition2.GetHashCode());
-    }
-
-    [Test]
-    public void GetHashCode_DifferentName_EqualsFalse ()
-    {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Some Other Name", GetType ().GetProperty ("DummyProperty"));
-
-      Assert.AreNotEqual (definition1.GetHashCode (), definition2.GetHashCode ());
-    }
-
-    [Test]
-    public void GetHashCode_DifferentProperty_EqualsFalse ()
-    {
-      var definition1 = new ColumnDefinition ("Name", GetType ().GetProperty ("DummyProperty"));
-      var definition2 = new ColumnDefinition ("Name", GetType ().GetProperty ("OtherProperty"));
-
-      Assert.AreNotEqual (definition1.GetHashCode (), definition2.GetHashCode ());
-    }
   }
 }

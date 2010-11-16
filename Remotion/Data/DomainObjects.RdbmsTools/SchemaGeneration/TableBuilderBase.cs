@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       string columnList = string.Empty;
       ClassDefinition currentClassDefinition = classDefinition;
-      var addedStorageProperties = new HashSet<IStoragePropertyDefinition>();
+      var addedStorageProperties = new HashSet<string>();
 
       while (currentClassDefinition != null)
       {
@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       return columnList;
     }
 
-    private void AppendColumnListOfDerivedClasses (ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<IStoragePropertyDefinition> addedStorageProperties)
+    private void AppendColumnListOfDerivedClasses (ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<string > addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("columnListStringBuilder", columnListStringBuilder);
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       }
     }
 
-    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<IStoragePropertyDefinition> addedStorageProperties)
+    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<string > addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent ())
       {
-        if (addedStorageProperties.Add (propertyDefinition.StoragePropertyDefinition))
+        if (addedStorageProperties.Add (propertyDefinition.StoragePropertyDefinition.Name))
           columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
       }
 

@@ -43,33 +43,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get { return _propertyInfo; }
     }
-
-    public bool Equals (ColumnDefinition other)
-    {
-      if (ReferenceEquals (null, other))
-        return false;
-      if (ReferenceEquals (this, other))
-        return true;
-      return Equals (other._name, _name) && Equals (other._propertyInfo, _propertyInfo);
-    }
-
-    public override bool Equals (object obj)
-    {
-      if (ReferenceEquals (null, obj))
-        return false;
-      if (ReferenceEquals (this, obj))
-        return true;
-      if (obj.GetType() != typeof (ColumnDefinition))
-        return false;
-      return Equals ((ColumnDefinition) obj);
-    }
-
-    public override int GetHashCode ()
-    {
-      unchecked
-      {
-        return ((_name != null ? _name.GetHashCode() : 0) * 397) ^ (_propertyInfo != null ? _propertyInfo.GetHashCode() : 0);
-      }
-    }
+   
   }
 }
