@@ -181,7 +181,9 @@
     <Compile Include="Mapping\SortExpressions\SortOrder.cs" />
     <Compile Include="Mapping\Validation\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidator.cs" />
+    <Compile Include="Mapping\Validation\IPersistenceMappingValidationRule.cs" />
     <Compile Include="Mapping\Validation\IPersistenceMappingValidator.cs" />
+    <Compile Include="Mapping\Validation\IPropertyDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\IPropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\ISortExpressionValidator.cs" />

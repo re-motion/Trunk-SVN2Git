@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// <summary>
   /// Validates that a persistent property type is supported by the storage provider.
   /// </summary>
-  public class PropertyTypeIsSupportedByStorageProviderValidationRule : IClassDefinitionValidationRule
+  public class PropertyTypeIsSupportedByStorageProviderValidationRule : IPersistenceMappingValidationRule
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {

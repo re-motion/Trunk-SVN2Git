@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// <summary>
   /// Validates that the StorageProviderID of a class defintion is equal to the StorageProviderID of the base class definition.
   /// </summary>
-  public class StorageProviderIDMatchesParentStorageProviderIDValiadationRule : IClassDefinitionValidationRule
+  public class StorageProviderIDMatchesParentStorageProviderIDValiadationRule : IPersistenceMappingValidationRule
   {
     public StorageProviderIDMatchesParentStorageProviderIDValiadationRule ()
     {
