@@ -29,20 +29,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
       return new MappingValidationResult (true, null);
     }
 
-    public static MappingValidationResult CreateInvalidResult (string message)
-    {
-      ArgumentUtility.CheckNotNull ("message", message);
-
-      return new MappingValidationResult (false, message);
-    }
-
-    [JetBrains.Annotations.StringFormatMethod ("formatMessage")]
+    [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
     public static MappingValidationResult CreateInvalidResult (string messageFormat, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return CreateInvalidResult (string.Format (messageFormat, args));
+      return new MappingValidationResult (false, string.Format (messageFormat, args));
     }
 
     private readonly bool _isValid;
