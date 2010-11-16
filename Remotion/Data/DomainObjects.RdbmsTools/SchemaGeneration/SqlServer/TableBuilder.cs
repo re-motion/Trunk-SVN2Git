@@ -54,15 +54,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       if (propertyDefinition.PropertyType == typeof (Byte[]))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (propertyDefinition.PropertyType))
-        return string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (propertyDefinition.PropertyType));
-
       return base.GetSqlDataType (propertyDefinition);
-    }
-
-    private int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)
-    {
-      return ExtensibleEnumUtility.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
     }
 
     private static string GetSqlDataType (Type type)
@@ -91,8 +83,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
         return "real";
       if (type.IsEnum)
         return GetSqlDataType (Enum.GetUnderlyingType (type));
+      
+      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
+        return string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (type));
 
       return null;
+    }
+
+    private static int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)
+    {
+      return ExtensibleEnumUtility.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
     }
 
     protected override string SqlDataTypeObjectID
