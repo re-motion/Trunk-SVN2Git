@@ -288,6 +288,8 @@
     <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
     <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
+    <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
+    <Compile Include="Persistence\Model\StorageEntityDefinitionStub.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
