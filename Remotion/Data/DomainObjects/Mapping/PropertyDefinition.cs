@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly StorageClass _storageClass;
     [NonSerialized]
-    private readonly IStorageProperty _storageProperty;
+    private readonly IStoragePropertyDefinition _storagePropertyDefinition;
 
     // construction and disposing
 
@@ -55,19 +55,19 @@ namespace Remotion.Data.DomainObjects.Mapping
         string propertyName,
         int? maxLength,
         StorageClass storageClass,
-        IStorageProperty storageProperty)
+        IStoragePropertyDefinition storagePropertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       if (storageClass == StorageClass.Persistent)
-        ArgumentUtility.CheckNotNull ("storageProperty", storageProperty);
+        ArgumentUtility.CheckNotNull ("storagePropertyDefinition", storagePropertyDefinition);
 
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = classDefinition.ID;
       _propertyName = propertyName;
       _maxLength = maxLength;
       _storageClass = storageClass;
-      _storageProperty = storageProperty;
+      _storagePropertyDefinition = storagePropertyDefinition;
     }
 
     // methods and properties
@@ -82,14 +82,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyName; }
     }
 
-    public IStorageProperty StorageProperty
+    public IStoragePropertyDefinition StoragePropertyDefinition
     {
       get
       {
         if (StorageClass != StorageClass.Persistent)
-          throw new InvalidOperationException ("Cannot access property 'StorageProperty' for non-persistent property definitions.");
+          throw new InvalidOperationException ("Cannot access property 'storagePropertyDefinition' for non-persistent property definitions.");
 
-        return _storageProperty;
+        return _storagePropertyDefinition;
       }
     }
 

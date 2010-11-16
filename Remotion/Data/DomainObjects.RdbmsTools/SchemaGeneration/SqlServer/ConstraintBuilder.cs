@@ -88,8 +88,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
 
       return string.Format (
           "  CONSTRAINT [FK_{0}] FOREIGN KEY ([{1}]) REFERENCES [{2}].[{3}] ([ID])",
-          classDefinition.GetEntityName () + "_" + propertyDefinition.StorageProperty.Name,
-          propertyDefinition.StorageProperty.Name,
+          classDefinition.GetEntityName () + "_" + propertyDefinition.StoragePropertyDefinition.Name,
+          propertyDefinition.StoragePropertyDefinition.Name,
           FileBuilder.DefaultSchema,
           oppositeClassDefinition.GetEntityName());
     }

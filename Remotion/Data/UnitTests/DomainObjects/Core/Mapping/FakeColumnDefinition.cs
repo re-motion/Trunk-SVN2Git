@@ -18,7 +18,7 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
-  public class FakeColumnDefinition : IStorageProperty
+  public class FakeColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
 

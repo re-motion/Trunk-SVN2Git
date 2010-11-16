@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           provider,
           "*",
           entityName,
-          relationProperty.StorageProperty.Name,
+          relationProperty.StoragePropertyDefinition.Name,
           relatedID,
           oppositeRelationEndPointDefinition.GetSortExpression());
     }

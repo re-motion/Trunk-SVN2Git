@@ -68,8 +68,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         if (propertyValue.Definition.StorageClass == StorageClass.Persistent && propertyValue.Definition.PropertyType != typeof (ObjectID))
         {
-          AppendColumn (columnBuilder, valueBuilder, propertyValue.Definition.StorageProperty.Name, propertyValue.Definition.StorageProperty.Name);
-          AddCommandParameter (command, propertyValue.Definition.StorageProperty.Name, propertyValue);
+          AppendColumn (columnBuilder, valueBuilder, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue.Definition.StoragePropertyDefinition.Name);
+          AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, propertyValue);
         }
       }
 

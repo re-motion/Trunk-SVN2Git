@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public interface IStorageProperty
+  public interface IStoragePropertyDefinition
   {
     string Name { get; }
   }

@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private void AppendColumnName (StringBuilder sb, SortedPropertySpecification sortedPropertySpecification)
     {
-      sb.Append (_dialect.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StorageProperty.Name));
+      sb.Append (_dialect.DelimitIdentifier (sortedPropertySpecification.PropertyDefinition.StoragePropertyDefinition.Name));
     }
   }
 }

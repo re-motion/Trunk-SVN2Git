@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               (ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition,
               _propertyDefinition1.PropertyName,
-              _propertyDefinition1.StorageProperty.Name);
+              _propertyDefinition1.StoragePropertyDefinition.Name);
 
       Assert.IsFalse (_collection.Contains (copy));
     }

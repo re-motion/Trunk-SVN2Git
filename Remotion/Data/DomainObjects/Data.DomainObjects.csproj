@@ -283,7 +283,7 @@
     <Compile Include="Mapping\Validation\Reflection\MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\MappingAttributesAreSupportedForPropertyTypeValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.cs" />
-    <Compile Include="Mapping\IStorageProperty.cs" />
+    <Compile Include="Mapping\IStoragePropertyDefinition.cs" />
     <Compile Include="Mapping\ReflectionBasedPropertyResolver.cs" />
     <Compile Include="Mapping\SortExpressions\SortExpressionDefinition.cs" />
     <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />

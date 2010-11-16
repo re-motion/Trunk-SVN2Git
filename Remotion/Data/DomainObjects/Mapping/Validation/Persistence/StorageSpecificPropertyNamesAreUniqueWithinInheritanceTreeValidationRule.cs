@@ -51,20 +51,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
           List<PropertyDefinition> basePropertyDefinitions;
-          if (_persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StorageProperty.Name, out basePropertyDefinitions)
+          if (_persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinitions)
               && basePropertyDefinitions != null
               && basePropertyDefinitions.Count > 0)
           {
             var basePropertyDefinition = basePropertyDefinitions[0];
 
-            if (!myPropertyDefinition.StorageProperty.Equals (basePropertyDefinition.StorageProperty))
+            if (!myPropertyDefinition.StoragePropertyDefinition.Equals (basePropertyDefinition.StoragePropertyDefinition))
             {
               var message = string.Format ("Property '{0}' of class '{1}' must not define storage specific name '{2}',"
                   + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.\r\n\r\n"
                   +"Declaring type: {5}\r\nProperty: {6}",
                   myPropertyDefinition.PropertyInfo.Name,
                   classDefinition.ClassType.Name,
-                  myPropertyDefinition.StorageProperty.Name,
+                  myPropertyDefinition.StoragePropertyDefinition.Name,
                   basePropertyDefinition.ClassDefinition.ClassType.Name,
                   basePropertyDefinition.PropertyInfo.Name,
                   classDefinition.ClassType.Name,
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             }
           }
 
-          _persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StorageProperty.Name] =
+          _persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StoragePropertyDefinition.Name] =
               new List<PropertyDefinition> (new[] { myPropertyDefinition });
         }
       }

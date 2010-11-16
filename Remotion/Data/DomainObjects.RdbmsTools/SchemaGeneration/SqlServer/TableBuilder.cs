@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
 
       return string.Format (
           "  [{0}] {1}{2},\r\n{3}",
-          propertyDefinition.StorageProperty.Name,
+          propertyDefinition.StoragePropertyDefinition.Name,
           GetSqlDataType (propertyDefinition),
           nullable,
           GetClassIDColumn (propertyDefinition));
@@ -168,7 +168,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       if (!HasClassIDColumn (propertyDefinition))
         return string.Empty;
 
-      return string.Format ("  [{0}] {1} NULL,\r\n", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StorageProperty.Name), SqlDataTypeClassID);
+      return string.Format ("  [{0}] {1} NULL,\r\n", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StoragePropertyDefinition.Name), SqlDataTypeClassID);
     }
   }
 }

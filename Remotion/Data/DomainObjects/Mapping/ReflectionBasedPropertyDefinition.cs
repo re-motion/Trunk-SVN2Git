@@ -40,8 +40,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         Type propertyType,
         bool? isNullable,
         int? maxLength,
-        StorageClass storageClass, IStorageProperty storageProperty)
-        : base (classDefinition, propertyName, maxLength, storageClass, storageProperty)
+        StorageClass storageClass, IStoragePropertyDefinition storagePropertyDefinition)
+        : base (classDefinition, propertyName, maxLength, storageClass, storagePropertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);

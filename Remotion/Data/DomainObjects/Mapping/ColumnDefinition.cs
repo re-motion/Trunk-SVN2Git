@@ -20,7 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class ColumnDefinition : IStorageProperty
+  public class ColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
     private readonly PropertyInfo _propertyInfo;

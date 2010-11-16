@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return typeof (ReflectionBasedPropertyDefinitionFactory).GetProperty ("FakeProperty", BindingFlags.Static | BindingFlags.Public);
     }
 
-    public static IStorageProperty GetFakeStorageProperty (string name)
+    public static IStoragePropertyDefinition GetFakeStorageProperty (string name)
     {
       return new FakeColumnDefinition (name);
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
       var fullPropertyName = originalDeclaringType.FullName + "." + propertyName;
 
-      IStorageProperty columnDefinition = null;
+      IStoragePropertyDefinition columnDefinition = null;
       if (storageClass == StorageClass.Persistent)
         columnDefinition = new ColumnDefinition (columnName, propertyInfo);
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         int? maxLength,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
-        IStorageProperty columnDefinition)
+        IStoragePropertyDefinition columnDefinition)
     {
       return new ReflectionBasedPropertyDefinition (
           classDefinition,
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         int? maxLength,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
-        IStorageProperty columnDefinition)
+        IStoragePropertyDefinition columnDefinition)
     {
       return new ReflectionBasedPropertyDefinition (
           classDefinition,

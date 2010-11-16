@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           FileBuilder.DefaultSchema);
     }
 
-    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<IStorageProperty, PropertyDefinition>> groupedPropertyDefinitions)
+    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<IStoragePropertyDefinition, PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
 
@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       return stringBuilder.ToString();
     }
 
-    private string GetColumnList (IEnumerable<IGrouping<IStorageProperty, PropertyDefinition>> groupedPropertyDefinitions)
+    private string GetColumnList (IEnumerable<IGrouping<IStoragePropertyDefinition, PropertyDefinition>> groupedPropertyDefinitions)
     {
       StringBuilder stringBuilder = new StringBuilder();
       foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
