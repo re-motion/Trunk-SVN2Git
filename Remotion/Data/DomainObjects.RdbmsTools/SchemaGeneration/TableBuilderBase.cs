@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     public static bool IsConcreteTable (ClassDefinition classDefinition)
     {
-      return classDefinition.MyEntityName != null && (classDefinition.BaseClass == null || classDefinition.BaseClass.GetEntityName() == null);
+      return classDefinition.StorageEntityDefinition != null && (classDefinition.BaseClass == null || classDefinition.BaseClass.GetEntityName() == null);
     }
 
     public static bool HasClassIDColumn (PropertyDefinition propertyDefinition)

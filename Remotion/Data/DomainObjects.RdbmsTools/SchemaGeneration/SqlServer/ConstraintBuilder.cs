@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
         createConstraintStringBuilder.AppendFormat (
             "ALTER TABLE [{0}].[{1}] ADD\r\n{2}\r\n",
             FileBuilder.DefaultSchema,
-            classDefinition.MyEntityName,
+            classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null,
             constraints);
       }
     }

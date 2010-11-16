@@ -15,14 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
-using Remotion.Mixins.Context;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlServer
 {
@@ -59,9 +58,17 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       base.SetUp();
 
       _tableBuilder = new TableBuilder();
-      _classDefintion = new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (Order), false, null, new PersistentMixinFinder(typeof (Order)));
+      _classDefintion = new ReflectionBasedClassDefinition (
+          "ClassID",
+          new StorageEntityDefinitionStub ("Table"),
+          "StorageProvider",
+          typeof (Order),
+          false,
+          null,
+          new PersistentMixinFinder (typeof (Order)));
     }
-[Test]
+
+    [Test]
     public void GetSqlDataType ()
     {
       Assert.AreEqual ("bit", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Boolean), null, null)));
@@ -118,7 +125,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Data type 'System.Char' is not supported.\r\n  Class: ClassID, property: Name")]
     public void GetSqlDataType_WithNotSupportedType ()
     {
@@ -164,7 +171,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           + "  [AddressID] uniqueidentifier NULL,\r\n\r\n"
           + "  -- Customer columns\r\n"
           + "  [CustomerType] int NOT NULL,\r\n"
-          + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n" 
+          + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
           + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
           + "  [LicenseCode] nvarchar (max) NULL,\r\n\r\n"
           + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
@@ -181,19 +188,48 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
       ReflectionBasedClassDefinition abstractClass =
-          new ReflectionBasedClassDefinition ("AbstractClass", null, "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder(typeof (AbstractClass)));
+          new ReflectionBasedClassDefinition (
+              "AbstractClass", null, "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder (typeof (AbstractClass)));
       abstractClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
+          CreatePropertyDefinition (
+              abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedAbstractClass =
-          new ReflectionBasedClassDefinition ("DerivedAbstractClass", null, "FirstStorageProvider", typeof (DerivedAbstractClass), false, abstractClass, new PersistentMixinFinder (typeof (DerivedAbstractClass)));
+          new ReflectionBasedClassDefinition (
+              "DerivedAbstractClass",
+              null,
+              "FirstStorageProvider",
+              typeof (DerivedAbstractClass),
+              false,
+              abstractClass,
+              new PersistentMixinFinder (typeof (DerivedAbstractClass)));
       derivedAbstractClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (derivedAbstractClass, "PropertyInAbstractDerivedClass", "PropertyInAbstractDerivedClass", typeof (string), false, 101, StorageClass.Persistent));
+          CreatePropertyDefinition (
+              derivedAbstractClass,
+              "PropertyInAbstractDerivedClass",
+              "PropertyInAbstractDerivedClass",
+              typeof (string),
+              false,
+              101,
+              StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
-          "DerivedConcreteClass", "EntityName", "FirstStorageProvider", typeof (DerivedConcreteClass), false, derivedAbstractClass, new PersistentMixinFinder(typeof (DerivedConcreteClass)));
+          "DerivedConcreteClass",
+          new StorageEntityDefinitionStub("EntityName"),
+          "FirstStorageProvider",
+          typeof (DerivedConcreteClass),
+          false,
+          derivedAbstractClass,
+          new PersistentMixinFinder (typeof (DerivedConcreteClass)));
       derivedConcreteClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (derivedConcreteClass, "PropertyInDerivedConcreteClass", "PropertyInDerivedConcreteClass", typeof (string), true, 102, StorageClass.Persistent));
+          CreatePropertyDefinition (
+              derivedConcreteClass,
+              "PropertyInDerivedConcreteClass",
+              "PropertyInDerivedConcreteClass",
+              typeof (string),
+              true,
+              102,
+              StorageClass.Persistent));
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"
@@ -221,28 +257,28 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddToCreateTableScriptWithDerivedClasses ()
     {
       string expectedStatement = "CREATE TABLE [dbo].[ConcreteClass]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- ConcreteClass columns\r\n"
-          + "  [PropertyInConcreteClass] nvarchar (100) NOT NULL,\r\n\r\n"
-          + "  -- DerivedClass columns\r\n"
-          + "  [PropertyInDerivedClass] nvarchar (100) NULL,\r\n"
-          + "  [PersistentProperty] nvarchar (max) NULL,\r\n\r\n"
-          + "  -- DerivedOfDerivedClass columns\r\n"
-          + "  [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,\r\n"
-          + "  [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
-          + "  -- SecondDerivedClass columns\r\n"
-          + "  [PropertyInSecondDerivedClass] nvarchar (100) NULL,\r\n"
-          + "  [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder ();
+                                 + "(\r\n"
+                                 + "  [ID] uniqueidentifier NOT NULL,\r\n"
+                                 + "  [ClassID] varchar (100) NOT NULL,\r\n"
+                                 + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
+                                 + "  -- ConcreteClass columns\r\n"
+                                 + "  [PropertyInConcreteClass] nvarchar (100) NOT NULL,\r\n\r\n"
+                                 + "  -- DerivedClass columns\r\n"
+                                 + "  [PropertyInDerivedClass] nvarchar (100) NULL,\r\n"
+                                 + "  [PersistentProperty] nvarchar (max) NULL,\r\n\r\n"
+                                 + "  -- DerivedOfDerivedClass columns\r\n"
+                                 + "  [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,\r\n"
+                                 + "  [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
+                                 + "  -- SecondDerivedClass columns\r\n"
+                                 + "  [PropertyInSecondDerivedClass] nvarchar (100) NULL,\r\n"
+                                 + "  [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
+                                 + "  CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                 + ")\r\n";
+      StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions.GetMandatory ("ConcreteClass"), stringBuilder);
 
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString ());
+      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
 
     //TODO: Move to TableBuilderBaseTest
@@ -250,21 +286,21 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddToCreateTableScriptWithRelationToClassWithoutInheritance ()
     {
       string expectedStatement = "CREATE TABLE [dbo].[OrderItem]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- OrderItem columns\r\n"
-          + "  [Position] int NOT NULL,\r\n"
-          + "  [Product] nvarchar (100) NOT NULL,\r\n"
-          + "  [OrderID] uniqueidentifier NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder ();
+                                 + "(\r\n"
+                                 + "  [ID] uniqueidentifier NOT NULL,\r\n"
+                                 + "  [ClassID] varchar (100) NOT NULL,\r\n"
+                                 + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
+                                 + "  -- OrderItem columns\r\n"
+                                 + "  [Position] int NOT NULL,\r\n"
+                                 + "  [Product] nvarchar (100) NOT NULL,\r\n"
+                                 + "  [OrderID] uniqueidentifier NULL,\r\n\r\n"
+                                 + "  CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                 + ")\r\n";
+      StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToCreateTableScript (OrderItemClass, stringBuilder);
 
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString ());
+      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
 
     [Test]
@@ -279,11 +315,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           + "  -- ClassWithoutProperties columns\r\n\r\n"
           + "  CONSTRAINT [PK_TableWithoutProperties] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder ();
+      StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToCreateTableScript (ClassWithoutProperties, stringBuilder);
 
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString ());
+      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
 
     [Test]
@@ -308,43 +344,44 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       _tableBuilder.AddTables (classes);
 
       string expectedCreateTableScript = "CREATE TABLE [dbo].[Customer]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- Company columns\r\n"
-          + "  [Name] nvarchar (100) NOT NULL,\r\n"
-          + "  [PhoneNumber] nvarchar (100) NULL,\r\n"
-          + "  [AddressID] uniqueidentifier NULL,\r\n\r\n"
-          + "  -- Customer columns\r\n"
-          + "  [CustomerType] int NOT NULL,\r\n"
-          + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
-          + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
-          + "  [LicenseCode] nvarchar (max) NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n\r\n"
-          + "CREATE TABLE [dbo].[Order]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- Order columns\r\n"
-          + "  [Number] int NOT NULL,\r\n"
-          + "  [Priority] int NOT NULL,\r\n"
-          + "  [CustomerID] uniqueidentifier NULL,\r\n"
-          + "  [CustomerIDClassID] varchar (100) NULL,\r\n"
-          + "  [OfficialID] varchar (255) NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n";
+                                         + "(\r\n"
+                                         + "  [ID] uniqueidentifier NOT NULL,\r\n"
+                                         + "  [ClassID] varchar (100) NOT NULL,\r\n"
+                                         + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
+                                         + "  -- Company columns\r\n"
+                                         + "  [Name] nvarchar (100) NOT NULL,\r\n"
+                                         + "  [PhoneNumber] nvarchar (100) NULL,\r\n"
+                                         + "  [AddressID] uniqueidentifier NULL,\r\n\r\n"
+                                         + "  -- Customer columns\r\n"
+                                         + "  [CustomerType] int NOT NULL,\r\n"
+                                         + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
+                                         + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
+                                         + "  [LicenseCode] nvarchar (max) NULL,\r\n\r\n"
+                                         + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                         + ")\r\n\r\n"
+                                         + "CREATE TABLE [dbo].[Order]\r\n"
+                                         + "(\r\n"
+                                         + "  [ID] uniqueidentifier NOT NULL,\r\n"
+                                         + "  [ClassID] varchar (100) NOT NULL,\r\n"
+                                         + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
+                                         + "  -- Order columns\r\n"
+                                         + "  [Number] int NOT NULL,\r\n"
+                                         + "  [Priority] int NOT NULL,\r\n"
+                                         + "  [CustomerID] uniqueidentifier NULL,\r\n"
+                                         + "  [CustomerIDClassID] varchar (100) NULL,\r\n"
+                                         + "  [OfficialID] varchar (255) NULL,\r\n\r\n"
+                                         + "  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                         + ")\r\n";
 
-      Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateTableScript ());
+      Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateTableScript());
 
-      string expectedDropTableScript = "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
+      string expectedDropTableScript =
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP TABLE [dbo].[Customer]\r\n\r\n"
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP TABLE [dbo].[Order]\r\n";
 
-      Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropTableScript ());
+      Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropTableScript());
     }
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool? isNullable, int? maxLength)
@@ -352,8 +389,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       return CreatePropertyDefinition (_classDefintion, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName,
-        Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
+    private PropertyDefinition CreatePropertyDefinition (
+        ReflectionBasedClassDefinition classDefinition,
+        string propertyName,
+        string columnName,
+        Type propertyType,
+        bool? isNullable,
+        int? maxLength,
+        StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
       return new ReflectionBasedPropertyDefinition (

@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
             + "    WHERE [ClassID] IN ({3})\r\n",
             GetColumnListForUnionSelect (tableRootClass, groupedPropertyDefinitions),
             FileBuilder.DefaultSchema,
-            tableRootClass.MyEntityName,
+            tableRootClass.StorageEntityDefinition!=null ? tableRootClass.StorageEntityDefinition.LegacyEntityName : null,
             classIDListForWhereClause);
 
         numberOfSelects++;
