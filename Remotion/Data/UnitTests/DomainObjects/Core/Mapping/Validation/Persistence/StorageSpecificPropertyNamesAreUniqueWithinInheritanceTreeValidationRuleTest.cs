@@ -82,10 +82,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false);
 
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName1", "FirstName", StorageClass.None));
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName2", "FirstName", StorageClass.None));
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.None,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.None,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new FakeColumnDefinition ("Property"));
+
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
       classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -102,21 +119,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false);
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new FakeColumnDefinition ("Property"));
 
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName1", "FirstName"));
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName2", "FirstName"));
-      classDefinition.SetReadOnly ();
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+      classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Property 'FakeProperty' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'FirstName', because class "
-          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific "
-          +"name.\r\n\r\n"
-          +"Declaring type: DerivedValidationDomainObjectClass\r\n"
-          +"Property: FakeProperty";
+          "Property 'PropertyWithStorageClassPersistent' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
+          +"because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage "
+          +"specific name.\r\n\r\n"
+          + "Declaring type: DerivedValidationDomainObjectClass\r\n"
+          + "Property: PropertyWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -129,12 +162,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false);
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property1"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new FakeColumnDefinition ("Property2"));
 
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName1", "FirstName1"));
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "FirstName2", "FirstName2"));
-      classDefinition.SetReadOnly ();
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+      classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -144,32 +193,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      _derivedBaseClass1.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass1, "FirstName1", "FirstName"));
-      _derivedBaseClass2.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass2, "FirstName2", "FirstName"));
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass1,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          new FakeColumnDefinition ("Property"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass2,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property"));
+
+      _derivedBaseClass1.MyPropertyDefinitions.Add (propertyDefinition1);
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
       _derivedBaseClass1.SetReadOnly();
-      _derivedBaseClass2.SetReadOnly ();
+      _derivedBaseClass2.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'FakeProperty' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'FirstName', because class "
-          +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific name.\r\n\r\n"
-          +"Declaring type: DerivedValidationDomainObjectClass\r\n"
-          +"Property: FakeProperty";
+          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
+          + "Declaring type: DerivedValidationDomainObjectClass\r\n"
+          + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
-      _derivedBaseClass1.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass1, "FirstName1", "FirstName1"));
-      _derivedBaseClass2.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass2, "FirstName2", "FirstName2"));
-      _derivedBaseClass1.SetReadOnly ();
-      _derivedBaseClass2.SetReadOnly ();
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass1,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          new FakeColumnDefinition ("Property1"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass2,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property2"));
+
+      _derivedBaseClass1.MyPropertyDefinitions.Add (propertyDefinition1);
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedBaseClass1.SetReadOnly();
+      _derivedBaseClass2.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
@@ -179,38 +262,70 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInDifferentInheritanceHierarchieLevel ()
     {
-      _derivedClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedClass, "FirstName1", "FirstName"));
-      _derivedBaseClass2.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass2, "FirstName2", "FirstName"));
-      _derivedClass.SetReadOnly ();
-      _derivedBaseClass2.SetReadOnly ();
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedClass,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
+          new FakeColumnDefinition ("Property"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass2,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property"));
+
+      _derivedClass.MyPropertyDefinitions.Add (propertyDefinition1);
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedClass.SetReadOnly();
+      _derivedBaseClass2.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'FakeProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'FirstName', because class "
-          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'FakeProperty' with the same storage specific name.\r\n\r\n"
-          +"Declaring type: OtherDerivedValidationHierarchyClass\r\n"
-          +"Property: FakeProperty";
+          "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
+          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
+          + "Declaring type: OtherDerivedValidationHierarchyClass\r\n"
+          + "Property: OtherProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInDifferentInheritanceHierarchieLevel ()
     {
-      _derivedClass.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedClass, "FirstName1", "FirstName1"));
-      _derivedBaseClass2.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClass2, "FirstName2", "FirstName2"));
-      _derivedClass.SetReadOnly ();
-      _derivedBaseClass2.SetReadOnly ();
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedClass,
+          "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
+          new FakeColumnDefinition ("Property1"));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass2,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new FakeColumnDefinition ("Property2"));
+
+      _derivedClass.MyPropertyDefinitions.Add (propertyDefinition1);
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedClass.SetReadOnly();
+      _derivedBaseClass2.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
-
-
   }
 }

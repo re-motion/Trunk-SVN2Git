@@ -18,5 +18,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
 {
   public class OtherDerivedValidationHierarchyClass : BaseOfBaseValidationDomainObjectClass
   {
+    public string OtherProperty { get; set; }
   }
 }

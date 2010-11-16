@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// </summary>
   public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IPersistenceMappingValidationRule
   {
-    private IDictionary<string, List<PropertyDefinition>> _persistentPropertyDefinitionsInInheritanceHierarchy;
+    private IDictionary<string, PropertyDefinition> _persistentPropertyDefinitionsInInheritanceHierarchy;
         
     public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      _persistentPropertyDefinitionsInInheritanceHierarchy = new Dictionary<string, List<PropertyDefinition>>();
+      _persistentPropertyDefinitionsInInheritanceHierarchy = new Dictionary<string, PropertyDefinition>();
 
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
         return ValidateStorageSpecificPropertyNames (classDefinition);
@@ -50,14 +50,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
-          List<PropertyDefinition> basePropertyDefinitions;
-          if (_persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinitions)
-              && basePropertyDefinitions != null
-              && basePropertyDefinitions.Count > 0)
+          PropertyDefinition basePropertyDefinition;
+          if (_persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
           {
-            var basePropertyDefinition = basePropertyDefinitions[0];
-
-            if (!myPropertyDefinition.StoragePropertyDefinition.Equals (basePropertyDefinition.StoragePropertyDefinition))
+            if (!myPropertyDefinition.PropertyInfo.Equals (basePropertyDefinition.PropertyInfo))
             {
               var message = string.Format ("Property '{0}' of class '{1}' must not define storage specific name '{2}',"
                   + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.\r\n\r\n"
@@ -73,8 +69,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             }
           }
 
-          _persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StoragePropertyDefinition.Name] =
-              new List<PropertyDefinition> (new[] { myPropertyDefinition });
+          _persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StoragePropertyDefinition.Name] =  myPropertyDefinition;
         }
       }
 
