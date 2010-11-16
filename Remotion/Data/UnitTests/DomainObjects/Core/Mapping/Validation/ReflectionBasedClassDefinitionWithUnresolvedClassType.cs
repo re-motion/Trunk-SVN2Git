@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {
@@ -23,13 +24,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
   {
     public ReflectionBasedClassDefinitionWithUnresolvedClassType (
         string id,
-        string entityName,
+        IStorageEntityDefinition storageEntityDefinition,
         string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, entityName, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
+        : base (id, storageEntityDefinition, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
     {
     }
 

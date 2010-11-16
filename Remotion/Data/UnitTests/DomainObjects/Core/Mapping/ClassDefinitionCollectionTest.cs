@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -40,10 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
-      _collection = new ClassDefinitionCollection ();
+      _collection = new ClassDefinitionCollection();
     }
 
     [Test]
@@ -69,7 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       try
       {
-        _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", TestDomainProviderID, typeof (Order), false));
+        _collection.Add (
+            ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", TestDomainProviderID, typeof (Order), false));
         Assert.Fail ("Expected an ArgumentException.");
       }
       catch (ArgumentException e)
@@ -83,11 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order' and "
-        + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer' both have the same class ID 'Order'. Use the ClassIDAttribute to define "
-        + "unique IDs for these classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
-        + "PublicKeyToken=.*' and 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
-        + "PublicKeyToken=.*'.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (MappingException),
+        ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order' and "
+                          +
+                          "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer' both have the same class ID 'Order'. Use the ClassIDAttribute to define "
+                          + "unique IDs for these classes. The assemblies involved are 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
+                          + "PublicKeyToken=.*' and 'Remotion.Data.UnitTests, Version=.*, Culture=neutral, "
+                          + "PublicKeyToken=.*'.", MatchType = MessageMatch.Regex)]
     public void AddTwiceWithSameClassID ()
     {
       _collection.Add (_classDefinition);
@@ -133,7 +137,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_classDefinition);
 
-      ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_classDefinition.ID, _classDefinition.MyEntityName, _classDefinition.StorageProviderID, _classDefinition.ClassType, false, _classDefinition.ReflectionBasedBaseClass);
+      ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          _classDefinition.ID,
+          StorageEntityTestHelper.GetMyEntityName(_classDefinition),
+          _classDefinition.StorageProviderID,
+          _classDefinition.ClassType,
+          false,
+          _classDefinition.ReflectionBasedBaseClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }
@@ -153,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassDefinitionCollectionTest'.")]
     public void GetMandatoryForInvalidClass ()
     {
-      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType ());
+      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType());
     }
 
     [Test]
@@ -190,10 +200,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_collection.IsReadOnly, Is.False);
 
-      _collection.SetReadOnly ();
+      _collection.SetReadOnly();
 
       Assert.That (_collection.IsReadOnly, Is.True);
     }
-    
   }
 }

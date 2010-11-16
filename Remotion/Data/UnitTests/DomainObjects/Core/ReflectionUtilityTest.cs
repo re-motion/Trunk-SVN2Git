@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
@@ -162,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub("Test"),
           "DefaultStorageProvider",
           typeof (ClassWithMixedProperty),
           true,
@@ -180,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub("Test"),
           "DefaultStorageProvider",
           typeof (ClassWithMixedProperty),
           true,
@@ -198,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub("Test"),
           "DefaultStorageProvider",
           typeof (ClassWithMixedProperty),
           true,
@@ -216,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub("Test"),
           "DefaultStorageProvider",
           typeof (ClassWithMixedProperty),
           true,

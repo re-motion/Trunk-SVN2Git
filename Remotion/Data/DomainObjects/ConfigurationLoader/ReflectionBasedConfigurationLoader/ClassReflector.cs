@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using TypeUtility=Remotion.Utilities.TypeUtility;
@@ -80,9 +81,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)
     {
+      var storageSpecificIdentifier = GetStorageSpecificIdentifier();
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
           GetID(),
-          GetStorageSpecificIdentifier(),
+          storageSpecificIdentifier!=null ? new StorageEntityDefinitionStub(storageSpecificIdentifier) : null,
           GetStorageProviderID(),
           Type,
           IsAbstract(),

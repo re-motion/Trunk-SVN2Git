@@ -626,6 +626,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Model\StorageEntityTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />

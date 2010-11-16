@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -51,13 +52,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ReflectionBasedClassDefinition (
         string id,
-        string entityName,
+        IStorageEntityDefinition storageEntityDefinition,
         string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, entityName, storageProviderID)
+        : base (id, storageEntityDefinition, storageProviderID)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);

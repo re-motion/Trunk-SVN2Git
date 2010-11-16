@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -60,8 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           expectedDefinition.ID);
 
       Assert.AreEqual (
-          expectedDefinition.MyEntityName,
-          actualDefinition.MyEntityName,
+          StorageEntityTestHelper.GetMyEntityName(expectedDefinition),
+          StorageEntityTestHelper.GetMyEntityName(actualDefinition),
           "EntityName of class definition '{0}' does not match.",
           expectedDefinition.ID);
 

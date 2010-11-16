@@ -29,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -64,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
-      Assert.That (actual.MyEntityName, Is.EqualTo ("OrderTable"));
+      Assert.That (StorageEntityTestHelper.GetMyEntityName(actual), Is.EqualTo ("OrderTable"));
       Assert.That (actual.GetViewName(), Is.EqualTo ("OrderView"));
       Assert.That (actual.StorageProviderID, Is.EqualTo ("StorageProvider"));
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));

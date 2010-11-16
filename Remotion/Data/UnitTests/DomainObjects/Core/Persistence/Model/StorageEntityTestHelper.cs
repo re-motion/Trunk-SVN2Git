@@ -15,27 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model
 {
-  /// <summary>
-  /// <see cref="StorageEntityDefinitionStub"/> is a stub implementation of <see cref="IStorageEntityDefinition"/> that simply holds an entity name.
-  /// </summary>
-  public class StorageEntityDefinitionStub : IStorageEntityDefinition
+  public class StorageEntityTestHelper
   {
-    private readonly string _entityName;
-
-    public StorageEntityDefinitionStub (string entityName)
+    public static string GetMyEntityName (ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      _entityName = entityName;
-    }
-
-    public string LegacyEntityName
-    {
-      get { return _entityName; }
+      return classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null;
     }
   }
 }

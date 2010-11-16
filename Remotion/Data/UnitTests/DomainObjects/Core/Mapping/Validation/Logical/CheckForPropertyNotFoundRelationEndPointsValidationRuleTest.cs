@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _validationRule = new CheckForPropertyNotFoundRelationEndPointsValidationRule();
       _classDefinition = new ReflectionBasedClassDefinition (
           "DerivedValidationDomainObjectClass",
-          "DerivedValidationDomainObjectClass",
+          new StorageEntityDefinitionStub ("DerivedValidationDomainObjectClass"),
           "DefaultStorageProvider",
           typeof (DerivedValidationDomainObjectClass),
           false,

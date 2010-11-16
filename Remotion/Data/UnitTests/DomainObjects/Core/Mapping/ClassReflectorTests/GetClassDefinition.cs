@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 {
@@ -139,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.MyEntityName);
+      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", StorageEntityTestHelper.GetMyEntityName (actual));
     }
 
     [Test]
@@ -151,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttribute", actual.ID);
-      Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttributeTable", actual.MyEntityName);
+      Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttributeTable", StorageEntityTestHelper.GetMyEntityName (actual));
     }
 
     [Test]
@@ -177,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
-      Assert.AreEqual ("ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttributeTable", actual.MyEntityName);
+      Assert.AreEqual ("ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttributeTable", StorageEntityTestHelper.GetMyEntityName (actual));
     }
 
     [Test]

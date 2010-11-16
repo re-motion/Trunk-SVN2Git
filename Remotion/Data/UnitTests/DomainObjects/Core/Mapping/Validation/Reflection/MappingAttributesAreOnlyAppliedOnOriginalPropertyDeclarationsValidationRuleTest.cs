@@ -19,6 +19,7 @@ using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (BaseMappingAttributesClass);
       var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
-          "Test", "Test", "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
+          "Test", new StorageEntityDefinitionStub ("Test"), "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
 
       _validationRule.Validate (classDefinition);
     }
@@ -103,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (ClassUsingMixinPropertiesNoInheritanceRoot);
       var classDefinition = new ReflectionBasedClassDefinition (
           "ClassUsingMixinPropertiesNoInheritanceRoot",
-          "ClassUsingMixinPropertiesNoInheritanceRoot",
+          new StorageEntityDefinitionStub("ClassUsingMixinPropertiesNoInheritanceRoot"),
           "DefaultStorageProvider",
           type,
           false,

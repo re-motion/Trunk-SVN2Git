@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProvider",
           typeof (DerivedValidationDomainObjectClass),
           false,
@@ -55,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProvider",
           typeof (string),
           false,

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _classDefinition = new ReflectionBasedClassDefinition (
           "ClassDerivedFromSimpleDomainObject",
-          "ClassDerivedFromSimpleDomainObject",
+          new StorageEntityDefinitionStub("ClassDerivedFromSimpleDomainObject"),
           "DefaultStorageProvider",
           typeof (ClassDerivedFromSimpleDomainObject),
           false,

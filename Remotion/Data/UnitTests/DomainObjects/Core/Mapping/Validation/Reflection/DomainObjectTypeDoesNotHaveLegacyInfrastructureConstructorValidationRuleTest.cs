@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeDoesNotHaveLegacyInfrastructureConcstructorValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (NonAbstractClassWithoutLegacyConstructor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (NonAbstractClassWithLegacyConstructor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -67,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (AbstractClassWithoutAttributeAndLegacyCtor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -79,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (AbstractClassWithoutAttributeAndWithLegacyCtor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -91,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (AbstractClassWithAttributeAndWithoutLegacyCtor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -103,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (AbstractClassWithAttributeAndWithLegacyCtor);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 

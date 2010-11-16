@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -340,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         Assert.IsNull (actual.BaseClass);
 
       Assert.AreEqual (expected.ClassType, actual.ClassType);
-      Assert.AreEqual (expected.MyEntityName, actual.MyEntityName);
+      Assert.AreEqual (StorageEntityTestHelper.GetMyEntityName(expected), StorageEntityTestHelper.GetMyEntityName(actual));
       Assert.AreEqual (expected.StorageProviderID, actual.StorageProviderID);
 
       Assert.AreEqual (expected.DerivedClasses.Count, actual.DerivedClasses.Count);

@@ -22,6 +22,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -43,9 +44,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // nonserialized member fields
     [NonSerialized]
-    private readonly string _entityName;
-
-    [NonSerialized]
     private readonly string _storageProviderID;
 
     [NonSerialized]
@@ -66,17 +64,18 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
+    [NonSerialized]
+    private readonly IStorageEntityDefinition _storageEntityDefinition;
+
     // construction and disposing
 
-    protected ClassDefinition (string id, string entityName, string storageProviderID)
+    protected ClassDefinition (string id, IStorageEntityDefinition storageEntityDefinition, string storageProviderID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      if (entityName == String.Empty)
-        throw new ArgumentEmptyException ("entityName");
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
 
       _id = id;
-      _entityName = entityName;
+      _storageEntityDefinition = storageEntityDefinition;
       _storageProviderID = storageProviderID;
 
       _propertyDefinitions = new PropertyDefinitionCollection (this);
@@ -159,8 +158,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public string GetEntityName ()
     {
-      if (_entityName != null)
-        return _entityName;
+      if (_storageEntityDefinition != null)
+        return _storageEntityDefinition.LegacyEntityName;
 
       if (BaseClass == null)
         return null;
@@ -363,9 +362,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _id; }
     }
 
-    public string MyEntityName
+    public IStorageEntityDefinition StorageEntityDefinition
     {
-      get { return _entityName; }
+      get { return _storageEntityDefinition; }
     }
 
     public abstract Type ClassType { get; }
@@ -470,9 +469,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
     {
-      if (_entityName != null)
+      if (_storageEntityDefinition != null)
       {
-        allConcreteEntityNames.Add (_entityName);
+        allConcreteEntityNames.Add (_storageEntityDefinition.LegacyEntityName);
         return;
       }
 

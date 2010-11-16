@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -31,14 +32,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      _classType = typeof(ClassNotInMapping);
-      _classDefinition = new TypeNotFoundClassDefinition ("Test", "Test", "DefaultStoarageProvider", _classType, typeof(string).GetProperty("Length"));
+      _classType = typeof (ClassNotInMapping);
+      _classDefinition = new TypeNotFoundClassDefinition (
+          "Test", new StorageEntityDefinitionStub ("Test"), "DefaultStoarageProvider", _classType, typeof (string).GetProperty ("Length"));
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_classDefinition.ClassType, Is.SameAs(_classType));
+      Assert.That (_classDefinition.ClassType, Is.SameAs (_classType));
       Assert.That (_classDefinition.BaseClass, Is.Null);
       Assert.That (_classDefinition.IsClassTypeResolved, Is.False);
       Assert.That (_classDefinition.IsAbstract, Is.False);

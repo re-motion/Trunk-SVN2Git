@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
 using Rhino.Mocks;
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (NonGenericTypeDomainObject);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -56,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       typeStub.Stub (stub => stub.IsSubclassOf (typeof (DomainObject))).Return (true);
 
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", typeStub, false, null, new PersistentMixinFinderMock (typeStub, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", typeStub, false, null, new PersistentMixinFinderMock (typeStub, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (GenericTypeDomainObject<string>);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 

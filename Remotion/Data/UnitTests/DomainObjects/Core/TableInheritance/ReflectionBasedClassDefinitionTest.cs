@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -46,10 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void InitializeWithNullEntityName ()
     {
-      Assert.IsNull (_domainBaseClass.MyEntityName);
+      Assert.IsNull (StorageEntityTestHelper.GetMyEntityName(_domainBaseClass));
 
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
-      Assert.IsNull (classDefinition.MyEntityName);
+      Assert.IsNull (StorageEntityTestHelper.GetMyEntityName(classDefinition));
     }
 
     [Test]
@@ -62,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void NullEntityNameWithDerivedClass ()
     {
-      Assert.IsNull (_domainBaseClass.MyEntityName);
-      Assert.IsNotNull (_personClass.MyEntityName);
-      Assert.IsNull (_customerClass.MyEntityName);
+      Assert.IsNull (StorageEntityTestHelper.GetMyEntityName(_domainBaseClass));
+      Assert.IsNotNull (StorageEntityTestHelper.GetMyEntityName(_personClass));
+      Assert.IsNull (StorageEntityTestHelper.GetMyEntityName(_customerClass));
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false,
@@ -58,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var classDefinition = new TypeNotFoundClassDefinition (
           "Test",
-          "Test",
+          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProviderID",
           typeof (ClassOutOfInheritanceHierarchy),
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));

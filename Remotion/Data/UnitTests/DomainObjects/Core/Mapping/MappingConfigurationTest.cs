@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
@@ -103,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var type = typeof (GenericTypeDomainObject<string>);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", "EntityName", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", new StorageEntityDefinitionStub("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
@@ -148,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "ID",
-          "EntityName",
+          new StorageEntityDefinitionStub("EntityName"),
           "SPID",
           typeof (RelationEndPointPropertyClass),
           false,

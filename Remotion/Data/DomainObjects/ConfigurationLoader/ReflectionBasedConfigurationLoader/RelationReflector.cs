@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -98,7 +99,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (oppositeClassDefinition == null)
       {
         return new TypeNotFoundClassDefinition (
-            type.Name, type.Name, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name, type, PropertyInfo);
+            type.Name,
+            new StorageEntityDefinitionStub (type.Name),
+            DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name,
+            type,
+            PropertyInfo);
       }
 
       if (optionalOppositePropertyInfo != null)
