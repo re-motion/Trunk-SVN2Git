@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public IEnumerable<MappingValidationResult> Validate (IEnumerable<ClassDefinition> classDefinitions)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       return from rule in _validationRules
              from classDefinition in classDefinitions

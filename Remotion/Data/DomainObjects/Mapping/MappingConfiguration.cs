@@ -180,47 +180,32 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidateClassDefinitions ()
     {
-      if (_classDefinitions.Count > 0)
-      {
-        var classDefinitionValidator = ClassDefinitionValidator.Create();
-        AnalyzeMappingValidationResults (classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
-      }
+      var classDefinitionValidator = ClassDefinitionValidator.Create();
+      AnalyzeMappingValidationResults (classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
     }
 
     private void ValidatePropertyDefinitions ()
     {
-      if (_classDefinitions.Count > 0)
-      {
-        var propertyDefinitionValidator = PropertyDefinitionValidator.Create();
-        AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
-      }
+      var propertyDefinitionValidator = PropertyDefinitionValidator.Create();
+      AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
     }
 
     private void ValidateRelationDefinitions ()
     {
-      if (_relationDefinitions.Count > 0)
-      {
-        var relationDefinitionValidator = RelationDefinitionValidator.Create();
-        AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
-      }
+      var relationDefinitionValidator = RelationDefinitionValidator.Create();
+      AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
     }
 
     private void ValidatePersistenceMapping ()
     {
-      if (_classDefinitions.Count > 0)
-      {
-        var persistenceMappingValidator = PersistenceMappingValidator.Create();
-        AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
-      }
+      var persistenceMappingValidator = PersistenceMappingValidator.Create();
+      AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
     }
 
     private void ValidateSortExpression ()
     {
-      if (_relationDefinitions.Count > 0)
-      {
-        var sortExpressionValidator = SortExpressionValidator.Create();
-        AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
-      }
+      var sortExpressionValidator = SortExpressionValidator.Create();
+      AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
     }
 
     private void AnalyzeMappingValidationResults (IEnumerable<MappingValidationResult> mappingValidationResults)

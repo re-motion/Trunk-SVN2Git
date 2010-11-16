@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public IEnumerable<MappingValidationResult> Validate (IEnumerable<RelationDefinition> relationDefinitions)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("relationDefinitions", relationDefinitions);
+      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
       return from rule in _validationRules
              from relationDefinition in relationDefinitions
