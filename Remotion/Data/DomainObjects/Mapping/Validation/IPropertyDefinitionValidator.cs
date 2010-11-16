@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
 {
@@ -25,8 +24,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public interface IPropertyDefinitionValidator
   {
-    ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules { get; }
-
     IEnumerable<MappingValidationResult> Validate (IEnumerable<ClassDefinition> classDefinitions);
   }
 }

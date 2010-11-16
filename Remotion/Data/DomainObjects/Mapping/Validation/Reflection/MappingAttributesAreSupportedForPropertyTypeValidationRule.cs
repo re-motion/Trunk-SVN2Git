@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that all applied attribute types of a property are supported.
   /// </summary>
-  public class MappingAttributesAreSupportedForPropertyTypeValidationRule : IClassDefinitionValidationRule
+  public class MappingAttributesAreSupportedForPropertyTypeValidationRule : IPropertyDefinitionValidationRule
   {
     private sealed class AttributeConstraint
     {

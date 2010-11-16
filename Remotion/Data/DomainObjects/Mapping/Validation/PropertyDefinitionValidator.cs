@@ -31,25 +31,25 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class PropertyDefinitionValidator : IPropertyDefinitionValidator
   {
-    private readonly ReadOnlyCollection<IClassDefinitionValidationRule> _validationRules;
+    private readonly ReadOnlyCollection<IPropertyDefinitionValidationRule> _validationRules;
 
-    public static ClassDefinitionValidator Create ()
+    public static PropertyDefinitionValidator Create ()
     {
-      return new ClassDefinitionValidator (
+      return new PropertyDefinitionValidator (
         new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
         new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
         new StorageClassIsSupportedValidationRule(),
         new PropertyTypeIsSupportedValidationRule());
     }
 
-    public PropertyDefinitionValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
+    public PropertyDefinitionValidator (params IPropertyDefinitionValidationRule[] classDefinitionValidationRules)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);
 
       _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
     }
 
-    public ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules
+    public ReadOnlyCollection<IPropertyDefinitionValidationRule> ValidationRules
     {
       get { return _validationRules; }
     }
