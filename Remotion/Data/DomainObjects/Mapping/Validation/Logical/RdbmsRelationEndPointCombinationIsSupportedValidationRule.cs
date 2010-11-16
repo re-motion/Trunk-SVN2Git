@@ -34,21 +34,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       if (endPointDefinition1.IsAnonymous && endPointDefinition2.IsAnonymous)
       {
-        var message = string.Format ("Relation '{0}' cannot have two anonymous end points.", relationDefinition.ID);
-        return MappingValidationResult.CreateInvalidResult(message);
+        return MappingValidationResult.CreateInvalidResult ("Relation '{0}' cannot have two anonymous end points.", relationDefinition.ID);
       }
 
       if (endPointDefinition1.IsVirtual && endPointDefinition2.IsVirtual)
       {
-        string message;
         var endPointDefinition1AsVirtualRelationEndPointDefinition = endPointDefinition1 as VirtualRelationEndPointDefinition;
         var endPointDefinition2AsVirtualRelationEndPointDefinition = endPointDefinition2 as VirtualRelationEndPointDefinition;
         if (endPointDefinition1AsVirtualRelationEndPointDefinition != null && endPointDefinition2AsVirtualRelationEndPointDefinition != null)
         {
-          message = string.Format (
+          return MappingValidationResult.CreateInvalidResult (
               "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two virtual end points. "
-              +
-              "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.\r\n\r\nDeclaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+              + "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.\r\n\r\n"
+              + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
               endPointDefinition1.PropertyInfo.Name,
               endPointDefinition1.ClassDefinition.ClassType.Name,
               endPointDefinition2.PropertyInfo.Name,
@@ -60,21 +58,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         }
         else
         {
-          message = string.Format (
+          return MappingValidationResult.CreateInvalidResult (
               "Relation '{0}' cannot have two virtual end points.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
               relationDefinition.ID,
               endPointDefinition1.ClassDefinition.ClassType.FullName,
               endPointDefinition1.PropertyInfo.Name);
         }
-        return MappingValidationResult.CreateInvalidResult(message);
       }
 
       if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
       {
-        var message = string.Format (
+        return MappingValidationResult.CreateInvalidResult (
             "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two non-virtual end points. "
-            +
-            "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.\r\n\r\nDeclaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+            + "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.\r\n\r\n"
+            + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
             endPointDefinition1.PropertyInfo.Name,
             endPointDefinition1.ClassDefinition.ClassType.Name,
             endPointDefinition2.PropertyInfo.Name,
@@ -83,7 +80,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             endPointDefinition1.ClassDefinition.ClassType.FullName,
             endPointDefinition1.PropertyInfo.Name,
             relationDefinition.ID);
-        return MappingValidationResult.CreateInvalidResult(message);
       }
 
       return MappingValidationResult.CreateValidResult();

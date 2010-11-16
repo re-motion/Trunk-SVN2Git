@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return MappingValidationResult.CreateInvalidResult(validationResult.Message);
+          return validationResult;
       }
 
       return MappingValidationResult.CreateValidResult();
@@ -46,40 +46,34 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       if (relationEndPointDefinition.PropertyInfo!=null)
       {
-        var relationAttribute =
-            (BidirectionalRelationAttribute)
-            AttributeUtility.GetCustomAttribute (relationEndPointDefinition.PropertyInfo, typeof (BidirectionalRelationAttribute), true);
+        var relationAttribute = AttributeUtility.GetCustomAttribute<BidirectionalRelationAttribute> (relationEndPointDefinition.PropertyInfo, true);
         if (relationAttribute != null)
         {
           var oppositeProperty = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
           if (oppositeProperty != null)
           {
-            var oppositeRelationAttribute =
-              (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (oppositeProperty, typeof (BidirectionalRelationAttribute), true);
+            var oppositeRelationAttribute = AttributeUtility.GetCustomAttribute<BidirectionalRelationAttribute> (oppositeProperty, true);
 
             if (oppositeRelationAttribute == null)
             {
-              var message = string.Format (
+              return MappingValidationResult.CreateInvalidResult (
                   "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.\r\n\r\n"
                   + "Declaration type: '{3}'",
                   relationAttribute.OppositeProperty,
                   oppositeProperty.DeclaringType.Name,
-                  relationAttribute.GetType ().Name,
+                  relationAttribute.GetType().Name,
                   relationEndPointDefinition.ClassDefinition.ClassType.FullName);
-              return MappingValidationResult.CreateInvalidResult(message);
             }
 
             if (!relationEndPointDefinition.PropertyInfo.Name.Equals (oppositeRelationAttribute.OppositeProperty, StringComparison.Ordinal))
             {
-              var message =
-                  string.Format (
-                      "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n\r\n"
-                      + "Declaration type: '{3}'",
-                      relationAttribute.OppositeProperty,
-                      oppositeProperty.DeclaringType.Name,
-                      relationAttribute.GetType ().Name,
-                      relationEndPointDefinition.ClassDefinition.ClassType.FullName);
-              return MappingValidationResult.CreateInvalidResult(message);
+              return MappingValidationResult.CreateInvalidResult (
+                  "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n\r\n"
+                  + "Declaration type: '{3}'",
+                  relationAttribute.OppositeProperty,
+                  oppositeProperty.DeclaringType.Name,
+                  relationAttribute.GetType().Name,
+                  relationEndPointDefinition.ClassDefinition.ClassType.FullName);
             }
           }
         }

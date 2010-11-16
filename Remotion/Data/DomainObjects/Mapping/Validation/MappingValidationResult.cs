@@ -35,7 +35,16 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
       return new MappingValidationResult (false, message);
     }
-    
+
+    [JetBrains.Annotations.StringFormatMethod ("formatMessage")]
+    public static MappingValidationResult CreateInvalidResult (string messageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("messageFormat", messageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      return CreateInvalidResult (string.Format (messageFormat, args));
+    }
+
     private readonly bool _isValid;
     private readonly string _message;
 

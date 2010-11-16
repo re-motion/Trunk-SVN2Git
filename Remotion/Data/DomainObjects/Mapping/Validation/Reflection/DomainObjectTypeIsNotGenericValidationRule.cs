@@ -42,8 +42,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       if (type.IsGenericType && !ReflectionUtility.IsDomainObjectBase(type))
       {
-        var message = string.Format ("Generic domain objects are not supported.\r\n\r\nDeclaring type: '{0}'", type.ToString());
-        return MappingValidationResult.CreateInvalidResult(message);
+        return MappingValidationResult.CreateInvalidResult ("Generic domain objects are not supported.\r\n\r\nDeclaring type: '{0}'", type.ToString());
       }
       return MappingValidationResult.CreateValidResult();
     }

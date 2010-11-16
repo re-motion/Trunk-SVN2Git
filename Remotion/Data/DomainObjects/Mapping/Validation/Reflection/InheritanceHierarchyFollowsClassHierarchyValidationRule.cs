@@ -30,13 +30,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       if (classDefinition.BaseClass !=null && !classDefinition.ClassType.IsSubclassOf (classDefinition.BaseClass.ClassType))
       {
-        var message = string.Format(
+        return MappingValidationResult.CreateInvalidResult (
             "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
             classDefinition.ClassType.AssemblyQualifiedName,
             classDefinition.ID,
             classDefinition.BaseClass.ClassType.AssemblyQualifiedName,
             classDefinition.BaseClass.ID);
-        return MappingValidationResult.CreateInvalidResult(message);
       }
       return MappingValidationResult.CreateValidResult();
     }

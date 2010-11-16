@@ -33,13 +33,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         var classDefinitionAsTypeNotFoundClassDefinition = endPointDefinition.ClassDefinition as TypeNotFoundClassDefinition;
         if (classDefinitionAsTypeNotFoundClassDefinition!=null)
         {
-          string message = string.Format (
-                    "The relation property '{0}' has return type '{1}', which is not a part of the mapping. Relation properties must not point to "
-                    + "classes above the inheritance root.\r\n\r\nDeclaration type: '{2}'",
-                    classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.Name,
-                    classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.PropertyType.Name,
-                    classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.DeclaringType.FullName);
-          return MappingValidationResult.CreateInvalidResult (message);
+          return MappingValidationResult.CreateInvalidResult (
+              "The relation property '{0}' has return type '{1}', which is not a part of the mapping. Relation properties must not point to "
+              + "classes above the inheritance root.\r\n\r\nDeclaration type: '{2}'",
+              classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.Name,
+              classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.PropertyType.Name,
+              classDefinitionAsTypeNotFoundClassDefinition.RelationProperty.DeclaringType.FullName);
         }
       }
       

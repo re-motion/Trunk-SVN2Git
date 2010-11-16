@@ -52,14 +52,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           relationEndPointDefinitionAsVirtualRelationEndPointDefintion.Cardinality == CardinalityType.One && 
           relationEndPointDefinitionAsVirtualRelationEndPointDefintion.SortExpressionText != null)
       {
-        var message = string.Format(
+        return MappingValidationResult.CreateInvalidResult (
             "Property '{0}' of class '{1}' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
-            +"Declaring type: '{2}'\r\nProperty: '{3}'",
+            + "Declaring type: '{2}'\r\nProperty: '{3}'",
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.Name,
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.ClassDefinition.ClassType.Name,
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.ClassDefinition.ClassType.FullName,
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.Name);
-        return MappingValidationResult.CreateInvalidResult(message);
       }
       return MappingValidationResult.CreateValidResult();
     }

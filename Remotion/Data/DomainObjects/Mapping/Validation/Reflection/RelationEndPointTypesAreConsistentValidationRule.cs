@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return MappingValidationResult.CreateInvalidResult (validationResult.Message);
+          return validationResult;
       }
 
       return MappingValidationResult.CreateValidResult();
@@ -61,14 +61,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             // In this case, the opposite property's return type must exactly match this ClassDefinition's type.
             if (classDefinition.ClassType != oppositeDomainObjectType)
             {
-              var message = string.Format(
+              return MappingValidationResult.CreateInvalidResult (
                   "The type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
-                  +"Declaring type: '{3}'",
+                  + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
                   oppositePropertyInfo.DeclaringType.Name,
                   classDefinition.ClassType.FullName);
-              return MappingValidationResult.CreateInvalidResult(message);
             }
           }
           else
@@ -85,14 +84,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             // (The scenario this was actually needed for is to allow for generic base classes above the inheritance root defining relation properties.)
             if (!declaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
             {
-              var message = string.Format(
+              return MappingValidationResult.CreateInvalidResult (
                   "The type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
-                  +"Declaring type: '{3}'",
+                  + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
                   oppositePropertyInfo.DeclaringType.Name,
                   classDefinition.ClassType.FullName);
-              return MappingValidationResult.CreateInvalidResult (message);
             }
           }
         }

@@ -73,13 +73,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         IMappingAttribute[] mappingAttributes = AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false);
         if (mappingAttributes.Length > 0)
         {
-          var message =
-              string.Format (
-                  "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\nDeclaration type: {1}\r\nProperty: {2}",
-                  mappingAttributes[0].GetType().Name,
-                  propertyInfo.DeclaringType.FullName,
-                  propertyInfo.Name);
-          return MappingValidationResult.CreateInvalidResult(message);
+          return MappingValidationResult.CreateInvalidResult (
+              "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\nDeclaration type: {1}\r\nProperty: {2}",
+              mappingAttributes[0].GetType().Name,
+              propertyInfo.DeclaringType.FullName,
+              propertyInfo.Name);
         }
       }
       return MappingValidationResult.CreateValidResult();
