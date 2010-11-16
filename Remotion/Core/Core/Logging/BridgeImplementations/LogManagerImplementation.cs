@@ -21,7 +21,6 @@ namespace Remotion.Logging.BridgeImplementations
 {
   public class LogManagerImplementation : ILogManagerImplementation
   {
-    // TODO: Get from config section
     private static readonly ILogManager s_current = new Log4NetLogManager ();
 
     /// <summary>
@@ -50,7 +49,7 @@ namespace Remotion.Logging.BridgeImplementations
     /// </summary>
     public void Initialize ()
     {
-      //TODO: Test once current ILogManager can be set through configuration.
+      //TODO: Test.
       s_current.Initialize ();
     }
 
