@@ -24,11 +24,25 @@ namespace Remotion
   /// <remarks>Used by those modules of the framework that do not have binary depedencies to another module to access information from this module.</remarks>
   public static class AdapterRegistry
   {
-    private static readonly IAdapterRegistryImplementation s_instance = SafeServiceLocator.Current.GetInstance<IAdapterRegistryImplementation>();
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly IAdapterRegistryImplementation AdapterRegistryImplementation =
+          SafeServiceLocator.Current.GetInstance<IAdapterRegistryImplementation> ();
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
 
     public static IAdapterRegistryImplementation Instance
     {
-      get { return s_instance; }
+      get { return LazyStaticFields.AdapterRegistryImplementation; }
     }
   }
 }
