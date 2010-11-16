@@ -14,31 +14,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using System.Reflection;
+using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  [TestFixture]
-  public class RdbmsColumnDefinitionTest
+  public class ColumnDefinition : IStoragePropertyDefinition
   {
-    private RdbmsColumnDefinition _rdbmsColumnDefinition;
-    public string DummyProperty { get; set; }
-    public string OtherProperty { get; set; }
+    private readonly string _name;
+    private readonly PropertyInfo _propertyInfo;
 
-    [SetUp]
-    public void SetUp ()
+    public ColumnDefinition (string name, PropertyInfo propertyInfo)
     {
-      _rdbmsColumnDefinition = new RdbmsColumnDefinition ("Name", GetType().GetProperty ("DummyProperty"));
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      _name = name;
+      _propertyInfo = propertyInfo;
     }
 
-    [Test]
-    public void Initialization ()
+    public string Name
     {
-      Assert.That (_rdbmsColumnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_rdbmsColumnDefinition.PropertyInfo.Name, Is.EqualTo ("DummyProperty"));
+      get { return _name; }
     }
 
+    public PropertyInfo PropertyInfo
+    {
+      get { return _propertyInfo; }
+    }
+   
   }
 }

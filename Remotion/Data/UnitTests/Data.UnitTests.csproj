@@ -262,7 +262,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\RdbmsColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeColumnDefinition.cs" />
@@ -627,6 +627,8 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\ValidationRuleTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Model\StorageEntityTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />

@@ -14,35 +14,44 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
-using Remotion.Data.DomainObjects.Persistence.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class RdbmsColumnDefinition : IStoragePropertyDefinition
+  /// <summary>
+  /// <see cref="TableDefinition"/> represents a table definition in a relational database.
+  /// </summary>
+  public class TableDefinition : IEntityDefinition
   {
-    private readonly string _name;
-    private readonly PropertyInfo _propertyInfo;
+    private readonly string _tableName;
+    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
-    public RdbmsColumnDefinition (string name, PropertyInfo propertyInfo)
+    public TableDefinition (string tabeleName, IEnumerable<ColumnDefinition> columns)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNullOrEmpty ("tabeleName", tabeleName);
+      ArgumentUtility.CheckNotNull ("columns", columns);
 
-      _name = name;
-      _propertyInfo = propertyInfo;
+      _tableName = tabeleName;
+      _columns = columns.ToList().AsReadOnly();
     }
 
-    public string Name
+    public string TableName
     {
-      get { return _name; }
+      get { return _tableName; }
     }
 
-    public PropertyInfo PropertyInfo
+    public string LegacyEntityName
     {
-      get { return _propertyInfo; }
+      get { return _tableName; }
     }
-   
+
+    public ReadOnlyCollection<ColumnDefinition> GetColumns ()
+    {
+      return _columns;
+    }
   }
 }

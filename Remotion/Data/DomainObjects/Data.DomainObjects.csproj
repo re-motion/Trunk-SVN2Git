@@ -262,7 +262,8 @@
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
-    <Compile Include="Persistence\Rdbms\Model\RdbmsColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidatorRule.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyNamesAreUniqueWithinInheritanceTreeValidationRule.cs" />
@@ -291,6 +292,8 @@
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Model\StorageEntityDefinitionStub.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
+    <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\UnionViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SortExpressionSqlGenerator.cs" />

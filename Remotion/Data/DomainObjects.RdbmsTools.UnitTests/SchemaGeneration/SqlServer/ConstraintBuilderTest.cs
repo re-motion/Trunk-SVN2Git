@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           isNullable,
           maxLength,
           storageClass,
-          new RdbmsColumnDefinition (columnName, dummyPropertyInfo));
+          new ColumnDefinition (columnName, dummyPropertyInfo));
     }
 
     [Test]

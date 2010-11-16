@@ -15,14 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.Persistence.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IStorageEntityDefinition"/> defines the API for a storable entity definition.
+  /// <see cref="IEntityDefinition"/> defines the API for an entity definition for a relational database.
   /// </summary>
-  public interface IStorageEntityDefinition
+  public interface IEntityDefinition : IStorageEntityDefinition
   {
-    string LegacyEntityName { get; }
+    ReadOnlyCollection<ColumnDefinition> GetColumns ();
   }
 }
