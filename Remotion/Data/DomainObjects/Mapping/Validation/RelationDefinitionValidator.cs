@@ -64,7 +64,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("relationDefinitions", relationDefinitions);
 
-      return _validationRules.SelectMany (rule => relationDefinitions, (rule, rd) => rule.Validate (rd)).Where (result => !result.IsValid);
+      return from rule in _validationRules
+             from relationDefinition in relationDefinitions
+             let result = rule.Validate (relationDefinition)
+             where !result.IsValid
+             select result;
     }
   }
 }
