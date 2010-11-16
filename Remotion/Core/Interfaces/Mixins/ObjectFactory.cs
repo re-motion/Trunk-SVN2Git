@@ -39,6 +39,22 @@ namespace Remotion.Mixins
   /// <threadsafety static="true" instance="true"/>
   public static class ObjectFactory
   {
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly IObjectFactoryImplementation ObjectFactoryImplementation = 
+          SafeServiceLocator.Current.GetInstance<IObjectFactoryImplementation> ();
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
+
     #region Public construction
 
     /// <summary>
@@ -526,8 +542,7 @@ namespace Remotion.Mixins
         GenerationPolicy generationPolicy,
         params object[] preparedMixins)
     {
-      return SafeServiceLocator.Current
-          .GetInstance<IObjectFactoryImplementation>().CreateInstance (
+      return LazyStaticFields.ObjectFactoryImplementation.CreateInstance (
               allowNonPublicConstructors, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
     }
 

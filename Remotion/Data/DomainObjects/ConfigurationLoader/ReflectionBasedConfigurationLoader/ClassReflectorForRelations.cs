@@ -39,10 +39,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       Type = type;
       NameResolver = nameResolver;
-      PersistentMixinFinder = new PersistentMixinFinder (type, ReflectionUtility.IsInheritanceRoot (Type));
     }
 
-    public PersistentMixinFinder PersistentMixinFinder { get; private set; }
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
 
@@ -53,7 +51,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
-      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, PersistentMixinFinder))
+      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition))
       {
         RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
@@ -77,7 +75,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         endPoint2.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
     }
 
-    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
+    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
       RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);

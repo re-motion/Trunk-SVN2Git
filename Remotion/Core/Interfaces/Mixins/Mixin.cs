@@ -26,6 +26,21 @@ namespace Remotion.Mixins
   /// </summary>
   public static class Mixin
   {
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly IMixinImplementation MixinImplementation = SafeServiceLocator.Current.GetInstance<IMixinImplementation> ();
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
+
     /// <summary>
     /// Gets the instance of the specified mixin type <typeparamref name="TMixin"/> that was mixed into the given <paramref name="mixinTarget"/>.
     /// </summary>
@@ -40,7 +55,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static TMixin Get<TMixin> (object mixinTarget) where TMixin : class
     {
-      return SafeServiceLocator.Current.GetInstance<IMixinImplementation>().Get<TMixin> (mixinTarget);
+      return LazyStaticFields.MixinImplementation.Get<TMixin> (mixinTarget);
     }
 
     /// <summary>
@@ -58,7 +73,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static object Get (Type mixinType, object mixinTarget)
     {
-      return SafeServiceLocator.Current.GetInstance<IMixinImplementation>().Get (mixinType, mixinTarget);
+      return LazyStaticFields.MixinImplementation.Get (mixinType, mixinTarget);
     }
   }
 

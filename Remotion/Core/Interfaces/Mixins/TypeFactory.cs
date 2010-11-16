@@ -41,6 +41,22 @@ namespace Remotion.Mixins
   /// <threadsafety static="true" instance="true"/>
   public static class TypeFactory
   {
+    // This class holds lazy, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a nested static
+    // class with a static constructor as lazily as possible on first access of the static field.
+    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
+    static class LazyStaticFields
+    {
+      public static readonly ITypeFactoryImplementation TypeFactoryImplementation =
+          SafeServiceLocator.Current.GetInstance<ITypeFactoryImplementation> ();
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
+    }
+
     /// <summary>
     /// Retrieves a concrete, instantiable, mixed type for the given <paramref name="targetOrConcreteType"/>, or <paramref name="targetOrConcreteType"/> itself if no
     /// mixin configuration exists for the type on the current thread.
@@ -111,7 +127,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
-      return SafeServiceLocator.Current.GetInstance<ITypeFactoryImplementation>().GetConcreteType (targetOrConcreteType, generationPolicy);
+      return LazyStaticFields.TypeFactoryImplementation.GetConcreteType (targetOrConcreteType, generationPolicy);
     }
 
     /// <summary>
@@ -122,7 +138,7 @@ namespace Remotion.Mixins
     /// <remarks>This method is useful when a mixin target instance is created via <see cref="FormatterServices.GetSafeUninitializedObject"/>.</remarks>
     public static void InitializeUnconstructedInstance (object mixinTarget)
     {
-      SafeServiceLocator.Current.GetInstance<ITypeFactoryImplementation>().InitializeUnconstructedInstance (mixinTarget);
+      LazyStaticFields.TypeFactoryImplementation.InitializeUnconstructedInstance (mixinTarget);
     }
   }
 }

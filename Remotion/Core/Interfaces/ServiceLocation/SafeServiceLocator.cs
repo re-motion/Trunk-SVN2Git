@@ -32,22 +32,22 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
-    // This class is used to make the initialization of DefaultServiceLocator as lazy as possible. This enables one to reliably set the framework
-    // version via the FrameworkVersion class before the DefaultServiceLocator is resolved.
+    // This class holds lazily initialized, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a 
+    // nested static class with a static constructor as lazily as possible on first access of the static field.
     // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
-    static class NestedSafeServiceLocator
+    static class LazyStaticFields
     {
-        // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the field as lazy as possible.
-// ReSharper disable EmptyConstructor
-        static NestedSafeServiceLocator()
-        {
-        }
-// ReSharper restore EmptyConstructor
-
       public static readonly IServiceLocator DefaultServiceLocatorInstance =
       (IServiceLocator) Activator.CreateInstance (
         TypeNameTemplateResolver.ResolveToType (
           "Remotion.ServiceLocation.DefaultServiceLocator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>"));
+
+      // ReSharper disable EmptyConstructor
+      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
+      static LazyStaticFields ()
+      {
+      }
+      // ReSharper restore EmptyConstructor
     }
     
     /// <summary>
@@ -61,12 +61,12 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? NestedSafeServiceLocator.DefaultServiceLocatorInstance;
+          return ServiceLocator.Current ?? LazyStaticFields.DefaultServiceLocatorInstance;
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => NestedSafeServiceLocator.DefaultServiceLocatorInstance);
-          return NestedSafeServiceLocator.DefaultServiceLocatorInstance;
+          ServiceLocator.SetLocatorProvider (() => LazyStaticFields.DefaultServiceLocatorInstance);
+          return LazyStaticFields.DefaultServiceLocatorInstance;
         }
       }
     }
