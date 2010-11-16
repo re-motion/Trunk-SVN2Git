@@ -38,9 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //Exception is thrown in ClassDefinitionCollection
     [Test]
     [ExpectedException (typeof (MappingException), 
-      ExpectedMessage = @"Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration."
+      ExpectedMessage = @"Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration."
       +@"NotSupportedPersistenceMapping.SameClassNameInInheritanceHierarchy.BaseClass' and 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-      +@"TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping.SameClassNameInInheritanceHierarchy.DerivedDerivedClass' both have "
+      +@"TestDomain.Validation.Integration.NotSupportedPersistenceMapping.SameClassNameInInheritanceHierarchy.DerivedDerivedClass' both have "
       +@"the same class ID 'SameClassNameInInheritanceHierarchy_DuplicatedClassName'\. Use the ClassIDAttribute to define unique IDs for these classes\. "
       +@"The assemblies involved are 'Remotion.Data.UnitTests, Version=.*, Culture=.*, PublicKeyToken=.*' and 'Remotion.Data.UnitTests, Version=.*, "
       +@"Culture=.*, PublicKeyToken=.*'\.", MatchType = MessageMatch.Regex)]
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), 
       ExpectedMessage = "The domain object type cannot redefine the 'StorageGroupAttribute' already defined on base type 'BaseClass'.\r\n\r\n"
-      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.DerivedDerivedClass'")]
     public void DuplicatedStorageGroupAttributeInInheritanceHierarchy ()
     {
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "Neither class 'ClassAboveInheritanceRoot' nor its base classes specify an entity name. Make class 'ClassAboveInheritanceRoot' abstract or apply "
       +"a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
-      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot'")]
     public void ConcreteClassAboveInheritanceRoot ()
     {
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), 
       ExpectedMessage = "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
-      + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"MappingAttributeAppliedOnOverriddenProperty.DerivedClass\r\nProperty: Property")]
     public void MappingAttributeAppliedOnOverriddenProperty ()
     {
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "Class 'DerivedClass' must not specify an entity name 'DerivedName' which is different from inherited entity name 'BaseName'.\r\n\r\n"
-      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPersistenceMapping."
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"SameEntityNamesInInheritanceHierarchy.DerivedClass")]
     public void SameEntityNamesInInheritanceHierarchy ()
     {

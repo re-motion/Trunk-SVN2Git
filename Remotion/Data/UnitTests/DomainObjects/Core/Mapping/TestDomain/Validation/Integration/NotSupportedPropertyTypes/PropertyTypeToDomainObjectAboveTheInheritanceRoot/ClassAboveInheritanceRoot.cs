@@ -16,7 +16,7 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedPropertyTypes.PropertyTypeToDomainObjectAboveTheInheritanceRoot
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPropertyTypes.PropertyTypeToDomainObjectAboveTheInheritanceRoot
 {
   [ClassID ("PropertyTypeToDomainObjectAboveTheInheritanceRoot_ClassAboveInheritanceRoot")]
   public class ClassAboveInheritanceRoot : DomainObject

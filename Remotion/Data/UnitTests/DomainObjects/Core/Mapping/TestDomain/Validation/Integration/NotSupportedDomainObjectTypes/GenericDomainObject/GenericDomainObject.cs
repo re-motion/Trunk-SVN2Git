@@ -16,7 +16,7 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ValidationIntegration.NotSupportedDomainObjectTypes.GenericDomainObject
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedDomainObjectTypes.GenericDomainObject
 {
   [DBTable]
   [ClassID ("NotSupportedDomainObjectTypes_GenericDomainObject")]
