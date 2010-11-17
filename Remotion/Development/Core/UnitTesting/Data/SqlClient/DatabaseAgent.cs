@@ -182,7 +182,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       var command = new BatchCommand (lineNumber, commandBatch.Length);
       foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
       {
-        if (line.Trim ().Equals ("GO", StringComparison.CurrentCultureIgnoreCase))
+        if (line.Trim ().Equals ("GO", StringComparison.OrdinalIgnoreCase))
         {
           var batch = command;
           command = new BatchCommand (lineNumber + 1, commandBatch.Length);
