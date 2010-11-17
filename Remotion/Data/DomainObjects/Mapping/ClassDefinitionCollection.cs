@@ -17,9 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Logging;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -29,8 +27,6 @@ public class ClassDefinitionCollection : CommonCollection
   // types
 
   // static members and constants
-
-  private static readonly ILog s_log = LogManager.GetLogger (typeof (ClassDefinitionCollection));
 
   // member fields
 
