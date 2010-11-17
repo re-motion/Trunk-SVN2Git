@@ -35,8 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void SetUp ()
     {
       _validationRule = new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule();
-      // TODO Review 3489: Use shorter factory overload (if possible); here, and in the tests below
-      // TODO Review 3489: Review the tests below, and use these fields if possible
       _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
@@ -74,8 +72,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       AssertMappingValidationResult (validationResult, true, null);
     }
 
-    // TODO Review 3489: Review the tests below, use shorter PropertyDefinitionFactory overloads if possible
-
     [Test]
     public void InheritanceRoot_NonPersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
@@ -100,14 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameClass ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "SPID",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
+          classDefinition, 
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           "Property");
@@ -119,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
-      classDefinition.SetReadOnly();
+      classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -135,12 +126,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInSameClass ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "SPID",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
+         
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName1",
@@ -173,8 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          _derivedBaseClass1,
-          "FirstName1",
+          _derivedBaseClass1, "FirstName1",
           typeof (string),
           null,
           null,

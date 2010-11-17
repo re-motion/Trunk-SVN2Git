@@ -30,7 +30,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     public static bool IsConcreteTable (ClassDefinition classDefinition)
     {
-      return classDefinition.StorageEntityDefinition != null && (classDefinition.BaseClass == null || classDefinition.BaseClass.GetEntityName() == null);
+      return classDefinition.StorageEntityDefinition.LegacyEntityName != null
+             && (classDefinition.BaseClass == null || classDefinition.BaseClass.GetEntityName() == null);
     }
 
     public static bool HasClassIDColumn (PropertyDefinition propertyDefinition)
@@ -45,9 +46,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
         if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
             && propertyDefinition.ClassDefinition.StorageProviderID == oppositeEndPointDefinition.ClassDefinition.StorageProviderID)
-        {
           return true;
-        }
       }
       return false;
     }
@@ -162,7 +161,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       return columnList;
     }
 
-    private void AppendColumnListOfDerivedClasses (ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<string > addedStorageProperties)
+    private void AppendColumnListOfDerivedClasses (
+        ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<string> addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("columnListStringBuilder", columnListStringBuilder);
@@ -175,14 +175,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       }
     }
 
-    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<string > addedStorageProperties)
+    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<string> addedStorageProperties)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
 
       StringBuilder columnListStringBuilder = new StringBuilder();
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent ())
+      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent())
       {
         if (addedStorageProperties.Add (propertyDefinition.StoragePropertyDefinition.Name))
           columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
