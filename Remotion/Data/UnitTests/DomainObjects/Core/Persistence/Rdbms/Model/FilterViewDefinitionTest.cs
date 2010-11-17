@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -35,12 +33,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new ColumnDefinition ("Column1", typeof (string).GetProperty ("Length"));
-      _column2 = new ColumnDefinition ("Column2", typeof (ArrayList).GetProperty ("Count"));
-      _column3 = new ColumnDefinition ("Column3", typeof (TableDefinition).GetProperty ("TableName"));
+      _column1 = new ColumnDefinition ("Column1");
+      _column2 = new ColumnDefinition ("Column2");
+      _column3 = new ColumnDefinition ("Column3");
       _entityDefinition = new TableDefinition ("Table", new[] { _column1, _column2, _column3 });
 
-      _filterViewDefinition = new FilterViewDefinition ("Test", _entityDefinition, "CLASSID", new[] { "Column1", "Column3" });
+      _filterViewDefinition = new FilterViewDefinition ("Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
     }
 
     [Test]
@@ -48,8 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_filterViewDefinition.ClassID, Is.EqualTo ("CLASSID"));
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
-      Assert.That (_filterViewDefinition.LegacyEntityName, Is.Null);
       Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void Initialization_ViewNameNull ()
+    {
+      var filterViewDefinition = new FilterViewDefinition (null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      Assert.That (filterViewDefinition.ViewName, Is.Null);
+    }
+
+    [Test]
+    public void LegacyEntityName ()
+    {
+      Assert.That (_filterViewDefinition.LegacyEntityName, Is.Null);
     }
 
     [Test]
@@ -57,15 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _filterViewDefinition.GetColumns();
 
-      Assert.That (result.SequenceEqual (new[] { _column1, _column3 }), Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), 
-      ExpectedMessage = "Following column names could not be found: 'InvalidColumnName1, InvalidColumnName3'")]
-    public void ColumnNamesNotFoundInBaseEntitiyDefinition ()
-    {
-      new FilterViewDefinition ("Test", _entityDefinition, "CLASSID", new[] { "Column1", "InvalidColumnName1", "Column2", "InvalidColumnName3" });
+      Assert.That (result, Is.EqualTo (new[] { _column1, _column3 }));
     }
   }
 }

@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       IStoragePropertyDefinition columnDefinition = null;
       if (storageClass == StorageClass.Persistent)
-        columnDefinition = new ColumnDefinition (columnName, propertyInfo);
+        columnDefinition = new ColumnDefinition (columnName);
 
       return Create (
           classDefinition, fullPropertyName, propertyType, isNullable, maxLength, storageClass, propertyInfo, columnDefinition);

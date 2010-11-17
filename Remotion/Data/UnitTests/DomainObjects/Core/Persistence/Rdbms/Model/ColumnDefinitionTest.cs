@@ -30,14 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new ColumnDefinition ("Name", GetType().GetProperty ("DummyProperty"));
+      _columnDefinition = new ColumnDefinition ("Name");
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_columnDefinition.PropertyInfo.Name, Is.EqualTo ("DummyProperty"));
     }
 
   }

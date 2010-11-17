@@ -29,13 +29,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
+    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
     public UnionViewDefinition (string viewName, IEnumerable<IEntityDefinition> unionedEntities)
     {
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
+      ArgumentUtility.CheckNotEmpty ("viewName", viewName);
 
       _viewName = viewName;
       _unionedEntities = unionedEntities.ToList().AsReadOnly();
+      _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).ToList ().AsReadOnly ();
     }
 
     public string ViewName
@@ -55,9 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ReadOnlyCollection<ColumnDefinition> GetColumns ()
     {
-      return _unionedEntities.SelectMany (entity => entity.GetColumns()).ToList().AsReadOnly();
+      return _columns;
     }
-
-    
   }
 }

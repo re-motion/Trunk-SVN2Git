@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columns = new[] { new ColumnDefinition ("COL1", typeof (string).GetProperty ("Length")) };
+      _columns = new[] { new ColumnDefinition ("COL1") };
       _tableDefintion = new TableDefinition ("Test", _columns);
     }
 
@@ -39,6 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization ()
     {
       Assert.That (_tableDefintion.TableName, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void LegacyEntityName ()
+    {
       Assert.That (_tableDefintion.LegacyEntityName, Is.EqualTo ("Test"));
     }
 
@@ -47,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result  = _tableDefintion.GetColumns ();
 
-      Assert.That (result.SequenceEqual (_columns), Is.True);  
+      Assert.That (result, Is.EqualTo (_columns));  
     }
   }
 }

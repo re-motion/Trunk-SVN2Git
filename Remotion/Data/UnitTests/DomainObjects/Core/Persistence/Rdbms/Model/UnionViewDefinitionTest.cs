@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -36,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new ColumnDefinition ("Column1", typeof (string).GetProperty ("Length"));
-      _column2 = new ColumnDefinition ("Column2", typeof (ArrayList).GetProperty ("Count"));
-      _column3 = new ColumnDefinition ("Column3", typeof (TableDefinition).GetProperty ("TableName"));
+      _column1 = new ColumnDefinition ("Column1");
+      _column2 = new ColumnDefinition ("Column2");
+      _column3 = new ColumnDefinition ("Column3");
 
       _tableDefinition1 = new TableDefinition ("Table1", new[] { _column1 });
       _tableDefinition2 = new TableDefinition ("Table2", new[] { _column2, _column3 });
@@ -49,6 +47,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization ()
     {
       Assert.That (_unionViewDefinition.ViewName, Is.EqualTo ("Test"));
+      Assert.That (_unionViewDefinition.UnionedEntities, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2 }));
+    }
+
+    [Test]
+    public void Initialization_ViewNameNull ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (null, new[] { _tableDefinition1, _tableDefinition2 });
+      Assert.That (unionViewDefinition.ViewName, Is.Null);
+    }
+
+    [Test]
+    public void LegacyEntityName ()
+    {
       Assert.That (_unionViewDefinition.LegacyEntityName, Is.Null);
     }
 
@@ -57,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _unionViewDefinition.GetColumns();
 
-      Assert.That (result.SequenceEqual (new[] { _column1, _column2, _column3 }));
+      Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
     }
 
   }

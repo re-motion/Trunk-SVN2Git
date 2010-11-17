@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Utilities;
 using System.Linq;
@@ -32,24 +31,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _classID;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
-    public FilterViewDefinition (string viewName, IEntityDefinition baseEntity, string classID, IEnumerable<string> includedColumnNames)
+    public FilterViewDefinition (string viewName, IEntityDefinition baseEntity, string classID, Func<ColumnDefinition, bool> columnFilter)
     {
+      ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
-      ArgumentUtility.CheckNotNull ("includedColumnNames", includedColumnNames);
+      ArgumentUtility.CheckNotNull ("columnFilter", columnFilter);
 
       _viewName = viewName;
       _baseEntity = baseEntity;
       _classID = classID;
 
-      var includedColumnNamesSet = new HashSet<string> (includedColumnNames);
-      _columns = _baseEntity.GetColumns().Where (column => includedColumnNamesSet.Contains (column.Name)).ToList().AsReadOnly();
-
-      if (_columns.Count < includedColumnNamesSet.Count)
-      {
-        var columnsNotFound = string.Join(", ", includedColumnNamesSet.Where (ic => !_baseEntity.GetColumns().Select (cd => cd.Name).Contains (ic)).ToArray());
-        throw new ArgumentException (string.Format ("Following column names could not be found: '{0}'", columnsNotFound));
-      }
+      _columns = _baseEntity.GetColumns().Where (columnFilter).ToList().AsReadOnly();
     }
 
     public string ViewName

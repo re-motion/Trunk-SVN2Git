@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsNullable(),
           GetMaxLength(),
           StorageClass,
-          new ColumnDefinition (storageSpecificIdentifier, propertyInfo));
+          new ColumnDefinition (storageSpecificIdentifier));
     }
 
     //TODO: Move adding of "ID" to RdbmsPropertyReflector
