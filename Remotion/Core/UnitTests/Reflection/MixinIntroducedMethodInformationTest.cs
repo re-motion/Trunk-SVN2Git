@@ -168,20 +168,21 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (
           _mixinIntroducedMethodInformation.Equals (
               new MixinIntroducedMethodInformation (
-                  new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub))),
-          Is.True);
+                  new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _implementationMethodInformationStub))),
+          Is.False);
+
       Assert.That (
           _mixinIntroducedMethodInformation.Equals (
               new MixinIntroducedMethodInformation (
-                  new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _implementationMethodInformationStub))),
-          Is.False);
-    }
+                  new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub))),
+          Is.True);}
 
     [Test]
     public void GetHashcode ()
     {
-      Assert.That (_mixinIntroducedMethodInformation.GetHashCode (),
-          Is.EqualTo (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation).GetHashCode ()));
+      Assert.That (
+          _mixinIntroducedMethodInformation.GetHashCode(),
+          Is.EqualTo (new MixinIntroducedMethodInformation (_interfaceImplementationMethodInformation).GetHashCode()));
     }
 
     [Test]

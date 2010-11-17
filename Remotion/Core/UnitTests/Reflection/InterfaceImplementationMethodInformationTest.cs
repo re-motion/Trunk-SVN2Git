@@ -159,30 +159,31 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (_interfaceImplementationMethodInformation.Equals (null), Is.False);
       Assert.That (_interfaceImplementationMethodInformation.Equals ("test"), Is.False);
+
       Assert.That (
           _interfaceImplementationMethodInformation.Equals (
-              new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub)),
-          Is.True);
+              new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _declarationMethodInformationStub)),
+          Is.False);
       Assert.That (
-         _interfaceImplementationMethodInformation.Equals (
-             new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _declarationMethodInformationStub)),
-         Is.False);
-      Assert.That (
-         _interfaceImplementationMethodInformation.Equals (
-             new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _implementationMethodInformationStub)),
-         Is.False);
+          _interfaceImplementationMethodInformation.Equals (
+              new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _implementationMethodInformationStub)),
+          Is.False);
       Assert.That (
           _interfaceImplementationMethodInformation.Equals (
               new InterfaceImplementationMethodInformation (_declarationMethodInformationStub, _implementationMethodInformationStub)),
           Is.False);
+
+      Assert.That (
+          _interfaceImplementationMethodInformation.Equals (
+              new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub)),
+          Is.True);
     }
 
     [Test]
     public void GetHashcode ()
     {
-      Assert.That (
-          _interfaceImplementationMethodInformation.GetHashCode (),
-          Is.EqualTo (new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub).GetHashCode ()));
+      var equalObject = new InterfaceImplementationMethodInformation (_implementationMethodInformationStub, _declarationMethodInformationStub);
+      Assert.That (_interfaceImplementationMethodInformation.GetHashCode(), Is.EqualTo (equalObject.GetHashCode()));
     }
 
     [Test]

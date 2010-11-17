@@ -468,9 +468,11 @@ namespace Remotion.UnitTests.Reflection
     public void Equals ()
     {
       Assert.That (_adapter.Equals (null), Is.False);
+      Assert.That (_adapter.Equals ("test"), Is.False);
+      Assert.That (_adapter.Equals (new MethodInfoAdapter (typeof (ClassWithOverridingMember).GetMethod ("BaseMethod"))), Is.False);
+
       Assert.That (_adapter.Equals (new MethodInfoAdapter (_method)), Is.True);
       Assert.That (_adapter.Equals (new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod"))), Is.True);
-      Assert.That (_adapter.Equals (new MethodInfoAdapter (typeof (ClassWithOverridingMember).GetMethod ("BaseMethod"))), Is.False);
     }
 
     [Test]

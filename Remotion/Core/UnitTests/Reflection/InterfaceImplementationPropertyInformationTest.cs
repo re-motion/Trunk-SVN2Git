@@ -130,7 +130,8 @@ namespace Remotion.UnitTests.Reflection
       var value = new SimpleReferenceType();
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
+          new MethodInfoAdapter (
+              typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
           new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetSetMethod (true)));
 
@@ -141,8 +142,8 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void SetValue_ImplementationAddsSetAccessor ()
     {
-      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      var value = new SimpleReferenceType ();
+      var instance = new ClassWithReferenceType<SimpleReferenceType>();
+      var value = new SimpleReferenceType();
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
@@ -155,12 +156,13 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void SetValue_ImplementationAddsSetAccessor_IndexedProperty ()
     {
-      var instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      var value = new SimpleReferenceType ();
+      var instance = new ClassWithReferenceType<SimpleReferenceType>();
+      var value = new SimpleReferenceType();
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (null);
       _implementationPropertyInformationStub.Stub (stub => stub.GetSetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[]{typeof(int) }).GetSetMethod (true)));
+          new MethodInfoAdapter (
+              typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Item", new[] { typeof (int) }).GetSetMethod (true)));
 
       _interfaceImplementationPropertyInformation.SetValue (instance, value, new object[] { 0 });
       Assert.That (instance[0], Is.SameAs (value));
@@ -174,7 +176,8 @@ namespace Remotion.UnitTests.Reflection
       instance.ImplicitInterfaceScalar = value;
 
       _declarationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
-          new MethodInfoAdapter (typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
+          new MethodInfoAdapter (
+              typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
       _implementationPropertyInformationStub.Stub (stub => stub.GetGetMethod (true)).Return (
           new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceScalar").GetGetMethod (true)));
 
@@ -533,24 +536,22 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_interfaceImplementationPropertyInformation.Equals ("Test"), Is.False);
       Assert.That (
           _interfaceImplementationPropertyInformation.Equals (
-              new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub)),
-          Is.True);
-      Assert.That (
-          _interfaceImplementationPropertyInformation.Equals (
               new InterfaceImplementationPropertyInformation (
                   new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
                   new PropertyInfoAdapter (typeof (string).GetProperty ("Length")))),
           Is.False);
+
+      Assert.That (
+          _interfaceImplementationPropertyInformation.Equals (
+              new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub)),
+          Is.True);
     }
 
     [Test]
     public void GetHashCodeTest ()
     {
-      Assert.That (
-          _interfaceImplementationPropertyInformation.GetHashCode(),
-          Is.EqualTo (
-              new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub).GetHashCode
-                  ()));
+      var equalObject = new InterfaceImplementationPropertyInformation (_implementationPropertyInformationStub, _declarationPropertyInformationStub);
+      Assert.That (_interfaceImplementationPropertyInformation.GetHashCode(), Is.EqualTo (equalObject.GetHashCode()));
     }
 
     [Test]

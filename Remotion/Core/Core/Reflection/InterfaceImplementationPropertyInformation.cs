@@ -180,6 +180,7 @@ namespace Remotion.Reflection
 
     public override bool Equals (object obj)
     {
+      // TODO Review 3351: Please rewrite using the standard pattern for classes that may derived from; see task description
       var other = obj as InterfaceImplementationPropertyInformation;
 
       if (other == null)

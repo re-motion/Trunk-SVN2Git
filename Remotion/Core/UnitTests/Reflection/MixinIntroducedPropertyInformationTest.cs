@@ -210,14 +210,15 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_mixinIntroducedPropertyInformation.Equals (null), Is.False);
       Assert.That (_mixinIntroducedPropertyInformation.Equals ("Test"), Is.False);
       Assert.That (
-          _mixinIntroducedPropertyInformation.Equals (new MixinIntroducedPropertyInformation (_interfaceImplementationPropertyInformation)), Is.True);
-      Assert.That (
           _mixinIntroducedPropertyInformation.Equals (
               new MixinIntroducedPropertyInformation (
                   new InterfaceImplementationPropertyInformation (
                       new PropertyInfoAdapter (typeof (string).GetProperty ("Length")),
                       new PropertyInfoAdapter (typeof (string).GetProperty ("Length"))))),
           Is.False);
+
+      Assert.That (
+        _mixinIntroducedPropertyInformation.Equals (new MixinIntroducedPropertyInformation (_interfaceImplementationPropertyInformation)), Is.True);
     }
 
     [Test]
