@@ -21,6 +21,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
 {
   /// <summary>
   /// <see cref="StorageEntityDefinitionStub"/> is a stub implementation of <see cref="IStorageEntityDefinition"/> that simply holds an entity name.
+  /// This class will be removed.
   /// </summary>
   public class StorageEntityDefinitionStub : IStorageEntityDefinition
   {
@@ -28,6 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
 
     public StorageEntityDefinitionStub (string entityName)
     {
+      // TODO Review 3488: Change to ArgumentUtility.CheckNotEmpty
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
 
       _entityName = entityName;

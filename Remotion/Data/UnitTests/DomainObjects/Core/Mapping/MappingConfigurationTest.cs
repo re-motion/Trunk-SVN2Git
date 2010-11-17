@@ -103,8 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", new StorageEntityDefinitionStub("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
@@ -147,14 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'")]
     public void RelationDefinitionsAreValidated ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID",
-          new StorageEntityDefinitionStub("EntityName"),
-          "SPID",
-          typeof (RelationEndPointPropertyClass),
-          false,
-          null,
-          new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
