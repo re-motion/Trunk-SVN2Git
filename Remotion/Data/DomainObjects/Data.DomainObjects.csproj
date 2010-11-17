@@ -262,6 +262,8 @@
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
+    <Compile Include="Persistence\Model\IStoragePropertyDefintionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />
