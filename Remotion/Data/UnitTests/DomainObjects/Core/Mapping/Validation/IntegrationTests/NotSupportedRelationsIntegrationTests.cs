@@ -177,7 +177,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       "The relation property 'RelationProperty' has return type 'ClassNotInMapping', which is not a part of the mapping. Relation properties must "
       +"not point to classes above the inheritance root.\r\n\r\n"
       + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
-      +"RelationPropertyTypeNotInMapping.InvalidRelationClass1'")]
+      +"RelationPropertyTypeNotInMapping.InvalidRelationClass1'\r\n"
+      + "Property: 'RelationProperty'")]
     public void RelationPropertyTypeNotInMapping ()
     {
       ValidateMapping ("NotSupportedRelations.RelationPropertyTypeNotInMapping");

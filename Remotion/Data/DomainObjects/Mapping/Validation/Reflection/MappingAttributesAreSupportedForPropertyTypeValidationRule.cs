@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         if (_attributeConstraints == null)
         {
-          _attributeConstraints = new Dictionary<Type, AttributeConstraint> ();
+          _attributeConstraints = new Dictionary<Type, AttributeConstraint>();
           AddAttributeConstraints (_attributeConstraints);
         }
         return _attributeConstraints;
@@ -70,42 +70,47 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
     public MappingAttributesAreSupportedForPropertyTypeValidationRule ()
     {
-      
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions select Validate (propertyDefinition.PropertyInfo);
+      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
+             select Validate (propertyDefinition.PropertyInfo, classDefinition);
     }
 
     //  //TODO 3424:
-  //  // StringPropertyAttribute
-  //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
-  //  {
-  //    override string GetMEssage()
-  //  }
+    //  // StringPropertyAttribute
+    //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
+    //  {
+    //    override string GetMEssage()
+    //  }
 
-  //  protected MappingValidationResultValidate (PropertyInfo pi)
-  //{ 
-  //    var attr = AttributeUtility.GetCustomAttributes<TAttribute> (pi, true))
-  //    if (attr != null && !IsPropertyTypeSupported (pi))
-  //    {
-  //        return new MappingValidationResult (false, GetMessage (pi));
-  //    }
-  //    return new MappingValidationResult (true);
-  //  }
+    //  protected MappingValidationResultValidate (PropertyInfo pi)
+    //{ 
+    //    var attr = AttributeUtility.GetCustomAttributes<TAttribute> (pi, true))
+    //    if (attr != null && !IsPropertyTypeSupported (pi))
+    //    {
+    //        return new MappingValidationResult (false, GetMessage (pi));
+    //    }
+    //    return new MappingValidationResult (true);
+    //  }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       foreach (Attribute attribute in AttributeUtility.GetCustomAttributes<Attribute> (propertyInfo, true))
       {
-        var constraint = GetAttributeConstraint (attribute.GetType ());
+        var constraint = GetAttributeConstraint (attribute.GetType());
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
-          return MappingValidationResult.CreateInvalidResult(constraint.Message);
+        {
+          return
+              MappingValidationResult.CreateInvalidResult (
+                  string.Format (
+                      "{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'", constraint.Message, classDefinition.ClassType.FullName, propertyInfo.Name));
+        }
       }
       return MappingValidationResult.CreateValidResult();
     }
@@ -126,15 +131,17 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("attributeConstraints", attributeConstraints);
 
-      attributeConstraints.Add (typeof (StringPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<StringPropertyAttribute, string> ());
-      attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]> ());
-      attributeConstraints.Add (typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum> ());
-      attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute> ());
-      attributeConstraints.Add (typeof (DBBidirectionalRelationAttribute), CreateAttributeConstraintForRelationProperty<DBBidirectionalRelationAttribute>());
+      attributeConstraints.Add (typeof (StringPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<StringPropertyAttribute, string>());
+      attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]>());
+      attributeConstraints.Add (
+          typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum>());
+      attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute>());
+      attributeConstraints.Add (
+          typeof (DBBidirectionalRelationAttribute), CreateAttributeConstraintForRelationProperty<DBBidirectionalRelationAttribute>());
     }
 
     private AttributeConstraint CreateAttributeConstraintForValueTypeProperty<TAttribute, TProperty> ()
-        where TAttribute : Attribute
+        where TAttribute: Attribute
     {
       return new AttributeConstraint (
           string.Format ("The '{0}' may be only applied to properties of type '{1}'.", typeof (TAttribute).Name, typeof (TProperty).Name),
@@ -142,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     }
 
     private AttributeConstraint CreateAttributeConstraintForRelationProperty<TAttribute> ()
-        where TAttribute : Attribute
+        where TAttribute: Attribute
     {
       return new AttributeConstraint (
           string.Format (
@@ -153,6 +160,5 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           typeof (DomainObject),
           typeof (ObjectList<>));
     }
-    
   }
 }
