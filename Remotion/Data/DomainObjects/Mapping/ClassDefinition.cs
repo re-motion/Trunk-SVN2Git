@@ -73,8 +73,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
-      // TODO Review 3488: Add null check for storageEntityDefinition - use a definition with a null legacy name where null is currently passed in
-
+      ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
+      
       _id = id;
       _storageEntityDefinition = storageEntityDefinition;
       _storageProviderID = storageProviderID;
@@ -159,7 +159,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public string GetEntityName ()
     {
-      if (_storageEntityDefinition != null) // TODO Review 3488: Check .Name != null instead
+      if (_storageEntityDefinition.LegacyEntityName != null)
         return _storageEntityDefinition.LegacyEntityName;
 
       if (BaseClass == null)
@@ -470,7 +470,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
     {
-      if (_storageEntityDefinition != null)
+      if (_storageEntityDefinition.LegacyEntityName != null)
       {
         allConcreteEntityNames.Add (_storageEntityDefinition.LegacyEntityName);
         return;

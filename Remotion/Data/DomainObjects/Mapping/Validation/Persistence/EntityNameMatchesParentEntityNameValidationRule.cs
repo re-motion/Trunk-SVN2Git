@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition != null && classDefinition.BaseClass.GetEntityName() != null
+      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition.LegacyEntityName != null && classDefinition.BaseClass.GetEntityName() != null
           && classDefinition.StorageEntityDefinition.LegacyEntityName != classDefinition.BaseClass.GetEntityName())
       {
         return MappingValidationResult.CreateInvalidResult (

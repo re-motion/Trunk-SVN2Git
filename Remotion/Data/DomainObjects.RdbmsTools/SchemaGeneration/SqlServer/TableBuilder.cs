@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           + "{2}  CONSTRAINT [PK_{1}] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n",
           FileBuilder.DefaultSchema,
-          classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null,
+          classDefinition.StorageEntityDefinition.LegacyEntityName,
           GetColumnList (classDefinition));
     }
 
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       dropTableStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP TABLE [{1}].[{0}]\r\n",
-          classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null,
+          classDefinition.StorageEntityDefinition.LegacyEntityName,
           FileBuilder.DefaultSchema);
     }
 

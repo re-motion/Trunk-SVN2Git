@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.StorageEntityDefinition!=null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null;
+      return classDefinition.StorageEntityDefinition.LegacyEntityName;
     }
 
     public static string GetColumnName (PropertyDefinition propertyDefinition)

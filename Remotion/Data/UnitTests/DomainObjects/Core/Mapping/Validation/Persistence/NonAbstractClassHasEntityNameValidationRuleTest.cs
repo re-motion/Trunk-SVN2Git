@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
           "NonAbstractClassHasEntityNameDomainObject",
-          null,
+          new StorageEntityDefinitionStub(null),
           "NonAbstractClassHasEntityNameStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false,

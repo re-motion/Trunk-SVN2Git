@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       return new ReflectionBasedClassDefinition (
           id,
-          entityName != null ? new StorageEntityDefinitionStub (entityName) : null,
+          new StorageEntityDefinitionStub (entityName),
           storageProviderID,
           classType,
           isAbstract,
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       return new ReflectionBasedClassDefinition (
           id,
-          entityName != null ? new StorageEntityDefinitionStub (entityName) : null,
+          new StorageEntityDefinitionStub (entityName),
           storageProviderID,
           classType,
           isAbstract,

@@ -29,8 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
 
     public StorageEntityDefinitionStub (string entityName)
     {
-      // TODO Review 3488: Change to ArgumentUtility.CheckNotEmpty
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+      ArgumentUtility.CheckNotEmpty ("entityName", entityName);
 
       _entityName = entityName;
     }

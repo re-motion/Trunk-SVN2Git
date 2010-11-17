@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var storageSpecificIdentifier = GetStorageSpecificIdentifier();
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
           GetID(),
-          storageSpecificIdentifier!=null ? new StorageEntityDefinitionStub(storageSpecificIdentifier) : null,
+          new StorageEntityDefinitionStub(storageSpecificIdentifier),
           GetStorageProviderID(),
           Type,
           IsAbstract(),

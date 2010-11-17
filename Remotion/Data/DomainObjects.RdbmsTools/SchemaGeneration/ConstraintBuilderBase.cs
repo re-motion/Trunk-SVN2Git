@@ -87,8 +87,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       if (TableBuilderBase.IsConcreteTable (classDefinition))
       {
         AddToCreateConstraintScript (classDefinition);
-        _entityNamesForDropConstraintScript.Add (
-            classDefinition.StorageEntityDefinition != null ? classDefinition.StorageEntityDefinition.LegacyEntityName : null);
+        _entityNamesForDropConstraintScript.Add (classDefinition.StorageEntityDefinition.LegacyEntityName);
       }
     }
 
