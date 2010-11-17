@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -69,6 +70,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _unionViewDefinition.GetColumns();
 
       Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
+    }
+
+    [Test]
+    public void Accept ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();
+
+      visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition)).Return (_unionViewDefinition);
+      visitorMock.Replay ();
+
+      var result = _unionViewDefinition.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_unionViewDefinition));
     }
 
   }
