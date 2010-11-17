@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     private readonly PropertyInfo _propertyInfo;
 
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
-        : base(classDefinition, propertyInfo.Name, maxLength, storageClass, new FakeColumnDefinition("Test"))
+        : base(classDefinition, propertyInfo.Name, maxLength, storageClass)
     {
       _propertyInfo = propertyInfo;
     }

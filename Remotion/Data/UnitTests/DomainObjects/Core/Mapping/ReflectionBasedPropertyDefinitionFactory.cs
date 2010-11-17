@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       IStoragePropertyDefinition columnDefinition = null;
       if (storageClass == StorageClass.Persistent)
-        columnDefinition = new ColumnDefinition (columnName);
+        columnDefinition = new ColumnDefinition (columnName, propertyInfo.PropertyType, isNullable);
 
       return Create (
           classDefinition, fullPropertyName, propertyType, isNullable, maxLength, storageClass, propertyInfo, columnDefinition);
@@ -105,15 +105,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition columnDefinition)
     {
-      return new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new ReflectionBasedPropertyDefinition (
           classDefinition,
           propertyInfo,
           propertyName,
           propertyType,
           isNullable,
           maxLength,
-          storageClass,
-          columnDefinition);
+          storageClass);
+      propertyDefinition.SetStorageProperty (columnDefinition);
+      return propertyDefinition;
     }
 
     public static ReflectionBasedPropertyDefinition Create (
@@ -159,15 +160,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition columnDefinition)
     {
-      return new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new ReflectionBasedPropertyDefinition (
           classDefinition,
           propertyInfo,
           propertyName,
           propertyType,
           isNullable,
           maxLength,
-          storageClass,
-          columnDefinition);
+          storageClass);
+      propertyDefinition.SetStorageProperty (columnDefinition);
+      return propertyDefinition;
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)

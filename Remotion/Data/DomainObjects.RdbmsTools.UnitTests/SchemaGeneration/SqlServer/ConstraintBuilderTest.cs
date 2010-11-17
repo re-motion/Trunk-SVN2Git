@@ -126,15 +126,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
         Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
-      return new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new ReflectionBasedPropertyDefinition (
           classDefinition,
           dummyPropertyInfo,
           propertyName,
           propertyType,
           isNullable,
           maxLength,
-          storageClass,
-          new ColumnDefinition (columnName));
+          storageClass);
+      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, isNullable));
+      return propertyDefinition;
     }
 
     [Test]

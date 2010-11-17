@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
@@ -41,27 +39,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public ReflectionBasedPropertyDefinition GetMetadata ()
     {
       PropertyInfo propertyInfo = PropertyInfo;
-      var storageSpecificIdentifier = GetStorageSpecificIdentifier();
-      return new ReflectionBasedPropertyDefinition (
+      
+      var propertyDefinition = new ReflectionBasedPropertyDefinition (
           _classDefinition,
           propertyInfo,
           GetPropertyName(),
           ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
-          StorageClass,
-          new ColumnDefinition (storageSpecificIdentifier));
-    }
-
-    //TODO: Move adding of "ID" to RdbmsPropertyReflector
-    private string GetStorageSpecificIdentifier()
-    {
-      IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (PropertyInfo, true);
-      if (attribute != null)
-        return attribute.Identifier;
-      if (ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType))
-        return PropertyInfo.Name + "ID";
-      return PropertyInfo.Name;
+          StorageClass);
+      var storagePropertyDefinition = new ColumnDefinitionFactory().CreateStoragePropertyDefintion(propertyDefinition);
+      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+      return propertyDefinition;
     }
 
     private bool? IsNullable()

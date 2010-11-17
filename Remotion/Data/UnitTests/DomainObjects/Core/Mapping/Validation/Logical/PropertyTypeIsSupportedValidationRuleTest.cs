@@ -51,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (string),
           true,
           20,
-          StorageClass.Persistent,
-          new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
+          StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 
@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (object),
           true,
           null,
-          StorageClass.Persistent,
-          new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
+          StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 
@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (OtherDerivedValidationHierarchyClass),
           true,
           null,
-          StorageClass.Persistent,
-          new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
+          StorageClass.Persistent);
+      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 

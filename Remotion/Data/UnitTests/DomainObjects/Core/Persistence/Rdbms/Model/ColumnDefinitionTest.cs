@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -24,19 +25,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ColumnDefinitionTest
   {
     private ColumnDefinition _columnDefinition;
+    private Type _type;
     public string DummyProperty { get; set; }
     public string OtherProperty { get; set; }
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new ColumnDefinition ("Name");
+      _type = typeof (string);
+      _columnDefinition = new ColumnDefinition ("Name", _type, true);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
+      Assert.That (_columnDefinition.Type, Is.SameAs(_type));
+      Assert.That (_columnDefinition.IsNullable, Is.True);
     }
 
   }

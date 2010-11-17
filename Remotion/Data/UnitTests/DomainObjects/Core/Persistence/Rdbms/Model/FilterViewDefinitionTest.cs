@@ -33,9 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new ColumnDefinition ("Column1");
-      _column2 = new ColumnDefinition ("Column2");
-      _column3 = new ColumnDefinition ("Column3");
+      _column1 = new ColumnDefinition ("Column1", typeof(string), true);
+      _column2 = new ColumnDefinition ("Column2", typeof(string), true);
+      _column3 = new ColumnDefinition ("Column3", typeof(string), true);
       _entityDefinition = new TableDefinition ("Table", new[] { _column1, _column2, _column3 });
 
       _filterViewDefinition = new FilterViewDefinition ("Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);

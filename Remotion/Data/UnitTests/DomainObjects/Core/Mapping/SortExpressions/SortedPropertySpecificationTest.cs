@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     public void Initialization_NotResolvedType ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
-      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (classDefinition, "BinaryProperty", null, StorageClass.Persistent, new FakeColumnDefinition ("T"));
+      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (classDefinition, "BinaryProperty", null, StorageClass.Persistent);
       Assert.That (fakePropertyDefinition.IsPropertyTypeResolved, Is.False);
 
       var result = new SortedPropertySpecification (fakePropertyDefinition, SortOrder.Ascending);

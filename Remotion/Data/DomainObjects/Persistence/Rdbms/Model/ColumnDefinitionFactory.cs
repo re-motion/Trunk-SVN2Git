@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return new ColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
+      return new ColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo), propertyDefinition.PropertyType, propertyDefinition.IsNullable);
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)

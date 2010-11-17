@@ -47,28 +47,20 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly StorageClass _storageClass;
     [NonSerialized]
-    private readonly IStoragePropertyDefinition _storagePropertyDefinition;
+    private IStoragePropertyDefinition _storagePropertyDefinition;
 
     // construction and disposing
 
-    protected PropertyDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        int? maxLength,
-        StorageClass storageClass,
-        IStoragePropertyDefinition storagePropertyDefinition)
+    protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      if (storageClass == StorageClass.Persistent)
-        ArgumentUtility.CheckNotNull ("storagePropertyDefinition", storagePropertyDefinition);
-
+      
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = classDefinition.ID;
       _propertyName = propertyName;
       _maxLength = maxLength;
       _storageClass = storageClass;
-      _storagePropertyDefinition = storagePropertyDefinition;
     }
 
     // methods and properties
@@ -118,6 +110,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public StorageClass StorageClass
     {
       get { return _storageClass; }
+    }
+
+    public void SetStorageProperty (IStoragePropertyDefinition storagePropertyDefinition)
+    {
+      _storagePropertyDefinition = storagePropertyDefinition;
     }
 
     public override string ToString ()

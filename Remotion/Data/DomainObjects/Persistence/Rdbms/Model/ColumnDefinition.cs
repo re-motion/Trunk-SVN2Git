@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
@@ -22,16 +23,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
+    private readonly Type _type;
+    private readonly bool? _isNullable;
 
-    public ColumnDefinition (string name)
+    public ColumnDefinition (string name, Type type, bool? isNullable)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("type", type);
+
       _name = name;
+      _type = type;
+      _isNullable = isNullable;
     }
 
     public string Name
     {
       get { return _name; }
+    }
+
+    public Type Type
+    {
+      get { return _type; }
+    }
+
+    public bool? IsNullable
+    {
+      get { return _isNullable; }
     }
   }
 }

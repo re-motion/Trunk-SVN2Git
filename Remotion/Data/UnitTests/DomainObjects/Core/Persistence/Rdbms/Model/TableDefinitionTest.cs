@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columns = new[] { new ColumnDefinition ("COL1") };
+      _columns = new[] { new ColumnDefinition ("COL1", typeof(string), true) };
       _tableDefintion = new TableDefinition ("Test", _columns);
     }
 
