@@ -37,10 +37,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-        {
-          if (!validationResult.IsValid)
-            return validationResult;
-        }
+          return validationResult;
       }
 
       return MappingValidationResult.CreateValidResult();

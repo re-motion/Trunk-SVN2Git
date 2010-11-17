@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         var validationResult = Validate (endPointDefinition);
         if (!validationResult.IsValid)
-          return MappingValidationResult.CreateInvalidResult(validationResult.Message);
+          return validationResult;
       }
 
       return MappingValidationResult.CreateValidResult();
