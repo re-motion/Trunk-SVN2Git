@@ -90,10 +90,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        // TODO: Peristence mapping:
-        // foreach (root in classDefinitions.GetInheritanceRootClasses())
-        //   root.StorageProviderDefinition.PersistenceMappingBuilder.SetPersistenceMapping (root);
-
+        //// TODO: Persistence mapping:
+        //foreach (ClassDefinition root in _classDefinitions.GetInheritanceRootClasses())
+        //{
+        //  var storageProviderDefinition = GetStorageProviderDefinition (root);
+        //  var persistenceModelBuilder = storageProviderDefinition.Factory.GetPersistenceModelBuilder();
+        //  persistenceModelBuilder.SetPersistenceModelForInheritanceGroup (root);
+        //}
+        
         ValidatePersistenceMapping();
 
         _resolveTypes = loader.ResolveTypes;
