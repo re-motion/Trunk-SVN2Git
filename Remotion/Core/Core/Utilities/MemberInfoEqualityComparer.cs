@@ -19,6 +19,10 @@ using System.Reflection;
 
 namespace Remotion.Utilities
 {
+  // TODO Review 3350: Implement IEqualityComparer<MemberInfo>. (This requires the methods to be renamed.)
+  /// <summary>
+  /// Provides logic to compare two <see cref="MemberInfo"/> for logical equality, without considering the <see cref="MemberInfo.ReflectedType"/>.
+  /// </summary>
   public class MemberInfoEqualityComparer
   {
     public static readonly MemberInfoEqualityComparer Instance = new MemberInfoEqualityComparer ();
@@ -43,6 +47,7 @@ namespace Remotion.Utilities
     /// </returns>
     public bool MemberInfoEquals (MemberInfo one, MemberInfo two)
     {
+      // TODO Review 3350: Remove these null checks, add tests that show that null/null are compared equal, null/member and member/null are compared non-equal. Add support for null comparisons below (*).
       ArgumentUtility.CheckNotNull ("one", one);
       ArgumentUtility.CheckNotNull ("two", two);
 
@@ -51,6 +56,8 @@ namespace Remotion.Utilities
       // possible to get two different MethodInfo references for the same array method
       if (ReferenceEquals (one, two))
         return true;
+
+      // TODO Review 3350: (*) if (ReferenceEquals (one, null) || ReferenceEquals (null, two)) return false;
 
       // Equal members always have the same metadata token
       if (one.MetadataToken != two.MetadataToken)
@@ -93,7 +100,12 @@ namespace Remotion.Utilities
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
     public int GetHashCode (MemberInfo memberInfo)
     {
-      if (memberInfo.DeclaringType!=null && memberInfo.DeclaringType.IsArray)
+      // TODO Review 3350: Add support for null => return 0 (also add test)
+
+      // DeclaringType can return null, even if ReSharper thinks otherwise.
+      // ReSharper disable ConditionIsAlwaysTrueOrFalse
+      if (memberInfo.DeclaringType != null && memberInfo.DeclaringType.IsArray)
+      // ReSharper restore ConditionIsAlwaysTrueOrFalse
         return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.Name) ^ GetHashCodeOrZero (memberInfo.Module);
       else
         return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.MetadataToken) ^ GetHashCodeOrZero (memberInfo.Module);
