@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -31,23 +32,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var errorMessages = new StringBuilder();
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
-      {
-        var validationResult = Validate (propertyDefinition.PropertyInfo);
-        if (!validationResult.IsValid)
-        {
-          if (errorMessages.Length > 0)
-            errorMessages.AppendLine (new string ('-', 10));
-          errorMessages.AppendLine (validationResult.Message);
-        }
-      }
-      var messages = errorMessages.ToString().Trim();
-      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
+      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions select Validate (propertyDefinition.PropertyInfo);
     }
 
     private MappingValidationResult Validate (PropertyInfo propertyInfo)

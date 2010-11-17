@@ -16,9 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -56,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition).First();
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -76,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition).First();
 
       var expectedMessage = 
         "The property type 'Object' is not supported. If you meant to declare a relation, 'Object' must be derived from 'DomainObject'.\r\n\r\n"
@@ -100,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition);
+      var validationResult = _validationRule.Validate (_classDefinition).First();
 
       AssertMappingValidationResult (validationResult, true, null);
     }

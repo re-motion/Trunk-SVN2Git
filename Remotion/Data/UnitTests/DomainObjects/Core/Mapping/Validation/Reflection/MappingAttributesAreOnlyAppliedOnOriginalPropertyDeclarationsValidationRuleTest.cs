@@ -17,10 +17,12 @@
 using System;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
 {
@@ -52,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (BaseMappingAttributesClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).First();
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -63,18 +65,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (DerivedClassWithMappingAttribute);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
       
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where(r=>!r.IsValid).ToArray();
 
-      var expectedMessages = new StringBuilder();
-      expectedMessages.AppendLine(
+      var expectedMessage1 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute\r\n"
-        + "Property: Property1\r\n"+new string('-', 10));
-      expectedMessages.AppendLine (
+        + "Property: Property1";
+      var expectedMessage2 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.DerivedClassWithMappingAttribute\r\n"
-        + "Property: Property3");
-      AssertMappingValidationResult (validationResult, false, expectedMessages.ToString().Trim());
+        + "Property: Property3";
+      Assert.That (validationResult.Length, Is.EqualTo (2));
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage1);
+      AssertMappingValidationResult (validationResult[1], false, expectedMessage2);
     }
 
     [Test]
@@ -83,18 +86,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (InheritanceRootDerivedMappingAttributesClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (r => !r.IsValid).ToArray ();
 
-      var expectedMessages = new StringBuilder ();
-      expectedMessages.AppendLine (
+      var expectedMessage1 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
-        + "Property: Property1\r\n"+new string('-', 10));
-      expectedMessages.AppendLine (
+        + "Property: Property1";
+      var expectedMessage2 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
-        + "Property: Property3");
-      AssertMappingValidationResult (validationResult, false, expectedMessages.ToString ().Trim ());
+        + "Property: Property3";
+      Assert.That (validationResult.Length, Is.EqualTo (2));
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage1);
+      AssertMappingValidationResult (validationResult[1], false, expectedMessage2);
     }
 
     [Test]
@@ -111,18 +115,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           new PersistentMixinFinder (type, true));
       
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).ToArray();
 
-      var expectedMessages = new StringBuilder ();
-      expectedMessages.AppendLine (
+      var expectedMessage1 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
-        + "Property: Property1");
-      expectedMessages.AppendLine (
+        + "Property: Property1";
+      var expectedMessage2 =
         "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
         + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule.InheritanceRootDerivedMappingAttributesClass\r\n"
-        + "Property: Property3");
-      AssertMappingValidationResult (validationResult, false, expectedMessages.ToString ().Trim ());
+        + "Property: Property3";
+      Assert.That (validationResult.Length, Is.EqualTo (2));
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage1);
+      AssertMappingValidationResult (validationResult[1], false, expectedMessage2);
     }
   }
 }

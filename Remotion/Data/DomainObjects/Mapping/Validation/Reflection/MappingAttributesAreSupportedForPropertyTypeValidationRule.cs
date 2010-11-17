@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
@@ -74,27 +73,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var errorMessages = new StringBuilder();
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
-      {
-        var validationResult = Validate (propertyDefinition.PropertyInfo);
-        if (!validationResult.IsValid)
-        {
-          if (errorMessages.Length > 0)
-            errorMessages.AppendLine (new string ('-', 10));
-          errorMessages.AppendLine (validationResult.Message);
-        }
-      }
-
-      var messages = errorMessages.ToString().Trim();
-      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
+      return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions select Validate (propertyDefinition.PropertyInfo);
     }
 
-  //  //TODO 3424:
+    //  //TODO 3424:
   //  // StringPropertyAttribute
   //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
   //  {

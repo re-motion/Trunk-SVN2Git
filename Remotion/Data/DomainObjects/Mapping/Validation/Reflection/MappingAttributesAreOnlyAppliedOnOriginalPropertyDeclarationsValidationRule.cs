@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -32,36 +33,18 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       
     }
 
-    //Test 3: Same using Mixins for Test 1
-    //Test 4: Same using Mixins for Test 2
-    //Test 5: Mixin Overrides Property on TargetType
-    //All cases with Same Attribute on both Properties 
-    //All cases with attribute only override
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       if (!classDefinition.IsClassTypeResolved)
         throw new InvalidOperationException ("Class type of '" + classDefinition.ID + "' is not resolved.");
 
-      var errorMessages = new StringBuilder ();
       bool isInheritanceRoot = classDefinition.BaseClass == null;
       var propertyFinder = new AllMappingPropertiesFinder (classDefinition.ClassType, isInheritanceRoot, new ReflectionBasedNameResolver());
       var propertyInfos = propertyFinder.FindPropertyInfos ((ReflectionBasedClassDefinition)classDefinition);
 
-      foreach (var propertyInfo in propertyInfos)
-      {
-        var validationResult = Validate (propertyInfo);
-        if (!validationResult.IsValid)
-        {
-          if (errorMessages.Length > 0)
-            errorMessages.AppendLine (new string ('-', 10));
-          errorMessages.AppendLine (validationResult.Message);
-        }
-      }
-
-      var messages = errorMessages.ToString ().Trim ();
-      return string.IsNullOrEmpty (messages) ? MappingValidationResult.CreateValidResult() : MappingValidationResult.CreateInvalidResult(messages);
+      return propertyInfos.Select (propertyInfo => Validate (propertyInfo));
     }
 
     private MappingValidationResult Validate (PropertyInfo propertyInfo)
