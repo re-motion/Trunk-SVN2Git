@@ -22,7 +22,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -36,6 +35,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   [TestFixture]
   public class ReflectionUtilityTest : StandardMappingTest
   {
+    private ReflectionBasedClassDefinition _classDefinitionWithMixedproperty;
+
+    [SetUp]
+    public override void SetUp ()
+    {
+      base.SetUp();
+      _classDefinitionWithMixedproperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
+    }
+
     [Test]
     [Obsolete]
     public void GetPropertyName ()
@@ -46,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithMixedProperties.Int32",
           ReflectionUtility.GetPropertyName (propertyInfo));
     }
-       
+
     [Test]
     public void GetAssemblyPath ()
     {
@@ -76,7 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Assembly assembly = Assembly.LoadFile (assemblyPath);
               Assert.AreEqual (directory, Path.GetDirectoryName (assembly.Location));
               Assert.AreEqual (directory, ReflectionUtility.GetAssemblyDirectory (assembly));
-            }, directoryPath, newAssemblyPath);
+            },
+            directoryPath,
+            newAssemblyPath);
       }
       finally
       {
@@ -85,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
+    [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "The assembly's code base 'http://server/File.ext' is not a local path.")]
     public void GetAssemblyPath_FromNonLocalUri ()
     {
@@ -101,7 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetDomainObjectAssemblyDirectory ()
     {
-      Assert.AreEqual (Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
+      Assert.AreEqual (
+          Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
           ReflectionUtility.GetConfigFileDirectory());
     }
 
@@ -150,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsTypeSupportedByStorageProvider_UnsupportedType ()
     {
-      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof(object), "DefaultStorageProvider"), Is.False);
+      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof (object), "DefaultStorageProvider"), Is.False);
     }
 
     [Test]
@@ -164,21 +176,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetDeclaringDomainObjectTypeForProperty_NoMixedProperty ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
       var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
 
-      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, classDefinition);
+      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, _classDefinitionWithMixedproperty);
 
-      Assert.That (result, Is.SameAs(typeof (ClassWithMixedProperty)));
+      Assert.That (result, Is.SameAs (typeof (ClassWithMixedProperty)));
     }
 
     [Test]
     public void GetDeclaringDomainObjectTypeForProperty_MixedProperty ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
       var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
 
-      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, classDefinition);
+      var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, _classDefinitionWithMixedproperty);
 
       Assert.That (result, Is.SameAs (typeof (ClassWithMixedProperty)));
     }
@@ -186,10 +196,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsMixedProperty_NoMixedProperty_ReturnsFalse ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
       var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
 
-      var result = ReflectionUtility.IsMixedProperty (property, classDefinition);
+      var result = ReflectionUtility.IsMixedProperty (property, _classDefinitionWithMixedproperty);
 
       Assert.That (result, Is.False);
     }
@@ -197,13 +206,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsMixedProperty_MixedProperty_ReturnsTrue ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperty), typeof (MixinAddingProperty));
       var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
 
-      var result = ReflectionUtility.IsMixedProperty (property, classDefinition);
+      var result = ReflectionUtility.IsMixedProperty (property, _classDefinitionWithMixedproperty);
 
       Assert.That (result, Is.True);
     }
-
   }
 }
