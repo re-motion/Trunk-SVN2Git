@@ -24,8 +24,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// </summary>
   public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IPersistenceMappingValidationRule
   {
-    private IDictionary<string, PropertyDefinition> _persistentPropertyDefinitionsInInheritanceHierarchy;
-        
     public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
       
@@ -35,15 +33,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      _persistentPropertyDefinitionsInInheritanceHierarchy = new Dictionary<string, PropertyDefinition>();
-
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
-        return ValidateStorageSpecificPropertyNames (classDefinition);
+        return ValidateStorageSpecificPropertyNames (classDefinition, new Dictionary<string, PropertyDefinition>());
       
       return MappingValidationResult.CreateValidResult();
     }
 
-    private MappingValidationResult ValidateStorageSpecificPropertyNames (ClassDefinition classDefinition)
+    private MappingValidationResult ValidateStorageSpecificPropertyNames (
+        ClassDefinition classDefinition, IDictionary<string, PropertyDefinition> propertyDefinitionsByName)
     {
       var mappingValidationResult = MappingValidationResult.CreateValidResult();
       foreach (PropertyDefinition myPropertyDefinition in classDefinition.MyPropertyDefinitions)
@@ -51,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
           PropertyDefinition basePropertyDefinition;
-          if (_persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
+          if (propertyDefinitionsByName.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
           {
             if (!myPropertyDefinition.PropertyInfo.Equals (basePropertyDefinition.PropertyInfo))
             {
@@ -69,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
             }
           }
 
-          _persistentPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StoragePropertyDefinition.Name] =  myPropertyDefinition;
+          propertyDefinitionsByName[myPropertyDefinition.StoragePropertyDefinition.Name] =  myPropertyDefinition;
         }
       }
 
@@ -77,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         if (!mappingValidationResult.IsValid)
           break;
-        mappingValidationResult = ValidateStorageSpecificPropertyNames (derivedClassDefinition);
+        mappingValidationResult = ValidateStorageSpecificPropertyNames (derivedClassDefinition, propertyDefinitionsByName);
       }
 
       return mappingValidationResult;
