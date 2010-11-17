@@ -35,6 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void SetUp ()
     {
       _validationRule = new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule();
+      // TODO Review 3489: Use shorter factory overload (if possible); here, and in the tests below
+      // TODO Review 3489: Review the tests below, and use these fields if possible
       _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
@@ -72,40 +74,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       AssertMappingValidationResult (validationResult, true, null);
     }
 
+    // TODO Review 3489: Review the tests below, use shorter PropertyDefinitionFactory overloads if possible
+
     [Test]
     public void InheritanceRoot_NonPersistentPropertiesWithSameStorageSpecificPropertyName ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "StorageSpecificPropertyNamesDerivedDomainObject",
-          "SPID",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
-
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          "FirstName1",
-          typeof (string),
-          null,
-          null,
+          _derivedBaseClass2,
           StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property"));
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          "FirstName2",
-          typeof (string),
-          null,
-          null,
+          _derivedBaseClass2,
           StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new FakeColumnDefinition ("Property"));
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"));
 
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
-      classDefinition.SetReadOnly();
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition1);
+      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (_derivedBaseClass2);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -121,22 +108,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           false);
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
-          "FirstName1",
-          typeof (string),
-          null,
-          null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property"));
+          "Property");
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
-          "FirstName2",
-          typeof (string),
-          null,
-          null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new FakeColumnDefinition ("Property"));
+          "Property");
 
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
