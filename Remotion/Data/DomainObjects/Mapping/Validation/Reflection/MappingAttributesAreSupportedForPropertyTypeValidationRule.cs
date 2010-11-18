@@ -131,16 +131,16 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("attributeConstraints", attributeConstraints);
 
-      attributeConstraints.Add (typeof (StringPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<StringPropertyAttribute, string>());
-      attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<BinaryPropertyAttribute, byte[]>());
+      attributeConstraints.Add (typeof (StringPropertyAttribute), CreateAttributeConstraintForPropertyType<StringPropertyAttribute, string>());
+      attributeConstraints.Add (typeof (BinaryPropertyAttribute), CreateAttributeConstraintForPropertyType<BinaryPropertyAttribute, byte[]>());
       attributeConstraints.Add (
-          typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForValueTypeProperty<ExtensibleEnumPropertyAttribute, IExtensibleEnum>());
+          typeof (ExtensibleEnumPropertyAttribute), CreateAttributeConstraintForPropertyType<ExtensibleEnumPropertyAttribute, IExtensibleEnum>());
       attributeConstraints.Add (typeof (MandatoryAttribute), CreateAttributeConstraintForRelationProperty<MandatoryAttribute>());
       attributeConstraints.Add (
           typeof (DBBidirectionalRelationAttribute), CreateAttributeConstraintForRelationProperty<DBBidirectionalRelationAttribute>());
     }
 
-    private AttributeConstraint CreateAttributeConstraintForValueTypeProperty<TAttribute, TProperty> ()
+    private AttributeConstraint CreateAttributeConstraintForPropertyType<TAttribute, TProperty> ()
         where TAttribute: Attribute
     {
       return new AttributeConstraint (
