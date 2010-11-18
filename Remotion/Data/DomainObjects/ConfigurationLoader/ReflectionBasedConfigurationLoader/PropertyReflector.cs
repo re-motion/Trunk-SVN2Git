@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsNullable(),
           GetMaxLength(),
           StorageClass);
-      var storagePropertyDefinition = new ColumnDefinitionFactory().CreateStoragePropertyDefinition(propertyDefinition);
+      var storagePropertyDefinition = new ColumnDefinitionFactory(new SqlStorageTypeCalculator()).CreateStoragePropertyDefinition(propertyDefinition);
       propertyDefinition.SetStorageProperty (storagePropertyDefinition);
       return propertyDefinition;
     }

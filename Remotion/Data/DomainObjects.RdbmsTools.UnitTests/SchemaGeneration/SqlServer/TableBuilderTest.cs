@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Data type 'System.Char' is not supported.\r\n  Class: ClassID, property: Name")]
+        "Data type 'System.Char' is not supported.\r\nDeclaration type: 'ClassID'\r\nProperty: 'Name'")]
     public void GetSqlDataType_WithNotSupportedType ()
     {
       _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Char), null, null));
@@ -408,7 +408,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, isNullable));
+      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, isNullable.HasValue? isNullable.Value:true));
       return propertyDefinition;
     }
   }

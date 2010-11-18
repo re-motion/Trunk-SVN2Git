@@ -25,12 +25,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _name;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
-
+    
     public ColumnDefinition (string name, Type propertyType, bool isNullable)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
-
+      
       _name = name;
       _propertyType = propertyType;
       _isNullable = isNullable;

@@ -66,34 +66,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     // methods and properties
 
+    public abstract string GetSqlDataType (PropertyDefinition propertyDefinition);
     public abstract void AddToCreateTableScript (ClassDefinition concreteTableClassDefinition, StringBuilder createTableStringBuilder);
     public abstract void AddToDropTableScript (ClassDefinition concreteTableClassDefinition, StringBuilder dropTableStringBuilder);
     public abstract string GetColumn (PropertyDefinition propertyDefinition, bool forceNullable);
     protected abstract string ColumnListOfParticularClassFormatString { get; }
-    protected abstract string SqlDataTypeObjectID { get; }
-    protected abstract string SqlDataTypeSerializedObjectID { get; }
     protected abstract string SqlDataTypeClassID { get; }
-
-    public virtual string GetSqlDataType (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      if (propertyDefinition.IsObjectID)
-      {
-        ClassDefinition oppositeClass = propertyDefinition.ClassDefinition.GetOppositeClassDefinition (propertyDefinition.PropertyName);
-        if (oppositeClass.StorageProviderID == propertyDefinition.ClassDefinition.StorageProviderID)
-          return SqlDataTypeObjectID;
-        else
-          return SqlDataTypeSerializedObjectID;
-      }
-
-      throw new InvalidOperationException (
-          string.Format (
-              "Data type '{0}' is not supported.\r\n  Class: {1}, property: {2}",
-              propertyDefinition.PropertyType,
-              propertyDefinition.ClassDefinition.ID,
-              propertyDefinition.PropertyName));
-    }
 
     public string GetCreateTableScript ()
     {

@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.ExtensibleEnums;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
@@ -44,65 +43,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      string sqlDataType = GetSqlDataType (propertyDefinition.PropertyType);
-      if (!string.IsNullOrEmpty (sqlDataType))
-        return sqlDataType;
-
-      if (propertyDefinition.PropertyType == typeof (String))
-        return string.Format ("nvarchar ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString() : "max");
-
-      if (propertyDefinition.PropertyType == typeof (Byte[]))
-        return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
-
-      return base.GetSqlDataType (propertyDefinition);
-    }
-
-    private static string GetSqlDataType (Type type)
-    {
-      type = Nullable.GetUnderlyingType (type) ?? type;
-
-      if (type == typeof (Boolean))
-        return "bit";
-      if (type == typeof (Byte))
-        return "tinyint";
-      if (type == typeof (DateTime))
-        return "datetime";
-      if (type == typeof (Decimal))
-        return "decimal (38, 3)";
-      if (type == typeof (Double))
-        return "float";
-      if (type == typeof (Guid))
-        return "uniqueidentifier";
-      if (type == typeof (Int16))
-        return "smallint";
-      if (type == typeof (Int32))
-        return "int";
-      if (type == typeof (Int64))
-        return "bigint";
-      if (type == typeof (Single))
-        return "real";
-      if (type.IsEnum)
-        return GetSqlDataType (Enum.GetUnderlyingType (type));
-      
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
-        return string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (type));
-
-      return null;
-    }
-
-    private static int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)
-    {
-      return ExtensibleEnumUtility.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
-    }
-
-    protected override string SqlDataTypeObjectID
-    {
-      get { return "uniqueidentifier"; }
-    }
-
-    protected override string SqlDataTypeSerializedObjectID
-    {
-      get { return "varchar (255)"; }
+      return new SqlStorageTypeCalculator ().GetStorageType (propertyDefinition);
     }
 
     protected override string SqlDataTypeClassID

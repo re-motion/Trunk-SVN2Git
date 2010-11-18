@@ -28,12 +28,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ColumnDefinitionFactory : IStoragePropertyDefinitionFactory
   {
+    private readonly StorageTypeCalculator _storageTypeCalculator;
+
+    public ColumnDefinitionFactory (StorageTypeCalculator storageTypeCalculator)
+    {
+      ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
+
+      _storageTypeCalculator = storageTypeCalculator;
+    }
+
     public IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var columnName = GetColumnName (propertyDefinition.PropertyInfo);
-      return new ColumnDefinition (columnName, propertyDefinition.PropertyType, propertyDefinition.IsNullable);
+      return new ColumnDefinition (
+          GetColumnName (propertyDefinition.PropertyInfo),
+          propertyDefinition.PropertyType,
+          propertyDefinition.IsNullable);
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)
