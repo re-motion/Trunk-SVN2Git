@@ -97,14 +97,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         foreach (ClassDefinition rootClasses in _classDefinitions.GetInheritanceRootClasses ())
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClasses);
         
-        //// TODO: Persistence mapping:
-        //foreach (ClassDefinition root in _classDefinitions.GetInheritanceRootClasses())
-        //{
-        //  var storageProviderDefinition = GetStorageProviderDefinition (root);
-        //  var persistenceModelBuilder = storageProviderDefinition.Factory.GetPersistenceModelBuilder();
-        //  persistenceModelBuilder.SetPersistenceModelForInheritanceGroup (root);
-        //}
-        
         ValidatePersistenceMapping();
 
         _resolveTypes = loader.ResolveTypes;
