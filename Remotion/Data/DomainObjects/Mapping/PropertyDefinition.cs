@@ -46,6 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly int? _maxLength;
     [NonSerialized]
     private readonly StorageClass _storageClass;
+    
     [NonSerialized]
     private IStoragePropertyDefinition _storagePropertyDefinition;
 
@@ -94,9 +95,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public abstract bool IsPropertyInfoResolved { get; }
 
-    public abstract bool IsNullable
-    {
-      get; }
+    public abstract bool IsNullable { get; }
 
     public abstract object DefaultValue { get; }
 
