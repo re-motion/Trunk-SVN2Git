@@ -113,6 +113,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetStorageProperty (IStoragePropertyDefinition storagePropertyDefinition)
     {
+      // TODO: null check
       _storagePropertyDefinition = storagePropertyDefinition;
     }
 

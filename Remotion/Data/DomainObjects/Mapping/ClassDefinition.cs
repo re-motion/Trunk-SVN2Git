@@ -64,8 +64,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
+
     [NonSerialized]
-    private readonly IStorageEntityDefinition _storageEntityDefinition;
+    private IStorageEntityDefinition _storageEntityDefinition;
 
     // construction and disposing
 
@@ -73,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
-      ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
+      //ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
       
       _id = id;
       _storageEntityDefinition = storageEntityDefinition;
@@ -337,6 +338,13 @@ namespace Remotion.Data.DomainObjects.Mapping
         return BaseClass.GetPropertyDefinition (propertyName);
 
       return propertyDefinition;
+    }
+
+    public void SetStorageEntity (IStorageEntityDefinition storageEntityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
+
+      _storageEntityDefinition = storageEntityDefinition;
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)

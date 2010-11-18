@@ -262,6 +262,7 @@
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
+    <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
     <Compile Include="Persistence\Model\IStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
@@ -297,6 +298,7 @@
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Model\StorageTypeCalculator.cs" />
+    <Compile Include="Persistence\Rdbms\Model\PersistenceModelLoader.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlStorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnionViewDefinition.cs" />

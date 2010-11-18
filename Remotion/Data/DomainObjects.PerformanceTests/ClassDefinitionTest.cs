@@ -17,9 +17,11 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -126,6 +128,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           TestRepititions,
           averageMicroseconds.ToString ("n"),
           endPoints.Count);
+    }
+
+    [Test]
+    public void SetStorageEntity ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var tableDefinition = new TableDefinition ("Test", new ColumnDefinition[] { });
+
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs(tableDefinition));
+      classDefinition.SetStorageEntity (tableDefinition);
+      Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs (tableDefinition));
     }
 
 
