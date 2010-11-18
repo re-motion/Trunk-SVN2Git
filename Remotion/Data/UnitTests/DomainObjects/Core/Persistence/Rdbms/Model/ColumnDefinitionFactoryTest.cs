@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -27,40 +28,87 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class ColumnDefinitionFactoryTest
   {
-    [Test]
-    public void PropertyWithStorageSpecificIdentifierAttributeAttribute_GetNameFromAttribute ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+    private ColumnDefinitionFactory _columnDefinitionFactory;
+    private ReflectionBasedClassDefinition _classWithAllDataTypesDefinition;
+    private ReflectionBasedClassDefinition _fileSystemItemClassDefinition;
 
-      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefinition (propertyDefinition);
+    [SetUp]
+    public void SetUp ()
+    {
+      _columnDefinitionFactory = new ColumnDefinitionFactory ();
+      _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
+      _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_GetNameFromAttribute ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("Boolean"));
     }
 
     [Test]
-    public void PropertyWithoutStorageSpecificIdentifierAttributeAttribute_DomainObjectPropertyType ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition, StorageClass.Persistent, typeof (FileSystemItem).GetProperty ("ParentFolder"));
-
-      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefinition (propertyDefinition);
-
-      Assert.That (result.Name, Is.EqualTo ("ParentFolderID"));
-    }
-
-    [Test]
-    public void PropertyWithoutStorageSpecificIdentifierAttributeAttribute_NoDomainObjectPropertyType ()
+    public void CreateStoragePropertyDefinition_UsePropertyName ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Distributor));
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
 
-      var result = new ColumnDefinitionFactory ().CreateStoragePropertyDefinition (propertyDefinition);
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("NumberOfShops"));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_UsePropertyName_RelationProperty ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result.Name, Is.EqualTo ("ParentFolderID"));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_PropertyType ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result.PropertyType, Is.SameAs (typeof (bool)));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_PropertyType_RelationProperty ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
+      Assert.That (propertyDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (Folder)));
+      Assert.That (propertyDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+
+      Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_IsNullable ()
+    {
+      var nullablePropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), true);
+      var nonNullablePropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), false);
+
+      var nullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nullablePropertyDefinition);
+      var nonNullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nonNullablePropertyDefinition);
+
+      Assert.That (nullableResult.IsNullable, Is.True);
+      Assert.That (nonNullableResult.IsNullable, Is.False);
     }
   }
 }

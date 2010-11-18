@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -114,29 +113,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool? isNullable, int? maxLength)
     {
-      return CreatePropertyDefinition (_classDefinition, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
-    }
-
-    private PropertyDefinition CreatePropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition,
-        string propertyName,
-        string columnName,
-        Type propertyType,
-        bool? isNullable,
-        int? maxLength,
-        StorageClass storageClass)
-    {
-      PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
-          classDefinition,
-          dummyPropertyInfo,
-          propertyName,
-          propertyType,
-          isNullable,
-          maxLength,
-          storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, isNullable));
-      return propertyDefinition;
+      return ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _classDefinition, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
   }
 }

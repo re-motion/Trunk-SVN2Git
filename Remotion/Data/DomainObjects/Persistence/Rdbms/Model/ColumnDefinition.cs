@@ -23,16 +23,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
-    private readonly Type _type;
-    private readonly bool? _isNullable;
+    private readonly Type _propertyType;
+    private readonly bool _isNullable;
 
-    public ColumnDefinition (string name, Type type, bool? isNullable)
+    public ColumnDefinition (string name, Type propertyType, bool isNullable)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       _name = name;
-      _type = type;
+      _propertyType = propertyType;
       _isNullable = isNullable;
     }
 
@@ -41,12 +41,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _name; }
     }
 
-    public Type Type
+    public Type PropertyType
     {
-      get { return _type; }
+      get { return _propertyType; }
     }
 
-    public bool? IsNullable
+    public bool IsNullable
     {
       get { return _isNullable; }
     }

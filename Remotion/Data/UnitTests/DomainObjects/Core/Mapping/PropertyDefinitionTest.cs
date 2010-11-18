@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
       var columnDefinition = new ColumnDefinition ("Test", typeof(string), true);
 
-      propertyDefinition.SetStorageProperty(columnDefinition);
+      propertyDefinition.SetStorageProperty (columnDefinition);
 
       Assert.That (propertyDefinition.StoragePropertyDefinition, Is.SameAs (columnDefinition));
     }

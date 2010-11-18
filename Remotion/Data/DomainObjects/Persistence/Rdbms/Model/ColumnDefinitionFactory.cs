@@ -32,16 +32,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return new ColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo), propertyDefinition.PropertyType, propertyDefinition.IsNullable);
+      var columnName = GetColumnName (propertyDefinition.PropertyInfo);
+      return new ColumnDefinition (columnName, propertyDefinition.PropertyType, propertyDefinition.IsNullable);
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)
     {
       var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
+      
       if (attribute != null)
         return attribute.Identifier;
+      
       if (ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
         return propertyInfo.Name + "ID";
+      
       return propertyInfo.Name;
     }
   }

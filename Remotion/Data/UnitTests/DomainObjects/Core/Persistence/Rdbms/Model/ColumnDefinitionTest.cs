@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization ()
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_columnDefinition.Type, Is.SameAs(_type));
+      Assert.That (_columnDefinition.PropertyType, Is.SameAs(_type));
       Assert.That (_columnDefinition.IsNullable, Is.True);
     }
 
