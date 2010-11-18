@@ -30,12 +30,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _tableName;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
-    public TableDefinition (string tabeleName, IEnumerable<ColumnDefinition> columns)
+    public TableDefinition (string tableName, IEnumerable<ColumnDefinition> columns)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("tabeleName", tabeleName);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
-      _tableName = tabeleName;
+      _tableName = tableName;
       _columns = columns.ToList().AsReadOnly();
     }
 
@@ -54,11 +54,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columns;
     }
 
-    public IEntityDefinition Accept (IEntityDefinitionVisitor visitor)
+    public void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      return visitor.VisitTableDefinition (this);
+      visitor.VisitTableDefinition (this);
     }
   }
 }

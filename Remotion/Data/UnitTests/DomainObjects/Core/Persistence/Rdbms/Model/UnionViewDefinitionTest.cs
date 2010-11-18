@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -77,13 +78,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();
 
-      visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition)).Return (_unionViewDefinition);
+      var fakeResult = new TableDefinition ("Test", Enumerable.Empty<ColumnDefinition>());
+
+      visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition)).Return (fakeResult);
       visitorMock.Replay ();
 
-      var result = _unionViewDefinition.Accept (visitorMock);
+      _unionViewDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_unionViewDefinition));
     }
 
   }

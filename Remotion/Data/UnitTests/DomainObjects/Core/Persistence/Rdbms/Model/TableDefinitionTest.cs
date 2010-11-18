@@ -60,13 +60,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
 
-      visitorMock.Expect (mock => mock.VisitTableDefinition (_tableDefintion)).Return (_tableDefintion);
+      visitorMock.Expect (mock => mock.VisitTableDefinition (_tableDefintion));
       visitorMock.Replay();
 
-      var result = _tableDefintion.Accept (visitorMock);
+      _tableDefintion.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (_tableDefintion));
     }
   }
 }

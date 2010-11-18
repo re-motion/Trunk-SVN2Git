@@ -70,9 +70,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columns;
     }
 
-    public IEntityDefinition Accept (IEntityDefinitionVisitor visitor)
+    public void Accept (IEntityDefinitionVisitor visitor)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitFilterViewDefinition (this);
     }
   }
 }
