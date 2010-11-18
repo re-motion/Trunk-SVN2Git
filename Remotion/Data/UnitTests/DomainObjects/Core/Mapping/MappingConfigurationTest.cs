@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
@@ -183,6 +184,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll ();
 
       new MappingConfiguration (_mockMappingLoader);
+    }
+
+    [Test]
+    public void PersistenceModelIsLoaded ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
+
+      var classDefinitionCollection = new[] { classDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
+
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
+
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf(typeof(TableDefinition)));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo("Order"));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (0));
     }
 
     [Test]

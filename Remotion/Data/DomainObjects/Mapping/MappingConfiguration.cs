@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -90,6 +91,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
+        SetMappingReadOnly (); //TODO: move down
+
+        var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()));
+        foreach (ClassDefinition rootClasses in _classDefinitions.GetInheritanceRootClasses ())
+          persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClasses);
+        
         //// TODO: Persistence mapping:
         //foreach (ClassDefinition root in _classDefinitions.GetInheritanceRootClasses())
         //{
@@ -102,8 +109,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
-
-        SetMappingReadOnly();
 
         ValidateSortExpression();
       }
