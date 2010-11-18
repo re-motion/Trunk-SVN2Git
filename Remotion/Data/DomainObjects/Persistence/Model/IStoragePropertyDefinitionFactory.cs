@@ -20,10 +20,10 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.Persistence.Model
 {
   /// <summary>
-  /// <see cref="IStoragePropertyDefintionFactory"/> defines the API to create a storable property defintion. 
+  /// <see cref="IStoragePropertyDefinitionFactory"/> defines the API to create a <see cref="IStoragePropertyDefinition"/>. 
   /// </summary>
-  public interface IStoragePropertyDefintionFactory
+  public interface IStoragePropertyDefinitionFactory
   {
-    IStoragePropertyDefinition CreateStoragePropertyDefintion (PropertyDefinition propertyDefinition);
+    IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition);
   }
 }

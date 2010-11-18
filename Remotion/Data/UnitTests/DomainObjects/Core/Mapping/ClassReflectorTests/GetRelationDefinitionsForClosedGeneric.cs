@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
@@ -26,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 {
   [TestFixture]
-  public class GetRelationDefintionsForClosedGeneric : TestBase
+  public class GetRelationDefinitionsForClosedGeneric : TestBase
   {
     private RelationDefinitionChecker _relationDefinitionChecker;
     private RelationDefinitionCollection _relationDefinitions;

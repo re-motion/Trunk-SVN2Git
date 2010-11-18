@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
 
-      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefintion (propertyDefinition);
+      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("Boolean"));
     }
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (FileSystemItem).GetProperty ("ParentFolder"));
 
-      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefintion (propertyDefinition);
+      var result = new ColumnDefinitionFactory().CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("ParentFolderID"));
     }
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
 
-      var result = new ColumnDefinitionFactory ().CreateStoragePropertyDefintion (propertyDefinition);
+      var result = new ColumnDefinitionFactory ().CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("NumberOfShops"));
     }

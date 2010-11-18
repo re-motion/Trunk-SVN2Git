@@ -26,7 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 {
   [TestFixture]
-  public class GetRelationDefintions : TestBase
+  public class GetRelationDefinitions : TestBase
   {
     private RelationDefinitionChecker _relationDefinitionChecker;
     private RelationDefinitionCollection _relationDefinitions;

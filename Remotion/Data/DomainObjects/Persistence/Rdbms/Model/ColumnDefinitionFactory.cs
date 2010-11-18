@@ -26,13 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="ColumnDefinition"/> from a <see cref="PropertyDefinition"/>.
   /// </summary>
-  public class ColumnDefinitionFactory : IStoragePropertyDefintionFactory
+  public class ColumnDefinitionFactory : IStoragePropertyDefinitionFactory
   {
-    public ColumnDefinitionFactory ()
-    {
-    }
-
-    public IStoragePropertyDefinition CreateStoragePropertyDefintion (PropertyDefinition propertyDefinition)
+    public IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -41,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private string GetColumnName (PropertyInfo propertyInfo)
     {
-      IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
+      var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
       if (attribute != null)
         return attribute.Identifier;
       if (ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
