@@ -88,12 +88,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
       var fullPropertyName = originalDeclaringType.FullName + "." + propertyName;
 
-      IStoragePropertyDefinition columnDefinition = null;
+      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+          classDefinition,
+          propertyInfo,
+          fullPropertyName,
+          propertyType,
+          isNullable,
+          maxLength,
+          storageClass);
       if (storageClass == StorageClass.Persistent)
-        columnDefinition = new ColumnDefinition (columnName, propertyInfo.PropertyType, isNullable);
-
-      return Create (
-          classDefinition, fullPropertyName, propertyType, isNullable, maxLength, storageClass, propertyInfo, columnDefinition);
+        propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyDefinition.PropertyType, propertyDefinition.IsNullable));
+      return propertyDefinition;
     }
 
     public static ReflectionBasedPropertyDefinition Create (
@@ -122,6 +127,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         StorageClass storageClass, 
         PropertyInfo propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
       return Create (
           classDefinition,
           propertyInfo.Name,
