@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"+
+      "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"+
       "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       + "OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnManySite.InvalidRelationClass2\r\nProperty: RelationProperty2")]
     public void OnetoManyBidirectionalRelation_ContainsForeignKeyIsTrueOnTheManySite ()
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Only relation end points with a property type of 'Remotion.Data.DomainObjects.DomainObject' can contain the foreign key.\r\n\r\n"
+      "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       +"OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites.InvalidRelationClass2\r\nProperty: RelationProperty2")]
     public void OneToManyBidirectionalRelation_ContainsForeignKeyIsTrueOnBothSites ()

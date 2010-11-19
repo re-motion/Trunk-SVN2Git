@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         return MappingValidationResult.CreateInvalidResult (
             "Only relation end points with a property type of '{0}' can contain the foreign key.\r\n\r\n"
             + "Declaring type: {1}\r\nProperty: {2}",
-            typeof (DomainObject),
+            typeof (DomainObject).Name,
             relationEndPointDefinition.ClassDefinition.ClassType.FullName,
             relationEndPointDefinition.PropertyInfo != null ? relationEndPointDefinition.PropertyInfo.Name : string.Empty);
       }

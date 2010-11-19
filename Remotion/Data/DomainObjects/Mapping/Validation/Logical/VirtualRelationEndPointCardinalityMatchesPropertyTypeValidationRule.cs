@@ -55,7 +55,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-              "The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.");
+              "The property type of a virtual end point of a one-to-one relation must be derived from '{0}'.", 
+              typeof (DomainObject).Name);
         }
 
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
@@ -64,8 +65,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-              "The property type of a virtual end point of a one-to-many relation"
-              + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.");
+              "The property type of a virtual end point of a one-to-many relation must be or be derived from '{0}'.", 
+              typeof (DomainObjectCollection).Name);
         }
       }
       return MappingValidationResult.CreateValidResult();

@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage =
-          "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.\r\n\r\n"
+          "The property type of an uni-directional relation property must be assignable to 'DomainObject'.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
           + "RelationEndPointPropertyTypeIsSupportedValidationRule.RelationEndPointPropertyClass\r\n"
           + "Property: PropertyWithoutBidirectionalAttribute";
