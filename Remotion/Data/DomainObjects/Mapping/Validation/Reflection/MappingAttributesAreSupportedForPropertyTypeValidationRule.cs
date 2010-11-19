@@ -106,10 +106,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         var constraint = GetAttributeConstraint (attribute.GetType());
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
         {
-          return
-              MappingValidationResult.CreateInvalidResult (
-                  string.Format (
-                      "{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'", constraint.Message, classDefinition.ClassType.FullName, propertyInfo.Name));
+          return MappingValidationResult.CreateInvalidResult (
+              "{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
+              constraint.Message,
+              classDefinition.ClassType.FullName,
+              propertyInfo.Name);
         }
       }
       return MappingValidationResult.CreateValidResult();
