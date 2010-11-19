@@ -74,6 +74,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetColumns_Distinct ()
+    {
+      var tableDefinition1 = new TableDefinition ("Table1", new[] { _column1, _column2 });
+      var tableDefinition2 = new TableDefinition ("Table2", new[] { _column2, _column3 });
+      _unionViewDefinition = new UnionViewDefinition ("Test", new[] { tableDefinition1, tableDefinition2 });
+
+      var result = _unionViewDefinition.GetColumns ();
+
+      Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();

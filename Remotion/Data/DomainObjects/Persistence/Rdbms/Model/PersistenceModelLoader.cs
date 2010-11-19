@@ -137,9 +137,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IEnumerable<ColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
-      var allClassesInHierarchy = (new[] { classDefinition }
-          .Concat (classDefinition.CreateSequence (cd => cd.BaseClass))
-          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>())).Distinct();
+      var allClassesInHierarchy = classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
 
       var columnDefinitions = from cd in allClassesInHierarchy
                               from PropertyDefinition pd in cd.MyPropertyDefinitions
