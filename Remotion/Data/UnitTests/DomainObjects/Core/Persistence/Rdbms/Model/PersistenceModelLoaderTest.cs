@@ -31,17 +31,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class PersistenceModelLoaderTest
   {
     private ReflectionBasedClassDefinition _orderClassDefinition;
-    private IStoragePropertyDefinitionFactory _columnDefinitionFactoryMock;
-    private PersistenceModelLoader _persistenceModelLoader;
-    private ColumnDefinition _fakeColumnDefinition1;
-    private ColumnDefinition _fakeColumnDefinition2;
-    private ReflectionBasedPropertyDefinition _propertyDefinition1;
-    private ReflectionBasedPropertyDefinition _propertyDefinition2;
     private ReflectionBasedClassDefinition _companyClassDefinition;
     private ReflectionBasedClassDefinition _partnerClassDefinition;
+    private ReflectionBasedClassDefinition _abstractClassDefinition;
+    
+    private IStoragePropertyDefinitionFactory _columnDefinitionFactoryMock;
+    private PersistenceModelLoader _persistenceModelLoader;
+    
+    private ReflectionBasedPropertyDefinition _propertyDefinition1;
+    private ReflectionBasedPropertyDefinition _propertyDefinition2;
     private ReflectionBasedPropertyDefinition _propertyDefinition3;
     private ReflectionBasedPropertyDefinition _propertyDefinition4;
-    private ReflectionBasedClassDefinition _abstractClassDefinition;
+
+    private ColumnDefinition _fakeColumnDefinition1;
+    private ColumnDefinition _fakeColumnDefinition2;
 
     [SetUp]
     public void SetUp ()
@@ -50,8 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _companyClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Company), null);
       _partnerClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Partner), _companyClassDefinition);
       _abstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (AbstractClass), null);
+
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionFactory>();
       _persistenceModelLoader = new PersistenceModelLoader (_columnDefinitionFactoryMock);
+
       _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           _orderClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), "OrderNo");
       _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
@@ -60,6 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
          _companyClassDefinition, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), "Name");
       _propertyDefinition4 = ReflectionBasedPropertyDefinitionFactory.Create (
          _partnerClassDefinition, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), "Name");
+
       _fakeColumnDefinition1 = new ColumnDefinition ("Test1", typeof (string), true);
       _fakeColumnDefinition2 = new ColumnDefinition ("Test2", typeof (int), false);
     }
@@ -86,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _columnDefinitionFactoryMock.VerifyAllExpectations ();
       Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.TypeOf(typeof(TableDefinition)));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo("Order"));
+      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Order"));
       Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (0));
     }
 
@@ -138,6 +144,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy_BaseClassDefinitionHasDBTableAttributeApplied_And_HasPropertyDefinitions ()
     {
+      // TODO Review 3496: Also add a property to the derived class => table and view should include that property
+
       Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.Null);
       Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.Null);
       Assert.That (_partnerClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
