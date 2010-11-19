@@ -99,7 +99,6 @@
     <Compile Include="Logging\BridgeInterfaces\ILogManagerImplementation.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogManager.cs" />
-    <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
