@@ -49,8 +49,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           && storageClassAttribute.StorageClass != StorageClass.Transaction)
       {
         return MappingValidationResult.CreateInvalidResult (
-          "Only StorageClass.Persistent and StorageClass.Transaction are supported for property '{0}' of class '{1}'.\r\n\r\n"
-            +"Declaring type: '{2}'\r\nProperty: '{3}'",
+            "Only StorageClass.Persistent and StorageClass.Transaction are supported for property '{0}' of class '{1}'.\r\n\r\n"
+            + "Declaring type: '{2}'\r\nProperty: '{3}'",
             propertyInfo.Name,
             propertyInfo.DeclaringType.Name,
             propertyInfo.DeclaringType.FullName,
