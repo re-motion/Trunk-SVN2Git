@@ -52,12 +52,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       if (classDefinition.StorageEntityDefinition == null)
       {
-        foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
-        {
-          var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
-          propertyDefinition.SetStorageProperty (storageProperty);
-        }
-
         var storageEntity = CreateStorageEntityDefinition (classDefinition);
         classDefinition.SetStorageEntity (storageEntity);
       }
@@ -85,10 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
 
-      // TODO Review 3496: Include base classes and derived classes => use GetColumnDefinitionsForHierarchy
-
-      var columnDefinitions = classDefinition.MyPropertyDefinitions.Cast<PropertyDefinition> ().Select (pd => GetColumnDefinition (pd));
-      return new TableDefinition (tableName, columnDefinitions);
+      return new TableDefinition (tableName, GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
@@ -98,21 +89,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       // TableDefinition
       var baseStorageEntityDefinition = GetEntityDefinition (classDefinition.BaseClass);
 
-      var actualAndBaseClassColumns = new HashSet<ColumnDefinition> (
-        // TODO Review 3496: Include derived classes => use GetColumnDefinitionsForHierarchy
-          classDefinition.GetPropertyDefinitions ().Cast<PropertyDefinition> ().Select (pd => (ColumnDefinition) pd.StoragePropertyDefinition));
+      var actualAndBaseClassColumns = new HashSet<ColumnDefinition> (GetColumnDefinitionsForHierarchy (classDefinition));
 
       return new FilterViewDefinition (
-          classDefinition.ID + "View", 
-          baseStorageEntityDefinition, 
-          classDefinition.ID, 
+          classDefinition.ID + "View",
+          baseStorageEntityDefinition,
+          classDefinition.ID,
           actualAndBaseClassColumns.Contains);
     }
 
     private IStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition)
     {
-      var derivedStorageEntityDefinitions = 
-          from ClassDefinition derivedClass in classDefinition.DerivedClasses 
+      var derivedStorageEntityDefinitions =
+          from ClassDefinition derivedClass in classDefinition.DerivedClasses
           select GetEntityDefinition (derivedClass);
 
       return new UnionViewDefinition (classDefinition.ID + "View", derivedStorageEntityDefinitions);
@@ -121,39 +110,42 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
     {
       EnsurePersistenceModelApplied (classDefinition);
-      // TODO Review 3496: Implement error case where the class already has a non-RDBMS entity definition, similar to the case below in GetColumnDefinition
+      
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
 
     private ColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
-      // TODO Review 3496: There should be an assertion exception here when the full unit test suite has been added. Uncomment the code below when the exception occurs.
-      return Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition as ColumnDefinition);
-      
-      //if (propertyDefinition.StoragePropertyDefinition == null)
-      //{
-      //  var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
-      //  propertyDefinition.SetStorageProperty (storageProperty);
-      //}
+      if (propertyDefinition.StoragePropertyDefinition == null)
+      {
+        var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+        propertyDefinition.SetStorageProperty (storageProperty);
+      }
 
-      // TODO Review 3496: Test by creating a PropertyDefinition with a fake StorageProperty that is not derived from ColumnDefinition and passing this via a ClassDefinition to ApplyPersistenceModelToHierarchy
-      //var columnDefinition = propertyDefinition.StoragePropertyDefinition as ColumnDefinition;
-      //if (columnDefinition == null)
-      //  throw new MappingException ("Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: ... Property: ...");
+      var columnDefinition = propertyDefinition.StoragePropertyDefinition as ColumnDefinition;
+      if (columnDefinition == null)
+      {
+        throw new MappingException (
+            string.Format (
+                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
+                propertyDefinition.PropertyInfo.DeclaringType.FullName,
+                propertyDefinition.PropertyInfo.Name));
+      }
 
-      //return columnDefinition;
+      return columnDefinition;
     }
 
-    //private IEnumerable<ColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
-    //{
-      //var allClassesInHierarchy = new[] { classDefinition }
-      //    .Concat (classDefinition.CreateSequence (cd => cd.BaseClass))
-      //    .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+    private IEnumerable<ColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    {
+      var allClassesInHierarchy = (new[] { classDefinition }
+          .Concat (classDefinition.CreateSequence (cd => cd.BaseClass))
+          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>())).Distinct();
 
-      //var columnDefinitions = from cd in allClassesInHierarchy
-      //                        from PropertyDefinition pd in cd.MyPropertyDefinitions
-      //                        select GetColumnDefinition (pd.StoragePropertyDefinition);
-      // return columnDefinitions;
-    // }
+      var columnDefinitions = from cd in allClassesInHierarchy
+                              from PropertyDefinition pd in cd.MyPropertyDefinitions
+                              select GetColumnDefinition (pd);
+
+      return columnDefinitions;
+    }
   }
 }

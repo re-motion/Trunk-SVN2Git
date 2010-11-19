@@ -39,7 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static IStoragePropertyDefinition GetFakeStorageProperty (string name)
     {
-      return new FakeColumnDefinition (name);
+      if (name == null)
+        return null;
+      else
+        return new FakeColumnDefinition (name);
     }
 
     public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, Type propertyType)
@@ -176,7 +179,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (columnDefinition);
+      if (columnDefinition != null)
+        propertyDefinition.SetStorageProperty (columnDefinition);
       return propertyDefinition;
     }
 

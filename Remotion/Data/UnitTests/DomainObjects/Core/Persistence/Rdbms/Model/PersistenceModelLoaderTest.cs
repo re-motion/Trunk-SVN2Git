@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -22,7 +23,6 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -30,218 +30,320 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class PersistenceModelLoaderTest
   {
-    private ReflectionBasedClassDefinition _orderClassDefinition;
-    private ReflectionBasedClassDefinition _companyClassDefinition;
-    private ReflectionBasedClassDefinition _partnerClassDefinition;
-    private ReflectionBasedClassDefinition _abstractClassDefinition;
-    
+    private ReflectionBasedClassDefinition _baseBaseClassDefinition;
+    private ReflectionBasedClassDefinition _baseClassDefinition;
+    private ReflectionBasedClassDefinition _tableClassDefinition1;
+    private ReflectionBasedClassDefinition _tableClassDefinition2;
+    private ReflectionBasedClassDefinition _derivedClassDefinition1;
+    private ReflectionBasedClassDefinition _derivedClassDefinition2;
+    private ReflectionBasedClassDefinition _derivedDerivedClassDefinition;
+
+    private ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
+    private ReflectionBasedPropertyDefinition _basePropertyDefinition;
+    private ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
+    private ReflectionBasedPropertyDefinition _tablePropertyDefinition2;
+    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition1;
+    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition2;
+    private ReflectionBasedPropertyDefinition _derivedDerivedPropertyDefinition;
+
     private IStoragePropertyDefinitionFactory _columnDefinitionFactoryMock;
     private PersistenceModelLoader _persistenceModelLoader;
-    
-    private ReflectionBasedPropertyDefinition _propertyDefinition1;
-    private ReflectionBasedPropertyDefinition _propertyDefinition2;
-    private ReflectionBasedPropertyDefinition _propertyDefinition3;
-    private ReflectionBasedPropertyDefinition _propertyDefinition4;
 
     private ColumnDefinition _fakeColumnDefinition1;
     private ColumnDefinition _fakeColumnDefinition2;
+    private ColumnDefinition _fakeColumnDefinition3;
+    private ColumnDefinition _fakeColumnDefinition4;
+    private ColumnDefinition _fakeColumnDefinition5;
+    private ColumnDefinition _fakeColumnDefinition6;
+    private ColumnDefinition _fakeColumnDefinition7;
+
 
     [SetUp]
     public void SetUp ()
     {
-      _orderClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
-      _companyClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Company), null);
-      _partnerClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Partner), _companyClassDefinition);
-      _abstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (AbstractClass), null);
+      var typeWithDBTableAttribute1 = typeof (Order);
+      var typeWithDBTableAttribute2 = typeof (Company);
+      var typeWithoutDBTableAttribute1 = typeof (Distributor);
+      var typeWithoutDBTableAttribute2 = typeof (Partner);
+      var typeWithoutDBTableAttribute3 = typeof (Supplier);
+
+      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithoutDBTableAttribute1, null);
+      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithoutDBTableAttribute1, _baseBaseClassDefinition);
+      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithDBTableAttribute1, _baseClassDefinition);
+      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithDBTableAttribute2, _baseClassDefinition);
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithoutDBTableAttribute1, _tableClassDefinition2);
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          typeWithoutDBTableAttribute2, _tableClassDefinition2);
+      _derivedDerivedClassDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeWithoutDBTableAttribute3, _derivedClassDefinition2);
+
+      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (_baseBaseClassDefinition, "BaseBaseProperty");
+      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty");
+      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (_tableClassDefinition1, "TableProperty1");
+      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2");
+      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (_derivedClassDefinition1, "DerivedProperty1");
+      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (_derivedClassDefinition2, "DerivedProperty2");
+      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (_derivedDerivedClassDefinition, "DerivedDerivedProperty");
+
+      _baseBaseClassDefinition.SetReadOnly();
+      _baseClassDefinition.SetReadOnly();
+      _tableClassDefinition1.SetReadOnly();
+      _tableClassDefinition2.SetReadOnly();
+      _derivedClassDefinition1.SetReadOnly();
+      _derivedClassDefinition2.SetReadOnly();
+      _derivedDerivedClassDefinition.SetReadOnly();
 
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionFactory>();
       _persistenceModelLoader = new PersistenceModelLoader (_columnDefinitionFactoryMock);
 
-      _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), "OrderNo");
-      _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
-          _orderClassDefinition, StorageClass.Persistent, typeof (Order).GetProperty ("DeliveryDate"), "DeliveryDate");
-      _propertyDefinition3 = ReflectionBasedPropertyDefinitionFactory.Create (
-         _companyClassDefinition, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), "Name");
-      _propertyDefinition4 = ReflectionBasedPropertyDefinitionFactory.Create (
-         _partnerClassDefinition, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), "Name");
-
       _fakeColumnDefinition1 = new ColumnDefinition ("Test1", typeof (string), true);
       _fakeColumnDefinition2 = new ColumnDefinition ("Test2", typeof (int), false);
+      _fakeColumnDefinition3 = new ColumnDefinition ("Test3", typeof (string), true);
+      _fakeColumnDefinition4 = new ColumnDefinition ("Test4", typeof (int), false);
+      _fakeColumnDefinition5 = new ColumnDefinition ("Test5", typeof (string), true);
+      _fakeColumnDefinition6 = new ColumnDefinition ("Test6", typeof (int), false);
+      _fakeColumnDefinition7 = new ColumnDefinition ("Test7", typeof (string), true);
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_HasAlreadyPersistenceModelApplied ()
+    public void ApplyPersistenceModelToHierarchy_HasAlreadyPersistenceModelApplied_AndNoDerivedClassDefinitions ()
     {
       var storageEntityDefinition = new TableDefinition ("Test", new ColumnDefinition[] { });
-      _orderClassDefinition.SetStorageEntity (storageEntityDefinition);
+      _derivedDerivedClassDefinition.SetStorageEntity (storageEntityDefinition);
 
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_orderClassDefinition);
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.SameAs (storageEntityDefinition));
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      Assert.That (_derivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (storageEntityDefinition));
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_ClassDefinitionHasDBTableAttributeApplied_And_HasNoPropertyDefinitions ()
+    public void ApplyPersistenceModelToHierarchy_BaseBaseClassDefinition ()
     {
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_orderClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition1)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition6);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (
+          _fakeColumnDefinition7);
+      _columnDefinitionFactoryMock.Replay();
 
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_orderClassDefinition);
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_baseBaseClassDefinition);
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.TypeOf(typeof(TableDefinition)));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Order"));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (0));
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertUnionViewDefinition (
+          _baseBaseClassDefinition,
+          "DistributorView",
+          new[] { _baseClassDefinition.StorageEntityDefinition },
+          new[]
+          {
+              _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition5,
+              _fakeColumnDefinition6, _fakeColumnDefinition7
+          });
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_ClassDefinitionHasDBTableAttributeApplied_And_HasPropertyDefinitions ()
+    public void ApplyPersistenceModelToHierarchy_BaseClassDefinition ()
     {
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.Null);
-      _orderClassDefinition.MyPropertyDefinitions.Add (_propertyDefinition1);
-      _orderClassDefinition.MyPropertyDefinitions.Add (_propertyDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition1)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition6);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (
+          _fakeColumnDefinition7);
+      _columnDefinitionFactoryMock.Replay();
 
-      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_propertyDefinition1)).Return (_fakeColumnDefinition1);
-      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_propertyDefinition2)).Return (_fakeColumnDefinition2);
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_baseClassDefinition);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertUnionViewDefinition (
+          _baseClassDefinition,
+          "DistributorView",
+          new[] { _tableClassDefinition1.StorageEntityDefinition, _tableClassDefinition2.StorageEntityDefinition },
+          new[]
+          {
+              _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition5,
+              _fakeColumnDefinition6, _fakeColumnDefinition7
+          });
+    }
+
+    [Test]
+    public void ApplyPersistenceModelToHierarchy_TableClassDefinition1 ()
+    {
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition1)).Return (_fakeColumnDefinition3);
+
+      _columnDefinitionFactoryMock.Replay();
+
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_tableClassDefinition1);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertTableDefinition (_tableClassDefinition1, "Order", new[] { _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3 });
+    }
+
+    [Test]
+    public void ApplyPersistenceModelToHierarchy_TableClassDefinition2 ()
+    {
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (
+          _fakeColumnDefinition6);
+      _columnDefinitionFactoryMock.Replay();
+
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_tableClassDefinition2);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertTableDefinition (
+          _tableClassDefinition2,
+          "Company",
+          new[]
+          {
+              _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition5,
+              _fakeColumnDefinition6
+          });
+    }
+
+    [Test]
+    public void ApplyPersistenceModelToHierarchy_DerivedClassDefinition1 ()
+    {
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (_fakeColumnDefinition6);
       
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_orderClassDefinition);
+      _columnDefinitionFactoryMock.Replay();
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Order"));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (2));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).GetColumns ()[0], Is.SameAs(_fakeColumnDefinition1));
-      Assert.That (((TableDefinition) _orderClassDefinition.StorageEntityDefinition).GetColumns ()[1], Is.SameAs (_fakeColumnDefinition2));
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedClassDefinition1);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertFilterViewDefinition (
+          _derivedClassDefinition1,
+          "DistributorView",
+          _tableClassDefinition2.StorageEntityDefinition,
+          "Distributor",
+          new[] { _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4 });
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_BaseClassDefinitionHasDBTableAttributeApplied_And_HasNoPropertyDefinitions ()
+    public void ApplyPersistenceModelToHierarchy_DerivedClassDefinition2 ()
     {
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_partnerClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      Assert.That (_companyClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      _partnerClassDefinition.SetReadOnly();
-      _companyClassDefinition.SetReadOnly();
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (_fakeColumnDefinition6);
+      _columnDefinitionFactoryMock.Replay();
 
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_partnerClassDefinition);
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedClassDefinition2);
 
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Company"));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (0));
-
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ViewName, Is.EqualTo ("PartnerView"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ClassID, Is.EqualTo("Partner"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs (_companyClassDefinition.StorageEntityDefinition));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (0));
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertFilterViewDefinition (
+          _derivedClassDefinition2,
+          "PartnerView",
+          _tableClassDefinition2.StorageEntityDefinition,
+          "Partner",
+          new[] { _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition6 });
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_BaseClassDefinitionHasDBTableAttributeApplied_And_HasPropertyDefinitions ()
+    public void ApplyPersistenceModelToHierarchy_DerivedDerivedClassDefinition ()
     {
-      // TODO Review 3496: Also add a property to the derived class => table and view should include that property
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_baseBasePropertyDefinition)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_basePropertyDefinition)).Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition2)).Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition2)).Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedDerivedPropertyDefinition)).Return (
+          _fakeColumnDefinition5);
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_derivedPropertyDefinition1)).Return (_fakeColumnDefinition6);
+      _columnDefinitionFactoryMock.Replay();
 
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_partnerClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      Assert.That (_companyClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      _companyClassDefinition.MyPropertyDefinitions.Add (_propertyDefinition3);
-      _partnerClassDefinition.SetReadOnly ();
-      _companyClassDefinition.SetReadOnly ();
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
 
-      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_propertyDefinition3)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertFilterViewDefinition (
+          _derivedDerivedClassDefinition,
+          "SupplierView",
+          _derivedClassDefinition2.StorageEntityDefinition,
+          "Supplier",
+          new[] { _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition5 });
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory'\r\n"
+      + "Property: 'FakeProperty'")]
+    public void StoragePropertyDefinitionIsNoColumnDefinition ()
+    {
+      var fakeResult = new FakeColumnDefinition ("Invalid");
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_tablePropertyDefinition1)).Return (fakeResult);
       
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_partnerClassDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Company"));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (1));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).GetColumns ()[0], Is.SameAs(_fakeColumnDefinition1));
-
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ViewName, Is.EqualTo ("PartnerView"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ClassID, Is.EqualTo ("Partner"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs (_companyClassDefinition.StorageEntityDefinition));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (1));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).GetColumns ()[0], Is.SameAs(_fakeColumnDefinition1));
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_tableClassDefinition1);
     }
 
     [Test]
-    public void ApplyPersistenceModelToHierarchy_BaseClassDefinitionHasDBTableAttributeApplied_And_HasPropertyDefinitions_PropertyIsFiltered ()
+    [ExpectedException(typeof(InvalidCastException))]
+    public void StorageEntityDefinitionDoesNotImplementIEntityDefinition ()
     {
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_partnerClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      Assert.That (_companyClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      _partnerClassDefinition.MyPropertyDefinitions.Add (_propertyDefinition4);
-      _partnerClassDefinition.SetReadOnly ();
-      _companyClassDefinition.SetReadOnly ();
+      var invalidStorageEntityDefinition = MockRepository.GenerateStub<IStorageEntityDefinition>();
+      _derivedClassDefinition2.SetStorageEntity (invalidStorageEntityDefinition);
 
-      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (_propertyDefinition4)).Return (_fakeColumnDefinition1);
-
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_partnerClassDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (_companyClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Company"));
-      Assert.That (((TableDefinition) _companyClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (0));
-
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ViewName, Is.EqualTo ("PartnerView"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).ClassID, Is.EqualTo ("Partner"));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs (_companyClassDefinition.StorageEntityDefinition));
-      Assert.That (((FilterViewDefinition) _partnerClassDefinition.StorageEntityDefinition).GetColumns ().Count, Is.EqualTo (0));
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
     }
 
-    [Test]
-    public void ApplyPersistenceModelToHierarchy_ActualAndBaseClassDefinitionHaveNoDBTableAttributeApplied_And_NoDerivedClasses()
+    private void AssertFilterViewDefinition (
+        ClassDefinition classDefinition, string viewName, IStorageEntityDefinition baseEntity, string classID, ColumnDefinition[] columnDefinitions)
     {
-      Assert.That (_abstractClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_abstractClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_abstractClassDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (_abstractClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).ViewName, Is.EqualTo("AbstractClassView"));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).UnionedEntities.Count, Is.EqualTo (0));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
+      Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ViewName, Is.EqualTo (viewName));
+      Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs(baseEntity));
+      Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ClassID, Is.EqualTo(classID));
+      Assert.That (
+          ((FilterViewDefinition) classDefinition.StorageEntityDefinition).GetColumns ().OrderBy (c => c.Name).ToArray (), Is.EqualTo (columnDefinitions));
     }
 
-    [Test]
-    public void ApplyPersistenceModelToHierarchy_ActualAndBaseClassDefinitionHaveNoDBTableAttributeApplied_And_WithDerivedClassesn ()
+    private void AssertUnionViewDefinition (
+        ClassDefinition classDefinition, string viewName, IStorageEntityDefinition[] storageEntityDefinitions, ColumnDefinition[] columnDefinitions)
     {
-      Assert.That (_abstractClassDefinition.StorageEntityDefinition, Is.Null);
-      Assert.That (_abstractClassDefinition.MyPropertyDefinitions.Count, Is.EqualTo (0));
-      PrivateInvoke.SetNonPublicField (
-          _abstractClassDefinition,
-          "_derivedClasses",
-          new ClassDefinitionCollection (new ClassDefinition[] { _orderClassDefinition, _partnerClassDefinition }, true, true));
-      _abstractClassDefinition.SetReadOnly();
-      _partnerClassDefinition.SetReadOnly();
-      
-      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_abstractClassDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations ();
-
-      Assert.That (_abstractClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).ViewName, Is.EqualTo ("AbstractClassView"));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).UnionedEntities.Count, Is.EqualTo (2));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).UnionedEntities[0], Is.SameAs(_orderClassDefinition.StorageEntityDefinition));
-      Assert.That (((UnionViewDefinition) _abstractClassDefinition.StorageEntityDefinition).UnionedEntities[1], Is.SameAs(_partnerClassDefinition.StorageEntityDefinition));
-
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (_partnerClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (_orderClassDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
+      Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).ViewName, Is.EqualTo (viewName));
+      Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
+      Assert.That (
+          ((UnionViewDefinition) classDefinition.StorageEntityDefinition).GetColumns().OrderBy (c => c.Name).ToArray(), Is.EqualTo (columnDefinitions));
     }
 
+    private void AssertTableDefinition (ClassDefinition classDefinition, string tableName, ColumnDefinition[] columnDefinitions)
+    {
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo (tableName));
+      Assert.That (
+          ((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().OrderBy (c => c.Name).ToArray(), Is.EqualTo (columnDefinitions));
+    }
+    
+    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName)
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition,
+          propertyName,
+          null);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      return propertyDefinition;
+    }
   }
 }

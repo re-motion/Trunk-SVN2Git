@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       _viewName = viewName;
       _unionedEntities = unionedEntities.ToList().AsReadOnly();
-      _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).ToList ().AsReadOnly ();
+      _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).Distinct().ToList ().AsReadOnly ();
     }
 
     public string ViewName
