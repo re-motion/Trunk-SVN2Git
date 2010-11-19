@@ -137,11 +137,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "The property type of an uni-directional relation property must be assignable to Remotion.Data.DomainObjects.DomainObject.\r\n\r\n"
-      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer'\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer'\r\n"
       +"Property: 'OrderNumber'\r\n"
       +"----------\r\n"
       +"Opposite relation property 'Orders' declared on type 'Order' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
       +"----------\r\n"
       +"The type 'Order' does not match the type of the opposite relation propery 'Orders' declared on type 'Order'.\r\n\r\n"
       +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'")]

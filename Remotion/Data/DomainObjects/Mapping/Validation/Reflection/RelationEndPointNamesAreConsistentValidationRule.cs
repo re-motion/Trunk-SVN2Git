@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
               return MappingValidationResult.CreateInvalidResult (
                   relationEndPointDefinition.ClassDefinition.ClassType,
                   "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.\r\n\r\n"
-                  + "Declaration type: '{3}'",
+                  + "Declaring type: '{3}'",
                   relationAttribute.OppositeProperty,
                   oppositeProperty.DeclaringType.Name,
                   relationAttribute.GetType().Name,
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
               return MappingValidationResult.CreateInvalidResult (
                   relationEndPointDefinition.ClassDefinition.ClassType,
                   "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n\r\n"
-                  + "Declaration type: '{3}'",
+                  + "Declaring type: '{3}'",
                   relationAttribute.OppositeProperty,
                   oppositeProperty.DeclaringType.Name,
                   relationAttribute.GetType().Name,

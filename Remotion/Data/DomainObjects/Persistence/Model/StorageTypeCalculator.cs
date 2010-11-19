@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
       }
 
       throw new InvalidOperationException (string.Format (
-              "Data type '{0}' is not supported.\r\nDeclaration type: '{1}'\r\nProperty: '{2}'",
+              "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
               propertyDefinition.PropertyType,
               propertyDefinition.ClassDefinition.ID, // TODO Review 3495: Use ClassDefinition.ClassType.FullName
               propertyDefinition.PropertyName));

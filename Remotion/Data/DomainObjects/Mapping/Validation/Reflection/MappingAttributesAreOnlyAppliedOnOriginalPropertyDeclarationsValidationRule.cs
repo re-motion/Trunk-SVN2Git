@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         {
           return MappingValidationResult.CreateInvalidResult (
               propertyInfo,
-              "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\nDeclaration type: {1}\r\nProperty: {2}",
+              "The '{0}' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
               mappingAttributes[0].GetType().Name,
               propertyInfo.DeclaringType.FullName,
               propertyInfo.Name);

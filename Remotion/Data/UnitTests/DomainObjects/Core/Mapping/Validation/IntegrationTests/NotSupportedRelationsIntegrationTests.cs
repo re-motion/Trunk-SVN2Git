@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
       "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass1' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-      +"Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       +"BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite.InvalidRelationClass2'")]
     public void BidirectionalRelationWithBidirectionalRelationAttributeOnOneSite ()
     {
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException (typeof (MappingException), ExpectedMessage =
       "Opposite relation property 'RelationProperty1' declared on type 'InvalidRelationClass2' defines a 'DBBidirectionalRelationAttribute' whose "
       + "opposite property does not match.\r\n\r\n"
-      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       + "BidirectionalRelation_RelationEndPointDefinitionsDoNotMatch.InvalidRelationClass1'\r\n"
       + "----------\r\n"
       + "Property 'RelationProperty2' on class 'InvalidRelationClass1' could not be found.\r\n\r\n"
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException(typeof(MappingException), ExpectedMessage =
       "The relation property 'RelationProperty' has return type 'ClassNotInMapping', which is not a part of the mapping. Relation properties must "
       +"not point to classes above the inheritance root.\r\n\r\n"
-      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
       +"RelationPropertyTypeNotInMapping.InvalidRelationClass1'\r\n"
       + "Property: 'RelationProperty'")]
     public void RelationPropertyTypeNotInMapping ()

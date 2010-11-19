@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), 
       ExpectedMessage = "The domain object type cannot redefine the 'StorageGroupAttribute' already defined on base type 'BaseClass'.\r\n\r\n"
-      + "Declaration type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.DerivedDerivedClass'")]
     public void DuplicatedStorageGroupAttributeInInheritanceHierarchy ()
     {
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), 
       ExpectedMessage = "The 'StorageClassNoneAttribute' is a mapping attribute and may only be applied at the property's base definition.\r\n\r\n"
-      + "Declaration type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"MappingAttributeAppliedOnOverriddenProperty.DerivedClass\r\nProperty: Property")]
     public void MappingAttributeAppliedOnOverriddenProperty ()
     {
