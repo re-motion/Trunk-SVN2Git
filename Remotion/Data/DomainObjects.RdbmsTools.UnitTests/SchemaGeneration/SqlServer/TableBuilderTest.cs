@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Data type 'System.Char' is not supported.\r\nDeclaration type: 'ClassID'\r\nProperty: 'Name'")]
+        "Data type 'System.Char' is not supported.\r\nDeclaring type: 'ClassID'\r\nProperty: 'Name'")]
     public void GetSqlDataType_WithNotSupportedType ()
     {
       _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Char), null, null));
