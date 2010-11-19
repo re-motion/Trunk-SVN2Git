@@ -47,18 +47,16 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         return MappingValidationResult.CreateValidResult();
 
       if (!relationEndPointDefinition.IsPropertyInfoResolved)
-        return MappingValidationResult.CreateValidResult ();
+        return MappingValidationResult.CreateValidResult();
 
       var propertyInfo = relationEndPointDefinition.PropertyInfo;
       var relationAttribute = AttributeUtility.GetCustomAttribute<DBBidirectionalRelationAttribute> (propertyInfo, true);
       if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
       {
-        return MappingValidationResult.CreateInvalidResult (
-            "Only relation end points with a property type of '{0}' can contain the foreign key.\r\n\r\n"
-            + "Declaring type: {1}\r\nProperty: {2}",
-            typeof (DomainObject).Name,
-            relationEndPointDefinition.ClassDefinition.ClassType.FullName,
-            relationEndPointDefinition.PropertyInfo != null ? relationEndPointDefinition.PropertyInfo.Name : string.Empty);
+        return MappingValidationResult.CreateInvalidResultForProperty (
+            propertyInfo,
+            "Only relation end points with a property type of '{0}' can contain the foreign key.",
+            typeof (DomainObject).Name);
       }
 
       return MappingValidationResult.CreateValidResult();
