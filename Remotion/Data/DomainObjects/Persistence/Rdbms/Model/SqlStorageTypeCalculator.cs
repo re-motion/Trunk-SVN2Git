@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="SqlStorageTypeCalculator"/> calculates the sql-specific type for a column in a realtional database.
+  /// <see cref="SqlStorageTypeCalculator"/> calculates the SQL Server-specific type for a column in a relational database.
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
