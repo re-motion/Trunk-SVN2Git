@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = "Class 'BaseValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory\r\n"
         +"Property: FakeProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory\r\n"
         +"Property: FakeProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }

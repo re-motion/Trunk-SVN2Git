@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.Name,
             typeof (DomainObject).Name,
             typeof (DomainObjectCollection).Name,
-            endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+            endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.DeclaringType.FullName,
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
       }
       return  MappingValidationResult.CreateValidResult();

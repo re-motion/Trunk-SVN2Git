@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
               endPointDefinition2.PropertyInfo.Name,
               endPointDefinition2.ClassDefinition.ClassType.Name,
               typeof (DBBidirectionalRelationAttribute).Name,
-              endPointDefinition1.ClassDefinition.ClassType.FullName,
+              endPointDefinition1.PropertyInfo.DeclaringType.FullName,
               endPointDefinition1.PropertyInfo.Name,
               relationDefinition.ID);
         }
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
               endPointDefinition1.PropertyInfo,
               "Relation '{0}' cannot have two virtual end points.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
               relationDefinition.ID,
-              endPointDefinition1.ClassDefinition.ClassType.FullName,
+              endPointDefinition1.PropertyInfo.DeclaringType.FullName,
               endPointDefinition1.PropertyInfo.Name);
         }
       }
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             endPointDefinition2.PropertyInfo.Name,
             endPointDefinition2.ClassDefinition.ClassType.Name,
             typeof (DBBidirectionalRelationAttribute).Name,
-            endPointDefinition1.ClassDefinition.ClassType.FullName,
+            endPointDefinition1.PropertyInfo.DeclaringType.FullName,
             endPointDefinition1.PropertyInfo.Name,
             relationDefinition.ID);
       }

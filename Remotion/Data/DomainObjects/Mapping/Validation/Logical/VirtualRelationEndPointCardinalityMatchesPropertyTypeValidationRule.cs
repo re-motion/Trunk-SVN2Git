@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
               "The property type of a virtual end point of a one-to-one relation"
               + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
               + "Declaring type: '{0}'\r\nProperty: '{1}'",
-              endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.DeclaringType.FullName,
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
         }
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
               "The property type of a virtual end point of a one-to-many relation"
               + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
               + "Declaring type: '{0}'\r\nProperty: '{1}'",
-              endPointDefinitionAsVirtualRelationEndPointDefinition.ClassDefinition.ClassType.FullName,
+              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.DeclaringType.FullName,
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
         }
       }

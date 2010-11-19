@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
                   myPropertyDefinition.StoragePropertyDefinition.Name,
                   basePropertyDefinition.ClassDefinition.ClassType.Name,
                   basePropertyDefinition.PropertyInfo.Name,
-                  classDefinition.ClassType.Name,
+                  myPropertyDefinition.PropertyInfo.DeclaringType.Name,
                   myPropertyDefinition.PropertyInfo.Name);
             }
           }

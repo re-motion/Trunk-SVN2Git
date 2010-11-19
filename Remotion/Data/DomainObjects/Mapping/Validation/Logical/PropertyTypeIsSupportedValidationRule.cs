@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             + "Declaring type: '{2}'\r\nProperty: '{3}'",
             nativePropertyType.Name,
             typeof (DomainObject).Name,
-            classDefinition.ClassType.FullName,
+            propertyInfo.DeclaringType.FullName,
             propertyInfo.Name);
       }
 

@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
             + "Declaring type: '{2}'\r\nProperty: '{3}'",
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.Name,
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.ClassDefinition.ClassType.Name,
-            relationEndPointDefinitionAsVirtualRelationEndPointDefintion.ClassDefinition.ClassType.FullName,
+            relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.DeclaringType.FullName,
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.Name);
       }
       return MappingValidationResult.CreateValidResult();

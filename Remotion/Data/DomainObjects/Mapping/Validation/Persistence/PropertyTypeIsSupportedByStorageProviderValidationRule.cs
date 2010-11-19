@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
               "The property type '{0}' is not supported by this storage provider.\r\n\r\n"
               + "Declaring type: '{1}'\r\nProperty: '{2}'",
               nativePropertyType.Name,
-              classDefinition.ClassType.FullName,
+              propertyInfo.DeclaringType.FullName,
               propertyInfo.Name);
         }
       }

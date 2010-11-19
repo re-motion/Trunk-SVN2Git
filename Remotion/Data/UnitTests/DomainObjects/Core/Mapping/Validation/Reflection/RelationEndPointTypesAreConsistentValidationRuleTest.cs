@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "The type 'BaseRelationEndPointPropertyClass2' cannot be assigned to the type of the opposite relation propery 'RelationProperty4' declared "
           +"on type 'DerivedRelationEndPointPropertyClass1'.\r\n\r\n"
           +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-          +"RelationEndPointTypesAreConsistentValidationRule.DerivedRelationEndPointPropertyClass2'";
+          +"RelationEndPointTypesAreConsistentValidationRule.BaseRelationEndPointPropertyClass2'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }

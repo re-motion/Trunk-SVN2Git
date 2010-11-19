@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
                 classDefinition.ClassType.Name,
                 propertyDefinition.PropertyInfo.Name,
                 basePropertyDefinition.ClassDefinition.ClassType.Name,
-                classDefinition.ClassType.FullName,
+                propertyDefinition.PropertyInfo.DeclaringType.FullName,
                 propertyDefinition.PropertyInfo.Name);
             if(errorMessages.Length>0)
               errorMessages.AppendLine (new string ('-', 10));

@@ -62,13 +62,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             if (classDefinition.ClassType != oppositeDomainObjectType)
             {
               return MappingValidationResult.CreateInvalidResult (
-                  classDefinition.ClassType,
+                  relationEndPointDefinition.PropertyInfo,
                   "The type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
                   + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
                   oppositePropertyInfo.DeclaringType.Name,
-                  classDefinition.ClassType.FullName);
+                  relationEndPointDefinition.PropertyInfo.DeclaringType.FullName);
             }
           }
           else
@@ -86,13 +86,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             if (!declaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
             {
               return MappingValidationResult.CreateInvalidResult (
-                  classDefinition.ClassType,
+                  relationEndPointDefinition.PropertyInfo,
                   "The type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
                   + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
                   oppositePropertyInfo.DeclaringType.Name,
-                  classDefinition.ClassType.FullName);
+                  relationEndPointDefinition.PropertyInfo.DeclaringType.FullName);
             }
           }
         }
