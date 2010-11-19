@@ -169,11 +169,5 @@ namespace Remotion.Data.DomainObjects.Mapping
           true,
           _derivedClasses.AreResolvedTypesRequired);
     }
-
-    private MappingException CreateMappingException (string message, params object[] args)
-    {
-      return new MappingException (string.Format (message, args));
-    }
-   
   }
 }

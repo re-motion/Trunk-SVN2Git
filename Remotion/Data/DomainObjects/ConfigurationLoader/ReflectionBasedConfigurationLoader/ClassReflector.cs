@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -64,19 +63,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       classDefinitions.Add (classDefinition);
 
       return classDefinition;
-    }
-
-    protected MappingException CreateMappingException (Exception innerException, Type type, string message, params object[] args)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("message", message);
-
-      StringBuilder messageBuilder = new StringBuilder();
-      messageBuilder.AppendFormat (message, args);
-      messageBuilder.AppendLine();
-      messageBuilder.AppendFormat ("Type: {0}", type.FullName);
-
-      return new MappingException (messageBuilder.ToString(), innerException);
     }
 
     private ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)

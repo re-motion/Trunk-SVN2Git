@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
-using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Reflection;
@@ -73,19 +71,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (attribute != null)
         return attribute.IsNullable;
       return true;
-    }
-
-    protected MappingException CreateMappingException (Exception innerException, PropertyInfo propertyInfo, string message, params object[] args)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      ArgumentUtility.CheckNotNullOrEmpty ("message", message);
-
-      StringBuilder messageBuilder = new StringBuilder();
-      messageBuilder.AppendFormat (message, args);
-      messageBuilder.AppendLine();
-      messageBuilder.AppendFormat ("Declaring type: {0}\r\nProperty: {1}", propertyInfo.DeclaringType, propertyInfo.Name);
-
-      return new MappingException (messageBuilder.ToString(), innerException);
     }
   }
 }
