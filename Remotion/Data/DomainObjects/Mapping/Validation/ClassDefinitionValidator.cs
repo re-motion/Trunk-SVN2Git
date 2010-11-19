@@ -39,7 +39,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
           new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule(),
           new DomainObjectTypeIsNotGenericValidationRule(),
           new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
-          new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
           new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule(),
           new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule());
     }

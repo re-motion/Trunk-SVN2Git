@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -60,11 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
-    public void HasNoBaseClass ()
+    public void HasNoBaseClass_And_HasNoPropertyDefintions ()
     {
-      var validationResult = _validationRule.Validate (_baseOfBaseClassDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (_validationRule.Validate (_derivedBaseClassDefinition).ToArray(), Is.Empty);
     }
 
     [Test]
@@ -72,10 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       _baseOfBaseClassDefinition.SetReadOnly();
       _derivedBaseClassDefinition.SetReadOnly ();
-      
-      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition);
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (_validationRule.Validate (_derivedBaseClassDefinition).ToArray (), Is.Empty);
     }
 
     [Test]
@@ -89,9 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (_validationRule.Validate (_derivedBaseClassDefinition).ToArray (), Is.Empty);
     }
 
     [Test]
@@ -105,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition);
+      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition).First ();
 
       var expectedMessage = "Class 'BaseValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"
@@ -126,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _derivedBaseClassDefinition.SetReadOnly();
       _derivedClassDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_derivedClassDefinition);
+      var validationResult = _validationRule.Validate (_derivedClassDefinition).First ();
 
       var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"
