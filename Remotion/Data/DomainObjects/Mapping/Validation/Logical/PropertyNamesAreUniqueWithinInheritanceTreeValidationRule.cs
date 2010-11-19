@@ -44,17 +44,15 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           var basePropertyDefinition = basePropertyDefinitions.SingleOrDefault(pd=>pd.PropertyName==propertyName);
           if (basePropertyDefinition!=null)
           {
-            string message = string.Format("Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the "
-              +"same name.\r\n\r\n"
-              +"Declaring type: {3}\r\nProperty: {4}",
+            var result = MappingValidationResult.CreateInvalidResultForProperty (
+                propertyDefinition.PropertyInfo,
+                "Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
                 classDefinition.ClassType.Name,
                 propertyDefinition.PropertyInfo.Name,
-                basePropertyDefinition.ClassDefinition.ClassType.Name,
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name);
-            if(errorMessages.Length>0)
+                basePropertyDefinition.ClassDefinition.ClassType.Name);
+            if (errorMessages.Length > 0)
               errorMessages.AppendLine (new string ('-', 10));
-            errorMessages.AppendLine (message);
+            errorMessages.AppendLine (result.Message);
           }
         }
       }

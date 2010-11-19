@@ -43,46 +43,39 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         var endPointDefinition2AsVirtualRelationEndPointDefinition = endPointDefinition2 as VirtualRelationEndPointDefinition;
         if (endPointDefinition1AsVirtualRelationEndPointDefinition != null && endPointDefinition2AsVirtualRelationEndPointDefinition != null)
         {
-          return MappingValidationResult.CreateInvalidResult (
+          return MappingValidationResult.CreateInvalidResultForRelation (
+              relationDefinition.ID,
               endPointDefinition1.PropertyInfo,
               "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two virtual end points. "
-              + "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.\r\n\r\n"
-              + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+              + "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.",
               endPointDefinition1.PropertyInfo.Name,
               endPointDefinition1.ClassDefinition.ClassType.Name,
               endPointDefinition2.PropertyInfo.Name,
               endPointDefinition2.ClassDefinition.ClassType.Name,
-              typeof (DBBidirectionalRelationAttribute).Name,
-              endPointDefinition1.PropertyInfo.DeclaringType.FullName,
-              endPointDefinition1.PropertyInfo.Name,
-              relationDefinition.ID);
+              typeof (DBBidirectionalRelationAttribute).Name);
         }
         else
         {
-          return MappingValidationResult.CreateInvalidResult (
-              endPointDefinition1.PropertyInfo,
-              "Relation '{0}' cannot have two virtual end points.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
+          return MappingValidationResult.CreateInvalidResultForRelation (
               relationDefinition.ID,
-              endPointDefinition1.PropertyInfo.DeclaringType.FullName,
-              endPointDefinition1.PropertyInfo.Name);
+              endPointDefinition1.PropertyInfo,
+              "Relation '{0}' cannot have two virtual end points.",
+              relationDefinition.ID);
         }
       }
 
       if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
       {
-        return MappingValidationResult.CreateInvalidResult (
+        return MappingValidationResult.CreateInvalidResultForRelation (
+            relationDefinition.ID,
             endPointDefinition1.PropertyInfo,
             "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two non-virtual end points. "
-            + "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.\r\n\r\n"
-            + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
+            + "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.",
             endPointDefinition1.PropertyInfo.Name,
             endPointDefinition1.ClassDefinition.ClassType.Name,
             endPointDefinition2.PropertyInfo.Name,
             endPointDefinition2.ClassDefinition.ClassType.Name,
-            typeof (DBBidirectionalRelationAttribute).Name,
-            endPointDefinition1.PropertyInfo.DeclaringType.FullName,
-            endPointDefinition1.PropertyInfo.Name,
-            relationDefinition.ID);
+            typeof (DBBidirectionalRelationAttribute).Name);
       }
 
       return MappingValidationResult.CreateValidResult();

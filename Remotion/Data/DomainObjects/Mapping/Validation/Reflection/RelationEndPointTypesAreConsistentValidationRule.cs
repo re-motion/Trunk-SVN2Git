@@ -61,14 +61,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             // In this case, the opposite property's return type must exactly match this ClassDefinition's type.
             if (classDefinition.ClassType != oppositeDomainObjectType)
             {
-              return MappingValidationResult.CreateInvalidResult (
+              return MappingValidationResult.CreateInvalidResultForProperty (
                   relationEndPointDefinition.PropertyInfo,
-                  "The type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
-                  + "Declaring type: '{3}'",
+                  "The type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
-                  oppositePropertyInfo.DeclaringType.Name,
-                  relationEndPointDefinition.PropertyInfo.DeclaringType.FullName);
+                  oppositePropertyInfo.DeclaringType.Name);
             }
           }
           else
@@ -85,14 +83,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             // (The scenario this was actually needed for is to allow for generic base classes above the inheritance root defining relation properties.)
             if (!declaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
             {
-              return MappingValidationResult.CreateInvalidResult (
+              return MappingValidationResult.CreateInvalidResultForProperty (
                   relationEndPointDefinition.PropertyInfo,
-                  "The type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
-                  + "Declaring type: '{3}'",
+                  "The type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.",
                   declaringDomainObjectTypeForProperty.Name,
                   relationAttribute.OppositeProperty,
-                  oppositePropertyInfo.DeclaringType.Name,
-                  relationEndPointDefinition.PropertyInfo.DeclaringType.FullName);
+                  oppositePropertyInfo.DeclaringType.Name);
             }
           }
         }

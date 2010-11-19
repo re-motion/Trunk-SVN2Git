@@ -91,8 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction are supported for property 'PropertyWithStorageClassNone' of "
         +"class 'DerivedValidationDomainObjectClass'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'\r\n"
-        +"Property: 'PropertyWithStorageClassNone'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        +"Property: PropertyWithStorageClassNone";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

@@ -37,22 +37,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
-             select Validate (propertyDefinition.PropertyInfo, classDefinition);
+             select Validate (propertyDefinition.PropertyInfo);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo, ClassDefinition classDefinition)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
       if (!PropertyValue.IsTypeSupported (nativePropertyType))
       {
-        return MappingValidationResult.CreateInvalidResult (
+        return MappingValidationResult.CreateInvalidResultForProperty (
             propertyInfo,
-            "The property type '{0}' is not supported. If you meant to declare a relation, '{0}' must be derived from '{1}'.\r\n\r\n"
-            + "Declaring type: '{2}'\r\nProperty: '{3}'",
+            "The property type '{0}' is not supported. If you meant to declare a relation, '{0}' must be derived from '{1}'.",
             nativePropertyType.Name,
-            typeof (DomainObject).Name,
-            propertyInfo.DeclaringType.FullName,
-            propertyInfo.Name);
+            typeof (DomainObject).Name);
       }
 
       return MappingValidationResult.CreateValidResult();

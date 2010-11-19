@@ -82,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = 
         "The property type 'Object' is not supported. If you meant to declare a relation, 'Object' must be derived from 'DomainObject'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'\r\n"
-        +"Property: 'PropertyWithTypeObjectWithStorageClassPersistent'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        +"Property: PropertyWithTypeObjectWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

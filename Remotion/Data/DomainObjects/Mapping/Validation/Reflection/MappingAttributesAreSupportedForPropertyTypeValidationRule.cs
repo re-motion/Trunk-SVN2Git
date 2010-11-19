@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
-             select Validate (propertyDefinition.PropertyInfo, classDefinition);
+             select Validate (propertyDefinition.PropertyInfo);
     }
 
     //  //TODO 3424:
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     //    return new MappingValidationResult (true);
     //  }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo, ClassDefinition classDefinition)
+    private MappingValidationResult Validate (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
@@ -106,12 +106,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         var constraint = GetAttributeConstraint (attribute.GetType());
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
         {
-          return MappingValidationResult.CreateInvalidResult (
-              propertyInfo,
-              "{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
-              constraint.Message,
-              classDefinition.ClassType.FullName,
-              propertyInfo.Name);
+          return MappingValidationResult.CreateInvalidResultForProperty (propertyInfo, constraint.Message);
         }
       }
       return MappingValidationResult.CreateValidResult();

@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       AssertMappingValidationResult (validationResult, false, 
         "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        +"Property: 'IntPropertyWithStringPropertyAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        +"Property: IntPropertyWithStringPropertyAttribute");
     }
 
     [Test]
@@ -95,9 +95,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition).First();
 
       AssertMappingValidationResult (validationResult, false, "The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        + "MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        +"Property: 'BoolPropertyWithBinaryPropertyAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        + "MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        +"Property: BoolPropertyWithBinaryPropertyAttribute");
     }
 
     [Test]
@@ -124,9 +124,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition).First();
 
       AssertMappingValidationResult (validationResult, false, "The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithExtensibleEnumPropertyAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithExtensibleEnumPropertyAttribute");
     }
 
     [Test]
@@ -154,9 +154,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       AssertMappingValidationResult (validationResult, false, 
         "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithMandatoryPropertyAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithMandatoryPropertyAttribute");
     }
 
     [Test]
@@ -171,9 +171,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       AssertMappingValidationResult (validationResult, false,
         "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithMandatoryPropertyAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithMandatoryPropertyAttribute");
     }
 
     [Test]
@@ -201,9 +201,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       AssertMappingValidationResult (validationResult, false,
         "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithBidirectionalRelationAttribute'");
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithBidirectionalRelationAttribute");
     }
 
     [Test]
@@ -226,17 +226,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validtionRule.Validate (_classDefinition).ToArray();
 
       var expectedMessage1 = "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithMandatoryPropertyAttribute'";
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithMandatoryPropertyAttribute";
       var expectedMessage2 = "The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'StringPropertyWithExtensibleEnumPropertyAttribute'";
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        + "MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: StringPropertyWithExtensibleEnumPropertyAttribute";
       var expectedMessage3 = "The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithValidPropertyAttributes'\r\n"
-        + "Property: 'BoolPropertyWithBinaryPropertyAttribute'";
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        + "MappingAttributesAreSupportedForPropertyTypeValidationRule.ClassWithInvalidPropertyAttributes\r\n"
+        + "Property: BoolPropertyWithBinaryPropertyAttribute";
       Assert.That (validationResult.Length, Is.EqualTo (3));
       AssertMappingValidationResult (validationResult[0], false, expectedMessage1);
       AssertMappingValidationResult (validationResult[1], false, expectedMessage2);

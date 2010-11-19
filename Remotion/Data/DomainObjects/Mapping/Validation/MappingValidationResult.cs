@@ -41,23 +41,46 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
     }
 
     [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
-    public static MappingValidationResult CreateInvalidResult (Type type, string messageFormat, params object[] args)
+    public static MappingValidationResult CreateInvalidResultForType (Type type, string messageFormat, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return new MappingValidationResult (false, string.Format (messageFormat, args) + string.Format ("\r\n\r\nDeclaring type: '{0}'", type));
+      return new MappingValidationResult (
+          false,
+          string.Format (messageFormat, args) 
+          + string.Format ("\r\n\r\nDeclaring type: {0}", type));
     }
 
     [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
-    public static MappingValidationResult CreateInvalidResult (PropertyInfo propertyInfo, string messageFormat, params object[] args)
+    public static MappingValidationResult CreateInvalidResultForProperty (PropertyInfo propertyInfo, string messageFormat, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNullOrEmpty ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return new MappingValidationResult (false, string.Format (messageFormat, args));
+      return new MappingValidationResult (
+          false,
+          string.Format (messageFormat, args) 
+          + string.Format ("\r\n\r\nDeclaring type: {0}", propertyInfo.DeclaringType)
+          + string.Format ("\r\nProperty: {0}", propertyInfo.Name));
+    }
+
+    [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
+    public static MappingValidationResult CreateInvalidResultForRelation (string relationID, PropertyInfo propertyInfo, string messageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("relationID", relationID);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNullOrEmpty ("messageFormat", messageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      return new MappingValidationResult (
+          false,
+          string.Format (messageFormat, args)
+          + string.Format ("\r\n\r\nDeclaring type: {0}", propertyInfo.DeclaringType)
+          + string.Format ("\r\nProperty: {0}", propertyInfo.Name)
+          + string.Format ("\r\nRelation ID: {0}", relationID));
     }
 
     private readonly bool _isValid;

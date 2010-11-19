@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       {
         if (endPointDefinition is PropertyNotFoundRelationEndPointDefinition)
         {
-          return MappingValidationResult.CreateInvalidResult (
+          return MappingValidationResult.CreateInvalidResultForType (
               endPointDefinition.ClassDefinition.ClassType,
               "Property '{0}' on class '{1}' could not be found.",
               endPointDefinition.PropertyName,

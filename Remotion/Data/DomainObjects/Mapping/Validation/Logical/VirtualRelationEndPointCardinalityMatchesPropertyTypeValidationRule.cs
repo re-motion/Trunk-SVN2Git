@@ -53,26 +53,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.One &&
             !endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObject)))
         {
-          return MappingValidationResult.CreateInvalidResult (
+          return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
-              "The property type of a virtual end point of a one-to-one relation"
-              + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.\r\n\r\n"
-              + "Declaring type: '{0}'\r\nProperty: '{1}'",
-              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.DeclaringType.FullName,
-              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
+              "The property type of a virtual end point of a one-to-one relation must be derived from 'Remotion.Data.DomainObjects.DomainObject'.");
         }
 
         if (endPointDefinitionAsVirtualRelationEndPointDefinition.Cardinality == CardinalityType.Many &&
             endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType != typeof (DomainObjectCollection) &&
             ! endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyType.IsSubclassOf (typeof (DomainObjectCollection)))
         {
-          return MappingValidationResult.CreateInvalidResult (
+          return MappingValidationResult.CreateInvalidResultForProperty (
               endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo,
               "The property type of a virtual end point of a one-to-many relation"
-              + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.\r\n\r\n"
-              + "Declaring type: '{0}'\r\nProperty: '{1}'",
-              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.DeclaringType.FullName,
-              endPointDefinitionAsVirtualRelationEndPointDefinition.PropertyInfo.Name);
+              + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.");
         }
       }
       return MappingValidationResult.CreateValidResult();

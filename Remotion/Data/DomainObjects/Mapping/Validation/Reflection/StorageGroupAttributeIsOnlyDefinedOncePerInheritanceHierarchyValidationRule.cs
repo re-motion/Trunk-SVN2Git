@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         while (!AttributeUtility.IsDefined<StorageGroupAttribute> (baseType, false)) //get base type which has the attribute applied
           baseType = baseType.BaseType;
 
-        return MappingValidationResult.CreateInvalidResult (
+        return MappingValidationResult.CreateInvalidResultForType (
             type,
             "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.",
             typeof (StorageGroupAttribute).Name,

@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = "Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or "
         +"'DomainObjectCollection' or must be 'DomainObjectCollection'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
-        +"Property: 'OrderNumber'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        +"Property: OrderNumber";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -120,8 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 
       var expectedMessage = "Virtual property 'OrderNumber' of class 'Order' is of type 'String', but must be derived from 'DomainObject' or "
         +"'DomainObjectCollection' or must be 'DomainObjectCollection'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
-        +"Property: 'OrderNumber'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        +"Property: OrderNumber";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
     

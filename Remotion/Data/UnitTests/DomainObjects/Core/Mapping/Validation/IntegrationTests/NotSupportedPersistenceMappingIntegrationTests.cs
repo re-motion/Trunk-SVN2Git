@@ -28,8 +28,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException(typeof(MappingException), ExpectedMessage = 
       "Property 'DuplicatedPropertyInTree' of class 'DerivedDerivedClass' must not define storage specific name 'DuplicatedPropertyInTree', "
       +"because class 'BaseClass' in same inheritance hierarchy already defines property 'DuplicatedPropertyInTree' with the same storage specific name.\r\n\r\n"
-      +"Declaring type: DerivedDerivedClass\r\n"
-      +"Property: DuplicatedPropertyInTree")]
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      + "SamePropertyNameInInheritanceHierarchy.DerivedDerivedClass\r\n"
+      + "Property: DuplicatedPropertyInTree")]
     public void SamePropertyNameInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.SamePropertyNameInInheritanceHierarchy");
@@ -53,8 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), 
       ExpectedMessage = "The domain object type cannot redefine the 'StorageGroupAttribute' already defined on base type 'BaseClass'.\r\n\r\n"
-      + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
-      +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.DerivedDerivedClass'")]
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      +"DuplicatedStorageGroupAttributeInInheritanceHierarchy.DerivedDerivedClass")]
     public void DuplicatedStorageGroupAttributeInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.DuplicatedStorageGroupAttributeInInheritanceHierarchy");
@@ -65,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "Neither class 'ClassAboveInheritanceRoot' nor its base classes specify an entity name. Make class 'ClassAboveInheritanceRoot' abstract or apply "
       +"a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
-      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
-      +"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot'")]
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      +"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot")]
     public void ConcreteClassAboveInheritanceRoot ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.ConcreteClassAboveInheritanceRoot");
@@ -87,8 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = 
       "Class 'DerivedClass' must not specify an entity name 'DerivedName' which is different from inherited entity name 'BaseName'.\r\n\r\n"
-      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
-      +"SameEntityNamesInInheritanceHierarchy.DerivedClass'")]
+      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
+      +"SameEntityNamesInInheritanceHierarchy.DerivedClass")]
     public void SameEntityNamesInInheritanceHierarchy ()
     {
       ValidateMapping ("NotSupportedPersistenceMapping.SameEntityNamesInInheritanceHierarchy");

@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -258,8 +259,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
       catch (MappingException ex)
       {
-        var message = string.Format ("{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'", ex.Message, ClassDefinition.ClassType, PropertyInfo.Name);
-        throw new MappingException (message, ex);
+        var result = MappingValidationResult.CreateInvalidResultForProperty (PropertyInfo, ex.Message);
+        throw new MappingException (result.Message, ex);
       }
     }
   }

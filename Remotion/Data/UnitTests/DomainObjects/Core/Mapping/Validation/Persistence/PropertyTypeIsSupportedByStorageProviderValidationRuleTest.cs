@@ -99,8 +99,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var validationResult = _validationRule.Validate (_classDefinition);
 
       var expectedMessage = "The property type 'Object' is not supported by this storage provider.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'\r\n"
-        +"Property: 'PropertyWithTypeObjectWithStorageClassPersistent'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        +"Property: PropertyWithTypeObjectWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

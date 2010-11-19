@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       if (classDefinition.BaseClass!=null && classDefinition.BaseClass.StorageProviderID != classDefinition.StorageProviderID)
       {
-        return MappingValidationResult.CreateInvalidResult (
+        return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
             "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
             classDefinition.ID,

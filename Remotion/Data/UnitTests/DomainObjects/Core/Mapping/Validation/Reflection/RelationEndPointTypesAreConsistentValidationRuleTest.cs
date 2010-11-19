@@ -157,8 +157,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var expectedMessage =
           "The type 'BaseRelationEndPointPropertyClass2' does not match the type of the opposite relation propery 'RelationProperty3' "
           + "declared on type 'DerivedRelationEndPointPropertyClass1'.\r\n\r\n"
-          + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-          +"RelationEndPointTypesAreConsistentValidationRule.BaseRelationEndPointPropertyClass2'";
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+          + "RelationEndPointTypesAreConsistentValidationRule.BaseRelationEndPointPropertyClass2\r\n"
+          + "Property: RelationProperty3";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -188,9 +189,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
 
       var expectedMessage =
           "The type 'BaseRelationEndPointPropertyClass2' cannot be assigned to the type of the opposite relation propery 'RelationProperty4' declared "
-          +"on type 'DerivedRelationEndPointPropertyClass1'.\r\n\r\n"
-          +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-          +"RelationEndPointTypesAreConsistentValidationRule.BaseRelationEndPointPropertyClass2'";
+          + "on type 'DerivedRelationEndPointPropertyClass1'.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+          + "RelationEndPointTypesAreConsistentValidationRule.BaseRelationEndPointPropertyClass2\r\n"
+          + "Property: RelationProperty4";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }

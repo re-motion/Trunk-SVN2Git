@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var expectedMessage = "SortExpression 'Test' cannot be parsed: 'Test' is not a valid mapped property name. Expected the .NET property name of a "+
         "property declared by the 'Order' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or "
         +"a derived class of 'Order', the full unique re-store property identifier can be specified.\r\n\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\nProperty: 'Orders'";
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\nProperty: Orders";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

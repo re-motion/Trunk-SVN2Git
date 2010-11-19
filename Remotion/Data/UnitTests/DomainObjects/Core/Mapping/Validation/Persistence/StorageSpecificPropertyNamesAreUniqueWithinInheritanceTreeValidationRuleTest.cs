@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           "Property 'PropertyWithStorageClassPersistent' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
           +"because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage "
           +"specific name.\r\n\r\n"
-          + "Declaring type: DerivedValidationDomainObjectClass\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: PropertyWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var expectedMessage =
           "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
           +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
-          + "Declaring type: DerivedValidationDomainObjectClass\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var expectedMessage =
           "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
           +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
-          + "Declaring type: OtherDerivedValidationHierarchyClass\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.OtherDerivedValidationHierarchyClass\r\n"
           + "Property: OtherProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }

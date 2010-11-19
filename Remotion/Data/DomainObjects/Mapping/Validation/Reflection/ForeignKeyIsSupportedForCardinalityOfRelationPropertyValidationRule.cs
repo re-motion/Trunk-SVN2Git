@@ -22,7 +22,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// <summary>
   /// Validates that a foreign key is not defined for a virtual relation end point.
   /// </summary>
-  public class ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule : IRelationDefinitionValidatorRule
+  public class 
+    ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule : IRelationDefinitionValidatorRule
   {
     public MappingValidationResult Validate (RelationDefinition relationDefinition)
     {
@@ -54,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       {
         return MappingValidationResult.CreateInvalidResult (
             "Only relation end points with a property type of '{0}' can contain the foreign key.\r\n\r\n"
-            + "Declaring type: '{1}'\r\nProperty: '{2}'",
+            + "Declaring type: {1}\r\nProperty: {2}",
             typeof (DomainObject),
             relationEndPointDefinition.ClassDefinition.ClassType.FullName,
             relationEndPointDefinition.PropertyInfo != null ? relationEndPointDefinition.PropertyInfo.Name : string.Empty);

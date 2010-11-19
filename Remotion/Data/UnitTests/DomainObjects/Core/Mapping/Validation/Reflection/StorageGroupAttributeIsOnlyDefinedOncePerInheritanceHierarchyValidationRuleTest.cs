@@ -80,8 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (classDefinition);
 
       string message = "The domain object type cannot redefine the 'StorageGroupAttribute' already defined on base type 'BaseClassWithStorageGroupAttribute'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.DerivedClassWithStorageGroupAttribute'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule.DerivedClassWithStorageGroupAttribute";
       AssertMappingValidationResult (validationResult, false, message);
     }
   }

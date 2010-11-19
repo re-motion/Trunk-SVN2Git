@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition.LegacyEntityName != null && classDefinition.BaseClass.GetEntityName() != null
           && classDefinition.StorageEntityDefinition.LegacyEntityName != classDefinition.BaseClass.GetEntityName())
       {
-        return MappingValidationResult.CreateInvalidResult (
+        return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
             "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
             classDefinition.ClassType.Name,

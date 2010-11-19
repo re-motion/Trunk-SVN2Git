@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = "Generic domain objects are not supported.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        +"DomainObjectTypeIsNotGenericValidationRule.GenericTypeDomainObject`1[System.String]'";
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        +"DomainObjectTypeIsNotGenericValidationRule.GenericTypeDomainObject`1[System.String]";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   

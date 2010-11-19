@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       var expectedMessage =
           "Cannot derive class 'DerivedValidationDomainObjectClass' from base class 'BaseValidationDomainObjectClass' handled by different StorageProviders."
-          + "\r\n\r\nDeclaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'";
+          + "\r\n\r\nDeclaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
