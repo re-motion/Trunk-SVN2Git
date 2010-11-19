@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -32,6 +34,26 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
     [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
     public static MappingValidationResult CreateInvalidResult (string messageFormat, params object[] args)
     {
+      ArgumentUtility.CheckNotNull ("messageFormat", messageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      return new MappingValidationResult (false, string.Format (messageFormat, args));
+    }
+
+    [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
+    public static MappingValidationResult CreateInvalidResult (Type type, string messageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("messageFormat", messageFormat);
+      ArgumentUtility.CheckNotNull ("args", args);
+
+      return new MappingValidationResult (false, string.Format (messageFormat, args));
+    }
+
+    [JetBrains.Annotations.StringFormatMethod ("messageFormat")]
+    public static MappingValidationResult CreateInvalidResult (PropertyInfo propertyInfo, string messageFormat, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("messageFormat", messageFormat);
       ArgumentUtility.CheckNotNull ("args", args);
 

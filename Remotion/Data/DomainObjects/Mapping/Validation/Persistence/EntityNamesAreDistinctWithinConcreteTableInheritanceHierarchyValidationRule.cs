@@ -39,6 +39,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         if (allDistinctConcreteEntityNames.ContainsKey (entityName))
         {
           return MappingValidationResult.CreateInvalidResult (
+              classDefinition.ClassType,
               "At least two classes in different inheritance branches derived from abstract class '{0}'"
               + " specify the same entity name '{1}', which is not allowed.\r\n\r\nDeclaring type: '{2}'",
               classDefinition.ClassType.Name,

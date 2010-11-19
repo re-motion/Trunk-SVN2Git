@@ -33,11 +33,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         if (endPointDefinition is PropertyNotFoundRelationEndPointDefinition)
         {
           return MappingValidationResult.CreateInvalidResult (
+              endPointDefinition.ClassDefinition.ClassType,
               "Property '{0}' on class '{1}' could not be found.\r\n\r\nDeclaring type: '{2}'",
               endPointDefinition.PropertyName,
               endPointDefinition.ClassDefinition.ClassType.Name,
-              endPointDefinition.ClassDefinition.ClassType.FullName)
-          ;
+              endPointDefinition.ClassDefinition.ClassType.FullName);
         }
       }
       return MappingValidationResult.CreateValidResult();

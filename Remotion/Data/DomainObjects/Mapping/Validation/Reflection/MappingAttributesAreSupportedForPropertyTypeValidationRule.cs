@@ -107,6 +107,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
         {
           return MappingValidationResult.CreateInvalidResult (
+              propertyInfo,
               "{0}\r\n\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
               constraint.Message,
               classDefinition.ClassType.FullName,

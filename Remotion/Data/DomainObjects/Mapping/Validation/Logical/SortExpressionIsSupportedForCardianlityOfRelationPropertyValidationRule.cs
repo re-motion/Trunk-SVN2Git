@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -53,6 +52,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
           relationEndPointDefinitionAsVirtualRelationEndPointDefintion.SortExpressionText != null)
       {
         return MappingValidationResult.CreateInvalidResult (
+            relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo,
             "Property '{0}' of class '{1}' must not specify a SortExpression, because cardinality is equal to 'one'.\r\n\r\n"
             + "Declaring type: '{2}'\r\nProperty: '{3}'",
             relationEndPointDefinitionAsVirtualRelationEndPointDefintion.PropertyInfo.Name,

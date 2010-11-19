@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       if (!classDefinition.ClassType.IsSubclassOf (typeof (DomainObject)))
       {
         return MappingValidationResult.CreateInvalidResult (
+            classDefinition.ClassType,
             "Type '{0}' of class '{1}' is not derived from '{2}'.",
             classDefinition.ClassType.Name,
             classDefinition.ID,

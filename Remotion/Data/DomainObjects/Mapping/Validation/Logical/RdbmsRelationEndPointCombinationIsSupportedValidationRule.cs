@@ -44,6 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         if (endPointDefinition1AsVirtualRelationEndPointDefinition != null && endPointDefinition2AsVirtualRelationEndPointDefinition != null)
         {
           return MappingValidationResult.CreateInvalidResult (
+              endPointDefinition1.PropertyInfo,
               "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two virtual end points. "
               + "One of the two properties must set 'ContainsForeignKey' to 'true' on the '{4}'.\r\n\r\n"
               + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",
@@ -59,6 +60,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         else
         {
           return MappingValidationResult.CreateInvalidResult (
+              endPointDefinition1.PropertyInfo,
               "Relation '{0}' cannot have two virtual end points.\r\n\r\nDeclaring type: {1}\r\nProperty: {2}",
               relationDefinition.ID,
               endPointDefinition1.ClassDefinition.ClassType.FullName,
@@ -69,6 +71,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (!endPointDefinition1.IsVirtual && !endPointDefinition2.IsVirtual)
       {
         return MappingValidationResult.CreateInvalidResult (
+            endPointDefinition1.PropertyInfo,
             "The relation between property '{0}', declared on type '{1}', and property '{2}' declared on type '{3}', contains two non-virtual end points. "
             + "One of the two properties must set 'ContainsForeignKey' to 'false' on the '{4}'.\r\n\r\n"
             + "Declaring type: {5}\r\nProperty: {6}\r\nRelation ID: {7}",

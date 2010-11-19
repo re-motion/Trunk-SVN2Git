@@ -48,6 +48,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         if (!hasRelationAttribute && !ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResult (
+              relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo,
               "The property type of an uni-directional relation property must be assignable to {0}.\r\n\r\nDeclaration type: '{1}'\r\nProperty: '{2}'",
               typeof (DomainObject),
               relationEndPointAsReflectionBasedVirtualRelationEndPoint.ClassDefinition.ClassType.FullName,

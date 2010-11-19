@@ -46,6 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       if (!PropertyValue.IsTypeSupported (nativePropertyType))
       {
         return MappingValidationResult.CreateInvalidResult (
+            propertyInfo,
             "The property type '{0}' is not supported. If you meant to declare a relation, '{0}' must be derived from '{1}'.\r\n\r\n"
             + "Declaring type: '{2}'\r\nProperty: '{3}'",
             nativePropertyType.Name,

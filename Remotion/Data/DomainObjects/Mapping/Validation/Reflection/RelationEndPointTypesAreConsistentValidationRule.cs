@@ -62,6 +62,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             if (classDefinition.ClassType != oppositeDomainObjectType)
             {
               return MappingValidationResult.CreateInvalidResult (
+                  classDefinition.ClassType,
                   "The type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
                   + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
@@ -85,6 +86,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             if (!declaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
             {
               return MappingValidationResult.CreateInvalidResult (
+                  classDefinition.ClassType,
                   "The type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.\r\n\r\n"
                   + "Declaring type: '{3}'",
                   declaringDomainObjectTypeForProperty.Name,
