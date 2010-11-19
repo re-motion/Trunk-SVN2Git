@@ -23,7 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  //TODO COMMONS-825: join again with base class
+  //TODO: join again with base class
   public class MappingReflector : MappingReflectorBase
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;
