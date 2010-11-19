@@ -58,24 +58,20 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
             {
               return MappingValidationResult.CreateInvalidResult (
                   relationEndPointDefinition.ClassDefinition.ClassType,
-                  "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.\r\n\r\n"
-                  + "Declaring type: '{3}'",
+                  "Opposite relation property '{0}' declared on type '{1}' does not define a matching '{2}'.",
                   relationAttribute.OppositeProperty,
                   oppositeProperty.DeclaringType.Name,
-                  relationAttribute.GetType().Name,
-                  relationEndPointDefinition.ClassDefinition.ClassType.FullName);
+                  relationAttribute.GetType().Name);
             }
 
             if (!relationEndPointDefinition.PropertyInfo.Name.Equals (oppositeRelationAttribute.OppositeProperty, StringComparison.Ordinal))
             {
               return MappingValidationResult.CreateInvalidResult (
                   relationEndPointDefinition.ClassDefinition.ClassType,
-                  "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.\r\n\r\n"
-                  + "Declaring type: '{3}'",
+                  "Opposite relation property '{0}' declared on type '{1}' defines a '{2}' whose opposite property does not match.",
                   relationAttribute.OppositeProperty,
                   oppositeProperty.DeclaringType.Name,
-                  relationAttribute.GetType().Name,
-                  relationEndPointDefinition.ClassDefinition.ClassType.FullName);
+                  relationAttribute.GetType().Name);
             }
           }
         }

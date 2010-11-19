@@ -37,11 +37,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         return MappingValidationResult.CreateInvalidResult (
             classDefinition.ClassType,
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.\r\n\r\nDeclaring type: '{3}",
+            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
             classDefinition.ClassType.Name,
             classDefinition.StorageEntityDefinition.LegacyEntityName,
-            classDefinition.BaseClass.GetEntityName(),
-            classDefinition.ClassType.FullName);
+            classDefinition.BaseClass.GetEntityName());
       }
       return MappingValidationResult.CreateValidResult();
     }

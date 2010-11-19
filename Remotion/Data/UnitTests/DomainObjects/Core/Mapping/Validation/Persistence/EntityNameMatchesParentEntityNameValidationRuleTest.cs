@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not specify an entity name 'EntityName' which is different from inherited "
         +"entity name 'BaseEntityName'.\r\n\r\n"
-        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+        +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass'";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

@@ -34,10 +34,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
         {
           return MappingValidationResult.CreateInvalidResult (
               endPointDefinition.ClassDefinition.ClassType,
-              "Property '{0}' on class '{1}' could not be found.\r\n\r\nDeclaring type: '{2}'",
+              "Property '{0}' on class '{1}' could not be found.",
               endPointDefinition.PropertyName,
-              endPointDefinition.ClassDefinition.ClassType.Name,
-              endPointDefinition.ClassDefinition.ClassType.FullName);
+              endPointDefinition.ClassDefinition.ClassType.Name);
         }
       }
       return MappingValidationResult.CreateValidResult();
