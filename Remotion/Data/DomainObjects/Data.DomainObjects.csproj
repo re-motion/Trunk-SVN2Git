@@ -448,7 +448,6 @@
     <Compile Include="InstantiableAttribute.cs" />
     <Compile Include="ConfigurationLoader\IMappingLoader.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IMappingAttribute.cs" />
-    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RdbmsClassReflector.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MemberReflectorBase.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\BidirectionalRelationAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\ClassReflector.cs" />

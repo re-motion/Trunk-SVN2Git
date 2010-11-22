@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     public static ClassReflector CreateClassReflector (Type type, IMappingNameResolver nameResolver)
     {
-      return new RdbmsClassReflector (type, nameResolver);
+      return new ClassReflector (type, nameResolver);
     }
 
     public ClassReflector (Type type, IMappingNameResolver nameResolver)
@@ -94,14 +94,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (attribute != null)
         return attribute.ClassID;
       return Type.Name;
-    }
-
-    protected virtual string GetStorageSpecificIdentifier ()
-    {
-      IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (Type, false);
-      if (attribute != null && !string.IsNullOrEmpty (attribute.Identifier))
-        return attribute.Identifier;
-      return GetID();
     }
 
     //TODO: COMMONS-842
