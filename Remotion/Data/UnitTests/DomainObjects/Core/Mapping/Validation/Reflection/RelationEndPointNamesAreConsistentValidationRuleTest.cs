@@ -36,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new RelationEndPointNamesAreConsistentValidationRule();
       _classDefinition1 = new ReflectionBasedClassDefinition (
           "ID",
-          new StorageEntityDefinitionStub ("EntityName"),
           "SPID",
           typeof (RelationEndPointPropertyClass1),
           false,
@@ -44,7 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass1), new Type[0]));
       _classDefinition2 = new ReflectionBasedClassDefinition (
           "ID",
-          new StorageEntityDefinitionStub ("EntityName"),
           "SPID",
           typeof (RelationEndPointPropertyClass2),
           false,

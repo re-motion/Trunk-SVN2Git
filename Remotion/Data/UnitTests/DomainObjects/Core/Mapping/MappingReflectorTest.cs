@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -61,15 +62,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsTrue (mappingReflector.ResolveTypes);
     }
 
+    // TODO 3497: This is actually an integration test for the whole mapping configuration building. Move to a separate test fixture.
     [Test]
     public void GetClassDefinitions ()
     {
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
       var actualClassDefinitions = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true);
-
       Assert.IsNotNull (actualClassDefinitions);
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
+
+      var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator ()));
+      foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
+        persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
       Assert.IsFalse (actualClassDefinitions.Contains (typeof (TestDomainBase)));
     }
@@ -97,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
       var actualClassDefinitions = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true);
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker(false);
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
 
       var actualRelationDefinitions = new RelationDefinitionCollection(mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);

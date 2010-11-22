@@ -57,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ColumnDefinition _fakeColumnDefinition6;
     private ColumnDefinition _fakeColumnDefinition7;
 
+    // TODO 3497: Add a test showing that the table name is used when DBTable specifies such a name (ClassHavingStorageSpecificIdentifierAttribute)
 
     [SetUp]
     public void SetUp ()

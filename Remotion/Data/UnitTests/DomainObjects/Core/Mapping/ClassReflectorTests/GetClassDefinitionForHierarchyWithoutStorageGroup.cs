@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       base.SetUp();
 
-      _classDefinitionChecker = new ClassDefinitionChecker();
+      _classDefinitionChecker = new ClassDefinitionChecker(false);
       _classDefinitions = new ClassDefinitionCollection();
     }
 

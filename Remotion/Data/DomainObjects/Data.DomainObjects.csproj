@@ -294,7 +294,6 @@
     <Compile Include="Mapping\Validation\SortExpressionValidator.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectDefaultValueStrategy.cs" />
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
-    <Compile Include="Persistence\Model\StorageEntityDefinitionStub.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Model\StorageTypeCalculator.cs" />

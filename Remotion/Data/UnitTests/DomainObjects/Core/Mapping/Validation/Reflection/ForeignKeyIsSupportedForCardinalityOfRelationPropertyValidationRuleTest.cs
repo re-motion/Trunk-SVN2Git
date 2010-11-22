@@ -38,7 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule();
       _classDefinition = new ReflectionBasedClassDefinition (
           "ID",
-          new StorageEntityDefinitionStub ("EntityName"),
           "SPID",
           typeof (ForeignKeyIsSupportedClass),
           false,

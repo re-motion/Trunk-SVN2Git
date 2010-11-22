@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddConstraintWithTwoConstraints ()
     {
       ReflectionBasedClassDefinition firstClass = new ReflectionBasedClassDefinition (
-          "FirstClass", new StorageEntityDefinitionStub("FirstEntity"), "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
+          "FirstClass", "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
 
       firstClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
@@ -89,10 +89,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition secondClass = new ReflectionBasedClassDefinition (
-          "SecondClass", new StorageEntityDefinitionStub("SecondEntity"), "FirstStorageProvider", typeof (Address), false, null, new PersistentMixinFinder (typeof (Address)));
+          "SecondClass", "FirstStorageProvider", typeof (Address), false, null, new PersistentMixinFinder (typeof (Address)));
 
       ReflectionBasedClassDefinition thirdClass = new ReflectionBasedClassDefinition (
-          "ThirdClass", new StorageEntityDefinitionStub("ThirdEntity"), "FirstStorageProvider", typeof (Employee), false, null, new PersistentMixinFinder(typeof (Employee)));
+          "ThirdClass", "FirstStorageProvider", typeof (Employee), false, null, new PersistentMixinFinder(typeof (Employee)));
 
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "FirstClassToSecondClass",
@@ -111,7 +111,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       firstClass.SetReadOnly ();
       secondClass.SetReadOnly ();
       thirdClass.SetReadOnly ();
-      
+
+      firstClass.SetStorageEntity (new TableDefinition ("FirstEntity", new ColumnDefinition[0]));
+      secondClass.SetStorageEntity (new TableDefinition ("SecondEntity", new ColumnDefinition[0]));
+      thirdClass.SetStorageEntity (new TableDefinition ("ThirdEntity", new ColumnDefinition[0]));
+
       _constraintBuilder.AddConstraint (firstClass);
 
       string expectedScript =
@@ -149,16 +153,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddConstraintWithRelationInDerivedClass ()
     {
       ReflectionBasedClassDefinition baseClass = new ReflectionBasedClassDefinition (
-          "BaseClass", new StorageEntityDefinitionStub("BaseClassEntity"), "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
+          "BaseClass", "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
 
       ReflectionBasedClassDefinition derivedClass = new ReflectionBasedClassDefinition (
-          "DerivedClass", new StorageEntityDefinitionStub("BaseClassEntity"), "FirstStorageProvider", typeof (Customer), false, baseClass, new PersistentMixinFinder(typeof (Customer)));
+          "DerivedClass", "FirstStorageProvider", typeof (Customer), false, baseClass, new PersistentMixinFinder(typeof (Customer)));
 
       derivedClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition otherClass = new ReflectionBasedClassDefinition (
-          "OtherClass", new StorageEntityDefinitionStub("OtherClassEntity"), "FirstStorageProvider", typeof (DevelopmentPartner), false, null, new PersistentMixinFinder(typeof (DevelopmentPartner)));
+          "OtherClass", "FirstStorageProvider", typeof (DevelopmentPartner), false, null, new PersistentMixinFinder(typeof (DevelopmentPartner)));
 
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "OtherClassToDerivedClass",
@@ -172,6 +176,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetReadOnly ();
       otherClass.SetReadOnly ();
 
+      baseClass.SetStorageEntity (new TableDefinition ("BaseClassEntity", new ColumnDefinition[0]));
+      derivedClass.SetStorageEntity (new TableDefinition ("DerivedClassEntity", new ColumnDefinition[0]));
+      otherClass.SetStorageEntity (new TableDefinition ("OtherClassEntity", new ColumnDefinition[0]));
+      
       _constraintBuilder.AddConstraint (baseClass);
 
       string expectedScript =

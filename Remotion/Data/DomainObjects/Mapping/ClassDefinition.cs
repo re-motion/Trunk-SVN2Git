@@ -70,14 +70,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    protected ClassDefinition (string id, IStorageEntityDefinition storageEntityDefinition, string storageProviderID)
+    protected ClassDefinition (string id, string storageProviderID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
-      //ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
       
       _id = id;
-      _storageEntityDefinition = storageEntityDefinition;
       _storageProviderID = storageProviderID;
 
       _propertyDefinitions = new PropertyDefinitionCollection (this);
@@ -160,7 +158,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public string GetEntityName ()
     {
-      if (_storageEntityDefinition.LegacyEntityName != null)
+      if (_storageEntityDefinition!=null && _storageEntityDefinition.LegacyEntityName != null)
         return _storageEntityDefinition.LegacyEntityName;
 
       if (BaseClass == null)
@@ -478,7 +476,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
     {
-      if (_storageEntityDefinition.LegacyEntityName != null)
+      if (_storageEntityDefinition!=null && _storageEntityDefinition.LegacyEntityName != null)
       {
         allConcreteEntityNames.Add (_storageEntityDefinition.LegacyEntityName);
         return;

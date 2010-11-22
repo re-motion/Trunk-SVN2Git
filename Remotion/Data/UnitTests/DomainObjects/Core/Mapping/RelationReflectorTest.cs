@@ -22,7 +22,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
@@ -377,12 +376,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var originatingProperty = typeof (Class1).GetProperty ("RelationProperty");
       var oppositeProperty = typeof (BaseClass2).GetProperty ("RelationPropertyOnBaseClass");
       var classDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
-          "BaseClass2", new StorageEntityDefinitionStub("BaseClass2"), "DefaultStorageProvider", typeof (BaseClass2), true, null, new PersistentMixinFinder (typeof (BaseClass2)));
+          "BaseClass2", "DefaultStorageProvider", typeof (BaseClass2), true, null, new PersistentMixinFinder (typeof (BaseClass2)));
       var originatingClass = new ReflectionBasedClassDefinition (
-          "Class1", new StorageEntityDefinitionStub("Class1"), "DefaultStorageProvider", typeof (Class1), false, null, new PersistentMixinFinder (typeof (Class1)));
+          "Class1", "DefaultStorageProvider", typeof (Class1), false, null, new PersistentMixinFinder (typeof (Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "DerivedClass2",
-          new StorageEntityDefinitionStub("DerivedClass2"),
           "DefaultStorageProvider",
           typeof (DerivedClass2),
           false,
@@ -432,7 +430,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "OverriddenProperty");
       var classDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "BaseClass2",
-          new StorageEntityDefinitionStub("BaseClass2"),
           "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2),
           true,
@@ -441,7 +438,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2)));
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          new StorageEntityDefinitionStub("Class1"),
           "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1),
           false,
@@ -450,7 +446,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "DerivedClass2",
-          new StorageEntityDefinitionStub("DerivedClass2"),
           "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
           false,
@@ -498,7 +493,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty = typeof (ClassAboveInheritanceRoot).GetProperty ("RelationPropertyOnClassAboveInheritanceRoot");
       var classNotInMapping = new ReflectionBasedClassDefinition (
           "ClassAboveInheritanceRoot",
-          new StorageEntityDefinitionStub("ClassAboveInheritanceRoot"),
           "DefaultStorageProvider",
           typeof (ClassAboveInheritanceRoot),
           true,
@@ -506,7 +500,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinder (typeof (ClassAboveInheritanceRoot)));
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          new StorageEntityDefinitionStub("Class1"),
           "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1),
           false,
@@ -514,7 +507,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinder (typeof (Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "Class2",
-          new StorageEntityDefinitionStub("Class2"),
           "DefaultStorageProvider",
           typeof (Class2),
           false,
@@ -559,7 +551,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty = typeof (ClassNotInMapping).GetProperty ("RelationProperty");
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          new StorageEntityDefinitionStub("Class1"),
           "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1),
           false,

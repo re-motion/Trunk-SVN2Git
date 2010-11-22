@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _classType = typeof (ClassNotInMapping);
       _classDefinition = new TypeNotFoundClassDefinition (
-          "Test", new StorageEntityDefinitionStub ("Test"), "DefaultStoarageProvider", _classType, typeof (string).GetProperty ("Length"));
+          "Test", "DefaultStoarageProvider", _classType, typeof (string).GetProperty ("Length"));
     }
 
     [Test]

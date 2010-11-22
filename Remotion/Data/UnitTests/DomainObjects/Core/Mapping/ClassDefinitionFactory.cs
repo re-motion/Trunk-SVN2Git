@@ -18,7 +18,9 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -33,14 +35,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ReflectionBasedClassDefinition baseClass,
         params Type[] persistentMixins)
     {
-      return new ReflectionBasedClassDefinition (
+      var classDefinition = new ReflectionBasedClassDefinition (
           id,
-          new StorageEntityDefinitionStub (entityName),
           storageProviderID,
           classType,
           isAbstract,
           baseClass,
           new PersistentMixinFinderMock (classType, persistentMixins));
+      SetStorageEntityName (entityName, classDefinition);
+      return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
@@ -52,14 +55,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new ReflectionBasedClassDefinition (
+      var classDefinition = new ReflectionBasedClassDefinition (
           id,
-          new StorageEntityDefinitionStub (entityName),
           storageProviderID,
           classType,
           isAbstract,
           baseClass,
           persistentMixinFinder);
+      SetStorageEntityName (entityName, classDefinition);
+      return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
@@ -73,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       return new ReflectionBasedClassDefinition (
           id,
-          null,
           storageProviderID,
           classType,
           isAbstract,
@@ -117,5 +120,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       return classDefinition;
     }
+
+    private static void SetStorageEntityName (string entityName, ReflectionBasedClassDefinition classDefinition)
+    {
+      if (entityName != null)
+        classDefinition.SetStorageEntity (new TableDefinition (entityName, new ColumnDefinition[0]));
+      else
+      {
+        var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
+        entityStub.Stub (stub => stub.LegacyEntityName).Return (null);
+
+        classDefinition.SetStorageEntity (entityStub);
+      }
+    }
+
   }
 }

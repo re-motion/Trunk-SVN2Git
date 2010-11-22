@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
@@ -44,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
+      _classDefinition.SetStorageEntity (new TableDefinition ("Order", new ColumnDefinition[0]));
       _collection = new ClassDefinitionCollection();
     }
 

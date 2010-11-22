@@ -24,13 +24,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
   {
     public ReflectionBasedClassDefinitionWithUnresolvedClassType (
         string id,
-        IStorageEntityDefinition storageEntityDefinition,
         string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageEntityDefinition, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
+        : base (id, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
     {
     }
 

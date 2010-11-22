@@ -100,7 +100,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         return new TypeNotFoundClassDefinition (
             type.Name,
-            new StorageEntityDefinitionStub (type.Name),
             DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name,
             type,
             PropertyInfo);

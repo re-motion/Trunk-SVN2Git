@@ -61,7 +61,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       _tableBuilder = new TableBuilder();
       _classDefintion = new ReflectionBasedClassDefinition (
           "ClassID",
-          new StorageEntityDefinitionStub ("Table"),
           "StorageProvider",
           typeof (Order),
           false,
@@ -190,7 +189,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       ReflectionBasedClassDefinition abstractClass =
           new ReflectionBasedClassDefinition (
-              "AbstractClass", new StorageEntityDefinitionStub(null), "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder (typeof (AbstractClass)));
+              "AbstractClass", "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder (typeof (AbstractClass)));
       abstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
@@ -198,7 +197,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       ReflectionBasedClassDefinition derivedAbstractClass =
           new ReflectionBasedClassDefinition (
               "DerivedAbstractClass",
-              new StorageEntityDefinitionStub (null),
               "FirstStorageProvider",
               typeof (DerivedAbstractClass),
               false,
@@ -216,7 +214,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
           "DerivedConcreteClass",
-          new StorageEntityDefinitionStub("EntityName"),
           "FirstStorageProvider",
           typeof (DerivedConcreteClass),
           false,
@@ -231,6 +228,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               true,
               102,
               StorageClass.Persistent));
+
+      derivedConcreteClass.SetStorageEntity (new TableDefinition ("EntityName", new ColumnDefinition[0]));
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"

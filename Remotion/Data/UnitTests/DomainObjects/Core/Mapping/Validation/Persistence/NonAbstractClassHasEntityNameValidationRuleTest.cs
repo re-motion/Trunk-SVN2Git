@@ -84,7 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
           "NonAbstractClassHasEntityNameDomainObject",
-          new StorageEntityDefinitionStub(null),
           "NonAbstractClassHasEntityNameStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false,

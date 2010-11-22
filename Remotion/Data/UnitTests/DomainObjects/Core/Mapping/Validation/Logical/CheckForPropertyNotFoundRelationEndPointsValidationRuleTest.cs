@@ -35,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _validationRule = new CheckForPropertyNotFoundRelationEndPointsValidationRule();
       _classDefinition = new ReflectionBasedClassDefinition (
           "DerivedValidationDomainObjectClass",
-          new StorageEntityDefinitionStub ("DerivedValidationDomainObjectClass"),
           "DefaultStorageProvider",
           typeof (DerivedValidationDomainObjectClass),
           false,

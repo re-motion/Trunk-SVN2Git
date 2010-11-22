@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (DerivedClassWithoutStorageGroupAttribute);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (BaseClassWithoutStorageGroupAttribute);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (BaseClassWithStorageGroupAttribute);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (DerivedClassWithStorageGroupAttribute);
       var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", new StorageEntityDefinitionStub ("EntityName"), "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
+          "ID", "SPID", type, false, null, new PersistentMixinFinderMock (type, new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
 

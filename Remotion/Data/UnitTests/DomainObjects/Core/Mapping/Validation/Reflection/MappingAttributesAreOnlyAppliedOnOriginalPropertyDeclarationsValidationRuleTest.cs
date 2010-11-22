@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (BaseMappingAttributesClass);
       var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
-          "Test", new StorageEntityDefinitionStub ("Test"), "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
+          "Test", "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
 
       _validationRule.Validate (classDefinition);
     }
@@ -108,7 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (ClassUsingMixinPropertiesNoInheritanceRoot);
       var classDefinition = new ReflectionBasedClassDefinition (
           "ClassUsingMixinPropertiesNoInheritanceRoot",
-          new StorageEntityDefinitionStub("ClassUsingMixinPropertiesNoInheritanceRoot"),
           "DefaultStorageProvider",
           type,
           false,

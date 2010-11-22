@@ -23,6 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -79,6 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.SetReadOnly ();
       organizationalUnitClass.SetReadOnly ();
       clientClass.SetReadOnly ();
+
+      new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator())).ApplyPersistenceModelToHierarchy (domainBaseClass);
 
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
           Provider, domainBaseClass, domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);

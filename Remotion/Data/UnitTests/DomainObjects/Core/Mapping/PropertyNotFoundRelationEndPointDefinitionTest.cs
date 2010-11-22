@@ -34,8 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _classDefinition = new ReflectionBasedClassDefinition (
           "ClassDerivedFromSimpleDomainObject",
-          new StorageEntityDefinitionStub("ClassDerivedFromSimpleDomainObject"),
-          "DefaultStorageProvider",
+         "DefaultStorageProvider",
           typeof (ClassDerivedFromSimpleDomainObject),
           false,
           null,

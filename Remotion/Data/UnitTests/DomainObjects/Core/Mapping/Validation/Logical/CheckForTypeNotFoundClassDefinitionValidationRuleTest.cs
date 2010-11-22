@@ -40,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false,
@@ -59,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var classDefinition = new TypeNotFoundClassDefinition (
           "Test",
-          new StorageEntityDefinitionStub ("Test"),
           "DefaultStorageProviderID",
           typeof (ClassOutOfInheritanceHierarchy),
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
