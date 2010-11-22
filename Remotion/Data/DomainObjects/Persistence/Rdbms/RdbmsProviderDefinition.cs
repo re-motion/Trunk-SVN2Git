@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Configuration;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
@@ -25,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class RdbmsProviderDefinition: StorageProviderDefinition
   {
-    private string _connectionString;
+    private readonly string _connectionString;
 
     public RdbmsProviderDefinition (
         string name,
