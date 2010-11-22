@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
@@ -61,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("NoAttribute");
 
       PropertyDefinition actual = propertyReflector.GetMetadata ();
+      actual.SetStorageProperty (new ColumnDefinition ("NoAttribute", typeof (string), true));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
@@ -75,6 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Persistent");
 
       PropertyDefinition actual = propertyReflector.GetMetadata ();
+      actual.SetStorageProperty (new ColumnDefinition ("Persistent", typeof (string), true));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",

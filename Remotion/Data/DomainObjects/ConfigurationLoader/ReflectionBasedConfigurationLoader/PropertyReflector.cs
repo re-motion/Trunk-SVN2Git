@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -48,8 +47,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsNullable(),
           GetMaxLength(),
           StorageClass);
-      var storagePropertyDefinition = new ColumnDefinitionFactory(new SqlStorageTypeCalculator()).CreateStoragePropertyDefinition(propertyDefinition);
-      propertyDefinition.SetStorageProperty (storagePropertyDefinition);
       return propertyDefinition;
     }
 

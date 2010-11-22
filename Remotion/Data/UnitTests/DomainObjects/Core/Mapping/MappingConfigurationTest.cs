@@ -39,19 +39,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private readonly RelationDefinition[] _relationDefinitionCollection = new RelationDefinition[0];
     private ReflectionBasedNameResolver _nameResolver;
 
-    public override void SetUp()
+    public override void SetUp ()
     {
       base.SetUp();
 
-      _nameResolver = new ReflectionBasedNameResolver ();
-      _mockRepository = new MockRepository ();
+      _nameResolver = new ReflectionBasedNameResolver();
+      _mockRepository = new MockRepository();
       _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
     }
 
     [Test]
-    public void Initialize()
+    public void Initialize ()
     {
-      Expect.Call (_mockMappingLoader.GetClassDefinitions ()).Return ( _classDefinitionCollection );
+      Expect.Call (_mockMappingLoader.GetClassDefinitions()).Return (_classDefinitionCollection);
       Expect.Call (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
       Expect.Call (_mockMappingLoader.ResolveTypes).Return (true);
       Expect.Call (_mockMappingLoader.NameResolver).Return (_nameResolver);
@@ -64,8 +64,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.VerifyAll();
 
-      Assert.That (actualClassDefinitionCollection, Is.EqualTo(_classDefinitionCollection));
-      Assert.That (actualRelationDefinitionCollection, Is.EqualTo(_relationDefinitionCollection));
+      Assert.That (actualClassDefinitionCollection, Is.EqualTo (_classDefinitionCollection));
+      Assert.That (actualRelationDefinitionCollection, Is.EqualTo (_relationDefinitionCollection));
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
       Assert.That (configuration.ClassDefinitions.IsReadOnly, Is.True);
@@ -73,12 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void SetCurrent()
+    public void SetCurrent ()
     {
       try
       {
         SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_classDefinitionCollection);
-        SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
+        SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (
+            _relationDefinitionCollection);
         SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
         SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
 
@@ -96,28 +97,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Generic domain objects are not supported.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-      +"DomainObjectTypeIsNotGenericValidationRule.GenericTypeDomainObject`1[System.String]")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Generic domain objects are not supported.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+        + "DomainObjectTypeIsNotGenericValidationRule.GenericTypeDomainObject`1[System.String]")]
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var classDefinitionCollection = new[] { classDefinition };
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
-      _mockRepository.ReplayAll ();
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader);
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Only StorageClass.Persistent and StorageClass.Transaction are supported for property 'PropertyWithStorageClassNone' of class "
-      +"'DerivedValidationDomainObjectClass'.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
-      +"Property: PropertyWithStorageClassNone")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Only StorageClass.Persistent and StorageClass.Transaction are supported for property 'PropertyWithStorageClassNone' of class "
+        + "'DerivedValidationDomainObjectClass'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+        + "Property: PropertyWithStorageClassNone")]
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
@@ -127,48 +128,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
       var classDefinitionCollection = new[] { classDefinition };
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
-      _mockRepository.ReplayAll ();
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader);
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "The property type of an uni-directional relation property must be assignable to 'DomainObject'.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
-      + "Property: OrderNumber\r\n"
-      + "----------\r\n"
-      + "Opposite relation property 'Orders' declared on type 'Order' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
-      + "Property: Customer\r\n"
-      + "----------\r\n"
-      + "The type 'Order' does not match the type of the opposite relation propery 'Orders' declared on type 'Order'.\r\n\r\n"
-      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
-      + "Property: Customer")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The property type of an uni-directional relation property must be assignable to 'DomainObject'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        + "Property: OrderNumber\r\n"
+        + "----------\r\n"
+        + "Opposite relation property 'Orders' declared on type 'Order' does not define a matching 'DBBidirectionalRelationAttribute'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        + "Property: Customer\r\n"
+        + "----------\r\n"
+        + "The type 'Order' does not match the type of the opposite relation propery 'Orders' declared on type 'Order'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order\r\n"
+        + "Property: Customer")]
     public void RelationDefinitionsAreValidated ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              +"TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
+              + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
       var classDefinitionCollection = new[] { classDefinition };
       var relationDefinitionCollection = new[] { relationDefinition };
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitionCollection);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader);
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Neither class 'DerivedValidationDomainObjectClass' nor its base classes specify an entity name. Make class 'DerivedValidationDomainObjectClass' "
-      +"abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
-      +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Neither class 'DerivedValidationDomainObjectClass' nor its base classes specify an entity name. Make class 'DerivedValidationDomainObjectClass' "
+        + "abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceMappingIsValidated ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -178,11 +179,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (DerivedValidationDomainObjectClass),
           false);
       var classDefinitionCollection = new[] { classDefinition };
-      
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader);
     }
@@ -191,29 +192,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsLoaded ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition, typeof(Order), "OrderNumber", typeof(int), null, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), null);
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition, typeof(Order), "DeliveryDate", typeof(DateTime), null, null, StorageClass.Persistent, typeof (Order).GetProperty ("DeliveryDate"), null);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       var classDefinitionCollection = new[] { classDefinition };
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
       SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader);
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
-      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf(typeof(TableDefinition)));
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo("Order"));
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (0));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Order"));
+      Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (2));
+      Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
+      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo("OrderNo"));
+      Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
+      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Argument 'mappingConfiguration' must have property 'ResolveTypes' set.\r\nParameter name: mappingConfiguration")]
-    public void SetCurrentRejectsUnresolvedTypes()
+    public void SetCurrentRejectsUnresolvedTypes ()
     {
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_classDefinitionCollection);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_relationDefinitionCollection);
@@ -230,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void ContainsClassDefinition()
+    public void ContainsClassDefinition ()
     {
       Assert.IsFalse (MappingConfiguration.Current.Contains (FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)]));
       Assert.IsTrue (MappingConfiguration.Current.Contains (MappingConfiguration.Current.ClassDefinitions[typeof (Order)]));
@@ -238,82 +251,100 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void ContainsNull()
+    public void ContainsNull ()
     {
       MappingConfiguration.Current.Contains ((ClassDefinition) null);
     }
 
     [Test]
-    public void ContainsPropertyDefinition()
+    public void ContainsPropertyDefinition ()
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
+              FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)][
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.ClassDefinitions[typeof (Order)]["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
+              MappingConfiguration.Current.ClassDefinitions[typeof (Order)][
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
     }
 
     [Test]
-    public void ContainsRelationDefinition()
+    public void ContainsRelationDefinition ()
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.Order.OrderItems"]));
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.Order.OrderItems"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"]));
+                                                               +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+                                                               +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
+                  ]));
     }
 
     [Test]
-    public void ContainsRelationEndPointDefinition()
+    public void ContainsRelationEndPointDefinition ()
     {
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.Order.OrderItems"].
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.Order.OrderItems"].
                   EndPointDefinitions[0]));
       Assert.IsFalse (
           MappingConfiguration.Current.Contains (
               FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.Order.OrderItems"].
+                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+                  + "TestDomain.Integration.Order.OrderItems"].
                   EndPointDefinitions[1]));
 
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"]
-              .EndPointDefinitions[0]));
+                                                               +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
+                                                               +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
+                  ]
+                  .EndPointDefinitions[0]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
               MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-              +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"+
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"].EndPointDefinitions[1]));
+                                                               +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->" +
+                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
+                  ].EndPointDefinitions[1]));
     }
 
     [Test]
-    public void ContainsRelationEndPointDefinitionNotInMapping()
+    public void ContainsRelationEndPointDefinitionNotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", "TestDomain", typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
       orderTicketDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false));
+          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false));
 
-      VirtualRelationEndPointDefinition orderEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
+      VirtualRelationEndPointDefinition orderEndPointDefinition =
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              orderDefinition,
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket",
+              true,
+              CardinalityType.One,
+              typeof (OrderTicket));
 
       RelationEndPointDefinition orderTicketEndPointdefinition =
-          new RelationEndPointDefinition (orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order", true);
+          new RelationEndPointDefinition (
+              orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order", true);
 
       new RelationDefinition ("RelationIDNotInMapping", orderEndPointDefinition, orderTicketEndPointdefinition);
 

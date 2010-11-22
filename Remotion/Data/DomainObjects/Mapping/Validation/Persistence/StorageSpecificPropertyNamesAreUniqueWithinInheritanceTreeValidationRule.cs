@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       var mappingValidationResult = MappingValidationResult.CreateValidResult();
       foreach (PropertyDefinition myPropertyDefinition in classDefinition.MyPropertyDefinitions)
       {
-        if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
+        if (myPropertyDefinition.StorageClass == StorageClass.Persistent && myPropertyDefinition.StoragePropertyDefinition!=null)
         {
           PropertyDefinition basePropertyDefinition;
           if (propertyDefinitionsByName.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))

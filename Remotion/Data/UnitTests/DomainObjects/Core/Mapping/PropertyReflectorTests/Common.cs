@@ -17,6 +17,7 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
@@ -31,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty");
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
+      actual.SetStorageProperty (new ColumnDefinition ("Boolean", typeof (bool), true));
 
       Assert.IsInstanceOfType (typeof (ReflectionBasedPropertyDefinition), actual);
       Assert.IsNotNull (actual);

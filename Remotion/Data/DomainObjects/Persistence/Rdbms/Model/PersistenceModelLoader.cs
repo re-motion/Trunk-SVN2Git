@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var columnDefinitions = from cd in allClassesInHierarchy
                               from PropertyDefinition pd in cd.MyPropertyDefinitions
-                              where pd.StorageClass == StorageClass.Persistent // TODO 3497: Add test
+                              where pd.StorageClass == StorageClass.Persistent
                               select GetColumnDefinition (pd);
 
       return columnDefinitions;
