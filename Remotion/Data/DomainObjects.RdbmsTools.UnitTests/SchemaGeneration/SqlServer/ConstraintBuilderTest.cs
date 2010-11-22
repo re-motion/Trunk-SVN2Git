@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
@@ -138,7 +137,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, isNullable.HasValue?isNullable.Value:true));
+      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue?isNullable.Value:true));
       return propertyDefinition;
     }
 
