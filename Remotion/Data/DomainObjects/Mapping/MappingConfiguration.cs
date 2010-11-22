@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        SetMappingReadOnly (); //TODO: move down
+        SetMappingReadOnly (); //TODO 3518: move down
 
         var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()));
         foreach (ClassDefinition rootClasses in _classDefinitions.GetInheritanceRootClasses ())
