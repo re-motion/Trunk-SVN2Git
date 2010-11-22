@@ -37,6 +37,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
       if (propertyDefinition.IsObjectID)
       {
         var oppositeClass = propertyDefinition.ClassDefinition.GetOppositeClassDefinition (propertyDefinition.PropertyName);
+        if(oppositeClass==null)
+          Console.WriteLine (propertyDefinition.ClassDefinition.ID+"->"+propertyDefinition.PropertyName);
+
         if (oppositeClass.StorageProviderID == propertyDefinition.ClassDefinition.StorageProviderID)
           return SqlDataTypeObjectID;
         else

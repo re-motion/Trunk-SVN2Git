@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           maxLength,
           storageClass);
       if (storageClass == StorageClass.Persistent)
-        propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyDefinition.PropertyType, propertyDefinition.IsNullable));
+        propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyDefinition.PropertyType, "dummyType", propertyDefinition.IsNullable));
       return propertyDefinition;
     }
 

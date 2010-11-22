@@ -44,6 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ColumnDefinition (
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
+          _storageTypeCalculator.GetStorageType(propertyDefinition),
           propertyDefinition.IsNullable);
     }
 

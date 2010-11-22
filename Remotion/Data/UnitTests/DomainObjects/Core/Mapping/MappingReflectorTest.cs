@@ -69,6 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
       var actualClassDefinitions = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true);
+      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
+      foreach (ClassDefinition classDefinition in actualClassDefinitions)
+        classDefinition.SetReadOnly ();
+      actualClassDefinitions.SetReadOnly ();
+      actualRelationDefinitions.SetReadOnly ();
       Assert.IsNotNull (actualClassDefinitions);
 
       var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator ()));

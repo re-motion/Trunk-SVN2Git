@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _type = typeof (string);
-      _columnDefinition = new ColumnDefinition ("Name", _type, true);
+      _columnDefinition = new ColumnDefinition ("Name", _type, "varchar", true);
     }
 
     [Test]
@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
       Assert.That (_columnDefinition.PropertyType, Is.SameAs(_type));
+      Assert.That (_columnDefinition.StorageType, Is.EqualTo("varchar"));
       Assert.That (_columnDefinition.IsNullable, Is.True);
     }
 

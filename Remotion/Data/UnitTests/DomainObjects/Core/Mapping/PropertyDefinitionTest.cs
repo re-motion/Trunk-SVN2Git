@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
-      var columnDefinition = new ColumnDefinition ("Test", typeof(string), true);
+      var columnDefinition = new ColumnDefinition ("Test", typeof(string), "varchar", true);
 
       propertyDefinition.SetStorageProperty (columnDefinition);
 

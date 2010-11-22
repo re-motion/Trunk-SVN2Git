@@ -66,11 +66,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateStoragePropertyDefinition_UsePropertyName_RelationProperty ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
-
-      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+      var fileSystemItemClassDefinition = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions["FileSystemItem"];
+      var propertyDefinition = fileSystemItemClassDefinition.MyPropertyDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"];
+      
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
       Assert.That (result.Name, Is.EqualTo ("ParentFolderID"));
+      Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
     }
 
     [Test]
@@ -85,15 +88,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_PropertyType_RelationProperty ()
+    public void CreateStoragePropertyDefinition_StorageType ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
-      Assert.That (propertyDefinition.PropertyInfo.PropertyType, Is.SameAs (typeof (Folder)));
-      Assert.That (propertyDefinition.PropertyType, Is.SameAs (typeof (ObjectID)));
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
 
       var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
-      Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (result.StorageType, Is.EqualTo("bit"));
     }
 
     [Test]
