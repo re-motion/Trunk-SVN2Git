@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
              select Validate (propertyDefinition.PropertyInfo);
     }
 
-    //  //TODO 3424:
+    //  //TODO 3467:
     //  // StringPropertyAttribute
     //  public class StringxxxValidationRule : xxxValidationRule<StringPropertyAttribute>
     //  {
