@@ -19,7 +19,6 @@ using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
@@ -126,7 +125,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Data type 'System.Char' is not supported.\r\nDeclaring type: 'ClassID'\r\nProperty: 'Name'")]
+        "Data type 'System.Char' is not supported.\r\nDeclaring type: 'Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain.Order'\r\nProperty: 'Name'")]
     public void GetSqlDataType_WithNotSupportedType ()
     {
       _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Char), null, null));
