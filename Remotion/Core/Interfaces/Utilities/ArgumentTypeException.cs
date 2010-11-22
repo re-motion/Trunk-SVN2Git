@@ -53,11 +53,19 @@ namespace Remotion.Utilities
       ActualType = (Type) info.GetValue ("ActualType", typeof (Type));
     }
 
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+
+      info.AddValue ("ExpectedType", ExpectedType);
+      info.AddValue ("ActualType", ActualType);
+    }
+
     private static string FormatMessage (string argumentName, Type expectedType, Type actualType)
     {
       string actualTypeName = actualType != null ? actualType.ToString() : "<null>";
       if (expectedType == null)
-        return string.Format ("Argument {0} has unexpected type {1}", argumentName, actualTypeName);
+        return string.Format ("Argument {0} has unexpected type {1}.", argumentName, actualTypeName);
       else
         return string.Format ("Argument {0} has type {2} when type {1} was expected.", argumentName, expectedType, actualTypeName);
     }
