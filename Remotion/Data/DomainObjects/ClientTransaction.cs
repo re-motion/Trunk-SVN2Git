@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
@@ -92,7 +91,16 @@ public class ClientTransaction
   /// </remarks>
   public static ClientTransaction Current
   {
-    get { return ClientTransactionScope.HasCurrentTransaction ? ClientTransactionScope.CurrentTransaction : null; }
+    get
+    {
+      // Performance: In order to reduce SafeContext calls, we do not use HasCurrentTransaction/CurrentTransaction here
+      ClientTransactionScope activeScope = ClientTransactionScope.ActiveScope;
+
+      if (activeScope != null && activeScope.ScopedTransaction != null)
+        return activeScope.ScopedTransaction;
+
+      return null;
+    }
   }
 
   // member fields
