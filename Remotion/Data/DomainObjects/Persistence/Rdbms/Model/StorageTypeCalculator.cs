@@ -18,9 +18,8 @@ using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  // TODO Review 3495: Move to Rdbms\Model namespace
   /// <summary>
   /// <see cref="StorageTypeCalculator"/> is the base class for type-calculator implementations which determine the storage-specific type for a 
   /// storable column definition.
@@ -49,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
       throw new InvalidOperationException (string.Format (
               "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
               propertyDefinition.PropertyType,
-              propertyDefinition.ClassDefinition.ID, // TODO Review 3495: Use ClassDefinition.ClassType.FullName
+              propertyDefinition.ClassDefinition.ClassType.FullName,
               propertyDefinition.PropertyName));
     }
   }

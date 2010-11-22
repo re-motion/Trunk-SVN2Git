@@ -296,7 +296,7 @@
     <Compile Include="Persistence\Model\IStorageEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\ISqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Model\StorageTypeCalculator.cs" />
+    <Compile Include="Persistence\Rdbms\Model\StorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\PersistenceModelLoader.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlStorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />

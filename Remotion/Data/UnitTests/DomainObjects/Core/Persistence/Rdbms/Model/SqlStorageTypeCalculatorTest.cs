@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Data type 'System.Char' is not supported.\r\nDeclaring type: 'Order'\r\nProperty: 'Name'")]
+        "Data type 'System.Char' is not supported.\r\nDeclaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'\r\nProperty: 'Name'")]
     public void GettorageType_WithNotSupportedType ()
     {
       _typeCalculator.GetStorageType (CreatePropertyDefinition (typeof (Char), null, null));
