@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
-      ArgumentUtility.CheckNotNull ("storageType", storageType);
+      ArgumentUtility.CheckNotNullOrEmpty ("storageType", storageType);
       
       _name = name;
       _propertyType = propertyType;
