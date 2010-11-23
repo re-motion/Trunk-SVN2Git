@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       actualRelationDefinitions.SetReadOnly ();
       Assert.IsNotNull (actualClassDefinitions);
 
-      var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator ()));
+      var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator ()), "DefaultStorageProvider");
       foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
         persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
 

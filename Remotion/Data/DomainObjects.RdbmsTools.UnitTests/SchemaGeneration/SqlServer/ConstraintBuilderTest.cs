@@ -111,9 +111,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetReadOnly ();
       thirdClass.SetReadOnly ();
 
-      firstClass.SetStorageEntity (new TableDefinition ("FirstEntity", new ColumnDefinition[0]));
-      secondClass.SetStorageEntity (new TableDefinition ("SecondEntity", new ColumnDefinition[0]));
-      thirdClass.SetStorageEntity (new TableDefinition ("ThirdEntity", new ColumnDefinition[0]));
+      firstClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "FirstEntity", new ColumnDefinition[0]));
+      secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", new ColumnDefinition[0]));
+      thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", new ColumnDefinition[0]));
 
       _constraintBuilder.AddConstraint (firstClass);
 
@@ -175,9 +175,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetReadOnly ();
       otherClass.SetReadOnly ();
 
-      baseClass.SetStorageEntity (new TableDefinition ("BaseClassEntity", new ColumnDefinition[0]));
-      derivedClass.SetStorageEntity (new TableDefinition ("DerivedClassEntity", new ColumnDefinition[0]));
-      otherClass.SetStorageEntity (new TableDefinition ("OtherClassEntity", new ColumnDefinition[0]));
+      baseClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "BaseClassEntity", new ColumnDefinition[0]));
+      derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", new ColumnDefinition[0]));
+      otherClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "OtherClassEntity", new ColumnDefinition[0]));
       
       _constraintBuilder.AddConstraint (baseClass);
 

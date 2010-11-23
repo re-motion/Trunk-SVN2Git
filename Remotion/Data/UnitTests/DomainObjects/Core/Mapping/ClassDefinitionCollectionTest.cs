@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
-      _classDefinition.SetStorageEntity (new TableDefinition ("Order", new ColumnDefinition[0]));
+      _classDefinition.SetStorageEntity (new TableDefinition ("SPID", "Order", new ColumnDefinition[0]));
       _collection = new ClassDefinitionCollection();
     }
 

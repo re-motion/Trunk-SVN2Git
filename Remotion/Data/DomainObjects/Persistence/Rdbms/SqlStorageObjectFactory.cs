@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public virtual IPersistenceModelLoader GetPersistenceModelLoader ()
     {
-      return new PersistenceModelLoader (StoragePropertyDefinitionFactory);
+      return new PersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition.Name);
     }
   }
 }

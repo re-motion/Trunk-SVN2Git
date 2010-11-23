@@ -30,12 +30,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class PersistenceModelLoader : IPersistenceModelLoader
   {
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
+    private readonly string _storageProviderID;
 
-    public PersistenceModelLoader (IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory)
+    public PersistenceModelLoader (IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory, string storageProviderID)
     {
       ArgumentUtility.CheckNotNull ("storagePropertyDefinitionFactory", storagePropertyDefinitionFactory);
+      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
 
       _storagePropertyDefinitionFactory = storagePropertyDefinitionFactory;
+      _storageProviderID = storageProviderID;
     }
 
     public void ApplyPersistenceModelToHierarchy (ClassDefinition classDefinition)
@@ -79,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
 
-      return new TableDefinition (tableName, GetColumnDefinitionsForHierarchy (classDefinition));
+      return new TableDefinition (_storageProviderID, tableName, GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
@@ -92,6 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var actualAndBaseClassColumns = new HashSet<ColumnDefinition> (GetColumnDefinitionsForHierarchy (classDefinition));
 
       return new FilterViewDefinition (
+          _storageProviderID,
           classDefinition.ID + "View",
           baseStorageEntityDefinition,
           classDefinition.ID,
@@ -104,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           from ClassDefinition derivedClass in classDefinition.DerivedClasses
           select GetEntityDefinition (derivedClass);
 
-      return new UnionViewDefinition (classDefinition.ID + "View", derivedStorageEntityDefinitions);
+      return new UnionViewDefinition (_storageProviderID, classDefinition.ID + "View", derivedStorageEntityDefinitions);
     }
 
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)

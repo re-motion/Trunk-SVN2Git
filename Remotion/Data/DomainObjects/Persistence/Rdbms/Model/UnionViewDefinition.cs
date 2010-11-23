@@ -30,15 +30,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
+    private readonly string _storageProviderID;
 
-    public UnionViewDefinition (string viewName, IEnumerable<IEntityDefinition> unionedEntities)
+    public UnionViewDefinition (string storageProviderID, string viewName, IEnumerable<IEntityDefinition> unionedEntities)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
 
+      _storageProviderID = storageProviderID;
       _viewName = viewName;
       _unionedEntities = unionedEntities.ToList().AsReadOnly();
       _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).Distinct().ToList ().AsReadOnly ();
+    }
+
+    public string StorageProviderID
+    {
+      get { return _storageProviderID; }
     }
 
     public string ViewName

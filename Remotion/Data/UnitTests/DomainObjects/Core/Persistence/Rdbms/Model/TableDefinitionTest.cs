@@ -32,13 +32,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _columns = new[] { new ColumnDefinition ("COL1", typeof(string), "varchar", true) };
-      _tableDefintion = new TableDefinition ("Test", _columns);
+      _tableDefintion = new TableDefinition ("SPID", "Test", _columns);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_tableDefintion.TableName, Is.EqualTo ("Test"));
+      Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
     }
 
     [Test]

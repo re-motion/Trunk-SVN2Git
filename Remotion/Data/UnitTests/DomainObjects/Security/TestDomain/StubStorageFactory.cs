@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public IPersistenceModelLoader GetPersistenceModelLoader ()
     {
-      return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()));
+      return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition.Name);
     }
   }
 }

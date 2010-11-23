@@ -29,14 +29,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _tableName;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
+    private readonly string _storageProviderID;
 
-    public TableDefinition (string tableName, IEnumerable<ColumnDefinition> columns)
+    public TableDefinition (string storageProviderID, string tableName, IEnumerable<ColumnDefinition> columns)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
+      _storageProviderID = storageProviderID;
       _tableName = tableName;
       _columns = columns.ToList().AsReadOnly();
+    }
+
+    public string StorageProviderID
+    {
+      get { return _storageProviderID; }
     }
 
     public string TableName

@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column1 = new ColumnDefinition ("Column1", typeof(string), "varchar", true);
       _column2 = new ColumnDefinition ("Column2", typeof(string), "varchar", true);
       _column3 = new ColumnDefinition ("Column3", typeof(string), "varchar", true);
-      _entityDefinition = new TableDefinition ("Table", new[] { _column1, _column2, _column3 });
+      _entityDefinition = new TableDefinition ("SPID", "Table", new[] { _column1, _column2, _column3 });
 
-      _filterViewDefinition = new FilterViewDefinition ("Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      _filterViewDefinition = new FilterViewDefinition ("SPID", "Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
     }
 
     [Test]
@@ -48,12 +48,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.ClassID, Is.EqualTo ("CLASSID"));
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
       Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
+      Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var filterViewDefinition = new FilterViewDefinition (null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      var filterViewDefinition = new FilterViewDefinition ("SPID", null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
