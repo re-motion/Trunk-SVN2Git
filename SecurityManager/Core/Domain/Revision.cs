@@ -26,7 +26,9 @@ namespace Remotion.SecurityManager.Domain
     public static int GetRevision ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("Remotion.SecurityManager.Domain.Revision.GetRevision");
-      return (int) ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
+      var currentTransaction = ClientTransactionScope.CurrentTransaction;
+      var queryManager = currentTransaction.QueryManager;
+      return (int) queryManager.GetScalar (query);
     }
 
     public static void IncrementRevision ()

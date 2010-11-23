@@ -15,27 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Mixins;
-using Remotion.Reflection;
-using Remotion.Utilities;
+using Remotion.SecurityManager.Persistence;
 
-namespace Remotion.SecurityManager.Persistence
+namespace Remotion.SecurityManager.UnitTests.Persistence
 {
-  public class SecurityManagerSqlFactory : SqlStorageObjectFactory
+  public class SecurityManagerSqlProviderTestMixin : Mixin<SecurityManagerSqlProvider>
   {
-    public SecurityManagerSqlFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base(rdbmsProviderDefinition)
-    {
-    }
-
-    public override Type StorageProviderType
-    {
-      get
-      {
-        return typeof(SecurityManagerSqlProvider);
-      }
-    }
- 
   }
 }

@@ -30,37 +30,42 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class SqlStorageObjectFactory : IStorageObjectFactory
   {
-    private readonly RdbmsProviderDefinition _storageProviderDefinition;
-    private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
+    protected readonly RdbmsProviderDefinition StorageProviderDefinition;
+    protected readonly IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory;
 
     public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       
-      _storageProviderDefinition = storageProviderDefinition;
-      _storagePropertyDefinitionFactory = new ColumnDefinitionFactory(new SqlStorageTypeCalculator());
+      StorageProviderDefinition = storageProviderDefinition;
+      StoragePropertyDefinitionFactory = new ColumnDefinitionFactory(new SqlStorageTypeCalculator());
     }
 
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
+    public virtual Type StorageProviderType
+    {
+      get { return typeof (SqlProvider); }
+    }
+
+    public virtual StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
-      return ObjectFactory.Create<SqlProvider> (ParamList.Create(_storageProviderDefinition, persistenceListener));
+      return (StorageProvider) ObjectFactory.Create (StorageProviderType, ParamList.Create (StorageProviderDefinition, persistenceListener));
     }
 
-    public TypeConversionProvider GetTypeConversionProvider ()
+    public virtual TypeConversionProvider GetTypeConversionProvider ()
     {
       return TypeConversionProvider.Create();
     }
 
-    public TypeProvider GetTypeProvider ()
+    public virtual TypeProvider GetTypeProvider ()
     {
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader GetPersistenceModelLoader ()
+    public virtual IPersistenceModelLoader GetPersistenceModelLoader ()
     {
-      return new PersistenceModelLoader (_storagePropertyDefinitionFactory);
+      return new PersistenceModelLoader (StoragePropertyDefinitionFactory);
     }
   }
 }
