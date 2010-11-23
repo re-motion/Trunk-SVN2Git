@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:c="http://www.re-motion.org/Data/DomainObjects/Configuration/2.0"
+    xmlns:c="http://www.re-motion.org/Data/DomainObjects/Configuration/2.1"
     xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense" 
-    targetNamespace="http://www.re-motion.org/Data/DomainObjects/Configuration/2.0"
+    targetNamespace="http://www.re-motion.org/Data/DomainObjects/Configuration/2.1"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
   
@@ -72,7 +72,7 @@
         <xs:complexType>
           <xs:attribute name="name" type="xs:string" use="required" />
           <xs:attribute name="type" type="c:DotNetType" use="required" />
-          <xs:attribute name="providerType" type="c:DotNetType" use="required" />
+          <xs:attribute name="factoryType" type="c:DotNetType" use="required" />
           <xs:attribute name="connectionString" type="xs:string" use="optional" />
           <xs:anyAttribute processContents="skip" />
         </xs:complexType>

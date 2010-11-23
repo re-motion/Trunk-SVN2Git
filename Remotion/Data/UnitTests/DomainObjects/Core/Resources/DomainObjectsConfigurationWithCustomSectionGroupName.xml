@@ -24,7 +24,7 @@
     </sectionGroup>
   </configSections>
 
-  <domainObjects xmlns="http://www.re-motion.org/Data/DomainObjects/Configuration/2.0">
+  <domainObjects xmlns="http://www.re-motion.org/Data/DomainObjects/Configuration/2.1">
     <mapping>
       <loader type="Remotion.Data.UnitTests::DomainObjects.Core.Mapping.FakeMappingLoader"/>
     </mapping>

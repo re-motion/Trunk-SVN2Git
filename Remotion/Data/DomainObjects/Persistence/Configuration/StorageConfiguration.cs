@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     </sectionGroup>
   </configSections>
 
-  <remotion.data.domainObjects xmlns=""http://www.re-motion.org/Data/DomainObjects/Configuration/2.0"">
+  <remotion.data.domainObjects xmlns=""http://www.re-motion.org/Data/DomainObjects/Configuration/2.1"">
     <storage defaultProviderDefinition=""Default"">
       <providerDefinitions>
         <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" name=""Default"" factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory"" connectionString=""DefaultConnection"" />
