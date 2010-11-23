@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof(SqlStorageObjectFactory), "ConnectionString");
       _sqlProviderFactory = new SqlStorageObjectFactory (_rdbmsProviderDefinition);
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener> ();
     }

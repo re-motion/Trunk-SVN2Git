@@ -55,13 +55,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
-              c_firstStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_firstStorageProviderConnectionString));
+              c_firstStorageProvider, typeof (SqlStorageObjectFactory), c_firstStorageProviderConnectionString));
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
-              c_secondStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_secondStorageProviderConnectionString));
+              c_secondStorageProvider, typeof (SqlStorageObjectFactory), c_secondStorageProviderConnectionString));
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
-              c_internalStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_internalStorageProviderConnectionString));
+              c_internalStorageProvider, typeof (SqlStorageObjectFactory), c_internalStorageProviderConnectionString));
 
       StorageConfiguration storageConfiguration =
           new StorageConfiguration (storageProviderDefinitionCollection, storageProviderDefinitionCollection[c_firstStorageProvider]);

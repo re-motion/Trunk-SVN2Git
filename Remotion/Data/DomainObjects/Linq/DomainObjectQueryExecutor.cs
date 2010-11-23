@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Linq
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderID);
 
       // Natively supported types can be executed as scalar queries
-      if (providerDefinition.TypeProvider.IsTypeSupported (typeof (T)))
+      if (providerDefinition.Factory.GetTypeProvider().IsTypeSupported (typeof (T)))
         return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);

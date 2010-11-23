@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
-      _definition = new RdbmsProviderDefinition ("StorageProviderID", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
+      _definition = new RdbmsProviderDefinition ("StorageProviderID", typeof(SqlStorageObjectFactory), "ConnectionString");
 
       FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper();
       configurationWrapper.SetUpConnectionString ("SqlProvider", "ConnectionString", null);
@@ -47,13 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Initialize_FromArguments()
     {
-      RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
+      RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
 
       Assert.AreEqual ("Provider", provider.Name);
-      Assert.AreSame (typeof (SqlProvider), provider.StorageProviderType);
       Assert.That (provider.Factory, Is.TypeOf (typeof (SqlStorageObjectFactory)));
       Assert.AreEqual ("ConnectionString", provider.ConnectionString);
-      Assert.IsNotNull (provider.TypeConversionProvider);
+      Assert.IsNotNull (provider.Factory.GetTypeConversionProvider());
     }
 
     [Test]
@@ -61,7 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
-      config.Add ("providerType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider");
       config.Add ("factoryType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory");
       config.Add ("connectionString", "SqlProvider");
 
@@ -69,24 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.AreEqual ("Provider", provider.Name);
       Assert.AreEqual ("The Description", provider.Description);
-      Assert.AreSame (typeof (SqlProvider), provider.StorageProviderType);
       Assert.That (provider.Factory, Is.TypeOf(typeof (SqlStorageObjectFactory)));
       Assert.AreEqual ("ConnectionString", provider.ConnectionString);
       Assert.IsEmpty (config);
-      Assert.IsNotNull (provider.TypeConversionProvider);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ConfigurationErrorsException),
-        ExpectedMessage = "The attribute 'providerType' is missing in the configuration of the 'Provider' provider.")]
-    public void Initialize_FromConfig_WithMissingProviderType()
-    {
-      NameValueCollection config = new NameValueCollection();
-      config.Add ("description", "The Description");
-      config.Add ("connectionString", "SqlProvider");
-      config.Add ("factoryType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory");
-
-      Dev.Null = new RdbmsProviderDefinition ("Provider", config);
+      Assert.IsNotNull (provider.Factory.GetTypeConversionProvider());
     }
 
     [Test]
@@ -97,8 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       NameValueCollection config = new NameValueCollection ();
       config.Add ("description", "The Description");
       config.Add ("connectionString", "SqlProvider");
-      config.Add ("providerType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider");
-
+      
       Dev.Null = new RdbmsProviderDefinition ("Provider", config);
     }
 
@@ -129,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (IdentityTypeNotSupportedException),
-        ExpectedMessage = "The StorageProvider 'Remotion.Data.DomainObjects.Persistence.Rdbms.SqlProvider' does not support identity values of type 'System.String'.")]
+        ExpectedMessage = "Storage provider does not support identity values of type 'System.String'.")]
     public void CheckInvalidIdentityType()
     {
       _definition.CheckIdentityType (typeof (string));
@@ -145,7 +128,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       }
       catch (IdentityTypeNotSupportedException ex)
       {
-        Assert.AreEqual (typeof (SqlProvider), ex.StorageProviderType);
         Assert.AreEqual (typeof (string), ex.InvalidIdentityType);
       }
     }

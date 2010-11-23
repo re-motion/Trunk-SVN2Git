@@ -25,7 +25,16 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [SetUp]
     public void SetUp ()
     {
-      StandardConfiguration.Initialize();
+      try
+      {
+        StandardConfiguration.Initialize ();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("SetUpFixture failed: " + ex);
+        Console.WriteLine ();
+        throw;
+      }
     }
 
     [TearDown]

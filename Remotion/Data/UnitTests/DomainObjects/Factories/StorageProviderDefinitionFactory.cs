@@ -30,12 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
 
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (
-              DatabaseTest.c_testDomainProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
+          new RdbmsProviderDefinition (DatabaseTest.c_testDomainProviderID, typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (
-              DatabaseTest.DefaultStorageProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
+          new RdbmsProviderDefinition (DatabaseTest.DefaultStorageProviderID, typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new UnitTestStorageProviderStubDefinition (
@@ -44,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
               TableInheritanceMappingTest.TableInheritanceTestDomainProviderID,
-              typeof (SqlProvider),
               typeof (SqlStorageObjectFactory),
               DatabaseTest.TestDomainConnectionString));
 

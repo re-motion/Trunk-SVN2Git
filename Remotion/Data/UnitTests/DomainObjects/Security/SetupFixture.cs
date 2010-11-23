@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     public void SetUp()
     {
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-      providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageProvider), typeof(SqlStorageObjectFactory), "NonExistingRdbms"));
+      providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageFactory), "NonExistingRdbms"));
       StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["StorageProvider"]);
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));

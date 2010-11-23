@@ -51,11 +51,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void Initialize_WithProviderCollectionAndProvider ()
     {
       StorageProviderDefinition providerDefinition1 = new RdbmsProviderDefinition (
-          "ProviderDefinition1", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition1", typeof (SqlStorageObjectFactory), "ConnectionString");
       StorageProviderDefinition providerDefinition2 = new RdbmsProviderDefinition (
-          "ProviderDefinition2", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition2", typeof (SqlStorageObjectFactory), "ConnectionString");
       StorageProviderDefinition providerDefinition3 = new RdbmsProviderDefinition (
-          "ProviderDefinition3", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition3", typeof (SqlStorageObjectFactory), "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
       providers.Add (providerDefinition1);
       providers.Add (providerDefinition2);
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void Initialize_WithProviderCollectionAndProvider_Expect ()
     {
       StorageProviderDefinition providerDefinition = new RdbmsProviderDefinition (
-          "ProviderDefinition", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition", typeof (SqlStorageObjectFactory), "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
 
       StorageConfiguration configuration = new StorageConfiguration (providers, providerDefinition);
@@ -88,7 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
             <providerDefinitions>
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
-                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
                   factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
@@ -99,7 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       Assert.That (_configuration.DefaultStorageProviderDefinition, Is.InstanceOfType (typeof (RdbmsProviderDefinition)));
       Assert.That (_configuration.StorageProviderDefinitions.Count, Is.EqualTo (1));
       Assert.That (_configuration.StorageProviderDefinitions["Rdbms"], Is.SameAs (_configuration.DefaultStorageProviderDefinition));
-      Assert.That (_configuration.DefaultStorageProviderDefinition.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
       Assert.That (((RdbmsProviderDefinition) _configuration.DefaultStorageProviderDefinition).ConnectionString, Is.EqualTo ("ConnectionString"));
     }
 
@@ -111,7 +109,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
             <providerDefinitions>
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
-                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
                   factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
@@ -121,7 +118,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 
       Assert.That (_configuration.DefaultStorageProviderDefinition, Is.Null);
       Assert.That (_configuration.StorageProviderDefinitions.Count, Is.EqualTo (1));
-      Assert.That (_configuration.StorageProviderDefinitions["Rdbms"].StorageProviderType, Is.SameAs (typeof (SqlProvider)));
       Assert.That (((RdbmsProviderDefinition) _configuration.StorageProviderDefinitions["Rdbms"]).ConnectionString, Is.EqualTo ("ConnectionString"));
     }
 
@@ -135,7 +131,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
             <providerDefinitions>
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
-                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
                   factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
@@ -160,7 +155,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
             <providerDefinitions>
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
-                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
                   factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
@@ -189,7 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
             <providerDefinitions>
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
-                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
                   factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>

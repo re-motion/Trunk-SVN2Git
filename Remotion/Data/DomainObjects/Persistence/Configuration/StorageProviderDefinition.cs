@@ -31,9 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 
     // member fields
 
-    private Type _storageProviderType;
-    private TypeConversionProvider _typeConversionProvider;
-    private TypeProvider _typeProvider;
     private IStorageObjectFactory _factory;
 
     // construction and disposing
@@ -44,29 +41,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("config", config);
 
-      var storageProviderTypeName = GetAndRemoveNonEmptyStringAttribute (config, "providerType", name, true);
       var storageFactoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
-      Initialize (TypeUtility.GetType (storageProviderTypeName, true), TypeUtility.GetType (storageFactoryTypeName, true));
+      Initialize (TypeUtility.GetType (storageFactoryTypeName, true));
     }
 
-    protected StorageProviderDefinition (string name, Type storageProviderType, Type factoryType)
+    protected StorageProviderDefinition (string name, Type factoryType)
         : base (name, new NameValueCollection())
     {
-      ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
       ArgumentUtility.CheckNotNull ("factoryType", factoryType);
 
-      Initialize (storageProviderType, factoryType);
+      Initialize (factoryType);
     }
 
-    private void Initialize(Type storageProviderType, Type factoryType)
+    private void Initialize(Type factoryType)
     {
-      _storageProviderType = storageProviderType;
-      
       // When creating the storage object factory, use CreateDynamic to create a ParamList from the dynamic type of this StorageProviderDefinition. 
       // That way, concrete factories such as SqlStorageObjectFactory can have ctors taking concrete definitions such as RdbmsProviderDefinition.
       _factory = (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.CreateDynamic (this));
-      _typeConversionProvider = TypeConversionProvider.Create ();
-      _typeProvider = new TypeProvider();
     }
 
     // abstract methods and properties
@@ -78,28 +69,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public void CheckIdentityType (Type identityType)
     {
       if (!IsIdentityTypeSupported (identityType))
-        throw new IdentityTypeNotSupportedException (_storageProviderType, identityType);
-    }
-
-    public Type StorageProviderType
-    {
-      get { return _storageProviderType; }
+        throw new IdentityTypeNotSupportedException (identityType);
     }
 
     public IStorageObjectFactory Factory
     {
       get { return _factory; }
     }
-
-    public TypeConversionProvider TypeConversionProvider
-    {
-      get { return _typeConversionProvider; }
-    }
-
-    public TypeProvider TypeProvider
-    {
-      get { return _typeProvider; }
-    }
-   
   }
 }

@@ -35,8 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public override void SetUp ()
     {
       base.SetUp();
-      _definition = new RdbmsProviderDefinition (
-          c_testDomainProviderID, typeof (TestRdbmsProvider), typeof (SqlStorageObjectFactory), TestDomainConnectionString);
+      _definition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (SqlStorageObjectFactory), TestDomainConnectionString);
       _dialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _provider = new TestRdbmsProvider (_definition, _dialectStub, NullPersistenceListener.Instance);
     }

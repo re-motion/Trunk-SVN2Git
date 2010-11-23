@@ -83,7 +83,7 @@ public class StorageProviderManager : IDisposable
       StorageProviderDefinition providerDefinition = 
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
 
-      Type concreteStorageProviderType = TypeFactory.GetConcreteType (providerDefinition.StorageProviderType);
+      Type concreteStorageProviderType = providerDefinition.Factory.CreateStorageProvider (_persistenceListener).GetType();
       var provider = (StorageProvider) ReflectionUtility.CreateObject (concreteStorageProviderType, providerDefinition, _persistenceListener);
 
       _storageProviders.Add (provider);

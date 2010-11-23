@@ -28,7 +28,6 @@
       <providerDefinitions>
         <add type="Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"
             name="Test"
-            providerType="Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider"
             factoryType="Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory" 
             connectionString="Test"/>
       </providerDefinitions>

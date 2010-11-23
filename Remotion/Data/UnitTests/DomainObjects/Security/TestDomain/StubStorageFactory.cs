@@ -21,24 +21,24 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core
+namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
-  public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
+  public class StubStorageFactory : IStorageObjectFactory
   {
-    private UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
 
-    public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
+    public StubStorageFactory (StorageProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderStubDefinition", storageProviderStubDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      _storageProviderStubDefinition = storageProviderStubDefinition;
+      _storageProviderDefinition = storageProviderDefinition;
     }
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
-      return new UnitTestStorageProviderStub (_storageProviderStubDefinition, persistenceListener);
+      return new StubStorageProvider (_storageProviderDefinition, persistenceListener);
     }
 
     public TypeConversionProvider GetTypeConversionProvider ()

@@ -18,32 +18,33 @@ using System;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core
+namespace Remotion.SecurityManager.Persistence
 {
-  public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
+  public class SecurityManagerSqlFactory : IStorageObjectFactory
   {
-    private UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
+    private readonly RdbmsProviderDefinition _rdbmsProviderFactory;
 
-    public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
+    public SecurityManagerSqlFactory (RdbmsProviderDefinition rdbmsProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderStubDefinition", storageProviderStubDefinition);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-      _storageProviderStubDefinition = storageProviderStubDefinition;
+      _rdbmsProviderFactory = rdbmsProviderDefinition;
     }
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
-      return new UnitTestStorageProviderStub (_storageProviderStubDefinition, persistenceListener);
+      return new SecurityManagerSqlProvider (_rdbmsProviderFactory, persistenceListener);
     }
 
     public TypeConversionProvider GetTypeConversionProvider ()
     {
-      throw new NotImplementedException();
+      return TypeConversionProvider.Create();
     }
 
     public TypeProvider GetTypeProvider ()

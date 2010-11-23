@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         string storageProviderID,
         Type storageProviderType,
         Type storageFactoryType)
-        : base (storageProviderID, storageProviderType, storageFactoryType)
+        : base (storageProviderID, storageFactoryType)
     {
     }
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         Type storageProviderType,
         Type storageFactoryType,
         XmlNode configurationNode)
-        : base (storageProviderID, storageProviderType, storageFactoryType)
+        : base (storageProviderID, storageFactoryType)
     {
     }
 

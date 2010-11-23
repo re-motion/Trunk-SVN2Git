@@ -320,7 +320,7 @@ namespace Remotion.Data.DomainObjects
     public static bool IsTypeSupportedByStorageProvider (Type type, string storageProviderID)
     {
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return storageProviderDefinition.TypeProvider.IsTypeSupported (type);
+      return storageProviderDefinition.Factory.GetTypeProvider().IsTypeSupported (type);
     }
   }
 }

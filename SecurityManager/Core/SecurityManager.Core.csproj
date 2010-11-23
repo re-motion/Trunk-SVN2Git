@@ -248,6 +248,7 @@
       <DependentUpon>User.resx</DependentUpon>
     </Compile>
     <Compile Include="Persistence\RevisionStorageProviderExtension.cs" />
+    <Compile Include="Persistence\SecurityManagerSqlFactory.cs" />
     <Compile Include="Persistence\SecurityManagerSqlProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityManagerException.cs" />

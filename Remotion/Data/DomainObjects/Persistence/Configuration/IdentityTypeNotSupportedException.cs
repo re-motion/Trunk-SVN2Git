@@ -29,13 +29,21 @@ public class IdentityTypeNotSupportedException : StorageProviderConfigurationExc
 
   // member fields
 
-  private Type _storageProviderType;
-  private Type _invalidIdentityType;
+  private readonly Type _storageProviderType;
+  private readonly Type _invalidIdentityType;
 
   // construction and disposing
 
   public IdentityTypeNotSupportedException () : this ("Storage provider does not support provided identity type.") 
   {
+  }
+
+  public IdentityTypeNotSupportedException (Type invalidIdentityType) 
+    : this(string.Format("Storage provider does not support identity values of type '{0}'.", invalidIdentityType))
+  {
+    ArgumentUtility.CheckNotNull ("invalidIdentityType", invalidIdentityType);
+
+    _invalidIdentityType = invalidIdentityType;
   }
 
   public IdentityTypeNotSupportedException (string message) : base (message) 
