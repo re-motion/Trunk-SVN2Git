@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
-  /// <see cref="IStorageObjectFactory"/> defines the API for all storage provider factories
+  /// <see cref="IStorageObjectFactory"/> defines the API for all storage object factories.
   /// </summary>
   public interface IStorageObjectFactory
   {
