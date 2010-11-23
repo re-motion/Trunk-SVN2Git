@@ -81,8 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       organizationalUnitClass.SetReadOnly ();
       clientClass.SetReadOnly ();
 
-      new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator())).ApplyPersistenceModelToHierarchy (domainBaseClass);
-
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
           Provider, domainBaseClass, domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);
 
