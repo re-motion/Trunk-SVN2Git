@@ -18,6 +18,8 @@ using System;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -25,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
   {
-    private UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
+    private readonly UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
 
     public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
     {
@@ -53,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public IPersistenceModelLoader GetPersistenceModelLoader ()
     {
-      throw new NotImplementedException();
+      return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()));
     }
   }
 }

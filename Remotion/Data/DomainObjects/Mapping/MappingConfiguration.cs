@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -93,10 +94,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         SetMappingReadOnly (); //TODO 3518: move down
 
-        var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()));
-        foreach (ClassDefinition rootClasses in _classDefinitions.GetInheritanceRootClasses ())
-          persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClasses);
-        
+        var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
+        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
+        {
+          var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
+          var persistenceModelLoader = storageProviderDefinition.Factory.GetPersistenceModelLoader();
+          persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
+        }
+
         ValidatePersistenceMapping();
 
         _resolveTypes = loader.ResolveTypes;

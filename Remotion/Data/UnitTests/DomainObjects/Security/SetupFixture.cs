@@ -29,7 +29,6 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
@@ -42,15 +41,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
   public class SetUpFixture
   {
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
-      ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-      providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageFactory), "NonExistingRdbms"));
-      StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["StorageProvider"]);
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
-          new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
+      try
+      {
+        ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
+        providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageFactory), "NonExistingRdbms"));
+        StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["StorageProvider"]);
+        DomainObjectsConfiguration.SetCurrent (
+            new FakeDomainObjectsConfiguration (
+                new MappingLoaderConfiguration(),
+                storageConfiguration,
+                new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
-      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (GetType().Assembly))));
+        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (GetType().Assembly))));
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("SetUpFixture failed: " + ex);
+        Console.WriteLine();
+        throw;
+      }
     }
 
     private string GetFullPath (string fileName)
@@ -60,12 +71,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
     private ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
     {
-      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray ());
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray());
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-      return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist(
+      return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (
           typeDiscoveryService, "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain");
     }
   }
