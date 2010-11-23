@@ -29,8 +29,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public RdbmsProviderDefinition (
         string name,
         Type storageProviderType,
+        Type factoryType,
         string connectionString)
-        : base (name, storageProviderType)
+        : base (name, storageProviderType, factoryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
       _connectionString = connectionString;

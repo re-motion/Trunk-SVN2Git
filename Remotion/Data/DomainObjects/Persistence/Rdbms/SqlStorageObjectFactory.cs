@@ -26,27 +26,26 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
-  /// The <see cref="StorageObjectFactory"/> is responsibke to create storage provider related instances.
+  /// The <see cref="SqlStorageObjectFactory"/> is responsible to create sql-specific storage provider instances.
   /// </summary>
-  public class StorageObjectFactory : IStorageObjectFactory
+  public class SqlStorageObjectFactory : IStorageObjectFactory
   {
-    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+    private readonly RdbmsProviderDefinition _storageProviderDefinition;
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
 
-    public StorageObjectFactory (RdbmsProviderDefinition rdbmsProviderDefinition, IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory)
+    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionFactory", storagePropertyDefinitionFactory);
-
-      _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _storagePropertyDefinitionFactory = storagePropertyDefinitionFactory;
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      
+      _storageProviderDefinition = storageProviderDefinition;
+      _storagePropertyDefinitionFactory = new ColumnDefinitionFactory(new SqlStorageTypeCalculator());
     }
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
-      return ObjectFactory.Create<SqlProvider> (ParamList.Create(_rdbmsProviderDefinition, persistenceListener));
+      return ObjectFactory.Create<SqlProvider> (ParamList.Create(_storageProviderDefinition, persistenceListener));
     }
 
     public TypeConversionProvider GetTypeConversionProvider ()

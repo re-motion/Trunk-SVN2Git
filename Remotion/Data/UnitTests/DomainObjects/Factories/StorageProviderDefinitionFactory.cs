@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core;
@@ -26,22 +25,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
   public static class StorageProviderDefinitionFactory
   {
-    public static ProviderCollection<StorageProviderDefinition> Create()
+    public static ProviderCollection<StorageProviderDefinition> Create ()
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
 
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (DatabaseTest.c_testDomainProviderID, typeof (SqlProvider), DatabaseTest.TestDomainConnectionString));
-
-      storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (DatabaseTest.DefaultStorageProviderID, typeof (SqlProvider), DatabaseTest.TestDomainConnectionString));
-
-      storageProviderDefinitionCollection.Add (
-          new UnitTestStorageProviderStubDefinition (DatabaseTest.c_unitTestStorageProviderStubID, typeof (UnitTestStorageProviderStub)));
+          new RdbmsProviderDefinition (
+              DatabaseTest.c_testDomainProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
-              TableInheritanceMappingTest.TableInheritanceTestDomainProviderID, typeof (SqlProvider), DatabaseTest.TestDomainConnectionString));
+              DatabaseTest.DefaultStorageProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
+
+      storageProviderDefinitionCollection.Add (
+          new UnitTestStorageProviderStubDefinition (
+              DatabaseTest.c_unitTestStorageProviderStubID, typeof (UnitTestStorageProviderStub), typeof (UnitTestStorageObjectFactoryStub)));
+
+      storageProviderDefinitionCollection.Add (
+          new RdbmsProviderDefinition (
+              TableInheritanceMappingTest.TableInheritanceTestDomainProviderID,
+              typeof (SqlProvider),
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
 
       return storageProviderDefinitionCollection;
     }

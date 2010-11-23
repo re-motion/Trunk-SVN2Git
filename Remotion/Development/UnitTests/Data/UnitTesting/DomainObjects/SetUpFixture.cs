@@ -42,7 +42,7 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
       try
       {
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("Development.Data.DomainObjects", typeof (RdbmsProviderDefinition), "ConnectionString"));
+        providers.Add (new RdbmsProviderDefinition ("Development.Data.DomainObjects", typeof (RdbmsProviderDefinition), typeof(SqlStorageObjectFactory), "ConnectionString"));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["Development.Data.DomainObjects"]);
 
         DomainObjectsConfiguration.SetCurrent (

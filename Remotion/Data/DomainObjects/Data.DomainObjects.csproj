@@ -306,7 +306,7 @@
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SortExpressionSqlGenerator.cs" />
     <Compile Include="Persistence\Rdbms\SqlDialect.cs" />
-    <Compile Include="Persistence\Rdbms\StorageObjectFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlStorageObjectFactory.cs" />
     <Compile Include="PropertyChangeEventArgs.cs" />
     <Compile Include="Queries\ILinqParserCustomizer.cs" />
     <Compile Include="Queries\IEagerFetcher.cs" />

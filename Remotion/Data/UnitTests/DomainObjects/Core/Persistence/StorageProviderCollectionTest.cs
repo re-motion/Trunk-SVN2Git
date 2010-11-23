@@ -30,10 +30,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _provider = new SqlProvider (new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), "ConnectionString"), NullPersistenceListener.Instance);
-      _collection = new StorageProviderCollection ();
+      _provider = new SqlProvider (
+          new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString"),
+          NullPersistenceListener.Instance);
+      _collection = new StorageProviderCollection();
     }
 
     [Test]
@@ -51,6 +53,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       StorageProvider copy = new SqlProvider ((RdbmsProviderDefinition) _provider.Definition, NullPersistenceListener.Instance);
       Assert.IsFalse (_collection.Contains (copy));
     }
-
   }
 }

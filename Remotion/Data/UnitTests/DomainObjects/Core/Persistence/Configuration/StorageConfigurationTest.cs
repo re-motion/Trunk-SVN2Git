@@ -32,27 +32,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     private StorageConfiguration _configuration;
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
       _configuration = new StorageConfiguration();
 
-      FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper ();
+      FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper();
       configurationWrapper.SetUpConnectionString ("Rdbms", "ConnectionString", null);
       ConfigurationWrapper.SetCurrent (configurationWrapper);
     }
 
     [TearDown]
-    public void TearDown()
+    public void TearDown ()
     {
-      ConfigurationWrapper.SetCurrent (null);      
+      ConfigurationWrapper.SetCurrent (null);
     }
 
     [Test]
-    public void Initialize_WithProviderCollectionAndProvider()
+    public void Initialize_WithProviderCollectionAndProvider ()
     {
-      StorageProviderDefinition providerDefinition1 = new RdbmsProviderDefinition ("ProviderDefinition1", typeof (SqlProvider), "ConnectionString");
-      StorageProviderDefinition providerDefinition2 = new RdbmsProviderDefinition ("ProviderDefinition2", typeof (SqlProvider), "ConnectionString");
-      StorageProviderDefinition providerDefinition3 = new RdbmsProviderDefinition ("ProviderDefinition3", typeof (SqlProvider), "ConnectionString");
+      StorageProviderDefinition providerDefinition1 = new RdbmsProviderDefinition (
+          "ProviderDefinition1", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+      StorageProviderDefinition providerDefinition2 = new RdbmsProviderDefinition (
+          "ProviderDefinition2", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
+      StorageProviderDefinition providerDefinition3 = new RdbmsProviderDefinition (
+          "ProviderDefinition3", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
       providers.Add (providerDefinition1);
       providers.Add (providerDefinition2);
@@ -67,9 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Collection is read-only.")]
-    public void Initialize_WithProviderCollectionAndProvider_Expect()
+    public void Initialize_WithProviderCollectionAndProvider_Expect ()
     {
-      StorageProviderDefinition providerDefinition = new RdbmsProviderDefinition ("ProviderDefinition", typeof (SqlProvider), "ConnectionString");
+      StorageProviderDefinition providerDefinition = new RdbmsProviderDefinition (
+          "ProviderDefinition", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
 
       StorageConfiguration configuration = new StorageConfiguration (providers, providerDefinition);
@@ -77,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void Deserialize_WithRdbmsProviderDefinition()
+    public void Deserialize_WithRdbmsProviderDefinition ()
     {
       string xmlFragment =
           @"<storage defaultProviderDefinition=""Rdbms"">
@@ -85,6 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
                   providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
           </storage>";
@@ -107,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
                   providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
           </storage>";
@@ -122,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "The provider 'Invalid' specified for the defaultProviderDefinition does not exist in the providers collection.")]
-    public void Test_WithRdbmsProviderDefinitionAndInvalidName()
+    public void Test_WithRdbmsProviderDefinitionAndInvalidName ()
     {
       string xmlFragment =
           @"<storage defaultProviderDefinition=""Invalid"">
@@ -130,6 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
                   providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
           </storage>";
@@ -140,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     }
 
     [Test]
-    public void Deserialize_WithStorageGroups()
+    public void Deserialize_WithStorageGroups ()
     {
       string xmlFragment =
           @"<storage defaultProviderDefinition=""Rdbms"">
@@ -154,6 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
                   providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
           </storage>";
@@ -171,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "The value of the property 'type' cannot be parsed.",
         MatchType = MessageMatch.Contains)]
-    public void Deserialize_WithStorageGroupHavingInvalidTypeName()
+    public void Deserialize_WithStorageGroupHavingInvalidTypeName ()
     {
       string xmlFragment =
           @"<storage defaultProviderDefinition=""Rdbms"">
@@ -182,6 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
               <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
                   name=""Rdbms"" 
                   providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  factoryType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory""
                   connectionString=""Rdbms""/>
             </providerDefinitions>
           </storage>";

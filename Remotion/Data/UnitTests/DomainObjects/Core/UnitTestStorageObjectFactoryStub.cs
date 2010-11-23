@@ -15,47 +15,38 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Xml;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  public class UnitTestStorageProviderStubDefinition : StorageProviderDefinition
+  public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public UnitTestStorageProviderStubDefinition (
-        string storageProviderID,
-        Type storageProviderType,
-        Type storageFactoryType)
-        : base (storageProviderID, storageProviderType, storageFactoryType)
+    public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
     {
     }
 
-    public UnitTestStorageProviderStubDefinition (
-        string storageProviderID,
-        Type storageProviderType,
-        Type storageFactoryType,
-        XmlNode configurationNode)
-        : base (storageProviderID, storageProviderType, storageFactoryType)
+    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
+      throw new NotImplementedException();
     }
 
-    // methods and properties
-
-    public override bool IsIdentityTypeSupported (Type identityType)
+    public TypeConversionProvider GetTypeConversionProvider ()
     {
-      ArgumentUtility.CheckNotNull ("identityType", identityType);
+      throw new NotImplementedException();
+    }
 
-      // Note: UnitTestStorageProviderStubDefinition supports all identity types for testing purposes.
-      return true;
+    public TypeProvider GetTypeProvider ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IPersistenceModelLoader GetPersistenceModelLoader ()
+    {
+      throw new NotImplementedException();
     }
   }
 }

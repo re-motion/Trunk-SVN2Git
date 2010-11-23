@@ -32,30 +32,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public override void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp ();
-      SetDatabaseModifyable ();
+      base.TestFixtureSetUp();
+      SetDatabaseModifyable();
     }
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      RdbmsProviderDefinition definition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (SqlProvider), TestDomainConnectionString);
+      RdbmsProviderDefinition definition = new RdbmsProviderDefinition (
+          c_testDomainProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), TestDomainConnectionString);
 
       _provider = new SqlProvider (definition, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
     {
-      _provider.Dispose ();
-      base.TearDown ();
+      _provider.Dispose();
+      base.TearDown();
     }
 
     [Test]
     public void DeleteSingleDataContainer ()
     {
       DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer());
-      _provider.Connect ();
+      _provider.Connect();
       _provider.Save (containers);
 
       Assert.IsNull (_provider.LoadDataContainer (DomainObjectIDs.OrderTicket1));
@@ -64,8 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void SetTimestampOfDeletedDataContainer ()
     {
-      DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer ());
-      _provider.Connect ();
+      DataContainerCollection containers = CreateDataContainerCollection (GetDeletedOrderTicketContainer());
+      _provider.Connect();
       _provider.Save (containers);
       _provider.SetTimestamp (containers);
 
@@ -79,14 +80,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Employee subordinate = Employee.GetObject (DomainObjectIDs.Employee3);
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
 
-      supervisor.Delete ();
-      subordinate.Delete ();
-      computer.Delete ();
+      supervisor.Delete();
+      subordinate.Delete();
+      computer.Delete();
 
-			DataContainerCollection containers = CreateDataContainerCollection (supervisor.InternalDataContainer, subordinate.InternalDataContainer,
-					computer.InternalDataContainer);
+      DataContainerCollection containers = CreateDataContainerCollection (
+          supervisor.InternalDataContainer,
+          subordinate.InternalDataContainer,
+          computer.InternalDataContainer);
 
-      _provider.Connect ();
+      _provider.Connect();
       _provider.Save (containers);
     }
 
@@ -115,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         deletedDataContainer = deletedOrderTicket.InternalDataContainer;
       }
 
-      _provider.Connect ();
+      _provider.Connect();
       _provider.Save (CreateDataContainerCollection (changedDataContainer));
       _provider.Save (CreateDataContainerCollection (deletedDataContainer));
     }
@@ -139,22 +142,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       DataContainer deletedDataContainer;
       ClassWithAllDataTypes deletedObject;
-      
+
       using (clientTransaction2.EnterDiscardingScope())
       {
         deletedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
         deletedDataContainer = deletedObject.InternalDataContainer;
-        deletedObject.Delete ();
+        deletedObject.Delete();
       }
-      
-      _provider.Connect ();
+
+      _provider.Connect();
       _provider.Save (CreateDataContainerCollection (changedDataContainer));
       _provider.Save (CreateDataContainerCollection (deletedDataContainer));
     }
 
     private DataContainerCollection CreateDataContainerCollection (params DataContainer[] dataContainers)
     {
-      DataContainerCollection collection = new DataContainerCollection ();
+      DataContainerCollection collection = new DataContainerCollection();
       foreach (DataContainer dataContainer in dataContainers)
         collection.Add (dataContainer);
 
@@ -164,8 +167,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private DataContainer GetDeletedOrderTicketContainer ()
     {
       OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      orderTicket.Delete ();
-			return orderTicket.InternalDataContainer;
+      orderTicket.Delete();
+      return orderTicket.InternalDataContainer;
     }
   }
 }

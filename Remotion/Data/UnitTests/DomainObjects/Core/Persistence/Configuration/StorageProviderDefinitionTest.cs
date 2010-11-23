@@ -15,16 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
@@ -35,24 +29,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     public void Initialize()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
 
       Assert.That (providerDefinition.Name, Is.EqualTo ("Provider"));
       Assert.That (providerDefinition.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
+      Assert.That (providerDefinition.Factory, Is.TypeOf(typeof (SqlStorageObjectFactory)));
       Assert.That (providerDefinition.ConnectionString, Is.EqualTo ("ConnectionString"));
     }
 
     [Test]
     public void GetTypeConversionProvider ()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
       Assert.That (providerDefinition.TypeConversionProvider, Is.InstanceOfType (typeof (TypeConversionProvider)));
     }
 
     [Test]
     public void GetTypeProvider ()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
       Assert.That (providerDefinition.TypeProvider, Is.InstanceOfType (typeof (TypeProvider)));
     }
 

@@ -27,17 +27,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _providerDefinition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (SqlProvider), TestDomainConnectionString);
+      _providerDefinition = new RdbmsProviderDefinition (
+          c_testDomainProviderID, typeof (SqlProvider), typeof (SqlStorageObjectFactory), TestDomainConnectionString);
 
       _provider = new SqlProvider (_providerDefinition, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
     {
-      _provider.Dispose ();
-      base.TearDown ();
+      _provider.Dispose();
+      base.TearDown();
     }
 
     protected RdbmsProviderDefinition ProviderDefinition

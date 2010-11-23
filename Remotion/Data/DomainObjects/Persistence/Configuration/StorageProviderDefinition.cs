@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Specialized;
 using Remotion.Configuration;
+using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -32,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     private Type _storageProviderType;
     private TypeConversionProvider _typeConversionProvider;
     private TypeProvider _typeProvider;
+    private IStorageObjectFactory _factory;
 
     // construction and disposing
 
@@ -41,21 +44,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("config", config);
 
-      string storageProviderTypeName = GetAndRemoveNonEmptyStringAttribute (config, "providerType", name, true);
-      Initialize (TypeUtility.GetType (storageProviderTypeName, true));
+      var storageProviderTypeName = GetAndRemoveNonEmptyStringAttribute (config, "providerType", name, true);
+      var storageFactoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
+      Initialize (TypeUtility.GetType (storageProviderTypeName, true), TypeUtility.GetType (storageFactoryTypeName, true));
     }
 
-    protected StorageProviderDefinition (string name, Type storageProviderType)
+    protected StorageProviderDefinition (string name, Type storageProviderType, Type factoryType)
         : base (name, new NameValueCollection())
     {
       ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
+      ArgumentUtility.CheckNotNull ("factoryType", factoryType);
 
-      Initialize (storageProviderType);
+      Initialize (storageProviderType, factoryType);
     }
 
-    private void Initialize(Type storageProviderType)
+    private void Initialize(Type storageProviderType, Type factoryType)
     {
       _storageProviderType = storageProviderType;
+      
+      // When creating the storage object factory, use CreateDynamic to create a ParamList from the dynamic type of this StorageProviderDefinition. 
+      // That way, concrete factories such as SqlStorageObjectFactory can have ctors taking concrete definitions such as RdbmsProviderDefinition.
+      _factory = (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.CreateDynamic (this));
       _typeConversionProvider = TypeConversionProvider.Create ();
       _typeProvider = new TypeProvider();
     }
@@ -75,6 +84,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public Type StorageProviderType
     {
       get { return _storageProviderType; }
+    }
+
+    public IStorageObjectFactory Factory
+    {
+      get { return _factory; }
     }
 
     public TypeConversionProvider TypeConversionProvider

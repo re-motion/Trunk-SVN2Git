@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel.Design;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
@@ -37,10 +36,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
   [SetUpFixture]
   public class SetUpFixture
   {
-    private const string c_firstStorageProviderConnectionString = "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTests1;Data Source=localhost;";
-    private const string c_secondStorageProviderConnectionString = "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTests2;Data Source=localhost;";
-    private const string c_internalStorageProviderConnectionString = "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTestsInternal;Data Source=localhost;";
-    
+    private const string c_firstStorageProviderConnectionString =
+        "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTests1;Data Source=localhost;";
+
+    private const string c_secondStorageProviderConnectionString =
+        "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTests2;Data Source=localhost;";
+
+    private const string c_internalStorageProviderConnectionString =
+        "Integrated Security=SSPI;Initial Catalog=RdbmsToolsUnitTestsInternal;Data Source=localhost;";
+
     private const string c_firstStorageProvider = "FirstStorageProvider";
     private const string c_secondStorageProvider = "SecondStorageProvider";
     private const string c_internalStorageProvider = "Internal";
@@ -50,21 +54,27 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (c_firstStorageProvider, typeof (SqlProvider), c_firstStorageProviderConnectionString));
+          new RdbmsProviderDefinition (
+              c_firstStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_firstStorageProviderConnectionString));
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (c_secondStorageProvider, typeof (SqlProvider), c_secondStorageProviderConnectionString));
+          new RdbmsProviderDefinition (
+              c_secondStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_secondStorageProviderConnectionString));
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (c_internalStorageProvider, typeof (SqlProvider), c_internalStorageProviderConnectionString));
+          new RdbmsProviderDefinition (
+              c_internalStorageProvider, typeof (SqlProvider), typeof (SqlStorageObjectFactory), c_internalStorageProviderConnectionString));
 
       StorageConfiguration storageConfiguration =
           new StorageConfiguration (storageProviderDefinitionCollection, storageProviderDefinitionCollection[c_firstStorageProvider]);
 
       storageConfiguration.StorageGroups.Add (new StorageGroupElement (new FirstStorageGroupAttribute(), c_firstStorageProvider));
       storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecondStorageGroupAttribute(), c_secondStorageProvider));
-      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new InternalStorageGroupAttribute (), c_internalStorageProvider));
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new InternalStorageGroupAttribute(), c_internalStorageProvider));
 
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration,
-          new QueryConfiguration()));
+      DomainObjectsConfiguration.SetCurrent (
+          new FakeDomainObjectsConfiguration (
+              new MappingLoaderConfiguration(),
+              storageConfiguration,
+              new QueryConfiguration()));
 
       var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (Ceo).Assembly, true));
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);

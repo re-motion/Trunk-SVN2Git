@@ -22,10 +22,10 @@ using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
 using Remotion.Logging;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools
 {
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   {
     public static RdbmsToolsRunner Create (RdbmsToolsParameter rdbmsToolsParameter)
     {
-      AppDomainSetup appDomainSetup = CreateAppDomainSetup(rdbmsToolsParameter);
+      AppDomainSetup appDomainSetup = CreateAppDomainSetup (rdbmsToolsParameter);
       return new RdbmsToolsRunner (appDomainSetup, rdbmsToolsParameter);
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
         {
           throw new FileNotFoundException (
               string.Format (
-                  "The configuration file supplied by the 'config' parameter was not found.\r\nFile: {0}", 
+                  "The configuration file supplied by the 'config' parameter was not found.\r\nFile: {0}",
                   appDomainSetup.ConfigurationFile),
               appDomainSetup.ConfigurationFile);
         }
@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
     protected override void CrossAppDomainCallbackHandler ()
     {
       if (_rdbmsToolsParameter.Verbose)
-        LogManager.InitializeConsole ();
+        LogManager.InitializeConsole();
 
       InitializeConfiguration();
 
@@ -85,7 +85,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
     protected virtual void InitializeConfiguration ()
     {
       DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (DomainObjectsConfiguration.Current.MappingLoader, GetPersistenceConfiguration(), new QueryConfiguration()));
+          new FakeDomainObjectsConfiguration (
+              DomainObjectsConfiguration.Current.MappingLoader, GetPersistenceConfiguration(), new QueryConfiguration()));
 
       MappingConfiguration.SetCurrent (new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader()));
     }
@@ -96,7 +97,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       if (storageConfiguration.StorageProviderDefinitions.Count == 0)
       {
         ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
-        RdbmsProviderDefinition providerDefinition = new RdbmsProviderDefinition ("Default", typeof (SqlProvider), "Initial Catalog=DatabaseName;");
+        RdbmsProviderDefinition providerDefinition = new RdbmsProviderDefinition (
+            "Default", typeof (SqlProvider), typeof (SqlStorageObjectFactory), "Initial Catalog=DatabaseName;");
         storageProviderDefinitionCollection.Add (providerDefinition);
 
         storageConfiguration = new StorageConfiguration (storageProviderDefinitionCollection, providerDefinition);

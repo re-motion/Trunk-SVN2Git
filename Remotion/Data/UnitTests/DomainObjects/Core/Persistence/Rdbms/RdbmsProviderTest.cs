@@ -34,25 +34,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _definition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (TestRdbmsProvider), TestDomainConnectionString);
-      _dialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      base.SetUp();
+      _definition = new RdbmsProviderDefinition (
+          c_testDomainProviderID, typeof (TestRdbmsProvider), typeof (SqlStorageObjectFactory), TestDomainConnectionString);
+      _dialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _provider = new TestRdbmsProvider (_definition, _dialectStub, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
     {
-      base.TearDown ();
-      _provider.Dispose ();
+      base.TearDown();
+      _provider.Dispose();
     }
 
     [Test]
     public void CreateDbCommand_CreatesCommand ()
     {
-      _provider.Connect ();
-      _provider.BeginTransaction ();
+      _provider.Connect();
+      _provider.BeginTransaction();
 
-      using (var command = _provider.CreateDbCommand ())
+      using (var command = _provider.CreateDbCommand())
       {
         Assert.That (command.WrappedInstance.Connection, Is.SameAs (_provider.Connection.WrappedInstance));
         Assert.That (command.WrappedInstance.Transaction, Is.SameAs (_provider.Transaction.WrappedInstance));
@@ -62,26 +63,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateDbCommand_DisposesCommand_WhenCreateDbCommandThrows_InSetConnection ()
     {
-      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
+      var commandMock = MockRepository.GenerateMock<IDbCommand>();
       commandMock.Expect (mock => mock.Connection = Arg<IDbConnection>.Is.Anything).WhenCalled (mi => { throw new ApplicationException ("Test"); });
-      commandMock.Expect (mock => mock.Dispose ());
-      commandMock.Replay ();
+      commandMock.Expect (mock => mock.Dispose());
+      commandMock.Replay();
 
-      var connectionStub = MockRepository.GenerateStub<IDbConnection> ();
-      connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      var connectionStub = MockRepository.GenerateStub<IDbConnection>();
+      connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
-      connectionStub.Replay ();
+      connectionStub.Replay();
 
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
-      providerPartialMock.Replay ();
+      providerPartialMock.Replay();
 
-      providerPartialMock.Connect ();
+      providerPartialMock.Connect();
       try
       {
-        providerPartialMock.CreateDbCommand ();
+        providerPartialMock.CreateDbCommand();
         Assert.Fail ("Expected ApplicationException");
       }
       catch (ApplicationException)
@@ -89,34 +90,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         // ok
       }
 
-      providerPartialMock.VerifyAllExpectations ();
-      commandMock.VerifyAllExpectations ();
+      providerPartialMock.VerifyAllExpectations();
+      commandMock.VerifyAllExpectations();
     }
 
     [Test]
     public void CreateDbCommand_DisposesCommand_WhenCreateDbCommandThrows_InSetTransaction ()
     {
-      var commandMock = MockRepository.GenerateMock<IDbCommand> ();
+      var commandMock = MockRepository.GenerateMock<IDbCommand>();
       commandMock.Expect (mock => mock.Connection = Arg<IDbConnection>.Is.Anything);
       commandMock.Expect (mock => mock.Transaction = Arg<IDbTransaction>.Is.Anything).WhenCalled (mi => { throw new ApplicationException ("Test"); });
-      commandMock.Expect (mock => mock.Dispose ());
-      commandMock.Replay ();
+      commandMock.Expect (mock => mock.Dispose());
+      commandMock.Replay();
 
-      var connectionStub = MockRepository.GenerateStub<IDbConnection> ();
-      connectionStub.Stub (stub => stub.CreateCommand ()).Return (commandMock);
+      var connectionStub = MockRepository.GenerateStub<IDbConnection>();
+      connectionStub.Stub (stub => stub.CreateCommand()).Return (commandMock);
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
-      connectionStub.Replay ();
+      connectionStub.Replay();
 
       var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
-      providerPartialMock.Replay ();
+      providerPartialMock.Replay();
 
-      providerPartialMock.Connect ();
+      providerPartialMock.Connect();
       try
       {
-        providerPartialMock.CreateDbCommand ();
+        providerPartialMock.CreateDbCommand();
         Assert.Fail ("Expected ApplicationException");
       }
       catch (ApplicationException)
@@ -124,23 +125,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         // ok
       }
 
-      providerPartialMock.VerifyAllExpectations ();
-      commandMock.VerifyAllExpectations ();
+      providerPartialMock.VerifyAllExpectations();
+      commandMock.VerifyAllExpectations();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Connect must be called before a command can be created.")]
     public void CreateDbCommand_NotConnected ()
     {
-      _provider.CreateDbCommand ();
+      _provider.CreateDbCommand();
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDisposedException))]
     public void CreateDbCommand_ChecksDisposed ()
     {
-      _provider.Dispose ();
-      _provider.CreateDbCommand ();
+      _provider.Dispose();
+      _provider.CreateDbCommand();
     }
 
     [Test]

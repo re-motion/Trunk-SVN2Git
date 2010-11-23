@@ -28,19 +28,17 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   [TestFixture]
-  public class StorageObjectFactoryTest
+  public class SqlStorageObjectFactoryTest
   {
-    private StorageObjectFactory _sqlProviderFactory;
+    private SqlStorageObjectFactory _sqlProviderFactory;
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
     private IPersistenceListener _persistenceListenerStub;
-    private ColumnDefinitionFactory _columnDefinitionFactory;
-
+  
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), "ConnectionString");
-      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator());
-      _sqlProviderFactory = new StorageObjectFactory (_rdbmsProviderDefinition, _columnDefinitionFactory);
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), typeof(SqlStorageObjectFactory), "ConnectionString");
+      _sqlProviderFactory = new SqlStorageObjectFactory (_rdbmsProviderDefinition);
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener> ();
     }
 
