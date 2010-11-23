@@ -894,6 +894,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CheckMandatoryRelations_UnloadedRelations_Ignored ()
+    {
+      var dataContainer = DataContainer.CreateNew (new ObjectID (DomainObjectIDs.Order1.ClassDefinition, Guid.NewGuid()));
+      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+
+      var orderItemsPropertyName = typeof (Order).FullName + ".OrderItems";
+
+      // remove all but OrderItems
+      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+      {
+        if (endPointID.Definition.PropertyName != orderItemsPropertyName)
+          DataManagerTestHelper.RemoveEndPoint (_dataManager, endPointID);
+      }
+
+      var orderItemEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[new RelationEndPointID (dataContainer.ID, orderItemsPropertyName)];
+      Assert.That (orderItemEndPoint, Is.Not.Null);
+      Assert.That (orderItemEndPoint.Definition.IsMandatory, Is.True);
+      orderItemEndPoint.Unload ();
+      Assert.That (orderItemEndPoint.IsDataAvailable, Is.False);
+
+      _dataManager.CheckMandatoryRelations (dataContainer); // does not throw
+
+      Assert.That (orderItemEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
     public void HasRelationChanged_True ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);

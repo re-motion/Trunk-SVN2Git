@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (endPointID.Definition.IsMandatory)
         {
           RelationEndPoint endPoint = _relationEndPointMap[endPointID];
-          if (endPoint != null)
+          if (endPoint != null && endPoint.IsDataAvailable)
             endPoint.CheckMandatory();
         }
       }
