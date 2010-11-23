@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsTrue (mappingReflector.ResolveTypes);
     }
 
-    // TODO 3497: This is actually an integration test for the whole mapping configuration building. Move to a separate test fixture.
+    // TODO 3497: This is actually an integration test for the whole mapping configuration building. Create a test fixture MappingReflectorIntegrationTest and move this test to it.
     [Test]
     public void GetClassDefinitions ()
     {
