@@ -22,12 +22,14 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
   public class ColumnDefinitionFactoryTest
   {
+    private StorageTypeCalculator _storageTypeCalculatorStub;
     private ColumnDefinitionFactory _columnDefinitionFactory;
     private ReflectionBasedClassDefinition _classWithAllDataTypesDefinition;
     private ReflectionBasedClassDefinition _fileSystemItemClassDefinition;
@@ -35,7 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator());
+      _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
+      _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
       _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
     }
@@ -45,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      StubStorageTypeCalculator (propertyDefinition);
 
       var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
@@ -57,6 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Distributor));
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
+      StubStorageTypeCalculator (propertyDefinition);
 
       var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
@@ -66,9 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateStoragePropertyDefinition_UsePropertyName_RelationProperty ()
     {
-      var fileSystemItemClassDefinition = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions["FileSystemItem"];
-      var propertyDefinition = fileSystemItemClassDefinition.MyPropertyDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"];
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
+      StubStorageTypeCalculator (propertyDefinition);
       
       var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
@@ -81,6 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      StubStorageTypeCalculator (propertyDefinition);
 
       var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
@@ -92,10 +97,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      StubStorageTypeCalculator (propertyDefinition);
 
       var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
 
-      Assert.That (result.StorageType, Is.EqualTo("bit"));
+      Assert.That (result.StorageType, Is.EqualTo ("storage type"));
     }
 
     [Test]
@@ -105,12 +111,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), true);
       var nonNullablePropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), false);
+      StubStorageTypeCalculator (nullablePropertyDefinition);
+      StubStorageTypeCalculator (nonNullablePropertyDefinition);
 
       var nullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nullablePropertyDefinition);
       var nonNullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nonNullablePropertyDefinition);
 
       Assert.That (nullableResult.IsNullable, Is.True);
       Assert.That (nonNullableResult.IsNullable, Is.False);
+    }
+
+    private void StubStorageTypeCalculator (PropertyDefinition propertyDefinition)
+    {
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return ("storage type");
     }
   }
 }
