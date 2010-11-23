@@ -20,12 +20,11 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 {
@@ -81,6 +80,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreSame (actual, actual.GetInheritanceRootClass());
+    }
+
+    [Test]
+    public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection ()
+    {
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
+      ClassDefinition expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition ();
+      _classDefinitions.Add (expectedBaseClass);
+
+      ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreEqual (2, _classDefinitions.Count);
+      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (DerivedClassWithMixedProperties)));
+      Assert.AreSame (expectedBaseClass, actual.BaseClass);
     }
 
     [Test]
@@ -142,33 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
     }
-
-    [Test]
-    public void GetClassDefinition_ForClassWithStorageSpecificIdentifierAttribute ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassHavingStorageSpecificIdentifierAttribute), Configuration.NameResolver);
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("ClassHavingStorageSpecificIdentifierAttribute", actual.ID);
-    }
-
-    [Test]
-    public void GetClassDefinition_ForDerivedClassWithStorageSpecificIdentifierAttribute ()
-    {
-      var classReflector= new ClassReflector (typeof (DerivedClassWithStorageSpecificIdentifierAttribute), Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateDerivedClassWithStorageSpecificIdentifierAttributeClassDefinition();
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-
-      Assert.IsNotNull (actual);
-      _classDefinitionChecker.Check (expected, actual);
-      _classDefinitionChecker.Check (expected.BaseClass, actual.BaseClass);
-      Assert.AreEqual (2, _classDefinitions.Count);
-    }
-
-    [Test]
+    
+   [Test]
     public void GetClassDefinition_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute ()
     {
       var classReflector= new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
@@ -178,6 +167,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
     }
+
+   [Test]
+   public void GetClassDefinition_ForClassWithHasStorageGroupAttributeDefinedItselfAndInBaseClass ()
+   {
+     var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
+
+     var actual = classReflector.GetClassDefinition (_classDefinitions);
+
+     Assert.IsNotNull (actual);
+     Assert.AreEqual ("DerivedClassWithStorageGroupAttribute", actual.ID);
+   }
+
 
     [Test]
     public void GetClassDefinition_ForClosedGenericClass ()
@@ -278,29 +279,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
           c_testDomainProviderID,
           typeof (ClassWithVirtualRelationEndPoints),
           false);
-
-      return classDefinition;
-    }
-
-    private ReflectionBasedClassDefinition CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("BaseClassWithoutStorageSpecificIdentifierAttribute",
-          "BaseClassWithoutStorageSpecificIdentifierAttribute",
-          c_testDomainProviderID,
-          typeof (BaseClassWithoutStorageSpecificIdentifierAttribute),
-          true);
-
-      return classDefinition;
-    }
-
-    private ReflectionBasedClassDefinition CreateDerivedClassWithStorageSpecificIdentifierAttributeClassDefinition ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithStorageSpecificIdentifierAttribute",
-          "DerivedClassWithStorageSpecificIdentifierAttribute",
-          c_testDomainProviderID,
-          typeof (DerivedClassWithStorageSpecificIdentifierAttribute),
-          false,
-          CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition ());
 
       return classDefinition;
     }

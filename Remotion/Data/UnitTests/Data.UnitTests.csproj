@@ -257,7 +257,6 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinitionForHierarchyWithoutStorageGroup.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinitionForRdbmsClassReflector.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitions.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
