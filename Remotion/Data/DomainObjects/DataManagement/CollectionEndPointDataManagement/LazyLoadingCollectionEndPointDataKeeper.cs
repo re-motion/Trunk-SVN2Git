@@ -117,14 +117,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       {
         var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
 
-        // TODO 3407: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
+        // TODO 3401: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
         // foreign keys' reflections to be registered in this collection via RegisterOriginalObject. No ReplaceContents/Commit required.
         _collectionData.ReplaceContents (contents);
         _collectionData.Commit (); // makes original collection identical to current
 
         MarkDataAvailable ();
 
-        // TODO 3407: This will also change: the change state is not necessarily false after the change described above.
+        // TODO 3401: This will also change: the change state is not necessarily false after the change described above.
         RaiseChangeStateNotification (false);
       }
     }
