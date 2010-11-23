@@ -316,6 +316,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void OriginalOppositeDomainObjectsContents_Get_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      Dev.Null = _customerEndPoint.OriginalOppositeDomainObjectsContents;
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void Unload ()
     {
       Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
@@ -449,6 +459,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateDeleteCommand_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+      _customerEndPoint.CreateDeleteCommand ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void SetOppositeCollectionAndNotify ()
     {
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
@@ -457,6 +476,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedWith (_customerEndPoint), Is.True);
       Assert.That (_customerEndPoint.OriginalCollectionReference.IsAssociatedWith (null), Is.True);
+    }
+
+    [Test]
+    public void SetOppositeCollectionAndNotify_LoadsData ()
+    {
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      endPoint.Unload ();
+      var originalCollection = endPoint.OppositeDomainObjects;
+      
+      Assert.That (originalCollection.IsDataAvailable, Is.False);
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
+      endPoint.SetOppositeCollectionAndNotify (newOpposites);
+
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (originalCollection.IsDataAvailable, Is.True);
+      Assert.That (
+          originalCollection, 
+          Is.EquivalentTo (new[] { _order1, _orderWithoutOrderItem }), 
+          "The data should be loaded before setting the new collection.");
     }
 
     [Test]
@@ -537,12 +577,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Commit_Unchanged_DoesNotLoadData ()
     {
+      _customerEndPoint.Touch ();
       _customerEndPoint.Unload ();
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
 
       _customerEndPoint.Commit();
       
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
     }
 
     [Test]
@@ -628,6 +671,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SetValueFrom_LoadsData_ForBothCollections ()
+    {
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      source.Unload ();
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.SetValueFrom (source);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (source.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject>());
@@ -701,6 +757,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterOriginalObject_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      _customerEndPoint.RegisterOriginalObject (_order2);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
     public void UnregisterOriginalObject ()
     {
       _customerEndPoint.UnregisterOriginalObject (_order1.ID);
@@ -709,7 +774,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OppositeDomainObjects, List.Not.Contains (_order1));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, List.Not.Contains (_order1));
     }
-    
+
+    [Test]
+    public void UnregisterOriginalObject_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      _customerEndPoint.UnregisterOriginalObject (_order1.ID);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
     [Test]
     public void CreateRemoveCommand ()
     {
@@ -720,6 +794,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
+    }
+
+    [Test]
+    public void CreateRemoveCommand_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.CreateRemoveCommand (_order1);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
     }
 
     [Test]
@@ -736,6 +820,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateInsertCommand_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.CreateInsertCommand (_order1, 12);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void CreateAddCommand ()
     {
       var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateAddCommand (_order1);
@@ -749,6 +843,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateAddCommand_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.CreateAddCommand (_order1);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void CreateReplaceCommand ()
     {
       var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateReplaceCommand (0, _orderWithoutOrderItem);
@@ -759,6 +863,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
+    }
+
+    [Test]
+    public void CreateReplaceCommand_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.CreateReplaceCommand (0, _order1);
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
     }
 
     [Test]
@@ -780,6 +894,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (data.Count, Is.EqualTo (2), "contains data of end point");
       _customerEndPoint.OppositeDomainObjects.Insert (1, _order2);
       Assert.That (data.Count, Is.EqualTo (3), "represents end point");
+    }
+
+    [Test]
+    public void CreateDelegatingCollectionData_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      _customerEndPoint.CreateDelegatingCollectionData ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -805,6 +928,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOppositeCollection));
+    }
+
+    [Test]
+    public void OppositeDomainObjects_Set_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
+      var newOppositeCollection = new OrderCollection (delegatingData);
+
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -900,6 +1036,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetOppositeRelationEndPoints_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+
+      _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void ChangesToDataState_CauseTransactionListenerNotifications ()
     {
       var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
@@ -907,6 +1053,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.OppositeDomainObjects.Add (_order2);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
+    }
+
+    [Test]
+    public void CheckMandatory_NonEmpty ()
+    {
+      _customerEndPoint.CheckMandatory ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
+        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of domain object "
+        + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' contains no items.")]
+    public void CheckMandatory_Empty ()
+    {
+      _customerEndPoint.OppositeDomainObjects.Clear ();
+      _customerEndPoint.CheckMandatory ();
+    }
+
+    [Test]
+    public void CheckMandatory_Unloaded_LoadsData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.CheckMandatory ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
     }
 
     private LazyLoadingCollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)

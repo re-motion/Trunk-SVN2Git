@@ -60,7 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _changeDetectionStrategy = changeDetectionStrategy;
     }
 
-    // No loading
     public DomainObjectCollection OppositeDomainObjects
     {
       get { return _oppositeDomainObjects; }
@@ -84,17 +83,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // Causes collection to be loaded
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
       get 
-      { 
+      {
+        EnsureDataAvailable ();
+
         var collectionType = Definition.PropertyType;
         return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
       }
     }
 
-    // No loading
     public DomainObjectCollection OriginalCollectionReference
     {
       get { return _originalCollectionReference; }
@@ -110,19 +109,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _dataKeeper.IsDataAvailable; }
     }
 
-    // No loading
     public override bool HasChanged
     {
       get { return OriginalCollectionReference != OppositeDomainObjects || _dataKeeper.HasDataChanged (_changeDetectionStrategy); }
     }
 
-    // No loading
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
     }
 
-    // No loading
     public void Unload ()
     {
       if (IsDataAvailable)
@@ -132,7 +128,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // Causes collection to be loaded
     public override void EnsureDataAvailable ()
     {
       _dataKeeper.EnsureDataAvailable ();
@@ -143,22 +138,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.MarkDataAvailable ();
     }
 
-    // Causes collection to be loaded // TODO: Very implicit
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-
       if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
+
+      EnsureDataAvailable ();
 
       var command = ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
       var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
 
-    // Causes collection to be loaded
     public override void SetValueFrom (RelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
@@ -170,13 +164,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
+      EnsureDataAvailable ();
+      sourceCollectionEndPoint.EnsureDataAvailable ();
+
       _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint._dataKeeper.CollectionData);
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
     }
 
-    // No loading
     public override void Commit ()
     {
       if (HasChanged)
@@ -188,7 +184,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    // No loading
     public override void Rollback ()
     {
       if (HasChanged)
@@ -214,16 +209,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    // No loading
     public override void Touch ()
     {
       _hasBeenTouched = true;
     }
 
-    // Causes collection to be loaded // TODO: Should this be the case?
     public override void CheckMandatory ()
     {
-      if (_oppositeDomainObjects.Count == 0)
+      // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an unloaded end-point should be 
+      // checked. (DataManager will not check unloaded end-points, as it also ignores not-yet-loaded end-points.)
+      EnsureDataAvailable ();
+
+      if (_dataKeeper.CollectionData.Count == 0)
       {
         throw CreateMandatoryRelationNotSetException (
             this.GetDomainObject(),
@@ -234,7 +231,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // No loading
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
@@ -243,7 +239,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataStrategy;
     }
 
-    // No loading
     public void RegisterOriginalObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -251,7 +246,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.RegisterOriginalObject (domainObject);
     }
 
-    // No loading
     public void UnregisterOriginalObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -259,51 +253,55 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
-    // Causes collection to be loaded
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
+      EnsureDataAvailable ();
+      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _dataKeeper.CollectionData);
     }
 
-    // Causes collection to be loaded // TODO: Collection is only loaded from within the command, this probably should be done earlier
     public override IDataManagementCommand CreateDeleteCommand ()
     {
+      EnsureDataAvailable ();
+      
       return new AdHocCommand
           {
             BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete (),
-            PerformHandler = () => { _dataKeeper.CollectionData.Clear (); Touch (); }, // indirect EnsureDataAvailable (IN THE command!)
+            PerformHandler = () => { _dataKeeper.CollectionData.Clear (); Touch (); },
             EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ()
           };
     }
 
-    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
+      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData);
     }
 
-    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count); // indirect EnsureDataAvailable
+      EnsureDataAvailable ();
+      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
-    // Causes collection to be loaded
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
+      EnsureDataAvailable ();
+
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
+        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _dataKeeper.CollectionData);
       else
-        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData); // indirect EnsureDataAvailable
+        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
     }
 
-    // Causes collection to be loaded
     public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      EnsureDataAvailable ();
+
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
 
       Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
