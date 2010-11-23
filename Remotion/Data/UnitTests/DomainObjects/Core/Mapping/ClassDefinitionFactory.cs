@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classType,
           isAbstract,
           baseClass,
+          null,
           new PersistentMixinFinderMock (classType, persistentMixins));
       SetStorageEntityName (entityName, classDefinition);
       return classDefinition;
@@ -53,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
+        Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
     {
       var classDefinition = new ReflectionBasedClassDefinition (
@@ -61,6 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classType,
           isAbstract,
           baseClass,
+          storageGroupType,
           persistentMixinFinder);
       SetStorageEntityName (entityName, classDefinition);
       return classDefinition;
@@ -81,6 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classType,
           isAbstract,
           baseClass,
+          null,
           persistentMixinFinder);
     }
 
@@ -88,13 +92,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string id, string entityName, string storageProviderID, Type classType, bool isAbstract, params Type[] persistentMixins)
     {
       return CreateReflectionBasedClassDefinition (
-          id, entityName, storageProviderID, classType, isAbstract, null, new PersistentMixinFinderMock (classType, persistentMixins));
+          id, entityName, storageProviderID, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
         string id, string entityName, string storageProviderID, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
     {
-      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, null, persistentMixinFinder);
+      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)

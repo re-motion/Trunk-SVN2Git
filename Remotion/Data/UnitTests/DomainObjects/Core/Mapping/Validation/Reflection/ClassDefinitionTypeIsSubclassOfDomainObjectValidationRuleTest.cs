@@ -43,6 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
+          null,
           new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -58,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           "DefaultStorageProvider",
           typeof (string),
           false,
+          null,
           null,
           new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
 

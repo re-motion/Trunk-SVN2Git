@@ -72,6 +72,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           Type,
           IsAbstract(),
           GetBaseClassDefinition (classDefinitions),
+          GetStorageGroupType(),
           PersistentMixinFinder);
 
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
@@ -94,6 +95,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (attribute != null)
         return attribute.ClassID;
       return Type.Name;
+    }
+
+    private Type GetStorageGroupType ()
+    {
+      var storageGroupAttribute = AttributeUtility.GetCustomAttributes<StorageGroupAttribute> (Type, true).FirstOrDefault ();
+      if (storageGroupAttribute != null)
+        return storageGroupAttribute.GetType();
+      return null;
     }
 
     //TODO: COMMONS-842

@@ -50,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClassDefinition,
+          null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
       _derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
@@ -58,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClassDefinition,
+          null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
     }
 

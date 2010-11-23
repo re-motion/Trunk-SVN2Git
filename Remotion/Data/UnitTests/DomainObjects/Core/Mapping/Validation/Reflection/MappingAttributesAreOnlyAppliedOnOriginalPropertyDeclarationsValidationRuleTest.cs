@@ -112,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           type,
           false,
           null,
+          null,
           new PersistentMixinFinder (type, true));
       
       var validationResult = _validationRule.Validate (classDefinition).ToArray();

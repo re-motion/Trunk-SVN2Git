@@ -64,6 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
+          null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -87,6 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
+          null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -110,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
+          null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
       var validationResult = _validationRule.Validate (classDefinition);

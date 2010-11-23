@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -29,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public TypeNotFoundClassDefinition (
         string id, string storageProviderID, Type classType, PropertyInfo relationProperty)
-        : base (id, storageProviderID, classType, false, null, new PersistentMixinFinder (classType))
+        : base (id, storageProviderID, classType, false, null, null, new PersistentMixinFinder (classType))
     {
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
 

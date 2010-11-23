@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -37,6 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
          "DefaultStorageProvider",
           typeof (ClassDerivedFromSimpleDomainObject),
           false,
+          null,
           null,
           new PersistentMixinFinder (typeof (ClassDerivedFromSimpleDomainObject)));
       _propertyNotFoundEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_classDefinition, "TestProperty");

@@ -39,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (RelationEndPointPropertyClass),
           false,
           null,
+          null,
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
     }
 

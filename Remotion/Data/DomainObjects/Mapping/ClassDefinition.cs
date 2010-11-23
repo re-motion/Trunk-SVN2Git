@@ -47,6 +47,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly string _storageProviderID;
 
     [NonSerialized]
+    private readonly Type _storageGroupType;
+
+    [NonSerialized]
     private readonly PropertyDefinitionCollection _propertyDefinitions;
 
     [NonSerialized]
@@ -70,13 +73,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    protected ClassDefinition (string id, string storageProviderID)
+    protected ClassDefinition (string id, string storageProviderID, Type storageGroupType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       
       _id = id;
       _storageProviderID = storageProviderID;
+      _storageGroupType = storageGroupType;
 
       _propertyDefinitions = new PropertyDefinitionCollection (this);
       _relationDefinitions = new RelationDefinitionCollection();
@@ -387,6 +391,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public string StorageProviderID
     {
       get { return _storageProviderID; }
+    }
+
+    public Type StorageGroupType
+    {
+      get { return _storageGroupType; }
     }
 
     public PropertyDefinitionCollection MyPropertyDefinitions

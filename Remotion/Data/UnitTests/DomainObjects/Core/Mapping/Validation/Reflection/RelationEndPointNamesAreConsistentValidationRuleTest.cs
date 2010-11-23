@@ -40,12 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (RelationEndPointPropertyClass1),
           false,
           null,
+          null,
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass1), new Type[0]));
       _classDefinition2 = new ReflectionBasedClassDefinition (
           "ID",
           "SPID",
           typeof (RelationEndPointPropertyClass2),
           false,
+          null,
           null,
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass2), new Type[0]));
     }

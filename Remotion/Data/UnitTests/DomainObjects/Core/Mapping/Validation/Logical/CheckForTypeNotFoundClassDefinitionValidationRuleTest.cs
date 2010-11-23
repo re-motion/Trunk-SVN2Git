@@ -44,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
+          null,
           new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
       var endPoint = new AnonymousRelationEndPointDefinition (classDefinition);
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);

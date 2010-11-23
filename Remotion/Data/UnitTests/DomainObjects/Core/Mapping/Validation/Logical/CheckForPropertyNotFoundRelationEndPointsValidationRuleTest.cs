@@ -39,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
+          null,
           new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
     }
 

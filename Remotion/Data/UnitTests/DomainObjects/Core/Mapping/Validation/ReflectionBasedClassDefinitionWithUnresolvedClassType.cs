@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {
@@ -29,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageProviderID, classType, isAbstract, baseClass, persistentMixinFinder)
+        : base (id, storageProviderID, classType, isAbstract, baseClass, null, persistentMixinFinder)
     {
     }
 

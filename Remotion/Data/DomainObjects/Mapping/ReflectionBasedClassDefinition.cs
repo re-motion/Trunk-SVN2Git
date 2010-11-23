@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -56,8 +55,9 @@ namespace Remotion.Data.DomainObjects.Mapping
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
+        Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageProviderID)
+        : base (id, storageProviderID, storageGroupType)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);

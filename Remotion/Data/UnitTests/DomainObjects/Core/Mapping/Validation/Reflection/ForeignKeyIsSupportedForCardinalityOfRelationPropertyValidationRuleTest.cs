@@ -42,6 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (ForeignKeyIsSupportedClass),
           false,
           null,
+          null,
           new PersistentMixinFinderMock (typeof (ForeignKeyIsSupportedClass), new Type[0]));
     }
 

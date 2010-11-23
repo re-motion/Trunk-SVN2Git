@@ -42,12 +42,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (BaseRelationEndPointPropertyClass1),
           false,
           null,
+          null,
           new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass1)));
       _baseClassDefinition2 = new ReflectionBasedClassDefinition (
           "BaseRelationEndPointPropertyClass2",
           "DefaultStorageProviderID",
           typeof (BaseRelationEndPointPropertyClass2),
           false,
+          null,
           null,
           new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass2)));
       _derivedClassDefinition1 = new ReflectionBasedClassDefinition (
@@ -56,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (DerivedRelationEndPointPropertyClass1),
           false,
           _baseClassDefinition1,
+          null,
           new PersistentMixinFinder (typeof (DerivedRelationEndPointPropertyClass1)));
       _derivedClassDefinition2 = new ReflectionBasedClassDefinition (
           "DerivedRelationEndPointPropertyClass2",
@@ -63,6 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (DerivedRelationEndPointPropertyClass2),
           false,
           _baseClassDefinition2,
+          null,
           new PersistentMixinFinder (typeof (DerivedRelationEndPointPropertyClass2)));
     }
 

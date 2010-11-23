@@ -64,6 +64,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           typeof (Order),
           false,
           null,
+          null,
           new PersistentMixinFinder (typeof (Order)));
     }
 
@@ -188,7 +189,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       ReflectionBasedClassDefinition abstractClass =
           new ReflectionBasedClassDefinition (
-              "AbstractClass", "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder (typeof (AbstractClass)));
+              "AbstractClass", "FirstStorageProvider", typeof (AbstractClass), false, null, null, new PersistentMixinFinder (typeof (AbstractClass)));
       abstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
@@ -200,6 +201,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               typeof (DerivedAbstractClass),
               false,
               abstractClass,
+              null,
               new PersistentMixinFinder (typeof (DerivedAbstractClass)));
       derivedAbstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
@@ -217,6 +219,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           typeof (DerivedConcreteClass),
           false,
           derivedAbstractClass,
+          null,
           new PersistentMixinFinder (typeof (DerivedConcreteClass)));
       derivedConcreteClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
