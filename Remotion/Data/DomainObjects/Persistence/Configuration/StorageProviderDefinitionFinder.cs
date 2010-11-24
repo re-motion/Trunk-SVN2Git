@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
   /// <summary>
-  /// The <see cref="StorageProviderDefinitionFinder"/> is responsible to find the <see cref="StorageProviderDefinition"/> for a 
+  /// The <see cref="StorageProviderDefinitionFinder"/> is responsible for finding the <see cref="StorageProviderDefinition"/> for a 
   /// <see cref="ClassDefinition"/>.
   /// </summary>
   public class StorageProviderDefinitionFinder
@@ -31,25 +31,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-
       if (classDefinition.StorageGroupType == null)
-      {
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
-        return defaultStorageProviderDefinition;
-      }
+        return GetDefaultStorageProviderDefinition();
 
       string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (classDefinition.StorageGroupType);
       var storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
       if (storageGroup == null)
-      {
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
-        return defaultStorageProviderDefinition;
-      }
+        return GetDefaultStorageProviderDefinition();
 
       return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
+    }
+
+    private StorageProviderDefinition GetDefaultStorageProviderDefinition ()
+    {
+      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      if (defaultStorageProviderDefinition == null)
+        throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
+
+      return defaultStorageProviderDefinition;
     }
   }
 }

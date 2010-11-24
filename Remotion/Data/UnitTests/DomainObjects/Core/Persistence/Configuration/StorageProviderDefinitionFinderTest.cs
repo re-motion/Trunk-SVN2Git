@@ -100,24 +100,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     public void GetStorageProviderDefinition_ClassWithStorageGroupType_StorageGroupDefined ()
     {
-      var spID = "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute, Remotion.Data.UnitTests";
-      var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
-      storageProviderDefinitionCollection.Add (
-          new UnitTestStorageProviderStubDefinition (spID, typeof (UnitTestStorageObjectFactoryStub)));
+      var providerID = "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute, Remotion.Data.UnitTests";
+
+      var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>
+                                                {
+                                                    new UnitTestStorageProviderStubDefinition (providerID, typeof (UnitTestStorageObjectFactoryStub))
+                                                };
+      
       var storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition);
-      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new StubStorageGroup1Attribute(), spID));
+          storageProviderDefinitionCollection, 
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition);
+      
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new StubStorageGroup1Attribute(), providerID));
+
       DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (
-              new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml")));
-      DomainObjectsConfiguration.Current.Storage.StorageGroups.Add (
-          new StorageGroupElement (
-              new StubStorageGroup1Attribute(),
-              "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute, Remotion.Data.UnitTests"));
+          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration ()));
+      DomainObjectsConfiguration.Current.Storage.StorageGroups.Add (new StorageGroupElement (new StubStorageGroup1Attribute(), providerID));
       
       var result = _finder.GetStorageProviderDefinition (_classWithStorageGroupType);
 
-      Assert.That (result.Name, Is.EqualTo (spID));
+      Assert.That (result.Name, Is.EqualTo (providerID));
     }
   }
 }
