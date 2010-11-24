@@ -64,32 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsTrue (mappingReflector.ResolveTypes);
     }
 
-    // TODO 3497: This is actually an integration test for the whole mapping configuration building. Create a test fixture MappingReflectorIntegrationTest and move this test to it.
-    [Test]
-    public void GetClassDefinitions ()
-    {
-      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
-
-      var actualClassDefinitions = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true);
-      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
-      foreach (ClassDefinition classDefinition in actualClassDefinitions)
-        classDefinition.SetReadOnly ();
-      actualClassDefinitions.SetReadOnly ();
-      actualRelationDefinitions.SetReadOnly ();
-      Assert.IsNotNull (actualClassDefinitions);
-
-      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      foreach (ClassDefinition rootClass in actualClassDefinitions)
-        rootClass.SetStorageProviderDefinition (storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass));
-      
-      foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
-        classDefinition.StorageProviderDefinition.Factory.CreatePersistenceModelLoader().ApplyPersistenceModelToHierarchy (classDefinition);
-
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
-      classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
-      Assert.IsFalse (actualClassDefinitions.Contains (typeof (TestDomainBase)));
-    }
-
     [Test]
     public void GetRelationDefinitions ()
     {

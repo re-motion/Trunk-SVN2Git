@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -57,9 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ColumnDefinition _fakeColumnDefinition6;
     private ColumnDefinition _fakeColumnDefinition7;
     private string _storageProviderID;
-
-    // TODO 3497: Add a test showing that the table name is used when DBTable specifies such a name (ClassHavingStorageSpecificIdentifierAttribute)
-    // TODO 3497: Add test showing the non-persistent properties are filtered
 
     [SetUp]
     public void SetUp ()
@@ -296,6 +294,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _derivedClassDefinition2.StorageEntityDefinition,
           "Supplier",
           new[] { _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3, _fakeColumnDefinition4, _fakeColumnDefinition5 });
+    }
+
+    [Test]
+    public void ApplyPersistentModelToHierarchy_NonPersistentPropertiesAreFiltered ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
+      var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
+      classDefinition.MyPropertyDefinitions.Add (nonPersistentProperty);
+      classDefinition.SetReadOnly();
+
+      _columnDefinitionFactoryMock.Replay();
+
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertTableDefinition (classDefinition, _storageProviderID, "Order", new ColumnDefinition[0]);
+    }
+
+    [Test]
+    public void ApplyPersistentModelToHierarchy_TableNameOfTheDBTableAttributeIsUsed ()
+    {
+      var classDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+              typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
+
+      _columnDefinitionFactoryMock.Replay ();
+
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations ();
+      AssertTableDefinition (classDefinition, _storageProviderID, "ClassHavingStorageSpecificIdentifierAttributeTable", new ColumnDefinition[0]);
     }
 
     [Test]
