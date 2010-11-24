@@ -163,7 +163,7 @@ namespace Remotion.Reflection
       if (other == null)
         return false;
 
-      return MemberInfoEqualityComparer.Instance.MemberInfoEquals (_propertyInfo, other._propertyInfo);
+      return MemberInfoEqualityComparer.Instance.Equals (_propertyInfo, other._propertyInfo);
     }
 
     public override int GetHashCode ()

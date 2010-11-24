@@ -110,7 +110,7 @@ namespace Remotion.Reflection
           (from ifc in DeclaringType.GetInterfaces()
            let map = DeclaringType.GetInterfaceMap (ifc)
            from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where MemberInfoEqualityComparer.Instance.MemberInfoEquals(map.TargetMethods[index], _methodInfo)
+           where MemberInfoEqualityComparer.Instance.Equals(map.TargetMethods[index], _methodInfo)
            select map.InterfaceMethods[index]).FirstOrDefault();
       return Maybe.ForValue (resultMethodInfo).Select (mi => new MethodInfoAdapter (mi)).ValueOrDefault();
     }
@@ -138,7 +138,7 @@ namespace Remotion.Reflection
           (from t in DeclaringType.CreateSequence (t => t.BaseType)
            from pi in t.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
            from accessor in new[] { pi.GetGetMethod (true), pi.GetSetMethod (true) }
-           where accessor != null && MemberInfoEqualityComparer.Instance.MemberInfoEquals (_methodInfo, accessor)
+           where accessor != null && MemberInfoEqualityComparer.Instance.Equals (_methodInfo, accessor)
            select pi).FirstOrDefault();
       return propertyInfo != null ? new PropertyInfoAdapter (propertyInfo) : null;
     }
@@ -171,7 +171,7 @@ namespace Remotion.Reflection
       if (other == null)
         return false;
 
-      return MemberInfoEqualityComparer.Instance.MemberInfoEquals (_methodInfo, other._methodInfo);
+      return MemberInfoEqualityComparer.Instance.Equals (_methodInfo, other._methodInfo);
     }
 
     public override int GetHashCode ()

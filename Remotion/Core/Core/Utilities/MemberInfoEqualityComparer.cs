@@ -15,15 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Utilities
 {
-  // TODO Review 3350: Implement IEqualityComparer<MemberInfo>. (This requires the methods to be renamed.)
   /// <summary>
   /// Provides logic to compare two <see cref="MemberInfo"/> for logical equality, without considering the <see cref="MemberInfo.ReflectedType"/>.
   /// </summary>
-  public class MemberInfoEqualityComparer
+  public class MemberInfoEqualityComparer : IEqualityComparer<MemberInfo>
   {
     public static readonly MemberInfoEqualityComparer Instance = new MemberInfoEqualityComparer ();
 
@@ -45,19 +45,15 @@ namespace Remotion.Utilities
     /// The idea for this method, but not the code, was taken from http://blogs.msdn.com/b/kingces/archive/2005/08/17/452774.aspx.
     /// </para>
     /// </returns>
-    public bool MemberInfoEquals (MemberInfo one, MemberInfo two)
+    public bool Equals (MemberInfo one, MemberInfo two)
     {
-      // TODO Review 3350: Remove these null checks, add tests that show that null/null are compared equal, null/member and member/null are compared non-equal. Add support for null comparisons below (*).
-      ArgumentUtility.CheckNotNull ("one", one);
-      ArgumentUtility.CheckNotNull ("two", two);
-
       // Same reference => true of course
       // Methods defined by concrete arrays (int[].Set (...) etc.) will always fall into the block above if they are equal; it doesn't seem to be 
       // possible to get two different MethodInfo references for the same array method
       if (ReferenceEquals (one, two))
         return true;
 
-      // TODO Review 3350: (*) if (ReferenceEquals (one, null) || ReferenceEquals (null, two)) return false;
+      if (ReferenceEquals (one, null) || ReferenceEquals (null, two)) return false;
 
       // Equal members always have the same metadata token
       if (one.MetadataToken != two.MetadataToken)
@@ -100,7 +96,8 @@ namespace Remotion.Utilities
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
     public int GetHashCode (MemberInfo memberInfo)
     {
-      // TODO Review 3350: Add support for null => return 0 (also add test)
+      if (memberInfo == null)
+        return 0;
 
       // DeclaringType can return null, even if ReSharper thinks otherwise.
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
