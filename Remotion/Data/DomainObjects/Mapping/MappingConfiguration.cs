@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         // foreach inheritance root, apply persistence model using rootClass.StorageProviderDefinition.Factory
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
         {
-          var persistenceModelLoader = rootClass.StorageProviderDefinition.Factory.GetPersistenceModelLoader();
+          var persistenceModelLoader = rootClass.StorageProviderDefinition.Factory.CreatePersistenceModelLoader();
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
         }
 

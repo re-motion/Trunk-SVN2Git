@@ -28,11 +28,9 @@ namespace Remotion.Data.DomainObjects.Persistence
   public interface IStorageObjectFactory
   {
     StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener);
-    // TODO Review 3507: Rename the following three methods to "Create..."
-    // TODO Review 3507: Re-add the StorageProviderDefinition.TypeConversionProvider and TypeProvider properties, initialize them in the ctors by calling Factory.Create...
-    // TODO Review 3507: Change all usages of the following two methods to use the StorageProviderDefinition properties again
-    TypeConversionProvider GetTypeConversionProvider ();
-    TypeProvider GetTypeProvider ();
-    IPersistenceModelLoader GetPersistenceModelLoader ();
+    
+    TypeConversionProvider CreateTypeConversionProvider ();
+    TypeProvider CreateTypeProvider ();
+    IPersistenceModelLoader CreatePersistenceModelLoader ();
   }
 }

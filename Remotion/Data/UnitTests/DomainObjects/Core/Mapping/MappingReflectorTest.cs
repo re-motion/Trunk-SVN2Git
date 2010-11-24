@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         rootClass.SetStorageProviderDefinition (storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass));
       
       foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
-        classDefinition.StorageProviderDefinition.Factory.GetPersistenceModelLoader().ApplyPersistenceModelToHierarchy (classDefinition);
+        classDefinition.StorageProviderDefinition.Factory.CreatePersistenceModelLoader().ApplyPersistenceModelToHierarchy (classDefinition);
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);

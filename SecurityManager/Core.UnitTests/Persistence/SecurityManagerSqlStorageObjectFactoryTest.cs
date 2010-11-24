@@ -26,30 +26,30 @@ using Rhino.Mocks;
 namespace Remotion.SecurityManager.UnitTests.Persistence
 {
   [TestFixture]
-  public class SecurityManagerSqlFactoryTest
+  public class SecurityManagerSqlStorageObjectFactoryTest
   {
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
-    private SecurityManagerSqlFactory _securityManagerSqlFactory;
+    private SecurityManagerSqlStorageObjectFactory _securityManagerSqlStorageObjectFactory;
     private IPersistenceListener _persistenceListenerStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SecurityManagerSqlFactory), "ConnectionString");
-      _securityManagerSqlFactory = new SecurityManagerSqlFactory (_rdbmsProviderDefinition);
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SecurityManagerSqlStorageObjectFactory), "ConnectionString");
+      _securityManagerSqlStorageObjectFactory = new SecurityManagerSqlStorageObjectFactory (_rdbmsProviderDefinition);
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
     }
 
     [Test]
     public void StorageProviderType ()
     {
-      Assert.That (_securityManagerSqlFactory.StorageProviderType, Is.SameAs (typeof (SecurityManagerSqlProvider)));
+      Assert.That (_securityManagerSqlStorageObjectFactory.StorageProviderType, Is.SameAs (typeof (SecurityManagerSqlProvider)));
     }
 
     [Test]
     public void CreateStorageProvider ()
     {
-      var result = _securityManagerSqlFactory.CreateStorageProvider (_persistenceListenerStub);
+      var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub);
 
       Assert.That (result, Is.TypeOf (typeof (SecurityManagerSqlProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
           MixinConfiguration.BuildFromActive().ForClass (typeof (SqlProvider)).Clear().AddMixins (typeof (SecurityManagerSqlProviderTestMixin)).
               EnterScope())
       {
-        var result = _securityManagerSqlFactory.CreateStorageProvider (_persistenceListenerStub);
+        var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub);
 
         Assert.That (Mixin.Get<SecurityManagerSqlProviderTestMixin> (result), Is.Not.Null);
       }

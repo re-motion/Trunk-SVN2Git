@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   // TODO Review 3507: Move to Persistence.Rdbms namespace
   [TestFixture]
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetTypeConversionProvider ()
     {
-      var result = _sqlProviderFactory.GetTypeConversionProvider();
+      var result = _sqlProviderFactory.CreateTypeConversionProvider();
 
       Assert.That (result, Is.TypeOf (typeof (TypeConversionProvider)));
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetTypeProvider ()
     {
-      var result = _sqlProviderFactory.GetTypeProvider();
+      var result = _sqlProviderFactory.CreateTypeProvider();
 
       Assert.That (result, Is.TypeOf (typeof (TypeProvider)));
     }
@@ -90,10 +90,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetPersistenceModelLoader ()
     {
-      var result = _sqlProviderFactory.GetPersistenceModelLoader();
+      var result = _sqlProviderFactory.CreatePersistenceModelLoader();
 
       Assert.That (result, Is.TypeOf (typeof (PersistenceModelLoader)));
-      Assert.That(PrivateInvoke.GetNonPublicField (_sqlProviderFactory, "StoragePropertyDefinitionFactory"), Is.TypeOf(typeof(ColumnDefinitionFactory)));
+      Assert.That (PrivateInvoke.GetNonPublicField (_sqlProviderFactory, "_storagePropertyDefinitionFactory"), Is.TypeOf (typeof (ColumnDefinitionFactory)));
     }
   }
 }

@@ -36,6 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     // member fields
 
     private readonly IStorageObjectFactory _factory;
+    private readonly TypeConversionProvider _typeConversionProvider;
+    private readonly TypeProvider _typeProvider;
 
     // construction and disposing
 
@@ -48,6 +50,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
       var factoryType = TypeUtility.GetType (factoryTypeName, true);
       _factory = CreateStorageObjectFactory (factoryType);
+      _typeConversionProvider = _factory.CreateTypeConversionProvider();
+      _typeProvider = _factory.CreateTypeProvider();
     }
 
     protected StorageProviderDefinition (string name, Type factoryType)
@@ -56,6 +60,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNull ("factoryType", factoryType);
 
       _factory = CreateStorageObjectFactory (factoryType);
+      _typeConversionProvider = _factory.CreateTypeConversionProvider ();
+      _typeProvider = _factory.CreateTypeProvider ();
     }
 
     // abstract methods and properties
@@ -73,6 +79,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public IStorageObjectFactory Factory
     {
       get { return _factory; }
+    }
+
+    public TypeConversionProvider TypeConversionProvider
+    {
+      get { return _typeConversionProvider; }
+    }
+
+    public TypeProvider TypeProvider
+    {
+      get { return _typeProvider; }
     }
 
     private IStorageObjectFactory CreateStorageObjectFactory (Type factoryType)

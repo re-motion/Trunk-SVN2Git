@@ -249,7 +249,7 @@
     <Compile Include="Domain\SecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Persistence\RevisionSqlProviderExtensionTest.cs" />
-    <Compile Include="Persistence\SecurityManagerSqlFactoryTest.cs" />
+    <Compile Include="Persistence\SecurityManagerSqlStorageObjectFactoryTest.cs" />
     <Compile Include="Persistence\SecurityManagerSqlProviderTestMixin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityServiceTest.cs" />

@@ -30,24 +30,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class SqlStorageObjectFactory : IStorageObjectFactory
   {
-    // TODO Review 3507: Change back to private fields, add protected getter properties
-    protected readonly RdbmsProviderDefinition StorageProviderDefinition;
-    protected readonly IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory;
+    private readonly RdbmsProviderDefinition _storageProviderDefinition;
+    private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
+    private readonly Type _storageProviderType;
 
-    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
+    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition) : this(storageProviderDefinition, typeof(SqlProvider))
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       
-      StorageProviderDefinition = storageProviderDefinition;
-      StoragePropertyDefinitionFactory = new ColumnDefinitionFactory(new SqlStorageTypeCalculator());
     }
 
-    // TODO Review 3507: Add an additional protected ctor that takes the storageProviderType, have the existing ctor delegate to the new one, passing 
-    // TODO Review 3507: typeof (SqlProvider). Change SecurityManagerStorageObjectFactory to pass in typeof (SecurityManagerSqlProvider). Change 
-    // TODO Review 3507: StorageProviderType to return the field initialized by the ctor, make it non-virtual.
-    public virtual Type StorageProviderType
+    protected SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition, Type storageProviderType)
     {
-      get { return typeof (SqlProvider); }
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      _storageProviderDefinition = storageProviderDefinition;
+      _storagePropertyDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator ());
+      _storageProviderType = storageProviderType;
+    }
+
+    public Type StorageProviderType
+    {
+      get { return _storageProviderType; }
+    }
+
+    protected RdbmsProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
+
+    protected IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory
+    {
+      get { return _storagePropertyDefinitionFactory; }
     }
 
     public virtual StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
@@ -57,17 +70,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return (StorageProvider) ObjectFactory.Create (StorageProviderType, ParamList.Create (StorageProviderDefinition, persistenceListener));
     }
 
-    public virtual TypeConversionProvider GetTypeConversionProvider ()
+    public virtual TypeConversionProvider CreateTypeConversionProvider ()
     {
       return TypeConversionProvider.Create();
     }
 
-    public virtual TypeProvider GetTypeProvider ()
+    public virtual TypeProvider CreateTypeProvider ()
     {
       return new TypeProvider();
     }
 
-    public virtual IPersistenceModelLoader GetPersistenceModelLoader ()
+    public virtual IPersistenceModelLoader CreatePersistenceModelLoader ()
     {
       return new PersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition.Name);
     }

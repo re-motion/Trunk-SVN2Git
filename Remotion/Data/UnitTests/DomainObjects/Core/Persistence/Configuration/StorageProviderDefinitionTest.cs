@@ -40,14 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void GetTypeConversionProvider ()
     {
       var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
-      Assert.That (providerDefinition.Factory.GetTypeConversionProvider(), Is.InstanceOfType (typeof (TypeConversionProvider)));
+      Assert.That (providerDefinition.Factory.CreateTypeConversionProvider(), Is.InstanceOfType (typeof (TypeConversionProvider)));
     }
 
     [Test]
     public void GetTypeProvider ()
     {
       var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
-      Assert.That (providerDefinition.Factory.GetTypeProvider(), Is.InstanceOfType (typeof (TypeProvider)));
+      Assert.That (providerDefinition.Factory.CreateTypeProvider(), Is.InstanceOfType (typeof (TypeProvider)));
     }
 
   }

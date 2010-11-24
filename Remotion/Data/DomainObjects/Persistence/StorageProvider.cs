@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     public TypeConversionProvider TypeConversionProvider
     {
-      get { return _definition.Factory.GetTypeConversionProvider(); }
+      get { return _definition.TypeConversionProvider; }
     }
 
     public IPersistenceListener PersistenceListener

@@ -89,20 +89,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 #pragma warning restore 168
     }
 
-    //TODO Review 3507: uncomment the tests and go back to Definition.TypeConversionProvider
+    [Test]
+    public void GetTypeConversionServices ()
+    {
+      Assert.AreSame (ProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);
+    }
 
-    //[Test]
-    //public void GetTypeConversionServices()
-    //{
-    //  Assert.AreSame (ProviderDefinition.Factory.GetTypeConversionProvider(), Provider.TypeConversionProvider);
-    //}
-
-    //[Test]
-    //public void CreateValueConverter ()
-    //{
-    //  ValueConverter valueConverter = Provider.CreateValueConverter();
-    //  Assert.IsNotNull (valueConverter);
-    //  Assert.AreSame (ProviderDefinition.Factory.GetTypeConversionProvider(), valueConverter.TypeConversionProvider);
-    //}
+    [Test]
+    public void CreateValueConverter ()
+    {
+      ValueConverter valueConverter = Provider.CreateValueConverter ();
+      Assert.IsNotNull (valueConverter);
+      Assert.AreSame (ProviderDefinition.TypeConversionProvider, valueConverter.TypeConversionProvider);
+    }
   }
 }

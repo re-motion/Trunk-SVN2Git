@@ -39,17 +39,17 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
       throw new NotImplementedException();
     }
 
-    public TypeConversionProvider GetTypeConversionProvider ()
+    public TypeConversionProvider CreateTypeConversionProvider ()
     {
-      throw new NotImplementedException();
+      return TypeConversionProvider.Create();
     }
 
-    public TypeProvider GetTypeProvider ()
+    public TypeProvider CreateTypeProvider ()
     {
-      throw new NotImplementedException();
+      return new TypeProvider();
     }
 
-    public IPersistenceModelLoader GetPersistenceModelLoader ()
+    public IPersistenceModelLoader CreatePersistenceModelLoader ()
     {
      throw new NotImplementedException();
     }

@@ -42,17 +42,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new StubStorageProvider (_storageProviderDefinition, persistenceListener);
     }
 
-    public TypeConversionProvider GetTypeConversionProvider ()
+    public TypeConversionProvider CreateTypeConversionProvider ()
     {
-      throw new NotImplementedException();
+      return TypeConversionProvider.Create();
     }
 
-    public TypeProvider GetTypeProvider ()
+    public TypeProvider CreateTypeProvider ()
     {
-      throw new NotImplementedException();
+      return new TypeProvider();
     }
 
-    public IPersistenceModelLoader GetPersistenceModelLoader ()
+    public IPersistenceModelLoader CreatePersistenceModelLoader ()
     {
       return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition.Name);
     }

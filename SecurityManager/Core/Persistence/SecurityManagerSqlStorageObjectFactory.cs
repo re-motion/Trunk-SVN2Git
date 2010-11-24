@@ -19,20 +19,10 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
 namespace Remotion.SecurityManager.Persistence
 {
-  // TODO Review 3507: Rename to SecurityManagerSqlStorageObjectFactory (test too)
-  public class SecurityManagerSqlFactory : SqlStorageObjectFactory
+  public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    public SecurityManagerSqlFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base (rdbmsProviderDefinition)
+    public SecurityManagerSqlStorageObjectFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base (rdbmsProviderDefinition, typeof(SecurityManagerSqlProvider))
     {
     }
-
-    public override Type StorageProviderType
-    {
-      get
-      {
-        return typeof (SecurityManagerSqlProvider);
-      }
-    }
- 
   }
 }
