@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
         return GetDefaultStorageProviderDefinition();
 
       string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (classDefinition.StorageGroupType);
+      // TODO Review 3508: Inject StorageConfiguration via ctor, adapt unit tests to pass in empty/non-empty StorageConfigurations
       var storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
       if (storageGroup == null)
         return GetDefaultStorageProviderDefinition();

@@ -94,6 +94,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         SetMappingReadOnly (); //TODO 3518: move down
 
+        // TODO Review 3508: Inject StorageProviderDefinitionFinder (via interface)
         var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
         {
