@@ -36,13 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule();
-      _classDefinition = new ReflectionBasedClassDefinition (
-          "ID",
-          typeof (ForeignKeyIsSupportedClass),
-          false,
-          null,
-          null,
-          new PersistentMixinFinderMock (typeof (ForeignKeyIsSupportedClass), new Type[0]));
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ForeignKeyIsSupportedClass));
     }
 
     [Test]

@@ -78,21 +78,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddConstraintWithTwoConstraints ()
     {
-      ReflectionBasedClassDefinition firstClass = new ReflectionBasedClassDefinition (
-          "FirstClass", typeof (Company), false, null, null, new PersistentMixinFinder(typeof (Company)));
-
+      var firstClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       firstClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
       firstClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
-      ReflectionBasedClassDefinition secondClass = new ReflectionBasedClassDefinition (
-          "SecondClass", typeof (Address), false, null, null, new PersistentMixinFinder (typeof (Address)));
-
-      ReflectionBasedClassDefinition thirdClass = new ReflectionBasedClassDefinition (
-          "ThirdClass", typeof (Employee), false, null, null, new PersistentMixinFinder(typeof (Employee)));
-
+      var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address));
+      var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee));
+      
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "FirstClassToSecondClass",
           new RelationEndPointDefinition (firstClass, "SecondClass", false),
@@ -155,18 +149,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddConstraintWithRelationInDerivedClass ()
     {
-      ReflectionBasedClassDefinition baseClass = new ReflectionBasedClassDefinition (
-          "BaseClass", typeof (Company), false, null, null, new PersistentMixinFinder(typeof (Company)));
-
-      ReflectionBasedClassDefinition derivedClass = new ReflectionBasedClassDefinition (
-          "DerivedClass", typeof (Customer), false, baseClass, null, new PersistentMixinFinder(typeof (Customer)));
-
+      var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
+      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), baseClass);
       derivedClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
-      ReflectionBasedClassDefinition otherClass = new ReflectionBasedClassDefinition (
-          "OtherClass", typeof (DevelopmentPartner), false, null, null, new PersistentMixinFinder(typeof (DevelopmentPartner)));
-
+      ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner));
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "OtherClassToDerivedClass",
           new RelationEndPointDefinition (derivedClass, "OtherClass", false),

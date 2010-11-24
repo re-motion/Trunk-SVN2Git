@@ -38,13 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void RelationDefinitionWithNoTypeNotFoundClassDefinition ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "Test",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
       var endPoint = new AnonymousRelationEndPointDefinition (classDefinition);
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);
 

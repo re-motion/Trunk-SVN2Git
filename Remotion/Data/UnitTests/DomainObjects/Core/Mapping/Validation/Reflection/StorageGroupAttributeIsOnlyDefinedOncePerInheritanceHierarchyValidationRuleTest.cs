@@ -38,8 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NotInheritanceRoot ()
     {
       var type = typeof (DerivedClassWithoutStorageGroupAttribute);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -50,9 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithoutStorageGroupAttribute ()
     {
       var type = typeof (BaseClassWithoutStorageGroupAttribute);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -62,9 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithStorageGroupAttribute_And_WithoutStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (BaseClassWithStorageGroupAttribute);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -74,8 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InheritanceRoot_WithStorageGroupAttribute_And_WithStorageGroupAttributeOnBaseClass ()
     {
       var type = typeof (DerivedClassWithStorageGroupAttribute);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type);
 
       var validationResult = _validationRule.Validate (classDefinition);
 

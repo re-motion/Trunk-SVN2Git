@@ -58,13 +58,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       base.SetUp();
 
       _tableBuilder = new TableBuilder();
-      _classDefintion = new ReflectionBasedClassDefinition (
-          "ClassID",
-          typeof (Order),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (Order)));
+      _classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
     }
 
     [Test]
@@ -186,21 +180,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
-      ReflectionBasedClassDefinition abstractClass =
-          new ReflectionBasedClassDefinition (
-              "AbstractClass", typeof (AbstractClass), false, null, null, new PersistentMixinFinder (typeof (AbstractClass)));
+      var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
       abstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
 
-      ReflectionBasedClassDefinition derivedAbstractClass =
-          new ReflectionBasedClassDefinition (
-              "DerivedAbstractClass",
-              typeof (DerivedAbstractClass),
-              false,
-              abstractClass,
-              null,
-              new PersistentMixinFinder (typeof (DerivedAbstractClass)));
+      var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), abstractClass);
       derivedAbstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               derivedAbstractClass,
@@ -211,13 +196,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               101,
               StorageClass.Persistent));
 
-      ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
-          "DerivedConcreteClass",
-          typeof (DerivedConcreteClass),
-          false,
-          derivedAbstractClass,
-          null,
-          new PersistentMixinFinder (typeof (DerivedConcreteClass)));
+      var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (DerivedConcreteClass), derivedAbstractClass);
       derivedConcreteClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               derivedConcreteClass,

@@ -33,13 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointPropertyTypeIsSupportedValidationRule();
-      _classDefinition = new ReflectionBasedClassDefinition (
-          "ID",
-          typeof (RelationEndPointPropertyClass),
-          false,
-          null,
-          null,
-          new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass), new Type[0]));
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
     }
 
     [Test]

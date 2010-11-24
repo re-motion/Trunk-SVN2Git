@@ -37,10 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NonAbstractType_WithoutLegacyConstructor ()
     {
-      var type = typeof (NonAbstractClassWithoutLegacyConstructor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (NonAbstractClassWithoutLegacyConstructor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -49,10 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NonAbstractType_WithLegacyConstructor()
     {
-      var type = typeof (NonAbstractClassWithLegacyConstructor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (NonAbstractClassWithLegacyConstructor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = 
@@ -66,10 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithoutInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
-      var type = typeof (AbstractClassWithoutAttributeAndLegacyCtor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClassWithoutAttributeAndLegacyCtor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -78,10 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithoutInstantiableAttribute_And_WithLegacyConstructor ()
     {
-      var type = typeof (AbstractClassWithoutAttributeAndWithLegacyCtor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClassWithoutAttributeAndWithLegacyCtor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -90,10 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithInstantiableAttribute_And_WithoutLegacyConstructor ()
     {
-      var type = typeof (AbstractClassWithAttributeAndWithoutLegacyCtor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClassWithAttributeAndWithoutLegacyCtor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -102,10 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void AbstractType_WithInstantiableAttribute_And_WithLegacyConstructor ()
     {
-      var type = typeof (AbstractClassWithAttributeAndWithLegacyCtor);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClassWithAttributeAndWithLegacyCtor));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =

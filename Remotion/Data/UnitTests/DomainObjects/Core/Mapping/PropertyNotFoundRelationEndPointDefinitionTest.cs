@@ -31,13 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      _classDefinition = new ReflectionBasedClassDefinition (
-          "ClassDerivedFromSimpleDomainObject",
-         typeof (ClassDerivedFromSimpleDomainObject),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (ClassDerivedFromSimpleDomainObject)));
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassDerivedFromSimpleDomainObject));
       _propertyNotFoundEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_classDefinition, "TestProperty");
     }
 

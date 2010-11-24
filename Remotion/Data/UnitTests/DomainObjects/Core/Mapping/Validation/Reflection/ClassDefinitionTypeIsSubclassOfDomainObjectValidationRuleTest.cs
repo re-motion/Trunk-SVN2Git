@@ -37,14 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ClassDefinitionTypeIsSubClassOfDomainObject ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "Test",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -53,17 +47,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ClassDefinitionTypeIsNoSubClassOfDomainObject ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "Test",
-          typeof (string),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (string));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
-      var expectedMessage = "Type 'String' of class 'Test' is not derived from 'DomainObject'.\r\n\r\nDeclaring type: System.String";
+      var expectedMessage = "Type 'String' of class 'String' is not derived from 'DomainObject'.\r\n\r\nDeclaring type: System.String";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
   }

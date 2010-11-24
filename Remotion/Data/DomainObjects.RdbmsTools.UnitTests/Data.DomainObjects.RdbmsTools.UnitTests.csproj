@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RdbmsToolsRunnerTest.cs" />
+    <Compile Include="SchemaGeneration\ClassDefinitionFactory.cs" />
     <Compile Include="SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\TableBuilderTest.cs" />

@@ -39,10 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoGenericType ()
     {
-      var type = typeof (NonGenericTypeDomainObject);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (NonGenericTypeDomainObject));
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -52,13 +50,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void IsGenericType_IsDomainObjectBase ()
     {
       var typeStub = MockRepository.GenerateStub<Type> ();
+      typeStub.Stub (stub => stub.Name).Return ("Test");
       typeStub.Stub (stub => stub.IsGenericType).Return (true);
       typeStub.Stub (stub => stub.Assembly).Return (typeof (DomainObject).Assembly);
       typeStub.Stub (stub => stub.IsSubclassOf (typeof (DomainObject))).Return (true);
 
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", typeStub, false, null, null, new PersistentMixinFinderMock (typeStub, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeStub);
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -68,9 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void IsGenericType_IsNotDomainObjectBase ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = new ReflectionBasedClassDefinition (
-          "ID", type, false, null, null, new PersistentMixinFinderMock (type, new Type[0]));
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+     
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage = "Generic domain objects are not supported.\r\n\r\n"

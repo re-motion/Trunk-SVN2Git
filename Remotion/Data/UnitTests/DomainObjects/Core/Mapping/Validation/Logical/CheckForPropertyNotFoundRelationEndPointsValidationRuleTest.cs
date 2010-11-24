@@ -33,13 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void SetUp ()
     {
       _validationRule = new CheckForPropertyNotFoundRelationEndPointsValidationRule();
-      _classDefinition = new ReflectionBasedClassDefinition (
-          "DerivedValidationDomainObjectClass",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (DerivedValidationDomainObjectClass)));
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
     }
 
     [Test]

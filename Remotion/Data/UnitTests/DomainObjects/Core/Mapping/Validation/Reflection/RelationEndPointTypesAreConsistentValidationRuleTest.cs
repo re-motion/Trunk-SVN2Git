@@ -36,34 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointTypesAreConsistentValidationRule();
-      _baseClassDefinition1 = new ReflectionBasedClassDefinition (
-          "BaseRelationEndPointPropertyClass1",
-          typeof (BaseRelationEndPointPropertyClass1),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass1)));
-      _baseClassDefinition2 = new ReflectionBasedClassDefinition (
-          "BaseRelationEndPointPropertyClass2",
-          typeof (BaseRelationEndPointPropertyClass2),
-          false,
-          null,
-          null,
-          new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass2)));
-      _derivedClassDefinition1 = new ReflectionBasedClassDefinition (
-          "DerivedRelationEndPointPropertyClass1",
-          typeof (DerivedRelationEndPointPropertyClass1),
-          false,
-          _baseClassDefinition1,
-          null,
-          new PersistentMixinFinder (typeof (DerivedRelationEndPointPropertyClass1)));
-      _derivedClassDefinition2 = new ReflectionBasedClassDefinition (
-          "DerivedRelationEndPointPropertyClass2",
-          typeof (DerivedRelationEndPointPropertyClass2),
-          false,
-          _baseClassDefinition2,
-          null,
-          new PersistentMixinFinder (typeof (DerivedRelationEndPointPropertyClass2)));
+      _baseClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass1));
+      _baseClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass2));
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(
+        typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
     }
 
     [Test]
