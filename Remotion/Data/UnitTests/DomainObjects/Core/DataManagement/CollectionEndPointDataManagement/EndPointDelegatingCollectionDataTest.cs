@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private Order _owningOrder;
 
     private ICollectionEndPoint _collectionEndPointMock;
-    private ICollectionEndPointDataKeeper _endPointDataKeeperStub;
+    private ICollectionEndPointDataKeeper _dataKeeperStub;
     private IDomainObjectCollectionData _dataStoreStub;
     private IDataManagementCommand _nestedCommandMock;
     private ExpandedCommand _expandedCommandFake;
@@ -64,9 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
-      _endPointDataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
-      _endPointDataKeeperStub.Stub (stub => stub.CollectionData).Return (_dataStoreStub);
-      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataKeeperStub);
+      _dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
+      _dataKeeperStub.Stub (stub => stub.CollectionData).Return (_dataStoreStub);
+      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _dataKeeperStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -87,6 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1);
 
       Assert.That (_data.Count, Is.EqualTo (1));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -119,11 +120,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void IsDataAvailable ()
     {
-      _endPointDataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (true);
+      _dataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (true);
       Assert.That (_data.IsDataAvailable, Is.True);
 
-      _endPointDataKeeperStub.BackToRecord();
-      _endPointDataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      _dataKeeperStub.BackToRecord();
+      _dataKeeperStub.Stub (stub => stub.IsDataAvailable).Return (false);
       _dataStoreStub.Replay ();
 
       Assert.That (_data.IsDataAvailable, Is.False);
@@ -134,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _data.EnsureDataAvailable();
 
-      _endPointDataKeeperStub.AssertWasCalled (mock => mock.EnsureDataAvailable());
+      _dataKeeperStub.AssertWasCalled (mock => mock.EnsureDataAvailable());
     }
 
     [Test]
@@ -144,6 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataStoreStub.Stub (mock => mock.GetDataStore()).Return (dataStoreStub);
 
       Assert.That (_data.GetDataStore(), Is.SameAs (dataStoreStub));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -153,6 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_data.ContainsObjectID (DomainObjectIDs.OrderItem1), Is.True);
       Assert.That (_data.ContainsObjectID (DomainObjectIDs.OrderItem2), Is.False);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -161,6 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_data.GetObject (1), Is.SameAs (_orderItem2));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -169,6 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_data.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem1));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -177,6 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_data.IndexOf (DomainObjectIDs.OrderItem2), Is.EqualTo (1));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -186,6 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       IEnumerable<DomainObject> dataAsEnumerable = _data;
       Assert.That (dataAsEnumerable.ToArray(), Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3 }));
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -465,7 +472,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var data = new EndPointDelegatingCollectionData (endPointStub, _endPointDataKeeperStub);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _dataKeeperStub);
 
       using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
       {

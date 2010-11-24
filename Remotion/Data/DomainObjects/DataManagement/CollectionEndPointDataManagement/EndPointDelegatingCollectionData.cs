@@ -48,7 +48,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public int Count
     {
-      get { return _endPointDataKeeper.CollectionData.Count; }
+      get 
+      {
+        EnsureDataAvailable ();
+        return _endPointDataKeeper.CollectionData.Count; 
+      }
     }
 
     public Type RequiredItemType
@@ -78,6 +82,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData GetDataStore ()
     {
+      EnsureDataAvailable ();
+
       // This will usually return the ChangeCachingDomainObjectCollectionData
       return _endPointDataKeeper.CollectionData.GetDataStore();
     }
@@ -85,28 +91,33 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+      EnsureDataAvailable ();
       return _endPointDataKeeper.CollectionData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
+      EnsureDataAvailable ();
       return _endPointDataKeeper.CollectionData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+      EnsureDataAvailable ();
       return _endPointDataKeeper.CollectionData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+      EnsureDataAvailable ();
       return _endPointDataKeeper.CollectionData.IndexOf (objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
+      EnsureDataAvailable ();
       return _endPointDataKeeper.CollectionData.GetEnumerator ();
     }
 
