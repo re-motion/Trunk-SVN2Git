@@ -80,11 +80,8 @@ public class StorageProviderManager : IDisposable
       if (_storageProviders.Contains (storageProviderID))
         return _storageProviders[storageProviderID];
 
-      StorageProviderDefinition providerDefinition = 
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-
-      Type concreteStorageProviderType = providerDefinition.Factory.CreateStorageProvider (_persistenceListener).GetType();
-      var provider = (StorageProvider) ReflectionUtility.CreateObject (concreteStorageProviderType, providerDefinition, _persistenceListener);
+      var providerDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
+      var provider = providerDefinition.Factory.CreateStorageProvider (_persistenceListener);
 
       _storageProviders.Add (provider);
 
