@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
       storageProviderDefinitionCollection.Add (
           new UnitTestStorageProviderStubDefinition (
-              DatabaseTest.c_unitTestStorageProviderStubID, typeof (UnitTestStorageProviderStub), typeof (UnitTestStorageObjectFactoryStub)));
+              DatabaseTest.c_unitTestStorageProviderStubID, typeof (UnitTestStorageObjectFactoryStub)));
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (

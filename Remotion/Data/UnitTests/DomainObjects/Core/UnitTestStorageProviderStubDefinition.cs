@@ -23,38 +23,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class UnitTestStorageProviderStubDefinition : StorageProviderDefinition
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public UnitTestStorageProviderStubDefinition (
-        string storageProviderID,
-        Type storageProviderType,
-        Type storageFactoryType)
+    public UnitTestStorageProviderStubDefinition (string storageProviderID, Type storageFactoryType)
         : base (storageProviderID, storageFactoryType)
     {
     }
-
-    public UnitTestStorageProviderStubDefinition (
-        string storageProviderID,
-        Type storageProviderType,
-        Type storageFactoryType,
-        XmlNode configurationNode)
-        : base (storageProviderID, storageFactoryType)
-    {
-    }
-
-    // methods and properties
 
     public override bool IsIdentityTypeSupported (Type identityType)
     {
       ArgumentUtility.CheckNotNull ("identityType", identityType);
 
-      // Note: UnitTestStorageProviderStubDefinition supports all identity types for testing purposes.
+      // UnitTestStorageProviderStubDefinition supports all identity types for testing purposes.
       return true;
     }
   }
