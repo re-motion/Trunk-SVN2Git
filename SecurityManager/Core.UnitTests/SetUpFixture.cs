@@ -1,19 +1,18 @@
-// This file is part of re-strict (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License version 3.0 
-// as published by the Free Software Foundation.
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
 // 
-// This program is distributed in the hope that it will be useful, 
+// re-motion is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 // 
-// You should have received a copy of the GNU Affero General Public License
-// along with this program; if not, see http://www.gnu.org/licenses.
-// 
-// Additional permissions are listed in the file re-motion_exceptions.txt.
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
 using System.ComponentModel.Design;
@@ -46,13 +45,13 @@ namespace Remotion.SecurityManager.UnitTests
     private const string c_masterConnectionString = "Integrated Security=SSPI;Initial Catalog=master;Data Source=localhost";
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
       try
       {
         ServiceLocator.SetLocatorProvider (() => null);
 
-        ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
+        ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
         providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlStorageObjectFactory), c_testDomainConnectionString));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
         storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
@@ -68,7 +67,9 @@ namespace Remotion.SecurityManager.UnitTests
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
+        MappingConfiguration.SetCurrent (
+            new MappingConfiguration (
+                new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
         SqlConnection.ClearAllPools();
 
@@ -86,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests
     }
 
     [TearDown]
-    public void TearDown()
+    public void TearDown ()
     {
       SqlConnection.ClearAllPools();
     }

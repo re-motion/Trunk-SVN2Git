@@ -16,8 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -30,15 +32,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void TableInheritanceMapping ()
     {
-      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly)));
+      MappingConfiguration mappingConfiguration =
+          new MappingConfiguration (
+              new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly)),
+              new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       ClassDefinition domainBaseClass = mappingConfiguration.ClassDefinitions.GetMandatory (typeof (DomainBase));
-      Assert.IsNull (StorageModelTestHelper.GetEntityName(domainBaseClass));
+      Assert.IsNull (StorageModelTestHelper.GetEntityName (domainBaseClass));
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Neither class 'TI_Person' nor its base classes specify an entity name. Make "
-      + "class 'Person' abstract or apply a DBTable attribute to it or one of its base classes.")]
-    [Ignore( "TODO: Implement")]
+                                                                     +
+                                                                     "class 'Person' abstract or apply a DBTable attribute to it or one of its base classes."
+        )]
+    [Ignore ("TODO: Implement")]
     public void ConstructorValidates ()
     {
       //MappingConfiguration.CreateConfigurationFromFileBasedLoader("TableInheritanceMappingWithNonAbstractClassWithoutEntity.xml");

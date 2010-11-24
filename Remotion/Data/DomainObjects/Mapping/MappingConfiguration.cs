@@ -37,7 +37,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private static readonly DoubleCheckedLockingContainer<MappingConfiguration> s_mappingConfiguration =
         new DoubleCheckedLockingContainer<MappingConfiguration> (
-            () => new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader()));
+            () =>
+            new MappingConfiguration (
+                DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
+                new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
     public static MappingConfiguration Current
     {
@@ -74,9 +77,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    public MappingConfiguration (IMappingLoader loader)
+    public MappingConfiguration (IMappingLoader loader, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("loader", loader);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       s_log.Info ("Building mapping configuration...");
 
@@ -91,10 +95,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        SetMappingReadOnly (); //TODO 3518: move down
-
-        // TODO Review 3508: Inject StorageProviderDefinitionFinder (via interface)
-        var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
+        SetMappingReadOnly(); //TODO 3518: move down
 
         // Set storage provider definition of all class definitions
         foreach (ClassDefinition rootClass in _classDefinitions)
@@ -102,9 +103,9 @@ namespace Remotion.Data.DomainObjects.Mapping
           var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
           rootClass.SetStorageProviderDefinition (storageProviderDefinition);
         }
-        
+
         // foreach inheritance root, apply persistence model using rootClass.StorageProviderDefinition.Factory
-        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
+        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
           var persistenceModelLoader = rootClass.StorageProviderDefinition.Factory.CreatePersistenceModelLoader();
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
@@ -232,7 +233,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     private MappingException CreateMappingException (IEnumerable<MappingValidationResult> mappingValidationResults)
     {
       var messages = new StringBuilder();
-      foreach (var validationResult in mappingValidationResults){
+      foreach (var validationResult in mappingValidationResults)
+      {
         if (messages.Length > 0)
           messages.AppendLine (new string ('-', 10));
         messages.AppendLine (validationResult.Message);

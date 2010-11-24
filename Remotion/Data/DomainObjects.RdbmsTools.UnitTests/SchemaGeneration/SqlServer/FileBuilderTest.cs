@@ -18,8 +18,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
@@ -81,7 +83,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void GetDatabaseName ()
     {
-      Assert.AreEqual ("RdbmsToolsUnitTests1", _fileBuilder.GetDatabaseName ());
+      Assert.AreEqual ("RdbmsToolsUnitTests1", _fileBuilder.GetDatabaseName());
     }
 
     [Test]
@@ -117,11 +119,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
       SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
-      SetupResult.For (mappingLoaderStub.GetClassDefinitions ()).Return (new ClassDefinition[0]);
+      SetupResult.For (mappingLoaderStub.GetClassDefinitions()).Return (new ClassDefinition[0]);
       SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
       mockRepository.ReplayAll();
 
-      FileBuilderBase.Build (typeof (FileBuilder), new MappingConfiguration (mappingLoaderStub), StorageConfiguration, "TestDirectory");
+      FileBuilderBase.Build (
+          typeof (FileBuilder),
+          new MappingConfiguration (mappingLoaderStub, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)),
+          StorageConfiguration,
+          "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
       Assert.AreEqual (_firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));

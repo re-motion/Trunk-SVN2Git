@@ -18,8 +18,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -58,7 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      MappingConfiguration configuration = new MappingConfiguration (_mockMappingLoader);
+      MappingConfiguration configuration = new MappingConfiguration (
+          _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       ClassDefinitionCollection actualClassDefinitionCollection = configuration.ClassDefinitions;
       RelationDefinitionCollection actualRelationDefinitionCollection = configuration.RelationDefinitions;
 
@@ -85,7 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
         _mockRepository.ReplayAll();
 
-        MappingConfiguration configuration = new MappingConfiguration (_mockMappingLoader);
+        MappingConfiguration configuration = new MappingConfiguration (
+            _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
         MappingConfiguration.SetCurrent (configuration);
 
         Assert.AreSame (configuration, MappingConfiguration.Current);
@@ -110,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
     }
 
     [Test]
@@ -131,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
     }
 
     [Test]
@@ -162,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
     }
 
     [Test]
@@ -185,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
     }
 
     [Test]
@@ -196,17 +200,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (classDefinition.StorageProviderDefinition, Is.Null);
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver ());
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
 
       Assert.That (classDefinition.StorageProviderDefinition, Is.Not.Null);
-      Assert.That (classDefinition.StorageProviderDefinition.Name, Is.EqualTo("DefaultStorageProvider"));
+      Assert.That (classDefinition.StorageProviderDefinition.Name, Is.EqualTo ("DefaultStorageProvider"));
     }
 
     [Test]
@@ -214,9 +218,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition, typeof(Order), "OrderNumber", typeof(int), null, null, StorageClass.Persistent, typeof (Order).GetProperty ("OrderNumber"), null);
+          classDefinition,
+          typeof (Order),
+          "OrderNumber",
+          typeof (int),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (Order).GetProperty ("OrderNumber"),
+          null);
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition, typeof(Order), "DeliveryDate", typeof(DateTime), null, null, StorageClass.Persistent, typeof (Order).GetProperty ("DeliveryDate"), null);
+          classDefinition,
+          typeof (Order),
+          "DeliveryDate",
+          typeof (DateTime),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (Order).GetProperty ("DeliveryDate"),
+          null);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
 
@@ -231,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader);
+      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
@@ -239,9 +259,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (2));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo("OrderNo"));
+      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
+      Assert.That (
+          ((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
     }
 
     [Test]
@@ -256,7 +277,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      MappingConfiguration configuration = new MappingConfiguration (_mockMappingLoader);
+      MappingConfiguration configuration = new MappingConfiguration (
+          _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
 
       _mockRepository.VerifyAll();
 

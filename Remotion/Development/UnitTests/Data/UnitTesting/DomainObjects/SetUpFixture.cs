@@ -42,7 +42,7 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
       try
       {
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("Development.Data.DomainObjects", typeof(SqlStorageObjectFactory), "ConnectionString"));
+        providers.Add (new RdbmsProviderDefinition ("Development.Data.DomainObjects", typeof (SqlStorageObjectFactory), "ConnectionString"));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["Development.Data.DomainObjects"]);
 
         DomainObjectsConfiguration.SetCurrent (
@@ -56,7 +56,9 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
-        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
+        MappingConfiguration.SetCurrent (
+            new MappingConfiguration (
+                new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       }
       catch (Exception e)
       {

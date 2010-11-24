@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Reflection;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
@@ -32,7 +33,6 @@ using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
@@ -58,19 +58,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     protected BaseConfiguration ()
     {
-      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create ();
-      _storageConfiguration = new StorageConfiguration (storageProviderDefinitionCollection, storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute (), DatabaseTest.c_testDomainProviderID));
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new StorageProviderStubAttribute (), DatabaseTest.c_unitTestStorageProviderStubID));
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TableInheritanceTestDomainAttribute (), TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
+      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
+      _storageConfiguration = new StorageConfiguration (
+          storageProviderDefinitionCollection, storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
+      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute(), DatabaseTest.c_testDomainProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (new StorageProviderStubAttribute(), DatabaseTest.c_unitTestStorageProviderStubID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (new TableInheritanceTestDomainAttribute(), TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
 
-      _mappingLoaderConfiguration = new MappingLoaderConfiguration ();
+      _mappingLoaderConfiguration = new MappingLoaderConfiguration();
       _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
-       
+      DomainObjectsConfiguration.SetCurrent (
+          new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
+
       var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
-      
-      _mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
+
+      _mappingConfiguration = new MappingConfiguration (
+          new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
     }
 
@@ -84,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       return _storageConfiguration;
     }
 
-    public FakeDomainObjectsConfiguration GetDomainObjectsConfiguration()
+    public FakeDomainObjectsConfiguration GetDomainObjectsConfiguration ()
     {
       return new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }

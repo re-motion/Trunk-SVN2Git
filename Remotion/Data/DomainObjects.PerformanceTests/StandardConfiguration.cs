@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.ComponentModel.Design;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -37,18 +37,20 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public static void Initialize ()
     {
-      ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
+      ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
       providers.Add (new RdbmsProviderDefinition ("PerformanceTestDomain", typeof (SqlStorageObjectFactory), ConnectionString));
       StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["PerformanceTestDomain"]);
 
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration, new QueryConfiguration()));
+      DomainObjectsConfiguration.SetCurrent (
+          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration()));
 
 
       var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (StandardConfiguration).Assembly, true));
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
-      MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
+      MappingConfiguration mappingConfiguration = new MappingConfiguration (
+          new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }
   }

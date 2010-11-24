@@ -88,7 +88,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
           new FakeDomainObjectsConfiguration (
               DomainObjectsConfiguration.Current.MappingLoader, GetPersistenceConfiguration(), new QueryConfiguration()));
 
-      MappingConfiguration.SetCurrent (new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader()));
+      MappingConfiguration.SetCurrent (
+          new MappingConfiguration (
+              DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
+              new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     protected StorageConfiguration GetPersistenceConfiguration ()

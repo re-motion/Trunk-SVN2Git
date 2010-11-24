@@ -18,8 +18,10 @@ using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
@@ -32,7 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     public void ValidateMapping (string testDomainNamespaceSuffix)
     {
       var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration." + testDomainNamespaceSuffix;
-      var temp = new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType().Assembly)));
+      var temp = new MappingConfiguration (
+          new MappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType().Assembly)),
+          new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
     }
 
     private ITypeDiscoveryService GetTypeDiscoveryService (string testDomainNamespace, params Assembly[] rootAssemblies)

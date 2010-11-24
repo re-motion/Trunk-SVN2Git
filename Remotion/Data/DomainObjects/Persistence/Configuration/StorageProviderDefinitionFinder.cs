@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -25,8 +24,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
   /// The <see cref="StorageProviderDefinitionFinder"/> is responsible for finding the <see cref="StorageProviderDefinition"/> for a 
   /// <see cref="ClassDefinition"/>.
   /// </summary>
-  public class StorageProviderDefinitionFinder
+  public class StorageProviderDefinitionFinder : IStorageProviderDefinitionFinder
   {
+    private readonly StorageConfiguration _storageConfiguration;
+
+    public StorageProviderDefinitionFinder (StorageConfiguration storageConfiguration)
+    {
+      ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
+
+      _storageConfiguration = storageConfiguration;
+    }
+
     public StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -35,19 +43,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
         return GetDefaultStorageProviderDefinition();
 
       string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (classDefinition.StorageGroupType);
-      // TODO Review 3508: Inject StorageConfiguration via ctor, adapt unit tests to pass in empty/non-empty StorageConfigurations
-      var storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
+      var storageGroup = _storageConfiguration.StorageGroups[storageGroupName];
       if (storageGroup == null)
         return GetDefaultStorageProviderDefinition();
 
-      return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
+      return _storageConfiguration.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
     }
 
     private StorageProviderDefinition GetDefaultStorageProviderDefinition ()
     {
-      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      var defaultStorageProviderDefinition = _storageConfiguration.DefaultStorageProviderDefinition;
       if (defaultStorageProviderDefinition == null)
-        throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
+        throw _storageConfiguration.CreateMissingDefaultProviderException (null);
 
       return defaultStorageProviderDefinition;
     }

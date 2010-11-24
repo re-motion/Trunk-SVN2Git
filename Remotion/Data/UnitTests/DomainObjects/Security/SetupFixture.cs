@@ -54,7 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
                 storageConfiguration,
                 new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
-        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (GetTypeDiscoveryService (GetType().Assembly))));
+        MappingConfiguration.SetCurrent (
+            new MappingConfiguration (
+                new MappingReflector (GetTypeDiscoveryService (GetType().Assembly)),
+                new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       }
       catch (Exception ex)
       {

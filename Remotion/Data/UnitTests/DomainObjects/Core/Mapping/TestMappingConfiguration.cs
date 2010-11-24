@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         if (s_instance == null)
         {
-          Debugger.Break ();
+          Debugger.Break();
           throw new InvalidOperationException ("TestMappingConfiguration has not been Initialized by invoking Initialize()");
         }
         return s_instance;
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static void Initialize ()
     {
-      s_instance = new TestMappingConfiguration ();
+      s_instance = new TestMappingConfiguration();
     }
 
     protected TestMappingConfiguration ()
@@ -69,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
       _storageConfiguration = new StorageConfiguration (
           storageProviderDefinitionCollection, storageProviderDefinitionCollection[MappingReflectionTestBase.DefaultStorageProviderID]);
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute (), MappingReflectionTestBase.c_testDomainProviderID));
+      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute(), MappingReflectionTestBase.c_testDomainProviderID));
       _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (new StorageProviderStubAttribute (), MappingReflectionTestBase.c_unitTestStorageProviderStubID));
+          new StorageGroupElement (new StorageProviderStubAttribute(), MappingReflectionTestBase.c_unitTestStorageProviderStubID));
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (new TableInheritanceTestDomainAttribute(), TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
 
@@ -82,7 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var typeDiscoveryService = GetTypeDiscoveryService();
 
-      _mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
+      _mappingConfiguration = new MappingConfiguration (
+          new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
 
       _domainObjectIDs = new DomainObjectIDs();
@@ -117,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       return new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }
- 
-    public DomainObjectIDs GetDomainObjectIDs()
+
+    public DomainObjectIDs GetDomainObjectIDs ()
     {
       return _domainObjectIDs;
     }

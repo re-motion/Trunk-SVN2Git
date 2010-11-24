@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
@@ -46,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   typeof (DerivedInheritanceRootClass2)
               });
       MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
-      var mappingConfiguration = new MappingConfiguration (reflector);
+      var mappingConfiguration = new MappingConfiguration (reflector, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       
       Assert.That (mappingConfiguration.RelationDefinitions[0].ID, 
         Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
@@ -77,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       actualRelationDefinitions.SetReadOnly ();
       Assert.IsNotNull (actualClassDefinitions);
 
-      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
+      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       foreach (ClassDefinition rootClass in actualClassDefinitions)
         rootClass.SetStorageProviderDefinition (storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass));
       
