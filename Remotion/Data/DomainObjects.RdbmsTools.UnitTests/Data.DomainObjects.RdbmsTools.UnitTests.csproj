@@ -78,6 +78,8 @@
     <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\TableBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\ViewBuilderTest.cs" />
+    <Compile Include="SchemaGeneration\StorageObjectFactoryStub.cs" />
+    <Compile Include="SchemaGeneration\StorageProviderStubDefinition.cs" />
     <Compile Include="StandardMappingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.UnitTests.build">

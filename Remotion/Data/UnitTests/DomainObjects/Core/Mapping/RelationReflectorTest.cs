@@ -376,12 +376,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var originatingProperty = typeof (Class1).GetProperty ("RelationProperty");
       var oppositeProperty = typeof (BaseClass2).GetProperty ("RelationPropertyOnBaseClass");
       var classDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
-          "BaseClass2", "DefaultStorageProvider", typeof (BaseClass2), true, null, null, new PersistentMixinFinder (typeof (BaseClass2)));
+          "BaseClass2", typeof (BaseClass2), true, null, null, new PersistentMixinFinder (typeof (BaseClass2)));
       var originatingClass = new ReflectionBasedClassDefinition (
-          "Class1", "DefaultStorageProvider", typeof (Class1), false, null, null, new PersistentMixinFinder (typeof (Class1)));
+          "Class1", typeof (Class1), false, null, null, new PersistentMixinFinder (typeof (Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "DerivedClass2",
-          "DefaultStorageProvider",
           typeof (DerivedClass2),
           false,
           classDeclaringOppositeProperty,
@@ -431,7 +430,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "OverriddenProperty");
       var classDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "BaseClass2",
-          "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2),
           true,
           null,
@@ -440,7 +438,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2)));
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1),
           false,
           null,
@@ -449,7 +446,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "DerivedClass2",
-          "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
           false,
           classDeclaringOppositeProperty,
@@ -497,7 +493,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty = typeof (ClassAboveInheritanceRoot).GetProperty ("RelationPropertyOnClassAboveInheritanceRoot");
       var classNotInMapping = new ReflectionBasedClassDefinition (
           "ClassAboveInheritanceRoot",
-          "DefaultStorageProvider",
           typeof (ClassAboveInheritanceRoot),
           true,
           null,
@@ -505,7 +500,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinder (typeof (ClassAboveInheritanceRoot)));
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1),
           false,
           null,
@@ -513,7 +507,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinder (typeof (Class1)));
       var derivedOfClassDeclaringOppositeProperty = new ReflectionBasedClassDefinition (
           "Class2",
-          "DefaultStorageProvider",
           typeof (Class2),
           false,
           null,
@@ -558,7 +551,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty = typeof (ClassNotInMapping).GetProperty ("RelationProperty");
       var originatingClass = new ReflectionBasedClassDefinition (
           "Class1",
-          "DefaultStorageProvider",
           typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1),
           false,
           null,

@@ -17,12 +17,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Utilities.TypeUtility;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -68,7 +65,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
           GetID(),
-          GetStorageProviderID(),
           Type,
           IsAbstract(),
           GetBaseClassDefinition (classDefinitions),
@@ -103,33 +99,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (storageGroupAttribute != null)
         return storageGroupAttribute.GetType();
       return null;
-    }
-
-    //TODO: COMMONS-842
-    //TODO: Move type resolving to storagegrouplist and unify with QueryConfigurationLoader
-    //TODO: Test for DefaultStorageProvider
-    private string GetStorageProviderID ()
-    {
-      var storageGroupAttribute = AttributeUtility.GetCustomAttributes<StorageGroupAttribute> (Type, true).FirstOrDefault ();
-      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      if (storageGroupAttribute == null)
-      {
-        //TODO COMMONS-783: Test exception
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
-        return defaultStorageProviderDefinition.Name;
-      }
-
-      string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupAttribute.GetType());
-      StorageGroupElement storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
-      if (storageGroup == null)
-      {
-        //TODO COMMONS-783: Test exception
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException (null);
-        return defaultStorageProviderDefinition.Name;
-      }
-      return storageGroup.StorageProviderName;
     }
 
     private bool IsAbstract ()

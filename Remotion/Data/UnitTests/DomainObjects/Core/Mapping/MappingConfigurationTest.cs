@@ -189,6 +189,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void StorageProviderDefinitonIsSet ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
+      var classDefinitionCollection = new[] { classDefinition };
+
+      Assert.That (classDefinition.StorageProviderDefinition, Is.Null);
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver ());
+
+      _mockRepository.ReplayAll ();
+
+      new MappingConfiguration (_mockMappingLoader);
+
+      Assert.That (classDefinition.StorageProviderDefinition, Is.Not.Null);
+      Assert.That (classDefinition.StorageProviderDefinition.Name, Is.EqualTo("DefaultStorageProvider"));
+    }
+
+    [Test]
     public void PersistenceModelIsLoaded ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);

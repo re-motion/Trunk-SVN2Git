@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
       foreach (ClassDefinition currentClass in classDefinitions)
       {
-        if (currentClass.StorageProviderID == _rdbmsProviderDefinition.Name)
+        if (currentClass.StorageProviderDefinition.Name == _rdbmsProviderDefinition.Name)
           classes.Add (currentClass);
       }
 

@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      StorageProvider provider = _storageProviderManager.GetMandatory (classDefinition.StorageProviderID);
+      StorageProvider provider = _storageProviderManager.GetMandatory (classDefinition.StorageProviderDefinition.Name);
       return provider.CreateNewObjectID (classDefinition);
     }
 
@@ -77,10 +77,10 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (dataContainers.Count == 0)
         return;
 
-      string storageProviderID = dataContainers[0].ClassDefinition.StorageProviderID;
+      string storageProviderID = dataContainers[0].ClassDefinition.StorageProviderDefinition.Name;
       foreach (DataContainer dataContainer in dataContainers)
       {
-        if (dataContainer.ClassDefinition.StorageProviderID != storageProviderID)
+        if (dataContainer.ClassDefinition.StorageProviderDefinition.Name != storageProviderID)
           throw CreatePersistenceException ("Save does not support multiple storage providers.");
       }
 
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
       var oppositeEndPointDefinition = relationEndPointID.Definition.GetOppositeEndPointDefinition();
 
-      var oppositeProvider = _storageProviderManager.GetMandatory (oppositeEndPointDefinition.ClassDefinition.StorageProviderID);
+      var oppositeProvider = _storageProviderManager.GetMandatory (oppositeEndPointDefinition.ClassDefinition.StorageProviderDefinition.Name);
 
       var oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
           oppositeEndPointDefinition.ClassDefinition,
@@ -259,7 +259,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       }
 
       StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (
-          relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition.StorageProviderID);
+          relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition.StorageProviderDefinition.Name);
 
       DataContainerCollection oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
           relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition,

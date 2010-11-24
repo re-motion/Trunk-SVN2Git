@@ -97,14 +97,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
       var oppositeClassDefinition = classDefinitions[type];
       if (oppositeClassDefinition == null)
-      {
-        return new TypeNotFoundClassDefinition (
-            type.Name,
-            DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name,
-            type,
-            PropertyInfo);
-      }
-
+        return new TypeNotFoundClassDefinition (type.Name, type, PropertyInfo);
+      
       if (optionalOppositePropertyInfo != null)
       {
         while (oppositeClassDefinition.BaseClass != null && oppositeClassDefinition.ClassType != optionalOppositePropertyInfo.DeclaringType)

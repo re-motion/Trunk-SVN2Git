@@ -57,14 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "IsAbstract of class definition '{0}' does not match.",
           expectedDefinition.ID);
 
-      Assert.AreEqual (
-          expectedDefinition.StorageProviderID,
-          actualDefinition.StorageProviderID,
+      if (_includePersistenceModel)
+      {
+        Assert.AreEqual (
+          expectedDefinition.StorageProviderDefinition.Name,
+          actualDefinition.StorageProviderDefinition.Name,
           "StorageProviderID of class definition '{0}' does not match. ",
           expectedDefinition.ID);
 
-      if (_includePersistenceModel)
-      {
         Assert.AreEqual (
             StorageModelTestHelper.GetEntityName (expectedDefinition),
             StorageModelTestHelper.GetEntityName (actualDefinition),

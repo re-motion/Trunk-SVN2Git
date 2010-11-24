@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderID];
+        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderDefinition.Name];
         Assert.IsNotNull (Mixin.Get<StorageProviderWithFixedGuidMixin> (provider));
       }
     }
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderID];
+        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderDefinition.Name];
         ObjectID id1 = provider.CreateNewObjectID (orderDefinition);
         ObjectID id2 = provider.CreateNewObjectID (orderDefinition);
         Assert.AreEqual (id1, id2);
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderID];
+        StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageProviderDefinition.Name];
         
         Guid fixedGuid = Guid.NewGuid ();
         ((IStorageProviderWithFixedGuid) provider).FixedGuid = fixedGuid;

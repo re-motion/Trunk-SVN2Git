@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (T)];
       var storageProviderID = classDefinition != null
-                                  ? classDefinition.StorageProviderID
+                                  ? classDefinition.StorageProviderDefinition.Name
                                   : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
       var query = QueryFactory.CreateCollectionQuery ("test", storageProviderID, "TEST", new QueryParameterCollection (), typeof (DomainObjectCollection));
       return CreateTestQueryResult (query, collection);

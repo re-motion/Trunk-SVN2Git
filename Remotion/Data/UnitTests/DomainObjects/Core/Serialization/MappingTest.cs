@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.AreEqual (expected.ClassType, actual.ClassType);
       Assert.AreEqual (StorageModelTestHelper.GetEntityName(expected), StorageModelTestHelper.GetEntityName(actual));
-      Assert.AreEqual (expected.StorageProviderID, actual.StorageProviderID);
+      Assert.AreEqual (expected.StorageProviderDefinition.Name, actual.StorageProviderDefinition.Name);
 
       Assert.AreEqual (expected.DerivedClasses.Count, actual.DerivedClasses.Count);
       for (int i = 0; i < expected.DerivedClasses.Count; i++)

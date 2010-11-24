@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -121,6 +122,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       Assert.IsNotNull (entityNames);
       Assert.AreEqual (1, entityNames.Length);
       Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
+    }
+
+    [Test]
+    public void SetStorageEntityDefinition ()
+    {
+      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", new ColumnDefinition[0]);
+      
+      _domainBaseClass.SetStorageEntity (tableDefinition);
+
+      Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
+    }
+
+    [Test]
+    public void SetStorageProviderDefinition ()
+    {
+      var providerDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+
+      _domainBaseClass.SetStorageProviderDefinition (providerDefinition);
+
+      Assert.That (_domainBaseClass.StorageProviderDefinition, Is.SameAs (providerDefinition));
     }
 
     [Test]

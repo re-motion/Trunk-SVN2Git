@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
       var providerDefinition = 
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderID);
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderDefinition.Name);
 
       // Natively supported types can be executed as scalar queries
       if (providerDefinition.Factory.GetTypeProvider().IsTypeSupported (typeof (T)))
@@ -229,7 +229,7 @@ namespace Remotion.Data.DomainObjects.Linq
         statement = statement + " ORDER BY " + sortExpression;
       }
 
-      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, command.Parameters, queryType);
+      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderDefinition.Name, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
     }

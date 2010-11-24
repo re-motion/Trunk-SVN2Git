@@ -35,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new RelationEndPointPropertyTypeIsSupportedValidationRule();
       _classDefinition = new ReflectionBasedClassDefinition (
           "ID",
-          "SPID",
           typeof (RelationEndPointPropertyClass),
           false,
           null,

@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageProviderID, classType, isAbstract, baseClass, null, persistentMixinFinder)
+        : base (id, classType, isAbstract, baseClass, null, persistentMixinFinder)
     {
     }
 

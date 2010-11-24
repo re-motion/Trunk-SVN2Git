@@ -38,7 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new RelationEndPointTypesAreConsistentValidationRule();
       _baseClassDefinition1 = new ReflectionBasedClassDefinition (
           "BaseRelationEndPointPropertyClass1",
-          "DefaultStorageProviderID",
           typeof (BaseRelationEndPointPropertyClass1),
           false,
           null,
@@ -46,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass1)));
       _baseClassDefinition2 = new ReflectionBasedClassDefinition (
           "BaseRelationEndPointPropertyClass2",
-          "DefaultStorageProviderID",
           typeof (BaseRelationEndPointPropertyClass2),
           false,
           null,
@@ -54,7 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           new PersistentMixinFinder (typeof (BaseRelationEndPointPropertyClass2)));
       _derivedClassDefinition1 = new ReflectionBasedClassDefinition (
           "DerivedRelationEndPointPropertyClass1",
-          "DefaultStorageProviderID",
           typeof (DerivedRelationEndPointPropertyClass1),
           false,
           _baseClassDefinition1,
@@ -62,7 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           new PersistentMixinFinder (typeof (DerivedRelationEndPointPropertyClass1)));
       _derivedClassDefinition2 = new ReflectionBasedClassDefinition (
           "DerivedRelationEndPointPropertyClass2",
-          "DefaultStorageProviderID",
           typeof (DerivedRelationEndPointPropertyClass2),
           false,
           _baseClassDefinition2,

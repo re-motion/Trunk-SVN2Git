@@ -60,7 +60,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       _tableBuilder = new TableBuilder();
       _classDefintion = new ReflectionBasedClassDefinition (
           "ClassID",
-          "StorageProvider",
           typeof (Order),
           false,
           null,
@@ -189,7 +188,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       ReflectionBasedClassDefinition abstractClass =
           new ReflectionBasedClassDefinition (
-              "AbstractClass", "FirstStorageProvider", typeof (AbstractClass), false, null, null, new PersistentMixinFinder (typeof (AbstractClass)));
+              "AbstractClass", typeof (AbstractClass), false, null, null, new PersistentMixinFinder (typeof (AbstractClass)));
       abstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (
               abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
@@ -197,7 +196,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       ReflectionBasedClassDefinition derivedAbstractClass =
           new ReflectionBasedClassDefinition (
               "DerivedAbstractClass",
-              "FirstStorageProvider",
               typeof (DerivedAbstractClass),
               false,
               abstractClass,
@@ -215,7 +213,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
           "DerivedConcreteClass",
-          "FirstStorageProvider",
           typeof (DerivedConcreteClass),
           false,
           derivedAbstractClass,

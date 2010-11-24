@@ -50,11 +50,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void DifferentStorageProviderID ()
     {
       var baseType = typeof (BaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID1", baseType, false);
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false, baseClassDefinition, new Type[0]);
-      PrivateInvoke.SetNonPublicField (classDefinition, "_storageProviderID", "SPID_NEW");
-
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID2", type, false, baseClassDefinition, new Type[0]);
+      
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =

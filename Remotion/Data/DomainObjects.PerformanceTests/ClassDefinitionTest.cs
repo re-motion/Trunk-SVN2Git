@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void SetStorageEntity ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var tableDefinition = new TableDefinition ("Test", new ColumnDefinition[] { });
+      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Test", new ColumnDefinition[] { });
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs(tableDefinition));
       classDefinition.SetStorageEntity (tableDefinition);

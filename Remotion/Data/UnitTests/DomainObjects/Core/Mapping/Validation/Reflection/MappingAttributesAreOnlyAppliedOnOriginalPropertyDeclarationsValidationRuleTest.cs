@@ -108,7 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var type = typeof (ClassUsingMixinPropertiesNoInheritanceRoot);
       var classDefinition = new ReflectionBasedClassDefinition (
           "ClassUsingMixinPropertiesNoInheritanceRoot",
-          "DefaultStorageProvider",
           type,
           false,
           null,

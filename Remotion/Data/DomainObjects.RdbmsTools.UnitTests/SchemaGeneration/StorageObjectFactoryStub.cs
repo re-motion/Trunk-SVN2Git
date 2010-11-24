@@ -18,17 +18,16 @@ using System;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core
+namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
 {
-  public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
+  public class StorageObjectFactoryStub : IStorageObjectFactory
   {
-    private readonly UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
+    private readonly StorageProviderStubDefinition _storageProviderStubDefinition;
 
-    public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
+    public StorageObjectFactoryStub (StorageProviderStubDefinition storageProviderStubDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderStubDefinition", storageProviderStubDefinition);
 
@@ -37,9 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
-
-      return new UnitTestStorageProviderStub (_storageProviderStubDefinition, persistenceListener);
+      throw new NotImplementedException();
     }
 
     public TypeConversionProvider GetTypeConversionProvider ()
@@ -54,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public IPersistenceModelLoader GetPersistenceModelLoader ()
     {
-      return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderStubDefinition.Name);
+     throw new NotImplementedException();
     }
   }
 }

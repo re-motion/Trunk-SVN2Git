@@ -18,11 +18,11 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core
+namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
 {
-  public class UnitTestStorageProviderStubDefinition : StorageProviderDefinition
+  public class StorageProviderStubDefinition : StorageProviderDefinition
   {
-    public UnitTestStorageProviderStubDefinition (string storageProviderID, Type storageFactoryType)
+    public StorageProviderStubDefinition (string storageProviderID, Type storageFactoryType)
         : base (storageProviderID, storageFactoryType)
     {
     }
@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       ArgumentUtility.CheckNotNull ("identityType", identityType);
 
-      // UnitTestStorageProviderStubDefinition supports all identity types for testing purposes.
       return true;
     }
   }

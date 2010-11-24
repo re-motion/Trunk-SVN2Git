@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       AddCommandParameter (command, propertyValue.Definition.StoragePropertyDefinition.Name, relatedIDValue);
 
-      if (classDefinition.StorageProviderID == relatedClassDefinition.StorageProviderID)
+      if (classDefinition.StorageProviderDefinition.Name == relatedClassDefinition.StorageProviderDefinition.Name)
         AddClassIDParameter (updateSetBuilder, command, relatedClassDefinition, propertyValue);
     }
 

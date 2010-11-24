@@ -27,8 +27,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly PropertyInfo _relationProperty;
 
     public TypeNotFoundClassDefinition (
-        string id, string storageProviderID, Type classType, PropertyInfo relationProperty)
-        : base (id, storageProviderID, classType, false, null, null, new PersistentMixinFinder (classType))
+        string id, Type classType, PropertyInfo relationProperty)
+        : base (id, classType, false, null, null, new PersistentMixinFinder (classType))
     {
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
 

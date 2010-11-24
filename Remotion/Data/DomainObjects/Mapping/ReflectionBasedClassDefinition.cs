@@ -51,13 +51,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ReflectionBasedClassDefinition (
         string id,
-        string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
         Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageProviderID, storageGroupType)
+        : base (id, storageGroupType)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);

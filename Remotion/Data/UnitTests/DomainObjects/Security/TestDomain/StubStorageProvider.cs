@@ -107,12 +107,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     private void CheckClassDefinition (ClassDefinition classDefinition, string argumentName)
     {
-      if (classDefinition.StorageProviderID != ID)
+      if (classDefinition.StorageProviderDefinition.Name != ID)
       {
         throw CreateArgumentException (
             argumentName,
             "The StorageProviderID '{0}' of the provided ClassDefinition does not match with this StorageProvider's ID '{1}'.",
-            classDefinition.StorageProviderID,
+            classDefinition.StorageProviderDefinition.Name,
             ID);
       }
     }

@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -36,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new RelationEndPointNamesAreConsistentValidationRule();
       _classDefinition1 = new ReflectionBasedClassDefinition (
           "ID",
-          "SPID",
           typeof (RelationEndPointPropertyClass1),
           false,
           null,
@@ -44,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           new PersistentMixinFinderMock (typeof (RelationEndPointPropertyClass1), new Type[0]));
       _classDefinition2 = new ReflectionBasedClassDefinition (
           "ID",
-          "SPID",
           typeof (RelationEndPointPropertyClass2),
           false,
           null,

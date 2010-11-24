@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
 
       var id = new ObjectID (orderDefinition, value);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageProviderID));
+      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageProviderDefinition.Name));
       Assert.That (id.ClassID, Is.EqualTo (orderDefinition.ID));
       Assert.That (id.Value, Is.EqualTo (value));
     }

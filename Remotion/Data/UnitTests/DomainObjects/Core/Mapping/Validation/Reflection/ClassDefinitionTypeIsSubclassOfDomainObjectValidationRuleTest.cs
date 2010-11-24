@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "DefaultStorageProvider",
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
@@ -56,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           "Test",
-          "DefaultStorageProvider",
           typeof (string),
           false,
           null,

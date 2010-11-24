@@ -22,6 +22,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -43,8 +44,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     private bool _isReadOnly;
 
     // nonserialized member fields
-    [NonSerialized]
-    private readonly string _storageProviderID;
 
     [NonSerialized]
     private readonly Type _storageGroupType;
@@ -71,15 +70,16 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
 
+    [NonSerialized]
+    private StorageProviderDefinition _storageProviderDefinition;
+
     // construction and disposing
 
-    protected ClassDefinition (string id, string storageProviderID, Type storageGroupType)
+    protected ClassDefinition (string id, Type storageGroupType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       
       _id = id;
-      _storageProviderID = storageProviderID;
       _storageGroupType = storageGroupType;
 
       _propertyDefinitions = new PropertyDefinitionCollection (this);
@@ -349,6 +349,13 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageEntityDefinition = storageEntityDefinition;
     }
 
+    public void SetStorageProviderDefinition (StorageProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      _storageProviderDefinition = storageProviderDefinition;
+    }
+
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)
     {
       PropertyDefinition propertyDefinition = GetPropertyDefinition (propertyName);
@@ -378,6 +385,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageEntityDefinition; }
     }
 
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
+
     public abstract Type ClassType { get; }
 
     public abstract bool IsClassTypeResolved { get; }
@@ -387,11 +399,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
     public abstract PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation);
     public abstract IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation);
-
-    public string StorageProviderID
-    {
-      get { return _storageProviderID; }
-    }
 
     public Type StorageGroupType
     {

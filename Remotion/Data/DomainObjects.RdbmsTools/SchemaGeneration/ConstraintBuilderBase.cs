@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       if (relationEndPoint.IsVirtual)
         return false;
 
-      if (oppositeClassDefinition.StorageProviderID != relationEndPoint.ClassDefinition.StorageProviderID)
+      if (oppositeClassDefinition.StorageProviderDefinition.Name != relationEndPoint.ClassDefinition.StorageProviderDefinition.Name)
         return false;
 
       if (oppositeClassDefinition.GetEntityName() == null)

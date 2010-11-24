@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      if (classDefinition.BaseClass!=null && classDefinition.BaseClass.StorageProviderID != classDefinition.StorageProviderID)
+      if (classDefinition.BaseClass!=null && classDefinition.BaseClass.StorageProviderDefinition.Name != classDefinition.StorageProviderDefinition.Name)
       {
         return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,

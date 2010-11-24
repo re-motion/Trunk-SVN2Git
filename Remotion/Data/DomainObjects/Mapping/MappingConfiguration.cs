@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -96,10 +95,18 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         // TODO Review 3508: Inject StorageProviderDefinitionFinder (via interface)
         var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
-        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
+
+        // Set storage provider definition of all class definitions
+        foreach (ClassDefinition rootClass in _classDefinitions)
         {
           var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
-          var persistenceModelLoader = storageProviderDefinition.Factory.GetPersistenceModelLoader();
+          rootClass.SetStorageProviderDefinition (storageProviderDefinition);
+        }
+        
+        // foreach inheritance root, apply persistence model using rootClass.StorageProviderDefinition.Factory
+        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses ())
+        {
+          var persistenceModelLoader = rootClass.StorageProviderDefinition.Factory.GetPersistenceModelLoader();
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
         }
 

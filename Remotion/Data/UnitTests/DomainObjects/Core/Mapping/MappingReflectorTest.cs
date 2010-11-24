@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
@@ -76,9 +77,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       actualRelationDefinitions.SetReadOnly ();
       Assert.IsNotNull (actualClassDefinitions);
 
-      var persistenceModelLoader = new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator ()), "DefaultStorageProvider");
+      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder();
+      foreach (ClassDefinition rootClass in actualClassDefinitions)
+        rootClass.SetStorageProviderDefinition (storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass));
+      
       foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
-        persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+        classDefinition.StorageProviderDefinition.Factory.GetPersistenceModelLoader().ApplyPersistenceModelToHierarchy (classDefinition);
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
