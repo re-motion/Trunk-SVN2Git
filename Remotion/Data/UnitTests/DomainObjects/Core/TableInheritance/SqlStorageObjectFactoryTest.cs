@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -62,11 +63,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void CreateStorageProviderWithMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (SqlProvider)).Clear ().AddMixins (typeof (StorageObjectFactoryMixin)).EnterScope ())
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (SqlProvider)).Clear ().AddMixins (typeof (SqlProviderTestMixin)).EnterScope ())
       {
         var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub);
 
-        Assert.That (Mixin.Get<StorageObjectFactoryMixin> (result), Is.Not.Null);
+        Assert.That (Mixin.Get<SqlProviderTestMixin> (result), Is.Not.Null);
       }
     }
 
@@ -92,6 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var result = _sqlProviderFactory.GetPersistenceModelLoader();
 
       Assert.That (result, Is.TypeOf (typeof (PersistenceModelLoader)));
+      Assert.That(PrivateInvoke.GetNonPublicField (_sqlProviderFactory, "StoragePropertyDefinitionFactory"), Is.TypeOf(typeof(ColumnDefinitionFactory)));
     }
   }
 }

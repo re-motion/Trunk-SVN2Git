@@ -20,8 +20,7 @@ using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
-  // TODO 3506: Rename to SqlProviderTestMixin
-  public class StorageObjectFactoryMixin : Mixin<SqlProvider>
+  public class SqlProviderTestMixin : Mixin<SqlProvider>
   {
   }
 }
