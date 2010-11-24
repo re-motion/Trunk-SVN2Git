@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       var spID = "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute, Remotion.Data.UnitTests";
       var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
       storageProviderDefinitionCollection.Add (
-          new UnitTestStorageProviderStubDefinition (spID, typeof (UnitTestStorageProviderStub), typeof (UnitTestStorageObjectFactoryStub)));
+          new UnitTestStorageProviderStubDefinition (spID, typeof (UnitTestStorageObjectFactoryStub)));
       var storageConfiguration = new StorageConfiguration (
           storageProviderDefinitionCollection, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition);
       storageConfiguration.StorageGroups.Add (new StorageGroupElement (new StubStorageGroup1Attribute(), spID));

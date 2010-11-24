@@ -15,17 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Mixins;
-using Remotion.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Persistence
 {
   public class SecurityManagerSqlFactory : SqlStorageObjectFactory
   {
-    public SecurityManagerSqlFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base(rdbmsProviderDefinition)
+    public SecurityManagerSqlFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base (rdbmsProviderDefinition)
     {
     }
 
@@ -33,7 +29,7 @@ namespace Remotion.SecurityManager.Persistence
     {
       get
       {
-        return typeof(SecurityManagerSqlProvider);
+        return typeof (SecurityManagerSqlProvider);
       }
     }
  
