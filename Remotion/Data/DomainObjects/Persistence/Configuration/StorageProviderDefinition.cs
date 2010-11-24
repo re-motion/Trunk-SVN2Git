@@ -23,6 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
+  /// <summary>
+  /// Defines the configuration for a specific <see cref="StorageProvider"/>. Subclasses of <see cref="StorageProviderDefinition"/> can be 
+  /// instantiated from a config file entry.
+  /// </summary>
   public abstract class StorageProviderDefinition: ExtendedProviderBase
   {
     // types
@@ -31,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 
     // member fields
 
-    private IStorageObjectFactory _factory;
+    private readonly IStorageObjectFactory _factory;
 
     // construction and disposing
 
@@ -41,8 +45,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("config", config);
 
-      var storageFactoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
-      Initialize (TypeUtility.GetType (storageFactoryTypeName, true));
+      var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
+      var factoryType = TypeUtility.GetType (factoryTypeName, true);
+      _factory = CreateStorageObjectFactory (factoryType);
     }
 
     protected StorageProviderDefinition (string name, Type factoryType)
@@ -50,14 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     {
       ArgumentUtility.CheckNotNull ("factoryType", factoryType);
 
-      Initialize (factoryType);
-    }
-
-    private void Initialize(Type factoryType)
-    {
-      // When creating the storage object factory, use CreateDynamic to create a ParamList from the dynamic type of this StorageProviderDefinition. 
-      // That way, concrete factories such as SqlStorageObjectFactory can have ctors taking concrete definitions such as RdbmsProviderDefinition.
-      _factory = (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.CreateDynamic (this));
+      _factory = CreateStorageObjectFactory (factoryType);
     }
 
     // abstract methods and properties
@@ -69,12 +67,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public void CheckIdentityType (Type identityType)
     {
       if (!IsIdentityTypeSupported (identityType))
-        throw new IdentityTypeNotSupportedException (identityType);
+        throw new IdentityTypeNotSupportedException (GetType(), identityType);
     }
 
     public IStorageObjectFactory Factory
     {
       get { return _factory; }
+    }
+
+    private IStorageObjectFactory CreateStorageObjectFactory (Type factoryType)
+    {
+      // When creating the storage object factory, use CreateDynamic to create a ParamList from the dynamic type of this StorageProviderDefinition. 
+      // That way, concrete factories such as SqlStorageObjectFactory can have ctors taking concrete definitions such as RdbmsProviderDefinition.
+      return (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.CreateDynamic (this));
     }
   }
 }

@@ -111,8 +111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [ExpectedException (typeof (IdentityTypeNotSupportedException),
-        ExpectedMessage = "Storage provider does not support identity values of type 'System.String'.")]
+    [ExpectedException (typeof (IdentityTypeNotSupportedException), ExpectedMessage = 
+        "The storage provider defined by 'RdbmsProviderDefinition' does not support identity values of type 'System.String'.")]
     public void CheckInvalidIdentityType()
     {
       _definition.CheckIdentityType (typeof (string));

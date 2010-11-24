@@ -29,7 +29,7 @@ public class IdentityTypeNotSupportedException : StorageProviderConfigurationExc
 
   // member fields
 
-  private readonly Type _storageProviderType;
+  private readonly Type _storageProviderDefinitionType;
   private readonly Type _invalidIdentityType;
 
   // construction and disposing
@@ -54,32 +54,32 @@ public class IdentityTypeNotSupportedException : StorageProviderConfigurationExc
   {
   }
 
-  public IdentityTypeNotSupportedException (Type storageProviderType, Type invalidIdentityType) 
-      : this (string.Format ("The StorageProvider '{0}' does not support identity values of type '{1}'.", storageProviderType, invalidIdentityType),
-            storageProviderType, invalidIdentityType)
+  public IdentityTypeNotSupportedException (Type storageProviderDefinitionType, Type invalidIdentityType) 
+      : this (string.Format ("The storage provider defined by '{0}' does not support identity values of type '{1}'.", storageProviderDefinitionType.Name, invalidIdentityType),
+            storageProviderDefinitionType, invalidIdentityType)
   {
   }
 
-  public IdentityTypeNotSupportedException (string message, Type storageProviderType, Type invalidIdentityType) : base (message)
+  public IdentityTypeNotSupportedException (string message, Type storageProviderDefinitionType, Type invalidIdentityType) : base (message)
   {
-    ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
+    ArgumentUtility.CheckNotNull ("storageProviderDefinitionType", storageProviderDefinitionType);
     ArgumentUtility.CheckNotNull ("invalidIdentityType", invalidIdentityType);
 
-    _storageProviderType = storageProviderType;
+    _storageProviderDefinitionType = storageProviderDefinitionType;
     _invalidIdentityType = invalidIdentityType;
   }
   
   protected IdentityTypeNotSupportedException (SerializationInfo info, StreamingContext context) : base (info, context) 
   {
-    _storageProviderType = (Type) info.GetValue ("StorageProviderType", typeof (Type));
+    _storageProviderDefinitionType = (Type) info.GetValue ("StorageProviderDefinitionType", typeof (Type));
     _invalidIdentityType = (Type) info.GetValue ("InvalidIdentityType", typeof (Type));
   }
 
   // methods and properties
 
-  public Type StorageProviderType
+  public Type StorageProviderDefinitionType
   {
-    get { return _storageProviderType; }
+    get { return _storageProviderDefinitionType; }
   }
 
   public Type InvalidIdentityType
@@ -91,7 +91,7 @@ public class IdentityTypeNotSupportedException : StorageProviderConfigurationExc
   {
     base.GetObjectData (info, context);
 
-    info.AddValue ("StorageProviderType", _storageProviderType);
+    info.AddValue ("StorageProviderDefinitionType", _storageProviderDefinitionType);
     info.AddValue ("InvalidIdentityType", _invalidIdentityType);
   }
 }

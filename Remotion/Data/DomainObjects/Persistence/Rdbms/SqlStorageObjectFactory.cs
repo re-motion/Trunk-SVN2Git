@@ -26,7 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
-  /// The <see cref="SqlStorageObjectFactory"/> is responsible to create sql-specific storage provider instances.
+  /// The <see cref="SqlStorageObjectFactory"/> is responsible to create SQL Server-specific storage provider instances.
   /// </summary>
   public class SqlStorageObjectFactory : IStorageObjectFactory
   {
