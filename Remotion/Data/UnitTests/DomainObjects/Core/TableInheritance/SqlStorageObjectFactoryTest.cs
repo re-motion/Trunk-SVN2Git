@@ -27,6 +27,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
+  // TODO Review 3507: Move to Persistence.Rdbms namespace
   [TestFixture]
   public class SqlStorageObjectFactoryTest
   {

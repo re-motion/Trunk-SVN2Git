@@ -30,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class SqlStorageObjectFactory : IStorageObjectFactory
   {
+    // TODO Review 3507: Change back to private fields, add protected getter properties
     protected readonly RdbmsProviderDefinition StorageProviderDefinition;
     protected readonly IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory;
 
@@ -41,6 +42,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       StoragePropertyDefinitionFactory = new ColumnDefinitionFactory(new SqlStorageTypeCalculator());
     }
 
+    // TODO Review 3507: Add an additional protected ctor that takes the storageProviderType, have the existing ctor delegate to the new one, passing 
+    // TODO Review 3507: typeof (SqlProvider). Change SecurityManagerStorageObjectFactory to pass in typeof (SecurityManagerSqlProvider). Change 
+    // TODO Review 3507: StorageProviderType to return the field initialized by the ctor, make it non-virtual.
     public virtual Type StorageProviderType
     {
       get { return typeof (SqlProvider); }

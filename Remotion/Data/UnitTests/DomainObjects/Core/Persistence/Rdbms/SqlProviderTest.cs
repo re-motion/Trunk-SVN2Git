@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 #pragma warning restore 168
     }
 
-    //TODO 3507: check following tests:
+    //TODO Review 3507: uncomment the tests and go back to Definition.TypeConversionProvider
 
     //[Test]
     //public void GetTypeConversionServices()
