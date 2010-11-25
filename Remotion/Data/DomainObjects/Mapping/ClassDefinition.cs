@@ -110,8 +110,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
-      _propertyDefinitions.SetReadOnly();
-      _relationDefinitions.SetReadOnly();
+      MyPropertyDefinitions.SetReadOnly();
+      MyRelationDefinitions.SetReadOnly();
       DerivedClasses.SetReadOnly();
 
       _isReadOnly = true;
@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return _propertyDefinitions.Contains (propertyDefinition);
+      return MyPropertyDefinitions.Contains (propertyDefinition);
     }
 
     public IRelationEndPointDefinition GetOppositeEndPointDefinition (string propertyName)
@@ -224,7 +224,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       var relationEndPointDefinitions = new ArrayList();
 
-      foreach (RelationDefinition relationDefinition in _relationDefinitions)
+      foreach (RelationDefinition relationDefinition in MyRelationDefinitions)
       {
         foreach (IRelationEndPointDefinition endPointDefinition in relationDefinition.EndPointDefinitions)
         {
@@ -240,7 +240,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      foreach (RelationDefinition relationDefinition in _relationDefinitions)
+      foreach (RelationDefinition relationDefinition in MyRelationDefinitions)
       {
         if (relationDefinition.IsEndPoint (_id, propertyName))
           return relationDefinition;
@@ -331,7 +331,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      PropertyDefinition propertyDefinition = _propertyDefinitions[propertyName];
+      PropertyDefinition propertyDefinition = MyPropertyDefinitions[propertyName];
 
       if (propertyDefinition == null && BaseClass != null)
         return BaseClass.GetPropertyDefinition (propertyName);
@@ -391,7 +391,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get
       {
         ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-        return _propertyDefinitions[propertyName];
+        return MyPropertyDefinitions[propertyName];
       }
     }
 
@@ -534,7 +534,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private RelationDefinitionCollection FindAllRelationDefinitions ()
     {
-      var relations = new RelationDefinitionCollection (_relationDefinitions.Cast<RelationDefinition>(), false);
+      var relations = new RelationDefinitionCollection (MyRelationDefinitions.Cast<RelationDefinition>(), false);
 
       if (BaseClass != null)
       {
