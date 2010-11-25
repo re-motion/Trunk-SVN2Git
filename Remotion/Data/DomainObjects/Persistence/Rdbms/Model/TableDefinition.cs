@@ -57,6 +57,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _tableName; }
     }
 
+    public string LegacyViewName
+    {
+      get { return _tableName + "View"; }
+    }
+
     public ReadOnlyCollection<ColumnDefinition> GetColumns ()
     {
       return _columns;

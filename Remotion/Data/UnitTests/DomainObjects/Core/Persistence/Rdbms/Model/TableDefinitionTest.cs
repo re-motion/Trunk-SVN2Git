@@ -49,6 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void LegacyViewName ()
+    {
+      Assert.That (_tableDefintion.LegacyViewName, Is.EqualTo ("TestView"));
+    }
+
+    [Test]
     public void GetColumns ()
     {
       var result  = _tableDefintion.GetColumns ();
