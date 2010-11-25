@@ -71,31 +71,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aktology\Akten\Akt.cs" />
-    <Compile Include="Aktology\Akten\SachAkt.cs" />
-    <Compile Include="Aktology\AktFactory.cs" />
-    <Compile Include="Aktology\Mixins\AngestelltenMixin.cs" />
-    <Compile Include="Aktology\Mixins\TransportFahrzeugMixin.cs" />
-    <Compile Include="Aktology\Mixins\PersonenMixin.cs" />
-    <Compile Include="Aktology\Mixins\FahrzeugMixin.cs" />
-    <Compile Include="DynamicMixinBuilding\BaseRequirements.cs" />
-    <Compile Include="DisposableMixin.cs" />
-    <Compile Include="DynamicMixinBuilding\DynamicMixinBuilder.cs" />
-    <Compile Include="DynamicMixinBuilding\DynamicMixinTypeGenerator.cs" />
-    <Compile Include="EquatableMixin.cs" />
-    <Compile Include="DynamicMixinBuilding\InterfaceEmitter.cs" />
-    <Compile Include="DynamicMixinBuilding\LoadFunctionExpression.cs" />
-    <Compile Include="PhotoStuff\DataObject.cs" />
-    <Compile Include="PhotoStuff\IDataObject.cs" />
-    <Compile Include="PhotoStuff\IDocument.cs" />
-    <Compile Include="PhotoStuff\StoredAttribute.cs" />
-    <Compile Include="PhotoStuff\Variant1\Document.cs" />
-    <Compile Include="PhotoStuff\Variant1\Photo.cs" />
-    <Compile Include="PhotoStuff\Variant2\Document.cs" />
-    <Compile Include="PhotoStuff\Variant2\DocumentMixin.cs" />
-    <Compile Include="PhotoStuff\Variant2\Photo.cs" />
-    <Compile Include="PhotoStuff\Variant3\Document.cs" />
-    <Compile Include="PhotoStuff\Variant3\Photo.cs" />
+    <Compile Include="DynamicMixinBuilding\Core\BaseRequirements.cs" />
+    <Compile Include="UsesAndExtends\Core\DisposableMixin.cs" />
+    <Compile Include="DynamicMixinBuilding\Core\DynamicMixinBuilder.cs" />
+    <Compile Include="DynamicMixinBuilding\Core\DynamicMixinTypeGenerator.cs" />
+    <Compile Include="UsesAndExtends\Core\EquatableMixin.cs" />
+    <Compile Include="DynamicMixinBuilding\Core\InterfaceEmitter.cs" />
+    <Compile Include="DynamicMixinBuilding\Core\LoadFunctionExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Core.Mixins.Samples.build">
       <SubType>Designer</SubType>
@@ -104,22 +86,18 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <Compile Include="Tutorial\T01_Configuration\ExtendsSamples.cs" />
-    <Compile Include="Tutorial\T01_Configuration\MixSamples.cs" />
-    <Compile Include="Tutorial\T01_Configuration\UsesSamples.cs" />
-    <Compile Include="Tutorial\T02_ParamList\TheObjectFactory.cs" />
-    <Compile Include="Tutorial\T02_ParamList\TheClass.cs" />
-    <Compile Include="UnitTests\Aktology\AktenTest.cs" />
-    <Compile Include="UnitTests\DisposableMixinTest.cs" />
-    <Compile Include="UnitTests\DynamicMixinBuilderTest.cs" />
-    <Compile Include="UnitTests\EquatableMixinTest.cs" />
-    <Compile Include="UnitTests\PhotoStuff\Variant3.cs" />
-    <Compile Include="UnitTests\PhotoStuff\Variant2.cs" />
-    <Compile Include="UnitTests\PhotoStuff\Variant1.cs" />
-    <Compile Include="UnitTests\Tutorial\T01_Configuration\ExtendsSamplesTest.cs" />
-    <Compile Include="UnitTests\Tutorial\T01_Configuration\MixSamplesTest.cs" />
-    <Compile Include="UnitTests\Tutorial\T01_Configuration\UsesSamplesTest.cs" />
-    <Compile Include="UnitTests\Tutorial\T02_ParamList\CtorCallTest.cs" />
+    <Compile Include="Tutorial\T01_Configuration\Core\Extends\ExtendsSamples.cs" />
+    <Compile Include="Tutorial\T01_Configuration\Core\Mix\MixSamples.cs" />
+    <Compile Include="Tutorial\T01_Configuration\Core\Uses\UsesSamples.cs" />
+    <Compile Include="Tutorial\T02_ParamList\Core\TheObjectFactory.cs" />
+    <Compile Include="Tutorial\T02_ParamList\Core\TheClass.cs" />
+    <Compile Include="UsesAndExtends\UnitTests\DisposableMixinTest.cs" />
+    <Compile Include="DynamicMixinBuilding\UnitTests\DynamicMixinBuilderTest.cs" />
+    <Compile Include="UsesAndExtends\UnitTests\EquatableMixinTest.cs" />
+    <Compile Include="Tutorial\T01_Configuration\UnitTests\ExtendsSamplesTest.cs" />
+    <Compile Include="Tutorial\T01_Configuration\UnitTests\MixSamplesTest.cs" />
+    <Compile Include="Tutorial\T01_Configuration\UnitTests\UsesSamplesTest.cs" />
+    <Compile Include="Tutorial\T02_ParamList\UnitTests\CtorCallTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -155,6 +133,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

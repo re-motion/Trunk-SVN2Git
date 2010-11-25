@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins.Samples.UsesAndExtends.Core;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
@@ -85,7 +86,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void FindAssemblies_FindsReferencedAssemblies_Transitive ()
     {
-      var mixinSamplesAssembly = typeof (Remotion.Mixins.Samples.EquatableMixin<>).Assembly;
+      var mixinSamplesAssembly = typeof (EquatableMixin<>).Assembly;
       var remotionAssembly = typeof (AssemblyFinder).Assembly;
       var log4netAssembly = typeof (log4net.LogManager).Assembly;
 

@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Samples;
+using Remotion.Mixins.Samples.UsesAndExtends.Core;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.UnitTests.Mixins.Utilities.TestDomain.AssociatedMethods;

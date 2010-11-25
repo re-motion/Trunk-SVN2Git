@@ -23,7 +23,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Mixins.Samples.PhotoStuff.Variant1;
+using Remotion.Mixins.Samples.UsesAndExtends.Core;
+using Remotion.Mixins.Samples.UsesAndExtends.UnitTests;
 using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Context
@@ -197,10 +198,10 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void BuildConfigurationFromAssemblies_Multiple ()
     {
-      var assemblies = new[] { typeof (BaseType1).Assembly, typeof (Photo).Assembly };
+      var assemblies = new[] { typeof (BaseType1).Assembly, typeof (DisposableMixin).Assembly };
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (null, assemblies);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
-      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (Photo)), Is.True);
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (DisposableMixinTest.C)), Is.True);
     }
   }
 }

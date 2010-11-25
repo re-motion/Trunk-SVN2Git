@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Samples;
+using Remotion.Mixins.Samples.UsesAndExtends.Core;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
@@ -141,7 +140,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_ForceUnsignedTrue_BecauseOfGenericTypeArgument ()
     {
-      var mixinType = typeof (EquatableMixin<BaseType1>);
+      var mixinType = typeof (List<BaseType1>);
       Assert.That (ReflectionUtility.IsAssemblySigned (mixinType.Assembly), Is.True);
       Assert.That (ReflectionUtility.IsAssemblySigned (mixinType.GetGenericArguments ()[0].Assembly), Is.False);
       var identifier = new ConcreteMixinTypeIdentifier (mixinType, new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
