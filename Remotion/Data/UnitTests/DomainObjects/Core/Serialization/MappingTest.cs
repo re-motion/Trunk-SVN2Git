@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -48,12 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
 
-      PropertyDefinition deserializedPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (propertyDefinition);
-
-      Assert.IsFalse (ReferenceEquals (propertyDefinition, deserializedPropertyDefinition));
-      Assert.IsFalse (ReferenceEquals (propertyDefinition.ClassDefinition, deserializedPropertyDefinition.ClassDefinition));
-      AreEqual (propertyDefinition, deserializedPropertyDefinition);
-
+      SerializeAndDeserialize (propertyDefinition);
     }
 
     [Test]
@@ -74,8 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "PropertyName", "ColumnName", typeof (int), StorageClass.Persistent);
 
-      PropertyDefinition deserializedPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (propertyDefinition);
-      AreEqual (propertyDefinition, deserializedPropertyDefinition);
+      SerializeAndDeserialize (propertyDefinition);
     }
 
     [Test]
@@ -121,10 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       new RelationDefinition ("OrderToOrderTicket", orderEndPointDefinition, orderTicketEndPointdefinition);
 
-      RelationEndPointDefinition deserializedOrderTicketEndPointdefinition = (RelationEndPointDefinition) SerializeAndDeserialize (orderTicketEndPointdefinition);
-
-      Assert.IsFalse (ReferenceEquals (orderTicketEndPointdefinition, deserializedOrderTicketEndPointdefinition));
-      AreEqual (orderTicketEndPointdefinition, deserializedOrderTicketEndPointdefinition);
+      SerializeAndDeserialize (orderTicketEndPointdefinition);
     }
 
     [Test]
@@ -239,10 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
         + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
         + "TestDomain.Integration.Order.OrderTicket");
-      RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
-
-      Assert.IsFalse (ReferenceEquals (relationDefinition, deserializedRelationDefinition));
-      AreEqual (relationDefinition, deserializedRelationDefinition);
+      SerializeAndDeserialize (relationDefinition);
     }
 
     [Test]
@@ -254,7 +241,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
       Assert.AreSame (relationDefinition, deserializedRelationDefinition);
-      AreEqual (relationDefinition, deserializedRelationDefinition);
     }
 
     [Test]
@@ -281,8 +267,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDefinitionCollection deserializedDefinitions = (ClassDefinitionCollection) SerializeAndDeserialize (definitions);
 
       Assert.IsFalse (ReferenceEquals (definitions, deserializedDefinitions));
-      AreEqual (definitions[0], deserializedDefinitions[0]);
-      AreEqual (definitions[1], deserializedDefinitions[1]);
+      Assert.AreSame (definitions[0], deserializedDefinitions[0]);
+      Assert.AreSame (definitions[1], deserializedDefinitions[1]);
       Assert.IsTrue (deserializedDefinitions.Contains (definitions[0].ID));
     }
 
@@ -293,10 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassDefinition classDefinition = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
 
-      ClassDefinition deserializedClassDefinition = (ClassDefinition) SerializeAndDeserialize (classDefinition);
-
-      Assert.IsFalse (ReferenceEquals (classDefinition, deserializedClassDefinition));
-      AreEqual (classDefinition, deserializedClassDefinition);
+      SerializeAndDeserialize (classDefinition);
     }
 
     [Test]
@@ -328,79 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       PropertyDefinition deserializedEnumPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (enumPropertyDefinition);
 
-      AreEqual (enumPropertyDefinition, deserializedEnumPropertyDefinition);
-    }
-
-    private void AreEqual (ClassDefinition expected, ClassDefinition actual)
-    {
-      Assert.AreEqual (expected.ID, actual.ID);
-
-      if (expected.BaseClass != null)
-        Assert.AreEqual (expected.BaseClass.ID, actual.BaseClass.ID);
-      else
-        Assert.IsNull (actual.BaseClass);
-
-      Assert.AreEqual (expected.ClassType, actual.ClassType);
-      Assert.AreEqual (StorageModelTestHelper.GetEntityName(expected), StorageModelTestHelper.GetEntityName(actual));
-      Assert.AreEqual (expected.StorageProviderDefinition.Name, actual.StorageProviderDefinition.Name);
-
-      Assert.AreEqual (expected.DerivedClasses.Count, actual.DerivedClasses.Count);
-      for (int i = 0; i < expected.DerivedClasses.Count; i++)
-        AreEqual (expected.DerivedClasses[i], actual.DerivedClasses[i]);
-
-      Assert.AreEqual (expected.MyPropertyDefinitions.Count, actual.MyPropertyDefinitions.Count);
-      for (int i = 0; i < expected.MyPropertyDefinitions.Count; i++)
-        AreEqual (expected.MyPropertyDefinitions[i], actual.MyPropertyDefinitions[i]);
-
-      Assert.AreEqual (expected.MyRelationDefinitions.Count, actual.MyRelationDefinitions.Count);
-      for (int i = 0; i < expected.MyRelationDefinitions.Count; i++)
-        AreEqual (expected.MyRelationDefinitions[i], actual.MyRelationDefinitions[i]);
-    }
-
-    private void AreEqual (RelationDefinition expected, RelationDefinition actual)
-    {
-      Assert.AreEqual (expected.ID, actual.ID);
-      Assert.AreEqual (expected.EndPointDefinitions.Count, actual.EndPointDefinitions.Count);
-
-      for (int i = 0; i < expected.EndPointDefinitions.Count; i++)
-        AreEqual (expected.EndPointDefinitions[i], actual.EndPointDefinitions[i]);
-    }
-
-    private void AreEqual (IRelationEndPointDefinition expected, IRelationEndPointDefinition actual)
-    {
-      Assert.AreEqual (expected.GetType (), actual.GetType ());
-
-      Assert.AreEqual (expected.Cardinality, actual.Cardinality);
-      Assert.AreEqual (expected.ClassDefinition.ID, actual.ClassDefinition.ID);
-      Assert.AreEqual (expected.IsMandatory, actual.IsMandatory);
-      Assert.AreEqual (expected.IsAnonymous, actual.IsAnonymous);
-      Assert.AreEqual (expected.IsVirtual, actual.IsVirtual);
-      Assert.AreEqual (expected.PropertyName, actual.PropertyName);
-      Assert.AreEqual (expected.PropertyType, actual.PropertyType);
-
-      if (expected.RelationDefinition != null)
-        Assert.AreEqual (expected.RelationDefinition.ID, actual.RelationDefinition.ID);
-      else
-        Assert.IsNull (actual.RelationDefinition);
-
-      if (expected.GetType () == typeof (VirtualRelationEndPointDefinition))
-        Assert.AreEqual (((VirtualRelationEndPointDefinition) expected).GetSortExpression(), ((VirtualRelationEndPointDefinition) actual).GetSortExpression());
-    }
-
-    private void AreEqual (PropertyDefinition expected, PropertyDefinition actual)
-    {
-      if (expected.ClassDefinition != null)
-        Assert.AreEqual (expected.ClassDefinition.ID, actual.ClassDefinition.ID);
-      else
-        Assert.IsNull (actual.ClassDefinition);
-
-      Assert.AreEqual (StorageModelTestHelper.GetColumnName(expected), StorageModelTestHelper.GetColumnName(actual));
-      Assert.AreEqual (expected.DefaultValue, actual.DefaultValue);
-      Assert.AreEqual (expected.IsNullable, actual.IsNullable);
-      Assert.AreEqual (expected.MaxLength, actual.MaxLength);
-      Assert.AreEqual (expected.PropertyName, actual.PropertyName);
-      Assert.AreEqual (expected.PropertyType, actual.PropertyType);
-      Assert.AreEqual (expected.StorageClass, actual.StorageClass);
+      Assert.AreSame (enumPropertyDefinition, deserializedEnumPropertyDefinition);
     }
   }
 }
