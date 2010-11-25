@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -51,28 +52,20 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
+      var relationDefinitionsForClass = new RelationDefinitionCollection();
       foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition))
       {
         RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
         if (!relationDefinitions.Contains (relationDefinition.ID))
-        {
           relationDefinitions.Add (relationDefinition);
-          AddRelationDefinitionToClassDefinitions (relationDefinition);
-        }
+        else
+          relationDefinition = relationDefinitions[relationDefinition.ID];
+        
+        if (!relationDefinitionsForClass.Contains (relationDefinition))
+          relationDefinitionsForClass.Add (relationDefinition);
       }
-    }
-
-    private void AddRelationDefinitionToClassDefinitions (RelationDefinition relationDefinition)
-    {
-      IRelationEndPointDefinition endPoint1 = relationDefinition.EndPointDefinitions[0];
-      IRelationEndPointDefinition endPoint2 = relationDefinition.EndPointDefinitions[1];
-
-      if (!endPoint1.IsAnonymous)
-        endPoint1.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
-
-      if (endPoint1.ClassDefinition != endPoint2.ClassDefinition && !endPoint2.IsAnonymous)
-        endPoint2.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
+      classDefinition.SetRelationDefinitions (relationDefinitionsForClass.Cast<RelationDefinition>());
     }
 
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)

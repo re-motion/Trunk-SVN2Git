@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Utilities;
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     private readonly DomainObject[] _domainObjects;
     private readonly DomainObjectCollection[] _collections;
-    private readonly ArrayList _states = new ArrayList();
+    private readonly List<ChangeState> _states = new List<ChangeState>();
     private int _cancelEventNumber;
 
     // construction and disposing
@@ -98,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public ChangeState this [int index]
     {
-      get { return (ChangeState) _states[index]; }
+      get { return _states[index]; }
     }
 
     public int Count
@@ -115,11 +116,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
         try
         {
-          ((ChangeState) _states[i]).Check (expectedStates[i]);
+          _states[i].Check (expectedStates[i]);
         }
         catch (Exception e)
         {
-          Assert.Fail (string.Format ("{0}: {1}", expectedStates[i].Message, e.Message));
+          Assert.Fail (
+              string.Format (
+                  "{0}\r\nExpected state: {1} - {2} - {3} \r\nActual state: {4} - {5} - {6}",
+                  e.Message,
+                  expectedStates[i].GetType().Name,
+                  expectedStates[i].Message,
+                  expectedStates[i].Sender,
+                  _states[i].GetType().Name,
+                  _states[i].Message,
+                  _states[i].Sender));
         }
       }
 
