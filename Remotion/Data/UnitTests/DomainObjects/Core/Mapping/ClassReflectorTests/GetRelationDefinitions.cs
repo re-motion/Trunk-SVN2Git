@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -344,19 +343,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
           false);
 
       CreatePropertyDefinitionsForClassWithRealRelationEndPoints (classDefinition);
-
-      return classDefinition;
-    }
-
-    private ClassDefinition CreateClassWithMixedPropertiesClassDefinition ()
-    {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",
-          "ClassWithMixedProperties",
-          c_testDomainProviderID,
-          typeof (ClassWithMixedProperties),
-          false);
-
-      CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 
       return classDefinition;
     }

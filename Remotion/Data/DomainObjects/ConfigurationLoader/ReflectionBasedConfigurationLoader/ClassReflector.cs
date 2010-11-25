@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
@@ -76,13 +77,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return classDefinition;
     }
 
-    private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, MemberInfo[] propertyInfos)
+    private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, IEnumerable<MemberInfo> propertyInfos)
     {
-      foreach (PropertyInfo propertyInfo in propertyInfos)
-      {
-        PropertyReflector propertyReflector = new PropertyReflector (classDefinition, propertyInfo, NameResolver);
-        classDefinition.MyPropertyDefinitions.Add (propertyReflector.GetMetadata());
-      }
+      var propertyDefinitionsForClass = (from PropertyInfo propertyInfo in propertyInfos
+                                         select new PropertyReflector (classDefinition, propertyInfo, NameResolver)
+                                         into propertyReflector select propertyReflector.GetMetadata()).Cast<PropertyDefinition>().ToList();
+      classDefinition.SetPropertyDefinitions (propertyDefinitionsForClass);
     }
 
     private string GetID ()
