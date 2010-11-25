@@ -126,13 +126,13 @@ namespace Remotion.Reflection
 
     public override bool Equals (object obj)
     {
-      // TODO Review 3351: Please rewrite using the standard pattern for classes that may derived from; see task description
-      var other = obj as InterfaceImplementationMethodInformation;
-
-      if (other == null)
+      if (obj == null)
+        return false;
+      if (obj.GetType() != GetType()) 
         return false;
 
-      return _implementationMethodInfo.Equals (other._implementationMethodInfo) && _declarationMethodInfo.Equals(other._declarationMethodInfo);
+      var other = (InterfaceImplementationMethodInformation) obj;
+      return _implementationMethodInfo.Equals (other._implementationMethodInfo) && _declarationMethodInfo.Equals (other._declarationMethodInfo);
     }
 
     public override int GetHashCode ()
