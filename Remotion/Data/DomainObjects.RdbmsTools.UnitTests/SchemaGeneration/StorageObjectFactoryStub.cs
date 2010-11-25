@@ -25,13 +25,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
 {
   public class StorageObjectFactoryStub : IStorageObjectFactory
   {
-    private readonly StorageProviderStubDefinition _storageProviderStubDefinition;
-
     public StorageObjectFactoryStub (StorageProviderStubDefinition storageProviderStubDefinition)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderStubDefinition", storageProviderStubDefinition);
-
-      _storageProviderStubDefinition = storageProviderStubDefinition;
     }
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)

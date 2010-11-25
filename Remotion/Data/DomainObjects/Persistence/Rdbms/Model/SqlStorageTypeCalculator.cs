@@ -28,6 +28,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
+    public SqlStorageTypeCalculator ()
+    {
+    }
+
     protected override string SqlDataTypeObjectID
     {
       get { return "uniqueidentifier"; }

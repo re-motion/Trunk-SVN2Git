@@ -28,7 +28,6 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  // TODO Review 3507: Move to Persistence.Rdbms namespace
   [TestFixture]
   public class SqlStorageObjectFactoryTest
   {
@@ -93,7 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _sqlProviderFactory.CreatePersistenceModelLoader();
 
       Assert.That (result, Is.TypeOf (typeof (PersistenceModelLoader)));
-      Assert.That (PrivateInvoke.GetNonPublicField (_sqlProviderFactory, "_storagePropertyDefinitionFactory"), Is.TypeOf (typeof (ColumnDefinitionFactory)));
+      Assert.That (((PersistenceModelLoader) result).StoragePropertyDefinitionFactory, Is.TypeOf (typeof (ColumnDefinitionFactory)));
+      Assert.That (((PersistenceModelLoader) result).StorageProviderID, Is.EqualTo ("TestDomain"));
     }
   }
 }

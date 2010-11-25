@@ -36,7 +36,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition) : this(storageProviderDefinition, typeof(SqlProvider))
     {
-      
     }
 
     protected SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition, Type storageProviderType)

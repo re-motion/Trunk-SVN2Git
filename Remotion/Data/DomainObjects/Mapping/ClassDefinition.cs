@@ -344,6 +344,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageEntityDefinition = storageEntityDefinition;
     }
 
+    // TODO Review 3511: Remove this method
     public void SetStorageProviderDefinition (StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -380,6 +381,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageEntityDefinition; }
     }
 
+    // TODO Review 3511: Move this property to IStorageEntityDefinition
     public StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }

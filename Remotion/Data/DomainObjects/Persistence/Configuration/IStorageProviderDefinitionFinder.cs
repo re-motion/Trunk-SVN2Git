@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Mapping;
 
+// TODO Review 3511: Move to Persistence namespace
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
   /// <summary>

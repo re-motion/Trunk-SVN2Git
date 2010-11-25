@@ -41,6 +41,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _storageProviderID = storageProviderID;
     }
 
+    public string StorageProviderID
+    {
+      get { return _storageProviderID; }
+    }
+
+    public IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory
+    {
+      get { return _storagePropertyDefinitionFactory; }
+    }
+
     public void ApplyPersistenceModelToHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -124,6 +134,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
+        // TODO Review 3511: Pass in the finder that was received in the ctor
         var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
         propertyDefinition.SetStorageProperty (storageProperty);
       }

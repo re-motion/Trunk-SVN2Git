@@ -134,8 +134,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var providerDefinition = 
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_startingClassDefinition.StorageProviderDefinition.Name);
+      var providerDefinition = _startingClassDefinition.StorageProviderDefinition;
 
       // Natively supported types can be executed as scalar queries
       if (providerDefinition.TypeProvider.IsTypeSupported (typeof (T)))

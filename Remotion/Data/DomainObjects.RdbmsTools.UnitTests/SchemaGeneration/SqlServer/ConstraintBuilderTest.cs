@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
@@ -109,9 +110,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
       thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
 
-      firstClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
-      secondClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
-      thirdClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
+      firstClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      secondClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      thirdClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
 
       _constraintBuilder.AddConstraint (firstClass);
 
@@ -171,9 +172,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
       otherClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
 
-      baseClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
-      derivedClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
-      otherClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
+      baseClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      derivedClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      otherClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
       
       _constraintBuilder.AddConstraint (baseClass);
 

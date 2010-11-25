@@ -70,20 +70,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var typeWithoutDBTableAttribute2 = typeof (Partner);
       var typeWithoutDBTableAttribute3 = typeof (Supplier);
 
-      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithoutDBTableAttribute1, null);
-      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithoutDBTableAttribute1, _baseBaseClassDefinition);
-      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithDBTableAttribute1, _baseClassDefinition);
-      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithDBTableAttribute2, _baseClassDefinition);
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithoutDBTableAttribute1, _tableClassDefinition2);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
           typeWithoutDBTableAttribute2, _tableClassDefinition2);
       _derivedDerivedClassDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeWithoutDBTableAttribute3, _derivedClassDefinition2);
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (typeWithoutDBTableAttribute3, _derivedClassDefinition2);
 
       _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (_baseBaseClassDefinition, "BaseBaseProperty");
       _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty");
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistentModelToHierarchy_NonPersistentPropertiesAreFiltered ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (typeof (Order), null);
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.MyPropertyDefinitions.Add (nonPersistentProperty);
@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void ApplyPersistentModelToHierarchy_TableNameOfTheDBTableAttributeIsUsed ()
     {
       var classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
 
       _columnDefinitionFactoryMock.Replay ();
