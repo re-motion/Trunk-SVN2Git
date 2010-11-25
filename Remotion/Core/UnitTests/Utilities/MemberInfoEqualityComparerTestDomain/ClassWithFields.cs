@@ -13,10 +13,13 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals
+
+//Then, move this whole namespace up to Utilities, rename to Utilities\MemberInfoEqualityComparerTestDomain
+namespace Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain
 {
-  public class DerivedClassWithProperties : ClassWithProperties
+  public class ClassWithFields
   {
+    public int Field1;
+    public int Field2;
   }
 }

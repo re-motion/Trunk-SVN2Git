@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals;
+using Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities

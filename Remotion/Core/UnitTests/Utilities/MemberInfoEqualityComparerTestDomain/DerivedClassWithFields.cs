@@ -14,12 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals
+namespace Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain
 {
-  public class GenericClassWithMethods<T>
+  public class DerivedClassWithFields : ClassWithFields
   {
-    public void SimpleMethod ()
-    {
-    }
   }
 }

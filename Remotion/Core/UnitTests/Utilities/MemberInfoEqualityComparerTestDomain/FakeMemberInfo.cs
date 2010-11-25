@@ -17,7 +17,7 @@
 using System;
 using System.Reflection;
 
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals
+namespace Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain
 {
   public class FakeMemberInfo : MemberInfo
   {

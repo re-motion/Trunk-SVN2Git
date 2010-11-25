@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// TODO Review 3350: Check that the classes in this namespace are only used by MemberInfoEqualityComparerTest. Then, move this whole namespace up to Utilities, rename to Utilities\MemberInfoEqualityComparerTestDomain
-namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain.MemberInfoEquals
+namespace Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain
 {
-  public class ClassWithFields
+  public class GenericClassWithMethods<T>
   {
-    public int Field1;
-    public int Field2;
+    public void SimpleMethod ()
+    {
+    }
   }
 }
