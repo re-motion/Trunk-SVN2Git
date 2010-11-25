@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -28,23 +29,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   public class MappingTest : SerializationBaseTest
   {
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithoutClassDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassID", "EntityName", "TestDomain", typeof (Order), false);
+      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
 
       SerializeAndDeserialize (propertyDefinition);
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The ReflectionBasedPropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "The ReflectionBasedPropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithClassDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassID", "EntityName", "TestDomain", typeof (Order), false);
+      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
 
       SerializeAndDeserialize (propertyDefinition);
@@ -56,17 +61,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
       PropertyDefinition orderNumberDefinition = orderDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
 
-      PropertyDefinition deserializedOrderNumberDefinition = (PropertyDefinition) SerializeAndDeserialize (orderNumberDefinition);
-      Assert.AreSame (orderNumberDefinition, deserializedOrderNumberDefinition);
+      var deserializedOrderNumberDefinition = (PropertyDefinition) SerializeAndDeserialize (orderNumberDefinition);
+      Assert.That (deserializedOrderNumberDefinition, Is.SameAs (orderNumberDefinition));
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithUnresolvedNativePropertyType_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(classDefinition, "PropertyName", "ColumnName", typeof (int), StorageClass.Persistent);
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", "TestDomain", typeof (Order), false);
+      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          classDefinition, "PropertyName", "ColumnName", typeof (int), StorageClass.Persistent);
 
       SerializeAndDeserialize (propertyDefinition);
     }
@@ -74,26 +81,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void SimplePropertyDefinitionCollection ()
     {
-      PropertyDefinitionCollection definitions = new PropertyDefinitionCollection ();
+      var definitions = new PropertyDefinitionCollection();
       definitions.Add (MappingConfiguration.Current.ClassDefinitions["Order"].MyPropertyDefinitions[0]);
       definitions.Add (MappingConfiguration.Current.ClassDefinitions["Order"].MyPropertyDefinitions[1]);
 
-      PropertyDefinitionCollection deserializedDefinitions = (PropertyDefinitionCollection) SerializeAndDeserialize (definitions);
+      var deserializedDefinitions = (PropertyDefinitionCollection) SerializeAndDeserialize (definitions);
 
-      Assert.IsFalse (ReferenceEquals (definitions, deserializedDefinitions));
-      Assert.AreEqual (definitions.Count, deserializedDefinitions.Count);
-      Assert.AreSame (definitions[0], deserializedDefinitions[0]);
-      Assert.AreSame (definitions[1], deserializedDefinitions[1]);
+      Assert.That (ReferenceEquals (definitions, deserializedDefinitions), Is.False);
+      Assert.That (deserializedDefinitions.Count, Is.EqualTo (definitions.Count));
+      Assert.That (deserializedDefinitions[0], Is.SameAs (definitions[0]));
+      Assert.That (deserializedDefinitions[1], Is.SameAs (definitions[1]));
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
-      classDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
-      RelationEndPointDefinition endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
+      classDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
+      var endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
 
       SerializeAndDeserialize (endPointdefinition);
     }
@@ -103,14 +113,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
-      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
+      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
-      orderTicketDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo(orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false,StorageClass.Persistent));
+      orderTicketDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
 
-      VirtualRelationEndPointDefinition orderEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
+      VirtualRelationEndPointDefinition orderEndPointDefinition =
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
-      RelationEndPointDefinition orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
+      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
 
       new RelationDefinition ("OrderToOrderTicket", orderEndPointDefinition, orderTicketEndPointdefinition);
 
@@ -120,41 +136,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationEndPointDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = 
-        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"];
-      RelationEndPointDefinition endPointDefinition = (RelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("OrderTicket", 
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions[
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
+          + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
+        ];
+      var endPointDefinition = (RelationEndPointDefinition) relationDefinition.GetEndPointDefinition (
+          "OrderTicket",
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
-      RelationEndPointDefinition deserializedEndPointDefinition = (RelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
-      Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
+      var deserializedEndPointDefinition = (RelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
+      Assert.That (deserializedEndPointDefinition, Is.SameAs (endPointDefinition));
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage =
+        "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", "TestDomain", typeof (Order), false);
 
-      VirtualRelationEndPointDefinition endPointdefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(classDefinition, "OrderTicket", true, CardinalityType.One, typeof (Order));
+      VirtualRelationEndPointDefinition endPointdefinition =
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              classDefinition, "OrderTicket", true, CardinalityType.One, typeof (Order));
 
       SerializeAndDeserialize (endPointdefinition);
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage =
+        "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
-      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
+      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
-      orderTicketDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
+      orderTicketDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
 
-      VirtualRelationEndPointDefinition orderEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
+      VirtualRelationEndPointDefinition orderEndPointDefinition =
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
-      RelationEndPointDefinition orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
+      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
 
       new RelationDefinition ("OrderToOrderTicket", orderEndPointDefinition, orderTicketEndPointdefinition);
 
@@ -164,42 +191,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void VirtualRelationEndPointDefinitionInMapping ()
     {
-      RelationDefinition relationDefinition = 
-        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
-       + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"];
-      VirtualRelationEndPointDefinition endPointDefinition = (VirtualRelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("Order", 
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions[
+        "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
+      ];
+      var endPointDefinition = (VirtualRelationEndPointDefinition) relationDefinition.GetEndPointDefinition (
+          "Order",
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
 
-      VirtualRelationEndPointDefinition deserializedEndPointDefinition = (VirtualRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
-      Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
+      var deserializedEndPointDefinition =
+          (VirtualRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
+      Assert.That (deserializedEndPointDefinition, Is.SameAs (endPointDefinition));
     }
 
     [Test]
     [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")]
+        ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")
+    ]
     public void AnonymousRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false);
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Client", "Client", "TestDomain", typeof (Client), false);
 
-      AnonymousRelationEndPointDefinition endPointdefinition = new AnonymousRelationEndPointDefinition (classDefinition);
+      var endPointdefinition = new AnonymousRelationEndPointDefinition (classDefinition);
 
       SerializeAndDeserialize (endPointdefinition);
     }
 
     [Test]
     [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")]
+        ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")
+    ]
     public void AnonymousRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition clientDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false);
-      ReflectionBasedClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Location", "Location", "TestDomain", typeof (Location), false);
+      ReflectionBasedClassDefinition clientDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Client", "Client", "TestDomain", typeof (Client), false);
+      ReflectionBasedClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Location", "Location", "TestDomain", typeof (Location), false);
 
-      locationDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent));
+      locationDefinition.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent));
 
-      AnonymousRelationEndPointDefinition clientEndPointDefinition = new AnonymousRelationEndPointDefinition (clientDefinition);
-      RelationEndPointDefinition locationEndPointDefinition = new RelationEndPointDefinition (locationDefinition, "Client", true);
+      var clientEndPointDefinition = new AnonymousRelationEndPointDefinition (clientDefinition);
+      var locationEndPointDefinition = new RelationEndPointDefinition (locationDefinition, "Client", true);
 
-      new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", clientEndPointDefinition, locationEndPointDefinition);
+      new RelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", clientEndPointDefinition, locationEndPointDefinition);
 
       SerializeAndDeserialize (clientEndPointDefinition);
     }
@@ -207,69 +245,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void AnonymousRelationEndPointDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = 
-        MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Location:"
-        +"Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"];
-      AnonymousRelationEndPointDefinition endPointDefinition = (AnonymousRelationEndPointDefinition) relationDefinition.GetOppositeEndPointDefinition ("Location", 
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions[
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location:"
+          + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"];
+      var endPointDefinition =
+          (AnonymousRelationEndPointDefinition) relationDefinition.GetOppositeEndPointDefinition (
+              "Location",
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
 
-      AnonymousRelationEndPointDefinition deserializedEndPointDefinition = (AnonymousRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
-      Assert.AreSame (endPointDefinition, deserializedEndPointDefinition);
+      var deserializedEndPointDefinition =
+          (AnonymousRelationEndPointDefinition) SerializeAndDeserialize (endPointDefinition);
+      Assert.That (deserializedEndPointDefinition, Is.SameAs (endPointDefinition));
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), 
-      ExpectedMessage = "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:"
-      +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->"
-      +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket' cannot be serialized because is is not part of "
-      +"the current mapping.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "The RelationDefinition 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:"
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->"
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket' cannot be serialized because is is not part of "
+        + "the current mapping.")]
     public void RelationDefinition_NotInMapping ()
     {
       RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory (
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        + "TestDomain.Integration.Order.OrderTicket");
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          + "TestDomain.Integration.Order.OrderTicket");
       SerializeAndDeserialize (relationDefinition);
     }
 
     [Test]
     public void RelationDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition = 
-        MappingConfiguration.Current.RelationDefinitions.GetMandatory ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      RelationDefinition deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
+      RelationDefinition relationDefinition =
+          MappingConfiguration.Current.RelationDefinitions.GetMandatory (
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
+              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
-      Assert.AreSame (relationDefinition, deserializedRelationDefinition);
+      Assert.That (deserializedRelationDefinition, Is.SameAs (relationDefinition));
     }
 
     [Test]
     public void SimpleRelationDefinitionCollection ()
     {
-      RelationDefinitionCollection definitions = new RelationDefinitionCollection ();
+      var definitions = new RelationDefinitionCollection();
       definitions.Add (MappingConfiguration.Current.RelationDefinitions[0]);
       definitions.Add (MappingConfiguration.Current.RelationDefinitions[1]);
 
-      RelationDefinitionCollection deserializedDefinitions = (RelationDefinitionCollection) SerializeAndDeserialize (definitions);
+      var deserializedDefinitions = (RelationDefinitionCollection) SerializeAndDeserialize (definitions);
 
-      Assert.IsFalse (ReferenceEquals (definitions, deserializedDefinitions));
-      Assert.AreSame (definitions[0], deserializedDefinitions[0]);
-      Assert.AreSame (definitions[1], deserializedDefinitions[1]);
+      Assert.That (ReferenceEquals (definitions, deserializedDefinitions), Is.False);
+      Assert.That (deserializedDefinitions[0], Is.SameAs (definitions[0]));
+      Assert.That (deserializedDefinitions[1], Is.SameAs (definitions[1]));
     }
 
     [Test]
     public void SimpleClassDefinitionCollection ()
     {
-      ClassDefinitionCollection definitions = new ClassDefinitionCollection ();
+      var definitions = new ClassDefinitionCollection();
       definitions.Add (MappingConfiguration.Current.ClassDefinitions[0]);
       definitions.Add (MappingConfiguration.Current.ClassDefinitions[1]);
 
-      ClassDefinitionCollection deserializedDefinitions = (ClassDefinitionCollection) SerializeAndDeserialize (definitions);
+      var deserializedDefinitions = (ClassDefinitionCollection) SerializeAndDeserialize (definitions);
 
-      Assert.IsFalse (ReferenceEquals (definitions, deserializedDefinitions));
-      Assert.AreSame (definitions[0], deserializedDefinitions[0]);
-      Assert.AreSame (definitions[1], deserializedDefinitions[1]);
-      Assert.IsTrue (deserializedDefinitions.Contains (definitions[0].ID));
+      Assert.That (ReferenceEquals (definitions, deserializedDefinitions), Is.False);
+      Assert.That (deserializedDefinitions[0], Is.SameAs (definitions[0]));
+      Assert.That (deserializedDefinitions[1], Is.SameAs (definitions[1]));
+      Assert.That (deserializedDefinitions.Contains (definitions[0].ID), Is.True);
     }
 
     [Test]
@@ -288,30 +330,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       // Note: Partner has a base class and several derived classes.
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
 
-      ClassDefinition deserializedClassDefinition = (ClassDefinition) SerializeAndDeserialize (classDefinition);
+      var deserializedClassDefinition = (ClassDefinition) SerializeAndDeserialize (classDefinition);
 
-      Assert.AreSame (classDefinition, deserializedClassDefinition);
+      Assert.That (deserializedClassDefinition, Is.SameAs (classDefinition));
     }
 
     [Test]
     public void PropertyDefinitionCollectionInMapping ()
     {
       PropertyDefinitionCollection definitions = MappingConfiguration.Current.ClassDefinitions["Order"].MyPropertyDefinitions;
-      PropertyDefinitionCollection deserializedDefinitions = (PropertyDefinitionCollection) SerializeAndDeserialize (definitions);
+      var deserializedDefinitions = (PropertyDefinitionCollection) SerializeAndDeserialize (definitions);
 
-      Assert.IsFalse (ReferenceEquals (definitions, deserializedDefinitions));
-      Assert.AreSame (definitions.ClassDefinition, deserializedDefinitions.ClassDefinition);
+      Assert.That (definitions, Is.Not.SameAs (deserializedDefinitions));
+      Assert.That (deserializedDefinitions.ClassDefinition, Is.SameAs (definitions.ClassDefinition));
     }
 
     [Test]
     public void PropertyDefinitionWithEnumType ()
     {
       PropertyDefinition enumPropertyDefinition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer").MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
+          MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer").MyPropertyDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
 
-      PropertyDefinition deserializedEnumPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (enumPropertyDefinition);
+      var deserializedEnumPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (enumPropertyDefinition);
 
-      Assert.AreSame (enumPropertyDefinition, deserializedEnumPropertyDefinition);
+      Assert.That (deserializedEnumPropertyDefinition, Is.SameAs (enumPropertyDefinition));
     }
   }
 }
