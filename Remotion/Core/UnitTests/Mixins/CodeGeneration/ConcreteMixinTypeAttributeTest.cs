@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {

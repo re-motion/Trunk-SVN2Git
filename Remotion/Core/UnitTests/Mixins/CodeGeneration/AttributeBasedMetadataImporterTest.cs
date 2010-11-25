@@ -25,7 +25,7 @@ using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
 using System.Reflection;

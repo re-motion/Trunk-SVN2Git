@@ -27,7 +27,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration

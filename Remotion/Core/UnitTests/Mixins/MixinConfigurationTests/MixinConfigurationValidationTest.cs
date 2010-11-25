@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Validation;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
 {

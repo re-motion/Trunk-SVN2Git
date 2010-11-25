@@ -23,8 +23,8 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTool;
 using Remotion.UnitTests.Mixins.MixerTool.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.MixerTool

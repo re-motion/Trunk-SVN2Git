@@ -20,7 +20,7 @@ using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {

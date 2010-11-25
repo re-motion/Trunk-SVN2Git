@@ -24,7 +24,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
 

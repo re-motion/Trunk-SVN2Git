@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -84,8 +84,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "The supplied mixin of type 'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin1' is not valid for target type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType1' in the current configuration.")]
+        ExpectedMessage = "The supplied mixin of type 'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin1' is not valid for target type "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BaseType1' in the current configuration.")]
     public void ThrowsIfWrongMixinInstancesInScope ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));

@@ -22,7 +22,7 @@ using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration

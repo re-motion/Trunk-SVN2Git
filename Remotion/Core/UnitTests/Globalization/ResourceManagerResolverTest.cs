@@ -20,7 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Globalization;
-using Remotion.UnitTests.Globalization.SampleTypes;
+using Remotion.UnitTests.Globalization.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Globalization
@@ -160,7 +160,7 @@ namespace Remotion.UnitTests.Globalization
 
     [Test]
     [ExpectedException (typeof (ResourceException), ExpectedMessage = 
-        "Type Remotion.UnitTests.Globalization.SampleTypes.ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the "
+        "Type Remotion.UnitTests.Globalization.TestDomain.ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the "
         + "attribute MultiLingualResourcesAttribute.")]
     public void GetResourceManager_DefiningType_NoSuccess ()
     {
@@ -210,8 +210,8 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    [ExpectedException (typeof (ResourceException), ExpectedMessage = 
-        "Type Remotion.UnitTests.Globalization.SampleTypes.ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the "
+    [ExpectedException (typeof (ResourceException), ExpectedMessage =
+        "Type Remotion.UnitTests.Globalization.TestDomain.ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the "
         + "attribute MultiLingualResourcesAttribute.")]
     public void GetResourceManager_NoDefiningType_NoSuccess ()
     {

@@ -25,7 +25,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 {
@@ -91,9 +91,9 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The following mixins are applied to the same base class "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin2, "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullMixin4.\r\nPlease supply additional dependencies to the mixin definitions, use the "
+        + "Remotion.UnitTests.Mixins.TestDomain.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
+        + "Remotion.UnitTests.Mixins.TestDomain.NullMixin, Remotion.UnitTests.Mixins.TestDomain.NullMixin2, "
+        + "Remotion.UnitTests.Mixins.TestDomain.NullMixin4.\r\nPlease supply additional dependencies to the mixin definitions, use the "
         + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_Throws ()
     {
@@ -170,8 +170,8 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The following mixins are applied to the same base class "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin2, Remotion.UnitTests.Mixins.SampleTypes."
+        + "Remotion.UnitTests.Mixins.TestDomain.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
+        + "Remotion.UnitTests.Mixins.TestDomain.NullMixin, Remotion.UnitTests.Mixins.TestDomain.NullMixin2, Remotion.UnitTests.Mixins.TestDomain."
        + "MixinAcceptingAlphabeticOrdering1.\r\nPlease supply additional dependencies to the mixin definitions, use the "
        + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering_TwoNonAccepters ()

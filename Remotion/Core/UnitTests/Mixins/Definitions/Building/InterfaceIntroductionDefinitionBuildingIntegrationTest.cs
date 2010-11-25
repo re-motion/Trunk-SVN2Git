@@ -23,7 +23,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
@@ -235,7 +235,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IExplicit)));
 
         MethodInfo explicitMethod = typeof (MixinWithExplicitImplementation).GetMethod (
-            "Remotion.UnitTests.Mixins.SampleTypes.IExplicit.Explicit", BindingFlags.Instance | BindingFlags.NonPublic);
+            "Remotion.UnitTests.Mixins.TestDomain.IExplicit.Explicit", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.IsNotNull (explicitMethod);
 
         MixinDefinition m1 = bt1.Mixins[typeof (MixinWithExplicitImplementation)];

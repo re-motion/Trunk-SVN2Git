@@ -22,7 +22,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
-using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {

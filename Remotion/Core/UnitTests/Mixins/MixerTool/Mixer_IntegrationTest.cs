@@ -26,8 +26,8 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.MixerTool;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.TypeDiscovery;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {

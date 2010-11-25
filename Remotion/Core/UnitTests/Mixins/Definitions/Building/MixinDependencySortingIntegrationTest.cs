@@ -24,8 +24,8 @@ using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Definitions.Building
 {

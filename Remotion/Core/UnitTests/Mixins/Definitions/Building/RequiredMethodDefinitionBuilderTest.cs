@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
@@ -156,7 +156,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [ExpectedException (typeof (ConfigurationException),
         ExpectedMessage = "The dependency 'IRequirement' (required by mixin(s) "
                           + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.MixinRequiringSingleMethod' applied to class "
-                          + "'Remotion.UnitTests.Mixins.SampleTypes.NullTarget') is not fulfilled - public or protected method 'Void Method()' could not be found on "
+                          + "'Remotion.UnitTests.Mixins.TestDomain.NullTarget') is not fulfilled - public or protected method 'Void Method()' could not be found on "
                           + "the target class.")]
     public void ThrowsIfMethodRequirementIsNotFulfilled ()
     {
@@ -171,7 +171,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [ExpectedException (typeof (ConfigurationException),
         ExpectedMessage = "The dependency 'IRequirement' (required by mixin(s) "
                           + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.MixinRequiringSingleProperty' applied to class "
-                          + "'Remotion.UnitTests.Mixins.SampleTypes.NullTarget') is not fulfilled - public or protected method 'Int32 get_Property()' could not be "
+                          + "'Remotion.UnitTests.Mixins.TestDomain.NullTarget') is not fulfilled - public or protected method 'Int32 get_Property()' could not be "
                           + "found on the target class.")]
     public void ThrowsIfPropertyRequirementIsNotFulfilled ()
     {
@@ -186,7 +186,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [ExpectedException (typeof (ConfigurationException),
         ExpectedMessage = "The dependency 'IRequirement' (required by mixin(s) "
                           + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.MixinRequiringSingleEvent' applied to class "
-                          + "'Remotion.UnitTests.Mixins.SampleTypes.NullTarget') is not fulfilled - public or protected method 'Void add_Event(System.EventHandler)' "
+                          + "'Remotion.UnitTests.Mixins.TestDomain.NullTarget') is not fulfilled - public or protected method 'Void add_Event(System.EventHandler)' "
                           + "could not be found on the target class.")]
     public void ThrowsIfEventRequirementIsNotFulfilled ()
     {
@@ -199,7 +199,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The dependency 'IMixinRequiringAllMembersRequirements' (required by "
-                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.SampleTypes.MixinRequiringAllMembersFace' applied to class "
+                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersFace' applied to class "
                                                                            + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.ClassFulfillingPrivately') is not fulfilled - public "
                                                                            + "or protected method 'Void Method()' could not be found on the target class.")]
     public void ThrowsIfRequiredMethodIsPrivate ()
@@ -212,7 +212,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The dependency 'IMixinRequiringAllMembersRequirements' (required by "
-                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.SampleTypes.MixinRequiringAllMembersFace' applied to class "
+                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersFace' applied to class "
                                                                            + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.ClassFulfillingInternally') is not fulfilled - public "
                                                                            + "or protected method 'Void Method()' could not be found on the target class.")]
     public void ThrowsIfRequiredMethodIsInternal ()

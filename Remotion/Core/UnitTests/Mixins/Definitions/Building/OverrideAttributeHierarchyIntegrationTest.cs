@@ -19,7 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Definitions.Building
 {

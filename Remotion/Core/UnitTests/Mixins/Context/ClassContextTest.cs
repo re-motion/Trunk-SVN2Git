@@ -24,7 +24,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Context.Suppression;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
 

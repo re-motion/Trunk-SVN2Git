@@ -21,7 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration

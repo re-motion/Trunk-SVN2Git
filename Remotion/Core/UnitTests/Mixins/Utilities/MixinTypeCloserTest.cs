@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Utilities
 {
@@ -68,8 +68,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof(ConfigurationException), ExpectedMessage = "Cannot bind generic parameter 'T' of mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixin`1[T]' to generic parameter number 0 of target type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType1': The target type does not have so many parameters.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixin`1[T]' to generic parameter number 0 of target type "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BaseType1': The target type does not have so many parameters.")]
     public void GetClosedMixinType_UnmappablePosition ()
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType1));
@@ -78,8 +78,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T2' of mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAfterTargetBoundParameter`2[T1,T2]' applied to target class "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericTargetClass`1[System.String]' has a BindToGenericTargetParameterAttribute, but it is not at "
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithPositionalAfterTargetBoundParameter`2[T1,T2]' applied to target class "
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericTargetClass`1[System.String]' has a BindToGenericTargetParameterAttribute, but it is not at "
         + "the front of the generic parameters. The type parameters with BindToGenericTargetParameterAttributes must all be at the front, before any "
         + "other generic parameters.")]
     public void GetClosedMixinType_PositionalAfterFirstNonPositional ()
@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T' of mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAndTargetBoundParameter`1[T]' has more than one binding specification.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithPositionalAndTargetBoundParameter`1[T]' has more than one binding specification.")]
     public void GetClosedMixinType_PositionalAndTargetBound ()
     {
       var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T' of mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAndConstraintBoundParameter`1[T]' has more than one binding specification.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithPositionalAndConstraintBoundParameter`1[T]' has more than one binding specification.")]
     public void GetClosedMixinType_PositionalAndConstraintBound ()
     {
       var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
@@ -108,8 +108,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The generic mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithUnsatisfiableConstraints`1[T]' applied to class "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType3' cannot be automatically closed because the constraints of its type parameter 'T' cannot "
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithUnsatisfiableConstraints`1[T]' applied to class "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BaseType3' cannot be automatically closed because the constraints of its type parameter 'T' cannot "
         + "be unified into a single type. The generic type parameter has inconclusive constraints 'System.ICloneable' "
         + "and 'System.Runtime.Serialization.ISerializable', which cannot be unified into a single type.")]
     public void GetClosedMixinType_MixinWithUnsatisfiableConstraintsThrows ()
@@ -120,8 +120,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The generic mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithoutBindingInformation`1[T]' applied to class "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType3' cannot be automatically closed because its type parameter 'T' does not have any binding "
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithoutBindingInformation`1[T]' applied to class "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BaseType3' cannot be automatically closed because its type parameter 'T' does not have any binding "
         + "information. Apply the BindToTargetTypeAttribute, BindToConstraintsAttribute, or BindToGenericTargetParameterAttribute to the type parameter or specify the parameter's "
         + "instantiation when configuring the mixin for the target class.")]
     public void GetClosedMixinType_MixinWithoutBindingInformationThrows ()
@@ -132,10 +132,10 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Cannot close the generic mixin type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin3`2[TThis,TBase]' applied to class 'Remotion.UnitTests.Mixins.SampleTypes.BaseType1' - "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TThis,TBase]' applied to class 'Remotion.UnitTests.Mixins.TestDomain.BaseType1' - "
         + "the inferred type arguments violate the generic parameter constraints. Specify the arguments manually, modify the parameter binding "
-        + "specification, or relax the constraints. GenericArguments[0], 'Remotion.UnitTests.Mixins.SampleTypes.BaseType1', on "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin3`2[TThis,TBase]' violates the constraint of type 'TThis'.")]
+        + "specification, or relax the constraints. GenericArguments[0], 'Remotion.UnitTests.Mixins.TestDomain.BaseType1', on "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TThis,TBase]' violates the constraint of type 'TThis'.")]
     public void GetClosedMixinType_BindToInvalidTargetType ()
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType1));
@@ -144,7 +144,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T' of mixin "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithDoubleBindingInformation`1[T]' has more than one binding specification.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixinWithDoubleBindingInformation`1[T]' has more than one binding specification.")]
     public void GetClosedMixinType_BindToTargetAndConstraints ()
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType1));

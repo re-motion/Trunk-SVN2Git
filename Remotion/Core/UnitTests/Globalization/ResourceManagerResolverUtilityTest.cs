@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Globalization;
-using Remotion.UnitTests.Globalization.SampleTypes;
+using Remotion.UnitTests.Globalization.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Globalization

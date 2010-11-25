@@ -28,7 +28,7 @@ using Remotion.Mixins.Context;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;

@@ -22,7 +22,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The following group of mixins contains circular dependencies: "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin4.")]
+        + "Remotion.UnitTests.Mixins.TestDomain.NullMixin, Remotion.UnitTests.Mixins.TestDomain.NullMixin4.")]
     public void SortMixins_CircularDependencies ()
     {
       var mockRepository = new MockRepository ();

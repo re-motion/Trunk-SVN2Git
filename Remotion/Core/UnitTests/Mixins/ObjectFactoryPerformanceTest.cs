@@ -19,8 +19,8 @@ using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.SampleTypes.GeneratedTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
+using Remotion.UnitTests.Mixins.TestDomain.GeneratedTypes;
 
 namespace Remotion.UnitTests.Mixins
 {

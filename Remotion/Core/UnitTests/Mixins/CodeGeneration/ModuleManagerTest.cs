@@ -28,8 +28,8 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.TypeDiscovery;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {

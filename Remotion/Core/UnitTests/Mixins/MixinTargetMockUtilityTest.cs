@@ -23,7 +23,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins
@@ -91,7 +91,7 @@ namespace Remotion.UnitTests.Mixins
 
     [Test]
     [ExpectedException (typeof (MemberAccessException), ExpectedMessage = "Cannot create an instance of "
-        + "Remotion.UnitTests.Mixins.SampleTypes.MixinWithAbstractMembers because it is an abstract class.")]
+        + "Remotion.UnitTests.Mixins.TestDomain.MixinWithAbstractMembers because it is an abstract class.")]
     public void CreateMixinWithMockedTarget_AbstractMixin ()
     {
       var thisMock = new ClassOverridingMixinMembers();

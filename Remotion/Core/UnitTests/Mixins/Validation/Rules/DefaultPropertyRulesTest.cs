@@ -17,7 +17,7 @@
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
-using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
+using Remotion.UnitTests.Mixins.Validation.ValidationTestDomain;
 
 namespace Remotion.UnitTests.Mixins.Validation.Rules
 {

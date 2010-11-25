@@ -22,9 +22,9 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using System.Linq;
+using Remotion.UnitTests.Mixins.Validation.ValidationTestDomain;
 
 namespace Remotion.UnitTests.Mixins.Validation
 {
@@ -235,8 +235,8 @@ namespace Remotion.UnitTests.Mixins.Validation
       Assert.That (exception.Message, 
           Is.EqualTo ("Some parts of the mixin configuration could not be validated." 
               + Environment.NewLine
-              + "Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
-              + "Validation.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
+              + "Remotion.UnitTests.Mixins.Validation.ValidationTestDomain.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
+              + "Validation.ValidationTestDomain.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.TestDomain.ClassOverridingSingleMixinMethod):"
               + Environment.NewLine
               + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
               + Environment.NewLine));

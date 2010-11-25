@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization

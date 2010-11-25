@@ -22,7 +22,7 @@ using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.UnitTests.Mixins.Utilities.TestDomain.AssociatedMethods;
 using Rhino.Mocks;
 

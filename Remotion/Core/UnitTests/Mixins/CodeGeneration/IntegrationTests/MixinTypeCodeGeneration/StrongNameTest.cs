@@ -22,7 +22,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {

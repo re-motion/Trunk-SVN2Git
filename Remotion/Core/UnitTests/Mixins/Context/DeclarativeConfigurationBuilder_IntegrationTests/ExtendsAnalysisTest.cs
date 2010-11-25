@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
 using NUnit.Framework.SyntaxHelpers;
 

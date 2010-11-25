@@ -24,8 +24,8 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.Mixins.Globalization;
-using Remotion.UnitTests.Mixins.Globalization.SampleTypes;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.Globalization.TestDomain;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.Globalization
@@ -353,7 +353,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
     }
 
     [Test]
-    [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.Globalization.SampleTypes."
+    [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.Globalization.TestDomain."
         + "ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the attribute MultiLingualResourcesAttribute.")]
 		public void GetResourceManager_NoSuccess ()
     {

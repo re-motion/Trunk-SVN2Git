@@ -27,7 +27,7 @@ using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy

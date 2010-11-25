@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_IntegrationTests
 {

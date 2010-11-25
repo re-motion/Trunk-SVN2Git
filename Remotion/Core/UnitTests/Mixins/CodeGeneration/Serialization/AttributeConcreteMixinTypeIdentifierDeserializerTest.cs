@@ -20,9 +20,9 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration.Serialization;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using System.Linq;
+using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 {

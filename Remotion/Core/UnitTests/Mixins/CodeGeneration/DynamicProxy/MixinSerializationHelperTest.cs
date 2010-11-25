@@ -22,7 +22,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.Context;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {
@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "TypeTransformer returned type 'System.Object', which is not compatible "
         + "with the serialized mixin configuration. The configuration requires a type assignable to "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.MixinWithAbstractMembers'.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.MixinWithAbstractMembers'.")]
     public void Initialization_WithTypeTransformer_InvalidTransformedType_NonAssignable ()
     {
       MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);

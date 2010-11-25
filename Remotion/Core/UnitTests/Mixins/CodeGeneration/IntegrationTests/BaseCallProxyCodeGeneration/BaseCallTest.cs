@@ -21,7 +21,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProxyCodeGeneration
 {
@@ -58,15 +58,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
           Assert.IsTrue (req.Type.IsAssignableFrom (proxyType));
 
         MethodInfo methodImplementdByMixin =
-            proxyType.GetMethod ("Remotion.UnitTests.Mixins.SampleTypes.IBT3Mixin4.Foo", BindingFlags.NonPublic | BindingFlags.Instance);
+            proxyType.GetMethod ("Remotion.UnitTests.Mixins.TestDomain.IBT3Mixin4.Foo", BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.IsNotNull (methodImplementdByMixin);
 
         MethodInfo methodImplementdByBCOverridden =
-            proxyType.GetMethod ("Remotion.UnitTests.Mixins.SampleTypes.IBaseType31.IfcMethod", BindingFlags.NonPublic | BindingFlags.Instance);
+            proxyType.GetMethod ("Remotion.UnitTests.Mixins.TestDomain.IBaseType31.IfcMethod", BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.IsNotNull (methodImplementdByBCOverridden);
 
         MethodInfo methodImplementdByBCNotOverridden =
-            proxyType.GetMethod ("Remotion.UnitTests.Mixins.SampleTypes.IBaseType35.IfcMethod2", BindingFlags.NonPublic | BindingFlags.Instance);
+            proxyType.GetMethod ("Remotion.UnitTests.Mixins.TestDomain.IBaseType35.IfcMethod2", BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.IsNotNull (methodImplementdByBCNotOverridden);
       }
     }

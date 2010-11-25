@@ -22,7 +22,7 @@ using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No public or protected deserialization constructor in type "
-        + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithoutCtor - serialization is not supported.")]
+        + "Remotion.UnitTests.Reflection.CodeGeneration.TestDomain.SerializableClassWithoutCtor - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor", typeof (SerializableClassWithoutCtor),
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No public or protected GetObjectData in type "
-        + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithPrivateGetObjectData - serialization is not supported.")]
+        + "Remotion.UnitTests.Reflection.CodeGeneration.TestDomain.SerializableClassWithPrivateGetObjectData - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData", typeof (SerializableClassWithPrivateGetObjectData),

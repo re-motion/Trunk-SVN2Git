@@ -21,7 +21,7 @@ using Remotion.Mixins.Context.Suppression;
 using Remotion.Mixins.Context;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Context.Suppression
 {

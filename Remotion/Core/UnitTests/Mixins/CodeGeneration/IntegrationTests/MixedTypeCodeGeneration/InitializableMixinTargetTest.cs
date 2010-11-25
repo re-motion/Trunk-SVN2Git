@@ -22,9 +22,9 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Reflection;
 using System.Linq;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {

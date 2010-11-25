@@ -21,7 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 using System.Reflection;
 using Remotion.Mixins.Context;

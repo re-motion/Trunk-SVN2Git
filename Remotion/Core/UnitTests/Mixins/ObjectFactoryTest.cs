@@ -20,8 +20,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
+using Remotion.UnitTests.Mixins.Validation.ValidationTestDomain;
 
 namespace Remotion.UnitTests.Mixins
 {
@@ -391,7 +391,7 @@ namespace Remotion.UnitTests.Mixins
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The supplied mixin of type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1' is not valid for target type 'Remotion.UnitTests.Mixins.SampleTypes.BaseType3' in the "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BT2Mixin1' is not valid for target type 'Remotion.UnitTests.Mixins.TestDomain.BaseType3' in the "
         + "current configuration.")]
     public void ThrowsOnWrongMixinInstances ()
     {
@@ -401,8 +401,8 @@ namespace Remotion.UnitTests.Mixins
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Cannot instantiate mixin "
-       + "'Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.MixinWithPrivateCtorAndVirtualMethod' applied to class "
-       + "'Remotion.UnitTests.Mixins.SampleTypes.NullTarget', there is no visible default constructor.")]
+       + "'Remotion.UnitTests.Mixins.Validation.ValidationTestDomain.MixinWithPrivateCtorAndVirtualMethod' applied to class "
+       + "'Remotion.UnitTests.Mixins.TestDomain.NullTarget', there is no visible default constructor.")]
     public void ThrowsWhenMixinWithoutPublicDefaultCtorShouldBeInstantiated ()
     {
       using (

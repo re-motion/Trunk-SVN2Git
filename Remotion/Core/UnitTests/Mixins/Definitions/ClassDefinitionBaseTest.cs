@@ -20,8 +20,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.Definitions
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The type Remotion.UnitTests.Mixins.SampleTypes.GenericTargetClass`1[T] "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The type Remotion.UnitTests.Mixins.TestDomain.GenericTargetClass`1[T] "
         + "contains generic parameters, which is not allowed.\r\nParameter name: type")]
     public void Initialization_WithGenericParameters ()
     {

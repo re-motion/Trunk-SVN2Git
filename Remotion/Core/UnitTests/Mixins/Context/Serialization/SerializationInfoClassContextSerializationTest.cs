@@ -22,7 +22,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins;
 using System.Linq;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.Context.Serialization
 {

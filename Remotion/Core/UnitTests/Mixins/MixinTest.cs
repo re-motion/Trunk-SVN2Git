@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins
 {
@@ -59,8 +59,8 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (AmbiguousMatchException), ExpectedMessage = "Both mixins 'Remotion.UnitTests.Mixins.SampleTypes."
-        + "DerivedDerivedNullMixin' and 'Remotion.UnitTests.Mixins.SampleTypes.DerivedNullMixin' match the given type 'NullMixin'.")]
+    [ExpectedException (typeof (AmbiguousMatchException), ExpectedMessage = "Both mixins 'Remotion.UnitTests.Mixins.TestDomain."
+        + "DerivedDerivedNullMixin' and 'Remotion.UnitTests.Mixins.TestDomain.DerivedNullMixin' match the given type 'NullMixin'.")]
     public void MixinGet_AssignableMatchAmbiguity ()
     {
       using (MixinConfiguration.BuildNew().ForClass<NullTarget>().AddMixin<DerivedNullMixin>().AddMixin<DerivedDerivedNullMixin>().EnterScope())

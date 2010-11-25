@@ -22,7 +22,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Context.Suppression;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
@@ -74,8 +74,8 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The mixin Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1 already has a "
-        + "dependency on type Remotion.UnitTests.Mixins.SampleTypes.BT1Mixin1.", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The mixin Remotion.UnitTests.Mixins.TestDomain.BT2Mixin1 already has a "
+        + "dependency on type Remotion.UnitTests.Mixins.TestDomain.BT1Mixin1.", MatchType = MessageMatch.Contains)]
     public void WithDependency_Twice ()
     {
       _mixinBuilder.WithDependency (typeof (BT1Mixin1)).WithDependency (typeof (BT1Mixin1));
@@ -207,7 +207,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type 'Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1' applied "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type 'Remotion.UnitTests.Mixins.TestDomain.BT2Mixin1' applied "
         + "to target class 'System.Object' suppresses itself.")]
     public void ReplaceMixin_SelfSuppressor ()
     {
@@ -216,7 +216,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixin`1[System.Object]' applied "
+        + "'Remotion.UnitTests.Mixins.TestDomain.GenericMixin`1[System.Object]' applied "
         + "to target class 'System.Object' suppresses itself.")]
     public void ReplaceMixin_SelfSuppressor_GenericDefinition ()
     {

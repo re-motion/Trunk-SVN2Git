@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
-        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin'). The given types were: ('').")]
+        + "(in this order): ('Remotion.UnitTests.Mixins.TestDomain.NullMixin'). The given types were: ('').")]
     public void CheckMixinArray_WrongNumberOfMixins ()
     {
       MixinArrayInitializer initializer = CreateInitializer (typeof (NullTarget), typeof (NullMixin));
@@ -46,8 +46,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
-        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin'). The given types were: "
-        + "('Remotion.UnitTests.Mixins.SampleTypes.NullMixin2').")]
+        + "(in this order): ('Remotion.UnitTests.Mixins.TestDomain.NullMixin'). The given types were: "
+        + "('Remotion.UnitTests.Mixins.TestDomain.NullMixin2').")]
     public void CheckMixinArray_NonMatchingMixins ()
     {
       MixinArrayInitializer initializer = CreateInitializer (typeof (NullTarget), typeof (NullMixin));
@@ -57,8 +57,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
-        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin2'). The given types "
-        + "were: ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin2, Remotion.UnitTests.Mixins.SampleTypes.NullMixin').")]
+        + "(in this order): ('Remotion.UnitTests.Mixins.TestDomain.NullMixin, Remotion.UnitTests.Mixins.TestDomain.NullMixin2'). The given types "
+        + "were: ('Remotion.UnitTests.Mixins.TestDomain.NullMixin2, Remotion.UnitTests.Mixins.TestDomain.NullMixin').")]
     public void CheckMixinArray_NonMatchingMixins_InvalidOrder ()
     {
       MixinArrayInitializer initializer = CreateInitializer (typeof (NullTarget), typeof (NullMixin), typeof (NullMixin2));
@@ -67,8 +67,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = @"Invalid mixin instances supplied\. Expected the following mixin types "
-        + @"\(in this order\)\: \('Remotion\.UnitTests\.Mixins\.SampleTypes\.MixinWithVirtualMethod_GeneratedMixin_.*'\)\. The given types "
-        + @"were\: \('Remotion\.UnitTests\.Mixins\.SampleTypes\.MixinWithVirtualMethod'\)\.", 
+        + @"\(in this order\)\: \('Remotion\.UnitTests\.Mixins\.TestDomain\.MixinWithVirtualMethod_GeneratedMixin_.*'\)\. The given types "
+        + @"were\: \('Remotion\.UnitTests\.Mixins\.TestDomain\.MixinWithVirtualMethod'\)\.", 
         MatchType = MessageMatch.Regex)]
     public void CheckMixinArray_NonMatchingMixins_NeedDerived ()
     {
@@ -129,7 +129,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Cannot instantiate mixin "
-        + "'Remotion.Mixins.CodeGeneration.MixinArrayInitializer' applied to class 'Remotion.UnitTests.Mixins.SampleTypes.NullTarget', "
+        + "'Remotion.Mixins.CodeGeneration.MixinArrayInitializer' applied to class 'Remotion.UnitTests.Mixins.TestDomain.NullTarget', "
         + "there is no visible default constructor.")]
     public void GetMixinArray_MixinCtorNotFound ()
     {
@@ -192,7 +192,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The supplied mixin of type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.NullMixin2' is not valid for target type 'Remotion.UnitTests.Mixins.SampleTypes.NullTarget' in the "
+        + "'Remotion.UnitTests.Mixins.TestDomain.NullMixin2' is not valid for target type 'Remotion.UnitTests.Mixins.TestDomain.NullTarget' in the "
         + "current configuration.")]
     public void GetMixinArray_WithNonFittingSupplied ()
     {
@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Two mixins were supplied that would match the expected mixin type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.NullMixin' on target class 'Remotion.UnitTests.Mixins.SampleTypes.NullTarget'.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.NullMixin' on target class 'Remotion.UnitTests.Mixins.TestDomain.NullTarget'.")]
     public void GetMixinArray_WithTwoFittingSupplied ()
     {
       var mixin1 = new NullMixin ();
@@ -215,8 +215,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A mixin was supplied that would match the expected mixin type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.MixinWithVirtualMethod' on target class "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSpecificMixinMember'. However, a derived "
+        + "'Remotion.UnitTests.Mixins.TestDomain.MixinWithVirtualMethod' on target class "
+        + "'Remotion.UnitTests.Mixins.TestDomain.ClassOverridingSpecificMixinMember'. However, a derived "
         + "type must be generated for that mixin type, so the supplied instance cannot be used.")]
     public void GetMixinArray_WithFittingSuppliedForDerivedMixin ()
     {

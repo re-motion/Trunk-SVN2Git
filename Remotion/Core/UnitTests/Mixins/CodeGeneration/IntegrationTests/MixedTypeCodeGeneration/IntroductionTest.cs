@@ -25,7 +25,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -81,11 +81,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
         var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
         MethodInfo[] allMethods = bt1.GetType ().GetMethods (c_nonPublicFlags | BindingFlags.DeclaredOnly);
         string[] allMethodNames = Array.ConvertAll (allMethods, mi => mi.Name);
-        Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.get_Prop1"));
-        Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.set_Prop2"));
+        Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.TestDomain.InterfaceWithPartialProperties.get_Prop1"));
+        Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.TestDomain.InterfaceWithPartialProperties.set_Prop2"));
 
-        Assert.That (allMethodNames, List.Not.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.set_Prop1"));
-        Assert.That (allMethodNames, List.Not.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.get_Prop2"));
+        Assert.That (allMethodNames, List.Not.Contains ("Remotion.UnitTests.Mixins.TestDomain.InterfaceWithPartialProperties.set_Prop1"));
+        Assert.That (allMethodNames, List.Not.Contains ("Remotion.UnitTests.Mixins.TestDomain.InterfaceWithPartialProperties.get_Prop2"));
       }
     }
 

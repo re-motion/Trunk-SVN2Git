@@ -23,7 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
 
