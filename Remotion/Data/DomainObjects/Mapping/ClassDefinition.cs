@@ -171,11 +171,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return BaseClass.GetEntityName();
     }
 
-    public string GetViewName ()
-    {
-      return _storageEntityDefinition.LegacyViewName;
-    }
-
     public bool Contains (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

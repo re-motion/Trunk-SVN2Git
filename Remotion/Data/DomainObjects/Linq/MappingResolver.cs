@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Linq
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
         throw new UnmappedItemException (message);
       }
-      var viewName = classDefinition.GetViewName();
+      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
       return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var alias = generator.GetUniqueIdentifier ("t");
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
           rightEndPointDefinition.ClassDefinition.ClassType,
-          rightEndPointDefinition.ClassDefinition.GetViewName (),
+          rightEndPointDefinition.ClassDefinition.StorageEntityDefinition.LegacyViewName,
           alias);
 
       var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPointDefinition), leftEndPointDefinition.IsVirtual);
