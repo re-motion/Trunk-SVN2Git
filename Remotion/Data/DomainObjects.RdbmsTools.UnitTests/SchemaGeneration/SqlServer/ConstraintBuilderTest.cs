@@ -105,9 +105,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetReadOnly ();
       thirdClass.SetReadOnly ();
 
-      firstClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "FirstEntity", new ColumnDefinition[0]));
-      secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", new ColumnDefinition[0]));
-      thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", new ColumnDefinition[0]));
+      firstClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
+      secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
+      thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
 
       firstClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
       secondClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
@@ -167,9 +167,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetReadOnly ();
       otherClass.SetReadOnly ();
 
-      baseClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "BaseClassEntity", new ColumnDefinition[0]));
-      derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", new ColumnDefinition[0]));
-      otherClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "OtherClassEntity", new ColumnDefinition[0]));
+      baseClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
+      derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
+      otherClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
 
       baseClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));
       derivedClass.SetStorageProviderDefinition (new StorageProviderStubDefinition ("DefaultStorageProvider", typeof (StorageObjectFactoryStub)));

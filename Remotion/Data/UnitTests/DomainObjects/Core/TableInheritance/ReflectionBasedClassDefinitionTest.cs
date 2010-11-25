@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void SetStorageEntityDefinition ()
     {
-      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", new ColumnDefinition[0]);
+      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", "Viewname", new ColumnDefinition[0]);
       
       _domainBaseClass.SetStorageEntity (tableDefinition);
 

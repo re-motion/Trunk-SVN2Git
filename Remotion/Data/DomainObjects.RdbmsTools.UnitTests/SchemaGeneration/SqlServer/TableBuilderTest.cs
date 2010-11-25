@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               102,
               StorageClass.Persistent));
 
-      derivedConcreteClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "EntityName", new ColumnDefinition[0]));
+      derivedConcreteClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "EntityName", "ViewName", new ColumnDefinition[0]));
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"

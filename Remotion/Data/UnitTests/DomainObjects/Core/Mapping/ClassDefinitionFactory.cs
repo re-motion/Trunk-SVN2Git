@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private static void SetStorageEntityName (string entityName, ReflectionBasedClassDefinition classDefinition)
     {
       if (entityName != null)
-        classDefinition.SetStorageEntity (new TableDefinition ("SPID", entityName, new ColumnDefinition[0]));
+        classDefinition.SetStorageEntity (new TableDefinition ("SPID", entityName, classDefinition.ID+"View", new ColumnDefinition[0]));
       else
       {
         var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();

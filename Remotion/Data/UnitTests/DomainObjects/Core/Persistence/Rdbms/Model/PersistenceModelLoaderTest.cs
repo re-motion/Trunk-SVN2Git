@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy_HasAlreadyPersistenceModelApplied_AndNoDerivedClassDefinitions ()
     {
-      var storageEntityDefinition = new TableDefinition (_storageProviderID, "Test", new ColumnDefinition[] { });
+      var storageEntityDefinition = new TableDefinition (_storageProviderID, "Test", "TestView", new ColumnDefinition[] { });
       _derivedDerivedClassDefinition.SetStorageEntity (storageEntityDefinition);
 
       _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);

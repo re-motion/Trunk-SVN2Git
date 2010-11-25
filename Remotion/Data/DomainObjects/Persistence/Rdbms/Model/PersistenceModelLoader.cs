@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
 
-      return new TableDefinition (_storageProviderID, tableName, GetColumnDefinitionsForHierarchy (classDefinition));
+      return new TableDefinition (_storageProviderID, tableName, classDefinition.ID+"View", GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)

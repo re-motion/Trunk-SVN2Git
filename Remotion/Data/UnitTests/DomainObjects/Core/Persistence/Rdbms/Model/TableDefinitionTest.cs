@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _columns = new[] { new ColumnDefinition ("COL1", typeof(string), "varchar", true) };
-      _tableDefintion = new TableDefinition ("SPID", "Test", _columns);
+      _tableDefintion = new TableDefinition ("SPID", "Test", "TestView", _columns);
     }
 
     [Test]

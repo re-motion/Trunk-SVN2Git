@@ -173,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public string GetViewName ()
     {
-      return ID + "View";
+      return _storageEntityDefinition.LegacyViewName;
     }
 
     public bool Contains (PropertyDefinition propertyDefinition)

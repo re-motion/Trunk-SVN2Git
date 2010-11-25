@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column2 = new ColumnDefinition ("Column2", typeof(string), "varchar", true);
       _column3 = new ColumnDefinition ("Column3", typeof(string), "varchar", true);
 
-      _tableDefinition1 = new TableDefinition ("SPID", "Table1", new[] { _column1 });
-      _tableDefinition2 = new TableDefinition ("SPID", "Table2", new[] { _column2, _column3 });
+      _tableDefinition1 = new TableDefinition ("SPID", "Table1", "View1", new[] { _column1 });
+      _tableDefinition2 = new TableDefinition ("SPID", "Table2", "View2", new[] { _column2, _column3 });
       _unionViewDefinition = new UnionViewDefinition ("SPID", "Test", new[] {_tableDefinition1, _tableDefinition2 } );
     }
 
@@ -83,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumns_Distinct ()
     {
-      var tableDefinition1 = new TableDefinition ("SPID", "Table1", new[] { _column1, _column2 });
-      var tableDefinition2 = new TableDefinition ("SPID", "Table2", new[] { _column2, _column3 });
+      var tableDefinition1 = new TableDefinition ("SPID", "Table1", "View1", new[] { _column1, _column2 });
+      var tableDefinition2 = new TableDefinition ("SPID", "Table2", "View2", new[] { _column2, _column3 });
       _unionViewDefinition = new UnionViewDefinition ("SPID", "Test", new[] { tableDefinition1, tableDefinition2 });
 
       var result = _unionViewDefinition.GetColumns ();
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();
 
-      var fakeResult = new TableDefinition ("SPID", "Test", Enumerable.Empty<ColumnDefinition>());
+      var fakeResult = new TableDefinition ("SPID", "Test", "TestView", Enumerable.Empty<ColumnDefinition>());
 
       visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition)).Return (fakeResult);
       visitorMock.Replay ();

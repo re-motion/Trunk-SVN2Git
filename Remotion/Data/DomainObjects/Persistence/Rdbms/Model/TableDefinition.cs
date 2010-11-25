@@ -30,15 +30,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _tableName;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
     private readonly string _storageProviderID;
+    private readonly string _viewName;
 
-    public TableDefinition (string storageProviderID, string tableName, IEnumerable<ColumnDefinition> columns)
+    public TableDefinition (string storageProviderID, string tableName, string viewName, IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
+      ArgumentUtility.CheckNotNullOrEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _storageProviderID = storageProviderID;
       _tableName = tableName;
+      _viewName = viewName;
       _columns = columns.ToList().AsReadOnly();
     }
 
@@ -59,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyViewName
     {
-      get { return _tableName + "View"; }
+      get { return _viewName; }
     }
 
     public ReadOnlyCollection<ColumnDefinition> GetColumns ()
