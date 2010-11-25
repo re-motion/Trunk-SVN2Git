@@ -144,11 +144,11 @@ namespace Remotion.Reflection
 
     public override bool Equals (object obj)
     {
-      // TODO Review 3351: Please rewrite using the standard pattern for classes that may derived from; see task description
-      var other = obj as MixinIntroducedPropertyInformation;
-
-      if (other == null)
+      if (obj == null)
         return false;
+      if (obj.GetType() != GetType()) 
+        return false;
+      var other = (MixinIntroducedPropertyInformation) obj;
 
       return _mixinPropertyInfo.Equals (other._mixinPropertyInfo);
     }
