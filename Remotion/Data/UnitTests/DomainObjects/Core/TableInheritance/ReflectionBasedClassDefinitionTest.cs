@@ -145,6 +145,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
+    public void SetPropertyDefinitions ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
+
+      _domainBaseClass.SetPropertyDefinitions (new[] { propertyDefinition });
+
+      Assert.That (_domainBaseClass.MyPropertyDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_domainBaseClass.MyPropertyDefinitions[0], Is.SameAs (propertyDefinition));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetPropertyDefinitions_ClassIsReadOnly ()
+    {
+      _domainBaseClass.SetReadOnly();
+
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinition[0]);
+    }
+
+    [Test]
+    public void SetRelationDefinitions ()
+    {
+      var relationDefinition = new RelationDefinition (
+          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
+
+      _domainBaseClass.SetRelationDefinitions (new[] { relationDefinition });
+
+      Assert.That (_domainBaseClass.MyRelationDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_domainBaseClass.MyRelationDefinitions[0], Is.SameAs (relationDefinition));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetRelationDefinitions_ClassIsReadOnly ()
+    {
+      _domainBaseClass.SetReadOnly ();
+
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinition[0]);
+    }
+
+    [Test]
     public void GetAllConcreteEntityNamesForConcrete ()
     {
       string[] entityNames = _personClass.GetAllConcreteEntityNames();

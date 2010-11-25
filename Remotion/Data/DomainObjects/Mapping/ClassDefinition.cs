@@ -43,16 +43,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private bool _isReadOnly;
 
-    // nonserialized member fields
+    // nonserialized readonyly member fields
 
     [NonSerialized]
     private readonly Type _storageGroupType;
-
-    [NonSerialized]
-    private readonly PropertyDefinitionCollection _propertyDefinitions;
-
-    [NonSerialized]
-    private readonly RelationDefinitionCollection _relationDefinitions;
 
     [NonSerialized]
     private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
@@ -66,13 +60,21 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
+    
+    // nonserialized member fields
+
+    [NonSerialized]
+    private PropertyDefinitionCollection _propertyDefinitions;
+
+    [NonSerialized]
+    private RelationDefinitionCollection _relationDefinitions;
 
     [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
 
     [NonSerialized]
     private StorageProviderDefinition _storageProviderDefinition;
-
+    
     // construction and disposing
 
     protected ClassDefinition (string id, Type storageGroupType)
@@ -350,6 +352,28 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _storageProviderDefinition = storageProviderDefinition;
+    }
+
+    public void SetPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
+
+      if (_isReadOnly)
+        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      var readOnlyPropertyDefinitions = new PropertyDefinitionCollection (propertyDefinitions, true);
+      _propertyDefinitions = readOnlyPropertyDefinitions;
+    }
+
+    public void SetRelationDefinitions (IEnumerable<RelationDefinition> relationDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
+
+      if (_isReadOnly)
+        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      var readOnlyRelationDefinitions = new RelationDefinitionCollection (relationDefinitions, true);
+      _relationDefinitions = readOnlyRelationDefinitions;
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)
