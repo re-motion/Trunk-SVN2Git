@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
 namespace Remotion.Data.DomainObjects.Persistence.Model
 {
@@ -26,5 +27,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
     string LegacyEntityName { get; }
     string LegacyViewName { get; }
     string StorageProviderID { get; }
+    StorageProviderDefinition StorageProviderDefinition { get; }
   }
 }

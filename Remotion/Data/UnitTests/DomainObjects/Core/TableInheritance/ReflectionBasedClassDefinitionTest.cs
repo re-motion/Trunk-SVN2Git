@@ -36,11 +36,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private ReflectionBasedClassDefinition _personClass;
     private ReflectionBasedClassDefinition _customerClass;
     private ReflectionBasedClassDefinition _organizationalUnitClass;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     public override void SetUp ()
     {
       base.SetUp();
 
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
       _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -128,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void SetStorageEntityDefinition ()
     {
-      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", "Viewname", new ColumnDefinition[0]);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
       
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
@@ -139,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
-      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", "Viewname", new ColumnDefinition[0]);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
       _domainBaseClass.SetReadOnly();
       
       _domainBaseClass.SetStorageEntity (tableDefinition);

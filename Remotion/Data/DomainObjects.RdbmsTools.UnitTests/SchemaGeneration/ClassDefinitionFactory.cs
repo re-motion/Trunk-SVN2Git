@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
@@ -103,12 +104,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
 
     private static void SetStorageEntityName (string entityName, ReflectionBasedClassDefinition classDefinition)
     {
+      var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
       if (entityName != null)
-        classDefinition.SetStorageEntity (new TableDefinition ("SPID", entityName, classDefinition.ID+"View", new ColumnDefinition[0]));
+        classDefinition.SetStorageEntity (new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID+"View", new ColumnDefinition[0]));
       else
       {
         var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
         entityStub.Stub (stub => stub.LegacyEntityName).Return (null);
+        entityStub.Stub (stub => stub.StorageProviderDefinition).Return (storageProviderDefinition);
 
         classDefinition.SetStorageEntity (entityStub);
       }

@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinitionCollection _collection;
     private ReflectionBasedClassDefinition _classDefinition;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     // construction and disposing
 
@@ -44,8 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
-      _classDefinition.SetStorageEntity (new TableDefinition ("SPID", "Order", "OrderView", new ColumnDefinition[0]));
+      _classDefinition.SetStorageEntity (new TableDefinition (_storageProviderDefinition, "Order", "OrderView", new ColumnDefinition[0]));
       _collection = new ClassDefinitionCollection();
     }
 

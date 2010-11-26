@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -27,19 +28,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class TableDefinition : IEntityDefinition
   {
-    private readonly string _storageProviderID;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly string _tableName;
     private readonly string _viewName;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
-    public TableDefinition (string storageProviderID, string tableName, string viewName, IEnumerable<ColumnDefinition> columns)
+    public TableDefinition (StorageProviderDefinition storageProviderDefinition, string tableName, string viewName, IEnumerable<ColumnDefinition> columns)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
-      _storageProviderID = storageProviderID;
+      _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
       _viewName = viewName;
       _columns = columns.ToList().AsReadOnly();
@@ -47,7 +48,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string StorageProviderID
     {
-      get { return _storageProviderID; }
+      get { return StorageProviderDefinition.Name; }
+    }
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
     }
 
     public string TableName

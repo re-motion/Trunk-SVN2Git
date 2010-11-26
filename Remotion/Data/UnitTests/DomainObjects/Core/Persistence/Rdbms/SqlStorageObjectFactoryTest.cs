@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;

@@ -60,11 +60,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ColumnDefinition _fakeColumnDefinition5;
     private ColumnDefinition _fakeColumnDefinition6;
     private ColumnDefinition _fakeColumnDefinition7;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderID = "DefaultStorageProvider";
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
 
       var typeWithDBTableAttribute1 = typeof (Order);
       var typeWithDBTableAttribute2 = typeof (Company);
@@ -96,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (_derivedDerivedClassDefinition, "DerivedDerivedProperty");
 
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionFactory>();
-      _persistenceModelLoader = new PersistenceModelLoader (_columnDefinitionFactoryMock, _storageProviderID);
+      _persistenceModelLoader = new PersistenceModelLoader (_columnDefinitionFactoryMock, _storageProviderDefinition);
 
       _fakeColumnDefinition1 = new ColumnDefinition ("Test1", typeof (string), "varchar", true);
       _fakeColumnDefinition2 = new ColumnDefinition ("Test2", typeof (int), "int", false);
@@ -110,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy_AlreadyHasPersistenceModelApplied_AndNoDerivedClassDefinitions ()
     {
-      var storageEntityDefinition = new TableDefinition (_storageProviderID, "Test", "TestView", new ColumnDefinition[] { });
+      var storageEntityDefinition = new TableDefinition (_storageProviderDefinition, "Test", "TestView", new ColumnDefinition[] { });
       _derivedDerivedClassDefinition.SetStorageEntity (storageEntityDefinition);
 
       _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);

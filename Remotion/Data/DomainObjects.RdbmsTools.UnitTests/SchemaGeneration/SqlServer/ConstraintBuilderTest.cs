@@ -80,6 +80,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddConstraintWithTwoConstraints ()
     {
+      var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
       var firstClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       var properties = new List<PropertyDefinition>();
       properties.Add (CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
@@ -103,13 +104,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
       thirdClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
 
-      firstClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
-      secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
-      thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
+      firstClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
+      secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
+      thirdClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
 
-      firstClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
-      secondClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
-      thirdClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      firstClass.SetStorageProviderDefinition (storageProviderDefinition);
+      secondClass.SetStorageProviderDefinition (storageProviderDefinition);
+      thirdClass.SetStorageProviderDefinition (storageProviderDefinition);
 
       _constraintBuilder.AddConstraint (firstClass);
 
@@ -147,6 +148,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddConstraintWithRelationInDerivedClass ()
     {
+      var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
       var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), baseClass);
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)}, true));
@@ -161,13 +163,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
       otherClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
 
-      baseClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
-      derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
-      otherClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
+      baseClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
+      derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
+      otherClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
 
-      baseClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
-      derivedClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
-      otherClass.SetStorageProviderDefinition (new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy"));
+      baseClass.SetStorageProviderDefinition (storageProviderDefinition);
+      derivedClass.SetStorageProviderDefinition (storageProviderDefinition);
+      otherClass.SetStorageProviderDefinition (storageProviderDefinition);
       
       _constraintBuilder.AddConstraint (baseClass);
 

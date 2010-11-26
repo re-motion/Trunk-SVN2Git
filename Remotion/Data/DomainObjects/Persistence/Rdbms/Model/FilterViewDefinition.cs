@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -30,18 +31,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly IEntityDefinition _baseEntity;
     private readonly string _classID;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
-    private readonly string _storageProviderID;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public FilterViewDefinition (
-        string storageProviderID, string viewName, IEntityDefinition baseEntity, string classID, Func<ColumnDefinition, bool> columnFilter)
+        StorageProviderDefinition storageProviderDefinition, string viewName, IEntityDefinition baseEntity, string classID, Func<ColumnDefinition, bool> columnFilter)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
       ArgumentUtility.CheckNotNull ("columnFilter", columnFilter);
 
-      _storageProviderID = storageProviderID;
+      _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _baseEntity = baseEntity;
       _classID = classID;
@@ -51,7 +52,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string StorageProviderID
     {
-      get { return _storageProviderID; }
+      get { return _storageProviderDefinition.Name; }
+    }
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
     }
 
     public string ViewName

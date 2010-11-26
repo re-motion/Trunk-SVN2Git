@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
@@ -181,6 +182,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     [Test]
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
+      var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
       var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
       abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)}, true));
@@ -210,7 +212,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               102,
               StorageClass.Persistent)}, true));
       derivedConcreteClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-      derivedConcreteClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "EntityName", "ViewName", new ColumnDefinition[0]));
+      derivedConcreteClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "EntityName", "ViewName", new ColumnDefinition[0]));
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"

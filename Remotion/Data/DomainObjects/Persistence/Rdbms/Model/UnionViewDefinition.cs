@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -30,15 +31,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<ColumnDefinition> _columns;
-    private readonly string _storageProviderID;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
 
-    public UnionViewDefinition (string storageProviderID, string viewName, IEnumerable<IEntityDefinition> unionedEntities)
+    public UnionViewDefinition (StorageProviderDefinition storageProviderDefinition, string viewName, IEnumerable<IEntityDefinition> unionedEntities)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
 
-      _storageProviderID = storageProviderID;
+      _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _unionedEntities = unionedEntities.ToList().AsReadOnly();
       _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).Distinct().ToList ().AsReadOnly ();
@@ -46,7 +47,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string StorageProviderID
     {
-      get { return _storageProviderID; }
+      get { return _storageProviderDefinition.Name; }
+    }
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
     }
 
     public string ViewName

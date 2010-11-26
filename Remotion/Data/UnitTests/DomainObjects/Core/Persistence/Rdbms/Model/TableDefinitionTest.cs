@@ -27,12 +27,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private ColumnDefinition[] _columns;
     private TableDefinition _tableDefintion;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
       _columns = new[] { new ColumnDefinition ("COL1", typeof(string), "varchar", true) };
-      _tableDefintion = new TableDefinition ("SPID", "Test", "TestView", _columns);
+      _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns);
     }
 
     [Test]
@@ -40,12 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_tableDefintion.TableName, Is.EqualTo ("Test"));
       Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
+      Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs(_storageProviderDefinition));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var tableDefinition = new TableDefinition ("SPID", "Test", null, _columns);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Test", null, _columns);
       Assert.That (tableDefinition.ViewName, Is.Null);
     }
 

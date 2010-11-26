@@ -30,16 +30,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ColumnDefinition _column3;
     private TableDefinition _entityDefinition;
     private FilterViewDefinition _filterViewDefinition;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
       _column1 = new ColumnDefinition ("Column1", typeof(string), "varchar", true);
       _column2 = new ColumnDefinition ("Column2", typeof(string), "varchar", true);
       _column3 = new ColumnDefinition ("Column3", typeof(string), "varchar", true);
-      _entityDefinition = new TableDefinition ("SPID", "Table", "View", new[] { _column1, _column2, _column3 });
+      _entityDefinition = new TableDefinition (_storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 });
 
-      _filterViewDefinition = new FilterViewDefinition ("SPID", "Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      _filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, "Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
     }
 
     [Test]
@@ -49,12 +51,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
       Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
       Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
+      Assert.That (_filterViewDefinition.StorageProviderDefinition, Is.SameAs(_storageProviderDefinition));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var filterViewDefinition = new FilterViewDefinition ("SPID", null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
