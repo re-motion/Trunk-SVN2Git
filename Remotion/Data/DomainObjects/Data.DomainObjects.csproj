@@ -262,8 +262,8 @@
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
-    <Compile Include="Persistence\Configuration\IStorageProviderDefinitionFinder.cs" />
-    <Compile Include="Persistence\Configuration\StorageProviderDefinitionFinder.cs" />
+    <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
+    <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
     <Compile Include="Persistence\Model\IStoragePropertyDefinitionFactory.cs" />

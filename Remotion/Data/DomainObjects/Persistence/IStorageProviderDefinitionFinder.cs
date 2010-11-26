@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
-// TODO Review 3511: Move to Persistence namespace
-namespace Remotion.Data.DomainObjects.Persistence.Configuration
+namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
   /// <see cref="IStorageProviderDefinitionFinder"/> defines the API for the storage provider definition finder implementations.
