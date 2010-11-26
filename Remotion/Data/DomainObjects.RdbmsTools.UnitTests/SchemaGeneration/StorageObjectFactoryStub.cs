@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader ()
+    public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
      throw new NotImplementedException();
     }

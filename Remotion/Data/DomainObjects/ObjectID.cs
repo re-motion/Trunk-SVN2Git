@@ -248,7 +248,7 @@ namespace Remotion.Data.DomainObjects
       CheckValue ("value", value);
 
       StorageProviderDefinition storageProviderDefinition =
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (classDefinition.StorageProviderDefinition.Name);
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name);
 
       storageProviderDefinition.CheckIdentityType (value.GetType());
 
@@ -264,7 +264,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string StorageProviderID
     {
-      get { return ClassDefinition.StorageProviderDefinition.Name; }
+      get { return ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name; }
     }
 
     /// <summary>

@@ -41,13 +41,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _baseOfBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject",
           "BaseEntityName",
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClassDefinition,
@@ -56,7 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClassDefinition,

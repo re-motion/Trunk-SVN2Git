@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -181,7 +181,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
-          "NonAbstractClassHasEntityNameStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false);
       var classDefinitionCollection = new[] { classDefinition };
@@ -192,27 +191,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
-    }
-
-    [Test]
-    public void StorageProviderDefinitonIsSet ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var classDefinitionCollection = new[] { classDefinition };
-
-      Assert.That (classDefinition.StorageProviderDefinition, Is.Null);
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
-
-      _mockRepository.ReplayAll();
-
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
-
-      Assert.That (classDefinition.StorageProviderDefinition, Is.Not.Null);
-      Assert.That (classDefinition.StorageProviderDefinition.Name, Is.EqualTo ("DefaultStorageProvider"));
     }
 
     [Test]
@@ -240,8 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (Order).GetProperty ("DeliveryDate"),
           null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
-      ;
-
+      
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       var classDefinitionCollection = new[] { classDefinition };
@@ -373,9 +350,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsRelationEndPointDefinitionNotInMapping ()
     {
       ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "Order", "TestDomain", typeof (Order), false);
+          "Order", "Order", typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", typeof (OrderTicket), false);
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)}, true));
 

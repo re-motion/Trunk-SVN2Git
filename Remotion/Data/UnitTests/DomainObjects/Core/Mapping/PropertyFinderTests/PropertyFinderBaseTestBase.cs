@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     protected ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinder (type));
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, type, false, new PersistentMixinFinder (type));
     }
   }
 }

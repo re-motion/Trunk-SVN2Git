@@ -51,7 +51,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && _classDefinition.StorageProviderDefinition.Name == _relatedClassDefinition.StorageProviderDefinition.Name)
+      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy
+          &&
+          _classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
+          == _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
         return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal);
       else
       {

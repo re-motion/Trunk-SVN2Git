@@ -52,9 +52,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader ()
+    public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new PersistenceModelLoader (new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition);
+      return new PersistenceModelLoader (
+          new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition, storageProviderDefinitionFinder);
     }
   }
 }

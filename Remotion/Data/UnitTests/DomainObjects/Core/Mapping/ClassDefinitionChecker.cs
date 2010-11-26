@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (_includePersistenceModel)
       {
         Assert.AreEqual (
-          expectedDefinition.StorageProviderDefinition.Name,
-          actualDefinition.StorageProviderDefinition.Name,
+          expectedDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+          actualDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           "StorageProviderID of class definition '{0}' does not match. ",
           expectedDefinition.ID);
 

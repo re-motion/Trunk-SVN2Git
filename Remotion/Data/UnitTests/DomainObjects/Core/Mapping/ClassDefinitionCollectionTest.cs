@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Order), false);
       _classDefinition.SetStorageEntity (new TableDefinition (_storageProviderDefinition, "Order", "OrderView", new ColumnDefinition[0]));
       _collection = new ClassDefinitionCollection();
     }
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       try
       {
         _collection.Add (
-            ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", TestDomainProviderID, typeof (Order), false));
+            ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", typeof (Order), false));
         Assert.Fail ("Expected an ArgumentException.");
       }
       catch (ArgumentException e)
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void AddTwiceWithSameClassID ()
     {
       _collection.Add (_classDefinition);
-      _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Customer), false));
+      _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Customer), false));
     }
 
     [Test]
@@ -144,7 +144,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           _classDefinition.ID,
           StorageModelTestHelper.GetEntityName(_classDefinition),
-          _classDefinition.StorageProviderDefinition.Name,
           _classDefinition.ClassType,
           false,
           _classDefinition.ReflectionBasedBaseClass);

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
 namespace Remotion.Data.DomainObjects.Persistence.Model
 {
@@ -24,7 +25,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   /// </summary>
   public interface IStoragePropertyDefinitionFactory
   {
-    // TODO Review 3511: Inject an IStorageProviderDefinitionFinder as a method parameter, pass it on to the StorageTypeCalculator
-    IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition);
+    IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder);
   }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -34,13 +35,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
     private readonly Type _storageProviderType;
 
-    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition) : this(storageProviderDefinition, typeof(SqlProvider))
+    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
+        : this (storageProviderDefinition, typeof (SqlProvider))
     {
     }
 
     protected SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition, Type storageProviderType)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
 
       _storageProviderDefinition = storageProviderDefinition;
       _storagePropertyDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator ());
@@ -79,9 +82,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new TypeProvider();
     }
 
-    public virtual IPersistenceModelLoader CreatePersistenceModelLoader ()
+    public virtual IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new PersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition);
+      return new PersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition, storageProviderDefinitionFinder);
     }
   }
 }

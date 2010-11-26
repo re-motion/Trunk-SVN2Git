@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _relatedClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("InheritanceRootInheritingPersistentMixin",
-          "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false,
+          "InheritanceRootInheritingPersistentMixin", typeof (InheritanceRootInheritingPersistentMixin), false,
           new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
       _classDefinitions = new ClassDefinitionCollection { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition };
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       mockRepository.ReplayAll ();
 
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false,
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Order), false,
           mixinFinderMock);
       CreateRelationReflectorForProperty (classDefinition, typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty");
     }

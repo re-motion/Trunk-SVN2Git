@@ -30,18 +30,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinitions ()
     {
-      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+      MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
-      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions (), true, true);
+      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
       Assert.IsNotNull (actualClassDefinitions);
 
       var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      foreach (ClassDefinition rootClass in actualClassDefinitions)
-        rootClass.SetStorageProviderDefinition (storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass));
-
-      foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses ())
-        classDefinition.StorageProviderDefinition.Factory.CreatePersistenceModelLoader ().ApplyPersistenceModelToHierarchy (classDefinition);
+      foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses())
+      {
+        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Factory.CreatePersistenceModelLoader (
+                storageProviderDefinitionFinder).ApplyPersistenceModelToHierarchy(classDefinition);
+      }
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);

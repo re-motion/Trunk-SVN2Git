@@ -95,18 +95,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        // TODO Review 3511: When the SetStorageProviderDefinition method is removed, unify the two loops again
-        // Set storage provider definition of all class definitions
-        foreach (ClassDefinition rootClass in _classDefinitions)
-        {
-          var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
-          rootClass.SetStorageProviderDefinition (storageProviderDefinition);
-        }
-
-        // foreach inheritance root, apply persistence model using rootClass.StorageProviderDefinition.Factory
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
-          var persistenceModelLoader = rootClass.StorageProviderDefinition.Factory.CreatePersistenceModelLoader();
+          var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
+          var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (storageProviderDefinitionFinder);
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
         }
 

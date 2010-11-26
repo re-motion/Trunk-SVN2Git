@@ -39,27 +39,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase1DomainObject",
           "StorageSpecificPropertyNamesDerivedBase1DomainObject",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedBase2DomainObject",
           "StorageSpecificPropertyNamesDerivedBase2DomainObject",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesDerivedDomainObject",
           "StorageSpecificPropertyNamesDerivedDomainObject",
-          "SPID",
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           _baseOfBaseClass);

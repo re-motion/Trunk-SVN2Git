@@ -32,14 +32,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
-    public PersistenceModelLoader (IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory, StorageProviderDefinition storageProviderDefinition)
+    public PersistenceModelLoader (
+        IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory,
+        StorageProviderDefinition storageProviderDefinition,
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storagePropertyDefinitionFactory", storagePropertyDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       _storagePropertyDefinitionFactory = storagePropertyDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
+      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
     public string StorageProviderID
@@ -93,7 +99,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
 
-      return new TableDefinition (_storageProviderDefinition, tableName, GetViewName (classDefinition), GetColumnDefinitionsForHierarchy (classDefinition));
+      return new TableDefinition (
+          _storageProviderDefinition, tableName, GetViewName (classDefinition), GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
@@ -130,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
     {
       EnsurePersistenceModelApplied (classDefinition);
-      
+
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
 
@@ -140,8 +147,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
-        // TODO Review 3511: Pass in the finder that was received in the ctor
-        var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
+        var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
         propertyDefinition.SetStorageProperty (storageProperty);
       }
 
@@ -162,7 +168,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var allClassesInHierarchy = classDefinition
           .CreateSequence (cd => cd.BaseClass)
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
 
       var columnDefinitions = from cd in allClassesInHierarchy
                               from PropertyDefinition pd in cd.MyPropertyDefinitions

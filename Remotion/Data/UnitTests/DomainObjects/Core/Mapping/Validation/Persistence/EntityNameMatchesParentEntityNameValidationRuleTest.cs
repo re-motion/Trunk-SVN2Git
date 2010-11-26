@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false);
       
@@ -54,13 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           null,
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
@@ -78,13 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "EntityName",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,
@@ -102,13 +97,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "BaseEntityName",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           true);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           baseClassDefinition,

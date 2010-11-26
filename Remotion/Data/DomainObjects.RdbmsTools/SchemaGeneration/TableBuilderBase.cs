@@ -45,7 +45,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
             propertyDefinition.ClassDefinition.ID, propertyDefinition.PropertyName);
 
         if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
-            && propertyDefinition.ClassDefinition.StorageProviderDefinition.Name == oppositeEndPointDefinition.ClassDefinition.StorageProviderDefinition.Name)
+            &&
+            propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
+            == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
           return true;
       }
       return false;

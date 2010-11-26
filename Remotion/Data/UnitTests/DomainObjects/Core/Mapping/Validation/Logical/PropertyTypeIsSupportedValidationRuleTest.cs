@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -39,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
-          "DefaultStorageProvider",
           typeof (DerivedValidationDomainObjectClass),
           false);
     }

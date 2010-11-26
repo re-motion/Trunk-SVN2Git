@@ -38,20 +38,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "EntityNamesAreDistinctBase1DomainObject",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "EntityNamesAreDistinctBase2DomainObject",
-          "SPID",
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
@@ -67,20 +64,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "SameEntityName",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "SameEntityName",
-          "SPID",
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
@@ -99,27 +93,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           "EntityNamesAreDistinctBase1DomainObject",
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           null,
-          "SPID",
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctDerivedDomainObject",
           "EntityNamesAreDistinctDerivedDomainObject",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           derivedBaseClass1);
@@ -135,27 +125,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBaseOfBaseDomainObject",
           null,
-          "SPID",
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       var derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase1DomainObject",
           null,
-          "SPID",
           typeof (BaseValidationDomainObjectClass),
           false,
           baseOfBaseClass);
       var derivedBaseClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctBase2DomainObject",
           "SameEntityName",
-          "SPID",
           typeof (OtherDerivedValidationHierarchyClass),
           false,
           baseOfBaseClass);
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNamesAreDistinctDerivedDomainObject",
           "SameEntityName",
-          "SPID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           derivedBaseClass1);

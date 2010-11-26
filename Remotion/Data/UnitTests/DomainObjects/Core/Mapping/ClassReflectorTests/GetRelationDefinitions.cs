@@ -328,7 +328,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
-          c_testDomainProviderID,
           typeof (ClassWithVirtualRelationEndPoints),
           false);
 
@@ -339,7 +338,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithRealRelationEndPoints",
           "ClassWithRealRelationEndPoints",
-          c_testDomainProviderID,
           typeof (ClassWithRealRelationEndPoints),
           false);
 

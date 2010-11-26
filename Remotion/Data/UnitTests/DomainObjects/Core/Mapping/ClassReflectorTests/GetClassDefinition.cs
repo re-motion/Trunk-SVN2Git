@@ -273,7 +273,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",
           "ClassWithMixedProperties",
-          c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
           false);
       
@@ -286,7 +285,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithMixedProperties",
           "DerivedClassWithMixedProperties",
-          c_testDomainProviderID,
           typeof (DerivedClassWithMixedProperties),
           false,
           CreateClassWithMixedPropertiesClassDefinition());
@@ -299,7 +297,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
-          c_testDomainProviderID,
           typeof (ClassWithVirtualRelationEndPoints),
           false);
 

@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false);
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
     }
   }
 }

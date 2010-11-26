@@ -26,12 +26,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
   public static class ClassDefinitionFactory
   {
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id,
-        string entityName,
-        string storageProviderID,
-        Type classType,
-        bool isAbstract,
-        ReflectionBasedClassDefinition baseClass)
+        string id, string entityName, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass)
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           id,
@@ -39,16 +34,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
           isAbstract,
           baseClass,
           null,
-          new PersistentMixinFinder(classType));
+          new PersistentMixinFinder (classType));
       SetStorageEntityName (entityName, classDefinition);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
         string id,
         string entityName,
-        string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
@@ -63,14 +56,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
           storageGroupType,
           persistentMixinFinder);
       SetStorageEntityName (entityName, classDefinition);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
         string id,
         string entityName,
-        string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
@@ -83,30 +74,32 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
           baseClass,
           null,
           persistentMixinFinder);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, null);
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, null);
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, ReflectionBasedClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, baseClass);
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, baseClass);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageDefinition (Type type, ReflectionBasedClassDefinition baseClass)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+        Type type, ReflectionBasedClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinitionWithoutStorageDefinition (type.Name, type.Name, null, type, false, baseClass, new PersistentMixinFinder (type));
+      return CreateReflectionBasedClassDefinitionWithoutStorageDefinition (
+          type.Name, type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
     private static void SetStorageEntityName (string entityName, ReflectionBasedClassDefinition classDefinition)
     {
       var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
       if (entityName != null)
-        classDefinition.SetStorageEntity (new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID+"View", new ColumnDefinition[0]));
+        classDefinition.SetStorageEntity (
+            new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID + "View", new ColumnDefinition[0]));
       else
       {
         var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
@@ -114,15 +107,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
         entityStub.Stub (stub => stub.StorageProviderDefinition).Return (storageProviderDefinition);
 
         classDefinition.SetStorageEntity (entityStub);
-      }
-    }
-
-    private static void SetStorageProviderDefinition (string storageProviderID, ReflectionBasedClassDefinition classDefinition)
-    {
-      if (!string.IsNullOrEmpty (storageProviderID))
-      {
-        classDefinition.SetStorageProviderDefinition (
-            new StorageProviderStubDefinition (storageProviderID, typeof (StorageObjectFactoryStub)));
       }
     }
   }

@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
 
-        if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageProviderDefinition.Name))
+        if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               propertyInfo,

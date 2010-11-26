@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
   /// <summary>
@@ -23,12 +25,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   {
     public StorageProviderIDMatchesParentStorageProviderIDValiadationRule ()
     {
-      
     }
 
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      if (classDefinition.BaseClass!=null && classDefinition.BaseClass.StorageProviderDefinition.Name != classDefinition.StorageProviderDefinition.Name)
+      if (classDefinition.BaseClass != null
+          &&
+          classDefinition.BaseClass.StorageEntityDefinition.StorageProviderDefinition.Name
+          != classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
       {
         return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,

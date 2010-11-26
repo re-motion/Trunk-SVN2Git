@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void OriginalPropertyDeclaration ()
     {
       var type = typeof (BaseMappingAttributesClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition).First();
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NonOriginalPropertiesDeclarationWithMappingAttribute_NoInheritanceRoot ()
     {
       var type = typeof (DerivedClassWithMappingAttribute);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
       
       var validationResult = _validationRule.Validate (classDefinition).Where(r=>!r.IsValid).ToArray();
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void NonOriginalPropertiesDeclarationWithMappingAttribute_InheritanceRoot ()
     {
       var type = typeof (InheritanceRootDerivedMappingAttributesClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition).Where (r => !r.IsValid).ToArray ();
 

@@ -101,7 +101,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutStorageGroupWithMixedProperties",
           "ClassWithoutStorageGroupWithMixedProperties",
-          DefaultStorageProviderID,
           typeof (ClassWithoutStorageGroupWithMixedProperties),
           false);
 
@@ -114,7 +113,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithoutStorageGroupWithMixedProperties",
           "DerivedClassWithoutStorageGroupWithMixedProperties",
-          DefaultStorageProviderID,
           typeof (DerivedClassWithoutStorageGroupWithMixedProperties),
           false,
           CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ());

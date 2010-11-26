@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateTestDomainBaseDefinition ()
     {
       ReflectionBasedClassDefinition testDomainBase = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "TestDomainBase", null, DatabaseTest.c_testDomainProviderID, typeof (TestDomainBase), true);
+          "TestDomainBase", null, typeof (TestDomainBase), true);
 
       return testDomainBase;
     }
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ReflectionBasedClassDefinition storageProviderStubDomainBase =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              "StorageProviderStubDomainBase", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (StorageProviderStubDomainBase), true);
+              "StorageProviderStubDomainBase", null, typeof (StorageProviderStubDomainBase), true);
 
       return storageProviderStubDomainBase;
     }
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateCompanyDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition company = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Company", "Company", DatabaseTest.c_testDomainProviderID, typeof (Company), false, baseClass);
+          "Company", "Company", typeof (Company), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateCustomerDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition customer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", null, DatabaseTest.c_testDomainProviderID, typeof (Customer), false, baseClass);
+          "Customer", null, typeof (Customer), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreatePartnerDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition partner = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Partner", null, DatabaseTest.c_testDomainProviderID, typeof (Partner), false, baseClass);
+          "Partner", null, typeof (Partner), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateSupplierDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition supplier = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Supplier", null, DatabaseTest.c_testDomainProviderID, typeof (Supplier), false, baseClass);
+          "Supplier", null, typeof (Supplier), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateDistributorDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition distributor = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Distributor", null, DatabaseTest.c_testDomainProviderID, typeof (Distributor), false, baseClass);
+          "Distributor", null, typeof (Distributor), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateOrderDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition order = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "Order", DatabaseTest.c_testDomainProviderID, typeof (Order), false, baseClass);
+          "Order", "Order", typeof (Order), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -264,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateOfficialDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition official = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Official", "Official", DatabaseTest.c_unitTestStorageProviderStubID, typeof (Official), false, baseClass);
+          "Official", "Official", typeof (Official), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -278,13 +278,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateSpecialOfficialDefinition (ReflectionBasedClassDefinition officialDefinition)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "SpecialOfficial", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (SpecialOfficial), false, officialDefinition);
+          "SpecialOfficial", null, typeof (SpecialOfficial), false, officialDefinition);
     }
 
     private ReflectionBasedClassDefinition CreateOrderTicketDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition orderTicket = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "OrderTicket", "OrderTicket", DatabaseTest.c_testDomainProviderID, typeof (OrderTicket), false, baseClass);
+          "OrderTicket", "OrderTicket", typeof (OrderTicket), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateOrderItemDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition orderItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "OrderItem", "OrderItem", DatabaseTest.c_testDomainProviderID, typeof (OrderItem), false, baseClass);
+          "OrderItem", "OrderItem", typeof (OrderItem), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateCeoDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition ceo = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Ceo", "Ceo", DatabaseTest.c_testDomainProviderID, typeof (Ceo), false, baseClass);
+          "Ceo", "Ceo", typeof (Ceo), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreatePersonDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition person = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Person", "Person", DatabaseTest.c_testDomainProviderID, typeof (Person), false, baseClass);
+          "Person", "Person", typeof (Person), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -361,7 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateClientDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition client = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Client", "Client", DatabaseTest.c_testDomainProviderID, typeof (Client), false, baseClass);
+          "Client", "Client", typeof (Client), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -375,7 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateLocationDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition location = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Location", "Location", DatabaseTest.c_testDomainProviderID, typeof (Location), false, baseClass);
+          "Location", "Location", typeof (Location), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -389,7 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateFileSystemItemDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition fileSystemItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "FileSystemItem", "FileSystemItem", DatabaseTest.c_testDomainProviderID, typeof (FileSystemItem), false, baseClass);
+          "FileSystemItem", "FileSystemItem", typeof (FileSystemItem), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -407,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateFolderDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition folder = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Folder", null, DatabaseTest.c_testDomainProviderID, typeof (Folder), false, baseClass);
+          "Folder", null, typeof (Folder), false, baseClass);
 
       return folder;
     }
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateFileDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition file = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "File", null, DatabaseTest.c_testDomainProviderID, typeof (File), false, baseClass);
+          "File", null, typeof (File), false, baseClass);
 
       return file;
     }
@@ -424,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateClassWithAllDataTypesDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition classWithAllDataTypes = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "ClassWithAllDataTypes", "TableWithAllDataTypes", DatabaseTest.c_testDomainProviderID, typeof (ClassWithAllDataTypes), false, baseClass);
+          "ClassWithAllDataTypes", "TableWithAllDataTypes", typeof (ClassWithAllDataTypes), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -697,7 +697,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithGuidKey",
           "TableWithGuidKey",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithGuidKey),
           false,
           baseClass);
@@ -710,7 +709,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithKeyOfInvalidType",
           "TableWithKeyOfInvalidType",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithKeyOfInvalidType),
           false,
           baseClass);
@@ -723,7 +721,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithoutIDColumn",
           "TableWithoutIDColumn",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutIDColumn),
           false,
           baseClass);
@@ -736,7 +733,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithoutClassIDColumn",
           "TableWithoutClassIDColumn",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutClassIDColumn),
           false,
           baseClass);
@@ -750,7 +746,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "ClassWithoutTimestampColumn",
               "TableWithoutTimestampColumn",
-              DatabaseTest.c_testDomainProviderID,
               typeof (ClassWithoutTimestampColumn),
               false,
               baseClass);
@@ -763,7 +758,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithValidRelations",
           "TableWithValidRelations",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithValidRelations),
           false,
           baseClass);
@@ -794,7 +788,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithInvalidRelation",
           "TableWithInvalidRelation",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithInvalidRelation),
           false,
           baseClass);
@@ -817,7 +810,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithoutRelatedClassIDColumn",
           "TableWithoutRelatedClassIDColumn",
-          DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutRelatedClassIDColumn),
           false,
           baseClass);
@@ -841,7 +833,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "ClassWithOptionalOneToOneRelationAndOppositeDerivedClass",
               "TableWithOptionalOneToOneRelationAndOppositeDerivedClass",
-              DatabaseTest.c_testDomainProviderID,
               typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass),
               false,
               baseClass);
@@ -866,7 +857,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "ClassWithoutRelatedClassIDColumnAndDerivation",
               "TableWithoutRelatedClassIDColumnAndDerivation",
-              DatabaseTest.c_testDomainProviderID,
               typeof (ClassWithoutRelatedClassIDColumnAndDerivation),
               false,
               baseClass);
@@ -887,7 +877,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateIndustrialSectorDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition industrialSector = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "IndustrialSector", "IndustrialSector", DatabaseTest.c_testDomainProviderID, typeof (IndustrialSector), false, baseClass);
+          "IndustrialSector", "IndustrialSector", typeof (IndustrialSector), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -901,7 +891,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateEmployeeDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition employee = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Employee", "Employee", DatabaseTest.c_testDomainProviderID, typeof (Employee), false, baseClass);
+          "Employee", "Employee", typeof (Employee), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -920,7 +910,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition targetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "TargetClassForPersistentMixin",
           "MixedDomains_Target",
-          DatabaseTest.c_testDomainProviderID,
           typeof (TargetClassForPersistentMixin),
           false,
           baseClass,
@@ -973,7 +962,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition derivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedTargetClassForPersistentMixin",
           null,
-          DatabaseTest.c_testDomainProviderID,
           typeof (DerivedTargetClassForPersistentMixin),
           false,
           baseClass);
@@ -986,7 +974,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition derivedDerivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedDerivedTargetClassForPersistentMixin",
           null,
-          DatabaseTest.c_testDomainProviderID,
           typeof (DerivedDerivedTargetClassForPersistentMixin),
           false,
           baseClass);
@@ -997,7 +984,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateComputerDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition computer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Computer", "Computer", DatabaseTest.c_testDomainProviderID, typeof (Computer), false, baseClass);
+          "Computer", "Computer", typeof (Computer), false, baseClass);
 
       var properties = new List<PropertyDefinition> ();
       properties.Add (
@@ -1044,7 +1031,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "ClassWithRelatedClassIDColumnAndNoInheritance",
               "TableWithRelatedClassIDColumnAndNoInheritance",
-              DatabaseTest.c_testDomainProviderID,
               typeof (ClassWithRelatedClassIDColumnAndNoInheritance),
               false,
               baseClass);
@@ -1067,7 +1053,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition relationTargetForPersistentMixinDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "RelationTargetForPersistentMixin",
           "MixedDomains_RelationTarget",
-          DatabaseTest.c_testDomainProviderID,
           typeof (RelationTargetForPersistentMixin),
           false,
           baseClass);

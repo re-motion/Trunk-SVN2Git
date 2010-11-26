@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
 
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           "SELECT [Computer].* FROM [Computer] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
           + "ORDER BY [Computer].[ID] asc",
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithNullValues ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
           + "ORDER BY [Computer].[ID] asc",
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithDuplicates ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           "SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
       queryManager.GetCollection (query);
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void QueryWithExtensibleEnums ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
 

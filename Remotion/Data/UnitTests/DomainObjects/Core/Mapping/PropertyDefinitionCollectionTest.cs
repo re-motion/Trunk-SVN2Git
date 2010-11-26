@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainProviderID, typeof (Order), false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Order), false);
       _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Name", "Name", StorageClass.Persistent);
       _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
     {
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", "Customer", TestDomainProviderID, typeof (Customer), false);
+          "Customer", "Customer", typeof (Customer), false);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Test", "Test", StorageClass.Persistent);
 
@@ -70,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
     {
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Company", "Company", TestDomainProviderID, typeof (Company), false);
+          "Company", "Company", typeof (Company), false);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Partner", "Partner", TestDomainProviderID, typeof (Partner), false, baseClassDefinition, new Type[0]);
+          "Partner", "Partner", typeof (Partner), false, baseClassDefinition, new Type[0]);
 
       var propertyDefinitionInBaseClass = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           baseClassDefinition, "Property1", "Property1", StorageClass.Persistent);

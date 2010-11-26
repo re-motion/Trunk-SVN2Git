@@ -44,16 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
+          "DomainBase", null, typeof (DomainBase), false);
       _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, _domainBaseClass);
+          "Person", "TableInheritance_Person", typeof (Person), false, _domainBaseClass);
       _customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, _personClass);
+          "Customer", null, typeof (Customer), false, _personClass);
 
       _organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrganizationalUnit",
           "TableInheritance_OrganizationalUnit",
-          TableInheritanceTestDomainProviderID,
           typeof (OrganizationalUnit),
           false,
           _domainBaseClass);
@@ -67,7 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase",
           null,
-          TableInheritanceTestDomainProviderID,
           typeof (DomainBase),
           false,
           null,
@@ -84,7 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase",
           null,
-          TableInheritanceTestDomainProviderID,
           typeof (DomainBase),
           false,
           null,
@@ -99,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void EntityNameMustNotBeEmptyWithClassType ()
     {
       ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DomainBase", string.Empty, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
+          "DomainBase", string.Empty, typeof (DomainBase), false);
     }
 
     [Test]
@@ -147,16 +144,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
       Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
-    }
-
-    [Test]
-    public void SetStorageProviderDefinition ()
-    {
-      var providerDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
-
-      _domainBaseClass.SetStorageProviderDefinition (providerDefinition);
-
-      Assert.That (_domainBaseClass.StorageProviderDefinition, Is.SameAs (providerDefinition));
     }
 
     [Test]
@@ -213,9 +200,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void GetAllConcreteEntityNamesForConreteSingleWithEntityName ()
     {
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false);
+          "Person", "TableInheritance_Person", typeof (Person), false);
       ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass);
+          "Customer", "TableInheritance_Person", typeof (Customer), false, personClass);
 
       string[] entityNames = customerClass.GetAllConcreteEntityNames();
       Assert.IsNotNull (entityNames);
@@ -241,11 +228,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void GetAllConcreteEntityNamesForAbstractClassWithSameEntityNameInInheritanceHierarchy ()
     {
       ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false);
+          "DomainBase", null, typeof (DomainBase), false);
       ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass);
+          "Person", "TableInheritance_Person", typeof (Person), false, domainBaseClass);
       ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass);
+          "Customer", "TableInheritance_Person", typeof (Customer), false, personClass);
 
       string[] entityNames = domainBaseClass.GetAllConcreteEntityNames();
       Assert.IsNotNull (entityNames);

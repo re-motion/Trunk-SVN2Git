@@ -31,7 +31,6 @@ namespace Remotion.Data.DomainObjects.Persistence
     
     TypeConversionProvider CreateTypeConversionProvider ();
     TypeProvider CreateTypeProvider ();
-    // TODO Review 3511: Inject IStorageProviderDefinitionFinder as a method parameter, pass it on to the ctor of PersistenceModelLoader
-    IPersistenceModelLoader CreatePersistenceModelLoader ();
+    IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
   }
 }

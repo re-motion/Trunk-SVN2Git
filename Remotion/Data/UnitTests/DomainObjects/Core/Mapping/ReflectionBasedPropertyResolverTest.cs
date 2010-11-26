@@ -293,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ReflectionBasedClassDefinition baseClassDefinition)
     {
       Type type = typeof (ClassDerivedFromClassWithInterface);
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, "TestDomain", type, false, baseClassDefinition);
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, type, false, baseClassDefinition);
     }
 
     private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()

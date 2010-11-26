@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Text;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -43,7 +45,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return new SqlStorageTypeCalculator ().GetStorageType (propertyDefinition);
+      var storageProviderFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      return new SqlStorageTypeCalculator ().GetStorageType (propertyDefinition, storageProviderFinder);
     }
 
     protected override string SqlDataTypeClassID

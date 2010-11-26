@@ -39,11 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void SetUp ()
     {
       _classWithoutStorageGroupType = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Test", "Test", "DefaultStorageProviderID", typeof (Customer), false, null, null, new PersistentMixinFinder (typeof (Customer)));
+          "Test", "Test", typeof (Customer), false, null, null, new PersistentMixinFinder (typeof (Customer)));
       _classWithStorageGroupType = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Test",
           "Test",
-          "DefaultStorageProviderID",
           typeof (Customer),
           false,
           null,

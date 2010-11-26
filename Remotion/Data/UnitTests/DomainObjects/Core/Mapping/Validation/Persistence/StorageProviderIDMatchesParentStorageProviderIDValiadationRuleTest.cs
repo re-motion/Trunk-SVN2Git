@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;
 
@@ -37,9 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void SameStorageProviderID ()
     {
       var baseType = typeof (BaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID", baseType, false);
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, baseType, false);
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, baseClassDefinition, new Type[0]);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -50,9 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void DifferentStorageProviderID ()
     {
       var baseType = typeof (BaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, "SPID1", baseType, false);
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, baseType, false);
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID2", type, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, baseClassDefinition, new Type[0]);
+      classDefinition.SetStorageEntity (
+          new TableDefinition (
+              new UnitTestStorageProviderStubDefinition ("SPID2", typeof (UnitTestStorageObjectFactoryStub)), "Test", "Test", new ColumnDefinition[0]));
       
       var validationResult = _validationRule.Validate (classDefinition);
 

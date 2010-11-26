@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -28,13 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public static class ClassDefinitionFactory
   {
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id,
-        string entityName,
-        string storageProviderID,
-        Type classType,
-        bool isAbstract,
-        ReflectionBasedClassDefinition baseClass,
-        params Type[] persistentMixins)
+        string id, string entityName, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, params Type[] persistentMixins)
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           id,
@@ -44,7 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           new PersistentMixinFinderMock (classType, persistentMixins));
       SetStorageEntityName (entityName, classDefinition);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
@@ -53,7 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
         string id,
         string entityName,
-        string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
@@ -68,7 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           storageGroupType,
           persistentMixinFinder);
       SetStorageEntityName (entityName, classDefinition);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
@@ -77,7 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
         string id,
         string entityName,
-        string storageProviderID,
         Type classType,
         bool isAbstract,
         ReflectionBasedClassDefinition baseClass,
@@ -90,57 +80,65 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           null,
           persistentMixinFinder);
-      SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id, string entityName, string storageProviderID, Type classType, bool isAbstract, params Type[] persistentMixins)
+        string id, string entityName, Type classType, bool isAbstract, params Type[] persistentMixins)
     {
       return CreateReflectionBasedClassDefinition (
-          id, entityName, storageProviderID, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
+          id, entityName, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id, string entityName, string storageProviderID, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
+        string id, string entityName, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
     {
-      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, null, null, persistentMixinFinder);
+      return CreateReflectionBasedClassDefinition (id, entityName, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, mixins);
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, ReflectionBasedClassDefinition baseClass,  params Type[] mixins)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
+        Type type, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, baseClass, mixins);
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, baseClass, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (Type type, ReflectionBasedClassDefinition baseClass)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+        Type type, ReflectionBasedClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinitionWithoutStorageEntity (type.Name, type.Name, null, type, false, baseClass, new PersistentMixinFinder (type));
+      return CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+          type.Name, type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
     public static ReflectionBasedClassDefinition CreateOrderDefinition ()
     {
-      return CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProviderID", typeof (Order), false);
+      return CreateReflectionBasedClassDefinition ("Order", "OrderTable", typeof (Order), false);
     }
 
     public static ReflectionBasedClassDefinition CreateOrderDefinitionWithResolvedCustomerProperty ()
     {
       ReflectionBasedClassDefinition classDefinition = CreateOrderDefinition();
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {
-          ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), false)}, true));
+      classDefinition.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  ReflectionBasedPropertyDefinitionFactory.Create (
+                      classDefinition, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), false)
+              },
+              true));
 
       return classDefinition;
     }
 
     private static void SetStorageEntityName (string entityName, ReflectionBasedClassDefinition classDefinition)
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
+      var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (entityName != null)
       {
         classDefinition.SetStorageEntity (
@@ -148,22 +146,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       }
       else
       {
-        var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition> ();
+        var entityStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
         entityStub.Stub (stub => stub.LegacyEntityName).Return (null);
         entityStub.Stub (stub => stub.StorageProviderDefinition).Return (storageProviderDefinition);
 
         classDefinition.SetStorageEntity (entityStub);
       }
     }
-
-    private static void SetStorageProviderDefinition (string storageProviderID, ReflectionBasedClassDefinition classDefinition)
-    {
-      if (!string.IsNullOrEmpty (storageProviderID))
-      {
-        classDefinition.SetStorageProviderDefinition (
-            new UnitTestStorageProviderStubDefinition (storageProviderID, typeof (UnitTestStorageObjectFactoryStub)));
-      }
-    }
-
   }
 }

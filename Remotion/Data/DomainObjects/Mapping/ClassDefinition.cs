@@ -72,9 +72,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
 
-    [NonSerialized]
-    private StorageProviderDefinition _storageProviderDefinition;
-    
     // construction and disposing
 
     protected ClassDefinition (string id, Type storageGroupType)
@@ -342,14 +339,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageEntityDefinition = storageEntityDefinition;
     }
 
-    // TODO Review 3511: Remove this method
-    public void SetStorageProviderDefinition (StorageProviderDefinition storageProviderDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      _storageProviderDefinition = storageProviderDefinition;
-    }
-
     public void SetPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
@@ -424,12 +413,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public IStorageEntityDefinition StorageEntityDefinition
     {
       get { return _storageEntityDefinition; }
-    }
-
-    // TODO Review 3511: Move this property to IStorageEntityDefinition
-    public StorageProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
     }
 
     public abstract Type ClassType { get; }

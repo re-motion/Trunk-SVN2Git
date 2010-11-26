@@ -16,6 +16,7 @@
 // 
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -33,13 +34,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private SqlStorageObjectFactory _sqlProviderFactory;
     private RdbmsProviderDefinition _rdbmsProviderDefinition;
     private IPersistenceListener _persistenceListenerStub;
-  
+    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+
     [SetUp]
     public void SetUp ()
     {
       _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof(SqlStorageObjectFactory), "ConnectionString");
       _sqlProviderFactory = new SqlStorageObjectFactory (_rdbmsProviderDefinition);
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener> ();
+      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
     }
 
     [Test]
@@ -88,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetPersistenceModelLoader ()
     {
-      var result = _sqlProviderFactory.CreatePersistenceModelLoader();
+      var result = _sqlProviderFactory.CreatePersistenceModelLoader(_storageProviderDefinitionFinder);
 
       Assert.That (result, Is.TypeOf (typeof (PersistenceModelLoader)));
       Assert.That (((PersistenceModelLoader) result).StoragePropertyDefinitionFactory, Is.TypeOf (typeof (ColumnDefinitionFactory)));

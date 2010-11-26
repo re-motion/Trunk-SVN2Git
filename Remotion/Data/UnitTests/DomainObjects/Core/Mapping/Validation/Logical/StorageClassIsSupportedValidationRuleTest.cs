@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -38,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _validationRule = new StorageClassIsSupportedValidationRule();
 
       _type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_type.Name, _type.Name, "SPID", _type, false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_type.Name, _type.Name, _type, false);
     }
 
     [Test]

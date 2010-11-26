@@ -42,9 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     public void SetUp ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
-      _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
-      _classDefinition3 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
+      _classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
+      _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
+      _classDefinition3 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();

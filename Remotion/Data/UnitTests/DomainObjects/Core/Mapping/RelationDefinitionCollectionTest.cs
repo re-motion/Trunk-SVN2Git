@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "OrderTicket", "OrderTicket", TestDomainProviderID, typeof (OrderTicket), false);
+          "OrderTicket", "OrderTicket", typeof (OrderTicket), false);
 
       _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
@@ -72,9 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
     {
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "BaseOrder", "BaseOrder", TestDomainProviderID, typeof (Order), false);
+          "BaseOrder", "BaseOrder", typeof (Order), false);
       var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DerivedOrder", "DerivedOrder", TestDomainProviderID, typeof (Order), false, baseClassDefinition, new Type[0]);
+          "DerivedOrder", "DerivedOrder", typeof (Order), false, baseClassDefinition, new Type[0]);
 
       var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."

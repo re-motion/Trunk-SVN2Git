@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -29,19 +30,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     protected abstract string SqlDataTypeObjectID { get; }
     protected abstract string SqlDataTypeSerializedObjectID { get; }
 
-    // TODO Review 3511: Inject an IStorageProviderDefinitionFinder as a method parameter and use that to get the class definitions' StorageProviderDefinitions
-    public virtual string GetStorageType (PropertyDefinition propertyDefinition)
+    public virtual string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
+      
       if (propertyDefinition.IsObjectID)
       {
         var oppositeClass = propertyDefinition.ClassDefinition.GetOppositeClassDefinition (propertyDefinition.PropertyName);
         Assertion.IsNotNull (oppositeClass, "When a property has type ObjectID, there must be an opposite class definition.");
 
-        //var leftStorageProviderDefinition = _finder.FindStorageProviderDefinition (propertyDefinition.ClassDefinition);
-        //var rightStorageProviderDefinition = _finder.FindStorageProviderDefinition (oppositeClass);
-        if (oppositeClass.StorageProviderDefinition.Name == propertyDefinition.ClassDefinition.StorageProviderDefinition.Name)
+        var leftStorageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
+        var rightStorageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass);
+        if (leftStorageProviderDefinition.Name == rightStorageProviderDefinition.Name)
           return SqlDataTypeObjectID;
         else
           return SqlDataTypeSerializedObjectID;

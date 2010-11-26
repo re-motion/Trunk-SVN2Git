@@ -17,7 +17,7 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
@@ -28,10 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
-    public SqlStorageTypeCalculator ()
-    {
-    }
-
     protected override string SqlDataTypeObjectID
     {
       get { return "uniqueidentifier"; }
@@ -42,10 +38,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return "varchar (255)"; }
     }
 
-    public override string GetStorageType (PropertyDefinition propertyDefinition)
+    public override string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
+      
       string sqlDataType = GetSqlDataType (propertyDefinition.PropertyType);
       if (!string.IsNullOrEmpty (sqlDataType))
         return sqlDataType;
@@ -56,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (propertyDefinition.PropertyType == typeof (Byte[]))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
-      return base.GetStorageType (propertyDefinition);
+      return base.GetStorageType (propertyDefinition, storageProviderDefinitionFinder);
     }
 
     private static string GetSqlDataType (Type type)

@@ -108,10 +108,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
       thirdClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
 
-      firstClass.SetStorageProviderDefinition (storageProviderDefinition);
-      secondClass.SetStorageProviderDefinition (storageProviderDefinition);
-      thirdClass.SetStorageProviderDefinition (storageProviderDefinition);
-
       _constraintBuilder.AddConstraint (firstClass);
 
       string expectedScript =
@@ -167,10 +163,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
       otherClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
 
-      baseClass.SetStorageProviderDefinition (storageProviderDefinition);
-      derivedClass.SetStorageProviderDefinition (storageProviderDefinition);
-      otherClass.SetStorageProviderDefinition (storageProviderDefinition);
-      
       _constraintBuilder.AddConstraint (baseClass);
 
       string expectedScript =

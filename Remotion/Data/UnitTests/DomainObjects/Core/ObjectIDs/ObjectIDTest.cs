@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
 
       var id = new ObjectID (orderDefinition, value);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageProviderDefinition.Name));
+      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name));
       Assert.That (id.ClassID, Is.EqualTo (orderDefinition.ID));
       Assert.That (id.Value, Is.EqualTo (value));
     }
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     [ExpectedException (typeof (MappingException))]
     public void InitializeWithUnknownClassDefinitionID ()
     {
-      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", typeof (Order), false);
       var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
       new ObjectID (unknownDefinition, value);
@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithUnknownClassDefinitionType ()
     {
-      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (InvalidDomainObject), false);
+      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (InvalidDomainObject), false);
       var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
       new ObjectID (unknownDefinition, value);
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithInvalidClassDefinition ()
     {
-      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Customer), false);
+      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Customer), false);
       new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         ExpectedMessage = "The provided ClassDefinition 'Order' is not the same reference as the ClassDefinition found in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithClassDefinitionNotPartOfMappingConfiguration ()
     {
-      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Order), false);
       new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
