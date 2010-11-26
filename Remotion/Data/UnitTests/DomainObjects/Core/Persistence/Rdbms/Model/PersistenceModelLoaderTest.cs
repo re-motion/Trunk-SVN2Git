@@ -95,14 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (_derivedClassDefinition2, "DerivedProperty2");
       _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (_derivedDerivedClassDefinition, "DerivedDerivedProperty");
 
-      _baseBaseClassDefinition.SetReadOnly();
-      _baseClassDefinition.SetReadOnly();
-      _tableClassDefinition1.SetReadOnly();
-      _tableClassDefinition2.SetReadOnly();
-      _derivedClassDefinition1.SetReadOnly();
-      _derivedClassDefinition2.SetReadOnly();
-      _derivedDerivedClassDefinition.SetReadOnly();
-
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IStoragePropertyDefinitionFactory>();
       _persistenceModelLoader = new PersistenceModelLoader (_columnDefinitionFactoryMock, _storageProviderID);
 
@@ -310,8 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
-      classDefinition.SetReadOnly();
-
+      
       _columnDefinitionFactoryMock.Replay();
 
       _persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);

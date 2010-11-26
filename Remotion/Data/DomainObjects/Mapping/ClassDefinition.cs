@@ -336,6 +336,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("storageEntityDefinition", storageEntityDefinition);
 
+      if (_isReadOnly)
+        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
       _storageEntityDefinition = storageEntityDefinition;
     }
 

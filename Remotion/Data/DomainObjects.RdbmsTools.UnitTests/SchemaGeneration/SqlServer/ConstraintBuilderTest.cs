@@ -103,10 +103,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
       thirdClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
 
-      firstClass.SetReadOnly ();
-      secondClass.SetReadOnly ();
-      thirdClass.SetReadOnly ();
-
       firstClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
       secondClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
       thirdClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
@@ -164,10 +160,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       baseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       derivedClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
       otherClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
-
-      baseClass.SetReadOnly ();
-      derivedClass.SetReadOnly ();
-      otherClass.SetReadOnly ();
 
       baseClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
       derivedClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));

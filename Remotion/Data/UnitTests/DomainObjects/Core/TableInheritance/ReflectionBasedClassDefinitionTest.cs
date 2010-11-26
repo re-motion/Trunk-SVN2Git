@@ -136,6 +136,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetStorageEntityDefinition_ClassIsReadOnly ()
+    {
+      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Tablename", "Viewname", new ColumnDefinition[0]);
+      _domainBaseClass.SetReadOnly();
+      
+      _domainBaseClass.SetStorageEntity (tableDefinition);
+
+      Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
+    }
+
+    [Test]
     public void SetStorageProviderDefinition ()
     {
       var providerDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
