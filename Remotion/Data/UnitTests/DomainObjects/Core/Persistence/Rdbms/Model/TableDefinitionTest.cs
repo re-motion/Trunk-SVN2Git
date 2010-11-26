@@ -43,6 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void Initialization_ViewNameNull ()
+    {
+      var tableDefinition = new TableDefinition ("SPID", "Test", null, _columns);
+      Assert.That (tableDefinition.ViewName, Is.Null);
+    }
+
+    [Test]
     public void LegacyEntityName ()
     {
       Assert.That (_tableDefintion.LegacyEntityName, Is.EqualTo ("Test"));

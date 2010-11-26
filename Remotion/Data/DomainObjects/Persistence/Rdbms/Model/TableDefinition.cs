@@ -27,16 +27,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class TableDefinition : IEntityDefinition
   {
-    private readonly string _tableName;
-    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
     private readonly string _storageProviderID;
+    private readonly string _tableName;
     private readonly string _viewName;
+    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
 
     public TableDefinition (string storageProviderID, string tableName, string viewName, IEnumerable<ColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
-      ArgumentUtility.CheckNotNullOrEmpty ("viewName", viewName);
+      ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _storageProviderID = storageProviderID;
@@ -53,6 +53,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public string TableName
     {
       get { return _tableName; }
+    }
+
+    public string ViewName
+    {
+      get { return _viewName; }
     }
 
     public string LegacyEntityName

@@ -29,7 +29,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -61,13 +60,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      var actual = new ReflectionBasedClassDefinition ("Order", typeof(Order), false, null, null, new PersistentMixinFinder (typeof (Order)));
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
-      Assert.That (StorageModelTestHelper.GetEntityName(actual), Is.EqualTo ("OrderTable"));
-      Assert.That (actual.StorageEntityDefinition.LegacyViewName, Is.EqualTo ("OrderView"));
-      Assert.That (actual.StorageProviderDefinition.Name, Is.EqualTo ("StorageProvider"));
+      Assert.That (actual.StorageEntityDefinition, Is.Null);
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));
       Assert.That (actual.BaseClass, Is.Null);
       Assert.That (actual.DerivedClasses.AreResolvedTypesRequired, Is.True);

@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void StorageProviderDefinitonIsSet ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var classDefinitionCollection = new[] { classDefinition };
 
       Assert.That (classDefinition.StorageProviderDefinition, Is.Null);
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistenceModelIsLoaded ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),

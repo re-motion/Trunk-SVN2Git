@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           + "    WHERE [ClassID] IN ({4})\r\n"
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
-          GetViewName (classDefinition),
+          classDefinition.StorageEntityDefinition.LegacyViewName,
           GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
           classDefinition.GetEntityName(),
           GetClassIDList (GetClassDefinitionsForWhereClause (classDefinition)));
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
           "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n",
           FileBuilder.DefaultSchema,
-          GetViewName (classDefinition),
+          classDefinition.StorageEntityDefinition.LegacyViewName,
           GetColumnList (groupedPropertyDefinitions));
 
       int numberOfSelects = 0;
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       dropViewStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP VIEW [{1}].[{0}]\r\n",
-          GetViewName (classDefinition),
+          classDefinition.StorageEntityDefinition.LegacyViewName,
           FileBuilder.DefaultSchema);
     }
 
@@ -170,11 +170,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
         classIDListBuilder.AppendFormat ("'{0}'", classDefinition.ID);
       }
       return classIDListBuilder.ToString();
-    }
-
-    private string GetViewName (ClassDefinition classDefinition)
-    {
-      return classDefinition.ID + "View";
     }
   }
 }

@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
         string id,
         string entityName,
         string storageProviderID,
@@ -112,9 +112,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, baseClass, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (Type type, ReflectionBasedClassDefinition baseClass)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (Type type, ReflectionBasedClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinitionWithoutStorageEntityDefinition (type.Name, type.Name, null, type, false, baseClass, new PersistentMixinFinder (type));
+      return CreateReflectionBasedClassDefinitionWithoutStorageEntity (type.Name, type.Name, null, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
     public static ReflectionBasedClassDefinition CreateOrderDefinition ()

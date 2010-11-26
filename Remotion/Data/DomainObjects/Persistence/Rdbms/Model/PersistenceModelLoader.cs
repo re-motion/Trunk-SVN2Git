@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
 
-      return new TableDefinition (_storageProviderID, tableName, classDefinition.ID+"View", GetColumnDefinitionsForHierarchy (classDefinition));
+      return new TableDefinition (_storageProviderID, tableName, GetViewName (classDefinition), GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return new FilterViewDefinition (
           _storageProviderID,
-          classDefinition.ID + "View",
+          GetViewName (classDefinition),
           baseStorageEntityDefinition,
           classDefinition.ID,
           actualAndBaseClassColumns.Contains);
@@ -118,7 +118,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           from ClassDefinition derivedClass in classDefinition.DerivedClasses
           select GetEntityDefinition (derivedClass);
 
-      return new UnionViewDefinition (_storageProviderID, classDefinition.ID + "View", derivedStorageEntityDefinitions);
+      return new UnionViewDefinition (_storageProviderID, GetViewName (classDefinition), derivedStorageEntityDefinitions);
+    }
+
+    private string GetViewName (ClassDefinition classDefinition)
+    {
+      return classDefinition.ID + "View";
     }
 
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
