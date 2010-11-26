@@ -492,8 +492,8 @@ ALTER TABLE [dbo].[AccessControlEntry] ADD
   CONSTRAINT [FK_AccessControlEntry_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
 ALTER TABLE [dbo].[Permission] ADD
-  CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID]),
-  CONSTRAINT [FK_Permission_AccessTypeDefinitionID] FOREIGN KEY ([AccessTypeDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID])
+  CONSTRAINT [FK_Permission_AccessTypeDefinitionID] FOREIGN KEY ([AccessTypeDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID])
 
 ALTER TABLE [dbo].[StateCombination] ADD
   CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
@@ -503,15 +503,15 @@ ALTER TABLE [dbo].[AccessControlList] ADD
   CONSTRAINT [FK_AccessControlList_StatelessAcl_ClassID] FOREIGN KEY ([StatelessAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
 
 ALTER TABLE [dbo].[StateUsage] ADD
-  CONSTRAINT [FK_StateUsage_StateCombinationID] FOREIGN KEY ([StateCombinationID]) REFERENCES [dbo].[StateCombination] ([ID]),
-  CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID])
+  CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_StateUsage_StateCombinationID] FOREIGN KEY ([StateCombinationID]) REFERENCES [dbo].[StateCombination] ([ID])
 
 ALTER TABLE [dbo].[EnumValueDefinition] ADD
   CONSTRAINT [FK_EnumValueDefinition_StatePropertyID] FOREIGN KEY ([StatePropertyID]) REFERENCES [dbo].[StatePropertyDefinition] ([ID])
 
 ALTER TABLE [dbo].[AccessTypeReference] ADD
-  CONSTRAINT [FK_AccessTypeReference_AccessTypeID] FOREIGN KEY ([AccessTypeID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
-  CONSTRAINT [FK_AccessTypeReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
+  CONSTRAINT [FK_AccessTypeReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
+  CONSTRAINT [FK_AccessTypeReference_AccessTypeID] FOREIGN KEY ([AccessTypeID]) REFERENCES [dbo].[EnumValueDefinition] ([ID])
 
 ALTER TABLE [dbo].[LocalizedName] ADD
   CONSTRAINT [FK_LocalizedName_CultureID] FOREIGN KEY ([CultureID]) REFERENCES [dbo].[Culture] ([ID])
@@ -538,9 +538,9 @@ ALTER TABLE [dbo].[Role] ADD
   CONSTRAINT [FK_Role_UserID] FOREIGN KEY ([UserID]) REFERENCES [dbo].[User] ([ID])
 
 ALTER TABLE [dbo].[Substitution] ADD
-  CONSTRAINT [FK_Substitution_SubstitutedRoleID] FOREIGN KEY ([SubstitutedRoleID]) REFERENCES [dbo].[Role] ([ID]),
   CONSTRAINT [FK_Substitution_SubstitutingUserID] FOREIGN KEY ([SubstitutingUserID]) REFERENCES [dbo].[User] ([ID]),
-  CONSTRAINT [FK_Substitution_SubstitutedUserID] FOREIGN KEY ([SubstitutedUserID]) REFERENCES [dbo].[User] ([ID])
+  CONSTRAINT [FK_Substitution_SubstitutedUserID] FOREIGN KEY ([SubstitutedUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_Substitution_SubstitutedRoleID] FOREIGN KEY ([SubstitutedRoleID]) REFERENCES [dbo].[Role] ([ID])
 
 ALTER TABLE [dbo].[Tenant] ADD
   CONSTRAINT [FK_Tenant_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Tenant] ([ID])
