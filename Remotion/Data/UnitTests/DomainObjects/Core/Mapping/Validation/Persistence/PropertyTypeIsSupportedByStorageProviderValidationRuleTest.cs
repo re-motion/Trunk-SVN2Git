@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           20,
           StorageClass.None);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassNone"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_classDefinition);
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           20,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition);
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition);
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty (new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
@@ -24,38 +25,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
   {
     protected void CreatePropertyDefinitionsForClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseString", "BaseString", typeof (string), null, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne", "BaseUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", "BasePrivateUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "Int32", "Int32", typeof (int), null, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      var properties = new List<PropertyDefinition>();
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseString", "BaseString", typeof (string), null, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne", "BaseUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", "BasePrivateUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "Int32", "Int32", typeof (int), null, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      classDefinition.SetPropertyDefinitions (properties);
     }
 
     protected void CreatePropertyDefinitionsForDerivedClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
+      classDefinition.SetPropertyDefinitions (properties);
     }
   }
 }

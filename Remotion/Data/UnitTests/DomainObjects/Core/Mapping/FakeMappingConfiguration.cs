@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
@@ -165,12 +167,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition company = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Company", "Company", DatabaseTest.c_testDomainProviderID, typeof (Company), false, baseClass);
 
-      company.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               company, typeof (Company), "Name", "Name", typeof (string), false, 100));
-      company.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               company, typeof (Company), "IndustrialSector", "IndustrialSectorID", typeof (ObjectID), true));
+      company.SetPropertyDefinitions (properties);
 
       return company;
     }
@@ -180,13 +184,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition customer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", null, DatabaseTest.c_testDomainProviderID, typeof (Customer), false, baseClass);
 
-      customer.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               customer, typeof (Customer), "CustomerSince", "CustomerSince", typeof (DateTime?)));
-
-      customer.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               customer, typeof (Customer), "Type", "CustomerType", typeof (Customer.CustomerType)));
+      customer.SetPropertyDefinitions (properties);
 
       return customer;
     }
@@ -196,9 +201,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition partner = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Partner", null, DatabaseTest.c_testDomainProviderID, typeof (Partner), false, baseClass);
 
-      partner.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               partner, typeof (Partner), "ContactPerson", "ContactPersonID", typeof (ObjectID), true));
+      partner.SetPropertyDefinitions (properties);
 
       return partner;
     }
@@ -208,9 +215,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition supplier = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Supplier", null, DatabaseTest.c_testDomainProviderID, typeof (Supplier), false, baseClass);
 
-      supplier.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality", typeof (int)));
+      supplier.SetPropertyDefinitions (properties);
 
       return supplier;
     }
@@ -220,9 +229,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition distributor = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Distributor", null, DatabaseTest.c_testDomainProviderID, typeof (Distributor), false, baseClass);
 
-      distributor.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops", typeof (int)));
+      distributor.SetPropertyDefinitions (properties);
 
       return distributor;
     }
@@ -232,18 +243,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition order = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", DatabaseTest.c_testDomainProviderID, typeof (Order), false, baseClass);
 
-      order.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               order, typeof (Order), "OrderNumber", "OrderNo", typeof (int)));
-      order.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               order, typeof (Order), "DeliveryDate", "DeliveryDate", typeof (DateTime)));
-      order.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               order, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), true));
-      order.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               order, typeof (Order), "Official", "OfficialID", typeof (ObjectID), true));
+      order.SetPropertyDefinitions (properties);
 
       return order;
     }
@@ -253,9 +266,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition official = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Official", "Official", DatabaseTest.c_unitTestStorageProviderStubID, typeof (Official), false, baseClass);
 
-      official.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               official, typeof (Official), "Name", "Name", typeof (string), false, 100));
+      official.SetPropertyDefinitions (properties);
 
       return official;
     }
@@ -271,13 +286,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition orderTicket = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", DatabaseTest.c_testDomainProviderID, typeof (OrderTicket), false, baseClass);
 
-      orderTicket.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderTicket, typeof (OrderTicket), "FileName", "FileName", typeof (string), false, 255));
-      orderTicket.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderTicket, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), true));
-      orderTicket.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderTicket,
               typeof (OrderTicket), "Int32TransactionProperty",
@@ -286,6 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               null,
               StorageClass.Transaction));
+      orderTicket.SetPropertyDefinitions (properties);
 
       return orderTicket;
     }
@@ -295,15 +312,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition orderItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderItem", "OrderItem", DatabaseTest.c_testDomainProviderID, typeof (OrderItem), false, baseClass);
 
-      orderItem.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Order", "OrderID", typeof (ObjectID), true));
-      orderItem.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Position", "Position", typeof (int)));
-      orderItem.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Product", "Product", typeof (string), false, 100));
+      orderItem.SetPropertyDefinitions (properties);
 
       return orderItem;
     }
@@ -313,12 +332,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition ceo = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Ceo", "Ceo", DatabaseTest.c_testDomainProviderID, typeof (Ceo), false, baseClass);
 
-      ceo.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               ceo, typeof (Ceo), "Name", "Name", typeof (string), false, 100));
-      ceo.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               ceo, typeof (Ceo), "Company", "CompanyID", typeof (ObjectID), true));
+      ceo.SetPropertyDefinitions (properties);
 
       return ceo;
     }
@@ -328,9 +349,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition person = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Person", "Person", DatabaseTest.c_testDomainProviderID, typeof (Person), false, baseClass);
 
-      person.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               person, typeof (Person), "Name", "Name", typeof (string), false, 100));
+      person.SetPropertyDefinitions (properties);
 
       return person;
     }
@@ -340,9 +363,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition client = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Client", "Client", DatabaseTest.c_testDomainProviderID, typeof (Client), false, baseClass);
 
-      client.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               client, typeof (Client), "ParentClient", "ParentClientID", typeof (ObjectID), true));
+      client.SetPropertyDefinitions (properties);
 
       return client;
     }
@@ -352,9 +377,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition location = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Location", "Location", DatabaseTest.c_testDomainProviderID, typeof (Location), false, baseClass);
 
-      location.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               location, typeof (Location), "Client", "ClientID", typeof (ObjectID), true));
+      location.SetPropertyDefinitions (properties);
 
       return location;
     }
@@ -364,13 +391,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition fileSystemItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "FileSystemItem", "FileSystemItem", DatabaseTest.c_testDomainProviderID, typeof (FileSystemItem), false, baseClass);
 
-      fileSystemItem.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               fileSystemItem,
               typeof (FileSystemItem), "ParentFolder",
               "ParentFolderID",
               typeof (ObjectID),
               true));
+      fileSystemItem.SetPropertyDefinitions (properties);
 
       return fileSystemItem;
     }
@@ -397,71 +426,72 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition classWithAllDataTypes = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithAllDataTypes", "TableWithAllDataTypes", DatabaseTest.c_testDomainProviderID, typeof (ClassWithAllDataTypes), false, baseClass);
 
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "BooleanProperty",
               "Boolean",
               typeof (bool)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "ByteProperty", "Byte", typeof (byte)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "DateProperty", "Date", typeof (DateTime)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DateTimeProperty",
               "DateTime",
               typeof (DateTime)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DecimalProperty",
               "Decimal",
               typeof (Decimal)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "DoubleProperty",
               "Double",
               typeof (double)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "EnumProperty",
               "Enum",
               typeof (ClassWithAllDataTypes.EnumType)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty",
               "ExtensibleEnum",
               typeof (Color),
               false));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "FlagsProperty",
               "Flags",
               typeof (ClassWithAllDataTypes.FlagsType)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "GuidProperty", "Guid", typeof (Guid)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int16Property", "Int16", typeof (short)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property", "Int32", typeof (int)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property", "Int64", typeof (long)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty", "Single", typeof (float)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "StringProperty",
@@ -469,14 +499,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (string),
               false,
               100));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength",
               "StringWithoutMaxLength",
               typeof (string),
               false));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "BinaryProperty",
@@ -484,79 +514,79 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (byte[]),
               false));
 
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaBooleanProperty",
               "NaBoolean",
               typeof (bool?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaByteProperty", "NaByte", typeof (byte?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateProperty",
               "NaDate",
               typeof (DateTime?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateTimeProperty",
               "NaDateTime",
               typeof (DateTime?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDecimalProperty",
               "NaDecimal",
               typeof (Decimal?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDoubleProperty",
               "NaDouble",
               typeof (double?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaEnumProperty",
               "NaEnum",
               typeof (ClassWithAllDataTypes.EnumType?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaFlagsProperty",
               "NaFlags",
               typeof (ClassWithAllDataTypes.FlagsType?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes, typeof (ClassWithAllDataTypes), "NaGuidProperty", "NaGuid", typeof (Guid?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt16Property",
               "NaInt16",
               typeof (short?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt32Property",
               "NaInt32",
               typeof (int?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt64Property",
               "NaInt64",
               typeof (long?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaSingleProperty",
               "NaSingle",
               typeof (float?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "StringWithNullValueProperty",
@@ -564,92 +594,92 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (string),
               true,
               100));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty",
               "ExtensibleEnumWithNullValue",
               typeof (Color),
               true));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty",
               "NaBooleanWithNullValue",
               typeof (bool?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty",
               "NaByteWithNullValue",
               typeof (byte?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty",
               "NaDateWithNullValue",
               typeof (DateTime?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty",
               "NaDateTimeWithNullValue",
               typeof (DateTime?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty",
               "NaDecimalWithNullValue",
               typeof (Decimal?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty",
               "NaDoubleWithNullValue",
               typeof (double?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty",
               "NaEnumWithNullValue",
               typeof (ClassWithAllDataTypes.EnumType?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaFlagsWithNullValueProperty",
               "NaFlagsWithNullValue",
               typeof (ClassWithAllDataTypes.FlagsType?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty",
               "NaGuidWithNullValue",
               typeof (Guid?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty",
               "NaInt16WithNullValue",
               typeof (short?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty",
               "NaInt32WithNullValue",
               typeof (int?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty",
               "NaInt64WithNullValue",
               typeof (long?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty",
               "NaSingleWithNullValue",
               typeof (float?)));
-      classWithAllDataTypes.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithAllDataTypes,
               typeof (ClassWithAllDataTypes), "NullableBinaryProperty",
@@ -657,6 +687,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (byte[]),
               true,
               1000000));
+      classWithAllDataTypes.SetPropertyDefinitions (properties);
 
       return classWithAllDataTypes;
     }
@@ -737,7 +768,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithValidRelations), "ClassWithGuidKeyOptional",
@@ -745,13 +777,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ObjectID),
               true));
 
-      classDefinition.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithValidRelations), "ClassWithGuidKeyNonOptional",
               "TableWithGuidKeyNonOptionalID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -766,13 +799,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithInvalidRelation), "ClassWithGuidKey",
               "TableWithGuidKeyID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -787,13 +822,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithoutRelatedClassIDColumn), "Distributor",
               "DistributorID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -809,13 +846,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass), "Company",
               "CompanyID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -832,13 +871,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithoutRelatedClassIDColumnAndDerivation), "Company",
               "CompanyID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -848,9 +889,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition industrialSector = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "IndustrialSector", "IndustrialSector", DatabaseTest.c_testDomainProviderID, typeof (IndustrialSector), false, baseClass);
 
-      industrialSector.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               industrialSector, typeof (IndustrialSector), "Name", "Name", typeof (string), false, 100));
+      industrialSector.SetPropertyDefinitions (properties);
 
       return industrialSector;
     }
@@ -860,12 +903,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition employee = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Employee", "Employee", DatabaseTest.c_testDomainProviderID, typeof (Employee), false, baseClass);
 
-      employee.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               employee, typeof (Employee), "Name", "Name", typeof (string), false, 100));
-      employee.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               employee, typeof (Employee), "Supervisor", "SupervisorID", typeof (ObjectID), true));
+      employee.SetPropertyDefinitions (properties);
 
       return employee;
     }
@@ -881,42 +926,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           typeof (MixinAddingPersistentProperties));
 
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "PersistentProperty",
               "PersistentProperty",
               typeof (int)));
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "ExtraPersistentProperty",
               "ExtraPersistentProperty",
               typeof (int)));
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty",
               "UnidirectionalRelationPropertyID",
               typeof (ObjectID)));
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "RelationProperty",
               "RelationPropertyID",
               typeof (ObjectID)));
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide",
               "CollectionPropertyNSideID",
               typeof (ObjectID)));
-      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty",
               "PrivateBaseRelationPropertyID",
               typeof (ObjectID)));
+      targetClassForPersistentMixin.SetPropertyDefinitions (properties);
 
       return targetClassForPersistentMixin;
     }
@@ -952,13 +999,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition computer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Computer", "Computer", DatabaseTest.c_testDomainProviderID, typeof (Computer), false, baseClass);
 
-      computer.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               computer, typeof (Computer), "SerialNumber", "SerialNumber", typeof (string), false, 20));
-      computer.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               computer, typeof (Computer), "Employee", "EmployeeID", typeof (ObjectID), true));
-      computer.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               computer,
               typeof (Computer), "Int32TransactionProperty",
@@ -967,7 +1015,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               null,
               StorageClass.Transaction));
-      computer.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               computer,
               typeof (Computer), "DateTimeTransactionProperty",
@@ -976,7 +1024,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               null,
               StorageClass.Transaction));
-      computer.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               computer,
               typeof (Computer), "EmployeeTransactionProperty",
@@ -985,6 +1033,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               true,
               null,
               StorageClass.Transaction));
+      computer.SetPropertyDefinitions (properties);
 
       return computer;
     }
@@ -1000,13 +1049,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               baseClass);
 
-      classDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithRelatedClassIDColumnAndNoInheritance), "ClassWithGuidKey",
               "TableWithGuidKeyID",
               typeof (ObjectID),
               true));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
     }
@@ -1021,20 +1072,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           baseClass);
 
-      relationTargetForPersistentMixinDefinition.MyPropertyDefinitions.Add (
+      var properties = new List<PropertyDefinition>();
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               relationTargetForPersistentMixinDefinition,
               typeof (RelationTargetForPersistentMixin), "RelationProperty2",
               "RelationProperty2ID",
               typeof (ObjectID),
               true));
-      relationTargetForPersistentMixinDefinition.MyPropertyDefinitions.Add (
+      properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               relationTargetForPersistentMixinDefinition,
               typeof (RelationTargetForPersistentMixin), "RelationProperty3",
               "RelationProperty3ID",
               typeof (ObjectID),
               true));
+      relationTargetForPersistentMixinDefinition.SetPropertyDefinitions (properties);
 
       return relationTargetForPersistentMixinDefinition;
     }
@@ -1048,9 +1101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinitionCollection relationDefinitions = new RelationDefinitionCollection();
 
       relationDefinitions.Add (CreateCustomerToOrderRelationDefinition());
+
       relationDefinitions.Add (CreateOrderToOrderItemRelationDefinition());
       relationDefinitions.Add (CreateOrderToOrderTicketRelationDefinition());
       relationDefinitions.Add (CreateOrderToOfficialRelationDefinition());
+
       relationDefinitions.Add (CreateCompanyToCeoRelationDefinition());
       relationDefinitions.Add (CreatePartnerToPersonRelationDefinition());
       relationDefinitions.Add (CreateClientToLocationRelationDefinition());
@@ -1073,6 +1128,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedVirtualRelationPropertyRelationDefinition());
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionProperty1SideCreateTargetClassForPersistentMixinMixedCollectionPropertyRelationDefinition());
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
+
+      var relationsByClass = from relationDefinition in relationDefinitions.Cast<RelationDefinition>()
+                             from endPoint in relationDefinition.EndPointDefinitions
+                             where !endPoint.IsAnonymous
+                             group relationDefinition by endPoint.ClassDefinition
+                               into grouping
+                               select new { Key = grouping.Key, Values = grouping.Distinct () };
+
+      foreach (var classWithRelations in relationsByClass)
+      {
+        classWithRelations.Key.SetRelationDefinitions (classWithRelations.Values);
+      }
+
 
       return relationDefinitions;
     }
@@ -1099,9 +1167,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders", endPoint1, endPoint2);
 
-      customer.MyRelationDefinitions.Add (relation);
-      orderClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1120,9 +1185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket"
           + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket", endPoint1, endPoint2);
-
-      orderClass.MyRelationDefinitions.Add (relation);
-      orderTicketClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1145,9 +1207,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems", endPoint1, endPoint2);
-
-      orderClass.MyRelationDefinitions.Add (relation);
-      orderItemClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1173,9 +1232,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Official.Orders", endPoint1, endPoint2);
 
-      officialClass.MyRelationDefinitions.Add (relation);
-      orderClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1195,9 +1251,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo.Company->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo", endPoint1, endPoint2);
-
-      companyClass.MyRelationDefinitions.Add (relation);
-      ceoClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1222,9 +1275,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner.ContactPerson->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Person.AssociatedPartnerCompany", endPoint1, endPoint2);
 
-      personClass.MyRelationDefinitions.Add (relation);
-      partnerClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1238,8 +1288,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinition relation =
           new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client"
             +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient", endPoint1, endPoint2);
-
-      clientClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1256,8 +1304,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location"
         +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", endPoint1, endPoint2);
-
-      locationClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1281,9 +1327,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem"
             + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems", endPoint1, endPoint2);
-
-      folderClass.MyRelationDefinitions.Add (relation);
-      fileSystemItemClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1313,9 +1356,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor->"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn", endPoint1, endPoint2);
 
-      distributorClass.MyRelationDefinitions.Add (relation);
-      classWithoutRelatedClassIDColumnClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1344,9 +1384,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company->"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation", endPoint1, endPoint2);
 
-      companyClass.MyRelationDefinitions.Add (relation);
-      classWithoutRelatedClassIDColumnAndDerivation.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1369,8 +1406,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.Company",
               endPoint1,
               endPoint2);
-
-      classWithOptionalOneToOneRelationAndOppositeDerivedClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1398,9 +1433,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               endPoint1,
               endPoint2);
 
-      classWithGuidKey.MyRelationDefinitions.Add (relation);
-      classWithValidRelations.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1427,9 +1459,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               endPoint1,
               endPoint2);
 
-      classWithGuidKey.MyRelationDefinitions.Add (relation);
-      classWithValidRelations.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1455,9 +1484,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithInvalidRelation",
               endPoint1,
               endPoint2);
-
-      classWithGuidKey.MyRelationDefinitions.Add (relation);
-      classWithInvalidRelation.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1487,9 +1513,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               endPoint1,
               endPoint2);
 
-      classWithGuidKey.MyRelationDefinitions.Add (relation);
-      classWithRelatedClassIDColumnAndNoInheritance.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1516,9 +1539,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.IndustrialSector.Companies", 
             endPoint1, endPoint2);
 
-      industrialSectorClass.MyRelationDefinitions.Add (relation);
-      companyClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1542,8 +1562,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Supervisor->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Subordinates", endPoint1, endPoint2);
 
-      employeeClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1564,9 +1582,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer.Employee->"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Computer", endPoint1, endPoint2);
-
-      employeeClass.MyRelationDefinitions.Add (relation);
-      computerClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1589,9 +1604,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.UnidirectionalRelationProperty", 
           endPoint1, 
           endPoint2);
-
-      mixedClass.MyRelationDefinitions.Add (relation);
-      relatedClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1621,9 +1633,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           endPoint1,
           endPoint2);
 
-      mixedClass.MyRelationDefinitions.Add (relation);
-      relatedClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1651,9 +1660,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.VirtualRelationProperty",
           endPoint1,
           endPoint2);
-
-      mixedClass.MyRelationDefinitions.Add (relation);
-      relatedClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }
@@ -1683,9 +1689,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           endPoint1,
           endPoint2);
 
-      mixedClass.MyRelationDefinitions.Add (relation);
-      relatedClass.MyRelationDefinitions.Add (relation);
-
       return relation;
     }
 
@@ -1713,9 +1716,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty4",
           endPoint1,
           endPoint2);
-
-      mixedClass.MyRelationDefinitions.Add (relation);
-      relatedClass.MyRelationDefinitions.Add (relation);
 
       return relation;
     }

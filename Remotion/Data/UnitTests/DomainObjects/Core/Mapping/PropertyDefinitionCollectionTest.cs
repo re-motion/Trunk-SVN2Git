@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Test", "Test", StorageClass.Persistent);
 
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
 
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray();
 
@@ -77,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinitionInDerivedClass = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property2", "Property2", StorageClass.Persistent);
 
-      baseClassDefinition.MyPropertyDefinitions.Add (propertyDefinitionInBaseClass);
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
+      baseClassDefinition.SetPropertyDefinitions (new[] { propertyDefinitionInBaseClass });;
+      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinitionInDerivedClass });;
 
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray ();
 

@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
@@ -237,8 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           StorageClass.Persistent,
           typeof (Order).GetProperty ("DeliveryDate"),
           null);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition1, propertyDefinition2 });;
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
@@ -374,8 +373,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "Order", "TestDomain", typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
-      orderTicketDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false));
+      orderTicketDefinition.SetPropertyDefinitions (new[]{
+          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)});
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (

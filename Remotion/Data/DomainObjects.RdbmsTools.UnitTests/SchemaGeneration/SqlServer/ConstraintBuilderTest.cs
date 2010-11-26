@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
@@ -80,10 +81,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddConstraintWithTwoConstraints ()
     {
       var firstClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
-      firstClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      firstClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      var properties = new List<PropertyDefinition>();
+      properties.Add (CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      firstClass.SetPropertyDefinitions (properties);
 
       var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address));
       var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee));
@@ -92,15 +93,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           "FirstClassToSecondClass",
           new RelationEndPointDefinition (firstClass, "SecondClass", false),
           new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name")));
-      firstClass.MyRelationDefinitions.Add (relationDefinition1);
-      secondClass.MyRelationDefinitions.Add (relationDefinition1);
-
+      
       RelationDefinition relationDefinition2 = new RelationDefinition (
           "FirstClassToThirdClass",
           new RelationEndPointDefinition (firstClass, "ThirdClass", false),
           new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
-      firstClass.MyRelationDefinitions.Add (relationDefinition2);
-      thirdClass.MyRelationDefinitions.Add (relationDefinition2);
+      
+      firstClass.SetRelationDefinitions (new[] { relationDefinition1, relationDefinition2 });
+      secondClass.SetRelationDefinitions (new[] { relationDefinition1 });
+      thirdClass.SetRelationDefinitions (new[] { relationDefinition2 });
 
       firstClass.SetReadOnly ();
       secondClass.SetReadOnly ();
@@ -152,8 +153,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), baseClass);
-      derivedClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      derivedClass.SetPropertyDefinitions (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)});
 
       ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner));
       RelationDefinition relationDefinition1 = new RelationDefinition (
@@ -161,8 +161,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           new RelationEndPointDefinition (derivedClass, "OtherClass", false),
           new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
 
-      derivedClass.MyRelationDefinitions.Add (relationDefinition1);
-      otherClass.MyRelationDefinitions.Add (relationDefinition1);
+      baseClass.SetRelationDefinitions (new RelationDefinition[0]);
+      derivedClass.SetRelationDefinitions (new[]{ relationDefinition1});
+      otherClass.SetRelationDefinitions(new[]{ relationDefinition1});
 
       baseClass.SetReadOnly ();
       derivedClass.SetReadOnly ();

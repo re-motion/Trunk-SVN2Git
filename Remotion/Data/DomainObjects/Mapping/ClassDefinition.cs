@@ -84,9 +84,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _id = id;
       _storageGroupType = storageGroupType;
 
-      _propertyDefinitions = new PropertyDefinitionCollection (this);
-      _relationDefinitions = new RelationDefinitionCollection();
-
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
@@ -110,8 +107,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
-      MyPropertyDefinitions.SetReadOnly();
-      MyRelationDefinitions.SetReadOnly();
+      if(_propertyDefinitions!=null)
+        MyPropertyDefinitions.SetReadOnly();
+      if(_relationDefinitions!=null)
+        MyRelationDefinitions.SetReadOnly();
       DerivedClasses.SetReadOnly();
 
       _isReadOnly = true;
@@ -331,7 +330,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      PropertyDefinition propertyDefinition = MyPropertyDefinitions[propertyName];
+      PropertyDefinition propertyDefinition = null;
+      if(_propertyDefinitions!=null)
+       propertyDefinition = MyPropertyDefinitions[propertyName];
 
       if (propertyDefinition == null && BaseClass != null)
         return BaseClass.GetPropertyDefinition (propertyName);
@@ -354,12 +355,40 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageProviderDefinition = storageProviderDefinition;
     }
 
+    // TODO 3518: Change to take PropertyDefinitionCollection
     public void SetPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
 
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      foreach (var propertyDefinition in propertyDefinitions)
+      {
+        if (!ReferenceEquals (propertyDefinition.ClassDefinition, this))
+        {
+          throw CreateMappingException (
+              "Property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
+              propertyDefinition.PropertyName,
+              _id,
+              propertyDefinition.ClassDefinition.ID);
+        }
+
+        var basePropertyDefinition = GetPropertyDefinition (propertyDefinition.PropertyName); // TODO 3518: Use BaseClass.GetPropDef, remove check in GetPropDef
+        if (basePropertyDefinition != null)
+        {
+          string definingClass =
+              basePropertyDefinition.ClassDefinition == this
+                  ? "it"
+                  : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
+
+          throw CreateMappingException (
+              "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
+              propertyDefinition.PropertyName,
+              _id,
+              definingClass);
+        }
+      }
 
       var readOnlyPropertyDefinitions = new PropertyDefinitionCollection (propertyDefinitions, true);
       _propertyDefinitions = readOnlyPropertyDefinitions;
@@ -428,12 +457,24 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyDefinitionCollection MyPropertyDefinitions
     {
-      get { return _propertyDefinitions; }
+      get
+      {
+        if(_propertyDefinitions==null)
+          throw new InvalidOperationException ("No property definitions have been set.");
+        
+        return _propertyDefinitions; 
+      }
     }
 
     public RelationDefinitionCollection MyRelationDefinitions
     {
-      get { return _relationDefinitions; }
+      get 
+      {
+        if (_relationDefinitions == null)
+          throw new InvalidOperationException ("No relation definitions have been set.");
+        
+        return _relationDefinitions; 
+      }
     }
 
     public bool IsPartOfInheritanceHierarchy

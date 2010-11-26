@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           20,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();

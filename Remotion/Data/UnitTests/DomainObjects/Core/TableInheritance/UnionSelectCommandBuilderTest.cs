@@ -63,18 +63,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass);
 
       ReflectionBasedClassDefinition clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "TableInheritance_Client", TableInheritanceTestDomainProviderID, typeof (Client), false);
-
-      domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.Create(domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID)));
+      var clientClassPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create(domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
+      domainBaseClass.SetPropertyDefinitions (new[] { clientClassPropertyDefinition });
 
       RelationEndPointDefinition domainBaseEndPointDefinition = new RelationEndPointDefinition (domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", false);
 
       VirtualRelationEndPointDefinition clientEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
-      RelationDefinition clientToDomainBaseDefinition = new RelationDefinition (
-          "ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
-
-      domainBaseClass.MyRelationDefinitions.Add (clientToDomainBaseDefinition);
-      clientClass.MyRelationDefinitions.Add (clientToDomainBaseDefinition);
+      RelationDefinition clientToDomainBaseDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
+      domainBaseClass.SetRelationDefinitions (new[] { clientToDomainBaseDefinition });
+      clientClass.SetRelationDefinitions (new[] { clientToDomainBaseDefinition});
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();

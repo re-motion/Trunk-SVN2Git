@@ -562,21 +562,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return typeof (ClassWithInvalidBidirectionalRelationRightSide);
     }
 
-    private Type GetRelationTargetForMixinAddingBidirectionalRelationTwice ()
-    {
-      return typeof (RelationTargetForMixinAddingBidirectionalRelationTwice);
-    }
-
-    private Type GetTargetClass2ForMixinAddingBidirectionalRelationTwice ()
-    {
-      return typeof (TargetClass2ForMixinAddingBidirectionalRelationTwice);
-    }
-
-    private Type GetMixinAddingBidirectionalRelationTwice ()
-    {
-      return typeof (MixinAddingBidirectionalRelationTwice);
-    }
-
     private RelationReflector CreateRelationReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       return new RelationReflector (classDefinition, propertyInfo, _nameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
@@ -596,7 +581,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = propertyReflector.GetMetadata();
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))
-        classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+        classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
 
       return propertyInfo;
     }

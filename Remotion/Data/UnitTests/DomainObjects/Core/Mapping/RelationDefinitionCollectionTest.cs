@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
         + "TestDomain.Integration.Order.OrderTicket"];
 
-      classDefinition.MyRelationDefinitions.Add (_relationDefinition);
+      classDefinition.SetRelationDefinitions (new[]{ _relationDefinition});
 
       var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(classDefinition).ToArray ();
 
@@ -84,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Integration.Order.Official->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
         + "Integration.Official.Orders"];
 
-      baseClassDefinition.MyRelationDefinitions.Add (relationDefinition1);
-      derivedClassDefinition.MyRelationDefinitions.Add (relationDefinition2);
+      baseClassDefinition.SetRelationDefinitions (new[]{ relationDefinition1});
+      derivedClassDefinition.SetRelationDefinitions(new[]{relationDefinition2});
 
       var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(derivedClassDefinition).ToArray ();
 

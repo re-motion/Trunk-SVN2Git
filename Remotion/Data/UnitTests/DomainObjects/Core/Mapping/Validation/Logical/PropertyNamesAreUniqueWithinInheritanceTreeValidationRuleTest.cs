@@ -81,10 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void HasBaseClass_And_HasPropertyDefintions ()
     {
-      _derivedBaseClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "FirstName", "FirstName"));
-      _derivedBaseClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "LastName", "LastName"));
+      _derivedBaseClassDefinition.SetPropertyDefinitions (new[]{ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "FirstName", "FirstName")});
+      _derivedBaseClassDefinition.SetPropertyDefinitions (new[]{ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "LastName", "LastName")});
       
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly ();
@@ -95,10 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void HasBaseClass_And_HasSamePropertyDefintionsInBaseClass ()
     {
-      _derivedBaseClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "Name", "Name"));
-      _baseOfBaseClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_baseOfBaseClassDefinition, "Name", "Name"));
+      _derivedBaseClassDefinition.SetPropertyDefinitions (new[]{ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedBaseClassDefinition, "Name", "Name")});
+      _baseOfBaseClassDefinition.SetPropertyDefinitions (new[]{ ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_baseOfBaseClassDefinition, "Name", "Name")});
 
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly();
@@ -115,10 +111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void HasBaseClass_And_HasSamePropertyDefintionsInBaseOfBaseClass ()
     {
-      _derivedClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedClassDefinition, "Name", "Name"));
-      _baseOfBaseClassDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_baseOfBaseClassDefinition, "Name", "Name"));
+      _derivedClassDefinition.SetPropertyDefinitions(new[] {ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_derivedClassDefinition, "Name", "Name")});
+      _baseOfBaseClassDefinition.SetPropertyDefinitions (new[] {ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_baseOfBaseClassDefinition, "Name", "Name")});
 
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly();

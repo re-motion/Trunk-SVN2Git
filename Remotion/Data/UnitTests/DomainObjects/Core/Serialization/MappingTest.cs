@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           "ClassID", "EntityName", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-
+      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
+      
       SerializeAndDeserialize (propertyDefinition);
     }
 
@@ -100,9 +100,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
+      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
       var endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
 
       SerializeAndDeserialize (endPointdefinition);
@@ -118,9 +118,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
-      orderTicketDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
+      var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
+      orderTicketDefinition.SetPropertyDefinitions (new[] { orderTicketPropertyDefinition });
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
@@ -173,9 +173,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
-      orderTicketDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent));
+      var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
+      orderTicketDefinition.SetPropertyDefinitions (new[] { orderTicketPropertyDefinition });
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
@@ -229,9 +229,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ReflectionBasedClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Location", "Location", "TestDomain", typeof (Location), false);
 
-      locationDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent));
+      var locationPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+              locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent);
+      locationDefinition.SetPropertyDefinitions (new[] { locationPropertyDefinition });
 
       var clientEndPointDefinition = new AnonymousRelationEndPointDefinition (clientDefinition);
       var locationEndPointDefinition = new RelationEndPointDefinition (locationDefinition, "Client", true);

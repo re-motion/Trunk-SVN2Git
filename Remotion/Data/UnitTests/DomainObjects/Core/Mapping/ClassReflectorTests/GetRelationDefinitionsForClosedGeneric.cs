@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -101,15 +102,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
     private void CreatePropertyDefinitionsForClosedGenericClassWithManySideRelationProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseUnidirectional", "BaseUnidirectionalID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToOne", "BaseBidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
-      classDefinition.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToMany", "BaseBidirectionalOneToManyID", typeof (ObjectID), true, null, StorageClass.Persistent));
-
+      var properties = new List<PropertyDefinition>();
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseUnidirectional", "BaseUnidirectionalID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToOne", "BaseBidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToMany", "BaseBidirectionalOneToManyID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      classDefinition.SetPropertyDefinitions (properties);
     }
 
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()

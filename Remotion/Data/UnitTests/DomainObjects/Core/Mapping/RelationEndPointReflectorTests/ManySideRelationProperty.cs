@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       PropertyReflector propertyReflector = CreatePropertyReflector (propertyName);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
       return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver);
     }
 

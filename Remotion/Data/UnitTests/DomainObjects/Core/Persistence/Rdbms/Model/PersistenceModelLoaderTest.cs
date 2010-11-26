@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
-      classDefinition.MyPropertyDefinitions.Add (nonPersistentProperty);
+      classDefinition.SetPropertyDefinitions (new[] { nonPersistentProperty });
       classDefinition.SetReadOnly();
 
       _columnDefinitionFactoryMock.Replay();
@@ -325,6 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinition[0]);
 
       _columnDefinitionFactoryMock.Replay ();
 
@@ -412,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           classDefinition,
           propertyName,
           null);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      classDefinition.SetPropertyDefinitions(new[]{ propertyDefinition});
       return propertyDefinition;
     }
   }

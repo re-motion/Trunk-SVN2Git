@@ -84,8 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"));
 
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition1);
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedBaseClass2.SetPropertyDefinitions(new[]{ propertyDefinition1, propertyDefinition2});
       _derivedBaseClass2.SetReadOnly();
 
       var validationResult = _validationRule.Validate (_derivedBaseClass2);
@@ -108,8 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           "Property");
 
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+      classDefinition.SetPropertyDefinitions(new[]{propertyDefinition1, propertyDefinition2});
       classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -147,8 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           new FakeColumnDefinition ("Property2"));
 
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition1);
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition2);
+      classDefinition.SetPropertyDefinitions(new[]{propertyDefinition1, propertyDefinition2});
       classDefinition.SetReadOnly();
 
       var validationResult = _validationRule.Validate (classDefinition);
@@ -177,8 +174,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property"));
 
-      _derivedBaseClass1.MyPropertyDefinitions.Add (propertyDefinition1);
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedBaseClass1.SetPropertyDefinitions(new[]{ propertyDefinition1});
+      _derivedBaseClass2.SetPropertyDefinitions(new[]{propertyDefinition2});
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -214,8 +211,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property2"));
 
-      _derivedBaseClass1.MyPropertyDefinitions.Add (propertyDefinition1);
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedBaseClass1.SetPropertyDefinitions(new[]{propertyDefinition1});
+      _derivedBaseClass2.SetPropertyDefinitions(new[]{propertyDefinition2});
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -246,8 +243,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property"));
 
-      _derivedClass.MyPropertyDefinitions.Add (propertyDefinition1);
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedClass.SetPropertyDefinitions(new[]{propertyDefinition1});
+      _derivedBaseClass2.SetPropertyDefinitions(new[]{propertyDefinition2});
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -283,8 +280,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property2"));
 
-      _derivedClass.MyPropertyDefinitions.Add (propertyDefinition1);
-      _derivedBaseClass2.MyPropertyDefinitions.Add (propertyDefinition2);
+      _derivedClass.SetPropertyDefinitions(new[]{propertyDefinition1});
+      _derivedBaseClass2.SetPropertyDefinitions(new[]{propertyDefinition2});
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 

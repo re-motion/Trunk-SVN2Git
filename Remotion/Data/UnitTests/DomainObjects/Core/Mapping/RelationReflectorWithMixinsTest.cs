@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -23,7 +24,9 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -36,30 +39,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition _relatedClassDefinition;
     private ReflectionBasedClassDefinition _inheritanceRootInheritingMixinClassDefinition;
     private ClassDefinitionCollection _classDefinitions;
-    
+
     public override void SetUp ()
     {
-      base.SetUp();
+      base.SetUp ();
 
-      _mixinTargetClassDefinition = 
+      _mixinTargetClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _multiMixinTargetClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassReceivingTwoReferencesToDerivedClass), typeof (MixinAddingTwoReferencesToDerivedClass1), typeof (MixinAddingTwoReferencesToDerivedClass2));
       _multiMixinRelatedClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
-      _relatedClassDefinition = 
+      _relatedClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
-      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition("InheritanceRootInheritingPersistentMixin", 
-          "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false, 
-          new PersistentMixinFinder(typeof (InheritanceRootInheritingPersistentMixin), true));
+      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("InheritanceRootInheritingPersistentMixin",
+          "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false,
+          new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
-      _classDefinitions = new ClassDefinitionCollection {_mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition};
+      _classDefinitions = new ClassDefinitionCollection { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition };
     }
 
     [Test]
     public void IsMixedProperty_True ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties), 
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
           "UnidirectionalRelationProperty");
       Assert.That (relationReflector.IsMixedProperty, Is.True);
     }
@@ -83,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void DomainObjectTypeDeclaringProperty_WithMixinAboveInheritanceRoot ()
     {
-      var relationReflector = CreateRelationReflectorForProperty(_inheritanceRootInheritingMixinClassDefinition, 
+      var relationReflector = CreateRelationReflectorForProperty (_inheritanceRootInheritingMixinClassDefinition,
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentRelationProperty");
       Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (TargetClassAboveInheritanceRoot)));
     }
@@ -114,14 +117,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (actualRelationDefinition.ID,
-          Is.EqualTo (typeof (TargetClassForPersistentMixin).FullName + ":" + 
+          Is.EqualTo (typeof (TargetClassForPersistentMixin).FullName + ":" +
           typeof (MixinAddingPersistentProperties).FullName + ".UnidirectionalRelationProperty"));
     }
 
     [Test]
     public void GetMetadata_Mixed_VirtualSide ()
     {
-      EnsurePropertyDefinitionExisitsOnClassDefinition (_relatedClassDefinition, typeof (RelationTargetForPersistentMixin), "RelationProperty2");
+      var propertyInfo = typeof (RelationTargetForPersistentMixin).GetProperty ("RelationProperty2", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var propertyReflector = new PropertyReflector (_relatedClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+      var propertyDefinition = propertyReflector.GetMetadata ();
+
+      _relatedClassDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
+      ;
+
       var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties), "VirtualRelationProperty");
 
@@ -164,12 +173,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Mixed_BidirectionalOneToOne_EndPointDefinition0 ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, 
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties), "RelationProperty");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
-      
+
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_mixinTargetClassDefinition.MyPropertyDefinitions[0]));
@@ -204,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
-      
+
       Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_mixinTargetClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_mixinTargetClassDefinition));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
@@ -215,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition,
           typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide");
-      
+
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (VirtualRelationEndPointDefinition)));
       var oppositeEndPointDefinition = (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
@@ -229,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_Mixed_OppositePropertyPrivateOnBase ()
     {
-      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, 
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition,
           typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty");
 
       Assert.That (relationReflector.GetMetadata (_classDefinitions), Is.Not.Null);
@@ -264,21 +273,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo = declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
       var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver ());
       var propertyDefinition = propertyReflector.GetMetadata ();
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (propertyDefinition);
+      var propertyDefinitionsOfClass = (PropertyDefinitionCollection) PrivateInvoke.GetNonPublicField (classDefinition, "_propertyDefinitions");
+      PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", null);
+      if (propertyDefinitionsOfClass != null)
+        properties.AddRange (propertyDefinitionsOfClass.Cast<PropertyDefinition> ());
 
-      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver (), new ReflectionBasedRelationEndPointDefinitionFactory());
-    }
-
-    private PropertyInfo EnsurePropertyDefinitionExisitsOnClassDefinition (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)
-    {
-      var propertyInfo = declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver ());
-      var propertyDefinition = propertyReflector.GetMetadata ();
-
-      if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))
-        classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-
-      return propertyInfo;
+      classDefinition.SetPropertyDefinitions (properties);
+      ;
+      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver (), new ReflectionBasedRelationEndPointDefinitionFactory ());
     }
   }
 }

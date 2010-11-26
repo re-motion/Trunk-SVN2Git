@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("Property");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassPersistent");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassTransaction");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Transaction);
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
-      _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
