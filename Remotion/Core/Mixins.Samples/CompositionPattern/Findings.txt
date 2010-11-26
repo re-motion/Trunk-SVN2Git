@@ -1,0 +1,3 @@
+﻿- No SuppressAttribute required: If the target class already implements the interface added by the mixin, the mixin implementation is ignored.
+- Members added by a mixin cannot be overridden by other mixins. You can derive from the mixin, but cannot change the "This" property unless the original mixin was designed for this purpose.
+- Mixins cannot currently be configured for a complete interface.
