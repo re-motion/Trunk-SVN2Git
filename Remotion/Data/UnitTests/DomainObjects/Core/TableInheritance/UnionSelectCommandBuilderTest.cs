@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       ReflectionBasedClassDefinition clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "TableInheritance_Client", TableInheritanceTestDomainProviderID, typeof (Client), false);
       var clientClassPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create(domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
-      domainBaseClass.SetPropertyDefinitions (new[] { clientClassPropertyDefinition });
+      domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { clientClassPropertyDefinition }, true));
 
       RelationEndPointDefinition domainBaseEndPointDefinition = new RelationEndPointDefinition (domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", false);
 

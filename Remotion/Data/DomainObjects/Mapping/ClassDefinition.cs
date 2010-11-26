@@ -347,15 +347,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageProviderDefinition = storageProviderDefinition;
     }
 
-    // TODO 3518: Change to take PropertyDefinitionCollection
-    public void SetPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
+    public void SetPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
 
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      foreach (var propertyDefinition in propertyDefinitions)
+      foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
       {
         if (!ReferenceEquals (propertyDefinition.ClassDefinition, this))
         {
@@ -382,8 +381,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
 
-      var readOnlyPropertyDefinitions = new PropertyDefinitionCollection (propertyDefinitions, true);
-      _propertyDefinitions = readOnlyPropertyDefinitions;
+      _propertyDefinitions = propertyDefinitions;
     }
 
     public void SetRelationDefinitions (IEnumerable<RelationDefinition> relationDefinitions)

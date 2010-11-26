@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyReflector = new PropertyReflector (_relatedClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
       var propertyDefinition = propertyReflector.GetMetadata ();
 
-      _relatedClassDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
+      _relatedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       ;
 
       var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition,
@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (propertyDefinitionsOfClass != null)
         properties.AddRange (propertyDefinitionsOfClass.Cast<PropertyDefinition> ());
 
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       ;
       return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver (), new ReflectionBasedRelationEndPointDefinitionFactory ());
     }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -55,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           20,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -75,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -99,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           null,
           StorageClass.Persistent);
       propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();

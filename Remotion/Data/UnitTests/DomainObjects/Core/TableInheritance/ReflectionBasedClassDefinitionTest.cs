@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -149,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
 
-      _domainBaseClass.SetPropertyDefinitions (new[] { propertyDefinition });
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       Assert.That (_domainBaseClass.MyPropertyDefinitions.Count, Is.EqualTo (1));
       Assert.That (_domainBaseClass.MyPropertyDefinitions[0], Is.SameAs (propertyDefinition));
@@ -161,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       _domainBaseClass.SetReadOnly();
 
-      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinition[0]);
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
     }
 
     [Test]

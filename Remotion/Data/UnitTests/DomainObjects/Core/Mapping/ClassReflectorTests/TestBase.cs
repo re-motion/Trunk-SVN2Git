@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithMixedProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     protected void CreatePropertyDefinitionsForDerivedClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithMixedProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
   }
 }

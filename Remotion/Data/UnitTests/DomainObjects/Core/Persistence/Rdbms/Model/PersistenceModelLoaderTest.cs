@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -308,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
-      classDefinition.SetPropertyDefinitions (new[] { nonPersistentProperty });
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetReadOnly();
 
       _columnDefinitionFactoryMock.Replay();
@@ -325,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinition[0]);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
 
       _columnDefinitionFactoryMock.Replay ();
 
@@ -413,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           classDefinition,
           propertyName,
           null);
-      classDefinition.SetPropertyDefinitions(new[]{ propertyDefinition});
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition}, true));
       return propertyDefinition;
     }
   }

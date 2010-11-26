@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -147,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var orderItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OrderItem));
       var oppositeProperty = ReflectionBasedPropertyDefinitionFactory.Create (orderItemClassDefinition, "Order", typeof (ObjectID));
       var productProperty = ReflectionBasedPropertyDefinitionFactory.Create (orderItemClassDefinition, "Product", typeof (string));
-      orderItemClassDefinition.SetPropertyDefinitions(new[]{oppositeProperty, productProperty});
+      orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));
       var oppositeEndPoint = new RelationEndPointDefinition (orderItemClassDefinition, "Order", false);
       var relationDefinition = new RelationDefinition ("test", endPoint, oppositeEndPoint);
       orderItemClassDefinition.SetReadOnly ();

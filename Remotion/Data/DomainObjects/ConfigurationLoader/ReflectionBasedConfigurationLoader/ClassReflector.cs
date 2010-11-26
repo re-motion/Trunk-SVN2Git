@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var propertyDefinitionsForClass = (from PropertyInfo propertyInfo in propertyInfos
                                          select new PropertyReflector (classDefinition, propertyInfo, NameResolver)
                                          into propertyReflector select propertyReflector.GetMetadata()).Cast<PropertyDefinition>();
-      classDefinition.SetPropertyDefinitions (propertyDefinitionsForClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (propertyDefinitionsForClass, true));
     }
 
     private string GetID ()

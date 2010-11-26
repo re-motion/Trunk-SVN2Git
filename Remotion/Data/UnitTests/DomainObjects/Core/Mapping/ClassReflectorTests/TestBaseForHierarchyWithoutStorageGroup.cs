@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithoutStorageGroupWithMixedProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithoutStorageGroupWithMixedProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add( ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithoutStorageGroupWithMixedProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     protected void CreatePropertyDefinitionsForDerivedClassWithoutStorageGroupWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithoutStorageGroupWithMixedProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add(ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithoutStorageGroupWithMixedProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (DerivedClassWithoutStorageGroupWithMixedProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
   }
 }

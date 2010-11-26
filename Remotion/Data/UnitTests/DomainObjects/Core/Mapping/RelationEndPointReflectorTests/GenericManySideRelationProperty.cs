@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -110,7 +111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       PropertyReflector propertyReflector = CreatePropertyReflector (propertyName);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
-      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      ;
       return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, MappingConfiguration.Current.NameResolver);
     }
 

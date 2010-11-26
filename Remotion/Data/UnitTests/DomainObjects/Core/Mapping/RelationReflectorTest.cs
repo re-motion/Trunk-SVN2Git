@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
@@ -581,7 +582,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = propertyReflector.GetMetadata();
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))
-        classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
+      {
+        classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      }
+      ;
 
       return propertyInfo;
     }

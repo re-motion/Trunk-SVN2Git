@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -44,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PersistentMixinFinderMock (classType, persistentMixins));
       SetStorageEntityName (entityName, classDefinition);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinition[0]);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
       return classDefinition;
     }
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           persistentMixinFinder);
       SetStorageEntityName (entityName, classDefinition);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinition[0]);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
       return classDefinition;
     }
@@ -90,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           persistentMixinFinder);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinition[0]);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
       return classDefinition;
     }
@@ -131,8 +132,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedClassDefinition CreateOrderDefinitionWithResolvedCustomerProperty ()
     {
       ReflectionBasedClassDefinition classDefinition = CreateOrderDefinition();
-      classDefinition.SetPropertyDefinitions (new[] {
-          ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), false)});
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {
+          ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), false)}, true));
 
       return classDefinition;
     }

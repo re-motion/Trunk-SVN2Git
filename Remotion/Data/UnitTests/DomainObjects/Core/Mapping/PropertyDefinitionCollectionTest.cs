@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -56,7 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Test", "Test", StorageClass.Persistent);
 
-      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      ;
 
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray();
 
@@ -77,8 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinitionInDerivedClass = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property2", "Property2", StorageClass.Persistent);
 
-      baseClassDefinition.SetPropertyDefinitions (new[] { propertyDefinitionInBaseClass });;
-      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinitionInDerivedClass });;
+      baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInBaseClass }, true));
+      ;
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInDerivedClass }, true));
+      ;
 
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray ();
 

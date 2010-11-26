@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("Property");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -58,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassPersistent");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassTransaction");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Transaction);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();
@@ -84,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyInfo = _type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.None);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_classDefinition).First();

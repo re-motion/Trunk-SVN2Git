@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -50,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           "ClassID", "EntityName", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
-      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
-      
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+
       SerializeAndDeserialize (propertyDefinition);
     }
 
@@ -102,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           "OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
-      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       var endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
 
       SerializeAndDeserialize (endPointdefinition);
@@ -120,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
-      orderTicketDefinition.SetPropertyDefinitions (new[] { orderTicketPropertyDefinition });
+      orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
@@ -175,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
-      orderTicketDefinition.SetPropertyDefinitions (new[] { orderTicketPropertyDefinition });
+      orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
@@ -231,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var locationPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent);
-      locationDefinition.SetPropertyDefinitions (new[] { locationPropertyDefinition });
+      locationDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { locationPropertyDefinition }, true));
 
       var clientEndPointDefinition = new AnonymousRelationEndPointDefinition (clientDefinition);
       var locationEndPointDefinition = new RelationEndPointDefinition (locationDefinition, "Client", true);

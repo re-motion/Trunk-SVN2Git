@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       var properties = new List<PropertyDefinition>();
       properties.Add (CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      firstClass.SetPropertyDefinitions (properties);
+      firstClass.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address));
       var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee));
@@ -153,7 +153,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     {
       var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), baseClass);
-      derivedClass.SetPropertyDefinitions (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)});
+      derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)}, true));
 
       ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner));
       RelationDefinition relationDefinition1 = new RelationDefinition (

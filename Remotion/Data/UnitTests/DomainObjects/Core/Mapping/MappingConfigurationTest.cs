@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -129,7 +130,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "SPID", type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
-      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });;
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      ;
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
@@ -237,7 +239,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           StorageClass.Persistent,
           typeof (Order).GetProperty ("DeliveryDate"),
           null);
-      classDefinition.SetPropertyDefinitions (new[] { propertyDefinition1, propertyDefinition2 });;
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
+      ;
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
@@ -373,8 +376,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "Order", "TestDomain", typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
-      orderTicketDefinition.SetPropertyDefinitions (new[]{
-          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)});
+      orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
+          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)}, true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (

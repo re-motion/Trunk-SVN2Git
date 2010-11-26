@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseUnidirectional", "BaseUnidirectionalID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToOne", "BaseBidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToMany", "BaseBidirectionalOneToManyID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()

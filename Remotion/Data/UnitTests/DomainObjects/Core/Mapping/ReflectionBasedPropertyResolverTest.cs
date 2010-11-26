@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (string),
               false,
               100));
-      classWithInterface.SetPropertyDefinitions (properties);
+      classWithInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithInterface;
     }
 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (string),
               false,
               100));
-      classWithInterfaceWithMissingAccessors.SetPropertyDefinitions (properties);
+      classWithInterfaceWithMissingAccessors.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithInterfaceWithMissingAccessors;
     }
 
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (string),
               false,
               100));
-      classWithMixinAddingInterface.SetPropertyDefinitions (properties);
+      classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       return classWithMixinAddingInterface;
     }
 
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classWithMixinAddingInterface =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
-      classWithMixinAddingInterface.SetPropertyDefinitions (new[]{
+      classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,
               typeof (MixinAddingPropertyBase),
@@ -364,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "Property",
               typeof (string),
               false,
-              100)});
+              100)}, true));
       return classWithMixinAddingInterface;
     }
   }

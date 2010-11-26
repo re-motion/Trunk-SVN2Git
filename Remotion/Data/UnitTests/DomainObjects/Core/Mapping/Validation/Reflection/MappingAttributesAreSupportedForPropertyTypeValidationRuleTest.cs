@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -46,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _validType.GetProperty ("StringProperty");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -59,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("IntPropertyWithStringPropertyAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _validType.GetProperty ("BinaryProperty");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("BoolPropertyWithBinaryPropertyAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -105,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _validType.GetProperty ("ExtensibleEnumProperty");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions (new[] { propertyDefinition });
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -118,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("StringPropertyWithExtensibleEnumPropertyAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -134,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _validType.GetProperty ("MandatoryProperty");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -147,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("StringPropertyWithMandatoryPropertyAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -164,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("StringPropertyWithMandatoryPropertyAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -181,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _validType.GetProperty ("BidirectionalRelationProperty");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -194,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var propertyInfo = _invalidType.GetProperty ("StringPropertyWithBidirectionalRelationAttribute");
       var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).First();
@@ -218,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var propertyInfo3 = _invalidType.GetProperty ("BoolPropertyWithBinaryPropertyAttribute");
       var propertyDefinition3 = new TestablePropertyDefinition (_classDefinition, propertyInfo3, 20, StorageClass.Persistent);
 
-      _classDefinition.SetPropertyDefinitions(new[]{propertyDefinition1, propertyDefinition2, propertyDefinition3});
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2, propertyDefinition3}, true));
       _classDefinition.SetReadOnly ();
 
       var validationResult = _validtionRule.Validate (_classDefinition).ToArray();

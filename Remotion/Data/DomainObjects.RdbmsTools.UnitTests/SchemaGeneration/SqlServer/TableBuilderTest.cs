@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
@@ -181,12 +182,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
       var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
-      abstractClass.SetPropertyDefinitions (new[]{
-          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)});
+      abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
+          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)}, true));
       abstractClass.SetRelationDefinitions (new RelationDefinition[0]);
 
       var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), abstractClass);
-      derivedAbstractClass.SetPropertyDefinitions (new[]{
+      derivedAbstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (
               derivedAbstractClass,
               "PropertyInAbstractDerivedClass",
@@ -194,12 +195,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               typeof (string),
               false,
               101,
-              StorageClass.Persistent)});
+              StorageClass.Persistent)}, true));
       derivedAbstractClass.SetRelationDefinitions (new RelationDefinition[0]);
 
       var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           typeof (DerivedConcreteClass), derivedAbstractClass);
-      derivedConcreteClass.SetPropertyDefinitions (new[]{
+      derivedConcreteClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (
               derivedConcreteClass,
               "PropertyInDerivedConcreteClass",
@@ -207,7 +208,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               typeof (string),
               true,
               102,
-              StorageClass.Persistent)});
+              StorageClass.Persistent)}, true));
       derivedConcreteClass.SetRelationDefinitions (new RelationDefinition[0]);
       derivedConcreteClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "EntityName", "ViewName", new ColumnDefinition[0]));
 

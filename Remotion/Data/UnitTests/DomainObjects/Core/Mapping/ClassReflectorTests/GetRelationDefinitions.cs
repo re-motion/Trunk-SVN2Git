@@ -362,7 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithRealRelationEndPoints), "Unidirectional", "UnidirectionalID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToOne", "BidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (ClassWithRealRelationEndPoints), "BidirectionalOneToMany", "BidirectionalOneToManyID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     private RelationDefinition CreateNoAttributeRelationDefinition ()

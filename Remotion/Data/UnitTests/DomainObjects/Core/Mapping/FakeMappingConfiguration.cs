@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               company, typeof (Company), "IndustrialSector", "IndustrialSectorID", typeof (ObjectID), true));
-      company.SetPropertyDefinitions (properties);
+      company.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return company;
     }
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               customer, typeof (Customer), "Type", "CustomerType", typeof (Customer.CustomerType)));
-      customer.SetPropertyDefinitions (properties);
+      customer.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return customer;
     }
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               partner, typeof (Partner), "ContactPerson", "ContactPersonID", typeof (ObjectID), true));
-      partner.SetPropertyDefinitions (properties);
+      partner.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return partner;
     }
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               supplier, typeof (Supplier), "SupplierQuality", "SupplierQuality", typeof (int)));
-      supplier.SetPropertyDefinitions (properties);
+      supplier.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return supplier;
     }
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               distributor, typeof (Distributor), "NumberOfShops", "NumberOfShops", typeof (int)));
-      distributor.SetPropertyDefinitions (properties);
+      distributor.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return distributor;
     }
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               order, typeof (Order), "Official", "OfficialID", typeof (ObjectID), true));
-      order.SetPropertyDefinitions (properties);
+      order.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return order;
     }
@@ -270,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               official, typeof (Official), "Name", "Name", typeof (string), false, 100));
-      official.SetPropertyDefinitions (properties);
+      official.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return official;
     }
@@ -302,7 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               null,
               StorageClass.Transaction));
-      orderTicket.SetPropertyDefinitions (properties);
+      orderTicket.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return orderTicket;
     }
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               orderItem, typeof (OrderItem), "Product", "Product", typeof (string), false, 100));
-      orderItem.SetPropertyDefinitions (properties);
+      orderItem.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return orderItem;
     }
@@ -339,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               ceo, typeof (Ceo), "Company", "CompanyID", typeof (ObjectID), true));
-      ceo.SetPropertyDefinitions (properties);
+      ceo.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return ceo;
     }
@@ -353,7 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               person, typeof (Person), "Name", "Name", typeof (string), false, 100));
-      person.SetPropertyDefinitions (properties);
+      person.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return person;
     }
@@ -367,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               client, typeof (Client), "ParentClient", "ParentClientID", typeof (ObjectID), true));
-      client.SetPropertyDefinitions (properties);
+      client.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return client;
     }
@@ -381,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               location, typeof (Location), "Client", "ClientID", typeof (ObjectID), true));
-      location.SetPropertyDefinitions (properties);
+      location.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return location;
     }
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "ParentFolderID",
               typeof (ObjectID),
               true));
-      fileSystemItem.SetPropertyDefinitions (properties);
+      fileSystemItem.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return fileSystemItem;
     }
@@ -687,7 +687,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (byte[]),
               true,
               1000000));
-      classWithAllDataTypes.SetPropertyDefinitions (properties);
+      classWithAllDataTypes.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classWithAllDataTypes;
     }
@@ -784,7 +784,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "TableWithGuidKeyNonOptionalID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -807,7 +807,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "TableWithGuidKeyID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -830,7 +830,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "DistributorID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -854,7 +854,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "CompanyID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -879,7 +879,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "CompanyID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -893,7 +893,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               industrialSector, typeof (IndustrialSector), "Name", "Name", typeof (string), false, 100));
-      industrialSector.SetPropertyDefinitions (properties);
+      industrialSector.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return industrialSector;
     }
@@ -910,7 +910,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               employee, typeof (Employee), "Supervisor", "SupervisorID", typeof (ObjectID), true));
-      employee.SetPropertyDefinitions (properties);
+      employee.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return employee;
     }
@@ -963,7 +963,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty",
               "PrivateBaseRelationPropertyID",
               typeof (ObjectID)));
-      targetClassForPersistentMixin.SetPropertyDefinitions (properties);
+      targetClassForPersistentMixin.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return targetClassForPersistentMixin;
     }
@@ -1033,7 +1033,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               true,
               null,
               StorageClass.Transaction));
-      computer.SetPropertyDefinitions (properties);
+      computer.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return computer;
     }
@@ -1057,7 +1057,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "TableWithGuidKeyID",
               typeof (ObjectID),
               true));
-      classDefinition.SetPropertyDefinitions (properties);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return classDefinition;
     }
@@ -1087,7 +1087,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "RelationProperty3ID",
               typeof (ObjectID),
               true));
-      relationTargetForPersistentMixinDefinition.SetPropertyDefinitions (properties);
+      relationTargetForPersistentMixinDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return relationTargetForPersistentMixinDefinition;
     }
