@@ -63,6 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -71,6 +74,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompositionPattern\Core\Domain\ITenantBoundObject.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\Mixins\SerialNumberMixin.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\Mixins\TenantBoundMixin.cs" />
+    <Compile Include="CompositionPattern\Core\ExternalDomainMixins\IMunicipalSettlement.cs" />
+    <Compile Include="CompositionPattern\Core\ExternalDomainMixins\MunicipalDocumentMixin.cs" />
+    <Compile Include="CompositionPattern\Core\ExternalDomainMixins\MunicipalSettlementMixin.cs" />
+    <Compile Include="CompositionPattern\Core\ExternalDomainMixins\Remotion_Mixins_Samples_CompositionPattern_Core_ExternalDomainMixins_MunicipalSettlementExtensions.cs" />
+    <Compile Include="CompositionPattern\Core\Framework\ComposedDomainObject.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\Mixins\DocumentMixin.cs" />
+    <Compile Include="CompositionPattern\Core\Framework\DomainObjectMixin.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\IDocument.cs" />
+    <Compile Include="CompositionPattern\Core\Framework\DomainObjectEventSource.cs" />
+    <Compile Include="CompositionPattern\Core\Framework\IDomainObject.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\ISettlement.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\ISettlementImplementation.cs" />
+    <Compile Include="CompositionPattern\Core\Domain\Settlement.cs" />
+    <Compile Include="CompositionPattern\Core\Framework\IDomainObjectMixin.cs" />
+    <Compile Include="CompositionPattern\UnitTests\Domain\Mixins\TenantBoundMixinTest.cs" />
+    <Compile Include="CompositionPattern\UnitTests\Domain\Mixins\DocumentMixinTest.cs" />
+    <Compile Include="CompositionPattern\UnitTests\Domain\Mixins\MixinInstanceFactory.cs" />
+    <Compile Include="CompositionPattern\UnitTests\Domain\SettlementTest.cs" />
+    <Compile Include="CompositionPattern\UnitTests\ExternalDomainMixins\MunicipalDocumentMixinTest.cs" />
+    <Compile Include="CompositionPattern\UnitTests\ExternalDomainMixins\MunicipalSettlementMixinTest.cs" />
+    <Compile Include="CompositionPattern\UnitTests\ExternalDomainMixins\SettlementIntegrationTest.cs" />
     <Compile Include="DynamicMixinBuilding\Core\BaseRequirements.cs" />
     <Compile Include="UsesAndExtends\Core\DisposableMixin.cs" />
     <Compile Include="DynamicMixinBuilding\Core\DynamicMixinBuilder.cs" />
