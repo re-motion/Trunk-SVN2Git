@@ -384,15 +384,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyDefinitions = propertyDefinitions;
     }
 
-    public void SetRelationDefinitions (IEnumerable<RelationDefinition> relationDefinitions)
+    public void SetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      var readOnlyRelationDefinitions = new RelationDefinitionCollection (relationDefinitions, true);
-      _relationDefinitions = readOnlyRelationDefinitions;
+      _relationDefinitions = relationDefinitions;
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)

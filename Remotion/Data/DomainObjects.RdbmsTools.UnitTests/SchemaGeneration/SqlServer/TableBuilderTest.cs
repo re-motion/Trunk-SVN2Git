@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
       abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)}, true));
-      abstractClass.SetRelationDefinitions (new RelationDefinition[0]);
+      abstractClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
 
       var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), abstractClass);
       derivedAbstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               false,
               101,
               StorageClass.Persistent)}, true));
-      derivedAbstractClass.SetRelationDefinitions (new RelationDefinition[0]);
+      derivedAbstractClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
 
       var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           typeof (DerivedConcreteClass), derivedAbstractClass);
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               true,
               102,
               StorageClass.Persistent)}, true));
-      derivedConcreteClass.SetRelationDefinitions (new RelationDefinition[0]);
+      derivedConcreteClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       derivedConcreteClass.SetStorageEntity (new TableDefinition ("DefaultStorageProvider", "EntityName", "ViewName", new ColumnDefinition[0]));
 
       string expectedStatement =

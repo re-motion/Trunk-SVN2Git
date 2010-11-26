@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationDefinitions();
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
       var relationDefinition = new RelationDefinition (
           "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
-      classDefinition.SetRelationDefinitions (new[] { relationDefinition });
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
       classDefinition.SetReadOnly();
 
       var result1 = classDefinition.GetRelationDefinitions();
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationDefinitions();
@@ -483,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationEndPointDefinitions();
@@ -506,7 +506,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
       var relationDefinition = new RelationDefinition (
           "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
-      classDefinition.SetRelationDefinitions (new[] { relationDefinition });
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
       classDefinition.SetReadOnly();
 
       var result1 = classDefinition.GetRelationEndPointDefinitions();
@@ -520,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationEndPointDefinitions();

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -59,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
         + "TestDomain.Integration.Order.OrderTicket"];
 
-      classDefinition.SetRelationDefinitions (new[]{ _relationDefinition});
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ _relationDefinition}, true));
 
       var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(classDefinition).ToArray ();
 
@@ -84,8 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Integration.Order.Official->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
         + "Integration.Official.Orders"];
 
-      baseClassDefinition.SetRelationDefinitions (new[]{ relationDefinition1});
-      derivedClassDefinition.SetRelationDefinitions(new[]{relationDefinition2});
+      baseClassDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
+      derivedClassDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{relationDefinition2}, true));
 
       var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(derivedClassDefinition).ToArray ();
 

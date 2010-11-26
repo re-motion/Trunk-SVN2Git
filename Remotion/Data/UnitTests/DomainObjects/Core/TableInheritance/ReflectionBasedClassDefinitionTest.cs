@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       var relationDefinition = new RelationDefinition (
           "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
 
-      _domainBaseClass.SetRelationDefinitions (new[] { relationDefinition });
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
 
       Assert.That (_domainBaseClass.MyRelationDefinitions.Count, Is.EqualTo (1));
       Assert.That (_domainBaseClass.MyRelationDefinitions[0], Is.SameAs (relationDefinition));
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       _domainBaseClass.SetReadOnly ();
 
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinition[0]);
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
     }
 
     [Test]

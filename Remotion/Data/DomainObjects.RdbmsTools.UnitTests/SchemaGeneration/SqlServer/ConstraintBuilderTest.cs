@@ -98,10 +98,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           "FirstClassToThirdClass",
           new RelationEndPointDefinition (firstClass, "ThirdClass", false),
           new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
-      
-      firstClass.SetRelationDefinitions (new[] { relationDefinition1, relationDefinition2 });
-      secondClass.SetRelationDefinitions (new[] { relationDefinition1 });
-      thirdClass.SetRelationDefinitions (new[] { relationDefinition2 });
+
+      firstClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1, relationDefinition2 }, true));
+      secondClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
+      thirdClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
 
       firstClass.SetReadOnly ();
       secondClass.SetReadOnly ();
@@ -161,9 +161,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           new RelationEndPointDefinition (derivedClass, "OtherClass", false),
           new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
 
-      baseClass.SetRelationDefinitions (new RelationDefinition[0]);
-      derivedClass.SetRelationDefinitions (new[]{ relationDefinition1});
-      otherClass.SetRelationDefinitions(new[]{ relationDefinition1});
+      baseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
+      derivedClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
+      otherClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
 
       baseClass.SetReadOnly ();
       derivedClass.SetReadOnly ();

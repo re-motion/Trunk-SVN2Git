@@ -1138,7 +1138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       foreach (var classWithRelations in relationsByClass)
       {
-        classWithRelations.Key.SetRelationDefinitions (classWithRelations.Values);
+        classWithRelations.Key.SetRelationDefinitions (new RelationDefinitionCollection (classWithRelations.Values, true));
       }
 
 

@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         if (!relationDefinitionsForClass.Contains (relationDefinition))
           relationDefinitionsForClass.Add (relationDefinition);
       }
-      classDefinition.SetRelationDefinitions (relationDefinitionsForClass.Cast<RelationDefinition>());
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (relationDefinitionsForClass.Cast<RelationDefinition>(), true));
     }
 
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)

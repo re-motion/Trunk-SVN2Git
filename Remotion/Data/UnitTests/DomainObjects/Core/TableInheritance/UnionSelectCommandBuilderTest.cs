@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       VirtualRelationEndPointDefinition clientEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
       RelationDefinition clientToDomainBaseDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
-      domainBaseClass.SetRelationDefinitions (new[] { clientToDomainBaseDefinition });
-      clientClass.SetRelationDefinitions (new[] { clientToDomainBaseDefinition});
+      domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { clientToDomainBaseDefinition }, true));
+      clientClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { clientToDomainBaseDefinition}, true));
 
       domainBaseClass.SetReadOnly ();
       personClass.SetReadOnly ();

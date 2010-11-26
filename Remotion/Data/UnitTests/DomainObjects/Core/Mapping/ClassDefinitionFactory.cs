@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetStorageEntityName (entityName, classDefinition);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetStorageEntityName (entityName, classDefinition);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           persistentMixinFinder);
       SetStorageProviderDefinition (storageProviderID, classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinition[0]);
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
