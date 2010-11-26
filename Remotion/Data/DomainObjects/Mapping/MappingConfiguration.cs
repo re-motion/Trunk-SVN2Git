@@ -95,8 +95,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        SetMappingReadOnly(); //TODO 3518: move down
-
         // TODO Review 3511: When the SetStorageProviderDefinition method is removed, unify the two loops again
         // Set storage provider definition of all class definitions
         foreach (ClassDefinition rootClass in _classDefinitions)
@@ -116,6 +114,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         _resolveTypes = loader.ResolveTypes;
         _nameResolver = loader.NameResolver;
+
+        SetMappingReadOnly ();
 
         ValidateSortExpression();
       }
