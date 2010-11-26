@@ -200,22 +200,16 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyDefinitionCollection GetPropertyDefinitions ()
     {
-      CheckIsReadOnlyForCachedData();
-
       return _cachedPropertyDefinitions.Value;
     }
 
     public RelationDefinitionCollection GetRelationDefinitions ()
     {
-      CheckIsReadOnlyForCachedData();
-
       return _cachedRelationDefinitions.Value;
     }
 
     public ICollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
     {
-      CheckIsReadOnlyForCachedData();
-
       return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
     }
 
@@ -286,8 +280,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public IRelationEndPointDefinition GetRelationEndPointDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      CheckIsReadOnlyForCachedData();
 
       IRelationEndPointDefinition value;
       _cachedRelationEndPointDefinitions.Value.TryGetValue (propertyName, out value);
@@ -598,13 +590,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
     }
-
-    private void CheckIsReadOnlyForCachedData ()
-    {
-      if (!IsReadOnly)
-        throw new InvalidOperationException ("ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.");
-    }
-
+    
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)

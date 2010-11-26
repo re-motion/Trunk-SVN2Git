@@ -180,16 +180,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
-    public void GetAllRelationDefinitions_ThrowsWhenNotReadOnly ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.GetRelationDefinitions();
-    }
-
-    [Test]
     public void GetAllRelationDefinitions_Cached ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -391,16 +381,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
-    public void GetAllPropertyDefinitions_ThrowsWhenNotReadOnly ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", "StorageProvider", typeof (Order), false);
-      classDefinition.GetPropertyDefinitions();
-    }
-
-    [Test]
     public void GetAllPropertyDefinitions_Cached ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
@@ -512,8 +492,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
     public void GetAllRelationEndPointDefinitions_ThrowsWhenNotReadOnly ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
