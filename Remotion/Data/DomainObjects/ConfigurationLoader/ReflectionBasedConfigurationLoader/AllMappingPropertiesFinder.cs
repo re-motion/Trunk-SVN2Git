@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _classDefinition = classDefinition;
     }
 
-    protected override bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
     {
       return AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false).Length > 0;
     }

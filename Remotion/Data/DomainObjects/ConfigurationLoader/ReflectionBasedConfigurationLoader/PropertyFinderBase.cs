@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
       }
 
-      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (_classDefinition));
+      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType ());
 
       // Mixins are currently only checked when the current type equals the classDefinition's type. This means we do not check for mixins when we
       // are above the inheritance root (where _type will be a base of classDefinition.ClassType).
@@ -110,10 +110,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder);
 
-    // TODO 3483: Remove classDefinition parameter
-    protected virtual bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    protected virtual bool FindPropertiesFilter (PropertyInfo propertyInfo)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
@@ -156,29 +154,23 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
-    // TODO 3483: Remove classDefinition parameter
-    public IList<PropertyInfo> FindPropertyInfosDeclaredOnThisType (ReflectionBasedClassDefinition classDefinition)
+    public IList<PropertyInfo> FindPropertyInfosDeclaredOnThisType ()
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
+    
       MemberInfo[] memberInfos = _type.FindMembers (
           MemberTypes.Property,
           PropertyBindingFlags | BindingFlags.DeclaredOnly,
-          FindPropertiesFilter,
-          classDefinition);
+          FindPropertiesFilter, 
+          null);
 
-      PropertyInfo[] propertyInfos = Array.ConvertAll<MemberInfo, PropertyInfo> (
-          memberInfos,
-          delegate (MemberInfo input) { return (PropertyInfo) input; });
+      PropertyInfo[] propertyInfos = Array.ConvertAll (memberInfos, delegate (MemberInfo input) { return (PropertyInfo) input; });
 
       return propertyInfos;
     }
 
     private bool FindPropertiesFilter (MemberInfo member, object filterCriteria)
     {
-      ReflectionBasedClassDefinition classDefinition =
-          ArgumentUtility.CheckNotNullAndType<ReflectionBasedClassDefinition> ("filterCriteria", filterCriteria);
-      return FindPropertiesFilter (classDefinition, (PropertyInfo) member);
+      return FindPropertiesFilter ((PropertyInfo) member);
     }
 
     private Set<MethodInfo> GetExplicitInterfaceImplementations (Type type)

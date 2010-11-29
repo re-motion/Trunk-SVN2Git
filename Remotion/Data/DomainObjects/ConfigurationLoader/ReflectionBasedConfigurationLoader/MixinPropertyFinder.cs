@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         {
           var mixinPropertyFinder = _propertyFinderFactory (current, classDefinition, false, false, _nameResolver, _persistentMixinFinder);
           // Note: mixins on mixins are not checked
-          foreach (PropertyInfo propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType (classDefinition))
+          foreach (PropertyInfo propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType ())
             yield return propertyInfo;
 
           processedMixins.Add (current);

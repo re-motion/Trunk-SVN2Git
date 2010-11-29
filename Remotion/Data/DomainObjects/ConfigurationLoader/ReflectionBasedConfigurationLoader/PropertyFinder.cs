@@ -37,18 +37,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IPersistentMixinFinder persistentMixinFinder)
         : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
       _classDefinition = classDefinition;
     }
 
-    protected override bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      if (!base.FindPropertiesFilter (classDefinition, propertyInfo))
+      if (!base.FindPropertiesFilter (propertyInfo))
         return false;
 
-      if (IsVirtualRelationEndPoint (classDefinition, propertyInfo))
+      if (IsVirtualRelationEndPoint (_classDefinition, propertyInfo))
         return false;
 
       return true;
