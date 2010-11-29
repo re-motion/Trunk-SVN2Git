@@ -34,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new AllMappingPropertiesFinder (
           typeof (DerivedClassWithMappingAttribute),
-          classDefinition,
           false,
           true,
           new ReflectionBasedNameResolver(),
@@ -59,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new AllMappingPropertiesFinder (
           typeof (DerivedClassWithMappingAttribute),
-          classDefinition,
           true,
           true,
           new ReflectionBasedNameResolver(),

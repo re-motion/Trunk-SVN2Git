@@ -33,25 +33,21 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly bool _includeBaseProperties;
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
     private readonly IMappingNameResolver _nameResolver;
-    private readonly ReflectionBasedClassDefinition _classDefinition;
     private readonly bool _includeMixinProperties;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
     protected PropertyFinderBase (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
 
       _type = type;
-      _classDefinition = classDefinition;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
       _includeMixinProperties = includeMixinProperties;
@@ -85,7 +81,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
-        var propertyFinder = CreateNewFinder (_type.BaseType, _classDefinition, true, false, NameResolver, _persistentMixinFinder);
+        var propertyFinder = CreateNewFinder (_type.BaseType, true, false, NameResolver, _persistentMixinFinder);
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
       }
 
@@ -96,7 +92,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (IncludeMixinProperties)
       {
         var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
-        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins (_classDefinition));
+        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins ());
       }
 
       return propertyInfos.ToArray();
@@ -104,7 +100,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected abstract PropertyFinderBase CreateNewFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,

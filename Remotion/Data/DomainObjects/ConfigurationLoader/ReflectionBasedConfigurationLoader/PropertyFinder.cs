@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -57,7 +57,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected override PropertyFinderBase CreateNewFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,

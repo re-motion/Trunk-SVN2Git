@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (TargetClassA), true);
 
-      Assert.That (propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassA))).ToArray (),
+      Assert.That (propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new []
                   {
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (TargetClassA), false);
 
-      Assert.That (propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassA))).ToArray (),
+      Assert.That (propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new[]
                   {
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (TargetClassB), false);
 
-      Assert.That (propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassB))).ToArray (),
+      Assert.That (propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new []
                   {
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (TargetClassC), false);
 
-      Assert.That (propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassC))).ToArray (),
+      Assert.That (propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new []
                   {
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (DiamondTarget), false);
 
-      Assert.That (propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (DiamondTarget))).ToArray (),
+      Assert.That (propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new[]
                   {
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (InheritanceRootInheritingPersistentMixin), true);
 
       Assert.That (
-          propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingPersistentMixin))).ToArray (),
+          propertyFinder.FindPropertyInfosOnMixins ().ToArray (),
           Is.EquivalentTo (
               new[]
                 {
@@ -123,7 +123,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     public PropertyFinderBase CreateNewFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
@@ -131,7 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       return new StubPropertyFinderBase (
           type,
-          classDefinition,
           includeBaseProperties,
           includeMixinProperties,
           nameResolver,

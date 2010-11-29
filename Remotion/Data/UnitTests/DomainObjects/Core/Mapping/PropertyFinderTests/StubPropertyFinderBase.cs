@@ -22,18 +22,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
   public class StubPropertyFinderBase : PropertyFinderBase
   {
-    private readonly ReflectionBasedClassDefinition _classDefinition;
-
     public StubPropertyFinderBase (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
-      _classDefinition = classDefinition;
     }
 
     public StubPropertyFinderBase (
@@ -42,19 +38,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
         bool includeBaseProperties,
         bool includeMixinProperties,
         IPersistentMixinFinder persistentMixinFinder)
-        : this (type, classDefinition, includeBaseProperties, includeMixinProperties, new ReflectionBasedNameResolver(), persistentMixinFinder)
+        : this (type, includeBaseProperties, includeMixinProperties, new ReflectionBasedNameResolver(), persistentMixinFinder)
     {
     }
 
     protected override PropertyFinderBase CreateNewFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new StubPropertyFinderBase (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+      return new StubPropertyFinderBase (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }
 }

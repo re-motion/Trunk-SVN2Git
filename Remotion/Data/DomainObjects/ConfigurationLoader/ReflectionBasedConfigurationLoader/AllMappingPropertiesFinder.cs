@@ -26,18 +26,15 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class AllMappingPropertiesFinder : PropertyFinderBase
   {
-    private readonly ReflectionBasedClassDefinition _classDefinition;
-
     public AllMappingPropertiesFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
-      _classDefinition = classDefinition;
+    
     }
 
     protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
@@ -47,13 +44,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected override PropertyFinderBase CreateNewFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new AllMappingPropertiesFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+      return new AllMappingPropertiesFinder (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }
 }

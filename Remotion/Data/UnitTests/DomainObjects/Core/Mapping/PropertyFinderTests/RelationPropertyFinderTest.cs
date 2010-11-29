@@ -41,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
       var propertyFinder = new RelationPropertyFinder (
           typeof (DerivedClassWithMixedProperties),
-          classDefinition,
           true,
           true,
           new ReflectionBasedNameResolver(),
@@ -56,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithMixedProperties), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
@@ -74,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithVirtualRelationEndPoints), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
