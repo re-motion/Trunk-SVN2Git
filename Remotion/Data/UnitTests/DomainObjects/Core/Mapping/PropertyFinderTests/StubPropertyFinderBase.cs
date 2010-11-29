@@ -22,13 +22,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
   public class StubPropertyFinderBase : PropertyFinderBase
   {
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
-      : base (type, includeBaseProperties, nameResolver)
+    public StubPropertyFinderBase (
+        Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
+        : base (type, classDefinition, includeBaseProperties, nameResolver)
     {
     }
 
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties)
-      : this (type, includeBaseProperties, new ReflectionBasedNameResolver ())
+    public StubPropertyFinderBase (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties)
+        : this (type, classDefinition, includeBaseProperties, new ReflectionBasedNameResolver())
     {
     }
   }

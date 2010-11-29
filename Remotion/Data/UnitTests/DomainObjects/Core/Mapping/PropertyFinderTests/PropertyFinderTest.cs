@@ -38,8 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      PropertyFinder propertyFinder =
-          new PropertyFinder (typeof (ClassWithMixedProperties), true, new ReflectionBasedNameResolver());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder =
+          new PropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -48,11 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      PropertyFinder propertyFinder =
-          new PropertyFinder (typeof (ClassWithMixedProperties), true, new ReflectionBasedNameResolver());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder =
+          new PropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
+          propertyFinder.FindPropertyInfos (),
           Is.EqualTo (
               new[]
                   {
@@ -69,12 +71,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      PropertyFinder propertyFinder =
-          new PropertyFinder (typeof (ClassWithVirtualRelationEndPoints), true, new ReflectionBasedNameResolver());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
+      var propertyFinder =
+          new PropertyFinder (typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, new ReflectionBasedNameResolver());
 
-      Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints))),
-          Is.Empty);
+      Assert.That (propertyFinder.FindPropertyInfos (), Is.Empty);
     }
 
     private PropertyInfo GetProperty (Type type, string propertyName)

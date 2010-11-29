@@ -38,7 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (DerivedClassWithMixedProperties), true, new ReflectionBasedNameResolver());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder = new RelationPropertyFinder (
+          typeof (DerivedClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -47,38 +49,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithMixedProperties), true, new ReflectionBasedNameResolver ());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder = new RelationPropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
+          propertyFinder.FindPropertyInfos (),
           Is.EquivalentTo (
-              new PropertyInfo[]
-                  {
-                      GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne")
-                  }));
+              new[]
+              {
+                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne")
+              }));
     }
 
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithVirtualRelationEndPoints), true, new ReflectionBasedNameResolver ());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
+      var propertyFinder = new RelationPropertyFinder (
+          typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, new ReflectionBasedNameResolver());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints))),
+          propertyFinder.FindPropertyInfos (),
           Is.EquivalentTo (
-              new PropertyInfo[]
-                  {
-                      GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToMany"),
-                      GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToMany"),
-                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NoAttribute"),
-                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NotNullable"),
-                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany")
-                  }));
+              new[]
+              {
+                  GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToMany"),
+                  GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToMany"),
+                  GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NoAttribute"),
+                  GetProperty (typeof (ClassWithVirtualRelationEndPoints), "NotNullable"),
+                  GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany")
+              }));
     }
 
     private PropertyInfo GetProperty (Type type, string propertyName)

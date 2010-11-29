@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -36,13 +34,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly bool _includeBaseProperties;
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
     private readonly IMappingNameResolver _nameResolver;
+    private readonly ReflectionBasedClassDefinition _classDefinition;
 
-    protected PropertyFinderBase (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
+    protected PropertyFinderBase (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _type = type;
+      _classDefinition = classDefinition;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
       _explicitInterfaceImplementations = GetExplicitInterfaceImplementations (type);
@@ -63,26 +64,25 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _nameResolver; }
     }
 
-    public PropertyInfo[] FindPropertyInfos (ReflectionBasedClassDefinition classDefinition)
+    public PropertyInfo[] FindPropertyInfos ()
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      List<PropertyInfo> propertyInfos = new List<PropertyInfo>();
+      var propertyInfos = new List<PropertyInfo>();
 
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
-        var propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, true, NameResolver);
-        propertyInfos.AddRange (propertyFinder.FindPropertyInfos (classDefinition));
+        var propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, _classDefinition, true, NameResolver);
+        propertyInfos.AddRange (propertyFinder.FindPropertyInfos ());
       }
 
-      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (classDefinition));
+      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (_classDefinition));
 
       // Mixins are currently only checked when the current type equals the classDefinition's type. This means we do not check for mixins when we
       // are above the inheritance root (where _type will be a base of classDefinition.ClassType).
       // TODO: Substitute this implicit rule with an includeMixins ctor parameter.
-      if (_type == classDefinition.ClassType)
+      if (_type == _classDefinition.ClassType)
       {
-        var mixinPropertyFinder = new MixinPropertyFinder (GetType(), classDefinition.PersistentMixinFinder, IncludeBaseProperties, NameResolver);
-        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins (classDefinition));
+        var mixinPropertyFinder = new MixinPropertyFinder (GetType(), _classDefinition.PersistentMixinFinder, IncludeBaseProperties, NameResolver);
+        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins (_classDefinition));
       }
 
       return propertyInfos.ToArray();

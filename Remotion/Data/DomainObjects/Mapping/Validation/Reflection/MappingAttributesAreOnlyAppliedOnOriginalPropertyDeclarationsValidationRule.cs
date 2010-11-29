@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   {
     public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule ()
     {
-      
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
@@ -41,8 +40,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         throw new InvalidOperationException ("Class type of '" + classDefinition.ID + "' is not resolved.");
 
       bool isInheritanceRoot = classDefinition.BaseClass == null;
-      var propertyFinder = new AllMappingPropertiesFinder (classDefinition.ClassType, isInheritanceRoot, new ReflectionBasedNameResolver());
-      var propertyInfos = propertyFinder.FindPropertyInfos ((ReflectionBasedClassDefinition)classDefinition);
+      var propertyFinder = new AllMappingPropertiesFinder (
+          classDefinition.ClassType, (ReflectionBasedClassDefinition) classDefinition, isInheritanceRoot, new ReflectionBasedNameResolver());
+      var propertyInfos = propertyFinder.FindPropertyInfos();
 
       return propertyInfos.Select (propertyInfo => Validate (propertyInfo));
     }

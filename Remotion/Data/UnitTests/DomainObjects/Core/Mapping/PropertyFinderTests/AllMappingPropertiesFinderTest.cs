@@ -19,7 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
+using
+    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
+        MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
@@ -29,9 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_IncludeBasePropertiesIsFalse ()
     {
-      var propertyFinder = new AllMappingPropertiesFinder (typeof (DerivedClassWithMappingAttribute), false, new ReflectionBasedNameResolver());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var propertyFinder = new AllMappingPropertiesFinder (
+          typeof (DerivedClassWithMappingAttribute), classDefinition, false, new ReflectionBasedNameResolver());
 
-      var properties = propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute)));
+      var properties = propertyFinder.FindPropertyInfos();
 
       Assert.That (properties.Length, Is.EqualTo (2));
       Assert.That (
@@ -47,9 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_IncludeBasePropertiesIsTrue ()
     {
-      var propertyFinder = new AllMappingPropertiesFinder (typeof (DerivedClassWithMappingAttribute), true, new ReflectionBasedNameResolver ());
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var propertyFinder = new AllMappingPropertiesFinder (typeof (DerivedClassWithMappingAttribute), classDefinition, true, new ReflectionBasedNameResolver());
 
-      var properties = propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute)));
+      var properties = propertyFinder.FindPropertyInfos ();
 
       Assert.That (properties.Length, Is.EqualTo (4));
       Assert.That (

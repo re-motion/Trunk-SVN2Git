@@ -28,7 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), true);
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -37,10 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForInheritanceRoot ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), true);
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
+          propertyFinder.FindPropertyInfos (),
           Is.EqualTo (
               new[]
                   {
@@ -57,10 +59,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForDerivedClass ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), false);
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, false);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
+          propertyFinder.FindPropertyInfos (),
           Is.EqualTo (
               new[]
                   {
@@ -74,10 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithInterface ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (ClassWithInterface), false);
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithInterface), classDefinition, false);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithInterface))),
+          propertyFinder.FindPropertyInfos (),
           Is.EqualTo (
               new[]
                   {

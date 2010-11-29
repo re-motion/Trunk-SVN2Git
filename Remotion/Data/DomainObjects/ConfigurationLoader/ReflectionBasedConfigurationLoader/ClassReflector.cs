@@ -120,8 +120,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
-      return propertyFinder.FindPropertyInfos (classDefinition);
+      PropertyFinder propertyFinder = new PropertyFinder (Type, classDefinition, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
+      return propertyFinder.FindPropertyInfos ();
     }
   }
 }

@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -55,13 +55,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var relationDefinitionsForClass = new RelationDefinitionCollection();
       foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition))
       {
-        RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
+        RelationReflector relationReflector = new RelationReflector (
+            classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
         if (!relationDefinitions.Contains (relationDefinition.ID))
           relationDefinitions.Add (relationDefinition);
         else
           relationDefinition = relationDefinitions[relationDefinition.ID];
-        
+
         if (!relationDefinitionsForClass.Contains (relationDefinition))
           relationDefinitionsForClass.Add (relationDefinition);
       }
@@ -70,8 +71,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
-      return relationPropertyFinder.FindPropertyInfos (classDefinition);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (
+          Type, classDefinition, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
+      return relationPropertyFinder.FindPropertyInfos();
     }
   }
 }

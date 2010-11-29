@@ -28,12 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForInheritanceRoot ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), true);
-
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassA));
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, true);
+      
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (TargetClassA))),
+          propertyFinder.FindPropertyInfos (),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new []
                   {
                       GetProperty (typeof (TargetClassBase), "P0"),
                       GetProperty (typeof (MixinBase), "P0a"),
@@ -48,12 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForNonInheritanceRoot ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), false);
-
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassA));
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, false);
+      
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (TargetClassA))),
+          propertyFinder.FindPropertyInfos (),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new []
                   {
                       GetProperty (typeof (TargetClassA), "P1"),
                       GetProperty (typeof (TargetClassA), "P2"),
@@ -66,12 +68,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForDerived ()
     {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassB), false);
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassB));
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassB), classDefinition, false);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (TargetClassB))),
+          propertyFinder.FindPropertyInfos (),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (TargetClassB), "P3"),
                       GetProperty (typeof (TargetClassB), "P4"),

@@ -26,8 +26,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class PropertyFinder : PropertyFinderBase
   {
-    public PropertyFinder (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
-        : base (type, includeBaseProperties, nameResolver)
+    public PropertyFinder (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
+        : base (type, classDefinition, includeBaseProperties, nameResolver)
     {
     }
 
