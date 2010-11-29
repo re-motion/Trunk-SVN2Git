@@ -25,7 +25,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public abstract class RelationReflectorBase : MemberReflectorBase
   {
     protected RelationReflectorBase (
-        ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
+        ReflectionBasedClassDefinition classDefinition,
+        PropertyInfo propertyInfo,
+        Type bidirectionalRelationAttributeType,
+        IMappingNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -37,8 +40,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
       DeclaringMixin = ClassDefinition.GetPersistentMixin (PropertyInfo.DeclaringType);
       DeclaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (PropertyInfo, ClassDefinition);
-      
-      CheckClassDefinitionType ();
+
+      CheckClassDefinitionType();
     }
 
     public ReflectionBasedClassDefinition ClassDefinition { get; private set; }
@@ -72,51 +75,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected PropertyInfo GetOppositePropertyInfo ()
     {
-      Type type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
-      PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo (type);
-      
-      if (oppositePropertyInfo == null)
-        oppositePropertyInfo = GetOppositePropertyInfoFromMixins (type);
-      
-      if (oppositePropertyInfo == null)
-        oppositePropertyInfo = GetOppositePropertyInfoFromBaseTypes (type); // property defined on base type?
-
-      return oppositePropertyInfo;
-    }
-
-    private PropertyInfo GetOppositePropertyInfoFromMixins (Type type)
-    {
-      foreach (var mixinType in new PersistentMixinFinder (type, true).GetPersistentMixins ())
-      {
-        var oppositePropertyInfo = GetOppositePropertyInfo (mixinType) ?? GetOppositePropertyInfoFromBaseTypes (mixinType);
-        if (oppositePropertyInfo != null)
-          return oppositePropertyInfo;
-      }
-      return null;
-    }
-
-    private PropertyInfo GetOppositePropertyInfoFromBaseTypes (Type type)
-    {
-      for (Type baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
-      {
-        var oppositePropertyInfo = GetOppositePropertyInfo (baseType);
-        if (oppositePropertyInfo != null)
-          return oppositePropertyInfo;
-      }
-      return null;
-    }
-
-    private PropertyInfo GetOppositePropertyInfo (Type type)
-    {
-      var property = type.GetProperty (BidirectionalRelationAttribute.OppositeProperty, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      if (property != null)
-      {
-        if (Utilities.ReflectionUtility.IsOriginalDeclaration (property))
-          return property;
-        else
-          return GetOppositePropertyInfo (type.BaseType);
-      }
-      return null;
+      var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
+      var propertyFinder = new OppositePropertyFinder (
+          BidirectionalRelationAttribute.OppositeProperty, type, true, true, NameResolver, new PersistentMixinFinder (type, true));
+      var properties = propertyFinder.FindPropertyInfos();
+      if (properties.Length > 0)
+        return properties[0];
+      else
+        return null;
     }
 
     private void CheckClassDefinitionType ()
