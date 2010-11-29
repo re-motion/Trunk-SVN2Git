@@ -28,33 +28,38 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 {
   public class MixinPropertyFinder
   {
-    private readonly Type _propertyFinderType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly bool _includeBaseProperties;
     private readonly IMappingNameResolver _nameResolver;
+    private readonly Func<Type, ReflectionBasedClassDefinition, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> _propertyFinderFactory;
 
-    public MixinPropertyFinder (Type propertyFinderType, IPersistentMixinFinder persistentMixinFinder, bool includeBaseProperties, IMappingNameResolver nameResolver)
+    public MixinPropertyFinder (
+        Func<Type, ReflectionBasedClassDefinition, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> propertyFinderFactory,
+        IPersistentMixinFinder persistentMixinFinder,
+        bool includeBaseProperties,
+        IMappingNameResolver nameResolver)
     {
-      ArgumentUtility.CheckNotNull ("propertyFinderType", propertyFinderType);
+      ArgumentUtility.CheckNotNull ("propertyFinderFactory", propertyFinderFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
-      _propertyFinderType = propertyFinderType;
+      _propertyFinderFactory = propertyFinderFactory;
       _persistentMixinFinder = persistentMixinFinder;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
     }
 
+    // TODO 3483: Remove classDefinition
     public IEnumerable<PropertyInfo> FindPropertyInfosOnMixins (ReflectionBasedClassDefinition classDefinition)
     {
       if (_persistentMixinFinder != null)
       {
-        var processedMixins = new Set<Type> ();
-        return from mixin in _persistentMixinFinder.GetPersistentMixins ()
+        var processedMixins = new Set<Type>();
+        return from mixin in _persistentMixinFinder.GetPersistentMixins()
                from propertyInfo in FindPropertyInfosOnMixin (classDefinition, mixin, processedMixins)
                select propertyInfo;
       }
       else
-        return Enumerable.Empty<PropertyInfo> ();
+        return Enumerable.Empty<PropertyInfo>();
     }
 
     private IEnumerable<PropertyInfo> FindPropertyInfosOnMixin (ReflectionBasedClassDefinition classDefinition, Type mixin, Set<Type> processedMixins)
@@ -64,7 +69,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         if (!processedMixins.Contains (current) && (_includeBaseProperties || !_persistentMixinFinder.IsInParentContext (current)))
         {
-          var mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (_propertyFinderType).With (current, classDefinition, false, _nameResolver);
+          var mixinPropertyFinder = _propertyFinderFactory (current, classDefinition, false, false, _nameResolver, _persistentMixinFinder);
           // Note: mixins on mixins are not checked
           foreach (PropertyInfo propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType (classDefinition))
             yield return propertyInfo;
@@ -79,7 +84,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (!type.IsGenericType)
         return false;
-      Type genericTypeDefinition = type.GetGenericTypeDefinition ();
+      Type genericTypeDefinition = type.GetGenericTypeDefinition();
       return genericTypeDefinition == typeof (Mixin<>) || genericTypeDefinition == typeof (Mixin<,>);
     }
   }

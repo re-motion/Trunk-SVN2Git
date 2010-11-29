@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForInheritanceRoot ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassA));
-      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, true);
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, true, true, classDefinition.PersistentMixinFinder);
       
       Assert.That (
           propertyFinder.FindPropertyInfos (),
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForNonInheritanceRoot ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassA));
-      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, false);
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), classDefinition, false, true, classDefinition.PersistentMixinFinder);
       
       Assert.That (
           propertyFinder.FindPropertyInfos (),
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForDerived ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (TargetClassB));
-      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassB), classDefinition, false);
+      var propertyFinder = new StubPropertyFinderBase (typeof (TargetClassB), classDefinition, false, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos (),

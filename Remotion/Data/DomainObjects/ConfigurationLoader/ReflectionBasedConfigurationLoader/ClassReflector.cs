@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       Type = type;
       NameResolver = nameResolver;
-      PersistentMixinFinder = new PersistentMixinFinder (type, ReflectionUtility.IsInheritanceRoot(Type));
+      PersistentMixinFinder = new PersistentMixinFinder (type, ReflectionUtility.IsInheritanceRoot (Type));
     }
 
     public PersistentMixinFinder PersistentMixinFinder { get; private set; }
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private Type GetStorageGroupType ()
     {
-      var storageGroupAttribute = AttributeUtility.GetCustomAttributes<StorageGroupAttribute> (Type, true).FirstOrDefault ();
+      var storageGroupAttribute = AttributeUtility.GetCustomAttributes<StorageGroupAttribute> (Type, true).FirstOrDefault();
       if (storageGroupAttribute != null)
         return storageGroupAttribute.GetType();
       return null;
@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
     {
-      if (ReflectionUtility.IsInheritanceRoot(Type))
+      if (ReflectionUtility.IsInheritanceRoot (Type))
         return null;
 
       ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (Type.BaseType, NameResolver);
@@ -120,8 +120,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (Type, classDefinition, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
-      return propertyFinder.FindPropertyInfos ();
+      PropertyFinder propertyFinder = new PropertyFinder (
+          Type,
+          classDefinition,
+          ReflectionUtility.IsInheritanceRoot (Type),
+          classDefinition.ClassType == Type,
+          NameResolver,
+          classDefinition.PersistentMixinFinder);
+      return propertyFinder.FindPropertyInfos();
     }
   }
 }

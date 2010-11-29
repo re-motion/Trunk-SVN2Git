@@ -33,7 +33,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new AllMappingPropertiesFinder (
-          typeof (DerivedClassWithMappingAttribute), classDefinition, false, new ReflectionBasedNameResolver());
+          typeof (DerivedClassWithMappingAttribute),
+          classDefinition,
+          false,
+          true,
+          new ReflectionBasedNameResolver(),
+          classDefinition.PersistentMixinFinder);
 
       var properties = propertyFinder.FindPropertyInfos();
 
@@ -52,9 +57,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindMappingProperties_IncludeBasePropertiesIsTrue ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
-      var propertyFinder = new AllMappingPropertiesFinder (typeof (DerivedClassWithMappingAttribute), classDefinition, true, new ReflectionBasedNameResolver());
+      var propertyFinder = new AllMappingPropertiesFinder (
+          typeof (DerivedClassWithMappingAttribute),
+          classDefinition,
+          true,
+          true,
+          new ReflectionBasedNameResolver(),
+          classDefinition.PersistentMixinFinder);
 
-      var properties = propertyFinder.FindPropertyInfos ();
+      var properties = propertyFinder.FindPropertyInfos();
 
       Assert.That (properties.Length, Is.EqualTo (4));
       Assert.That (

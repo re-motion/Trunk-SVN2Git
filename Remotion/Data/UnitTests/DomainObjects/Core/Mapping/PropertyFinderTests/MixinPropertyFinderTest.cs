@@ -117,8 +117,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     private MixinPropertyFinder CreatePropertyFinder (Type type, bool includeBaseProperties)
     {
-      return new MixinPropertyFinder (typeof (StubPropertyFinderBase), new PersistentMixinFinder (type, includeBaseProperties), includeBaseProperties,
+     return new MixinPropertyFinder (CreateNewFinder, new PersistentMixinFinder (type, includeBaseProperties), includeBaseProperties,
           new ReflectionBasedNameResolver ());
+    }
+
+    public PropertyFinderBase CreateNewFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
+    {
+      return new StubPropertyFinderBase (
+          type,
+          classDefinition,
+          includeBaseProperties,
+          includeMixinProperties,
+          nameResolver,
+          persistentMixinFinder);
     }
   }
 }

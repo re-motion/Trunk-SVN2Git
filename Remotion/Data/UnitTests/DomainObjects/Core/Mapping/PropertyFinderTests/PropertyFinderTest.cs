@@ -40,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
       var propertyFinder =
-          new PropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
+          new PropertyFinder (
+              typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -51,21 +52,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
       var propertyFinder =
-          new PropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
+          new PropertyFinder (
+              typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (),
+          propertyFinder.FindPropertyInfos(),
           Is.EqualTo (
               new[]
-                  {
-                      GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseString"),
-                      GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithMixedProperties), "Int32"),
-                      GetProperty (typeof (ClassWithMixedProperties), "String"),
-                      GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne"),
-                      GetProperty (typeof (ClassWithMixedProperties), "PrivateString")
-                  }));
+              {
+                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseString"),
+                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithMixedProperties), "Int32"),
+                  GetProperty (typeof (ClassWithMixedProperties), "String"),
+                  GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithMixedProperties), "PrivateString")
+              }));
     }
 
     [Test]
@@ -73,9 +75,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder =
-          new PropertyFinder (typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, new ReflectionBasedNameResolver());
+          new PropertyFinder (
+              typeof (ClassWithVirtualRelationEndPoints),
+              classDefinition,
+              true,
+              true,
+              new ReflectionBasedNameResolver(),
+              classDefinition.PersistentMixinFinder);
 
-      Assert.That (propertyFinder.FindPropertyInfos (), Is.Empty);
+      Assert.That (propertyFinder.FindPropertyInfos(), Is.Empty);
     }
 
     private PropertyInfo GetProperty (Type type, string propertyName)

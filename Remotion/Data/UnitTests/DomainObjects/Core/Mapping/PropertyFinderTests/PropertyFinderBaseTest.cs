@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
@@ -29,17 +28,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void Initialize ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
-      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true);
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
+      Assert.That (propertyFinder.IncludeMixinProperties, Is.True);
     }
 
     [Test]
     public void FindPropertyInfos_ForInheritanceRoot ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
-      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true);
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, true, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos (),
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForDerivedClass ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
-      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, false);
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithMixedProperties), classDefinition, false, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos (),
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForClassWithInterface ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
-      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithInterface), classDefinition, false);
+      var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithInterface), classDefinition, false, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos (),

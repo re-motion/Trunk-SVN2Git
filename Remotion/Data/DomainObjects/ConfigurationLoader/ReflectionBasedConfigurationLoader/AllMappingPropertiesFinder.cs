@@ -26,14 +26,34 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class AllMappingPropertiesFinder : PropertyFinderBase
   {
-    public AllMappingPropertiesFinder (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
-        : base (type, classDefinition, includeBaseProperties, nameResolver)
+    private readonly ReflectionBasedClassDefinition _classDefinition;
+
+    public AllMappingPropertiesFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
+        : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
+      _classDefinition = classDefinition;
     }
 
     protected override bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
-      return AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false).Length>0;
+      return AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false).Length > 0;
+    }
+
+    protected override PropertyFinderBase CreateNewFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
+    {
+      return new AllMappingPropertiesFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }
 }

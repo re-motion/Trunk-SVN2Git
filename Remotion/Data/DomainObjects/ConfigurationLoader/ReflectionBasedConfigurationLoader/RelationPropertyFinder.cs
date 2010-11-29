@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Mixins.Context;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -29,9 +27,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class RelationPropertyFinder : PropertyFinderBase
   {
-    public RelationPropertyFinder (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
-        : base (type, classDefinition, includeBaseProperties, nameResolver)
+    private readonly ReflectionBasedClassDefinition _classDefinition;
+
+    public RelationPropertyFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
+        : base (type, classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
+      _classDefinition = classDefinition;
     }
 
     protected override bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
@@ -44,6 +51,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       return ReflectionUtility.IsRelationType (propertyInfo.PropertyType);
     }
-    
+
+    protected override PropertyFinderBase CreateNewFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
+    {
+      return new RelationPropertyFinder(type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+    }
   }
 }

@@ -40,7 +40,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (DerivedClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
+          typeof (DerivedClassWithMixedProperties),
+          classDefinition,
+          true,
+          true,
+          new ReflectionBasedNameResolver(),
+          classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -50,10 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
-      var propertyFinder = new RelationPropertyFinder (typeof (ClassWithMixedProperties), classDefinition, true, new ReflectionBasedNameResolver());
+      var propertyFinder = new RelationPropertyFinder (
+          typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (),
+          propertyFinder.FindPropertyInfos(),
           Is.EquivalentTo (
               new[]
               {
@@ -68,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, new ReflectionBasedNameResolver());
+          typeof (ClassWithVirtualRelationEndPoints), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (),
+          propertyFinder.FindPropertyInfos(),
           Is.EquivalentTo (
               new[]
               {

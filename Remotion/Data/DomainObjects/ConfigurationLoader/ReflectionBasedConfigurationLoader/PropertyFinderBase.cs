@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -35,17 +34,28 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
     private readonly IMappingNameResolver _nameResolver;
     private readonly ReflectionBasedClassDefinition _classDefinition;
+    private readonly bool _includeMixinProperties;
+    private readonly IPersistentMixinFinder _persistentMixinFinder;
 
-    protected PropertyFinderBase (Type type, ReflectionBasedClassDefinition classDefinition, bool includeBaseProperties, IMappingNameResolver nameResolver)
+    protected PropertyFinderBase (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
 
       _type = type;
       _classDefinition = classDefinition;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
+      _includeMixinProperties = includeMixinProperties;
+      _persistentMixinFinder = persistentMixinFinder;
       _explicitInterfaceImplementations = GetExplicitInterfaceImplementations (type);
     }
 
@@ -59,6 +69,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _includeBaseProperties; }
     }
 
+    public bool IncludeMixinProperties
+    {
+      get { return _includeMixinProperties; }
+    }
+
     public IMappingNameResolver NameResolver
     {
       get { return _nameResolver; }
@@ -70,24 +85,32 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
-        var propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, _classDefinition, true, NameResolver);
-        propertyInfos.AddRange (propertyFinder.FindPropertyInfos ());
+        var propertyFinder = CreateNewFinder (_type.BaseType, _classDefinition, true, false, NameResolver, _persistentMixinFinder);
+        propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
       }
 
       propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (_classDefinition));
 
       // Mixins are currently only checked when the current type equals the classDefinition's type. This means we do not check for mixins when we
       // are above the inheritance root (where _type will be a base of classDefinition.ClassType).
-      // TODO: Substitute this implicit rule with an includeMixins ctor parameter.
-      if (_type == _classDefinition.ClassType)
+      if (IncludeMixinProperties)
       {
-        var mixinPropertyFinder = new MixinPropertyFinder (GetType(), _classDefinition.PersistentMixinFinder, IncludeBaseProperties, NameResolver);
+        var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
         propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins (_classDefinition));
       }
 
       return propertyInfos.ToArray();
     }
-    
+
+    protected abstract PropertyFinderBase CreateNewFinder (
+        Type type,
+        ReflectionBasedClassDefinition classDefinition,
+        bool includeBaseProperties,
+        bool includeMixinProperties,
+        IMappingNameResolver nameResolver,
+        IPersistentMixinFinder persistentMixinFinder);
+
+    // TODO 3483: Remove classDefinition parameter
     protected virtual bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -95,7 +118,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
         return false;
-      
+
       if (IsUnmanagedProperty (propertyInfo))
         return false;
 
@@ -133,6 +156,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
+    // TODO 3483: Remove classDefinition parameter
     public IList<PropertyInfo> FindPropertyInfosDeclaredOnThisType (ReflectionBasedClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -152,7 +176,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private bool FindPropertiesFilter (MemberInfo member, object filterCriteria)
     {
-      ReflectionBasedClassDefinition classDefinition = 
+      ReflectionBasedClassDefinition classDefinition =
           ArgumentUtility.CheckNotNullAndType<ReflectionBasedClassDefinition> ("filterCriteria", filterCriteria);
       return FindPropertiesFilter (classDefinition, (PropertyInfo) member);
     }

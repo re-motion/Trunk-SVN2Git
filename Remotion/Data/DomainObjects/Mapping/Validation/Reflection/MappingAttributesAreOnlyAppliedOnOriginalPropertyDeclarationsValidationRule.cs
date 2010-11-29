@@ -41,7 +41,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       bool isInheritanceRoot = classDefinition.BaseClass == null;
       var propertyFinder = new AllMappingPropertiesFinder (
-          classDefinition.ClassType, (ReflectionBasedClassDefinition) classDefinition, isInheritanceRoot, new ReflectionBasedNameResolver());
+          classDefinition.ClassType,
+          (ReflectionBasedClassDefinition) classDefinition,
+          isInheritanceRoot,
+          true,
+          new ReflectionBasedNameResolver(),
+          ((ReflectionBasedClassDefinition) classDefinition).PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 
       return propertyInfos.Select (propertyInfo => Validate (propertyInfo));

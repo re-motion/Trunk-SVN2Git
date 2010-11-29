@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
       RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (
-          Type, classDefinition, ReflectionUtility.IsInheritanceRoot (Type), NameResolver);
+          Type, classDefinition, ReflectionUtility.IsInheritanceRoot (Type), classDefinition.ClassType==Type, NameResolver, classDefinition.PersistentMixinFinder);
       return relationPropertyFinder.FindPropertyInfos();
     }
   }
