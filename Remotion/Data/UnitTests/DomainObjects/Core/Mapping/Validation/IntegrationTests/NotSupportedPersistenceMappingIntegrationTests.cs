@@ -84,10 +84,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedPersistenceMapping.MappingAttributeAppliedOnOverriddenProperty");
     }
 
-    //EntityNameMatchesParentEntityNameValidationRule
+    //OnlyOneTablePerHierarchyValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Class 'DerivedClass' must not specify an entity name 'DerivedName' which is different from inherited entity name 'BaseName'.\r\n\r\n"
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "Class 'DerivedClass' must not define a table when it's base class 'BaseClass' also defines one.\r\n\r\n"
       +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"SameEntityNamesInInheritanceHierarchy.DerivedClass")]
     public void SameEntityNamesInInheritanceHierarchy ()

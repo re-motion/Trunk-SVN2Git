@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       var validator = PersistenceMappingValidator.Create ();
 
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (6));
-      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (EntityNameMatchesParentEntityNameValidationRule)));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (OnlyOneTablePerHierarchyValidationRule)));
       Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule)));
       Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (NonAbstractClassHasEntityNameValidationRule)));
       Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageProviderIDMatchesParentStorageProviderIDValiadationRule)));

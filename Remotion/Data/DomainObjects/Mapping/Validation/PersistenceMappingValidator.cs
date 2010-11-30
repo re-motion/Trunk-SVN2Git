@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
     public static PersistenceMappingValidator Create ()
     {
       return new PersistenceMappingValidator (
-          new EntityNameMatchesParentEntityNameValidationRule(),
+          new OnlyOneTablePerHierarchyValidationRule(),
           new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule(),
           new NonAbstractClassHasEntityNameValidationRule(),
           new StorageProviderIDMatchesParentStorageProviderIDValiadationRule(),

@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -22,31 +25,36 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   /// <summary>
   /// Validates that the entity-name of a class is the same as the inherited entity-name.
   /// </summary>
-  public class EntityNameMatchesParentEntityNameValidationRule : IPersistenceMappingValidationRule
+  public class OnlyOneTablePerHierarchyValidationRule : IPersistenceMappingValidationRule
   {
-    public EntityNameMatchesParentEntityNameValidationRule ()
+    public OnlyOneTablePerHierarchyValidationRule ()
     {
-      
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition.LegacyEntityName != null && classDefinition.BaseClass.GetEntityName () != null
-          && classDefinition.StorageEntityDefinition.LegacyEntityName != classDefinition.BaseClass.GetEntityName ())
+      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition is TableDefinition)
       {
-        yield return MappingValidationResult.CreateInvalidResultForType (
-            classDefinition.ClassType,
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
-            classDefinition.ClassType.Name,
-            classDefinition.StorageEntityDefinition.LegacyEntityName,
-            classDefinition.BaseClass.GetEntityName ());
+        var baseClasses = classDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
+        foreach (ClassDefinition baseClass in baseClasses)
+        {
+          if (baseClass.StorageEntityDefinition is TableDefinition)
+          {
+            yield return MappingValidationResult.CreateInvalidResultForType (
+                classDefinition.ClassType,
+                "Class '{0}' must not define a table when it's base class '{1}' also defines one.",
+                classDefinition.ClassType.Name,
+                baseClass.ClassType.Name);
+          }
+        }
       }
       else
       {
         yield return MappingValidationResult.CreateValidResult();
       }
+     
     }
   }
 }

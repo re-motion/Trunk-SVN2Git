@@ -19,24 +19,47 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
 {
   [TestFixture]
-  public class EntityNameMatchesParentEntityNameValidationRuleTest : ValidationRuleTestBase
+  public class OnlyOneTablePerHierarchyValidationRuleTest : ValidationRuleTestBase
   {
-    private EntityNameMatchesParentEntityNameValidationRule _validationRule;
+    private OnlyOneTablePerHierarchyValidationRule _validationRule;
+    private TableDefinition _tableDefinition;
+    private UnionViewDefinition _unionViewDefinition;
+    private ReflectionBasedClassDefinition _baseClassDefinition;
+    private ReflectionBasedClassDefinition _classDefinitionWithBaseClass;
 
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new EntityNameMatchesParentEntityNameValidationRule();
+      _validationRule = new OnlyOneTablePerHierarchyValidationRule();
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new ColumnDefinition[0]);
+      _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0]);
+
+      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "EntityNameMatchesParentEntityNameBaseDomainObject",
+          null,
+          typeof (BaseValidationDomainObjectClass),
+          true);
+      _classDefinitionWithBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "EntityNameMatchesParentEntityNameDomainObject",
+          "EntityName",
+          typeof (DerivedValidationDomainObjectClass),
+          false,
+          _baseClassDefinition,
+          null,
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
     }
 
     [Test]
-    public void HasNoBaseClass ()
+    public void HasNoBaseClassAndHasNoTableDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
@@ -44,64 +67,65 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false);
 
+      classDefinition.SetStorageEntity (_unionViewDefinition);
+
       var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
       Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
-    public void HasNoMyEntityName_And_HasBaseClass ()
+    public void HasBaseClassAndHasNoTableDefinition ()
     {
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _classDefinitionWithBaseClass.SetStorageEntity (_unionViewDefinition);
+
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray ();
+
+      Assert.That (validationResult, Is.Empty);
+    }
+
+    [Test]
+    public void HasBaseClassAndHasTableDefinition_BaseClassHasNoTableDefinition ()
+    {
+      _classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
+      _baseClassDefinition.SetStorageEntity (_unionViewDefinition);
+
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
+
+      Assert.That (validationResult, Is.Empty);
+    }
+
+    [Test]
+    public void HasBaseClassAndHasTableDefinition_BaseClassHasTableDefinition ()
+    {
+      _classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
+      _baseClassDefinition.SetStorageEntity (_tableDefinition);
+
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
+
+      Assert.That (validationResult.Length, Is.EqualTo (1));
+      var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define a table when it's base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+    }
+
+    [Test]
+    public void HasBaseClassesAndHasTableDefinition_BaseOfBaseClassHasTableDefinition ()
+    {
+      var baseOfBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
-          null,
-          typeof (BaseValidationDomainObjectClass),
+          "BaseEntityName",
+          typeof (BaseOfBaseValidationDomainObjectClass),
           true);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "EntityNameMatchesParentEntityNameDomainObject",
-          null,
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          baseClassDefinition,
-          null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
-
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult, Is.Empty);
-    }
-
-    [Test]
-    public void HasBaseClassWithSameEntityName ()
-    {
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "EntityNameMatchesParentEntityNameBaseDomainObject",
-          "EntityName",
-          typeof (BaseValidationDomainObjectClass),
-          true);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "EntityNameMatchesParentEntityNameDomainObject",
-          "EntityName",
-          typeof (DerivedValidationDomainObjectClass),
-          false,
-          baseClassDefinition,
-          null,
-          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
-
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult, Is.Empty);
-    }
-
-    [Test]
-    public void HasBaseClassWithDifferentEntityName ()
-    {
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
           "BaseEntityName",
           typeof (BaseValidationDomainObjectClass),
-          true);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          true,
+          baseOfBaseClassDefinition,
+          null,
+          new PersistentMixinFinderMock(typeof(DomainObject), new Type[0]));
+      var classDefinitionWithBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
           typeof (DerivedValidationDomainObjectClass),
@@ -110,12 +134,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
+      classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
+      baseClassDefinition.SetStorageEntity (_unionViewDefinition);
+      baseOfBaseClassDefinition.SetStorageEntity (_tableDefinition);
+      
+      var validationResult = _validationRule.Validate (classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
 
       Assert.That (validationResult.Length, Is.EqualTo (1));
-      var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not specify an entity name 'EntityName' which is different from inherited "
-        +"entity name 'BaseEntityName'.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      var expectedMessage = 
+        "Class 'DerivedValidationDomainObjectClass' must not define a table when it's base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 

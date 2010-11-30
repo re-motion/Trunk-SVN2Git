@@ -280,7 +280,7 @@
     <Compile Include="Mapping\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\MappingValidationResult.cs" />
-    <Compile Include="Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Persistence\OnlyOneTablePerHierarchyValidationRule.cs" />
     <Compile Include="Mapping\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule.cs" />
     <Compile Include="Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule.cs" />
