@@ -28,14 +28,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public class MixinPropertyFinder
   {
     private readonly IPersistentMixinFinder _persistentMixinFinder;
-    private readonly bool _includeBaseProperties;
+    private readonly bool _includeBaseMixins;
     private readonly IMappingNameResolver _nameResolver;
     private readonly Func<Type, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> _propertyFinderFactory;
 
     public MixinPropertyFinder (
         Func<Type, bool, bool, IMappingNameResolver, IPersistentMixinFinder, PropertyFinderBase> propertyFinderFactory,
         IPersistentMixinFinder persistentMixinFinder,
-        bool includeBaseProperties,
+        bool includeBaseMixins,
         IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("propertyFinderFactory", propertyFinderFactory);
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _propertyFinderFactory = propertyFinderFactory;
       _persistentMixinFinder = persistentMixinFinder;
       _nameResolver = nameResolver;
-      _includeBaseProperties = includeBaseProperties;
+      _includeBaseMixins = includeBaseMixins;
     }
 
     public IEnumerable<PropertyInfo> FindPropertyInfosOnMixins ()
@@ -65,10 +65,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       Type current = mixin;
       while (current != null && !IsMixinBaseClass (current))
       {
-        if (!processedMixins.Contains (current) && (_includeBaseProperties || !_persistentMixinFinder.IsInParentContext (current)))
+        if (!processedMixins.Contains (current) && (_includeBaseMixins || !_persistentMixinFinder.IsInParentContext (current)))
         {
-          var mixinPropertyFinder = _propertyFinderFactory (current, false, false, _nameResolver, _persistentMixinFinder);
           // Note: mixins on mixins are not checked
+          var mixinPropertyFinder = _propertyFinderFactory (current, false, false, _nameResolver, _persistentMixinFinder);
           foreach (PropertyInfo propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType ())
             yield return propertyInfo;
 

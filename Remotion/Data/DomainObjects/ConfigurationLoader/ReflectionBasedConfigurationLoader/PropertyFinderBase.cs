@@ -75,35 +75,36 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _nameResolver; }
     }
 
-    public PropertyInfo[] FindPropertyInfos ()
-    {
-      var propertyInfos = new List<PropertyInfo>();
-
-      if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
-      {
-        var propertyFinder = CreateNewFinder (_type.BaseType, true, false, NameResolver, _persistentMixinFinder);
-        propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
-      }
-
-      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType ());
-
-      // Mixins are currently only checked when the current type equals the classDefinition's type. This means we do not check for mixins when we
-      // are above the inheritance root (where _type will be a base of classDefinition.ClassType).
-      if (IncludeMixinProperties)
-      {
-        var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
-        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins ());
-      }
-
-      return propertyInfos.ToArray();
-    }
-
     protected abstract PropertyFinderBase CreateNewFinder (
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder);
+
+    public PropertyInfo[] FindPropertyInfos ()
+    {
+      var propertyInfos = new List<PropertyInfo>();
+
+      if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
+      {
+        // Use a new PropertyFinder of the same type as this one to get all properties from above this class. Mixins are not included for the base
+        // classes; the mixin finder below will include the mixins for those classes anyway.
+        var propertyFinder = CreateNewFinder (_type.BaseType, true, false, NameResolver, _persistentMixinFinder);
+        propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
+      }
+
+      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType ());
+
+      if (IncludeMixinProperties)
+      {
+        // Base mixins are included only when base properties are included.
+        var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
+        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins ());
+      }
+
+      return propertyInfos.ToArray();
+    }
 
     protected virtual bool FindPropertiesFilter (PropertyInfo propertyInfo)
     {

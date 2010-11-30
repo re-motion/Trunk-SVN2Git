@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!base.FindPropertiesFilter (propertyInfo))
         return false;
 
-      if (IsVirtualRelationEndPoint (_classDefinition, propertyInfo))
+      if (IsVirtualRelationEndPoint (propertyInfo))
         return false;
 
       return true;
@@ -65,12 +65,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new PropertyFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
 
-    private bool IsVirtualRelationEndPoint (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    private bool IsVirtualRelationEndPoint (PropertyInfo propertyInfo)
     {
       if (!ReflectionUtility.IsRelationType (propertyInfo.PropertyType))
         return false;
       RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          classDefinition, propertyInfo, NameResolver);
+          _classDefinition, propertyInfo, NameResolver);
       return relationEndPointReflector.IsVirtualEndRelationEndpoint();
     }
   }
