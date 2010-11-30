@@ -263,6 +263,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\OppositePropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionTest.cs" />
@@ -613,7 +614,6 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\StorageProviderIDMatchesParentStorageProviderIDValiadationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\PropertyDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
