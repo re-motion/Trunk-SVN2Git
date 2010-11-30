@@ -63,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 
     //NonAbstractClassHasEntityNameValidationRule
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Neither class 'ClassAboveInheritanceRoot' nor its base classes specify an entity name. Make class 'ClassAboveInheritanceRoot' abstract or apply "
-      +"a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "Neither class 'ClassAboveInheritanceRoot' nor its base classes are mapped to a table. Make class 'ClassAboveInheritanceRoot' abstract or define "
+      +"a table for it or one of it's base classes.\r\n\r\n"
       +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"ConcreteClassAboveInheritanceRoot.ClassAboveInheritanceRoot")]
     public void ConcreteClassAboveInheritanceRoot ()

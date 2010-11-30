@@ -19,8 +19,9 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
@@ -29,53 +30,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
   public class NonAbstractClassHasEntityNameValidationRuleTest : ValidationRuleTestBase
   {
     private NonAbstractClassHasEntityNameValidationRule _validationRule;
+    private ReflectionBasedClassDefinition _abstractClassDefinition;
+    private TableDefinition _tableDefinition;
+    private UnionViewDefinition _unionViewDefinition;
+    private ReflectionBasedClassDefinition _noAbstractClassDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _validationRule = new NonAbstractClassHasEntityNameValidationRule();
-    }
-
-    [Test]
-    public void ClassTypeResolved_NoEntityName_Abstract ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _abstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           typeof (DerivedValidationDomainObjectClass),
           true);
-
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult, Is.Empty);
-    }
-
-    [Test]
-    public void ClassTypeResolved_EntityName_NotAbstract ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _noAbstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
           typeof (DerivedValidationDomainObjectClass),
           false);
-
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult, Is.Empty);
-    }
-
-    [Test]
-    public void ClassTypeResolved_EntityName_Abstract ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameDomainObject",
-          "EntityName",
-          typeof (DerivedValidationDomainObjectClass),
-          false);
-
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult, Is.Empty);
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new ColumnDefinition[0]);
+      _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0]);
     }
 
     [Test]
@@ -89,27 +65,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray ();
 
       Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
-    public void ClassTypeResolved_NoEntityName_NotAbstract ()
+    public void ClassTypeResolved_NoUnionViewDefinition_Abstract ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "NonAbstractClassHasEntityNameDomainObject",
-          null,
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      _abstractClassDefinition.SetStorageEntity (_tableDefinition);
 
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_abstractClassDefinition).Where (result => !result.IsValid).ToArray();
 
-      Assert.That (validationResult.Length, Is.EqualTo (1));
-      var expectedMessage =
-          "Neither class 'DerivedValidationDomainObjectClass' nor its base classes specify an entity name. Make class 'DerivedValidationDomainObjectClass' "
-          +"abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
-          +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      Assert.That (validationResult, Is.Empty);
+    }
+
+    [Test]
+    public void ClassTypeResolved_UnionViewDefinition_Abstract ()
+    {
+      _abstractClassDefinition.SetStorageEntity (_unionViewDefinition);
+
+      var validationResult = _validationRule.Validate (_abstractClassDefinition).Where (result => !result.IsValid).ToArray ();
+
+      Assert.That (validationResult, Is.Empty);
+    }
+
+    [Test]
+    public void ClassTypeResolved_UnionViewDefinition_NotAbstract ()
+    {
+      _noAbstractClassDefinition.SetStorageEntity (_unionViewDefinition);
+
+      var validationResult = _validationRule.Validate (_noAbstractClassDefinition).Where (result => !result.IsValid).ToArray();
+
+      Assert.That (validationResult.Length, Is.EqualTo(1));
+
+      var expectedMessage = "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
+        +"Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of it's base classes.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
     

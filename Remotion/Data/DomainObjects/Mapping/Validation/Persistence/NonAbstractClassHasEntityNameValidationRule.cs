@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -33,12 +34,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.IsClassTypeResolved && classDefinition.GetEntityName () == null && !classDefinition.IsAbstract)
+      if (classDefinition.IsClassTypeResolved && classDefinition.StorageEntityDefinition is UnionViewDefinition && !classDefinition.IsAbstract)
       {
         yield return MappingValidationResult.CreateInvalidResultForType (
               classDefinition.ClassType,
-              "Neither class '{0}' nor its base classes specify an entity name. "
-              + "Make class '{0}' abstract or apply a 'DBTable' attribute to it or one of its base classes.",
+              "Neither class '{0}' nor its base classes are mapped to a table. "
+              + "Make class '{0}' abstract or define a table for it or one of it's base classes.",
               classDefinition.ClassType.Name);
       }
       else

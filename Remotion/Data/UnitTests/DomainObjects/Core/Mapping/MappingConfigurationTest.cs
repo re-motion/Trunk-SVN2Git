@@ -174,16 +174,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Neither class 'DerivedValidationDomainObjectClass' nor its base classes specify an entity name. Make class 'DerivedValidationDomainObjectClass' "
-        + "abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
+        "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. Make class 'DerivedValidationDomainObjectClass' "
+        +"abstract or define a table for it or one of it's base classes.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceMappingIsValidated ()
     {
+      var unionViewDefinition = new UnionViewDefinition (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", new TableDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           typeof (DerivedValidationDomainObjectClass),
           false);
+      classDefinition.SetStorageEntity (unionViewDefinition);
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
