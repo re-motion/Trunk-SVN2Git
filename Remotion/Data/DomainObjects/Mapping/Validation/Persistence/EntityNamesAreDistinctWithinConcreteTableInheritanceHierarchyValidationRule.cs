@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
@@ -33,24 +35,41 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allDistinctConcreteEntityNames = new HashSet<string>();
-      foreach (string entityName in classDefinition.GetAllConcreteEntityNames ())
+      if (classDefinition.BaseClass == null) //if class definition is inheritance root class
       {
-        if (allDistinctConcreteEntityNames.Contains(entityName))
+        var allDistinctTableNames = new HashSet<string> ();
+        foreach (var tableName in FindAllTableDefinitions (classDefinition).Select (td => td.TableName))
         {
-          yield return MappingValidationResult.CreateInvalidResultForType (
-              classDefinition.ClassType,
-              "At least two classes in different inheritance branches derived from abstract class '{0}'"
-              + " specify the same entity name '{1}', which is not allowed.",
-              classDefinition.ClassType.Name,
-              entityName);
-        }
-        else
-        {
-          yield return MappingValidationResult.CreateValidResult();
-        }
+          if (allDistinctTableNames.Contains (tableName))
+          {
+            yield return MappingValidationResult.CreateInvalidResultForType (
+                classDefinition.ClassType,
+                "At least two classes in different inheritance branches derived from abstract class '{0}'"
+                + " specify the same entity name '{1}', which is not allowed.",
+                classDefinition.ClassType.Name,
+                tableName);
+          }
+          else
+          {
+            yield return MappingValidationResult.CreateValidResult ();
+          }
 
-        allDistinctConcreteEntityNames.Add (entityName);
+          allDistinctTableNames.Add (tableName);
+        }
+      }
+    }
+
+    private IEnumerable<TableDefinition> FindAllTableDefinitions (ClassDefinition classDefinition)
+    {
+      var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
+      if (tableDefinition != null)
+        yield return tableDefinition;
+
+      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
+      {
+        var tableDefinitionsInDerivedClass = FindAllTableDefinitions (derivedClass);
+        foreach (var tableDefinitionInDerivedClass in tableDefinitionsInDerivedClass)
+          yield return tableDefinitionInDerivedClass;
       }
     }
   }

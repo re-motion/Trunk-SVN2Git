@@ -609,7 +609,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\PersistenceMappingValidatorTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\EntityNameMatchesParentEntityNameValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\OnlyOneTablePerHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Persistence\NonAbstractClassHasEntityNameValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest.cs" />
