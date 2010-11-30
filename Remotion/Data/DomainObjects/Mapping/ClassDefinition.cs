@@ -104,10 +104,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
+      // TODO Review 3518: Remove these collection read-only setters
       if(_propertyDefinitions!=null)
         MyPropertyDefinitions.SetReadOnly();
       if(_relationDefinitions!=null)
         MyRelationDefinitions.SetReadOnly();
+
       DerivedClasses.SetReadOnly();
 
       _isReadOnly = true;
@@ -226,6 +228,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return (IRelationEndPointDefinition[]) relationEndPointDefinitions.ToArray (typeof (IRelationEndPointDefinition));
     }
 
+    // TODO Review 3518: Add a test checking that this method throws an exception if no relations have been set
     public RelationDefinition GetRelationDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -315,13 +318,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return false;
     }
 
+    // TODO Review 3518: Add a test checking that this method throws an exception if no properties have been set
     public PropertyDefinition GetPropertyDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      PropertyDefinition propertyDefinition = null;
-      if(_propertyDefinitions!=null)
-       propertyDefinition = MyPropertyDefinitions[propertyName];
+      var propertyDefinition = MyPropertyDefinitions[propertyName];
 
       if (propertyDefinition == null && BaseClass != null)
         return BaseClass.GetPropertyDefinition (propertyName);
@@ -346,33 +348,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
-      {
-        if (!ReferenceEquals (propertyDefinition.ClassDefinition, this))
-        {
-          throw CreateMappingException (
-              "Property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
-              propertyDefinition.PropertyName,
-              _id,
-              propertyDefinition.ClassDefinition.ID);
-        }
+      CheckNewPropertyDefinitions (propertyDefinitions);
 
-        var basePropertyDefinition = GetPropertyDefinition (propertyDefinition.PropertyName); // TODO 3518: Use BaseClass.GetPropDef, remove check in GetPropDef
-        if (basePropertyDefinition != null)
-        {
-          string definingClass =
-              basePropertyDefinition.ClassDefinition == this
-                  ? "it"
-                  : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
-
-          throw CreateMappingException (
-              "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
-              propertyDefinition.PropertyName,
-              _id,
-              definingClass);
-        }
-      }
-
+      // TODO Review 3518: Set collection read-only
       _propertyDefinitions = propertyDefinitions;
     }
 
@@ -383,6 +361,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
+      // TODO Review 3518: Add a CheckNewRelationDefinitions methods that checks for duplicates and ClassDefinition (similar to CheckNewPropertyDefinitions), add tests
+
+      // TODO Review 3518: Set collection read-only
       _relationDefinitions = relationDefinitions;
     }
 
@@ -434,7 +415,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get
       {
-        if(_propertyDefinitions==null)
+        if(_propertyDefinitions == null)
           throw new InvalidOperationException ("No property definitions have been set.");
         
         return _propertyDefinitions; 
@@ -466,65 +447,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public abstract ReflectionBasedClassDefinitionValidator GetValidator ();
 
-    internal void PropertyDefinitions_Adding (object sender, PropertyDefinitionAddingEventArgs args)
-    {
-      if (!ReferenceEquals (args.PropertyDefinition.ClassDefinition, this))
-      {
-        throw CreateMappingException (
-            "Property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
-            args.PropertyDefinition.PropertyName,
-            _id,
-            args.PropertyDefinition.ClassDefinition.ID);
-      }
-
-      if (IsClassTypeResolved != args.PropertyDefinition.IsPropertyTypeResolved)
-      {
-        if (IsClassTypeResolved)
-        {
-          throw CreateInvalidOperationException (
-              "The PropertyDefinition '{0}' cannot be added to ClassDefinition '{1}', "
-              + "because the ClassDefinition's type is resolved and the PropertyDefinition's type is not.",
-              args.PropertyDefinition.PropertyName,
-              _id);
-        }
-        else
-        {
-          throw CreateInvalidOperationException (
-              "The PropertyDefinition '{0}' cannot be added to ClassDefinition '{1}', "
-              + "because the PropertyDefinition's type is resolved and the ClassDefinition's type is not.",
-              args.PropertyDefinition.PropertyName,
-              _id);
-        }
-      }
-
-      var basePropertyDefinition = GetPropertyDefinition (args.PropertyDefinition.PropertyName);
-      if (basePropertyDefinition != null)
-      {
-        string definingClass =
-            basePropertyDefinition.ClassDefinition == this
-                ? "it"
-                : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
-
-        throw CreateMappingException (
-            "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
-            args.PropertyDefinition.PropertyName,
-            _id,
-            definingClass);
-      }
-    }
-
-    internal void PropertyDefinitions_Added (object sender, PropertyDefinitionAddedEventArgs args)
-    {
-    }
-
     private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (String.Format (message, args));
-    }
-
-    private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
-    {
-      return new InvalidOperationException (String.Format (message, args));
     }
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
@@ -572,6 +497,36 @@ namespace Remotion.Data.DomainObjects.Mapping
         relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions());
 
       return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
+    }
+
+    private void CheckNewPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
+    {
+      foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
+      {
+        if (!ReferenceEquals (propertyDefinition.ClassDefinition, this))
+        {
+          throw CreateMappingException (
+              "Property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
+              propertyDefinition.PropertyName,
+              _id,
+              propertyDefinition.ClassDefinition.ID);
+        }
+
+        var basePropertyDefinition = BaseClass != null ? BaseClass.GetPropertyDefinition (propertyDefinition.PropertyName) : null;
+        if (basePropertyDefinition != null)
+        {
+          string definingClass =
+              basePropertyDefinition.ClassDefinition == this
+                  ? "it"
+                  : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
+
+          throw CreateMappingException (
+              "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
+              propertyDefinition.PropertyName,
+              _id,
+              definingClass);
+        }
+      }
     }
     
     #region Serialization

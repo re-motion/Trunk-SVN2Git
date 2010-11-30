@@ -180,6 +180,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [Ignore ("TODO 3546: Enable this test when ClassDefinitionFactory leaves collection null.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "... (relation definitions not set) ...")]
+    public void GetAllRelationDefinitions_ThrowsWhenRelationsNotSet ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", typeof (Order), false);
+      classDefinition.GetRelationDefinitions ();
+    }
+
+    [Test]
     public void GetAllRelationDefinitions_Cached ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -212,12 +222,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetAllRelationDefinitions_Contents ()
     {
       RelationDefinitionCollection relations = _distributorClass.GetRelationDefinitions();
-
-      ////TODO: Rmove!
-      //foreach (RelationDefinition relationDefinition in relations)
-      //{
-      //  Console.WriteLine (relationDefinition.ID);
-      //}
 
       Assert.IsNotNull (relations);
       Assert.AreEqual (5, relations.Count);
@@ -380,6 +384,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result, Is.Not.Null);
     }
 
+    [Ignore ("TODO 3546: Enable this test when ClassDefinitionFactory leaves collection null.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "... (property definitions not set) ...")]
+    public void GetAllPropertyDefinitions_ThrowsWhenPropertiesNotSet ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", typeof (Order), false);
+      classDefinition.GetPropertyDefinitions ();
+    }
+
     [Test]
     public void GetAllPropertyDefinitions_Cached ()
     {
@@ -406,6 +419,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (result.IsReadOnly, Is.True);
     }
+
+    // TODO Review 3518: Add test that calls SetRelationDefinitions and checks that MyRelationDefinitions has the same elements afterwards
+    // TODO Review 3518: Add test that calls SetRelationDefinitions with a non-read-only collection - the MyRelationDefinitions collection should still be read-only
+
+    // TODO Review 3518: Add test that calls SetPropertyDefinitions and checks that MyPropertyDefinitions has the same elements afterwards
+    // TODO Review 3518: Add test that calls SetPropertyDefinitions with a non-read-only collection - the MyPropertyDefinitions collection should still be read-only
+    // TODO Review 3518: Rename to SetPropertyDefinitions_YYY
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
@@ -492,10 +512,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetAllRelationEndPointDefinitions_ThrowsWhenNotReadOnly ()
+    [Ignore ("TODO 3546: Enable this test when ClassDefinitionFactory leaves collection null.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "... (relation definitions not set) ...")]
+    public void GetAllRelationEndPointDefinitions_ThrowsWhenRelationsNotSet ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", typeof (Order), false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", typeof (Order), false);
       classDefinition.GetRelationEndPointDefinitions();
     }
 

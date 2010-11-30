@@ -38,6 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private ReflectionBasedClassDefinition _organizationalUnitClass;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
+    // TODO Review 3518: Move all tests over to Mapping\ReflectionBasedClassDefinitionTest, delete this class
+
     public override void SetUp ()
     {
       base.SetUp();
@@ -89,14 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           new PersistentMixinFinder (typeof (DomainBase)));
       Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
       Assert.That (classDefinition.StorageGroupType, Is.SameAs(typeof(DBStorageGroupAttribute)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
-    public void EntityNameMustNotBeEmptyWithClassType ()
-    {
-      ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DomainBase", string.Empty, typeof (DomainBase), false);
     }
 
     [Test]
