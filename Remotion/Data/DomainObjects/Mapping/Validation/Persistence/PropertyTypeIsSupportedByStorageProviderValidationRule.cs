@@ -17,9 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -34,22 +31,21 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
-             select Validate (propertyDefinition.PropertyInfo, classDefinition);
+             select Validate (propertyDefinition, classDefinition);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo, ClassDefinition classDefinition)
+    private MappingValidationResult Validate (PropertyDefinition propertyDefinition, ClassDefinition classDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var storageAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, true);
-      if (storageAttribute != null && storageAttribute.StorageClass == StorageClass.Persistent)
+      if (propertyDefinition.StorageClass == StorageClass.Persistent)
       {
-        var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
+        var nativePropertyType = ReflectionUtility.IsDomainObject (propertyDefinition.PropertyType) ? typeof (ObjectID) : propertyDefinition.PropertyType;
 
         if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
-              propertyInfo,
+              propertyDefinition.PropertyInfo,
               "The property type '{0}' is not supported by this storage provider.",
               nativePropertyType.Name);
         }
