@@ -104,12 +104,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
-      // TODO Review 3518: Remove these collection read-only setters
-      if(_propertyDefinitions!=null)
-        MyPropertyDefinitions.SetReadOnly();
-      if(_relationDefinitions!=null)
-        MyRelationDefinitions.SetReadOnly();
-
       DerivedClasses.SetReadOnly();
 
       _isReadOnly = true;

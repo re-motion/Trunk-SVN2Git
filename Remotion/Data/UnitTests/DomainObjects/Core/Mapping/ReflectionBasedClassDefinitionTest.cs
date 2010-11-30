@@ -81,23 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       actual.SetReadOnly();
 
       Assert.That (actual.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    public void SetReadOnly_SetsCollectionsReadOnly ()
-    {
-      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", typeof (Order), false);
-      PrivateInvoke.SetNonPublicField (actual, "_propertyDefinitions", new PropertyDefinitionCollection (new PropertyDefinition[0], false));
-      PrivateInvoke.SetNonPublicField (actual, "_relationDefinitions", new RelationDefinitionCollection (new RelationDefinition[0], false));
-      
-      Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.False);
-      Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.False);
-      
-      actual.SetReadOnly();
-
-      Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.True);
-      Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.True);
       Assert.That (actual.DerivedClasses.IsReadOnly, Is.True);
     }
 
