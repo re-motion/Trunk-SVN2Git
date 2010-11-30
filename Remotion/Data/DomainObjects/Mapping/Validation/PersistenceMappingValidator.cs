@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
       return from rule in _validationRules
              from classDefinition in classDefinitions
-             let result = rule.Validate (classDefinition)
+             from result in rule.Validate (classDefinition)
              where !result.IsValid
              select result;
     }

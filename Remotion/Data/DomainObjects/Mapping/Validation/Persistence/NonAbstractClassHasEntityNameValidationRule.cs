@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -28,22 +29,22 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.IsClassTypeResolved)
+      if (classDefinition.IsClassTypeResolved && classDefinition.GetEntityName () == null && !classDefinition.IsAbstract)
       {
-        if (classDefinition.GetEntityName () == null && !classDefinition.IsAbstract)
-        {
-          return MappingValidationResult.CreateInvalidResultForType (
+        yield return MappingValidationResult.CreateInvalidResultForType (
               classDefinition.ClassType,
               "Neither class '{0}' nor its base classes specify an entity name. "
               + "Make class '{0}' abstract or apply a 'DBTable' attribute to it or one of its base classes.",
               classDefinition.ClassType.Name);
-        }
       }
-      return MappingValidationResult.CreateValidResult();
+      else
+      {
+        yield return MappingValidationResult.CreateValidResult ();
+      }
     }
   }
 }

@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
@@ -53,9 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           false,
           baseOfBaseClass);
 
-      var validationResult = _validationRule.Validate (baseOfBaseClass);
+      var validationResult = _validationRule.Validate (baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -79,12 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           false,
           baseOfBaseClass);
 
-      var validationResult = _validationRule.Validate (baseOfBaseClass);
+      var validationResult = _validationRule.Validate (baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
       var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
         +"specify the same entity name 'SameEntityName', which is not allowed.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
     [Test]
@@ -114,9 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           false,
           derivedBaseClass1);
 
-      var validationResult = _validationRule.Validate (baseOfBaseClass);
+      var validationResult = _validationRule.Validate (baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -146,12 +148,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           false,
           derivedBaseClass1);
 
-      var validationResult = _validationRule.Validate (baseOfBaseClass);
+      var validationResult = _validationRule.Validate (baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
       var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
         +"specify the same entity name 'SameEntityName', which is not allowed.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
   }

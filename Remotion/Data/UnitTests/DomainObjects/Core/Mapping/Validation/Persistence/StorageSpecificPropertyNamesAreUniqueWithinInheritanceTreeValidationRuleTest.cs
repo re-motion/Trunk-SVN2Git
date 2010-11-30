@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -64,9 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void NoInheritanceRoot ()
     {
-      var validationResult = _validationRule.Validate (_derivedClass);
+      var validationResult = _validationRule.Validate (_derivedClass).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -84,9 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1, propertyDefinition2}, true));
       _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_derivedBaseClass2);
+      var validationResult = _validationRule.Validate (_derivedBaseClass2).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -107,15 +108,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
       classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
+      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage =
           "Property 'PropertyWithStorageClassPersistent' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
           +"because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage "
           +"specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: PropertyWithStorageClassPersistent";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
     [Test]
@@ -145,9 +147,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
       classDefinition.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -176,14 +178,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass);
+      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
+      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage =
           "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
           +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: Property";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
     [Test]
@@ -213,9 +216,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass);
+      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -245,14 +248,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass);
+      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
+      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage =
           "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
           +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.OtherDerivedValidationHierarchyClass\r\n"
           + "Property: OtherProperty";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
     [Test]
@@ -282,9 +286,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass);
+      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
   }
 }

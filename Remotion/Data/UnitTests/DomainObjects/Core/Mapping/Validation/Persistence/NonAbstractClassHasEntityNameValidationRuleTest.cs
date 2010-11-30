@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -43,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           true);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -57,9 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -71,9 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -87,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -101,13 +103,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
 
+      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage =
           "Neither class 'DerivedValidationDomainObjectClass' nor its base classes specify an entity name. Make class 'DerivedValidationDomainObjectClass' "
           +"abstract or apply a 'DBTable' attribute to it or one of its base classes.\r\n\r\n"
           +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
     
   }

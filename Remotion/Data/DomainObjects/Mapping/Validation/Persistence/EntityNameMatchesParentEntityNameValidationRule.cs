@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -28,21 +29,24 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition.LegacyEntityName != null && classDefinition.BaseClass.GetEntityName() != null
-          && classDefinition.StorageEntityDefinition.LegacyEntityName != classDefinition.BaseClass.GetEntityName())
+      if (classDefinition.BaseClass != null && classDefinition.StorageEntityDefinition.LegacyEntityName != null && classDefinition.BaseClass.GetEntityName () != null
+          && classDefinition.StorageEntityDefinition.LegacyEntityName != classDefinition.BaseClass.GetEntityName ())
       {
-        return MappingValidationResult.CreateInvalidResultForType (
+        yield return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
             "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
             classDefinition.ClassType.Name,
             classDefinition.StorageEntityDefinition.LegacyEntityName,
-            classDefinition.BaseClass.GetEntityName());
+            classDefinition.BaseClass.GetEntityName ());
       }
-      return MappingValidationResult.CreateValidResult();
+      else
+      {
+        yield return MappingValidationResult.CreateValidResult();
+      }
     }
   }
 }

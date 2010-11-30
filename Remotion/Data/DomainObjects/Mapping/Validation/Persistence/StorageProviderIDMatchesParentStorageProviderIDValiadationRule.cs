@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
@@ -27,20 +28,23 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
     {
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       if (classDefinition.BaseClass != null
           &&
           classDefinition.BaseClass.StorageEntityDefinition.StorageProviderDefinition.Name
           != classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
       {
-        return MappingValidationResult.CreateInvalidResultForType (
+        yield return MappingValidationResult.CreateInvalidResultForType (
             classDefinition.ClassType,
             "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
             classDefinition.ID,
             classDefinition.BaseClass.ID);
       }
-      return MappingValidationResult.CreateValidResult();
+      else
+      {
+        yield return MappingValidationResult.CreateValidResult();
+      }
     }
   }
 }

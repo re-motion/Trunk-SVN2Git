@@ -16,10 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
-using Remotion.Development.UnitTesting;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
 {
@@ -42,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var type = typeof (DerivedValidationDomainObjectClass);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false, baseClassDefinition, new Type[0]);
 
-      var validationResult = _validationRule.Validate (classDefinition);
+      var validationResult = _validationRule.Validate (classDefinition).Where(result=>!result.IsValid).ToArray();
 
-      AssertMappingValidationResult (validationResult, true, null);
+      Assert.That (validationResult, Is.Empty);
     }
 
     [Test]
@@ -57,13 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       classDefinition.SetStorageEntity (
           new TableDefinition (
               new UnitTestStorageProviderStubDefinition ("SPID2", typeof (UnitTestStorageObjectFactoryStub)), "Test", "Test", new ColumnDefinition[0]));
-      
-      var validationResult = _validationRule.Validate (classDefinition);
 
+      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
+
+      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage =
           "Cannot derive class 'DerivedValidationDomainObjectClass' from base class 'BaseValidationDomainObjectClass' handled by different StorageProviders."
           + "\r\n\r\nDeclaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult, false, expectedMessage);
+      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
 
 

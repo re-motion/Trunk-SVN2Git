@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
@@ -26,56 +28,54 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
   {
     public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
-      
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
-        return ValidateStorageSpecificPropertyNames (classDefinition, new Dictionary<string, PropertyDefinition>());
-      
-      return MappingValidationResult.CreateValidResult();
+      {
+        var propertyDefinitionsByName = new Dictionary<string, PropertyDefinition>();
+
+        var allPropertyDefinitions = new List<PropertyDefinition>();
+        allPropertyDefinitions.AddRange (classDefinition.MyPropertyDefinitions.Cast<PropertyDefinition>());
+        foreach (ClassDefinition derivedClassDefinition in classDefinition.GetAllDerivedClasses())
+          allPropertyDefinitions.AddRange (derivedClassDefinition.MyPropertyDefinitions.Cast<PropertyDefinition> ());
+        
+        foreach (var propertyDefinition in allPropertyDefinitions)
+          yield return ValidateStorageSpecificPropertyNames (propertyDefinition, propertyDefinitionsByName);
+      }
+      else
+        yield return MappingValidationResult.CreateValidResult();
     }
 
     private MappingValidationResult ValidateStorageSpecificPropertyNames (
-        ClassDefinition classDefinition, IDictionary<string, PropertyDefinition> propertyDefinitionsByName)
+        PropertyDefinition propertyDefinition, IDictionary<string, PropertyDefinition> propertyDefinitionsByName)
     {
-      var mappingValidationResult = MappingValidationResult.CreateValidResult();
-      foreach (PropertyDefinition myPropertyDefinition in classDefinition.MyPropertyDefinitions)
+      if (propertyDefinition.StorageClass == StorageClass.Persistent && propertyDefinition.StoragePropertyDefinition != null)
       {
-        if (myPropertyDefinition.StorageClass == StorageClass.Persistent && myPropertyDefinition.StoragePropertyDefinition!=null)
+        PropertyDefinition basePropertyDefinition;
+        if (propertyDefinitionsByName.TryGetValue (propertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
         {
-          PropertyDefinition basePropertyDefinition;
-          if (propertyDefinitionsByName.TryGetValue (myPropertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
+          if (!propertyDefinition.PropertyInfo.Equals (basePropertyDefinition.PropertyInfo))
           {
-            if (!myPropertyDefinition.PropertyInfo.Equals (basePropertyDefinition.PropertyInfo))
-            {
-              return MappingValidationResult.CreateInvalidResultForProperty (
-                  myPropertyDefinition.PropertyInfo,
-                  "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
-                  + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-                  myPropertyDefinition.PropertyInfo.Name,
-                  classDefinition.ClassType.Name,
-                  myPropertyDefinition.StoragePropertyDefinition.Name,
-                  basePropertyDefinition.ClassDefinition.ClassType.Name,
-                  basePropertyDefinition.PropertyInfo.Name);
-            }
+            return MappingValidationResult.CreateInvalidResultForProperty (
+                propertyDefinition.PropertyInfo,
+                "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
+                + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
+                propertyDefinition.PropertyInfo.Name,
+                propertyDefinition.ClassDefinition.ClassType.Name,
+                propertyDefinition.StoragePropertyDefinition.Name,
+                basePropertyDefinition.ClassDefinition.ClassType.Name,
+                basePropertyDefinition.PropertyInfo.Name);
           }
-
-          propertyDefinitionsByName[myPropertyDefinition.StoragePropertyDefinition.Name] =  myPropertyDefinition;
         }
+
+        propertyDefinitionsByName[propertyDefinition.StoragePropertyDefinition.Name] = propertyDefinition;
       }
 
-      foreach (ClassDefinition derivedClassDefinition in classDefinition.DerivedClasses)
-      {
-        if (!mappingValidationResult.IsValid)
-          break;
-        mappingValidationResult = ValidateStorageSpecificPropertyNames (derivedClassDefinition, propertyDefinitionsByName);
-      }
-
-      return mappingValidationResult;
+      return MappingValidationResult.CreateValidResult();
     }
   }
 }

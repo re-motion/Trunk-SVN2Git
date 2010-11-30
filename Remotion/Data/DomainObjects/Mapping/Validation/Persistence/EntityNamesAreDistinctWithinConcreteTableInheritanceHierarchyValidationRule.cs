@@ -29,26 +29,29 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       
     }
 
-    public MappingValidationResult Validate (ClassDefinition classDefinition)
+    public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allDistinctConcreteEntityNames = new Dictionary<string, object> ();
+      var allDistinctConcreteEntityNames = new HashSet<string>();
       foreach (string entityName in classDefinition.GetAllConcreteEntityNames ())
       {
-        if (allDistinctConcreteEntityNames.ContainsKey (entityName))
+        if (allDistinctConcreteEntityNames.Contains(entityName))
         {
-          return MappingValidationResult.CreateInvalidResultForType (
+          yield return MappingValidationResult.CreateInvalidResultForType (
               classDefinition.ClassType,
               "At least two classes in different inheritance branches derived from abstract class '{0}'"
               + " specify the same entity name '{1}', which is not allowed.",
               classDefinition.ClassType.Name,
               entityName);
         }
+        else
+        {
+          yield return MappingValidationResult.CreateValidResult();
+        }
 
-        allDistinctConcreteEntityNames.Add (entityName, null);
+        allDistinctConcreteEntityNames.Add (entityName);
       }
-      return MappingValidationResult.CreateValidResult();
     }
   }
 }
