@@ -25,14 +25,22 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
+using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using Client = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client;
+using Customer = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer;
+using FileSystemItem = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem;
+using Folder = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder;
+using Order = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order;
+using Person = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Person;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -44,10 +52,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     
     private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
     private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private ReflectionBasedClassDefinition _domainBaseClass;
+    private ReflectionBasedClassDefinition _personClass;
+    private ReflectionBasedClassDefinition _customerClass;
+    private ReflectionBasedClassDefinition _organizationalUnitClass;
 
     public override void SetUp ()
     {
       base.SetUp();
+
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+
+      _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DomainBase", null, typeof (DomainBase), false);
+      _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+         "Person", "TableInheritance_Person", typeof (Person), false, _domainBaseClass);
+      _customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Customer", null, typeof (Customer), false, _personClass);
+      _organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrganizationalUnit",
+          "TableInheritance_OrganizationalUnit",
+          typeof (OrganizationalUnit),
+          false,
+          _domainBaseClass);
 
       _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _distributorClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
@@ -69,6 +97,192 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.BaseClass, Is.Null);
       Assert.That (actual.DerivedClasses.AreResolvedTypesRequired, Is.True);
       Assert.That (actual.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void InitializeWithNullStorageGroupType ()
+    {
+      Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
+
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DomainBase",
+          null,
+          typeof (DomainBase),
+          false,
+          null,
+          null,
+          new PersistentMixinFinder (typeof (DomainBase)));
+      Assert.That (classDefinition.StorageGroupType, Is.Null);
+    }
+
+    [Test]
+    public void InitializeWithStorageGroupType ()
+    {
+      Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
+
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DomainBase",
+          null,
+          typeof (DomainBase),
+          false,
+          null,
+          typeof (DBStorageGroupAttribute),
+          new PersistentMixinFinder (typeof (DomainBase)));
+      Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
+      Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
+    }
+
+    [Test]
+    public void NullEntityNameWithDerivedClass ()
+    {
+      Assert.IsNull (StorageModelTestHelper.GetEntityName (_domainBaseClass));
+      Assert.IsNotNull (StorageModelTestHelper.GetEntityName (_personClass));
+      Assert.IsNull (StorageModelTestHelper.GetEntityName (_customerClass));
+    }
+
+    [Test]
+    public void GetEntityName ()
+    {
+      Assert.IsNull (_domainBaseClass.GetEntityName ());
+      Assert.AreEqual ("TableInheritance_Person", _personClass.GetEntityName ());
+      Assert.AreEqual ("TableInheritance_Person", _customerClass.GetEntityName ());
+    }
+
+    [Test]
+    public void GetAllConcreteEntityNamesForConreteSingle ()
+    {
+      string[] entityNames = _customerClass.GetAllConcreteEntityNames ();
+      Assert.IsNotNull (entityNames);
+      Assert.AreEqual (1, entityNames.Length);
+      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
+    }
+
+    [Test]
+    public void SetStorageEntityDefinition ()
+    {
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
+
+      _domainBaseClass.SetStorageEntity (tableDefinition);
+
+      Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetStorageEntityDefinition_ClassIsReadOnly ()
+    {
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
+      _domainBaseClass.SetReadOnly ();
+
+      _domainBaseClass.SetStorageEntity (tableDefinition);
+
+      Assert.That (_domainBaseClass.StorageEntityDefinition, Is.SameAs (tableDefinition));
+    }
+
+    [Test]
+    public void SetPropertyDefinitions ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
+
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
+
+      Assert.That (_domainBaseClass.MyPropertyDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_domainBaseClass.MyPropertyDefinitions[0], Is.SameAs (propertyDefinition));
+      Assert.That (_domainBaseClass.MyPropertyDefinitions.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetPropertyDefinitions_ClassIsReadOnly ()
+    {
+      _domainBaseClass.SetReadOnly ();
+
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
+    }
+
+    [Test]
+    public void SetRelationDefinitions ()
+    {
+      var relationDefinition = new RelationDefinition (
+          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
+
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
+
+      Assert.That (_domainBaseClass.MyRelationDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_domainBaseClass.MyRelationDefinitions[0], Is.SameAs (relationDefinition));
+      Assert.That (_domainBaseClass.MyRelationDefinitions.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void SetRelationDefinitions_BaseClassAlreadyDefinesRelationWithTheSameID ()
+    {
+      var relationDefinition = new RelationDefinition (
+          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
+
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
+      _personClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetRelationDefinitions_ClassIsReadOnly ()
+    {
+      _domainBaseClass.SetReadOnly ();
+
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
+    }
+
+    [Test]
+    public void GetAllConcreteEntityNamesForConcrete ()
+    {
+      string[] entityNames = _personClass.GetAllConcreteEntityNames ();
+      Assert.IsNotNull (entityNames);
+      Assert.AreEqual (1, entityNames.Length);
+      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
+    }
+
+    [Test]
+    public void GetAllConcreteEntityNamesForConreteSingleWithEntityName ()
+    {
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Person", "TableInheritance_Person", typeof (Person), false);
+      ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Customer", "TableInheritance_Person", typeof (Customer), false, personClass);
+
+      string[] entityNames = customerClass.GetAllConcreteEntityNames ();
+      Assert.IsNotNull (entityNames);
+      Assert.AreEqual (1, entityNames.Length);
+      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
+    }
+
+    [Test]
+    public void GetAllConcreteEntityNamesForAbstractClass ()
+    {
+      // ensure both classes derived from DomainBase are loaded
+      Dev.Null = _personClass;
+      Dev.Null = _organizationalUnitClass;
+
+      string[] entityNames = _domainBaseClass.GetAllConcreteEntityNames ();
+      Assert.IsNotNull (entityNames);
+      Assert.AreEqual (2, entityNames.Length);
+      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
+      Assert.AreEqual ("TableInheritance_OrganizationalUnit", entityNames[1]);
+    }
+
+    [Test]
+    public void GetAllConcreteEntityNamesForAbstractClassWithSameEntityNameInInheritanceHierarchy ()
+    {
+      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DomainBase", null, typeof (DomainBase), false);
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Person", "TableInheritance_Person", typeof (Person), false, domainBaseClass);
+      ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Customer", "TableInheritance_Person", typeof (Customer), false, personClass);
+
+      string[] entityNames = domainBaseClass.GetAllConcreteEntityNames ();
+      Assert.IsNotNull (entityNames);
+      Assert.AreEqual (1, entityNames.Length);
+      Assert.AreEqual ("TableInheritance_Person", entityNames[0]);
     }
 
     [Test]
@@ -139,6 +353,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core."
         +"Mapping.TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders", 
         relation.ID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation definitions have been set.")]
+    public void GetRelationDefinition_NoRelationDefinitionsHaveBeenSet_ThrowsException ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      PrivateInvoke.SetNonPublicField (classDefinition, "_relationDefinitions", null);
+
+      classDefinition.GetRelationDefinition ("dummy");
     }
 
     [Test]
@@ -340,6 +564,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set.")]
+    public void GetPropertyDefinition_NoPropertyDefinitionsHaveBeenSet_ThrowsException ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", null);
+
+      classDefinition.GetPropertyDefinition ("dummy");
+    }
+    
+    [Test]
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void GetEmptyPropertyDefinition ()
     {
@@ -402,13 +636,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (result.IsReadOnly, Is.True);
     }
-
-    // TODO Review 3518: Add test that calls SetRelationDefinitions and checks that MyRelationDefinitions has the same elements afterwards
-    // TODO Review 3518: Add test that calls SetRelationDefinitions with a non-read-only collection - the MyRelationDefinitions collection should still be read-only
-
-    // TODO Review 3518: Add test that calls SetPropertyDefinitions and checks that MyPropertyDefinitions has the same elements afterwards
-    // TODO Review 3518: Add test that calls SetPropertyDefinitions with a non-read-only collection - the MyPropertyDefinitions collection should still be read-only
-    // TODO Review 3518: Rename to SetPropertyDefinitions_YYY
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =

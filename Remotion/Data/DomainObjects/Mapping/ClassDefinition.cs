@@ -222,7 +222,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return (IRelationEndPointDefinition[]) relationEndPointDefinitions.ToArray (typeof (IRelationEndPointDefinition));
     }
 
-    // TODO Review 3518: Add a test checking that this method throws an exception if no relations have been set
     public RelationDefinition GetRelationDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -312,7 +311,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return false;
     }
 
-    // TODO Review 3518: Add a test checking that this method throws an exception if no properties have been set
     public PropertyDefinition GetPropertyDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -344,7 +342,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       CheckNewPropertyDefinitions (propertyDefinitions);
 
-      // TODO Review 3518: Set collection read-only
+      propertyDefinitions.SetReadOnly();
       _propertyDefinitions = propertyDefinitions;
     }
 
@@ -355,9 +353,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      // TODO Review 3518: Add a CheckNewRelationDefinitions methods that checks for duplicates and ClassDefinition (similar to CheckNewPropertyDefinitions), add tests
-
-      // TODO Review 3518: Set collection read-only
+      relationDefinitions.SetReadOnly();
       _relationDefinitions = relationDefinitions;
     }
 
@@ -509,10 +505,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         var basePropertyDefinition = BaseClass != null ? BaseClass.GetPropertyDefinition (propertyDefinition.PropertyName) : null;
         if (basePropertyDefinition != null)
         {
-          string definingClass =
-              basePropertyDefinition.ClassDefinition == this
-                  ? "it"
-                  : String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
+          string definingClass = String.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
 
           throw CreateMappingException (
               "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",

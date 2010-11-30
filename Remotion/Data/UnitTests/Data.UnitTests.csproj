@@ -1300,9 +1300,6 @@
     </Compile>
     <Compile Include="DomainObjects\SetupFixture.cs" />
     <Compile Include="DomainObjects\Factories\StandardConfiguration.cs" />
-    <Compile Include="DomainObjects\Core\TableInheritance\ReflectionBasedClassDefinitionTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ConcreteTableInheritanceRelationLoaderTest.cs">
       <SubType>Code</SubType>
     </Compile>
