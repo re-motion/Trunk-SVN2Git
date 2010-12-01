@@ -32,6 +32,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
     }
 
+    // TODO Review 3542: Also refactor this rule
+
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
