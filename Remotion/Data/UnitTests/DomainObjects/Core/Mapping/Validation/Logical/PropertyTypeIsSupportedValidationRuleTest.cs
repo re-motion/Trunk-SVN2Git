@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       var expectedMessage = 
         "The property type 'Object' is not supported. If you meant to declare a relation, 'Object' must be derived from 'DomainObject'.\r\n\r\n"
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }

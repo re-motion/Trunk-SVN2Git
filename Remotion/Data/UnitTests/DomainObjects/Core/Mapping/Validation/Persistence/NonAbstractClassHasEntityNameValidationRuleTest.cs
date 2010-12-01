@@ -67,9 +67,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           null,
           new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
 
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (classDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -77,9 +77,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       _abstractClassDefinition.SetStorageEntity (_tableDefinition);
 
-      var validationResult = _validationRule.Validate (_abstractClassDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_abstractClassDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -87,9 +87,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       _abstractClassDefinition.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_abstractClassDefinition).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_abstractClassDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -97,14 +97,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       _noAbstractClassDefinition.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_noAbstractClassDefinition).Where (result => !result.IsValid).ToArray();
-
-      Assert.That (validationResult.Length, Is.EqualTo(1));
+      var validationResult = _validationRule.Validate (_noAbstractClassDefinition);
 
       var expectedMessage = "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
         +"Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
     
   }

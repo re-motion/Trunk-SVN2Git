@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false, 
         "The 'StringPropertyAttribute' may be only applied to properties of type 'String'.\r\n\r\n"
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false, "The 'BinaryPropertyAttribute' may be only applied to properties of type 'Byte[]'.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false, "The 'ExtensibleEnumPropertyAttribute' may be only applied to properties of type 'IExtensibleEnum'.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false, 
         "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false,
         "The 'MandatoryAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validtionRule.Validate (_classDefinition).First();
+      var validationResult = _validtionRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, false,
         "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"

@@ -53,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -73,9 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -93,13 +93,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
-      Assert.That (validationResult.Length, Is.EqualTo(1));
       var expectedMessage = "The property type 'Object' is not supported by this storage provider.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
         +"Property: PropertyWithTypeObjectWithStorageClassPersistent";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
@@ -117,9 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
   }
 }

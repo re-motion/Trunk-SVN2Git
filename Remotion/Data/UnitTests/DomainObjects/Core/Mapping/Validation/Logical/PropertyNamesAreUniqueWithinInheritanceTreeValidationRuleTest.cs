@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _baseOfBaseClassDefinition.SetReadOnly ();
       _derivedBaseClassDefinition.SetReadOnly();
 
-      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition).First ();
+      var validationResult = _validationRule.Validate (_derivedBaseClassDefinition);
 
       var expectedMessage = "Class 'BaseValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _derivedBaseClassDefinition.SetReadOnly();
       _derivedClassDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_derivedClassDefinition).First ();
+      var validationResult = _validationRule.Validate (_derivedClassDefinition);
 
       var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define property 'FakeProperty', because base class "
         +"'BaseOfBaseValidationDomainObjectClass' already defines a property with the same name.\r\n\r\n"

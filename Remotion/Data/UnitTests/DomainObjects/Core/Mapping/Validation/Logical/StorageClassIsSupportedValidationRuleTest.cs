@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
-      var validationResult = _validationRule.Validate (_classDefinition).First();
+      var validationResult = _validationRule.Validate (_classDefinition);
 
       var expectedMessage = "Only StorageClass.Persistent and StorageClass.Transaction are supported for property 'PropertyWithStorageClassNone' of "
         +"class 'DerivedValidationDomainObjectClass'.\r\n\r\n"

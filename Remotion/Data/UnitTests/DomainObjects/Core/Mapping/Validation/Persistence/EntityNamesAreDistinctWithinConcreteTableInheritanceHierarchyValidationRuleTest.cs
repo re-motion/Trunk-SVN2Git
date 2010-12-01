@@ -71,9 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [Test]
     public void NoInheritanceRoot ()
     {
-      var validationResult = _validationRule.Validate (_derivedBaseClass1).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_derivedBaseClass1);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -83,10 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_unionViewDefinition);
       _derivedClass.SetStorageEntity (_unionViewDefinition);
 
-      // TODO Review 3521: Change all tests with similar code to use the AssertMappingValidationResult base method that accepts IEnumerable (all persistence rules)
-      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
 
@@ -97,9 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_unionViewDefinition);
       _derivedClass.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -109,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_tableDefinition2);
       _derivedClass.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -121,13 +120,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_tableDefinition1);
       _derivedClass.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
         +"specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
@@ -137,13 +135,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_unionViewDefinition);
       _derivedClass.SetStorageEntity (_tableDefinition1);
 
-      var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
         + "specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
     
 

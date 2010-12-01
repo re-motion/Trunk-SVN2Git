@@ -72,9 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       classDefinition.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (classDefinition).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (classDefinition);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     {
       _classDefinitionWithBaseClass.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray ();
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -93,9 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
       _baseClassDefinition.SetStorageEntity (_unionViewDefinition);
 
-      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass);
 
-      Assert.That (validationResult, Is.Empty);
+      AssertMappingValidationResult (validationResult, true, null);
     }
 
     [Test]
@@ -104,12 +104,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
       _baseClassDefinition.SetStorageEntity (_tableDefinition);
 
-      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass);
 
-      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     [Test]
@@ -144,13 +143,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       baseClassDefinition.SetStorageEntity (_unionViewDefinition);
       baseOfBaseClassDefinition.SetStorageEntity (_tableDefinition);
       
-      var validationResult = _validationRule.Validate (classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
+      var validationResult = _validationRule.Validate (classDefinitionWithBaseClass);
 
-      Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage = 
         "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
-      AssertMappingValidationResult (validationResult[0], false, expectedMessage);
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
     
