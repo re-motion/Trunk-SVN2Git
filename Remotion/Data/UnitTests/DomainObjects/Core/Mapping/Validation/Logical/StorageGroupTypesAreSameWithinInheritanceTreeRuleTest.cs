@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
@@ -71,13 +70,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void ClassWithBaseClass_ClassesWithDifferentStorageGroupAttribute ()
     {
       var baseClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), null, typeof (DBStorageGroupAttribute));
-      var derivedClassDefinition = CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass), baseClassDefinition, typeof (StubStorageGroup1Attribute));
+      var derivedClassDefinition = CreateClassDefinition (typeof (BaseValidationDomainObjectClass), baseClassDefinition, typeof (StubStorageGroup1Attribute));
 
       var validationResult = _validationRule.Validate (derivedClassDefinition);
 
-      var expectedMessage = "Class 'BaseOfBaseValidationDomainObjectClass' must have the same storage group type as it's base class "
-        +"'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass'.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
+      var expectedMessage = "Class 'BaseValidationDomainObjectClass' must have the same storage group type as its base class "
+        +"'BaseOfBaseValidationDomainObjectClass'.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 

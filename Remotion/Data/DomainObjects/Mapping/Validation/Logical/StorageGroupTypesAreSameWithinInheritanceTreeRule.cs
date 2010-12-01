@@ -25,13 +25,16 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   {
     public MappingValidationResult Validate (ClassDefinition classDefinition)
     {
-      if(classDefinition.BaseClass!=null)
+      if (classDefinition.BaseClass != null)
       {
         if (classDefinition.StorageGroupType != classDefinition.BaseClass.StorageGroupType)
         {
-          var message = "Class '{0}' must have the same storage group type as it's base class '{1}'.";
+          var message = "Class '{0}' must have the same storage group type as its base class '{1}'.";
           return MappingValidationResult.CreateInvalidResultForType (
-              classDefinition.ClassType, message, classDefinition.ClassType.Name, classDefinition.BaseClass.ClassType);
+              classDefinition.ClassType, 
+              message, 
+              classDefinition.ClassType.Name, 
+              classDefinition.BaseClass.ClassType.Name);
         }
       }
       return MappingValidationResult.CreateValidResult();
