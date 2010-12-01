@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
         yield return MappingValidationResult.CreateInvalidResultForType (
               classDefinition.ClassType,
               "Neither class '{0}' nor its base classes are mapped to a table. "
-              + "Make class '{0}' abstract or define a table for it or one of it's base classes.",
+              + "Make class '{0}' abstract or define a table for it or one of its base classes.",
               classDefinition.ClassType.Name);
       }
       else

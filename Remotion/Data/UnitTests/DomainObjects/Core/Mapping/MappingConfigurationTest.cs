@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -23,7 +22,6 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -62,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      MappingConfiguration configuration = new MappingConfiguration (
+      var configuration = new MappingConfiguration (
           _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       ClassDefinitionCollection actualClassDefinitionCollection = configuration.ClassDefinitions;
       RelationDefinitionCollection actualRelationDefinitionCollection = configuration.RelationDefinitions;
@@ -90,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
         _mockRepository.ReplayAll();
 
-        MappingConfiguration configuration = new MappingConfiguration (
+        var configuration = new MappingConfiguration (
             _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
         MappingConfiguration.SetCurrent (configuration);
 
@@ -132,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-      ;
+
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
@@ -175,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. Make class 'DerivedValidationDomainObjectClass' "
-        +"abstract or define a table for it or one of it's base classes.\r\n\r\n"
+        +"abstract or define a table for it or one of its base classes.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceMappingIsValidated ()
     {
@@ -260,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      MappingConfiguration configuration = new MappingConfiguration (
+      var configuration = new MappingConfiguration (
           _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
 
       _mockRepository.VerifyAll();
@@ -368,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               CardinalityType.One,
               typeof (OrderTicket));
 
-      RelationEndPointDefinition orderTicketEndPointdefinition =
+      var orderTicketEndPointdefinition =
           new RelationEndPointDefinition (
               orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order", true);
 
