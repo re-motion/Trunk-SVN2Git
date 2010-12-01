@@ -80,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _derivedBaseClass1.SetStorageEntity (_unionViewDefinition);
       _derivedClass.SetStorageEntity (_unionViewDefinition);
 
+      // TODO Review 3521: Change all tests with similar code to use the AssertMappingValidationResult base method that accepts IEnumerable (all persistence rules)
       var validationResult = _validationRule.Validate (_baseOfBaseClass).Where (result => !result.IsValid).ToArray ();
 
       Assert.That (validationResult, Is.Empty);

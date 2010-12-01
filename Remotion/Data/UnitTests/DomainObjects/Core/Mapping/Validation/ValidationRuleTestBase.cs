@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -27,6 +29,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       Assert.That (validationResult.IsValid, Is.EqualTo (expectedIsValid));
       Assert.That (validationResult.Message, Is.EqualTo (expectedMessage));
+    }
+
+    protected void AssertMappingValidationResult (IEnumerable<MappingValidationResult> validationResult, bool expectedIsValid, string expectedMessage)
+    {
+      var invalidResults = validationResult.Where (r => !r.IsValid).ToArray ();
+      if (expectedIsValid)
+      {
+        Assert.That (invalidResults, Is.Empty);
+      }
+      else
+      {
+        Assert.That (invalidResults.Length, Is.EqualTo (1));
+        Assert.That (invalidResults[0].IsValid, Is.EqualTo (expectedIsValid));
+        Assert.That (invalidResults[0].Message, Is.EqualTo (expectedMessage));
+      }
     }
   }
 }

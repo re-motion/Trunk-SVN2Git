@@ -38,10 +38,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         var propertyDefinitionsByName = new Dictionary<string, PropertyDefinition>();
 
-        var allPropertyDefinitions = new List<PropertyDefinition>();
-        allPropertyDefinitions.AddRange (classDefinition.MyPropertyDefinitions.Cast<PropertyDefinition>());
-        foreach (ClassDefinition derivedClassDefinition in classDefinition.GetAllDerivedClasses())
-          allPropertyDefinitions.AddRange (derivedClassDefinition.MyPropertyDefinitions.Cast<PropertyDefinition> ());
+        var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()
+            .SelectMany (cd => cd.MyPropertyDefinitions.Cast<PropertyDefinition>());
+        var allPropertyDefinitions = classDefinition.MyPropertyDefinitions.Cast<PropertyDefinition> ().Concat (derivedPropertyDefinitions);
         
         foreach (var propertyDefinition in allPropertyDefinitions)
           yield return ValidateStorageSpecificPropertyNames (propertyDefinition, propertyDefinitionsByName);
