@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -52,9 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
-
+      
       _classWithInterface = CreateDefinitionForClassWithInterface();
       _classDerivedFromClassWithInterface = CreateDefinitionForClassDerivedFromClassWithInterface(_classWithInterface);
+      _classDerivedFromClassWithInterface.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _classWithInterfaceWithMissingAccessors = CreateDefinitionForClassWithInterfaceWithMissingAccessors();
       _classWithMixinAddingInterface = CreateDefinitionForClassWithMixinAddingInterface();
       _derivedClassWithMixinWithDuplicateInterface = CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface();

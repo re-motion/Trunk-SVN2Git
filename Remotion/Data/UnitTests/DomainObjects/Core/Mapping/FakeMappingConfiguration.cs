@@ -151,6 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ReflectionBasedClassDefinition testDomainBase = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "TestDomainBase", null, _storageProviderDefinition,  typeof (TestDomainBase), true);
+      testDomainBase.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return testDomainBase;
     }
@@ -160,6 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition storageProviderStubDomainBase =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "StorageProviderStubDomainBase", null, _storageProviderDefinition, typeof (StorageProviderStubDomainBase), true);
+      storageProviderStubDomainBase.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return storageProviderStubDomainBase;
     }
@@ -168,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ReflectionBasedClassDefinition company = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Company", "Company", _storageProviderDefinition, typeof (Company), false, baseClass);
-
+      
       var properties = new List<PropertyDefinition> ();
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
@@ -279,8 +281,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ReflectionBasedClassDefinition CreateSpecialOfficialDefinition (ReflectionBasedClassDefinition officialDefinition)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var specialOfficial = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "SpecialOfficial", null, _storageProviderDefinition, typeof (SpecialOfficial), false, officialDefinition);
+      specialOfficial.SetPropertyDefinitions (new PropertyDefinitionCollection());
+
+      return specialOfficial;
     }
 
     private ReflectionBasedClassDefinition CreateOrderTicketDefinition (ReflectionBasedClassDefinition baseClass)
@@ -410,6 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ReflectionBasedClassDefinition folder = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Folder", null, _storageProviderDefinition, typeof (Folder), false, baseClass);
+      folder.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return folder;
     }
@@ -418,6 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ReflectionBasedClassDefinition file = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "File", null, _storageProviderDefinition, typeof (File), false, baseClass);
+      file.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return file;
     }
@@ -703,6 +710,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ClassWithGuidKey),
           false,
           baseClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return classDefinition;
     }
@@ -716,6 +724,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ClassWithKeyOfInvalidType),
           false,
           baseClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return classDefinition;
     }
@@ -729,6 +738,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ClassWithoutIDColumn),
           false,
           baseClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return classDefinition;
     }
@@ -742,6 +752,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ClassWithoutClassIDColumn),
           false,
           baseClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return classDefinition;
     }
@@ -756,6 +767,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ClassWithoutTimestampColumn),
               false,
               baseClass);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return classDefinition;
     }
@@ -979,6 +991,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (DerivedTargetClassForPersistentMixin),
           false,
           baseClass);
+      derivedTargetClassForPersistentMixin.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return derivedTargetClassForPersistentMixin;
     }
@@ -992,6 +1005,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (DerivedDerivedTargetClassForPersistentMixin),
           false,
           baseClass);
+      derivedDerivedTargetClassForPersistentMixin.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       return derivedDerivedTargetClassForPersistentMixin;
     }

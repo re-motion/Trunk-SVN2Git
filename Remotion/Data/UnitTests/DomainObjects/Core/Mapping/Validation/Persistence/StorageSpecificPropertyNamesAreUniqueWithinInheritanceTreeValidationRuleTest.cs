@@ -86,6 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           StorageClass.None,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"));
 
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1, propertyDefinition2}, true));
       _derivedBaseClass2.SetReadOnly();
 
@@ -176,8 +177,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property"));
 
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1}, true));
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition2}, true));
+      _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -213,8 +216,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property2"));
 
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition2}, true));
+      _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -245,8 +250,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property"));
 
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition2 }, true));
       _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
-      _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition2}, true));
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
 
@@ -282,6 +289,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
           new FakeColumnDefinition ("Property2"));
 
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition2}, true));
       _derivedClass.SetReadOnly();

@@ -45,8 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           new PersistentMixinFinderMock (classType, persistentMixins));
       SetStorageEntityName (entityName, storageProviderDefinition, classDefinition);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
@@ -68,8 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           storageGroupType,
           persistentMixinFinder);
       SetStorageEntityName (entityName, storageProviderDefinition, classDefinition);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 
@@ -88,8 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           baseClass,
           null,
           persistentMixinFinder);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       return classDefinition;
     }
 

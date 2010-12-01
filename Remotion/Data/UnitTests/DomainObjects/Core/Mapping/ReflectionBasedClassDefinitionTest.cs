@@ -83,8 +83,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _targetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+      PrivateInvoke.SetNonPublicField (_targetClassForPersistentMixinClass, "_propertyDefinitions", new PropertyDefinitionCollection());
+      PrivateInvoke.SetNonPublicField (_targetClassForPersistentMixinClass, "_relationDefinitions", new RelationDefinitionCollection ());
       _derivedTargetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+      PrivateInvoke.SetNonPublicField (_derivedTargetClassForPersistentMixinClass, "_propertyDefinitions", new PropertyDefinitionCollection ());
+      PrivateInvoke.SetNonPublicField (_derivedTargetClassForPersistentMixinClass, "_relationDefinitions", new RelationDefinitionCollection ());
     }
 
     [Test]
@@ -195,6 +199,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The property-definitions for class 'DomainBase' have already been set.")]
+    public void SetPropertyDefinitions_Twice_ThrowsException ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_domainBaseClass, "Test", "Test");
+
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
+      _domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetPropertyDefinitions_ClassIsReadOnly ()
     {
@@ -214,6 +228,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (_domainBaseClass.MyRelationDefinitions.Count, Is.EqualTo (1));
       Assert.That (_domainBaseClass.MyRelationDefinitions[0], Is.SameAs (relationDefinition));
       Assert.That (_domainBaseClass.MyRelationDefinitions.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The relation-definitions for class 'DomainBase' have already been set.")]
+    public void SetRelationDefinitions_Twice_ThrowsException ()
+    {
+      var relationDefinition = new RelationDefinition (
+          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
+
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
+      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
     }
 
     [Test]
@@ -678,6 +703,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
       var partnerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Partner", "Company", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, companyClass);
+      partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+
       var supplierClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Supplier", "Company", UnitTestDomainStorageProviderDefinition, typeof (Supplier), false, partnerClass);
       var supplierPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (supplierClass, "Name", "Name");
       supplierClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { supplierPropertyDefinition }, true));

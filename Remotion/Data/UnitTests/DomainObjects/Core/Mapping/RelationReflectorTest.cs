@@ -28,6 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Class1 =
@@ -51,9 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
       _nameResolver = new ReflectionBasedNameResolver();
       _classWithRealRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
+      _classWithRealRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _classWithRealRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
       _classWithVirtualRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
+      _classWithVirtualRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _classWithVirtualRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
       _classWithBothEndPointsOnSameClassClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
+      _classWithBothEndPointsOnSameClassClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       _classDefinitions = new ClassDefinitionCollection
                           {
@@ -347,6 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var propertyInfo = type.GetProperty ("LeftSide");
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationReflector = CreateRelationReflector (classDefinition, propertyInfo);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide()));
@@ -364,6 +371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var propertyInfo = type.GetProperty ("InvalidOppositePropertyNameLeftSide");
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationReflector = CreateRelationReflector (classDefinition, propertyInfo);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide()));
@@ -578,10 +586,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))
       {
-        classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+        PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       }
-      ;
-
+      
       return propertyInfo;
     }
   }

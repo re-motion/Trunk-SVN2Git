@@ -337,6 +337,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
 
+      if(_propertyDefinitions!=null)
+        throw new InvalidOperationException (string.Format ("The property-definitions for class '{0}' have already been set.", ID));
+
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
@@ -349,6 +352,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     public void SetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
+
+      if (_relationDefinitions != null)
+        throw new InvalidOperationException (string.Format ("The relation-definitions for class '{0}' have already been set.", ID));
 
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));

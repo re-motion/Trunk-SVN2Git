@@ -68,8 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       _relationDefinitionChecker.Check (expectedDefinitions, _relationDefinitions);
 
-      Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions.Count, Is.EqualTo (0));
-
       Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions, 
         List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPointsNotInMapping.BaseUnidirectional"]));
@@ -131,8 +129,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       expectedDefinitions.Add (CreateBidirectionalOneToManyRelationDefinition ());
 
       _relationDefinitionChecker.Check (expectedDefinitions, _relationDefinitions);
-
-      Assert.That (_classWithRealRelationEndPointsClassDefinition.MyRelationDefinitions.Count, Is.EqualTo (0));
 
       Assert.That (_classWithVirtualRelationEndPointsClassDefinition.MyRelationDefinitions,
           List.Contains (_relationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints:" 
@@ -290,27 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithRealRelationEndPoints.BidirectionalOneToMany->"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.BidirectionalOneToMany"]));
     
-    }
-
-    [Test]
-    public void GetRelationDefinitions_RelationDefinitionsWithTheSameIDAreNotAddedTwice ()
-    {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
-
-      classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
-      classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
-
-      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition ());
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition ());
-      expectedDefinitions.Add (CreateBasePrivateBidirectionalOneToOneRelationDefinition ());
-      expectedDefinitions.Add (CreateBasePrivateBidirectionalOneToManyRelationDefinition ());
-      expectedDefinitions.Add (CreateNoAttributeRelationDefinition ());
-      expectedDefinitions.Add (CreateNotNullableRelationDefinition ());
-      expectedDefinitions.Add (CreateBidirectionalOneToOneRelationDefinition ());
-      expectedDefinitions.Add (CreateBidirectionalOneToManyRelationDefinition ());
-
-      _relationDefinitionChecker.Check (expectedDefinitions, _relationDefinitions);
     }
 
     [Test]

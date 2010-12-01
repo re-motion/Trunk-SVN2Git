@@ -155,6 +155,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void RelationDefinitionsAreValidated ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
@@ -186,6 +188,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (DerivedValidationDomainObjectClass),
           false);
       classDefinition.SetStorageEntity (unionViewDefinition);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);

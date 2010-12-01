@@ -138,6 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classReflector= new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
+      expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 

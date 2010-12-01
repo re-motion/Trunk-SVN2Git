@@ -36,6 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
           typeof (Company),
           false);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       return new[] { classDefinition };
     }
 
