@@ -21,12 +21,16 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
+  // TODO Review 3484: Rename to NameBasedPropertyFinder
+  /// <summary>
+  /// Finds a property based on its name. This is used by <see cref="RelationReflectorBase"/> to find the opposite property for a relation end-point.
+  /// </summary>
   public class OppositePropertyFinder : PropertyFinderBase
   {
-    private readonly string _oppositePropertyName;
+    private readonly string _propertyName;
 
     public OppositePropertyFinder (
-        string oppositePropertyName,
+        string propertyName,
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
@@ -34,9 +38,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IPersistentMixinFinder persistentMixinFinder)
         : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("oppositePropertyName", oppositePropertyName);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      _oppositePropertyName = oppositePropertyName;
+      _propertyName = propertyName;
     }
 
     protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
@@ -46,7 +50,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!base.FindPropertiesFilter (propertyInfo))
         return false;
 
-      return propertyInfo.Name == _oppositePropertyName;
+      return propertyInfo.Name == _propertyName;
     }
 
     protected override PropertyFinderBase CreateNewFinder (
@@ -57,7 +61,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IPersistentMixinFinder persistentMixinFinder)
     {
       return new OppositePropertyFinder (
-          _oppositePropertyName, type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+          _propertyName, type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }
 }

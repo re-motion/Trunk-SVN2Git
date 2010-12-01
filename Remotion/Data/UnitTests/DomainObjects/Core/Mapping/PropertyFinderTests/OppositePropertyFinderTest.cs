@@ -60,5 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       Assert.That (properties.Length, Is.EqualTo (1));
       Assert.That (properties, Is.EqualTo (new[] { GetProperty (typeof (BaseMappingAttributesClass), "Property2") }));
     }
+
+    // TODO Review 3484: Add a test for CreateNewFinder, use PrivateInvoke to call it
   }
 }
