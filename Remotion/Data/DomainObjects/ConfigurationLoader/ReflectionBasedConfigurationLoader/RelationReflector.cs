@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
 

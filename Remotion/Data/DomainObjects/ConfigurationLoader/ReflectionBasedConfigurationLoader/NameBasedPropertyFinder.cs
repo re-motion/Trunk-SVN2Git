@@ -21,15 +21,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  // TODO Review 3484: Rename to NameBasedPropertyFinder
   /// <summary>
   /// Finds a property based on its name. This is used by <see cref="RelationReflectorBase"/> to find the opposite property for a relation end-point.
   /// </summary>
-  public class OppositePropertyFinder : PropertyFinderBase
+  public class NameBasedPropertyFinder : PropertyFinderBase
   {
     private readonly string _propertyName;
 
-    public OppositePropertyFinder (
+    public NameBasedPropertyFinder (
         string propertyName,
         Type type,
         bool includeBaseProperties,
@@ -60,7 +59,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new OppositePropertyFinder (
+      return new NameBasedPropertyFinder (
           _propertyName, type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }

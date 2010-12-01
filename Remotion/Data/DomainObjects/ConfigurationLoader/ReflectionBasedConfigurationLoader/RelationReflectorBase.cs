@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     protected PropertyInfo GetOppositePropertyInfo ()
     {
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
-      var propertyFinder = new OppositePropertyFinder (
+      var propertyFinder = new NameBasedPropertyFinder (
           BidirectionalRelationAttribute.OppositeProperty, 
           type, 
           true, 
@@ -84,12 +85,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           NameResolver, 
           new PersistentMixinFinder (type, true));
       
-      var properties = propertyFinder.FindPropertyInfos();
-      // TODO Review 3484: Write a test for RelationReflector where the opposite property has the same name as a property in a base class. (The opposite property uses "new" to hide the base property.) The RelationDefinition should use the derived property, not the base property. The test should fail; use LastOrDefault to fix it.
-      if (properties.Length > 0)
-        return properties[0];
-      else
-        return null;
+      return propertyFinder.FindPropertyInfos().LastOrDefault();
     }
 
     private void CheckClassDefinitionType ()

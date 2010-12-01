@@ -168,7 +168,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IRelationEndPointDefinitionFactory.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MixinPropertyFinder.cs" />
-    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\OppositePropertyFinder.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\NameBasedPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\ReflectionBasedRelationEndPointDefinitionFactory.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBase.cs" />

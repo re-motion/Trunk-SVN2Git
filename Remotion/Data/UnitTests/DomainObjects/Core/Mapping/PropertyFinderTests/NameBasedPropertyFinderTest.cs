@@ -19,26 +19,29 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
+using
+    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
+        MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
   [TestFixture]
-  public class OppositePropertyFinderTest : PropertyFinderBaseTestBase
+  public class NameBasedPropertyFinderTest : PropertyFinderBaseTestBase
   {
     [Test]
     public void FindMappingProperties_PropertyNameDoesNotExist ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
-      var propertyFinder = new OppositePropertyFinder (
+      var propertyFinder = new NameBasedPropertyFinder (
           "UnknownPropertyName",
           typeof (DerivedClassWithMappingAttribute),
           true,
           true,
-          new ReflectionBasedNameResolver (),
+          new ReflectionBasedNameResolver(),
           classDefinition.PersistentMixinFinder);
 
-      var properties = propertyFinder.FindPropertyInfos ();
+      var properties = propertyFinder.FindPropertyInfos();
 
       Assert.That (properties.Length, Is.EqualTo (0));
     }
@@ -47,20 +50,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     public void FindMappingProperties_PropertyNameDoesExist ()
     {
       var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
-      var propertyFinder = new OppositePropertyFinder (
+      var propertyFinder = new NameBasedPropertyFinder (
           "Property2",
           typeof (DerivedClassWithMappingAttribute),
           true,
           true,
-          new ReflectionBasedNameResolver (),
+          new ReflectionBasedNameResolver(),
           classDefinition.PersistentMixinFinder);
 
-      var properties = propertyFinder.FindPropertyInfos ();
+      var properties = propertyFinder.FindPropertyInfos();
 
       Assert.That (properties.Length, Is.EqualTo (1));
       Assert.That (properties, Is.EqualTo (new[] { GetProperty (typeof (BaseMappingAttributesClass), "Property2") }));
     }
 
-    // TODO Review 3484: Add a test for CreateNewFinder, use PrivateInvoke to call it
+    [Test]
+    public void CreateNewFinder ()
+    {
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var nameResolver = new ReflectionBasedNameResolver();
+      var propertyFinder = new NameBasedPropertyFinder (
+          "Property2",
+          typeof (DerivedClassWithMappingAttribute),
+          true,
+          true,
+          nameResolver,
+          classDefinition.PersistentMixinFinder);
+
+      var result = (NameBasedPropertyFinder) PrivateInvoke.InvokeNonPublicMethod (
+          propertyFinder, "CreateNewFinder", typeof (string), true, true, nameResolver, classDefinition.PersistentMixinFinder);
+
+      Assert.That (result.Type, Is.SameAs (typeof (string)));
+      Assert.That (result.IncludeBaseProperties, Is.True);
+      Assert.That (result.IncludeMixinProperties, Is.True);
+      Assert.That (result.NameResolver, Is.SameAs(nameResolver));
+      Assert.That (PrivateInvoke.GetNonPublicField (result, "_propertyName"), Is.EqualTo ("Property2"));
+    }
   }
 }

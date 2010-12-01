@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
@@ -25,6 +24,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.OppositePropertyIsAlsoDeclaredInBaseClass;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot;
@@ -536,6 +536,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver, endPointFactoryMock);
       relationReflector.GetMetadata (classDefinitions);
+    }
+
+    [Test]
+    public void GetMetadata_OppositePropertyIsAlsoDeclaredInBaseClass ()
+    {
+      var originatingProperty = typeof (ClassWithOppositeProperty).GetProperty ("OppositeProperty");
+      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithOppositeProperty));
+      var oppositeProperty = typeof (OppositeClass).GetProperty ("OppsoiteProperty");
+      var oppositeClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OppositeClass));
+      var oppositeBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OppositeBaseClass));
+
+      var endPointFactoryMock = MockRepository.GenerateMock<IRelationEndPointDefinitionFactory> ();
+      var fakeEndPoint1 = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      var fakeEndPoint2 = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      fakeEndPoint1.Stub (stub => stub.PropertyInfo).Return (originatingProperty);
+      fakeEndPoint1.Stub (stub => stub.ClassDefinition).Return (originatingClass);
+      fakeEndPoint1.Stub (stub => stub.IsAnonymous).Return (true);
+      fakeEndPoint2.Stub (stub => stub.PropertyInfo).Return (oppositeProperty);
+      
+      endPointFactoryMock.Expect (mock => mock.CreateEndPoint (originatingClass, originatingProperty, _nameResolver)).Return (fakeEndPoint1);
+      endPointFactoryMock.Expect (
+          mock =>
+          mock.CreateEndPoint (
+              Arg<ReflectionBasedClassDefinition>.Matches (cd => cd.ClassType.Name == "OppositeClass"),
+              Arg<PropertyInfo>.Matches (pi => pi.Name == "OppositeProperty"),
+              Arg.Is (_nameResolver)))
+          .Return (fakeEndPoint2);
+      endPointFactoryMock.Replay ();
+
+      var classDefinitions = new ClassDefinitionCollection { originatingClass, oppositeClass, oppositeBaseClass };
+      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver, endPointFactoryMock);
+      var result = relationReflector.GetMetadata (classDefinitions);
+
+      endPointFactoryMock.VerifyAllExpectations ();
+      Assert.That (result.EndPointDefinitions, Is.EqualTo (new[] { fakeEndPoint1, fakeEndPoint2 }));
     }
 
     [Test]

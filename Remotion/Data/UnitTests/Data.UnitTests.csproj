@@ -262,7 +262,10 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\OppositePropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\NameBasedPropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\ClassWithOppositeProperty.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionFactoryTest.cs" />
