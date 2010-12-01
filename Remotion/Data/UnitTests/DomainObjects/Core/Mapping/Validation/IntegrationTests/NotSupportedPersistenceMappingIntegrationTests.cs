@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     //OnlyOneTablePerHierarchyValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
-      "Class 'DerivedClass' must not define a table when it's base class 'BaseClass' also defines one.\r\n\r\n"
+      "Class 'DerivedClass' must not define a table when its base class 'BaseClass' also defines one.\r\n\r\n"
       +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
       +"SameEntityNamesInInheritanceHierarchy.DerivedClass")]
     public void SameEntityNamesInInheritanceHierarchy ()

@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
           {
             yield return MappingValidationResult.CreateInvalidResultForType (
                 classDefinition.ClassType,
-                "Class '{0}' must not define a table when it's base class '{1}' also defines one.",
+                "Class '{0}' must not define a table when its base class '{1}' also defines one.",
                 classDefinition.ClassType.Name,
                 baseClass.ClassType.Name);
           }

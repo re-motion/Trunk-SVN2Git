@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass).Where (result => !result.IsValid).ToArray();
 
       Assert.That (validationResult.Length, Is.EqualTo (1));
-      var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define a table when it's base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+      var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
 
       Assert.That (validationResult.Length, Is.EqualTo (1));
       var expectedMessage = 
-        "Class 'DerivedValidationDomainObjectClass' must not define a table when it's base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+        "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult[0], false, expectedMessage);
     }
