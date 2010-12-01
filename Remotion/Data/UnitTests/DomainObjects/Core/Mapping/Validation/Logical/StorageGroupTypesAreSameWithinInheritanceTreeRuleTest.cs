@@ -85,6 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           classType.Name,
           classType.Name,
+          StorageProviderDefinition,
           classType,
           true,
           baseClass,

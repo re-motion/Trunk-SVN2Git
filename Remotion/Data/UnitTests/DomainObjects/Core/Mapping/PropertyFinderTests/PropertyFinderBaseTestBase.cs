@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
@@ -35,7 +36,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     protected ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, type, false, new PersistentMixinFinder (type));
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          type.Name,
+          type.Name,
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
+          type,
+          false,
+          new PersistentMixinFinder (type));
     }
   }
 }

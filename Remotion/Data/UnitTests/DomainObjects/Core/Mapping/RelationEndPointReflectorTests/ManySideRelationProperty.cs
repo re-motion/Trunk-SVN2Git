@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithManySideRelationProperties",
           "ClassWithManySideRelationProperties",
+          UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithRealRelationEndPoints),
           false);
     }

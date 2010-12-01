@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithoutBaseClass ()
     {
       var type = typeof (BaseOfBaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, StorageProviderDefinition, type, false);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -50,9 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithBaseClass_ClassTypeIsDerivedFromBaseClassType ()
     {
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, baseType, false);
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, StorageProviderDefinition, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, StorageProviderDefinition, derivedType, false, baseClassDefinition, new Type[0]);
 
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -63,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithBaseClass_ClassTypeIsNotDerivedFromBaseClassType ()
     {
       var baseType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, baseType, false);
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (baseType.Name, baseType.Name, StorageProviderDefinition, baseType, false);
       var derivedType = typeof (BaseValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, derivedType, false, baseClassDefinition, new Type[0]);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (derivedType.Name, derivedType.Name, StorageProviderDefinition, derivedType, false, baseClassDefinition, new Type[0]);
       PrivateInvoke.SetNonPublicField (classDefinition, "_classType", typeof (ClassOutOfInheritanceHierarchy));
 
       var validationResult = _validationRule.Validate (classDefinition);

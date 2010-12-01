@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointTypesAreConsistentValidationRule;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -38,10 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       _validationRule = new RelationEndPointTypesAreConsistentValidationRule();
       _baseClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass1));
       _baseClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass2));
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(
-        typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
     }
 
     [Test]

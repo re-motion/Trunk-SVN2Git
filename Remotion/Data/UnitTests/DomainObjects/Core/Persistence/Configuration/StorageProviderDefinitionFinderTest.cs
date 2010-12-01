@@ -39,11 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [SetUp]
     public void SetUp ()
     {
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+
       _classWithoutStorageGroupType = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Test", "Test", typeof (Customer), false, null, null, new PersistentMixinFinder (typeof (Customer)));
+          "Test", "Test", storageProviderDefinition, typeof (Customer), false, null, null, new PersistentMixinFinder (typeof (Customer)));
       _classWithStorageGroupType = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Test",
           "Test",
+          storageProviderDefinition,
           typeof (Customer),
           false,
           null,

@@ -293,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ReflectionBasedClassDefinition baseClassDefinition)
     {
       Type type = typeof (ClassDerivedFromClassWithInterface);
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, type, false, baseClassDefinition);
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false, baseClassDefinition);
     }
 
     private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
@@ -326,8 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
@@ -354,8 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           ReflectionBasedPropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,

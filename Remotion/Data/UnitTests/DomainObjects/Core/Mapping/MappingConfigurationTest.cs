@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -182,6 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
+          UnitTestDomainStorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false);
       classDefinition.SetStorageEntity (unionViewDefinition);
@@ -352,9 +353,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsRelationEndPointDefinitionNotInMapping ()
     {
       ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "Order", typeof (Order), false);
+          "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", typeof (OrderTicket), false);
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)}, true));
 

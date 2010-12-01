@@ -378,8 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty = typeof (BaseClass2).GetProperty ("RelationPropertyOnBaseClass");
       var classDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseClass2));
       var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Class1));
-      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          typeof (DerivedClass2), classDeclaringOppositeProperty);
+      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClass2), classDeclaringOppositeProperty);
 
       // This tests the scenario that the relation property's return type is a subclass of the opposite property's declaring type
       Assert.That (originatingProperty.PropertyType, Is.Not.SameAs (classDeclaringOppositeProperty.ClassType));
@@ -422,12 +421,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeProperty =
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2).GetProperty (
               "OverriddenProperty");
-      var classDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2));
-      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1));
-      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
+      var classDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2));
+      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1));
+      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
               classDeclaringOppositeProperty);
      
       // This tests the scenario that the relation property's return type is a subclass of the opposite property's declaring type
@@ -469,8 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1).GetProperty ("RelationProperty");
       var oppositeProperty = typeof (ClassAboveInheritanceRoot).GetProperty ("RelationPropertyOnClassAboveInheritanceRoot");
       var classNotInMapping = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassAboveInheritanceRoot));
-      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1));
+      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot.Class1));
       var derivedOfClassDeclaringOppositeProperty = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Class2));
       
       // This tests the scenario that the relation property's return type is a subclass of the opposite property's declaring type

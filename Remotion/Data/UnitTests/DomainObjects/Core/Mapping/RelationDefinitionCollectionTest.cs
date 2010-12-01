@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -53,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "OrderTicket", "OrderTicket", typeof (OrderTicket), false);
+          "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
 
       _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
@@ -72,9 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
     {
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "BaseOrder", "BaseOrder", typeof (Order), false);
+          "BaseOrder", "BaseOrder", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DerivedOrder", "DerivedOrder", typeof (Order), false, baseClassDefinition, new Type[0]);
+          "DerivedOrder", "DerivedOrder", UnitTestDomainStorageProviderDefinition, typeof (Order), false, baseClassDefinition, new Type[0]);
 
       var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."

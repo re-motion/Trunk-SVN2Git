@@ -49,9 +49,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp();
 
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       var idValue = Guid.NewGuid();
       ReflectionBasedClassDefinition orderClass =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", typeof (Order), false);
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", storageProviderDefinition, typeof (Order), false);
 
       _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
       _existingDataContainer = DataContainer.CreateForExisting (

@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _validationRule = new StorageClassIsSupportedValidationRule();
 
       _type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_type.Name, _type.Name, _type, false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (_type);
     }
 
     [Test]

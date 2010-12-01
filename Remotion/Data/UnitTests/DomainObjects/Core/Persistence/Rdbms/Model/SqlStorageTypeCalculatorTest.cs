@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -34,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ClassDefinition _orderItemClass;
     private ClassDefinition _orderClass;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     private enum Int32Enum : int
     {
@@ -48,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _typeCalculator = new SqlStorageTypeCalculator ();
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(typeof(Order));
       _orderItemClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       _orderClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));

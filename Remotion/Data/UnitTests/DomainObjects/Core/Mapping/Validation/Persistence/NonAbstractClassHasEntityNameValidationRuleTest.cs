@@ -42,11 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _abstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
+          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           true);
       _noAbstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
+          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));

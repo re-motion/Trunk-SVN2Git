@@ -39,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _customerClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer",
           "Customer",
+          UnitTestDomainStorageProviderDefinition,
           typeof (Customer),
           false);
       _customerOrdersEndPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (

@@ -34,11 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       _validationRule = new PropertyTypeIsSupportedValidationRule();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
-          null,
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
     }
 
     [Test]

@@ -35,12 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     public void SetUp ()
     {
       _validationRule = new PropertyTypeIsSupportedByStorageProviderValidationRule();
-
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
-          null,
-          typeof (DerivedValidationDomainObjectClass),
-          false);
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
     }
 
     [Test]

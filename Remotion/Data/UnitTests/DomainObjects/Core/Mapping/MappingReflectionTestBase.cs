@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -59,6 +60,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     protected MappingConfiguration Configuration
     {
       get { return MappingConfiguration.Current; }
+    }
+
+    protected StorageProviderDefinition TestDomainStorageProviderDefinition
+    {
+      get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID]; }
+    }
+
+    protected StorageProviderDefinition UnitTestDomainStorageProviderDefinition
+    {
+      get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
     }
   }
 }

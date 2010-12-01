@@ -80,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithVirtualRelationEndPoints",
           "ClosedGenericClassWithVirtualRelationEndPoints",
+          TestDomainStorageProviderDefinition,
           typeof (ClosedGenericClassWithVirtualRelationEndPoints),
           false);
 
@@ -90,6 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
           "ClosedGenericClassWithManySideRelationProperties",
+          TestDomainStorageProviderDefinition,
           typeof (ClosedGenericClassWithRealRelationEndPoints),
           false);
 

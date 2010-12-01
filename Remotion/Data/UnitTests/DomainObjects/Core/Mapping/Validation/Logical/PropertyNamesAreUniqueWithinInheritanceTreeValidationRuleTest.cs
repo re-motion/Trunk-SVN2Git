@@ -41,11 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _baseOfBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject",
           "BaseEntityName",
+          StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
+          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClassDefinition,
@@ -54,6 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       _derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "PropertyNamesAreUniqueWithinInheritanceTreeBaseDomainObject",
           null,
+          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClassDefinition,

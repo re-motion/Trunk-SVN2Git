@@ -37,11 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ReflectionBasedClassDefinition _classWithAllDataTypesDefinition;
     private ReflectionBasedClassDefinition _fileSystemItemClassDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+    private StorageProviderDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
       _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));

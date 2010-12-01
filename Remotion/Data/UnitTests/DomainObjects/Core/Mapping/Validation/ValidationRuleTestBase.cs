@@ -19,6 +19,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {
@@ -44,6 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
         Assert.That (invalidResults[0].IsValid, Is.EqualTo (expectedIsValid));
         Assert.That (invalidResults[0].Message, Is.EqualTo (expectedMessage));
       }
+    }
+
+    protected StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)); }
     }
   }
 }

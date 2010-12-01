@@ -44,17 +44,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
       _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "BaseOfBase",
           null,
+          StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
       _derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedBase1",
           null,
+          StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
       _derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Derived",
           "Derived",
+          StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClass1);
