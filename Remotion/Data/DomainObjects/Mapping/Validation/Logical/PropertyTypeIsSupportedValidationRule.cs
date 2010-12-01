@@ -32,23 +32,21 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     {
     }
 
-    // TODO Review 3542: Also refactor this rule
-
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
-             select Validate (propertyDefinition.PropertyInfo);
+             select Validate (propertyDefinition);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (PropertyDefinition propertyDefinition)
     {
-      var nativePropertyType = ReflectionUtility.IsDomainObject (propertyInfo.PropertyType) ? typeof (ObjectID) : propertyInfo.PropertyType;
+      var nativePropertyType = propertyDefinition.PropertyType;
       if (!PropertyValue.IsTypeSupported (nativePropertyType))
       {
         return MappingValidationResult.CreateInvalidResultForProperty (
-            propertyInfo,
+            propertyDefinition.PropertyInfo,
             "The property type '{0}' is not supported. If you meant to declare a relation, '{0}' must be derived from '{1}'.",
             nativePropertyType.Name,
             typeof (DomainObject).Name);
