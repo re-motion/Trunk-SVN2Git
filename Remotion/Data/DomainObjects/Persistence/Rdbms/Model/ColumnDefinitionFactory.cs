@@ -43,10 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
+      var storageType = _storageTypeCalculator.GetStorageType(propertyDefinition, providerDefinitionFinder);
       return new ColumnDefinition (
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
-          _storageTypeCalculator.GetStorageType(propertyDefinition, providerDefinitionFinder),
+          storageType, // TODO Review 3542: ?? "not supported"
           propertyDefinition.IsNullable);
     }
 
