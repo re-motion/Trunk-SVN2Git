@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -113,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           _classDefinition,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent"),
           "RelationPropertyWithStorageClassPersistent",
-          typeof (OtherDerivedValidationHierarchyClass),
+          typeof (ObjectID),
           true,
           null,
           StorageClass.Persistent);
