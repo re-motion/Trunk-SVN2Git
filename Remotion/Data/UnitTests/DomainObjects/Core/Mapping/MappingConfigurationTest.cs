@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
@@ -202,7 +203,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+      new MappingConfiguration (
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -243,7 +245,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+      new MappingConfiguration (
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
@@ -255,6 +258,99 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
           ((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Order'.")]
+    public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToTheRootClass ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
+
+      var classDefinitionCollection = new[] { classDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
+
+      var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
+
+      _mockRepository.ReplayAll();
+
+      new MappingConfiguration (_mockMappingLoader, persistenceModelStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The persistence model loader did not assign a storage property to property 'Fake' of class 'Order'.")]
+    public void VerifyPersistenceModelApplied_NoStoragePropertyIsAppliedToTheRootClassProperty ()
+    {
+      var fakeStorageEntityDefinition = new TableDefinition (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new ColumnDefinition[0]);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
+      propertyDefinition.SetStorageProperty (null);
+
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
+      Assert.That (propertyDefinition.StoragePropertyDefinition, Is.Null);
+
+      var classDefinitionCollection = new[] { classDefinition };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
+
+      var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
+
+      _mockRepository.ReplayAll();
+
+      persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (classDefinition)).WhenCalled (
+          mi =>
+          classDefinition.SetStorageEntity (fakeStorageEntityDefinition));
+
+      new MappingConfiguration (_mockMappingLoader, persistenceModelStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Partner'.")]
+    public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToDerivedClass ()
+    {
+      var fakeStorageEntityDefinition = new TableDefinition (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new ColumnDefinition[0]);
+      var companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Company), null);
+      var partnerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
+
+      companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+
+      companyClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { partnerClass }, true, true));
+
+      Assert.That (companyClass.StorageEntityDefinition, Is.Null);
+      Assert.That (partnerClass.StorageEntityDefinition, Is.Null);
+
+      var classDefinitionCollection = new[] { companyClass, partnerClass };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver ());
+
+      var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader> ();
+
+      _mockRepository.ReplayAll ();
+
+      persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (companyClass)).WhenCalled (
+          mi => companyClass.SetStorageEntity (fakeStorageEntityDefinition));
+
+      new MappingConfiguration (_mockMappingLoader, persistenceModelStub);
     }
 
     [Test]

@@ -115,7 +115,26 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void VerifyPersistenceModelApplied (ClassDefinition classDefinition)
     {
-      // TODO 3552
+      if (classDefinition.StorageEntityDefinition == null)
+      {
+        var message = string.Format ("The persistence model loader did not assign a storage entity to class '{0}'.", classDefinition.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      foreach (PropertyDefinition propDef in classDefinition.MyPropertyDefinitions)
+      {
+        if (propDef.StorageClass == StorageClass.Persistent && propDef.StoragePropertyDefinition == null)
+        {
+          var message = string.Format (
+              "The persistence model loader did not assign a storage property to property '{0}' of class '{1}'.",
+              propDef.PropertyName,
+              classDefinition.ID);
+          throw new InvalidOperationException (message);
+        }
+      }
+
+      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
+        VerifyPersistenceModelApplied (derivedClass);
     }
 
     /// <summary>
