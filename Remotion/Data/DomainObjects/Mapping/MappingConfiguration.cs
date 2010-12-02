@@ -95,13 +95,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
+        var persistenceModelLoader = new PersistenceModelLoader (storageProviderDefinitionFinder);
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
-          // TODO 3552: Move the following three lines to the new RdbmsPersistenceModelLoader
-          var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
-          var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (storageProviderDefinitionFinder);
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
-
           VerifyPersistenceModelApplied (rootClass);
         }
 

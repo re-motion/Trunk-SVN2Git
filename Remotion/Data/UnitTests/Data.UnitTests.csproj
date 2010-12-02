@@ -640,6 +640,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlDialectTest.cs" />
+    <Compile Include="DomainObjects\Core\TableInheritance\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlStorageObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
