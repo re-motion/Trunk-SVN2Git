@@ -121,9 +121,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
       PropertyFinder propertyFinder = new PropertyFinder (
-          Type,
+          classDefinition.ClassType,
           classDefinition,
-          ReflectionUtility.IsInheritanceRoot (Type),
+          classDefinition.BaseClass == null,
           true,
           NameResolver,
           classDefinition.PersistentMixinFinder);
