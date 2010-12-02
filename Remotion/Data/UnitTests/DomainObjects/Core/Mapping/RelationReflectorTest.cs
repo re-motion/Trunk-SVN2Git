@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -44,7 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition _classWithVirtualRelationEndPoints;
     private ReflectionBasedClassDefinition _classWithBothEndPointsOnSameClassClassDefinition;
     private ClassDefinitionCollection _classDefinitions;
-    private ITypeDiscoveryService _typeDiscoverServiceStub;
     private ReflectionBasedNameResolver _nameResolver;
 
     public override void SetUp ()
@@ -54,9 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _classWithRealRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
       _classWithRealRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _classWithRealRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
+
       _classWithVirtualRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       _classWithVirtualRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _classWithVirtualRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
+
       _classWithBothEndPointsOnSameClassClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
       _classWithBothEndPointsOnSameClassClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -67,7 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                               _classWithVirtualRelationEndPoints,
                               _classWithBothEndPointsOnSameClassClassDefinition
                           };
-      _typeDiscoverServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
     }
 
     [Test]

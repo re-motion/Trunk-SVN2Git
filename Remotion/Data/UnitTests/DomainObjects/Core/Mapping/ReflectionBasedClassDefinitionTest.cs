@@ -81,13 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _distributorClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
 
+      // TODO Review 3546: Change FakeMappingConfiguration to set empty relation definitions for every class without relations
+      // TODO Review 3546: Then remove the PrivateInvokes
       _targetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
-      PrivateInvoke.SetNonPublicField (_targetClassForPersistentMixinClass, "_propertyDefinitions", new PropertyDefinitionCollection());
-      PrivateInvoke.SetNonPublicField (_targetClassForPersistentMixinClass, "_relationDefinitions", new RelationDefinitionCollection ());
       _derivedTargetClassForPersistentMixinClass =
           (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
-      PrivateInvoke.SetNonPublicField (_derivedTargetClassForPersistentMixinClass, "_propertyDefinitions", new PropertyDefinitionCollection ());
       PrivateInvoke.SetNonPublicField (_derivedTargetClassForPersistentMixinClass, "_relationDefinitions", new RelationDefinitionCollection ());
     }
 
@@ -388,8 +387,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetRelationDefinition_NoRelationDefinitionsHaveBeenSet_ThrowsException ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
-      PrivateInvoke.SetNonPublicField (classDefinition, "_relationDefinitions", null);
-
       classDefinition.GetRelationDefinition ("dummy");
     }
 
@@ -596,8 +593,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetPropertyDefinition_NoPropertyDefinitionsHaveBeenSet_ThrowsException ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
-      PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", null);
-
       classDefinition.GetPropertyDefinition ("dummy");
     }
     
