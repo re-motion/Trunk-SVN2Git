@@ -77,40 +77,48 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    public MappingConfiguration (IMappingLoader loader, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public MappingConfiguration (IMappingLoader mappingLoader, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("loader", loader);
+      ArgumentUtility.CheckNotNull ("mappingLoader", mappingLoader);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       s_log.Info ("Building mapping configuration...");
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = new ClassDefinitionCollection (loader.GetClassDefinitions(), true, true);
+        _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true, true);
 
         ValidateClassDefinitions();
         ValidatePropertyDefinitions();
 
-        _relationDefinitions = new RelationDefinitionCollection (loader.GetRelationDefinitions (_classDefinitions), true);
+        _relationDefinitions = new RelationDefinitionCollection (mappingLoader.GetRelationDefinitions (_classDefinitions), true);
 
         ValidateRelationDefinitions();
 
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
+          // TODO 3552: Move the following three lines to the new PersistenceModelLoader
           var storageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (rootClass);
           var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (storageProviderDefinitionFinder);
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
+
+          VerifyPersistenceModelApplied (rootClass);
         }
 
         ValidatePersistenceMapping();
 
-        _resolveTypes = loader.ResolveTypes;
-        _nameResolver = loader.NameResolver;
+        _resolveTypes = mappingLoader.ResolveTypes;
+        _nameResolver = mappingLoader.NameResolver;
 
         SetMappingReadOnly ();
 
         ValidateSortExpression();
       }
+    }
+
+    private void VerifyPersistenceModelApplied (ClassDefinition classDefinition)
+    {
+      // TODO 3552
     }
 
     /// <summary>
