@@ -54,7 +54,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       {
         yield return MappingValidationResult.CreateValidResult();
       }
-     
     }
   }
 }
