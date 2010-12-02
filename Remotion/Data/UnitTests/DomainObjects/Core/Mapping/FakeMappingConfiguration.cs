@@ -1168,12 +1168,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                                into grouping
                                select new { Key = grouping.Key, Values = grouping.Distinct () };
 
+      var classesWithRelationDefinitions = new HashSet<ClassDefinition>();
       foreach (var classWithRelations in relationsByClass)
       {
         classWithRelations.Key.SetRelationDefinitions (new RelationDefinitionCollection (classWithRelations.Values, true));
+        classesWithRelationDefinitions.Add (classWithRelations.Key);
       }
 
-
+      foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition>().Where(cd=>!classesWithRelationDefinitions.Contains(cd)))
+        classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
+      
       return relationDefinitions;
     }
 
