@@ -128,6 +128,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (nonNullableResult.IsNullable, Is.False);
     }
 
+    [Test]
+    public void CreateStoragePropertyDefinition_NotSupportedType ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return (null);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.StorageType, Is.EqualTo ("not supported"));
+    }
+
     private void StubStorageTypeCalculator (PropertyDefinition propertyDefinition)
     {
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("storage type");

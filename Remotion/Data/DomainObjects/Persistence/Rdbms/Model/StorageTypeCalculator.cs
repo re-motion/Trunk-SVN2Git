@@ -47,11 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           return SqlDataTypeSerializedObjectID;
       }
 
-      throw new InvalidOperationException (string.Format (
-              "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
-              propertyDefinition.PropertyType,
-              propertyDefinition.ClassDefinition.ClassType.FullName,
-              propertyDefinition.PropertyName));
+      return null;
     }
   }
 }

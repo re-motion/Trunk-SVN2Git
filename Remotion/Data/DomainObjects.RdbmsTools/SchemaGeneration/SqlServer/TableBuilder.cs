@@ -48,12 +48,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
 
       var storageProviderFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       var storageType = new SqlStorageTypeCalculator ().GetStorageType (propertyDefinition, storageProviderFinder);
-      // TODO Review 3542: Add InvalidOperationException if storageType == null
-      //throw new InvalidOperationException (string.Format (
-      //        "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
-      //        propertyDefinition.PropertyType,
-      //        propertyDefinition.ClassDefinition.ClassType.FullName,
-      //        propertyDefinition.PropertyName));
+
+      if (storageType == null)
+      {
+        throw new InvalidOperationException (string.Format (
+                "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
+                propertyDefinition.PropertyType,
+                propertyDefinition.ClassDefinition.ClassType.FullName,
+                propertyDefinition.PropertyName));
+      }
       return storageType;
     }
 

@@ -25,9 +25,11 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
+using Order = Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -360,6 +362,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void ApplyPersistenceModelToHierarchy_ColumnDefinitionsIsSetForAbstractClassWithoutDerivations ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+          typeof (AbstractClassWithoutDerivations), null);
+      var propertyDefinition = CreateAndAddPropertyDefinition (classDefinition, "DomainBase");
+
+      _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder)).Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock.Replay();
+
+      _persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
+      AssertUnionViewDefinition (
+          classDefinition,
+          _storageProviderID,
+          "AbstractClassWithoutDerivationsView",
+          new IStorageEntityDefinition[0], 
+          new ColumnDefinition[0]); //Note: UnionViewDefinition has no columns because it has not unioned entities!
+
+    }
+
+    [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory'\r\n"
@@ -432,7 +456,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           classDefinition,
           propertyName,
           null);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       return propertyDefinition;
     }
   }

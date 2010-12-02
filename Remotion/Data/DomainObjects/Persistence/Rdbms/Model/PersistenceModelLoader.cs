@@ -126,6 +126,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           from ClassDefinition derivedClass in classDefinition.DerivedClasses
           select GetEntityDefinition (derivedClass);
 
+      if(!derivedStorageEntityDefinitions.Any())
+       GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
+
       return new UnionViewDefinition (_storageProviderDefinition, GetViewName (classDefinition), derivedStorageEntityDefinitions);
     }
 

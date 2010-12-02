@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
@@ -41,9 +42,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       if (propertyDefinition.StorageClass == StorageClass.Persistent)
       {
         var nativePropertyType = propertyDefinition.PropertyType;
-        // TODO Review 3542: Change ColumnDefinitionFactory to use "not supported" for unsupported types. Check ((ColumnDefinition) propertyDefinition.StorageProperty).SqlType for "not supported" here.
-        // TODO Review 3542: Remove IsTypeSupportedByStorageProvider method from ReflectionUtility
-        if (!ReflectionUtility.IsTypeSupportedByStorageProvider (nativePropertyType, classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name))
+        if(((ColumnDefinition) propertyDefinition.StoragePropertyDefinition).StorageType=="not supported")
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               propertyDefinition.PropertyInfo,

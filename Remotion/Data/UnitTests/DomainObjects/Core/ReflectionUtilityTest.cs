@@ -158,18 +158,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (ReflectionUtility.IsDomainObject (typeof (AbstractClass)), Is.True);
     }
 
-    [Test]
-    public void IsTypeSupportedByStorageProvider_UnsupportedType ()
-    {
-      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof (object), "DefaultStorageProvider"), Is.False);
-    }
-
-    [Test]
-    public void IsTypeSupportedByStorageProvider_SupportedType ()
-    {
-      Assert.That (ReflectionUtility.IsTypeSupportedByStorageProvider (typeof (string), "DefaultStorageProvider"), Is.True);
-    }
-
     // TODO Review 3488: Add _classDefinitionWithMixedProperty, initialize in setup, use in the following tests
 
     [Test]

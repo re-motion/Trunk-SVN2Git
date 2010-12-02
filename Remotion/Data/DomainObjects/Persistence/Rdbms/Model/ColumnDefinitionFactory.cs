@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
@@ -47,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ColumnDefinition (
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
-          storageType, // TODO Review 3542: ?? "not supported"
+          storageType ?? "not supported",
           propertyDefinition.IsNullable);
     }
 

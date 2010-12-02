@@ -310,17 +310,6 @@ namespace Remotion.Data.DomainObjects
 
       return type.Assembly == typeof (DomainObject).Assembly;
     }
-
-    /// <summary>
-    /// Checks if a property type is supported by the storage provider.
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="storageProviderID"></param>
-    /// <returns><see langword="true" /> if the given type is supported by the storage provider.</returns>
-    public static bool IsTypeSupportedByStorageProvider (Type type, string storageProviderID)
-    {
-      var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return storageProviderDefinition.TypeProvider.IsTypeSupported (type);
-    }
+    
   }
 }

@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
@@ -49,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           true,
           20,
           StorageClass.None);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassNone"));
+      propertyDefinition.SetStorageProperty(new ColumnDefinition ("PropertyWithStorageClassNone", typeof(string), "supported", true));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly();
 
@@ -59,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     }
 
     [Test]
-    public void PropertyWithStorageClassPersistent_NoRelationProperty_SupportedType ()
+    public void PropertyWithStorageClassPersistent_SupportedType ()
     {
       var propertyDefinition = new ReflectionBasedPropertyDefinition (
           _classDefinition,
@@ -69,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           true,
           20,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
+      propertyDefinition.SetStorageProperty(new ColumnDefinition ("PropertyWithStorageClassPersistent", typeof(string), "supported", true));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -79,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     }
 
     [Test]
-    public void PropertyWithStorageClassPersistent_NoRelationProperty_UnsupportedType ()
+    public void PropertyWithStorageClassPersistent_UnsupportedType ()
     {
       var propertyDefinition = new ReflectionBasedPropertyDefinition (
           _classDefinition,
@@ -89,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
+      propertyDefinition.SetStorageProperty(new ColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent", typeof(string), "not supported", true));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -99,26 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
         +"Property: PropertyWithTypeObjectWithStorageClassPersistent";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
-    }
-
-    [Test]
-    public void RelationPropertyWithStorageClassPersistent_RelationProperty ()
-    {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
-          _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent"),
-          "RelationPropertyWithStorageClassPersistent",
-          typeof (ObjectID),
-          true,
-          null,
-          StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty (new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
-      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
-      _classDefinition.SetReadOnly ();
-
-      var validationResult = _validationRule.Validate (_classDefinition);
-
-      AssertMappingValidationResult (validationResult, true, null);
     }
   }
 }
