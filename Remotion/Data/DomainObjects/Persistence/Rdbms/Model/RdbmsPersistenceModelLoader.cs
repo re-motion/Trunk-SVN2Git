@@ -26,15 +26,15 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="PersistenceModelLoader"/> is responsible to load a persistence model for a relational database.
+  /// The <see cref="RdbmsPersistenceModelLoader"/> is responsible to load a persistence model for a relational database.
   /// </summary>
-  public class PersistenceModelLoader : IPersistenceModelLoader
+  public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
-    public PersistenceModelLoader (
+    public RdbmsPersistenceModelLoader (
         IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory,
         StorageProviderDefinition storageProviderDefinition,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)

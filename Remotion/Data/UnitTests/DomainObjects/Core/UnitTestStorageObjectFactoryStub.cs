@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new PersistenceModelLoader (
+      return new RdbmsPersistenceModelLoader (
           new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderStubDefinition, storageProviderDefinitionFinder);
     }
   }
