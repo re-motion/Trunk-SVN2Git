@@ -344,7 +344,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedDefinitions = (PropertyDefinitionCollection) SerializeAndDeserialize (definitions);
 
       Assert.That (definitions, Is.Not.SameAs (deserializedDefinitions));
-      Assert.That (deserializedDefinitions.ClassDefinition, Is.SameAs (definitions.ClassDefinition));
     }
 
     [Test]

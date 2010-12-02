@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
@@ -58,8 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classDefinition, "Test", "Test", StorageClass.Persistent);
 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-      ;
-
+      
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray();
 
       Assert.That (propertyDefinitions.Length, Is.EqualTo (1));
@@ -80,10 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classDefinition, "Property2", "Property2", StorageClass.Persistent);
 
       baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInBaseClass }, true));
-      ;
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInDerivedClass }, true));
-      ;
-
+      
       var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray ();
 
       Assert.That (propertyDefinitions.Length, Is.EqualTo (2));
@@ -96,36 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_propertyDefinition1);
       Assert.AreEqual (1, _collection.Count);
-    }
-
-    [Test]
-    public void AddEvents ()
-    {
-      PropertyDefinitionCollectionEventReceiver eventReceiver = new PropertyDefinitionCollectionEventReceiver (
-          _collection, false);
-
-      _collection.Add (_propertyDefinition1);
-
-      Assert.AreSame (_propertyDefinition1, eventReceiver.AddingPropertyDefinition);
-      Assert.AreSame (_propertyDefinition1, eventReceiver.AddedPropertyDefinition);
-    }
-
-    [Test]
-    public void CancelAdd ()
-    {
-      PropertyDefinitionCollectionEventReceiver eventReceiver = new PropertyDefinitionCollectionEventReceiver (
-          _collection, true);
-
-      try
-      {
-        _collection.Add (_propertyDefinition1);
-        Assert.Fail ("EventReceiverCancelException should be raised.");
-      }
-      catch (EventReceiverCancelException)
-      {
-        Assert.AreSame (_propertyDefinition1, eventReceiver.AddingPropertyDefinition);
-        Assert.AreSame (null, eventReceiver.AddedPropertyDefinition);
-      }
     }
 
     [Test]
@@ -198,23 +163,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsNullPropertyDefinition ()
     {
       _collection.Contains ((PropertyDefinition) null);
-    }
-
-    [Test]
-    public void ContainsColumName ()
-    {
-      _collection.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (_classDefinition, "PropertyName", "ColumnName", StorageClass.Persistent));
-
-      Assert.IsTrue (_collection.ContainsColumnName ("ColumnName"));
-    }
-
-    [Test]
-    public void InitializeWithClassDefinition ()
-    {
-      ClassDefinition orderDefinition = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      PropertyDefinitionCollection collection = new PropertyDefinitionCollection (orderDefinition);
-      Assert.AreSame (orderDefinition, collection.ClassDefinition);
     }
 
     [Test]

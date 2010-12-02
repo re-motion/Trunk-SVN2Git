@@ -25,36 +25,16 @@ namespace Remotion.Data.DomainObjects.Mapping
 [Serializable]
 public class PropertyDefinitionCollection : CommonCollection
 {
-  // types
-
-  // static members and constants
-
   public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
   {
     ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
     return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions.Cast<PropertyDefinition> ());
   }
 
-  // member fields
-
-  public event PropertyDefinitionAddingEventHandler Adding;
-  public event PropertyDefinitionAddedEventHandler Added;
-
-  private readonly ClassDefinition _classDefinition;
-
-  // construction and disposing
-
   public PropertyDefinitionCollection ()
   {
   }
 
-  public PropertyDefinitionCollection (ClassDefinition classDefinition)
-  {
-    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-    _classDefinition = classDefinition;
-  }
-
-  // standard constructor for collections
   public PropertyDefinitionCollection (IEnumerable<PropertyDefinition> collection, bool makeCollectionReadOnly)  
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
@@ -65,24 +45,9 @@ public class PropertyDefinitionCollection : CommonCollection
     SetIsReadOnly (makeCollectionReadOnly);
   }
 
-  // methods and properties
-
   public void SetReadOnly ()
   {
     SetIsReadOnly (true);
-  }
-
-  public bool ContainsColumnName (string columnName)
-  {
-    ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-
-    foreach (PropertyDefinition propertyDefinition in this)
-    {
-      if (propertyDefinition.StoragePropertyDefinition.Name == columnName)
-        return true;
-    }
-
-    return false;
   }
 
   public IEnumerable<PropertyDefinition> GetAllPersistent ()
@@ -92,23 +57,6 @@ public class PropertyDefinitionCollection : CommonCollection
       if (propertyDefinition.StorageClass == StorageClass.Persistent)
         yield return propertyDefinition;
     }
-  }
-
-  public ClassDefinition ClassDefinition 
-  {
-    get { return _classDefinition; }
-  }
-
-  protected virtual void OnAdding (PropertyDefinitionAddingEventArgs args)
-  {
-    if (Adding != null)
-      Adding (this, args);
-  }
-
-  protected virtual void OnAdded (PropertyDefinitionAddedEventArgs args)
-  {
-    if (Added != null)
-      Added (this, args);
   }
 
   #region Standard implementation for "add-only" collections
@@ -140,17 +88,15 @@ public class PropertyDefinitionCollection : CommonCollection
     }
   }
 
-  public int Add (PropertyDefinition value)  
+  public int Add (PropertyDefinition value)
   {
     ArgumentUtility.CheckNotNull ("value", value);
 
-    OnAdding (new PropertyDefinitionAddingEventArgs (value));
     int position = BaseAdd (value.PropertyName, value);
-    OnAdded (new PropertyDefinitionAddedEventArgs (value));
-
+    
     return position;
   }
-
+  
   #endregion
 }
 }

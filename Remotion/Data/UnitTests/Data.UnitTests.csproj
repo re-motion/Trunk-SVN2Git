@@ -1177,9 +1177,6 @@
     <Compile Include="DomainObjects\Core\EventReceiver\PropertyChangeState.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\EventReceiver\PropertyDefinitionCollectionEventReceiver.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\EventReceiver\RelationChangeState.cs">
       <SubType>Code</SubType>
     </Compile>
