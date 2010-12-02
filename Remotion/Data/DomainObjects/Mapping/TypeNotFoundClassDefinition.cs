@@ -45,11 +45,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false; }
     }
 
-    public override ClassDefinitionCollection DerivedClasses
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public override IDomainObjectCreator GetDomainObjectCreator ()
     {
       throw new NotImplementedException();

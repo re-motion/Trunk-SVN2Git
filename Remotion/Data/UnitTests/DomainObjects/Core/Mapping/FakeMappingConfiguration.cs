@@ -144,6 +144,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationTargetForPersistentMixinDefinition = CreateRelationTargetForPersistentMixinDefinition (null);
       classDefinitions.Add (relationTargetForPersistentMixinDefinition);
 
+      var classesByBaseClass = from classDefinition in classDefinitions.Cast<ClassDefinition> ()
+                               where classDefinition.BaseClass != null
+                               group classDefinition by classDefinition.BaseClass
+                                 into grouping
+                                 select new { grouping.Key, Values = grouping.Distinct () };
+
+      var classesWithDerivedClasses = new HashSet<ClassDefinition> ();
+      foreach (var classesWithBaseClass in classesByBaseClass)
+      {
+        classesWithBaseClass.Key.SetDerivedClasses (new ClassDefinitionCollection (classesWithBaseClass.Values, true, true));
+        classesWithDerivedClasses.Add (classesWithBaseClass.Key);
+      }
+
+      foreach (var classDefinition in classDefinitions.Cast<ClassDefinition> ().Where (cd => !classesWithDerivedClasses.Contains (cd)))
+        classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+
       return classDefinitions;
     }
 

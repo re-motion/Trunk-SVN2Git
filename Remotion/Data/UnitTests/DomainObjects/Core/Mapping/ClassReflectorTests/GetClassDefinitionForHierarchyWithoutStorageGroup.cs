@@ -40,8 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
@@ -54,8 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);

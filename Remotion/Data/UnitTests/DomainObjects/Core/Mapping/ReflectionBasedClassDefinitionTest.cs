@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (DomainBase), false);
-      _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+     _personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
          "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false, _domainBaseClass);
       _customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", null, UnitTestDomainStorageProviderDefinition, typeof (Customer), false, _personClass);
@@ -77,6 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrganizationalUnit),
           false,
           _domainBaseClass);
+
+      _domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[]{_personClass, _organizationalUnitClass}, true, true));
 
       _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _distributorClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
@@ -94,7 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Initialize ()
     {
       var actual = new ReflectionBasedClassDefinition ("Order", typeof(Order), false, null, null, new PersistentMixinFinder (typeof (Order)));
-
+      actual.SetDerivedClasses (new ClassDefinitionCollection (true));
+      
       Assert.That (actual.ID, Is.EqualTo ("Order"));
       Assert.That (actual.StorageEntityDefinition, Is.Null);
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));
@@ -241,22 +244,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void SetRelationDefinitions_BaseClassAlreadyDefinesRelationWithTheSameID ()
-    {
-      var relationDefinition = new RelationDefinition (
-          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
-
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
-      _personClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
-    }
-
-    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetRelationDefinitions_ClassIsReadOnly ()
     {
       _domainBaseClass.SetReadOnly ();
 
       _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
+    }
+
+    [Test]
+    public void SetDerivedClasses ()
+    {
+      _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection(new[]{_orderClass}, false, true));
+
+      Assert.That (_personClass.DerivedClasses.Count, Is.EqualTo (1));
+      Assert.That (_personClass.DerivedClasses[0], Is.SameAs (_orderClass));
+      Assert.That (_personClass.MyRelationDefinitions.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'Person' have already been set.")]
+    public void SetDerivedClasses_Twice_ThrowsException ()
+    {
+      _personClass.SetRelationDefinitions (new RelationDefinitionCollection ());
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'Person' is read-only.")]
+    public void SetDerivedClasses_ClasssIsReadOnly ()
+    {
+      _personClass.SetReadOnly();
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
     }
 
     [Test]
@@ -306,6 +327,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
 
+      domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[]{personClass}, true, true));
+
       string[] entityNames = domainBaseClass.GetAllConcreteEntityNames ();
       Assert.IsNotNull (entityNames);
       Assert.AreEqual (1, entityNames.Length);
@@ -317,6 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      actual.SetDerivedClasses (new ClassDefinitionCollection (true));
       Assert.That (actual.IsReadOnly, Is.False);
 
       actual.SetReadOnly();
@@ -383,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation definitions have been set.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation definitions have been set for class 'Order'.")]
     public void GetRelationDefinition_NoRelationDefinitionsHaveBeenSet_ThrowsException ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
@@ -403,6 +427,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -428,6 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       var relationDefinition = new RelationDefinition (
           "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
       classDefinition.SetReadOnly();
 
@@ -442,6 +468,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -589,7 +616,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void GetPropertyDefinition_NoPropertyDefinitionsHaveBeenSet_ThrowsException ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
@@ -616,6 +643,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -638,6 +666,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetReadOnly();
 
@@ -652,6 +681,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -738,6 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -761,6 +792,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       var relationDefinition = new RelationDefinition (
           "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
@@ -777,6 +809,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       classDefinition.SetReadOnly();
 

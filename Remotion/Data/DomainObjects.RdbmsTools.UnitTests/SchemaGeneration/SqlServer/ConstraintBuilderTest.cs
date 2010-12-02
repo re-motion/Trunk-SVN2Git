@@ -108,6 +108,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
       thirdClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
 
+      firstClass.SetDerivedClasses (new ClassDefinitionCollection ());
+      secondClass.SetDerivedClasses (new ClassDefinitionCollection ());
+      thirdClass.SetDerivedClasses (new ClassDefinitionCollection ());
+
       _constraintBuilder.AddConstraint (firstClass);
 
       string expectedScript =
@@ -163,6 +167,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       baseClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
       derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
       otherClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
+
+      baseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
+      derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
+      otherClass.SetDerivedClasses (new ClassDefinitionCollection());
 
       _constraintBuilder.AddConstraint (baseClass);
 

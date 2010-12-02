@@ -190,6 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetStorageEntity (unionViewDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       var classDefinitionCollection = new[] { classDefinition };
 
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
@@ -225,7 +226,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (Order).GetProperty ("DeliveryDate"),
           null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
-      
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       var classDefinitionCollection = new[] { classDefinition };

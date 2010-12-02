@@ -46,9 +46,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly ReflectionBasedClassDefinition _baseClass;
 
-    [NonSerialized]
-    private ClassDefinitionCollection _derivedClasses;
-
     public ReflectionBasedClassDefinition (
         string id,
         Type classType,
@@ -65,14 +62,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
-      _derivedClasses = new ClassDefinitionCollection (Enumerable.Empty<ClassDefinition>(), true, true);
       _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
       _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
 
       if (baseClass != null)
       {
         _baseClass = baseClass;
-        baseClass.AddDerivedClass (this);
       }
     }
 
@@ -84,11 +79,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public ReflectionBasedClassDefinition ReflectionBasedBaseClass
     {
       get { return _baseClass; }
-    }
-
-    public override ClassDefinitionCollection DerivedClasses
-    {
-      get { return _derivedClasses; }
     }
 
     public IPersistentMixinFinder PersistentMixinFinder
@@ -159,13 +149,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return InterceptedDomainObjectCreator.Instance;
     }
-
-    private void AddDerivedClass (ClassDefinition derivedClass)
-    {
-      _derivedClasses = new ClassDefinitionCollection (
-          _derivedClasses.Cast<ClassDefinition>().Concat (new[] { derivedClass }),
-          true,
-          _derivedClasses.AreResolvedTypesRequired);
-    }
+    
   }
 }

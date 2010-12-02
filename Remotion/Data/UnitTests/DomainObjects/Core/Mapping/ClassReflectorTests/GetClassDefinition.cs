@@ -48,8 +48,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classReflector= new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition();
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
@@ -62,8 +64,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classReflector= new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
+      expected.BaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { expected }, true, true));
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
+      actual.BaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { actual }, true, true));
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
@@ -139,8 +145,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       var classReflector= new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);

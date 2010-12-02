@@ -72,6 +72,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
 
+    [NonSerialized]
+    private ClassDefinitionCollection _derivedClasses;
+
     // construction and disposing
 
     protected ClassDefinition (string id, Type storageGroupType)
@@ -104,8 +107,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public void SetReadOnly ()
     {
-      DerivedClasses.SetReadOnly();
-
       _isReadOnly = true;
     }
 
@@ -345,8 +346,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       CheckNewPropertyDefinitions (propertyDefinitions);
 
-      propertyDefinitions.SetReadOnly();
       _propertyDefinitions = propertyDefinitions;
+      _propertyDefinitions.SetReadOnly();
     }
 
     public void SetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
@@ -359,8 +360,22 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      relationDefinitions.SetReadOnly();
       _relationDefinitions = relationDefinitions;
+      _relationDefinitions.SetReadOnly();
+    }
+
+    public void SetDerivedClasses (ClassDefinitionCollection derivedClasses)
+    {
+      ArgumentUtility.CheckNotNull ("derivedClasses", derivedClasses);
+
+      if (_derivedClasses != null)
+        throw new InvalidOperationException (string.Format ("The derived-classes for class '{0}' have already been set.", ID));
+
+      if (_isReadOnly)
+        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      _derivedClasses = derivedClasses;
+      _derivedClasses.SetReadOnly ();
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)
@@ -397,7 +412,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract bool IsClassTypeResolved { get; }
 
     public abstract ClassDefinition BaseClass { get; }
-    public abstract ClassDefinitionCollection DerivedClasses { get; }
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
     public abstract PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation);
     public abstract IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation);
@@ -412,7 +426,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get
       {
         if(_propertyDefinitions == null)
-          throw new InvalidOperationException ("No property definitions have been set.");
+          throw new InvalidOperationException (string.Format ("No property definitions have been set for class '{0}'.", ID));
         
         return _propertyDefinitions; 
       }
@@ -423,9 +437,20 @@ namespace Remotion.Data.DomainObjects.Mapping
       get 
       {
         if (_relationDefinitions == null)
-          throw new InvalidOperationException ("No relation definitions have been set.");
+          throw new InvalidOperationException (string.Format ("No relation definitions have been set for class '{0}'.", ID));
         
         return _relationDefinitions; 
+      }
+    }
+
+    public ClassDefinitionCollection DerivedClasses
+    {
+      get 
+      {
+        if (_derivedClasses == null)
+          throw new InvalidOperationException (string.Format ("No derived classes have been set for class '{0}'.", ID));
+
+        return _derivedClasses; 
       }
     }
 

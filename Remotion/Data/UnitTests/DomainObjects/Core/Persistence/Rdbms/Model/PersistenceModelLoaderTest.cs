@@ -95,6 +95,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeWithoutDBTableAttribute3, _derivedClassDefinition2);
 
+      _baseBaseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _baseClassDefinition }, true, true));
+      _baseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _tableClassDefinition1, _tableClassDefinition2 }, true, true));
+      _tableClassDefinition2.SetDerivedClasses (
+          new ClassDefinitionCollection (new[] { _derivedClassDefinition1, _derivedClassDefinition2 }, true, true));
+      _derivedClassDefinition2.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedClassDefinition }, true, true));
+      _tableClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
+      _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
+      _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+
       _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (_baseBaseClassDefinition, "BaseBaseProperty");
       _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty");
       _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (_tableClassDefinition1, "TableProperty1");
@@ -331,6 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
       _columnDefinitionFactoryMock.Replay();
 
@@ -347,6 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
       _columnDefinitionFactoryMock.Replay();
 
@@ -366,6 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
           typeof (AbstractClassWithoutDerivations), null);
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       var propertyDefinition = CreateAndAddPropertyDefinition (classDefinition, "DomainBase");
 
       _columnDefinitionFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder)).Return (_fakeColumnDefinition1);

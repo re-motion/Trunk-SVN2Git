@@ -214,6 +214,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedConcreteClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       derivedConcreteClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "EntityName", "ViewName", new ColumnDefinition[0]));
 
+      abstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedAbstractClass }, true, true));
+      derivedAbstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedConcreteClass }, true, true));
+      derivedConcreteClass.SetDerivedClasses (new ClassDefinitionCollection());
+
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"
           + "(\r\n"

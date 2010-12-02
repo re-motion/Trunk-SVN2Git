@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -61,6 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
           typeof (DerivedValidationDomainObjectClass),
           false,
           _derivedBaseClass1);
+
+      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1 }, true, true));
+      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedClass }, true, true));
+      _derivedClass.SetDerivedClasses (new ClassDefinitionCollection ());
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _tableDefinition1 = new TableDefinition (storageProviderDefinition, "TableName1", null, new ColumnDefinition[0]);
