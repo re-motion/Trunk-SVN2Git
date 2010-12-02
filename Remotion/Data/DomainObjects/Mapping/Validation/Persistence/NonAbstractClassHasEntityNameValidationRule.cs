@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       if (classDefinition.IsClassTypeResolved && classDefinition.StorageEntityDefinition is UnionViewDefinition && !classDefinition.IsAbstract)
       {
         yield return MappingValidationResult.CreateInvalidResultForType (
-              classDefinition.ClassType,
-              "Neither class '{0}' nor its base classes are mapped to a table. "
-              + "Make class '{0}' abstract or define a table for it or one of its base classes.",
-              classDefinition.ClassType.Name);
+            classDefinition.ClassType,
+            "Neither class '{0}' nor its base classes are mapped to a table. "
+            + "Make class '{0}' abstract or define a table for it or one of its base classes.",
+            classDefinition.ClassType.Name);
       }
       else
       {
