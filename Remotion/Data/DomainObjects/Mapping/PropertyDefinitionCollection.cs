@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -23,7 +24,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.Mapping
 {
 [Serializable]
-public class PropertyDefinitionCollection : CommonCollection
+public class PropertyDefinitionCollection : CommonCollection, IEnumerable<PropertyDefinition>
 {
   public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
   {
@@ -98,5 +99,13 @@ public class PropertyDefinitionCollection : CommonCollection
   }
   
   #endregion
+
+  public new IEnumerator<PropertyDefinition> GetEnumerator ()
+  {
+    // ReSharper disable LoopCanBeConvertedToQuery
+    foreach (PropertyDefinition propertyDefinition in (IEnumerable) this) // use base implementation
+      // ReSharper restore LoopCanBeConvertedToQuery
+      yield return propertyDefinition;
+  }
 }
 }

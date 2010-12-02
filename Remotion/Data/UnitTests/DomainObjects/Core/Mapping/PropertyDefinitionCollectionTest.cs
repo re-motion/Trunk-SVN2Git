@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -183,6 +184,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _collection.SetReadOnly();
 
       Assert.That (_collection.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void GetEnumerator ()
+    {
+      _collection.Add (_propertyDefinition1);
+
+      IEnumerator<PropertyDefinition> enumerator = _collection.GetEnumerator();
+      
+      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.Current, Is.SameAs (_propertyDefinition1));
+      Assert.That (enumerator.MoveNext(), Is.False);
     }
   }
 }
