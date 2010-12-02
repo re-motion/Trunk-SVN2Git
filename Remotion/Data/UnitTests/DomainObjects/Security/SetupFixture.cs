@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
         MappingConfiguration.SetCurrent (
             new MappingConfiguration (
                 new MappingReflector (GetTypeDiscoveryService (GetType().Assembly)),
-                new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+                new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
       }
       catch (Exception ex)
       {

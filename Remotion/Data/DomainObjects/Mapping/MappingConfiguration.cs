@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             () =>
             new MappingConfiguration (
                 DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
-                new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+                new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 
     public static MappingConfiguration Current
     {
@@ -77,10 +78,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
-    public MappingConfiguration (IMappingLoader mappingLoader, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public MappingConfiguration (IMappingLoader mappingLoader, IPersistenceModelLoader persistenceModelLoader)
     {
       ArgumentUtility.CheckNotNull ("mappingLoader", mappingLoader);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("persistenceModelLoader", persistenceModelLoader);
 
       s_log.Info ("Building mapping configuration...");
 
@@ -95,7 +96,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions();
 
-        var persistenceModelLoader = new PersistenceModelLoader (storageProviderDefinitionFinder);
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);

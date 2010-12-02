@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
-          _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       ClassDefinitionCollection actualClassDefinitionCollection = configuration.ClassDefinitions;
       RelationDefinitionCollection actualRelationDefinitionCollection = configuration.RelationDefinitions;
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         _mockRepository.ReplayAll();
 
         var configuration = new MappingConfiguration (
-            _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+            _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
         MappingConfiguration.SetCurrent (configuration);
 
         Assert.AreSame (configuration, MappingConfiguration.Current);
@@ -114,7 +114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+      new MappingConfiguration (
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -126,7 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -136,7 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+      new MappingConfiguration (
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -169,13 +172,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+      new MappingConfiguration (
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. Make class 'DerivedValidationDomainObjectClass' "
-        +"abstract or define a table for it or one of its base classes.\r\n\r\n"
+        + "abstract or define a table for it or one of its base classes.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass")]
     public void PersistenceMappingIsValidated ()
     {
@@ -198,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+      new MappingConfiguration (_mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }
 
     [Test]
@@ -239,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.ReplayAll();
 
-      new MappingConfiguration (_mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+      new MappingConfiguration (_mockMappingLoader, new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
@@ -266,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
-          _mockMappingLoader, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
+          _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       _mockRepository.VerifyAll();
 
@@ -361,9 +365,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       ReflectionBasedClassDefinition orderTicketDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
-      orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
-          ReflectionBasedPropertyDefinitionFactory.Create (orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)}, true));
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
+      orderTicketDefinition.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  ReflectionBasedPropertyDefinitionFactory.Create (
+                      orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)
+              },
+              true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (

@@ -24,9 +24,6 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
@@ -39,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ProveThatRelationsAboveTheInheritanceRootAreSupported ()
     {
-      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
           .Return (
               new[]
@@ -48,14 +45,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   typeof (DerivedInheritanceRootClass2)
               });
       MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
-      var mappingConfiguration = new MappingConfiguration (reflector, new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
-      
-      Assert.That (mappingConfiguration.RelationDefinitions[0].ID, 
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
-                   +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
-      Assert.That (mappingConfiguration.RelationDefinitions[1].ID, 
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
-                   +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+      var mappingConfiguration = new MappingConfiguration (
+          reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+
+      Assert.That (
+          mappingConfiguration.RelationDefinitions[0].ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+      Assert.That (
+          mappingConfiguration.RelationDefinitions[1].ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
     }
 
     [Test]
@@ -70,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
-      var actualClassDefinitions = new ClassDefinitionCollection( mappingReflector.GetClassDefinitions(), true, true);
-      var actualRelationDefinitions = new RelationDefinitionCollection(mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
+      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
+      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
 
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (FakeMappingConfiguration.Current.RelationDefinitions, actualRelationDefinitions, true);
@@ -82,16 +84,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assembly assembly = GetType().Assembly;
       MappingReflector expectedMappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly));
-      var expectedClassDefinitions = new ClassDefinitionCollection(expectedMappingReflector.GetClassDefinitions(), true, true);
-      var expectedRelationDefinitions = new RelationDefinitionCollection(expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions), true);
+      var expectedClassDefinitions = new ClassDefinitionCollection (expectedMappingReflector.GetClassDefinitions(), true, true);
+      var expectedRelationDefinitions = new RelationDefinitionCollection (
+          expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions), true);
 
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
-      var actualClassDefinitions = new ClassDefinitionCollection(mappingReflector.GetClassDefinitions(), true, true);
+      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker(false);
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (false);
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
 
-      var actualRelationDefinitions = new RelationDefinitionCollection(mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
+      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }

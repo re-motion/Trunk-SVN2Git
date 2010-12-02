@@ -70,7 +70,8 @@ namespace Remotion.SecurityManager.UnitTests
 
         MappingConfiguration.SetCurrent (
             new MappingConfiguration (
-                new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+                new MappingReflector (typeDiscoveryService),
+                new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 
         SqlConnection.ClearAllPools();
 

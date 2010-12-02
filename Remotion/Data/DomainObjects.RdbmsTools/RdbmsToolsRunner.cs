@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       MappingConfiguration.SetCurrent (
           new MappingConfiguration (
               DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
-              new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+              new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
     }
 
     protected StorageConfiguration GetPersistenceConfiguration ()

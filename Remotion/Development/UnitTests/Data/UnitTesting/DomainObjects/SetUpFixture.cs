@@ -59,7 +59,8 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
 
         MappingConfiguration.SetCurrent (
             new MappingConfiguration (
-                new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+                new MappingReflector (typeDiscoveryService),
+                new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
       }
       catch (Exception e)
       {

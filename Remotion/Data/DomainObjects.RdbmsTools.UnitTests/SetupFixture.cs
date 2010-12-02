@@ -83,7 +83,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration.SetCurrent (
           new MappingConfiguration (
-              new MappingReflector (typeDiscoveryService), new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+              new MappingReflector (typeDiscoveryService),
+              new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
     }
   }
 }

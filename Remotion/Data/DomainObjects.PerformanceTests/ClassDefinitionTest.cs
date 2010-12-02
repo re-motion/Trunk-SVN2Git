@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using System.Linq;
@@ -134,7 +135,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void SetStorageEntity ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var tableDefinition = new TableDefinition ("DefaultStorageProvider", "Test", "TestView", new ColumnDefinition[] { });
+      var tableDefinition = new TableDefinition (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "TestView", new ColumnDefinition[] { });
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs(tableDefinition));
       classDefinition.SetStorageEntity (tableDefinition);
