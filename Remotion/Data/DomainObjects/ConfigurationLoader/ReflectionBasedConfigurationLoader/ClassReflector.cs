@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           Type,
           classDefinition,
           ReflectionUtility.IsInheritanceRoot (Type),
-          classDefinition.ClassType == Type,
+          true,
           NameResolver,
           classDefinition.PersistentMixinFinder);
       return propertyFinder.FindPropertyInfos();
