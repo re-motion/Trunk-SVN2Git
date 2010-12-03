@@ -56,8 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
     }
 
-    // TODO Review 3552: Refactor the tests calling SetupResult.For on the _mockMappingLoader to use StubMockMappingLoader instead
-
     [Test]
     public void Initialize ()
     {
@@ -165,12 +163,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
               + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
-      var classDefinitionCollection = new[] { classDefinition };
-      var relationDefinitionCollection = new[] { relationDefinition };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitionCollection);
-
+      
+      StubMockMappingLoader (new[]{classDefinition},new[]{ relationDefinition});
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -196,11 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      var classDefinitionCollection = new[] { classDefinition };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-
+      
+      StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -236,13 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
-      var classDefinitionCollection = new[] { classDefinition };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
-
+      StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -269,16 +254,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
-
-      var classDefinitionCollection = new[] { classDefinition };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
-
+      
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
+      StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelStub);
@@ -300,15 +279,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
       Assert.That (propertyDefinition.StoragePropertyDefinition, Is.Null);
 
-      var classDefinitionCollection = new[] { classDefinition };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver());
-
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
+      StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
 
       persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (classDefinition)).WhenCalled (
@@ -336,15 +309,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (companyClass.StorageEntityDefinition, Is.Null);
       Assert.That (partnerClass.StorageEntityDefinition, Is.Null);
 
-      var classDefinitionCollection = new[] { companyClass, partnerClass };
-
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitionCollection);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (new RelationDefinition[0]);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (new ReflectionBasedNameResolver ());
-
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader> ();
 
+      StubMockMappingLoader (companyClass, partnerClass);
       _mockRepository.ReplayAll ();
 
       persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (companyClass)).WhenCalled (
