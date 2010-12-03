@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           UnitTestDomainStorageProviderDefinition,
           _classDefinition.ClassType,
           false,
-          _classDefinition.ReflectionBasedBaseClass);
+          (ReflectionBasedClassDefinition) _classDefinition.BaseClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }

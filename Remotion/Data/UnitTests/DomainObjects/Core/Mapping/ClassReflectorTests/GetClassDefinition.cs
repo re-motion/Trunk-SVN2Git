@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       var classReflector= new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
 
-      var expectedBaseClass = expected.ReflectionBasedBaseClass;
+      var expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 

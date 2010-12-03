@@ -43,9 +43,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
-    [NonSerialized]
-    private readonly ReflectionBasedClassDefinition _baseClass;
-
     public ReflectionBasedClassDefinition (
         string id,
         Type classType,
@@ -53,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         ReflectionBasedClassDefinition baseClass,
         Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
-        : base (id, storageGroupType)
+        : base (id, storageGroupType, baseClass)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
@@ -64,18 +61,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
       _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
-
-      _baseClass = baseClass;
-    }
-
-    public override ClassDefinition BaseClass
-    {
-      get { return _baseClass; }
-    }
-
-    public ReflectionBasedClassDefinition ReflectionBasedBaseClass
-    {
-      get { return _baseClass; }
     }
 
     public IPersistentMixinFinder PersistentMixinFinder

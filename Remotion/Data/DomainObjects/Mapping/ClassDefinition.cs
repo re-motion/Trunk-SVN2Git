@@ -22,7 +22,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -60,6 +59,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
 
+    [NonSerialized]
+    private readonly ClassDefinition _baseClass;
     
     // nonserialized member fields
 
@@ -75,11 +76,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private ClassDefinitionCollection _derivedClasses;
 
-    // TODO Review 3548: Move _baseClass field and property implementation to this class
-
     // construction and disposing
 
-    protected ClassDefinition (string id, Type storageGroupType)
+    protected ClassDefinition (string id, Type storageGroupType, ClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       
@@ -94,6 +93,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       _cachedPropertyDefinitions =
           new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (
               () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this), true));
+
+      _baseClass = baseClass;
     }
 
     // methods and properties
@@ -418,10 +419,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public abstract bool IsClassTypeResolved { get; }
 
-    public abstract ClassDefinition BaseClass { get; }
     public abstract IDomainObjectCreator GetDomainObjectCreator ();
     public abstract PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation);
     public abstract IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation);
+
+    public ClassDefinition BaseClass
+    {
+      get { return _baseClass; }
+    }
 
     public Type StorageGroupType
     {
