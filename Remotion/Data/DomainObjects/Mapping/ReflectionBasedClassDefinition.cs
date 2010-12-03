@@ -65,10 +65,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
       _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
 
-      if (baseClass != null)
-      {
-        _baseClass = baseClass;
-      }
+      _baseClass = baseClass;
     }
 
     public override ClassDefinition BaseClass

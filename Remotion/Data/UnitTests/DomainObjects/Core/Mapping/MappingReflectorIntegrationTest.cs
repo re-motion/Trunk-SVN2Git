@@ -15,12 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
+using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
+using Remotion.Reflection;
+using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -34,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
-      Assert.IsNotNull (actualClassDefinitions);
+      Assert.That (actualClassDefinitions, Is.Not.Null);
 
       var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses())
@@ -45,7 +53,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
-      Assert.IsFalse (actualClassDefinitions.Contains (typeof (TestDomainBase)));
+      Assert.That (actualClassDefinitions.Contains (typeof (TestDomainBase)), Is.False);
+    }
+
+    [Test]
+    public void ShadowedProperties ()
+    {
+      var property1 = typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      var property2 = typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
+          .Return (new[] { typeof (Base), typeof (Shadower) });
+
+      var mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
+      var classDefinition1 = mappingReflector.GetClassDefinitions ().Single (cd => cd.ClassType == typeof (Shadower));
+      var classDefinition2 = classDefinition1.BaseClass;
+
+      var propertyDefinition1 =
+          (ReflectionBasedPropertyDefinition)
+          classDefinition1.GetMandatoryPropertyDefinition (property1.DeclaringType.FullName + "." + property1.Name);
+      var propertyDefinition2 =
+          (ReflectionBasedPropertyDefinition)
+          classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
+
+      Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (property1));
+      Assert.That (propertyDefinition2.PropertyInfo, Is.EqualTo (property2));
+    }
+
+    [Test]
+    public void RelationsAboveInheritanceRoot ()
+    {
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
+          .Return (
+              new[]
+              {
+                  typeof (UnidirectionalRelationClass), typeof (AboveInheritanceRootClassWithRelation), typeof (DerivedInheritanceRootClass1),
+                  typeof (DerivedInheritanceRootClass2)
+              });
+      MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
+      var mappingConfiguration = new MappingConfiguration (
+          reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+
+      Assert.That (
+          mappingConfiguration.RelationDefinitions[0].ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+      Assert.That (
+          mappingConfiguration.RelationDefinitions[1].ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
+    }
+
+    [Instantiable]
+    [DBTable]
+    public abstract class Base : DomainObject
+    {
+      public int Name
+      {
+        get { return Properties[typeof (Base), "Name"].GetValue<int> (); }
+      }
+    }
+
+    [Instantiable]
+    public abstract class Shadower : Base
+    {
+      [DBColumn ("NewName")]
+      public new int Name
+      {
+        get { return Properties[typeof (Shadower), "Name"].GetValue<int> (); }
+      }
     }
   }
 }

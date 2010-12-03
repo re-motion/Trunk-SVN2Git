@@ -75,6 +75,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private ClassDefinitionCollection _derivedClasses;
 
+    // TODO Review 3548: Move _baseClass field and property implementation to this class
+
     // construction and disposing
 
     protected ClassDefinition (string id, Type storageGroupType)
@@ -344,7 +346,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      CheckNewPropertyDefinitions (propertyDefinitions);
+      CheckPropertyDefinitions (propertyDefinitions);
 
       _propertyDefinitions = propertyDefinitions;
       _propertyDefinitions.SetReadOnly();
@@ -360,6 +362,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
+      // TODO 3556: When this is changed to relation end-points, add a CheckRelationEndPointDefinitions method similar to CheckPropertyDefinitions
+
       _relationDefinitions = relationDefinitions;
       _relationDefinitions.SetReadOnly();
     }
@@ -373,6 +377,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      // TODO Review 3548: Add a CheckDerivedClasses method: All derived classes must have this class as their base class definition
 
       _derivedClasses = derivedClasses;
       _derivedClasses.SetReadOnly ();
@@ -520,7 +526,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
     }
 
-    private void CheckNewPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
+    private void CheckPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
     {
       foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
       {

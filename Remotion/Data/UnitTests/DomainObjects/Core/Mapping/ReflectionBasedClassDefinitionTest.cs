@@ -1370,49 +1370,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (property, propertyDefinition.PropertyInfo);
     }
 
-    [Instantiable]
-    [DBTable]
-    public abstract class Base : DomainObject
-    {
-      public int Name
-      {
-        get { return Properties[typeof (Base), "Name"].GetValue<int>(); }
-      }
-    }
 
-    [Instantiable]
-    public abstract class Shadower : Base
-    {
-      [DBColumn ("NewName")]
-      public new int Name
-      {
-        get { return Properties[typeof (Shadower), "Name"].GetValue<int>(); }
-      }
-    }
 
-    [Test]
-    public void PropertyInfoWithShadowedProperty ()
-    {
-      var property1 = typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      var property2 = typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
-      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
-          .Return (new[] { typeof (Base), typeof (Shadower) });
-
-      var mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
-      ClassDefinition classDefinition1 = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true)[typeof (Shadower)];
-      ClassDefinition classDefinition2 = classDefinition1.BaseClass;
-
-      var propertyDefinition1 =
-          (ReflectionBasedPropertyDefinition)
-          classDefinition1.GetMandatoryPropertyDefinition (property1.DeclaringType.FullName + "." + property1.Name);
-      var propertyDefinition2 =
-          (ReflectionBasedPropertyDefinition)
-          classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
-
-      Assert.AreEqual (property1, propertyDefinition1.PropertyInfo);
-      Assert.AreEqual (property2, propertyDefinition2.PropertyInfo);
-    }
+  
 
     [Test]
     public void CreatorIsFactoryBasedCreator ()

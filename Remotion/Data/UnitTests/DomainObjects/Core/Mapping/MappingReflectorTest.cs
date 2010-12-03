@@ -33,32 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class MappingReflectorTest : MappingReflectionTestBase
   {
-    [Test]
-    public void ProveThatRelationsAboveTheInheritanceRootAreSupported ()
-    {
-      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
-      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
-          .Return (
-              new[]
-              {
-                  typeof (UnidirectionalRelationClass), typeof (AboveInheritanceRootClassWithRelation), typeof (DerivedInheritanceRootClass1),
-                  typeof (DerivedInheritanceRootClass2)
-              });
-      MappingReflector reflector = new MappingReflector (typeDiscoveryServiceStub);
-      var mappingConfiguration = new MappingConfiguration (
-          reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
-      Assert.That (
-          mappingConfiguration.RelationDefinitions[0].ID,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
-      Assert.That (
-          mappingConfiguration.RelationDefinitions[1].ID,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
-    }
 
     [Test]
     public void GetResolveTypes ()
@@ -98,5 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
+
+    // TODO Review 3548: Add tests showing that GetClassDefinitions calculates empty and non-empty derived classes
   }
 }
