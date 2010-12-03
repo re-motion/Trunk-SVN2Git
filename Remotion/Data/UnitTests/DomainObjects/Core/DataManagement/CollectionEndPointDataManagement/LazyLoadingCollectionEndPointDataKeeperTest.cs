@@ -199,6 +199,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _unloadedDataKeeper.EnsureDataAvailable ();
 
       Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
+      Assert.That (_unloadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+      Assert.That (_unloadedDataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
       _clientTransactionMock.VerifyAllExpectations ();
     }
 
@@ -288,22 +290,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _clientTransactionMock.Replay ();
 
       Assert.That (_loadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+
       _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
     }
 
     [Test]
-    public void DataStore_Unloaded_LoadsData ()
+    public void DataStore_Unloaded_DoesNotLoadData ()
     {
-      _clientTransactionMock
-          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (new[] { _domainObject2, _domainObject3 });
       _clientTransactionMock.Replay ();
 
       Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
-      Assert.That (_unloadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+      
+      Assert.That (_unloadedDataKeeper.CollectionData.ToArray (), Is.Empty);
 
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
-      _clientTransactionMock.VerifyAllExpectations();
+      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
+      _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
     }
 
     [Test]
@@ -312,6 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _clientTransactionMock.Replay ();
 
       var originalData = _loadedDataKeeper.OriginalCollectionData;
+      
       _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
 
       Assert.That (originalData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
@@ -321,17 +323,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void OriginalData_Unloaded_LoadsData ()
     {
-      _clientTransactionMock
-          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (new[] { _domainObject2, _domainObject3 });
       _clientTransactionMock.Replay ();
+      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
+      
+      var originalData = _unloadedDataKeeper.OriginalCollectionData;
 
       Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
-      var originalData = _unloadedDataKeeper.OriginalCollectionData;
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
-      _clientTransactionMock.VerifyAllExpectations ();
+      _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
 
-      Assert.That (originalData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+      Assert.That (originalData.ToArray(), Is.Empty);
       Assert.That (originalData.IsReadOnly, Is.True);
     }
     
@@ -353,6 +353,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _loadedDataKeeper.Unload ();
 
       StubLoadRelatedObjects (_domainObject2);
+      _loadedDataKeeper.EnsureDataAvailable();
+
       Assert.That (_loadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
     }
 
@@ -364,7 +366,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _loadedDataKeeper.Unload ();
 
       StubLoadRelatedObjects (_domainObject2);
-      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2 }));
+      _loadedDataKeeper.EnsureDataAvailable ();
+
+      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
       Assert.That (_loadedDataKeeper.OriginalCollectionData.IsReadOnly, Is.True);
     }
 

@@ -259,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order1);
 
       var delegatingCollectionData = new EndPointDelegatingCollectionData (
-          MockRepository.GenerateStub<ICollectionEndPoint> (), MockRepository.GenerateStub<ICollectionEndPointDataKeeper>());
+          MockRepository.GenerateStub<ICollectionEndPoint> (), MockRepository.GenerateStub<IDomainObjectCollectionData>());
       var collectionOfDifferentEndPoint = new DomainObjectCollection (delegatingCollectionData);
 
       Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (null), Is.False);

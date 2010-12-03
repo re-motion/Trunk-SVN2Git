@@ -36,15 +36,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     [NonSerialized] // relies on the collection end point restoring the association on deserialization
     private readonly ICollectionEndPoint _associatedEndPoint;
     [NonSerialized] // relies on the collection end point restoring the association on deserialization
-    private readonly ICollectionEndPointDataKeeper _endPointDataKeeper;
+    private readonly IDomainObjectCollectionData _endPointData;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, ICollectionEndPointDataKeeper endPointDataKeeper)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData endPointData)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("endPointDataKeeper", endPointDataKeeper);
+      ArgumentUtility.CheckNotNull ("endPointData", endPointData);
 
       _associatedEndPoint = collectionEndPoint;
-      _endPointDataKeeper = endPointDataKeeper;
+      _endPointData = endPointData;
     }
 
     public int Count
@@ -52,18 +52,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get 
       {
         EnsureDataAvailable ();
-        return _endPointDataKeeper.CollectionData.Count; 
+        return _endPointData.Count; 
       }
     }
 
     public Type RequiredItemType
     {
-      get { return _endPointDataKeeper.CollectionData.RequiredItemType; }
+      get { return _endPointData.RequiredItemType; }
     }
 
     public bool IsReadOnly
     {
-      get { return _endPointDataKeeper.CollectionData.IsReadOnly; }
+      get { return _endPointData.IsReadOnly; }
     }
 
     public ICollectionEndPoint AssociatedEndPoint
@@ -73,12 +73,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public bool IsDataAvailable
     {
-      get { return _endPointDataKeeper.IsDataAvailable; }
+      get { return _associatedEndPoint.IsDataAvailable; }
     }
 
     public void EnsureDataAvailable ()
     {
-      _endPointDataKeeper.EnsureDataAvailable ();
+      _associatedEndPoint.EnsureDataAvailable ();
     }
 
     public IDomainObjectCollectionData GetDataStore ()
@@ -86,40 +86,40 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       EnsureDataAvailable ();
 
       // This will usually return the ChangeCachingDomainObjectCollectionData
-      return _endPointDataKeeper.CollectionData.GetDataStore();
+      return _endPointData.GetDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       EnsureDataAvailable ();
-      return _endPointDataKeeper.CollectionData.ContainsObjectID (objectID);
+      return _endPointData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
       EnsureDataAvailable ();
-      return _endPointDataKeeper.CollectionData.GetObject (index);
+      return _endPointData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       EnsureDataAvailable ();
-      return _endPointDataKeeper.CollectionData.GetObject (objectID);
+      return _endPointData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       EnsureDataAvailable ();
-      return _endPointDataKeeper.CollectionData.IndexOf (objectID);
+      return _endPointData.IndexOf (objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
       EnsureDataAvailable ();
-      return _endPointDataKeeper.CollectionData.GetEnumerator ();
+      return _endPointData.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

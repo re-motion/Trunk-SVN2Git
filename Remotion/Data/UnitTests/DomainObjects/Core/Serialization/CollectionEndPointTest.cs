@@ -21,8 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -126,16 +124,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       _endPoint.OppositeDomainObjects.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
 
-      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var deserializedCheckingDecorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (
-          deserializedEndPoint.OppositeDomainObjects);
-      var deserializedDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
-          deserializedCheckingDecorator);
-
-      Assert.That (deserializedDelegatingData.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedDelegatingData, "_endPointDataKeeper"), 
-          Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_dataKeeper")));
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (
+          deserializedEndPoint.OppositeDomainObjects,
+          _endPoint.OppositeDomainObjects.RequiredItemType,
+          deserializedEndPoint);
     }
 
     [Test]

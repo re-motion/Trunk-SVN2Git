@@ -79,7 +79,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       get
       {
-        EnsureDataAvailable ();
         return _collectionData;
       }
     }
@@ -88,7 +87,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       get
       {
-        EnsureDataAvailable ();
         return _collectionData.OriginalData;
       }
     }

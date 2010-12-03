@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataKeeper));
+      var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataKeeper.CollectionData));
 
       return dataStrategy;
     }
@@ -276,6 +276,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
+      EnsureDataAvailable ();
       return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData);
     }
 
@@ -378,8 +379,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField ("_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
       associatedEndPointField.SetValue (endPointDelegatingData, this);
 
-      var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointDataKeeper", BindingFlags.NonPublic | BindingFlags.Instance);
-      endPointDataField.SetValue (endPointDelegatingData, _dataKeeper);
+      var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointData", BindingFlags.NonPublic | BindingFlags.Instance);
+      endPointDataField.SetValue (endPointDelegatingData, _dataKeeper.CollectionData);
     }
 
     #endregion
