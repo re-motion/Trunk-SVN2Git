@@ -88,6 +88,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
+      // TODO 3556: Use RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
           FindAllRelationEndPointDefinitions);
       _cachedPropertyDefinitions =

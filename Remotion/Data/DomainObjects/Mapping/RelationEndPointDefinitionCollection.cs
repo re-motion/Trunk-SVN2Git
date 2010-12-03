@@ -25,10 +25,12 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   public class RelationEndPointDefinitionCollection : CommonCollection, IEnumerable<IRelationEndPointDefinition>
   {
+    // TODO 3556: Rename to CreateForAllRelationEndPoints
     public static IEnumerable<IRelationEndPointDefinition> CreateForAllRelations (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      // TODO 3556: Use MyRelationEndPointDefinitions instead of MyRelationDefinitions...SelectMany (EndPointDefinitions)
       return
           classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationDefinitions.Cast<RelationDefinition>()).SelectMany (
               rd => rd.EndPointDefinitions);
@@ -42,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("collection", collection);
 
-      foreach (IRelationEndPointDefinition relationEndPoint in collection)
+      foreach (var relationEndPoint in collection)
         Add (relationEndPoint);
 
       SetIsReadOnly (makeCollectionReadOnly);
@@ -51,6 +53,14 @@ namespace Remotion.Data.DomainObjects.Mapping
     public void SetReadOnly ()
     {
       SetIsReadOnly (true);
+    }
+
+    public new IEnumerator<IRelationEndPointDefinition> GetEnumerator ()
+    {
+      // ReSharper disable LoopCanBeConvertedToQuery
+      foreach (IRelationEndPointDefinition relationEndPoint in (IEnumerable) this) // use base implementation
+        // ReSharper restore LoopCanBeConvertedToQuery
+        yield return relationEndPoint;
     }
 
     #region Standard implementation for "add-only" collections
@@ -95,13 +105,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     #endregion
-
-    public new IEnumerator<IRelationEndPointDefinition> GetEnumerator ()
-    {
-      // ReSharper disable LoopCanBeConvertedToQuery
-      foreach (IRelationEndPointDefinition relationEndPoint in (IEnumerable) this) // use base implementation
-          // ReSharper restore LoopCanBeConvertedToQuery
-        yield return relationEndPoint;
-    }
   }
 }
