@@ -24,12 +24,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public static class RelationEndPointValueChecker
   {
-    public static void CheckNotDeleted (IEndPoint endPoint, DomainObject domainObject)
-    {
-      if (domainObject != null && domainObject.TransactionContext[endPoint.ClientTransaction].State == StateType.Deleted)
-        throw new ObjectDeletedException (domainObject.ID);
-    }
-
     public static void CheckClientTransaction (IEndPoint endPoint, DomainObject domainObject, string exceptionFormatString)
     {
       if (domainObject != null && !endPoint.ClientTransaction.IsEnlisted (domainObject))

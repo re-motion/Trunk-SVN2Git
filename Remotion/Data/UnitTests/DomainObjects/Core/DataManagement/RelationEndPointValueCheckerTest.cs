@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -115,39 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointStub = CreateCollectionEndPointStub (bindingTransaction1, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
-    }
-
-    [Test]
-    public void CheckNotDeleted_NotDeleted ()
-    {
-      var owningObject = Order.NewObject();
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
-
-      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      
-      RelationEndPointValueChecker.CheckNotDeleted (endPointStub, relatedObject);
-    }
-
-    [Test]
-    public void CheckNotDeleted_Null ()
-    {
-      var owningObject = Order.NewObject ();
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
-
-      RelationEndPointValueChecker.CheckNotDeleted (endPointStub, null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void CheckNotDeleted_Deleted ()
-    {
-      var owningObject = Order.NewObject ();
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
-
-      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      relatedObject.Delete ();
-
-      RelationEndPointValueChecker.CheckNotDeleted (endPointStub, relatedObject);
     }
 
     private void CallCheckClientTransaction (IEndPoint endPoint, DomainObject relatedObject)

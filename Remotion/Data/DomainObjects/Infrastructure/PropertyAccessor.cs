@@ -304,7 +304,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void CheckTransactionalStatus (ClientTransaction transaction)
     {
-      DomainObjectCheckUtility.CheckIfObjectIsInvalid (_domainObject, transaction);
+      DomainObjectCheckUtility.EnsureNotInvalid (_domainObject, transaction);
       DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
     }
 

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -144,7 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
-      RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObject (), ClientTransaction);
 
       EnsureDataAvailable ();
 

@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -128,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Clear ()
     {
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
       
       var combinedCommand = GetClearCommand ();
       combinedCommand.NotifyAndPerform ();
@@ -139,8 +140,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, domainObject);
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
 
       var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
       var bidirectionalModification = insertCommand.ExpandToAllRelatedObjects ();
@@ -154,8 +155,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, domainObject);
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
 
       var containsObjectID = ContainsObjectID (domainObject.ID);
       if (containsObjectID)
@@ -169,7 +170,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
 
       var domainObject = GetObject (objectID);
       if (domainObject != null)
@@ -189,8 +190,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("value", value);
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, value);
-      RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
+      DomainObjectCheckUtility.EnsureNotDeleted (value, AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
 
       var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
       var bidirectionalModification = replaceCommand.ExpandToAllRelatedObjects ();

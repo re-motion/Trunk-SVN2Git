@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -25,15 +26,34 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class DomainObjectCheckUtility
   {
     /// <summary>
-    /// Checks if an object is invalid in the given <paramref name="transaction"/>, and, if yes, throws an <see cref="ObjectInvalidException"/>.
+    /// Checks if an object is invalid in the given <paramref name="clientTransaction"/>, and, if yes, throws an <see cref="ObjectInvalidException"/>.
     /// </summary>
     /// <param name="domainObject">The domain object to check.</param>
-    /// <param name="transaction">The transaction to check the object against.</param>
+    /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectInvalidException">The object is invalid in the given <see cref="ClientTransaction"/>.</exception>
-    public static void CheckIfObjectIsInvalid (DomainObject domainObject, ClientTransaction transaction)
+    public static void EnsureNotInvalid (DomainObject domainObject, ClientTransaction clientTransaction)
     {
-      if (domainObject.TransactionContext[transaction].IsInvalid)
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (domainObject.TransactionContext[clientTransaction].IsInvalid)
         throw new ObjectInvalidException (domainObject.ID);
+    }
+
+    /// <summary>
+    /// Checks if an object has been deleted in the given <paramref name="clientTransaction"/>, and, if yes, throws an 
+    /// <see cref="ObjectDeletedException"/>.
+    /// </summary>
+    /// <param name="domainObject">The domain object to check.</param>
+    /// <param name="clientTransaction">The transaction to check the object against.</param>
+    /// <exception cref="ObjectDeletedException">The object has been deleted in the given <see cref="ClientTransaction"/>.</exception>
+    public static void EnsureNotDeleted (DomainObject domainObject, ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (domainObject.TransactionContext[clientTransaction].State == StateType.Deleted)
+        throw new ObjectDeletedException (domainObject.ID);
     }
 
     /// <summary>
@@ -42,13 +62,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see langword="true" /> for the given <see cref="DomainObject"/>.
     /// </summary>
     /// <param name="domainObject">The domain object to check.</param>
-    /// <param name="transaction">The transaction to check the object against.</param>
+    /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <returns>Returns <see langword="true"/> if the method succeeds without throwing an exception. This return value is available so that the 
     /// method can be used from within an expression.</returns>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
-    public static void CheckIfRightTransaction (DomainObject domainObject, ClientTransaction transaction)
+    public static void CheckIfRightTransaction (DomainObject domainObject, ClientTransaction clientTransaction)
     {
-      if (!transaction.IsEnlisted (domainObject))
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (!clientTransaction.IsEnlisted (domainObject))
       {
         string message = String.Format (
             "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "

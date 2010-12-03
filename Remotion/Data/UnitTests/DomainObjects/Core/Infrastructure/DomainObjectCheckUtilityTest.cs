@@ -27,20 +27,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class DomainObjectCheckUtilityTest : ClientTransactionBaseTest
   {
     [Test]
-    public void CheckIfObjectIsDiscarded_Valid ()
+    public void EnsureNotInvalid_Valid ()
     {
       var order = Order.NewObject ();
 
-      DomainObjectCheckUtility.CheckIfObjectIsInvalid (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.EnsureNotInvalid (order, ClientTransaction.Current);
     }
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
-    public void CheckIfObjectIsDiscarded_Discarded ()
+    public void EnsureNotInvalid_Discarded ()
     {
       var order = Order.NewObject ();
       order.Delete ();
-      DomainObjectCheckUtility.CheckIfObjectIsInvalid (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.EnsureNotInvalid (order, ClientTransaction.Current);
     }
 
     [Test]
@@ -63,6 +63,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
       }
+    }
+
+    [Test]
+    public void EnsureNotDeleted_NotDeleted ()
+    {
+      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+
+      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, ClientTransactionMock);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void EnsureNotDeleted_Deleted ()
+    {
+      var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      relatedObject.Delete ();
+
+      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, ClientTransactionMock);
     }
   }
 }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -53,10 +54,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
           newRelatedObject,
           "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
 
-      RelationEndPointValueChecker.CheckNotDeleted (this, newRelatedObject);
-      RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
-
-      CheckNewRelatedObjectType (newRelatedObject);
+      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObject (), ClientTransaction);
+      if (newRelatedObject != null)
+      {
+        DomainObjectCheckUtility.EnsureNotDeleted (newRelatedObject, ClientTransaction);
+        CheckNewRelatedObjectType (newRelatedObject);
+      }
 
       var setCommand = CreateSetCommand (newRelatedObject);
       var bidirectionalModification = setCommand.ExpandToAllRelatedObjects ();
@@ -153,9 +156,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckNewRelatedObjectType (DomainObject newRelatedObject)
     {
-      if (newRelatedObject == null)
-        return;
-
       if (!Definition.GetOppositeEndPointDefinition().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
       {
         var message = string.Format (

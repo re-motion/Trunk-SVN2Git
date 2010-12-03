@@ -349,7 +349,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
             deletedObject.ID);
       }
 
-      DomainObjectCheckUtility.CheckIfObjectIsInvalid (deletedObject, ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotInvalid (deletedObject, ClientTransaction);
 
       if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
         return new NopCommand();
