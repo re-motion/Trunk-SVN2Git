@@ -29,7 +29,7 @@ public class PropertyDefinitionCollection : CommonCollection, IEnumerable<Proper
   public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
   {
     ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions.Cast<PropertyDefinition> ());
+    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions);
   }
 
   public PropertyDefinitionCollection ()
@@ -40,7 +40,7 @@ public class PropertyDefinitionCollection : CommonCollection, IEnumerable<Proper
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 
-    foreach (PropertyDefinition propertyDefinition in collection)
+    foreach (var propertyDefinition in collection)
       Add (propertyDefinition);
     
     SetIsReadOnly (makeCollectionReadOnly);
@@ -53,11 +53,15 @@ public class PropertyDefinitionCollection : CommonCollection, IEnumerable<Proper
 
   public IEnumerable<PropertyDefinition> GetAllPersistent ()
   {
-    foreach (PropertyDefinition propertyDefinition in this)
-    {
-      if (propertyDefinition.StorageClass == StorageClass.Persistent)
-        yield return propertyDefinition;
-    }
+    return this.Where (propertyDefinition => propertyDefinition.StorageClass == StorageClass.Persistent);
+  }
+
+  public new IEnumerator<PropertyDefinition> GetEnumerator ()
+  {
+    // ReSharper disable LoopCanBeConvertedToQuery
+    foreach (PropertyDefinition propertyDefinition in (IEnumerable) this) // use base implementation
+      // ReSharper restore LoopCanBeConvertedToQuery
+      yield return propertyDefinition;
   }
 
   #region Standard implementation for "add-only" collections
@@ -99,13 +103,5 @@ public class PropertyDefinitionCollection : CommonCollection, IEnumerable<Proper
   }
   
   #endregion
-
-  public new IEnumerator<PropertyDefinition> GetEnumerator ()
-  {
-    // ReSharper disable LoopCanBeConvertedToQuery
-    foreach (PropertyDefinition propertyDefinition in (IEnumerable) this) // use base implementation
-      // ReSharper restore LoopCanBeConvertedToQuery
-      yield return propertyDefinition;
-  }
 }
 }

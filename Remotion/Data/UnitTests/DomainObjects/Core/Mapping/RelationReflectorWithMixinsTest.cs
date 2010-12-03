@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinitionsOfClass = (PropertyDefinitionCollection) PrivateInvoke.GetNonPublicField (classDefinition, "_propertyDefinitions");
       PrivateInvoke.SetNonPublicField (classDefinition, "_propertyDefinitions", null);
       if (propertyDefinitionsOfClass != null)
-        properties.AddRange (propertyDefinitionsOfClass.Cast<PropertyDefinition>());
+        properties.AddRange (propertyDefinitionsOfClass);
 
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
       ;

@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           actualDefinitions.Count,
           "Number of property definitions in class definition '{0}' does not match. Expected: {1}",
           expectedClassDefinition.ID,
-          SeparatedStringBuilder.Build (", ", actualDefinitions.Cast<PropertyDefinition>().Select (pd => pd.PropertyName)));
+          SeparatedStringBuilder.Build (", ", actualDefinitions.Select (pd => pd.PropertyName)));
 
       foreach (PropertyDefinition expectedDefinition in expectedDefinitions)
       {

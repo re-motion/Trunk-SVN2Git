@@ -79,9 +79,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, IEnumerable<MemberInfo> propertyInfos)
     {
-      var propertyDefinitionsForClass = (from PropertyInfo propertyInfo in propertyInfos
-                                         select new PropertyReflector (classDefinition, propertyInfo, NameResolver)
-                                         into propertyReflector select propertyReflector.GetMetadata()).Cast<PropertyDefinition>();
+      var propertyDefinitionsForClass = from PropertyInfo propertyInfo in propertyInfos
+                                        select (PropertyDefinition) new PropertyReflector (classDefinition, propertyInfo, NameResolver).GetMetadata();
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (propertyDefinitionsForClass, true));
     }
 

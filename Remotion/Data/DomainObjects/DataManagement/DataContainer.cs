@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var propertyValues = from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ().Cast<PropertyDefinition>()
+      var propertyValues = from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ()
                            select propertyDefinition.StorageClass == StorageClass.Persistent 
                               ? new PropertyValue (propertyDefinition, persistentValueLookup (propertyDefinition)) 
                               : new PropertyValue (propertyDefinition);
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private static IEnumerable<PropertyValue> GetDefaultPropertyValues (ObjectID id)
     {
-      return from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ().Cast<PropertyDefinition> ()
+      return from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ()
              select new PropertyValue (propertyDefinition);
     }
 
