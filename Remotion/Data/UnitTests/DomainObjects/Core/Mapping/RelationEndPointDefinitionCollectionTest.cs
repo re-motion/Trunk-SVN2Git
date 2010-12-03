@@ -21,7 +21,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -106,41 +105,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Add ()
     {
       _collection.Add (_endPoint1);
-      Assert.AreEqual (1, _collection.Count);
+      Assert.That (_collection.Count, Is.EqualTo (1));
     }
 
     [Test]
     public void PropertyNameIndexer ()
     {
       _collection.Add (_endPoint1);
-      Assert.AreSame (_endPoint1, _collection["Property1"]);
+      Assert.That (_collection["Property1"], Is.SameAs (_endPoint1));
     }
 
     [Test]
     public void NumericIndexer ()
     {
       _collection.Add (_endPoint1);
-      Assert.AreSame (_endPoint1, _collection[0]);
+      Assert.That (_collection[0], Is.SameAs (_endPoint1));
     }
 
     [Test]
     public void ContainsPropertyNameTrue ()
     {
       _collection.Add (_endPoint1);
-      Assert.IsTrue (_collection.Contains ("Property1"));
+      Assert.That (_collection.Contains ("Property1"), Is.True);
     }
 
     [Test]
     public void ContainsPropertyNameFalse ()
     {
-      Assert.IsFalse (_collection.Contains ("UndefinedPropertyName"));
+      Assert.That (_collection.Contains ("UndefinedPropertyName"), Is.False);
     }
 
     [Test]
     public void ContainsRelationEndPointDefinitionTrue ()
     {
       _collection.Add (_endPoint1);
-      Assert.IsTrue (_collection.Contains (_endPoint1));
+      Assert.That (_collection.Contains (_endPoint1), Is.True);
     }
 
     [Test]
@@ -148,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_endPoint1);
 
-      Assert.IsFalse (_collection.Contains (_endPoint2));
+      Assert.That (_collection.Contains (_endPoint2), Is.False);
     }
 
     [Test]
@@ -156,8 +155,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var copiedCollection = new RelationEndPointDefinitionCollection (new[] { _endPoint1 }, false);
 
-      Assert.AreEqual (1, copiedCollection.Count);
-      Assert.AreSame (_endPoint1, copiedCollection[0]);
+      Assert.That (copiedCollection.Count, Is.EqualTo (1));
+      Assert.That (copiedCollection[0], Is.SameAs (_endPoint1));
     }
 
     [Test]
