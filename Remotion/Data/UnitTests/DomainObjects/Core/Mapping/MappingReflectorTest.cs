@@ -15,18 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -74,6 +69,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
 
-    // TODO Review 3548: Add tests showing that GetClassDefinitions calculates empty and non-empty derived classes
+    [Test]
+    public void GetClassDefinitions_DerivedClassesAreSet ()
+    {
+      Assembly assembly = GetType ().Assembly;
+      var mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
+      var classDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
+
+      Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
+      Assert.That (classDefinitions["Company"].DerivedClasses.Count, Is.EqualTo (2));
+    }
+
   }
 }

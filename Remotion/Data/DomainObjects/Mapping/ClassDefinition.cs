@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     [NonSerialized]
     private readonly ClassDefinition _baseClass;
-    
+
     // nonserialized member fields
 
     [NonSerialized]
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     protected ClassDefinition (string id, Type storageGroupType, ClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      
+
       _id = id;
       _storageGroupType = storageGroupType;
 
@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public string GetEntityName ()
     {
-      if (_storageEntityDefinition!=null && _storageEntityDefinition.LegacyEntityName != null)
+      if (_storageEntityDefinition != null && _storageEntityDefinition.LegacyEntityName != null)
         return _storageEntityDefinition.LegacyEntityName;
 
       if (BaseClass == null)
@@ -342,7 +342,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyDefinitions", propertyDefinitions);
 
-      if(_propertyDefinitions!=null)
+      if (_propertyDefinitions != null)
         throw new InvalidOperationException (string.Format ("The property-definitions for class '{0}' have already been set.", ID));
 
       if (_isReadOnly)
@@ -380,10 +380,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      // TODO Review 3548: Add a CheckDerivedClasses method: All derived classes must have this class as their base class definition
+      CheckDerivedClass (derivedClasses);
 
       _derivedClasses = derivedClasses;
-      _derivedClasses.SetReadOnly ();
+      _derivedClasses.SetReadOnly();
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)
@@ -437,32 +437,32 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get
       {
-        if(_propertyDefinitions == null)
+        if (_propertyDefinitions == null)
           throw new InvalidOperationException (string.Format ("No property definitions have been set for class '{0}'.", ID));
-        
-        return _propertyDefinitions; 
+
+        return _propertyDefinitions;
       }
     }
 
     public RelationDefinitionCollection MyRelationDefinitions
     {
-      get 
+      get
       {
         if (_relationDefinitions == null)
           throw new InvalidOperationException (string.Format ("No relation definitions have been set for class '{0}'.", ID));
-        
-        return _relationDefinitions; 
+
+        return _relationDefinitions;
       }
     }
 
     public ClassDefinitionCollection DerivedClasses
     {
-      get 
+      get
       {
         if (_derivedClasses == null)
           throw new InvalidOperationException (string.Format ("No derived classes have been set for class '{0}'.", ID));
 
-        return _derivedClasses; 
+        return _derivedClasses;
       }
     }
 
@@ -487,7 +487,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
     {
-      if (_storageEntityDefinition!=null && _storageEntityDefinition.LegacyEntityName != null)
+      if (_storageEntityDefinition != null && _storageEntityDefinition.LegacyEntityName != null)
       {
         allConcreteEntityNames.Add (_storageEntityDefinition.LegacyEntityName);
         return;
@@ -532,7 +532,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
     }
 
-    private void CheckPropertyDefinitions (PropertyDefinitionCollection propertyDefinitions)
+    private void CheckPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
     {
       foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
       {
@@ -558,7 +558,28 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
     }
-    
+
+    private void CheckDerivedClass (ClassDefinitionCollection derivedClasses)
+    {
+      foreach (ClassDefinition derivedClass in derivedClasses)
+      {
+        if (derivedClass.BaseClass == null)
+        {
+          throw CreateMappingException (
+              "Derived class '{0}' cannot be added to class '{1}', because it has no base class definition defined.", derivedClass.ID, _id);
+        }
+
+        if (derivedClass.BaseClass != this)
+        {
+          throw CreateMappingException (
+              "Derived class '{0}' cannot be added to class '{1}', because it has class '{2}' as its base class definition defined.",
+              derivedClass.ID,
+              _id,
+              derivedClass.BaseClass.ID);
+        }
+      }
+    }
+
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)

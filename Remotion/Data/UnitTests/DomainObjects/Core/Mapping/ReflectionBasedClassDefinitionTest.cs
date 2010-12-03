@@ -254,11 +254,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetDerivedClasses ()
     {
+      
       _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
 
       Assert.That (_personClass.DerivedClasses.Count, Is.EqualTo (1));
-      Assert.That (_personClass.DerivedClasses[0], Is.SameAs (_orderClass));
+      Assert.That (_personClass.DerivedClasses[0], Is.SameAs (_customerClass));
       Assert.That (_personClass.MyRelationDefinitions.IsReadOnly, Is.True);
     }
 
@@ -267,8 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetDerivedClasses_Twice_ThrowsException ()
     {
       _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
     }
 
     [Test]
@@ -277,6 +278,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _personClass.SetReadOnly();
       _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Derived class 'Order' cannot be added to class 'Person', because it has no base class definition defined.")]
+    public void SetDerivedClasses_DerivedClassHasNoBaseClassDefined ()
+    {
+      _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Derived class 'Person' cannot be added to class 'Customer', because it has class 'DomainBase' as its base class definition defined.")]
+    public void SetDerivedClasses_DerivedClassHasWrongBaseClassDefined ()
+    {
+      _customerClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass }, false, true));
     }
 
     [Test]
