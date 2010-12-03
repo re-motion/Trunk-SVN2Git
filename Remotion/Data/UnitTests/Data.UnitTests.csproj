@@ -263,6 +263,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\NameBasedPropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\ClassWithOppositeProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeClass.cs" />
