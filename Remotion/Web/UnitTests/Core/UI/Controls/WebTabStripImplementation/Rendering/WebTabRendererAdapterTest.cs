@@ -50,8 +50,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       webTabRendererMock.Expect (mock => mock.Render (renderingContext, webTabStub, true, true, webTabStyle));
       webTabRendererMock.Replay();
 
-      var rendererAdapter = new WebTabRendererAdapter (webTabRendererMock, webTabStub, true);
-      rendererAdapter.Render (renderingContext, webTabStub, true, webTabStyle);
+      var rendererAdapter = new WebTabRendererAdapter (webTabRendererMock, webTabStub, true, true, webTabStyle);
+      rendererAdapter.Render (renderingContext);
 
       webTabRendererMock.VerifyAllExpectations();
     }

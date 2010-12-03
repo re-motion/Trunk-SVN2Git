@@ -65,8 +65,11 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       RenderBeginTabsPane (renderingContext);
 
       foreach (var webTabRenderer in renderingContext.WebTabRenderers)
-        RenderTab (renderingContext, webTabRenderer);
-      
+      {
+        webTabRenderer.Render (renderingContext);
+        renderingContext.Writer.WriteLine ();
+      }
+
       RenderEndTabsPane (renderingContext);
       renderingContext.Writer.RenderEndTag ();
     }
@@ -105,15 +108,6 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
     {
       renderingContext.Writer.RenderEndTag (); // End List
       renderingContext.Writer.RenderEndTag (); // End Div
-    }
-
-    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter)
-    {
-      bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
-      WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, style);
-
-      renderingContext.Writer.WriteLine ();
     }
 
     #region public virtual string CssClass...

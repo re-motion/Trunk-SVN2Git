@@ -45,6 +45,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private IWebTab _tab0, _tab1, _tab2, _tab3;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private WebTabStyle _style;
 
     [SetUp]
     public void SetUp ()
@@ -71,6 +72,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _webTabStrip.Stub (stub => stub.TabStyle).Return (new WebTabStyle());
       _webTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
+      _style = new WebTabStyle();
+
       MockRepository.GenerateStub<IResourceUrlFactory>();
     }
 
@@ -93,8 +96,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false, true, _style), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -113,8 +116,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false, true, _style), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (true, false, false, 4, renderingContext);
@@ -134,8 +137,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false, true, _style), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -153,8 +156,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false, true, _style), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (false, false, false, 4, renderingContext);
@@ -172,8 +175,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (false, false, false, 3, renderingContext);
@@ -205,8 +208,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
           _webTabStrip,
           new[]
           {
-              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false),
-              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true)
+              new WebTabRendererAdapter (_tab0.GetRenderer(), _tab0, false, true, _style), new WebTabRendererAdapter (_tab1.GetRenderer(), _tab1, false, true, _style),
+              new WebTabRendererAdapter (_tab2.GetRenderer(), _tab2, false, true, _style), new WebTabRendererAdapter (_tab3.GetRenderer(), _tab3, true, true, _style)
           });
 
       AssertControl (false, true, true, 4, renderingContext);

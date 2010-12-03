@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
@@ -51,8 +50,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       RenderBeginTabsPane (renderingContext);
 
       foreach (var webTabRenderer in renderingContext.WebTabRenderers)
-        RenderTab (renderingContext, webTabRenderer);
-      
+      {
+        webTabRenderer.Render (renderingContext);
+        renderingContext.Writer.WriteLine ();
+      }
+
       RenderEndTabsPane (renderingContext);
       RenderClearingPane (renderingContext);
       renderingContext.Writer.RenderEndTag ();
@@ -99,15 +101,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassClearingPane);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
       renderingContext.Writer.RenderEndTag ();
-    }
-
-    private void RenderTab (WebTabStripRenderingContext renderingContext, WebTabRendererAdapter rendererAdapter)
-    {
-      bool isEnabled = !rendererAdapter.WebTab.IsSelected || renderingContext.Control.EnableSelectedTab;
-      WebTabStyle style = rendererAdapter.WebTab.IsSelected ? renderingContext.Control.SelectedTabStyle : renderingContext.Control.TabStyle;
-      rendererAdapter.Render (renderingContext, rendererAdapter.WebTab, isEnabled, style);
-
-      renderingContext.Writer.WriteLine ();
     }
 
     #region public virtual string CssClass...

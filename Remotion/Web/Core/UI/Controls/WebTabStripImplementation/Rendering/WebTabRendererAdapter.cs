@@ -28,8 +28,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     private readonly IWebTabRenderer _webTabRenderer;
     private readonly IWebTab _webTab;
     private readonly bool _isLast;
+    private readonly bool _isEnabled;
+    private readonly WebTabStyle _webTabStyle;
 
-    public WebTabRendererAdapter (IWebTabRenderer webTabRenderer, IWebTab webTab, bool isLast)
+
+    public WebTabRendererAdapter (IWebTabRenderer webTabRenderer, IWebTab webTab, bool isLast, bool isEnabled, WebTabStyle webTabStyle)
     {
       ArgumentUtility.CheckNotNull ("webTabRenderer", webTabRenderer);
       ArgumentUtility.CheckNotNull ("webTab", webTab);
@@ -37,6 +40,8 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       _webTabRenderer = webTabRenderer;
       _webTab = webTab;
       _isLast = isLast;
+      _isEnabled = isEnabled;
+      _webTabStyle = webTabStyle;
     }
 
     public IWebTab WebTab
@@ -49,12 +54,21 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       get { return _isLast; }
     }
 
-    public void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
+    public bool IsEnabled
+    {
+      get { return _isEnabled; }
+    }
+
+    public WebTabStyle WebTabStyle
+    {
+      get { return _webTabStyle; }
+    }
+
+    public void Render (WebTabStripRenderingContext renderingContext)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
-      ArgumentUtility.CheckNotNull ("style", style);
-
-      _webTabRenderer.Render (renderingContext, tab, isEnabled, _isLast, style);
+      
+      _webTabRenderer.Render (renderingContext, _webTab, _isEnabled, _isLast, _webTabStyle);
     }
 
   }

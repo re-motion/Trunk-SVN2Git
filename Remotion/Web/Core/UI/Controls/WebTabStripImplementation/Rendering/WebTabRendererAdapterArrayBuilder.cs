@@ -35,6 +35,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       _webTabs = webTabs;
     }
 
+    public bool EnableSelectedTab { get; set; }
+    public WebTabStyle SelectedTabStyle { get; set; }
+    public WebTabStyle TabStyle { get; set; }
+
     public WebTabRendererAdapter[] GetWebTabRenderers ()
     {
       var rendererAdapters = new List<WebTabRendererAdapter>();
@@ -42,7 +46,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       {
         var webTab = _webTabs[i];
         var isLast = i == (_webTabs.Length - 1);
-        rendererAdapters.Add (new WebTabRendererAdapter (webTab.GetRenderer(), webTab, isLast));
+        var isEnabled = !_webTabs[i].IsSelected || EnableSelectedTab;
+        var style = _webTabs[i].IsSelected ? SelectedTabStyle : TabStyle;
+
+        rendererAdapters.Add (new WebTabRendererAdapter (webTab.GetRenderer(), webTab, isLast, isEnabled, style));
       }
       return rendererAdapters.ToArray();
     }

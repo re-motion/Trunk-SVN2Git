@@ -264,6 +264,10 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       var builder = new WebTabRendererAdapterArrayBuilder (GetVisibleTabs ().ToArray ());
+      builder.EnableSelectedTab = EnableSelectedTab;
+      builder.SelectedTabStyle = SelectedTabStyle;
+      builder.TabStyle = TabStyle;
+      
       var renderers = builder.GetWebTabRenderers();
 
       return new WebTabStripRenderingContext (Page.Context, writer, this, renderers);
