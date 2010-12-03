@@ -130,7 +130,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void Clear ()
     {
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
-      
+
+      EnsureDataAvailable ();
+
       var combinedCommand = GetClearCommand ();
       combinedCommand.NotifyAndPerform ();
     }
@@ -142,6 +144,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+
+      EnsureDataAvailable ();
 
       var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
       var bidirectionalModification = insertCommand.ExpandToAllRelatedObjects ();
@@ -158,6 +162,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
 
+      EnsureDataAvailable ();
+
       var containsObjectID = ContainsObjectID (domainObject.ID);
       if (containsObjectID)
         CreateAndExecuteRemoveCommand (domainObject);
@@ -171,6 +177,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+
+      EnsureDataAvailable ();
 
       var domainObject = GetObject (objectID);
       if (domainObject != null)
@@ -192,6 +200,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (value, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+
+      EnsureDataAvailable ();
 
       var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
       var bidirectionalModification = replaceCommand.ExpandToAllRelatedObjects ();

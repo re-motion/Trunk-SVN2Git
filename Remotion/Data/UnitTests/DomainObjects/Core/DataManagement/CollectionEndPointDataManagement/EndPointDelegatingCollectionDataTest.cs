@@ -283,6 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _data.Clear();
 
       mockRepository.VerifyAll();
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -296,6 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _data.Clear();
 
       _collectionEndPointMock.VerifyAllExpectations();
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -310,6 +312,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.VerifyAllExpectations();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -334,6 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.VerifyAllExpectations();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
 
       Assert.That (result, Is.True);
     }
@@ -371,6 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.VerifyAllExpectations();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
 
       Assert.That (result, Is.True);
     }
@@ -384,6 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
 
       Assert.That (result, Is.False);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
@@ -404,6 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.VerifyAllExpectations();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
+      _dataKeeperStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]
