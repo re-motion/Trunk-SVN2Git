@@ -109,6 +109,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "End points without property name cannot be added to this collection.")]
+    public void Add_PropertyNameIsNull ()
+    {
+      var endPoint = new AnonymousRelationEndPointDefinition (_classDefinition);
+      _collection.Add (endPoint);
+    }
+
+    [Test]
     public void PropertyNameIndexer ()
     {
       _collection.Add (_endPoint1);
