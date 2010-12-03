@@ -1164,24 +1164,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionProperty1SideCreateTargetClassForPersistentMixinMixedCollectionPropertyRelationDefinition());
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
 
-      var relationsByClass = from relationDefinition in relationDefinitions.Cast<RelationDefinition>()
-                             from endPoint in relationDefinition.EndPointDefinitions
-                             where !endPoint.IsAnonymous
-                             group relationDefinition by endPoint.ClassDefinition
-                               into grouping
-                               select new { Key = grouping.Key, Values = grouping.Distinct () };
+      CalculateAndSetRelationDefinitions (relationDefinitions);
 
-      var classesWithRelationDefinitions = new HashSet<ClassDefinition>();
-      foreach (var classWithRelations in relationsByClass)
-      {
-        classWithRelations.Key.SetRelationDefinitions (new RelationDefinitionCollection (classWithRelations.Values, true));
-        classesWithRelationDefinitions.Add (classWithRelations.Key);
-      }
-
-      foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition>().Where(cd=>!classesWithRelationDefinitions.Contains(cd)))
-        classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
-      
       return relationDefinitions;
+    }
+
+    private void CalculateAndSetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
+    {
+      var relationsByClass = (from relationDefinition in relationDefinitions.Cast<RelationDefinition>()
+                              from endPoint in relationDefinition.EndPointDefinitions
+                              where !endPoint.IsAnonymous
+                              group relationDefinition by endPoint.ClassDefinition)
+                             .ToDictionary (grouping => grouping.Key, grouping => grouping.Distinct());
+
+      foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition> ())
+      {
+        IEnumerable<RelationDefinition> relationDefinitionsForClass;
+        if (!relationsByClass.TryGetValue (classDefinition, out relationDefinitionsForClass))
+          relationDefinitionsForClass = Enumerable.Empty<RelationDefinition> ();
+
+        classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (relationDefinitionsForClass, true));
+      }
     }
 
     private RelationDefinition CreateCustomerToOrderRelationDefinition ()
