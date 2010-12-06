@@ -100,9 +100,10 @@ namespace Remotion.Data.DomainObjects.Mapping
         {
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
           VerifyPersistenceModelApplied (rootClass);
-        }
 
-        ValidatePersistenceMapping();
+          var validator = persistenceModelLoader.CreatePersistenceMappingValidator (rootClass);
+          ValidatePersistenceMapping (validator, rootClass);
+        }
 
         _resolveTypes = mappingLoader.ResolveTypes;
         _nameResolver = mappingLoader.NameResolver;
@@ -234,10 +235,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
     }
 
-    private void ValidatePersistenceMapping ()
+    private void ValidatePersistenceMapping (IPersistenceMappingValidator validator, ClassDefinition rootClass)
     {
-      var persistenceMappingValidator = PersistenceMappingValidator.Create ();
-      AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition> ()));
+      var classDefinitionsToValidate = new[]{rootClass}.Concat(rootClass.GetAllDerivedClasses().Cast<ClassDefinition>());
+      AnalyzeMappingValidationResults (validator.Validate (classDefinitionsToValidate));
     }
 
     private void AnalyzeMappingValidationResults (IEnumerable<MappingValidationResult> mappingValidationResults)

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
@@ -42,6 +43,13 @@ namespace Remotion.Data.DomainObjects.Mapping
       var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition);
       var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder);
       persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+    }
+
+    public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)
+    {
+      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition);
+      var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder);
+      return persistenceModelLoader.CreatePersistenceMappingValidator (classDefinition);
     }
   }
 }

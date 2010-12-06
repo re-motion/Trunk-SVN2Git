@@ -20,6 +20,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -122,6 +124,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeColumnDefinition5 = new ColumnDefinition ("Test5", typeof (string), "varchar", true);
       _fakeColumnDefinition6 = new ColumnDefinition ("Test6", typeof (int), "int", false);
       _fakeColumnDefinition7 = new ColumnDefinition ("Test7", typeof (string), "varchar", true);
+    }
+
+    [Test]
+    public void CreatePersistenceMappingValidator ()
+    {
+      var validator = (PersistenceMappingValidator) _rdbmsPersistenceModelLoader.CreatePersistenceMappingValidator(_baseBaseClassDefinition);
+
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (OnlyOneTablePerHierarchyValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (NonAbstractClassHasEntityNameValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule)));
+      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (PropertyTypeIsSupportedByStorageProviderValidationRule)));
     }
 
     [Test]

@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.FunctionalProgramming;
@@ -56,6 +58,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory
     {
       get { return _storagePropertyDefinitionFactory; }
+    }
+
+    public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)
+    {
+      return new PersistenceMappingValidator (
+          new OnlyOneTablePerHierarchyValidationRule (),
+          new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule (),
+          new NonAbstractClassHasEntityNameValidationRule (),
+          new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
+          new PropertyTypeIsSupportedByStorageProviderValidationRule ());
     }
 
     public void ApplyPersistenceModelToHierarchy (ClassDefinition classDefinition)

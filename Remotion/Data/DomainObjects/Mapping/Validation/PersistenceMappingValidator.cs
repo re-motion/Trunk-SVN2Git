@@ -32,16 +32,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly ReadOnlyCollection<IPersistenceMappingValidationRule> _validationRules;
 
-    public static PersistenceMappingValidator Create ()
-    {
-      return new PersistenceMappingValidator (
-          new OnlyOneTablePerHierarchyValidationRule(),
-          new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule(),
-          new NonAbstractClassHasEntityNameValidationRule(),
-          new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
-          new PropertyTypeIsSupportedByStorageProviderValidationRule());
-    }
-
     public PersistenceMappingValidator (params IPersistenceMappingValidationRule[] classDefinitionValidationRules)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);

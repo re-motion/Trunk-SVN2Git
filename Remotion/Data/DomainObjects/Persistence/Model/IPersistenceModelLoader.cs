@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 
 namespace Remotion.Data.DomainObjects.Persistence.Model
 {
@@ -25,5 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   public interface IPersistenceModelLoader
   {
     void ApplyPersistenceModelToHierarchy (ClassDefinition classDefinition);
+    IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition);
   }
 }

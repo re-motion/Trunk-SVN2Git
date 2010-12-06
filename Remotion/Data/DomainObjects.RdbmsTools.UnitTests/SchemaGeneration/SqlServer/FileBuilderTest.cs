@@ -21,6 +21,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
@@ -121,6 +124,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
       SetupResult.For (mappingLoaderStub.GetClassDefinitions()).Return (new ClassDefinition[0]);
       SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
+      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator ()).Return (CreateClassDefinitionValidator ());
+      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator ()).Return (CreatePropertyDefinitionValidator ());
+      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator ()).Return (CreateRelationDefinitionValidator ());
+      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator ()).Return (CreateSortExpressionValidator ());
       mockRepository.ReplayAll();
 
       FileBuilderBase.Build (
@@ -132,6 +139,47 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
       Assert.AreEqual (_firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
+    }
+
+    private ClassDefinitionValidator CreateClassDefinitionValidator ()
+    {
+      return new ClassDefinitionValidator (
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
+          new DomainObjectTypeIsNotGenericValidationRule (),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+    }
+
+    private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    {
+      return new PropertyDefinitionValidator (
+          new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
+          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
+          new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
+          new StorageClassIsSupportedValidationRule (),
+          new PropertyTypeIsSupportedValidationRule ());
+    }
+
+    private RelationDefinitionValidator CreateRelationDefinitionValidator ()
+    {
+      return new RelationDefinitionValidator (
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new RelationEndPointNamesAreConsistentValidationRule (),
+          new RelationEndPointTypesAreConsistentValidationRule (),
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
+          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+    }
+
+    private SortExpressionValidator CreateSortExpressionValidator ()
+    {
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
     }
   }
 }

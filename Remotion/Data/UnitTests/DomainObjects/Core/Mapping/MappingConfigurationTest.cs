@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Initialize ()
     {
       StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, true);
-      
+
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       try
       {
-        StubMockMappingLoader(_emptyClassDefinitions, _emptyRelationDefinitions, true);
+        StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, true);
 
         _mockRepository.ReplayAll();
 
@@ -162,8 +162,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
               + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
-      
-      StubMockMappingLoader (new[]{classDefinition},new[]{ relationDefinition}, true);
+
+      StubMockMappingLoader (new[] { classDefinition }, new[] { relationDefinition }, true);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetStorageEntity (unionViewDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      
+
       StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
 
@@ -244,6 +244,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void VerifyPeristenceModelApplied_ ()
+    {
+      var fakeStorageEntityDefinition = new TableDefinition (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new ColumnDefinition[0]);
+      var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader>();
+      var validatorMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
+      var validatorMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
+
+      var rootClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var rootClass2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Company), null);
+      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Customer), rootClass2);
+
+      rootClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      rootClass2.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      rootClass1.SetDerivedClasses (new ClassDefinitionCollection());
+      rootClass2.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
+      derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
+
+      persistenceModelLoaderMock.Expect(mock => mock.ApplyPersistenceModelToHierarchy (rootClass1)).WhenCalled (
+          mi => rootClass1.SetStorageEntity (fakeStorageEntityDefinition));
+      persistenceModelLoaderMock.Expect(mock => mock.ApplyPersistenceModelToHierarchy (rootClass2)).WhenCalled (
+          mi =>
+          {
+            rootClass2.SetStorageEntity (fakeStorageEntityDefinition);
+            derivedClass.SetStorageEntity (fakeStorageEntityDefinition);
+          });
+      persistenceModelLoaderMock.Expect (mock => mock.CreatePersistenceMappingValidator (rootClass1)).Return (validatorMock1);
+      persistenceModelLoaderMock.Expect (mock => mock.CreatePersistenceMappingValidator (rootClass2)).Return (validatorMock2);
+      persistenceModelLoaderMock.Replay();
+
+      validatorMock1.Expect (mock => mock.Validate (Arg<IEnumerable<ClassDefinition>>.Matches (c => new List<ClassDefinition> (c)[0] == rootClass1))).
+          Return (new MappingValidationResult[0]);
+      validatorMock2.Expect (
+          mock =>
+          mock.Validate (
+              Arg<IEnumerable<ClassDefinition>>.Matches (
+                  c => new List<ClassDefinition> (c)[0] == rootClass2 && new List<ClassDefinition> (c)[1] == derivedClass))).
+          Return (new MappingValidationResult[0]);
+      validatorMock1.Replay();
+      validatorMock2.Replay();
+
+      StubMockMappingLoader (new[] { rootClass1, rootClass2, derivedClass }, new RelationDefinition[0], true);
+      _mockRepository.ReplayAll();
+
+      new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderMock);
+
+      persistenceModelLoaderMock.VerifyAllExpectations();
+      validatorMock1.VerifyAllExpectations();
+      validatorMock2.VerifyAllExpectations();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Order'.")]
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToTheRootClass ()
@@ -252,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
-      
+
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
       StubMockMappingLoader (classDefinition);
@@ -307,10 +360,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (companyClass.StorageEntityDefinition, Is.Null);
       Assert.That (partnerClass.StorageEntityDefinition, Is.Null);
 
-      var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader> ();
+      var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
       StubMockMappingLoader (companyClass, partnerClass);
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (companyClass)).WhenCalled (
           mi => companyClass.SetStorageEntity (fakeStorageEntityDefinition));
@@ -324,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetCurrentRejectsUnresolvedTypes ()
     {
       StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, false);
-      
+
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
@@ -456,58 +509,58 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       StubMockMappingLoader (classDefinitions, new RelationDefinition[0], true);
     }
 
-    private void StubMockMappingLoader (IEnumerable<ClassDefinition> classDefinitions, IEnumerable<RelationDefinition> relationDefinitions, bool resolveTypes)
+    private void StubMockMappingLoader (
+        IEnumerable<ClassDefinition> classDefinitions, IEnumerable<RelationDefinition> relationDefinitions, bool resolveTypes)
     {
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitions);
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitions);
       SetupResult.For (_mockMappingLoader.ResolveTypes).Return (resolveTypes);
       SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
-      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator ()).Return (CreateClassDefinitionValidator());
-      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator ()).Return (CreatePropertyDefinitionValidator());
-      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator ()).Return (CreateRelationDefinitionValidator ());
-      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator ()).Return (CreateSortExpressionValidator ());
-
+      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (CreateRelationDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator()).Return (CreateSortExpressionValidator());
     }
 
     private ClassDefinitionValidator CreateClassDefinitionValidator ()
     {
       return new ClassDefinitionValidator (
-          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
-          new DomainObjectTypeIsNotGenericValidationRule (),
-          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
-          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
-          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule(),
+          new DomainObjectTypeIsNotGenericValidationRule(),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule(),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule(),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule());
     }
 
     private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
       return new PropertyDefinitionValidator (
-        new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
-        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
-        new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
-        new StorageClassIsSupportedValidationRule (),
-        new PropertyTypeIsSupportedValidationRule ());
+          new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule(),
+          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule(),
+          new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
+          new StorageClassIsSupportedValidationRule(),
+          new PropertyTypeIsSupportedValidationRule());
     }
 
     private RelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
       return new RelationDefinitionValidator (
-          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
-          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
-          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
-          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
-          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new RelationEndPointNamesAreConsistentValidationRule (),
-          new RelationEndPointTypesAreConsistentValidationRule (),
-          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
-          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule(),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule(),
+          new RelationEndPointNamesAreConsistentValidationRule(),
+          new RelationEndPointTypesAreConsistentValidationRule(),
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule(),
+          new CheckForTypeNotFoundClassDefinitionValidationRule());
     }
 
     private SortExpressionValidator CreateSortExpressionValidator ()
     {
-      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule());
     }
   }
 }
