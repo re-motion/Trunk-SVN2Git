@@ -51,14 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     }
 
     [Test]
-    public void Create ()
-    {
-      var validator = SortExpressionValidator.Create();
-
-      Assert.That (validator.ValidationRule, Is.TypeOf (typeof (SortExpressionIsValidValidationRule)));
-    }
-
-    [Test]
     public void ValidateWithOneRelationDefinition_ValidResult ()
     {
       var validator = new SortExpressionValidator (_validationRuleMock);

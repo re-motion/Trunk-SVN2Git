@@ -57,19 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     }
     
     [Test]
-    public void Create ()
-    {
-      var validator = PropertyDefinitionValidator.Create ();
-
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
-      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (PropertyNamesAreUniqueWithinInheritanceTreeValidationRule)));
-      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
-      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
-      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
-      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (PropertyTypeIsSupportedValidationRule)));
-    }
-
-    [Test]
     public void ValidateWithOneRuleAndClassDefinition_ValidResult ()
     {
       var validator = new PropertyDefinitionValidator (_validationRuleMock1);

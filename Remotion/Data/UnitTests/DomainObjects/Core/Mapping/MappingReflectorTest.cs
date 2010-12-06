@@ -21,6 +21,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -28,13 +30,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class MappingReflectorTest : MappingReflectionTestBase
   {
+    private IMappingLoader _mappingReflector;
 
+    [SetUp]
+    public new void SetUp ()
+    {
+      base.SetUp();
+      _mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+    }
 
     [Test]
     public void GetResolveTypes ()
     {
-      IMappingLoader mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
-      Assert.IsTrue (mappingReflector.ResolveTypes);
+      
+      Assert.IsTrue (_mappingReflector.ResolveTypes);
     }
 
     [Test]
@@ -78,6 +87,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
       Assert.That (classDefinitions["Company"].DerivedClasses.Count, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void CreateClassDefinitionValidator ()
+    {
+      var validator = _mappingReflector.CreateClassDefinitionValidator();
+
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (6));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (DomainObjectTypeIsNotGenericValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (InheritanceHierarchyFollowsClassHierarchyValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule)));
+      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule)));
+      Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (StorageGroupTypesAreSameWithinInheritanceTreeRule)));
+    }
+
+    [Test]
+    public void CreatePropertyDefinitionValidator ()
+    {
+      var validator = _mappingReflector.CreatePropertyDefinitionValidator();
+
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (PropertyNamesAreUniqueWithinInheritanceTreeValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (PropertyTypeIsSupportedValidationRule)));
+    }
+
+    [Test]
+    public void CreateRelationDefinitionValidator ()
+    {
+      var validator = _mappingReflector.CreateRelationDefinitionValidator();
+
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (10));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RdbmsRelationEndPointCombinationIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (VirtualRelationEndPointPropertyTypeIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule)));
+      Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (RelationEndPointPropertyTypeIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[6], Is.TypeOf (typeof (RelationEndPointNamesAreConsistentValidationRule)));
+      Assert.That (validator.ValidationRules[7], Is.TypeOf (typeof (RelationEndPointTypesAreConsistentValidationRule)));
+      Assert.That (validator.ValidationRules[8], Is.TypeOf (typeof (CheckForPropertyNotFoundRelationEndPointsValidationRule)));
+      Assert.That (validator.ValidationRules[9], Is.TypeOf (typeof (CheckForTypeNotFoundClassDefinitionValidationRule)));
+    }
+
+    [Test]
+    public void CreateSortExpressionValidator ()
+    {
+      var validator = _mappingReflector.CreateSortExpressionValidator();
+
+      Assert.That (validator.ValidationRule, Is.TypeOf (typeof (SortExpressionIsValidValidationRule)));
     }
 
   }

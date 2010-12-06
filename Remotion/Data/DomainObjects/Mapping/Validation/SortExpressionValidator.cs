@@ -31,11 +31,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly IRelationDefinitionValidatorRule _validationRule;
 
-    public static SortExpressionValidator Create ()
-    {
-      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
-    }
-
     public SortExpressionValidator (IRelationDefinitionValidatorRule validationRule)
     {
       _validationRule = validationRule;

@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -32,16 +30,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   public class PropertyDefinitionValidator : IPropertyDefinitionValidator
   {
     private readonly ReadOnlyCollection<IPropertyDefinitionValidationRule> _validationRules;
-
-    public static PropertyDefinitionValidator Create ()
-    {
-      return new PropertyDefinitionValidator (
-        new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
-        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
-        new MappingAttributesAreSupportedForPropertyTypeValidationRule(),
-        new StorageClassIsSupportedValidationRule(),
-        new PropertyTypeIsSupportedValidationRule());
-    }
 
     public PropertyDefinitionValidator (params IPropertyDefinitionValidationRule[] classDefinitionValidationRules)
     {

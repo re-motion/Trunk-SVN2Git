@@ -22,6 +22,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -59,11 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      Expect.Call (_mockMappingLoader.GetClassDefinitions()).Return (_emptyClassDefinitions);
-      Expect.Call (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_emptyRelationDefinitions);
-      Expect.Call (_mockMappingLoader.ResolveTypes).Return (true);
-      Expect.Call (_mockMappingLoader.NameResolver).Return (_nameResolver);
-
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, true);
+      
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       try
       {
-        StubMockMappingLoader(_emptyClassDefinitions, _emptyRelationDefinitions);
+        StubMockMappingLoader(_emptyClassDefinitions, _emptyRelationDefinitions, true);
 
         _mockRepository.ReplayAll();
 
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
               + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
       
-      StubMockMappingLoader (new[]{classDefinition},new[]{ relationDefinition});
+      StubMockMappingLoader (new[]{classDefinition},new[]{ relationDefinition}, true);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -323,11 +323,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Argument 'mappingConfiguration' must have property 'ResolveTypes' set.\r\nParameter name: mappingConfiguration")]
     public void SetCurrentRejectsUnresolvedTypes ()
     {
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_emptyClassDefinitions);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (_emptyRelationDefinitions);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (false);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
-
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, false);
+      
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
@@ -456,15 +453,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private void StubMockMappingLoader (params ClassDefinition[] classDefinitions)
     {
-      StubMockMappingLoader (classDefinitions, new RelationDefinition[0]);
+      StubMockMappingLoader (classDefinitions, new RelationDefinition[0], true);
     }
 
-    private void StubMockMappingLoader (IEnumerable<ClassDefinition> classDefinitions, IEnumerable<RelationDefinition> relationDefinitions)
+    private void StubMockMappingLoader (IEnumerable<ClassDefinition> classDefinitions, IEnumerable<RelationDefinition> relationDefinitions, bool resolveTypes)
     {
       SetupResult.For (_mockMappingLoader.GetClassDefinitions ()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitions);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (resolveTypes);
       SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator ()).Return (CreateClassDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator ()).Return (CreatePropertyDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator ()).Return (CreateRelationDefinitionValidator ());
+      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator ()).Return (CreateSortExpressionValidator ());
+
+    }
+
+    private ClassDefinitionValidator CreateClassDefinitionValidator ()
+    {
+      return new ClassDefinitionValidator (
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
+          new DomainObjectTypeIsNotGenericValidationRule (),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+    }
+
+    private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    {
+      return new PropertyDefinitionValidator (
+        new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
+        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
+        new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
+        new StorageClassIsSupportedValidationRule (),
+        new PropertyTypeIsSupportedValidationRule ());
+    }
+
+    private RelationDefinitionValidator CreateRelationDefinitionValidator ()
+    {
+      return new RelationDefinitionValidator (
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new RelationEndPointNamesAreConsistentValidationRule (),
+          new RelationEndPointTypesAreConsistentValidationRule (),
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
+          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+    }
+
+    private SortExpressionValidator CreateSortExpressionValidator ()
+    {
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
     }
   }
 }

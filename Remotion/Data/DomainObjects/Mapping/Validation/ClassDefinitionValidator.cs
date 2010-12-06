@@ -33,17 +33,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly ReadOnlyCollection<IClassDefinitionValidationRule> _validationRules;
 
-    public static ClassDefinitionValidator Create ()
-    {
-      return new ClassDefinitionValidator (
-          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule(),
-          new DomainObjectTypeIsNotGenericValidationRule(),
-          new InheritanceHierarchyFollowsClassHierarchyValidationRule(),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule(),
-          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule(),
-          new StorageGroupTypesAreSameWithinInheritanceTreeRule());
-    }
-
     public ClassDefinitionValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);

@@ -19,6 +19,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -106,6 +109,47 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IMappingNameResolver NameResolver
     {
       get { return _nameResolver; }
+    }
+
+    public ClassDefinitionValidator CreateClassDefinitionValidator ()
+    {
+      return new ClassDefinitionValidator (
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
+          new DomainObjectTypeIsNotGenericValidationRule (),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+    }
+
+    public PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    {
+      return new PropertyDefinitionValidator (
+        new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
+        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
+        new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
+        new StorageClassIsSupportedValidationRule (),
+        new PropertyTypeIsSupportedValidationRule ());
+    }
+
+    public RelationDefinitionValidator CreateRelationDefinitionValidator ()
+    {
+      return new RelationDefinitionValidator (
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new RelationEndPointNamesAreConsistentValidationRule (),
+          new RelationEndPointTypesAreConsistentValidationRule (),
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
+          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+    }
+
+    public SortExpressionValidator CreateSortExpressionValidator ()
+    {
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
     }
   }
 }

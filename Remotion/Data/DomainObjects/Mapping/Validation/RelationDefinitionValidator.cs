@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -32,21 +30,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   public class RelationDefinitionValidator : IRelationDefinitionValidator
   {
     private readonly ReadOnlyCollection<IRelationDefinitionValidatorRule> _validationRules;
-
-    public static RelationDefinitionValidator Create ()
-    {
-      return new RelationDefinitionValidator (
-          new RdbmsRelationEndPointCombinationIsSupportedValidationRule(),
-          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule(),
-          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule(),
-          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule(),
-          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule(),
-          new RelationEndPointPropertyTypeIsSupportedValidationRule(),
-          new RelationEndPointNamesAreConsistentValidationRule(),
-          new RelationEndPointTypesAreConsistentValidationRule(),
-          new CheckForPropertyNotFoundRelationEndPointsValidationRule(),
-          new CheckForTypeNotFoundClassDefinitionValidationRule());
-    }
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)
     {

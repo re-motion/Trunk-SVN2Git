@@ -89,12 +89,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true, true);
 
-        ValidateClassDefinitions();
-        ValidatePropertyDefinitions();
+        ValidateClassDefinitions(mappingLoader);
+        ValidatePropertyDefinitions(mappingLoader);
 
         _relationDefinitions = new RelationDefinitionCollection (mappingLoader.GetRelationDefinitions (_classDefinitions), true);
 
-        ValidateRelationDefinitions();
+        ValidateRelationDefinitions(mappingLoader);
 
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         SetMappingReadOnly ();
 
-        ValidateSortExpression();
+        ValidateSortExpression(mappingLoader);
       }
     }
 
@@ -210,34 +210,34 @@ namespace Remotion.Data.DomainObjects.Mapping
       _relationDefinitions.SetReadOnly();
     }
 
-    private void ValidateClassDefinitions ()
+    private void ValidateClassDefinitions (IMappingLoader mappingLoader)
     {
-      var classDefinitionValidator = ClassDefinitionValidator.Create();
+      var classDefinitionValidator = mappingLoader.CreateClassDefinitionValidator();
       AnalyzeMappingValidationResults (classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
     }
 
-    private void ValidatePropertyDefinitions ()
+    private void ValidatePropertyDefinitions (IMappingLoader mappingLoader)
     {
-      var propertyDefinitionValidator = PropertyDefinitionValidator.Create();
+      var propertyDefinitionValidator = mappingLoader.CreatePropertyDefinitionValidator();
       AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
     }
 
-    private void ValidateRelationDefinitions ()
+    private void ValidateRelationDefinitions (IMappingLoader mappingLoader)
     {
-      var relationDefinitionValidator = RelationDefinitionValidator.Create();
+      var relationDefinitionValidator = mappingLoader.CreateRelationDefinitionValidator();
       AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
+    }
+
+    private void ValidateSortExpression (IMappingLoader mappingLoader)
+    {
+      var sortExpressionValidator = mappingLoader.CreateSortExpressionValidator();
+      AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
     }
 
     private void ValidatePersistenceMapping ()
     {
-      var persistenceMappingValidator = PersistenceMappingValidator.Create();
-      AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
-    }
-
-    private void ValidateSortExpression ()
-    {
-      var sortExpressionValidator = SortExpressionValidator.Create();
-      AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
+      var persistenceMappingValidator = PersistenceMappingValidator.Create ();
+      AnalyzeMappingValidationResults (persistenceMappingValidator.Validate (_classDefinitions.Cast<ClassDefinition> ()));
     }
 
     private void AnalyzeMappingValidationResults (IEnumerable<MappingValidationResult> mappingValidationResults)

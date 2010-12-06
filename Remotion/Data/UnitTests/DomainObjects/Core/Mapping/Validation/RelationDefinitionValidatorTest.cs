@@ -56,24 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     }
 
     [Test]
-    public void Create ()
-    {
-      var validator = RelationDefinitionValidator.Create();
-
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (10));
-      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RdbmsRelationEndPointCombinationIsSupportedValidationRule)));
-      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule)));
-      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule)));
-      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (VirtualRelationEndPointPropertyTypeIsSupportedValidationRule)));
-      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule)));
-      Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (RelationEndPointPropertyTypeIsSupportedValidationRule)));
-      Assert.That (validator.ValidationRules[6], Is.TypeOf (typeof (RelationEndPointNamesAreConsistentValidationRule)));
-      Assert.That (validator.ValidationRules[7], Is.TypeOf (typeof (RelationEndPointTypesAreConsistentValidationRule)));
-      Assert.That (validator.ValidationRules[8], Is.TypeOf (typeof (CheckForPropertyNotFoundRelationEndPointsValidationRule)));
-      Assert.That (validator.ValidationRules[9], Is.TypeOf (typeof (CheckForTypeNotFoundClassDefinitionValidationRule)));
-    }
-
-    [Test]
     public void ValidateWithOneRuleAndRelationDefinition_ValidResult ()
     {
       var validator = new RelationDefinitionValidator (_validationRuleMock1);

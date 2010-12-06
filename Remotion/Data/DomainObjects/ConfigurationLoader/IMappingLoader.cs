@@ -16,6 +16,7 @@
 // 
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader
 {
@@ -25,5 +26,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
     IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions);
     bool ResolveTypes { get; }
     IMappingNameResolver NameResolver { get; }
+    ClassDefinitionValidator CreateClassDefinitionValidator ();
+    PropertyDefinitionValidator CreatePropertyDefinitionValidator ();
+    RelationDefinitionValidator CreateRelationDefinitionValidator ();
+    SortExpressionValidator CreateSortExpressionValidator ();
   }
 }
