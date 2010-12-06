@@ -126,8 +126,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
         if (checkRelations)
         {
+          var expectedRelationDefinitions = new RelationDefinitionCollection(expectedDefinition.MyRelationEndPointDefinitions.Select (ep => ep.RelationDefinition), true);
+          var actualRelationDefinitions = new RelationDefinitionCollection (actualDefinition.MyRelationEndPointDefinitions.Select (ep => ep.RelationDefinition), true);
+
           RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
-          relationDefinitionChecker.Check (expectedDefinition.MyRelationDefinitions, actualDefinition.MyRelationDefinitions, ignoreUnknown);
+          relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, ignoreUnknown);
         }
       }
     }

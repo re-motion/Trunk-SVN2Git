@@ -49,52 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
-
-      _relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        + "TestDomain.Integration.Order.OrderTicket"];
-
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ _relationDefinition}, true));
-
-      var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(classDefinition).ToArray ();
-
-      Assert.That (relationDefinitions.Length, Is.EqualTo (1));
-      Assert.That (relationDefinitions[0], Is.SameAs (_relationDefinition));
-    }
-
-    [Test]
-    public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
-    {
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "BaseOrder", "BaseOrder", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DerivedOrder", "DerivedOrder", UnitTestDomainStorageProviderDefinition, typeof (Order), false, baseClassDefinition, new Type[0]);
-
-      var relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
-        + "Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
-        + "Integration.Customer.Orders"];
-      var relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
-        + "Integration.Order.Official->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain."
-        + "Integration.Official.Orders"];
-
-      baseClassDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
-      derivedClassDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[]{relationDefinition2}, true));
-
-      var relationDefinitions = RelationDefinitionCollection.CreateForAllRelations(derivedClassDefinition).ToArray ();
-
-      Assert.That (relationDefinitions.Length, Is.EqualTo (2));
-      Assert.That (relationDefinitions[0], Is.SameAs (relationDefinition2));
-      Assert.That (relationDefinitions[1], Is.SameAs (relationDefinition1));
-    }
-
-    [Test]
     public void Add ()
     {
       _collection.Add (_relationDefinition);

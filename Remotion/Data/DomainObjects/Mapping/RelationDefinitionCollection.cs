@@ -16,34 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
 [Serializable]
 public class RelationDefinitionCollection : CommonCollection
 {
-  // types
-
-  // static members and constants
-
-  public static IEnumerable<RelationDefinition> CreateForAllRelations (ClassDefinition classDefinition)
-  {
-    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationDefinitions.Cast<RelationDefinition> ());
-  }
-
-  // member fields
-
-  // construction and disposing
-
   public RelationDefinitionCollection ()
   {
   }
-
-  // standard constructor for collections
 
   public RelationDefinitionCollection (IEnumerable<RelationDefinition> collection, bool makeCollectionReadOnly)
   {
@@ -54,8 +36,6 @@ public class RelationDefinitionCollection : CommonCollection
 
     SetIsReadOnly (makeCollectionReadOnly);
   }
-
-  // methods and properties
 
   public void SetReadOnly ()
   {

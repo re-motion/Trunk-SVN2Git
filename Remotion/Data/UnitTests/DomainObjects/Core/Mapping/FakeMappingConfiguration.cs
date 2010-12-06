@@ -1164,28 +1164,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionProperty1SideCreateTargetClassForPersistentMixinMixedCollectionPropertyRelationDefinition());
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
 
-      CalculateAndSetRelationDefinitions (relationDefinitions);
       CalculateAndSetRelationEndPointDefinitions (relationDefinitions);
       
       return relationDefinitions;
-    }
-
-    private void CalculateAndSetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
-    {
-      var relationsByClass = (from relationDefinition in relationDefinitions.Cast<RelationDefinition>()
-                              from endPoint in relationDefinition.EndPointDefinitions
-                              where !endPoint.IsAnonymous
-                              group relationDefinition by endPoint.ClassDefinition)
-                             .ToDictionary (grouping => grouping.Key, grouping => grouping.Distinct());
-
-      foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition> ())
-      {
-        IEnumerable<RelationDefinition> relationDefinitionsForClass;
-        if (!relationsByClass.TryGetValue (classDefinition, out relationDefinitionsForClass))
-          relationDefinitionsForClass = Enumerable.Empty<RelationDefinition> ();
-
-        classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (relationDefinitionsForClass, true));
-      }
     }
 
     private void CalculateAndSetRelationEndPointDefinitions (RelationDefinitionCollection relationDefinitions)

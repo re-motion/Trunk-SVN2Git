@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -42,16 +41,11 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private bool _isReadOnly;
 
-    // nonserialized readonyly member fields
-
     [NonSerialized]
     private readonly Type _storageGroupType;
 
     [NonSerialized]
     private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
-
-    [NonSerialized]
-    private readonly DoubleCheckedLockingContainer<RelationDefinitionCollection> _cachedRelationDefinitions;
 
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> _cachedRelationEndPointDefinitions;
@@ -62,13 +56,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly ClassDefinition _baseClass;
 
-    // nonserialized member fields
-
     [NonSerialized]
     private PropertyDefinitionCollection _propertyDefinitions;
-
-    [NonSerialized]
-    private RelationDefinitionCollection _relationDefinitions;
 
     [NonSerialized]
     private RelationEndPointDefinitionCollection _relationEndPoints;
@@ -79,8 +68,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private ClassDefinitionCollection _derivedClasses;
 
-    // construction and disposing
-
     protected ClassDefinition (string id, Type storageGroupType, ClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -89,8 +76,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageGroupType = storageGroupType;
 
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
-      _cachedRelationDefinitions = new DoubleCheckedLockingContainer<RelationDefinitionCollection> (FindAllRelationDefinitions);
-      // TODO 3556: Use RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints
+       // TODO 3556: Use RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
           FindAllRelationEndPointDefinitions);
       _cachedPropertyDefinitions =
@@ -204,39 +190,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _cachedPropertyDefinitions.Value;
     }
 
-    public RelationDefinitionCollection GetRelationDefinitions ()
-    {
-      return _cachedRelationDefinitions.Value;
-    }
-
     public ICollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
     {
       return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
-    }
-
-    public RelationDefinition GetRelationDefinition (string propertyName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      foreach (RelationDefinition relationDefinition in MyRelationDefinitions)
-      {
-        if (relationDefinition.IsEndPoint (_id, propertyName))
-          return relationDefinition;
-      }
-
-      if (BaseClass != null)
-        return BaseClass.GetRelationDefinition (propertyName);
-
-      return null;
-    }
-
-    public RelationDefinition GetMandatoryRelationDefinition (string propertyName)
-    {
-      RelationDefinition relationDefinition = GetRelationDefinition (propertyName);
-      if (relationDefinition == null)
-        throw CreateMappingException ("No relation found for class '{0}' and property '{1}'.", ID, propertyName);
-
-      return relationDefinition;
     }
 
     public ClassDefinition GetOppositeClassDefinition (string propertyName)
@@ -341,20 +297,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyDefinitions.SetReadOnly();
     }
 
-    public void SetRelationDefinitions (RelationDefinitionCollection relationDefinitions)
-    {
-      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
-
-      if (_relationDefinitions != null)
-        throw new InvalidOperationException (string.Format ("The relation-definitions for class '{0}' have already been set.", ID));
-
-      if (_isReadOnly)
-        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
-
-      _relationDefinitions = relationDefinitions;
-      _relationDefinitions.SetReadOnly();
-    }
-
     public void SetRelationEndPointDefinitions (RelationEndPointDefinitionCollection relationEndPoints)
     {
       ArgumentUtility.CheckNotNull ("relationEndPoints", relationEndPoints);
@@ -445,17 +387,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    public RelationDefinitionCollection MyRelationDefinitions
-    {
-      get
-      {
-        if (_relationDefinitions == null)
-          throw new InvalidOperationException (string.Format ("No relation definitions have been set for class '{0}'.", ID));
-
-        return _relationDefinitions;
-      }
-    }
-
     public RelationEndPointDefinitionCollection MyRelationEndPointDefinitions
     {
       get 
@@ -516,22 +447,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         allDerivedClasses.Add (derivedClass);
         derivedClass.FillAllDerivedClasses (allDerivedClasses);
       }
-    }
-
-    private RelationDefinitionCollection FindAllRelationDefinitions ()
-    {
-      var relations = new RelationDefinitionCollection (MyRelationDefinitions.Cast<RelationDefinition>(), false);
-
-      if (BaseClass != null)
-      {
-        foreach (RelationDefinition baseRelation in BaseClass.GetRelationDefinitions())
-        {
-          if (!relations.Contains (baseRelation))
-            relations.Add (baseRelation);
-        }
-      }
-
-      return new RelationDefinitionCollection (relations.Cast<RelationDefinition>(), true);
     }
 
     private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()

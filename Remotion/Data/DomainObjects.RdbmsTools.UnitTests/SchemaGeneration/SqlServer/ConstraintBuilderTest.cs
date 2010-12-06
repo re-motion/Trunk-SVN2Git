@@ -92,22 +92,17 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       var endPointDefinition1 = new RelationEndPointDefinition (firstClass, "SecondClass", false);
       var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name"));
-      RelationDefinition relationDefinition1 = new RelationDefinition (
-          "FirstClassToSecondClass",
-          endPointDefinition1,
-          endPointDefinition2);
-
       var endPointDefinition3 = new RelationEndPointDefinition (firstClass, "ThirdClass", false);
       var endPointDefinition4 = new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name"));
-      RelationDefinition relationDefinition2 = new RelationDefinition (
-          "FirstClassToThirdClass",
-          endPointDefinition3,
-          endPointDefinition4);
 
-      firstClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1, relationDefinition2 }, true));
-      secondClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
-      thirdClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
+      var relationDefinition1 = new RelationDefinition ("R1", endPointDefinition1, endPointDefinition2);
+      var relationDefinition2 = new RelationDefinition ("R2", endPointDefinition3, endPointDefinition4);
 
+      endPointDefinition1.SetRelationDefinition (relationDefinition1);
+      endPointDefinition2.SetRelationDefinition (relationDefinition1);
+      endPointDefinition3.SetRelationDefinition (relationDefinition2);
+      endPointDefinition4.SetRelationDefinition (relationDefinition2);
+      
       firstClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1, endPointDefinition3 }, true));
       secondClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
       thirdClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition4 }, true));
@@ -169,10 +164,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           "OtherClassToDerivedClass",
           endPointDefinition1,
           endPointDefinition2);
-
-      baseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-      derivedClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
-      otherClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
 
       baseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       derivedClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1 }, true));

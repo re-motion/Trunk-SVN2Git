@@ -63,45 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CreateForAllRelationDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
-    {
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Customer", "Customer", UnitTestDomainStorageProviderDefinition, typeof (Customer), false);
-      var relationDefinition = new RelationDefinition ("Test", _endPoint1, _endPoint2);
-
-      _classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
-
-      var endPoints = RelationEndPointDefinitionCollection.CreateForAllRelations (_classDefinition).ToArray();
-
-      Assert.That (endPoints.Length, Is.EqualTo (2));
-      Assert.That (endPoints[0], Is.SameAs (_endPoint1));
-      Assert.That (endPoints[1], Is.SameAs (_endPoint2));
-    }
-
-    [Test]
-    public void CreateForAllRelationDefinitions_ClassDefinitionWithBaseClassDefinition ()
-    {
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
-
-      var relationDefinition1 = new RelationDefinition ("Test", _endPoint1, _endPoint2);
-      var relationDefinition2 = new RelationDefinition ("Test", _endPoint3, _endPoint4);
-
-      _classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
-      baseClassDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
-      
-      var endPoints = RelationEndPointDefinitionCollection.CreateForAllRelations (_classDefinition).ToArray ();
-
-      Assert.That (endPoints.Length, Is.EqualTo (4));
-      Assert.That (endPoints[0], Is.SameAs (_endPoint1));
-      Assert.That (endPoints[1], Is.SameAs (_endPoint2));
-      Assert.That (endPoints[2], Is.SameAs (_endPoint3));
-      Assert.That (endPoints[3], Is.SameAs (_endPoint4));
-    }
-
-    [Test]
     public void Add ()
     {
       _collection.Add (_endPoint1);

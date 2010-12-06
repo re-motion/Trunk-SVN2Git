@@ -23,17 +23,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  [Serializable]
   public class RelationEndPointDefinitionCollection : CommonCollection, IEnumerable<IRelationEndPointDefinition>
   {
-    // TODO 3556: Rename to CreateForAllRelationEndPoints
-    public static IEnumerable<IRelationEndPointDefinition> CreateForAllRelations (ClassDefinition classDefinition)
+    public static IEnumerable<IRelationEndPointDefinition> CreateForAllRelationEndPoints (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      // TODO 3556: Use MyRelationEndPointDefinitions instead of MyRelationDefinitions...SelectMany (EndPointDefinitions)
-      return
-          classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationDefinitions.Cast<RelationDefinition>()).SelectMany (
-              rd => rd.EndPointDefinitions);
+      return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationEndPointDefinitions);
     }
 
     public RelationEndPointDefinitionCollection ()

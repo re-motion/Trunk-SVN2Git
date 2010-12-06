@@ -16,13 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -34,7 +32,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Rhino.Mocks;
 using Client = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client;
 using Customer = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer;
 using FileSystemItem = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem;
@@ -218,40 +215,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void SetRelationDefinitions ()
-    {
-      var relationDefinition = new RelationDefinition (
-          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
-
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
-
-      Assert.That (_domainBaseClass.MyRelationDefinitions.Count, Is.EqualTo (1));
-      Assert.That (_domainBaseClass.MyRelationDefinitions[0], Is.SameAs (relationDefinition));
-      Assert.That (_domainBaseClass.MyRelationDefinitions.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The relation-definitions for class 'DomainBase' have already been set."
-        )]
-    public void SetRelationDefinitions_Twice_ThrowsException ()
-    {
-      var relationDefinition = new RelationDefinition (
-          "Test", new AnonymousRelationEndPointDefinition (_domainBaseClass), new AnonymousRelationEndPointDefinition (_domainBaseClass));
-
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, false));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
-    public void SetRelationDefinitions_ClassIsReadOnly ()
-    {
-      _domainBaseClass.SetReadOnly();
-
-      _domainBaseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-    }
-
-    [Test]
     public void SetRelationEndPointDefinitions ()
     {
       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
@@ -264,15 +227,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-      "Relation end point for property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket' cannot be added "
-      +"to class 'DomainBase', because it was initialized for class 'Order'.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "Relation end point for property 'Test' cannot be added to class 'DomainBase', because it was initialized for class 'Distributor'.")]
     public void SetRelationEndPointDefinitions_DifferentClassDefinition_ThrowsException ()
     {
-      var endPointDefinition =
-          _orderClass.MyRelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket"
-              ].EndPointDefinitions[0];
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_distributorClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
       
       _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
     }
@@ -300,20 +259,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetDerivedClasses ()
     {
-      
-      _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
       _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
 
       Assert.That (_personClass.DerivedClasses.Count, Is.EqualTo (1));
       Assert.That (_personClass.DerivedClasses[0], Is.SameAs (_customerClass));
-      Assert.That (_personClass.MyRelationDefinitions.IsReadOnly, Is.True);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'Person' have already been set.")]
     public void SetDerivedClasses_Twice_ThrowsException ()
     {
-      _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
       _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
       _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
     }
@@ -331,7 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       "Derived class 'Order' cannot be added to class 'Person', because it has no base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasNoBaseClassDefined ()
     {
-      _personClass.SetRelationDefinitions (new RelationDefinitionCollection());
       _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
     }
 
@@ -456,142 +410,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "ClassID", "Table", UnitTestDomainStorageProviderDefinition, typeof (Order), true);
 
       Assert.IsTrue (actual.IsAbstract);
-    }
-
-    [Test]
-    public void GetRelationDefinition ()
-    {
-      RelationDefinition relation =
-          _orderClass.GetRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer");
-
-      Assert.IsNotNull (relation);
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core."
-          + "Mapping.TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders",
-          relation.ID);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation definitions have been set for class 'Order'.")]
-    public void GetRelationDefinition_NoRelationDefinitionsHaveBeenSet_ThrowsException ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
-      classDefinition.GetRelationDefinition ("dummy");
-    }
-
-    [Test]
-    public void GetUndefinedRelationDefinition ()
-    {
-      Assert.IsNull (
-          _orderClass.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"));
-    }
-
-    [Test]
-    public void GetAllRelationDefinitions_SucceedsWhenReadOnly ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-      classDefinition.SetReadOnly();
-
-      var result = classDefinition.GetRelationDefinitions();
-
-      Assert.That (result, Is.Not.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "No relation definitions have been set for class 'Order'.")]
-    public void GetAllRelationDefinitions_ThrowsWhenRelationsNotSet ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.GetRelationDefinitions();
-    }
-
-    [Test]
-    public void GetAllRelationDefinitions_Cached ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      var relationDefinition = new RelationDefinition (
-          "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
-      classDefinition.SetReadOnly();
-
-      var result1 = classDefinition.GetRelationDefinitions();
-      var result2 = classDefinition.GetRelationDefinitions();
-
-      Assert.That (result1, Is.SameAs (result2));
-    }
-
-    [Test]
-    public void GetAllRelationDefinitions_ReadOnly ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-      classDefinition.SetReadOnly();
-
-      var result = classDefinition.GetRelationDefinitions();
-
-      Assert.That (result.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    public void GetAllRelationDefinitions_Contents ()
-    {
-      RelationDefinitionCollection relations = _distributorClass.GetRelationDefinitions();
-
-      Assert.IsNotNull (relations);
-      Assert.AreEqual (5, relations.Count);
-      Assert.IsNotNull (
-          relations["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo:Remotion.Data.UnitTests.DomainObjects."
-                    +
-                    "Core.Mapping.TestDomain.Integration.Ceo.Company->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo"
-              ]);
-      Assert.IsNotNull (
-          relations["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner:Remotion.Data.UnitTests.DomainObjects."
-                    +
-                    "Core.Mapping.TestDomain.Integration.Partner.ContactPerson->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Person.AssociatedPartnerCompany"
-              ]);
-      Assert.IsNotNull (
-          relations[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn:Remotion.Data.UnitTests."
-              +
-              "DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor->Remotion.Data.UnitTests.DomainObjects."
-              + "Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn"]);
-      Assert.IsNotNull (
-          relations[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company->"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation"]);
-      Assert.IsNotNull (
-          relations["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company:"
-                    + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.IndustrialSector->"
-                    + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.IndustrialSector.Companies"]);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
-    public void GetEmptyRelationDefinition ()
-    {
-      _orderClass.GetRelationDefinition (string.Empty);
-    }
-
-    [Test]
-    public void GetRelationDefinitionWithInheritance ()
-    {
-      Assert.IsNotNull (
-          _distributorClass.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo"));
-      Assert.IsNotNull (
-          _distributorClass.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner.ContactPerson"));
     }
 
     [Test]
@@ -1006,20 +824,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetRelationDefinitions ()
-    {
-      ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
-
-      RelationDefinitionCollection clientRelations = clientDefinition.GetRelationDefinitions();
-
-      Assert.AreEqual (1, clientRelations.Count);
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client:"
-          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient",
-          clientRelations[0].ID);
-    }
-
-    [Test]
     public void IsRelationEndPointWithAnonymousRelationEndPointDefinition ()
     {
       ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
@@ -1121,36 +925,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetRelationDefinitionsCompositeBaseClass ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
-
-      RelationDefinitionCollection relations = fileSystemItemDefinition.GetRelationDefinitions();
-
-      Assert.IsNotNull (relations);
-      Assert.AreEqual (1, relations.Count);
-      Assert.IsNotNull (
-          relations["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem:Remotion.Data.UnitTests.DomainObjects."
-                    + "Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder->Remotion.Data.UnitTests.DomainObjects."
-                    + "Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"]);
-    }
-
-    [Test]
-    public void GetRelationDefinitionsCompositeDerivedClass ()
-    {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
-
-      RelationDefinitionCollection relations = folderDefinition.GetRelationDefinitions();
-
-      Assert.IsNotNull (relations);
-      Assert.AreEqual (1, relations.Count);
-      Assert.IsNotNull (
-          relations["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem:Remotion.Data.UnitTests.DomainObjects."
-                    + "Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder->Remotion.Data.UnitTests.DomainObjects."
-                    + "Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"]);
-    }
-
-    [Test]
     public void GetRelationEndPointDefinitionCompositeBaseClass ()
     {
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
@@ -1173,32 +947,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
       Assert.IsNotNull (
           folderDefinition.GetRelationEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
-    }
-
-    [Test]
-    public void GetRelationDefinitionCompositeBaseClass ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
-
-      Assert.IsNotNull (
-          fileSystemItemDefinition.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNull (
-          fileSystemItemDefinition.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
-    }
-
-    [Test]
-    public void GetRelationDefinitionCompositeDerivedClass ()
-    {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
-
-      Assert.IsNotNull (
-          folderDefinition.GetRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"));
-      Assert.IsNotNull (
-          folderDefinition.GetRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"));
     }
 
@@ -1314,27 +1062,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
       fileSystemItemDefinition.GetMandatoryOppositeClassDefinition ("InvalidProperty");
-    }
-
-    [Test]
-    public void GetMandatoryRelationDefinition ()
-    {
-      RelationDefinition relation =
-          _orderClass.GetMandatoryRelationDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer");
-
-      Assert.IsNotNull (relation);
-      Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core."
-          + "Mapping.TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders",
-          relation.ID);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'Order' and property 'InvalidProperty'.")]
-    public void GetMandatoryRelationDefinitionWithInvalidPropertyName ()
-    {
-      _orderClass.GetMandatoryRelationDefinition ("InvalidProperty");
     }
 
     [Test]

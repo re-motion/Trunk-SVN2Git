@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -27,22 +28,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeEndPointDefinition ()
     {
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
-    
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+          typeof (Order).FullName + ".OrderTicket");
+
       var oppositeEndPointDefinition = endPointDefinition.GetOppositeEndPointDefinition();
-      
-      Assert.That (oppositeEndPointDefinition, 
+
+      Assert.That (
+          oppositeEndPointDefinition,
           Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order")));
     }
 
     [Test]
     public void GetMandatoryOppositeEndPointDefinition ()
     {
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+          typeof (Order).FullName + ".OrderTicket");
 
-      var oppositeEndPointDefinition = endPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = endPointDefinition.GetMandatoryOppositeEndPointDefinition();
 
-      Assert.That (oppositeEndPointDefinition,
+      Assert.That (
+          oppositeEndPointDefinition,
           Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order")));
     }
 
@@ -50,22 +55,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
         + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-        +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems' has no association with "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems' has no association with "
         + "class 'Order' and property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer'.")]
     public void GetMandatoryOppositeEndPointDefinition_Failure ()
     {
-      var fakeEndPointDefinition = new RelationEndPointDefinition (DomainObjectIDs.Order1.ClassDefinition, typeof (Order).FullName + ".Customer", true);
-      fakeEndPointDefinition.SetRelationDefinition (DomainObjectIDs.Order1.ClassDefinition.GetRelationDefinition (typeof (Order).FullName + ".OrderItems"));
+      var fakeEndPointDefinition = new RelationEndPointDefinition (
+          DomainObjectIDs.Order1.ClassDefinition, typeof (Order).FullName + ".Customer", true);
+      fakeEndPointDefinition.SetRelationDefinition (
+          DomainObjectIDs.Order1.ClassDefinition.MyRelationEndPointDefinitions[typeof (Order).FullName + ".OrderItems"].RelationDefinition);
 
-      fakeEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+      fakeEndPointDefinition.GetMandatoryOppositeEndPointDefinition();
     }
 
     [Test]
     public void GetOppositeClassDefinition ()
     {
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+          typeof (Order).FullName + ".OrderTicket");
 
-      var oppositeEndPointDefinition = endPointDefinition.GetOppositeClassDefinition ();
+      var oppositeEndPointDefinition = endPointDefinition.GetOppositeClassDefinition();
 
       Assert.That (oppositeEndPointDefinition, Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition));
     }

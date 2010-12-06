@@ -51,12 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _nameResolver = new ReflectionBasedNameResolver();
       _classWithRealRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
       _classWithRealRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _classWithRealRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
-
+      
       _classWithVirtualRelationEndPoints = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       _classWithVirtualRelationEndPoints.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _classWithVirtualRelationEndPoints.SetRelationDefinitions (new RelationDefinitionCollection());
-
+      
       _classWithBothEndPointsOnSameClassClassDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
       _classWithBothEndPointsOnSameClassClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());

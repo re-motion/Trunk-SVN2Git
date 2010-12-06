@@ -38,11 +38,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      RelationDefinition relationDefinition = propertyDefinition.ClassDefinition.GetRelationDefinition (propertyDefinition.PropertyName);
-      if (relationDefinition != null)
+      IRelationEndPointDefinition relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      if (relationEndPointDefinition != null)
       {
-        IRelationEndPointDefinition oppositeEndPointDefinition = relationDefinition.GetOppositeEndPointDefinition (
-            propertyDefinition.ClassDefinition.ID, propertyDefinition.PropertyName);
+        IRelationEndPointDefinition oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition(); 
 
         if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
             &&

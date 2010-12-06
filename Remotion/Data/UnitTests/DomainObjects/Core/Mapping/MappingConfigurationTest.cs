@@ -158,7 +158,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
@@ -188,7 +187,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
       classDefinition.SetStorageEntity (unionViewDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection());
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       
       StubMockMappingLoader (classDefinition);

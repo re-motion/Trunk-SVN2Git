@@ -51,17 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetRelationDefinitions ()
-    {
-      Assert.IsTrue (_locationClass.GetRelationDefinitions ().Contains (
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        +"TestDomain.Integration.Location.Client"));
-      Assert.IsFalse (_clientClass.GetRelationDefinitions ().Contains (
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        +"TestDomain.Integration.Location.Client"));
-    }
-
-    [Test]
     public void GetRelationEndPointDefinitions ()
     {
       Assert.That (_locationClass.GetRelationEndPointDefinitions (), List.Contains (_locationEndPoint));

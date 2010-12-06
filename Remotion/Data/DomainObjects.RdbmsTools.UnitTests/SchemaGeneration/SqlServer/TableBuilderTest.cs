@@ -186,8 +186,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
       abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)}, true));
-      abstractClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-
+      
       var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), abstractClass);
       derivedAbstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (
@@ -198,8 +197,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               false,
               101,
               StorageClass.Persistent)}, true));
-      derivedAbstractClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
-
+      
       var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           typeof (DerivedConcreteClass), derivedAbstractClass);
       derivedConcreteClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
@@ -211,12 +209,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
               true,
               102,
               StorageClass.Persistent)}, true));
-      derivedConcreteClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       derivedConcreteClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "EntityName", "ViewName", new ColumnDefinition[0]));
 
       abstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedAbstractClass }, true, true));
       derivedAbstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedConcreteClass }, true, true));
       derivedConcreteClass.SetDerivedClasses (new ClassDefinitionCollection());
+
+      abstractClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      derivedAbstractClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      derivedConcreteClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"
