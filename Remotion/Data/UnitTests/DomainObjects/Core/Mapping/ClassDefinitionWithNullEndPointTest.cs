@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMyRelationEndPointDefinitions ()
     {
-      Assert.That (_locationClass.GetMyRelationEndPointDefinitions (), List.Contains (_locationEndPoint));
-      Assert.That (_clientClass.GetMyRelationEndPointDefinitions (), List.Not.Contains (_clientEndPoint));
+      Assert.That (_locationClass.MyRelationEndPointDefinitions, List.Contains (_locationEndPoint));
+      Assert.That (_clientClass.MyRelationEndPointDefinitions, List.Not.Contains (_clientEndPoint));
     }
   }
 }

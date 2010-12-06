@@ -1165,7 +1165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
 
       CalculateAndSetRelationDefinitions (relationDefinitions);
-
+      CalculateAndSetRelationEndPointDefinitions (relationDefinitions);
+      
       return relationDefinitions;
     }
 
@@ -1184,6 +1185,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           relationDefinitionsForClass = Enumerable.Empty<RelationDefinition> ();
 
         classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (relationDefinitionsForClass, true));
+      }
+    }
+
+    private void CalculateAndSetRelationEndPointDefinitions (RelationDefinitionCollection relationDefinitions)
+    {
+      var relationsByClass = (from relationDefinition in relationDefinitions.Cast<RelationDefinition> ()
+                              from endPoint in relationDefinition.EndPointDefinitions
+                              where !endPoint.IsAnonymous
+                              group relationDefinition by endPoint.ClassDefinition)
+                             .ToDictionary (grouping => grouping.Key, grouping => grouping.Distinct ());
+
+      foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition>())
+      {
+        IEnumerable<IRelationEndPointDefinition> relationEndPointsDefinitionsForClass;
+        IEnumerable<RelationDefinition> relationDefinitionsForClass;
+        if (!relationsByClass.TryGetValue (classDefinition, out relationDefinitionsForClass))
+          relationEndPointsDefinitionsForClass = Enumerable.Empty<IRelationEndPointDefinition>();
+        else
+          relationEndPointsDefinitionsForClass = from relationDefinition in relationDefinitionsForClass
+                                  from endPointDefinition in relationDefinition.EndPointDefinitions
+                                  where endPointDefinition.ClassDefinition == classDefinition && !endPointDefinition.IsAnonymous
+                                  select endPointDefinition;
+        classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (relationEndPointsDefinitionsForClass, true));
       }
     }
 

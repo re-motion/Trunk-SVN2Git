@@ -67,6 +67,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           relationDefinitionsForClass.Add (relationDefinition);
       }
       classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (relationDefinitionsForClass.Cast<RelationDefinition>(), true));
+
+      var endPointDefinitions = from relationDefinition in relationDefinitionsForClass.Cast<RelationDefinition> ()
+                                 from endPointDefinition in relationDefinition.EndPointDefinitions
+                                 where endPointDefinition.ClassDefinition == classDefinition && !endPointDefinition.IsAnonymous
+                                 select endPointDefinition;
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection(endPointDefinitions, true));
     }
 
     private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)

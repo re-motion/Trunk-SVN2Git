@@ -71,6 +71,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     private RelationDefinitionCollection _relationDefinitions;
 
     [NonSerialized]
+    private RelationEndPointDefinitionCollection _relationEndPoints;
+
+    [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
 
     [NonSerialized]
@@ -211,22 +214,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
     }
 
-    public IRelationEndPointDefinition[] GetMyRelationEndPointDefinitions ()
-    {
-      var relationEndPointDefinitions = new ArrayList();
-
-      foreach (RelationDefinition relationDefinition in MyRelationDefinitions)
-      {
-        foreach (IRelationEndPointDefinition endPointDefinition in relationDefinition.EndPointDefinitions)
-        {
-          if (IsMyRelationEndPoint (endPointDefinition))
-            relationEndPointDefinitions.Add (endPointDefinition);
-        }
-      }
-
-      return (IRelationEndPointDefinition[]) relationEndPointDefinitions.ToArray (typeof (IRelationEndPointDefinition));
-    }
-
     public RelationDefinition GetRelationDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -364,10 +351,24 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      // TODO 3556: When this is changed to relation end-points, add a CheckRelationEndPointDefinitions method similar to CheckPropertyDefinitions
-
       _relationDefinitions = relationDefinitions;
       _relationDefinitions.SetReadOnly();
+    }
+
+    public void SetRelationEndPointDefinitions (RelationEndPointDefinitionCollection relationEndPoints)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPoints", relationEndPoints);
+
+      if (_relationEndPoints != null)
+        throw new InvalidOperationException (string.Format ("The relation end point definitions for class '{0}' have already been set.", ID));
+
+      if (_isReadOnly)
+        throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
+
+      CheckRelationEndPointDefinitions (relationEndPoints);
+
+      _relationEndPoints = relationEndPoints;
+      _relationEndPoints.SetReadOnly();
     }
 
     public void SetDerivedClasses (ClassDefinitionCollection derivedClasses)
@@ -455,6 +456,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    public RelationEndPointDefinitionCollection MyRelationEndPointDefinitions
+    {
+      get 
+      {
+        if (_relationEndPoints == null)
+          throw new InvalidOperationException (string.Format ("No relation end point definitions have been set for class '{0}'.", ID));
+
+        return _relationEndPoints;
+      }
+    }
+
     public ClassDefinitionCollection DerivedClasses
     {
       get
@@ -524,7 +536,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()
     {
-      IEnumerable<IRelationEndPointDefinition> relationEndPointDefinitions = GetMyRelationEndPointDefinitions();
+      IEnumerable<IRelationEndPointDefinition> relationEndPointDefinitions = MyRelationEndPointDefinitions;
 
       if (BaseClass != null)
         relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions());
@@ -534,7 +546,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void CheckPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
     {
-      foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
+      foreach (var propertyDefinition in propertyDefinitions)
       {
         if (!ReferenceEquals (propertyDefinition.ClassDefinition, this))
         {
@@ -556,6 +568,23 @@ namespace Remotion.Data.DomainObjects.Mapping
               _id,
               definingClass);
         }
+      }
+    }
+
+    private void CheckRelationEndPointDefinitions (IEnumerable<IRelationEndPointDefinition> relationEndPoints)
+    {
+      foreach (IRelationEndPointDefinition endPointDefinition in relationEndPoints)
+      {
+        if (!ReferenceEquals (endPointDefinition.ClassDefinition, this))
+        {
+          throw CreateMappingException (
+              "Relation end point for property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
+              endPointDefinition.PropertyName,
+              _id,
+              endPointDefinition.ClassDefinition.ID);
+        }
+
+        //TODO 3556: check if end point already exists in base classes?
       }
     }
 

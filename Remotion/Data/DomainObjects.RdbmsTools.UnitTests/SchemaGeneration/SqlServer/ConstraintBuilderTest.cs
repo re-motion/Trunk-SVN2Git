@@ -89,20 +89,28 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
       var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address));
       var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee));
-      
+
+      var endPointDefinition1 = new RelationEndPointDefinition (firstClass, "SecondClass", false);
+      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name"));
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "FirstClassToSecondClass",
-          new RelationEndPointDefinition (firstClass, "SecondClass", false),
-          new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name")));
-      
+          endPointDefinition1,
+          endPointDefinition2);
+
+      var endPointDefinition3 = new RelationEndPointDefinition (firstClass, "ThirdClass", false);
+      var endPointDefinition4 = new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name"));
       RelationDefinition relationDefinition2 = new RelationDefinition (
           "FirstClassToThirdClass",
-          new RelationEndPointDefinition (firstClass, "ThirdClass", false),
-          new ReflectionBasedVirtualRelationEndPointDefinition (thirdClass, "FirstClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
+          endPointDefinition3,
+          endPointDefinition4);
 
       firstClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1, relationDefinition2 }, true));
       secondClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition1 }, true));
       thirdClass.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition2 }, true));
+
+      firstClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1, endPointDefinition3 }, true));
+      secondClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
+      thirdClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition4 }, true));
 
       firstClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
       secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
@@ -155,14 +163,20 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)}, true));
 
       ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner));
+      var endPointDefinition1 = new RelationEndPointDefinition (derivedClass, "OtherClass", false);
+      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name"));
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "OtherClassToDerivedClass",
-          new RelationEndPointDefinition (derivedClass, "OtherClass", false),
-          new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name")));
+          endPointDefinition1,
+          endPointDefinition2);
 
       baseClass.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
       derivedClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
       otherClass.SetRelationDefinitions (new RelationDefinitionCollection (new[]{ relationDefinition1}, true));
+
+      baseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      derivedClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1 }, true));
+      otherClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
 
       baseClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
       derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));

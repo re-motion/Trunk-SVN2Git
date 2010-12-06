@@ -252,6 +252,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void SetRelationEndPointDefinitions ()
+    {
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
+
+      Assert.That (_domainBaseClass.MyRelationEndPointDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_domainBaseClass.MyRelationEndPointDefinitions[0], Is.SameAs (endPointDefinition));
+      Assert.That (_domainBaseClass.MyRelationEndPointDefinitions.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Relation end point for property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket' cannot be added "
+      +"to class 'DomainBase', because it was initialized for class 'Order'.")]
+    public void SetRelationEndPointDefinitions_DifferentClassDefinition_ThrowsException ()
+    {
+      var endPointDefinition =
+          _orderClass.MyRelationDefinitions[
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket"
+              ].EndPointDefinitions[0];
+      
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+      "The relation end point definitions for class 'DomainBase' have already been set.")]
+    public void SetRelationEndPointDefinitions_Twice_ThrowsException ()
+    {
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, false));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
+    public void SetRelationEndPointDefinitions_ClassIsReadonly ()
+    {
+      _domainBaseClass.SetReadOnly ();
+
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new IRelationEndPointDefinition[0], true));
+    }
+
+    [Test]
     public void SetDerivedClasses ()
     {
       
@@ -810,7 +856,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[]{ endPointDefinition}, true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationEndPointDefinitions();
@@ -820,7 +867,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), 
-      ExpectedMessage = "No relation definitions have been set for class 'Order'.")]
+      ExpectedMessage = "No relation end point definitions have been set for class 'Order'.")]
     public void GetAllRelationEndPointDefinitions_ThrowsWhenRelationsNotSet ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -834,9 +881,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      var relationDefinition = new RelationDefinition (
-          "Test", new AnonymousRelationEndPointDefinition (classDefinition), new AnonymousRelationEndPointDefinition (classDefinition));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new[] { relationDefinition }, true));
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition(classDefinition, "Test", false, CardinalityType.One, typeof(DomainObject), null, typeof(Order).GetProperty("OrderNumber"));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[]{endPointDefinition}, true));
       classDefinition.SetReadOnly();
 
       var result1 = classDefinition.GetRelationEndPointDefinitions();
@@ -851,7 +897,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
-      classDefinition.SetRelationDefinitions (new RelationDefinitionCollection (new RelationDefinition[0], true));
+      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[]{endPointDefinition}, true));
       classDefinition.SetReadOnly();
 
       var result = classDefinition.GetRelationEndPointDefinitions();
@@ -884,7 +931,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitions ()
     {
-      IRelationEndPointDefinition[] relationEndPointDefinitions = _distributorClass.GetMyRelationEndPointDefinitions();
+      IRelationEndPointDefinition[] relationEndPointDefinitions = _distributorClass.MyRelationEndPointDefinitions.ToArray();
 
       Assert.IsNotNull (relationEndPointDefinitions);
       Assert.AreEqual (1, relationEndPointDefinitions.Length);
@@ -991,7 +1038,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
 
-      IRelationEndPointDefinition[] endPointDefinitions = clientDefinition.GetMyRelationEndPointDefinitions();
+      IRelationEndPointDefinition[] endPointDefinitions = clientDefinition.MyRelationEndPointDefinitions.ToArray();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
       Assert.IsTrue (
@@ -1004,7 +1051,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
-      IRelationEndPointDefinition[] endPointDefinitions = fileSystemItemDefinition.GetMyRelationEndPointDefinitions();
+      IRelationEndPointDefinition[] endPointDefinitions = fileSystemItemDefinition.MyRelationEndPointDefinitions.ToArray();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
       Assert.IsTrue (
@@ -1034,7 +1081,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
-      IRelationEndPointDefinition[] endPointDefinitions = folderDefinition.GetMyRelationEndPointDefinitions();
+      IRelationEndPointDefinition[] endPointDefinitions = folderDefinition.MyRelationEndPointDefinitions.ToArray();
 
       Assert.AreEqual (1, endPointDefinitions.Length);
       Assert.IsTrue (

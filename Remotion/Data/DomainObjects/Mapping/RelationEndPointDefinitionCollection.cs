@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       if (string.IsNullOrEmpty (value.PropertyName))
         throw new InvalidOperationException ("End points without property name cannot be added to this collection.");
-
+      
       int position = BaseAdd (value.PropertyName, value);
 
       return position;
