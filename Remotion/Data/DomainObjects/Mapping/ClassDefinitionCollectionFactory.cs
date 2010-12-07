@@ -31,30 +31,6 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     private readonly IMappingNameResolver _nameResolver;
 
-    public static ReflectionBasedClassDefinition GetClassDefinition (
-        ClassDefinitionCollection classDefinitions, Type classType, IMappingNameResolver mappingNameResolver, ClassReflector classReflector)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-
-      if (classDefinitions.Contains (classType))
-        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
-
-      var classDefinition = classReflector.GetMetadata (GetBaseClassDefinition (classDefinitions, classType, mappingNameResolver));
-      classDefinitions.Add (classDefinition);
-
-      return classDefinition;
-    }
-
-    private static ReflectionBasedClassDefinition GetBaseClassDefinition (
-        ClassDefinitionCollection classDefinitions, Type type, IMappingNameResolver nameResolver)
-    {
-      if (ReflectionUtility.IsInheritanceRoot (type))
-        return null;
-
-      var classReflector = new ClassReflector (type.BaseType, nameResolver);
-      return GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
-    }
-
     public ClassDefinitionCollectionFactory (IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
@@ -74,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Mapping
                             select ClassReflector.CreateClassReflector (domainObjectClass, _nameResolver);
 
       foreach (ClassReflector classReflector in classReflectors)
-        ClassDefinitionCollectionFactory.GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
+        GetClassDefinition (classDefinitions, classReflector.Type, classReflector);
 
       var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
                                 where classDefinition.BaseClass != null
@@ -91,6 +67,30 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
 
       return classDefinitions;
+    }
+
+    public ReflectionBasedClassDefinition GetClassDefinition (
+        ClassDefinitionCollection classDefinitions, Type classType, ClassReflector classReflector)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      if (classDefinitions.Contains (classType))
+        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
+
+      var classDefinition = classReflector.GetMetadata (GetBaseClassDefinition (classDefinitions, classType));
+      classDefinitions.Add (classDefinition);
+
+      return classDefinition;
+    }
+
+    private ReflectionBasedClassDefinition GetBaseClassDefinition (
+        ClassDefinitionCollection classDefinitions, Type type)
+    {
+      if (ReflectionUtility.IsInheritanceRoot (type))
+        return null;
+
+      var classReflector = new ClassReflector (type.BaseType, _nameResolver);
+      return GetClassDefinition (classDefinitions, classReflector.Type, classReflector);
     }
   }
 }
