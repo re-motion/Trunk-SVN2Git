@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       expected.SetDerivedClasses (new ClassDefinitionCollection());
       expected.BaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { expected }, true, true));
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
       actual.SetDerivedClasses (new ClassDefinitionCollection());
       actual.BaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { actual }, true, true));
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       ClassDefinition expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition ();
       _classDefinitions.Add (expectedBaseClass);
 
-      ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
@@ -106,10 +106,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       var classReflector1 = new ClassReflector (type1, Configuration.NameResolver);
       var classReflector2 = new ClassReflector (type2, Configuration.NameResolver);
 
-      classReflector1.GetClassDefinition (_classDefinitions);
+      ClassReflector.GetClassDefinition (_classDefinitions, classReflector1.Type, classReflector1.NameResolver, classReflector1);
       try
       {
-        classReflector2.GetClassDefinition (_classDefinitions);
+        ClassReflector.GetClassDefinition (_classDefinitions, classReflector2.Type, classReflector2.NameResolver, classReflector2);
 
         Assert.Fail ("exception expected");
       }

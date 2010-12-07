@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
                               select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
 
         foreach (ClassReflector classReflector in classReflectors)
-          classReflector.GetClassDefinition (classDefinitions);
+          ClassReflector.GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
 
         var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
                                   where classDefinition.BaseClass != null

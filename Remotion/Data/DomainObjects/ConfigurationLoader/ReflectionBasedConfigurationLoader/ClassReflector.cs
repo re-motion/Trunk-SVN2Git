@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return null;
 
       var classReflector = new ClassReflector (type.BaseType, nameResolver);
-      return classReflector.GetClassDefinition (classDefinitions);
+      return GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
     }
 
     public ClassReflector (Type type, IMappingNameResolver nameResolver)
@@ -58,14 +58,15 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
 
-    public ReflectionBasedClassDefinition GetClassDefinition (ClassDefinitionCollection classDefinitions)
+    public static ReflectionBasedClassDefinition GetClassDefinition (
+        ClassDefinitionCollection classDefinitions, Type classType, IMappingNameResolver mappingNameResolver, ClassReflector classReflector)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      if (classDefinitions.Contains (Type))
-        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
+      if (classDefinitions.Contains (classType))
+        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
 
-      var classDefinition = CreateClassDefinition (GetBaseClassDefinition (classDefinitions, Type, NameResolver));
+      var classDefinition = classReflector.CreateClassDefinition (GetBaseClassDefinition (classDefinitions, classType, mappingNameResolver));
       classDefinitions.Add (classDefinition);
 
       return classDefinition;

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       ReflectionBasedClassDefinition expected = CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
       expected.SetDerivedClasses (new ClassDefinitionCollection());
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
       actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
       expected.SetDerivedClasses (new ClassDefinitionCollection());
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
       actual.SetDerivedClasses (new ClassDefinitionCollection());
 
       Assert.IsNotNull (actual);
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       ReflectionBasedClassDefinition expectedBaseClass = CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
       _classDefinitions.Add (expectedBaseClass);
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
+      ReflectionBasedClassDefinition actual = ClassReflector.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
