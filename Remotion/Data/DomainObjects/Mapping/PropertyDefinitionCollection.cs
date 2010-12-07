@@ -17,92 +17,92 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-[Serializable]
-public class PropertyDefinitionCollection : CommonCollection, IEnumerable<PropertyDefinition>
-{
-  // TODO Review 3556: Change to return a PropertyDefinitionCollection; add a makeCollectionReadOnly parameter
-  public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
+  [Serializable]
+  public class PropertyDefinitionCollection : CommonCollection, IEnumerable<PropertyDefinition>
   {
-    ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-    return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions);
-  }
+    public static PropertyDefinitionCollection CreateForAllProperties (ClassDefinition classDefinition, bool makeCollectionReadOnly)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      return new PropertyDefinitionCollection (
+          classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyPropertyDefinitions), makeCollectionReadOnly);
+    }
 
-  public PropertyDefinitionCollection ()
-  {
-  }
+    public PropertyDefinitionCollection ()
+    {
+    }
 
-  public PropertyDefinitionCollection (IEnumerable<PropertyDefinition> collection, bool makeCollectionReadOnly)  
-  {
-    ArgumentUtility.CheckNotNull ("collection", collection);
+    public PropertyDefinitionCollection (IEnumerable<PropertyDefinition> collection, bool makeCollectionReadOnly)
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
 
-    foreach (var propertyDefinition in collection)
-      Add (propertyDefinition);
-    
-    SetIsReadOnly (makeCollectionReadOnly);
-  }
+      foreach (var propertyDefinition in collection)
+        Add (propertyDefinition);
 
-  public void SetReadOnly ()
-  {
-    SetIsReadOnly (true);
-  }
+      SetIsReadOnly (makeCollectionReadOnly);
+    }
 
-  public IEnumerable<PropertyDefinition> GetAllPersistent ()
-  {
-    return this.Where (propertyDefinition => propertyDefinition.StorageClass == StorageClass.Persistent);
-  }
+    public void SetReadOnly ()
+    {
+      SetIsReadOnly (true);
+    }
 
-  public new IEnumerator<PropertyDefinition> GetEnumerator ()
-  {
-    // ReSharper disable LoopCanBeConvertedToQuery
-    foreach (PropertyDefinition propertyDefinition in (IEnumerable) this) // use base implementation
-      // ReSharper restore LoopCanBeConvertedToQuery
-      yield return propertyDefinition;
-  }
+    public IEnumerable<PropertyDefinition> GetAllPersistent ()
+    {
+      return this.Where (propertyDefinition => propertyDefinition.StorageClass == StorageClass.Persistent);
+    }
 
-  #region Standard implementation for "add-only" collections
+    public new IEnumerator<PropertyDefinition> GetEnumerator ()
+    {
+      // ReSharper disable LoopCanBeConvertedToQuery
+      foreach (PropertyDefinition propertyDefinition in (IEnumerable) this) // use base implementation
+          // ReSharper restore LoopCanBeConvertedToQuery
+        yield return propertyDefinition;
+    }
 
-  public bool Contains (PropertyDefinition propertyDefinition)
-  {
-    ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+    #region Standard implementation for "add-only" collections
 
-    return BaseContains (propertyDefinition.PropertyName, propertyDefinition);
-  }
+    public bool Contains (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-  public bool Contains (string propertyName)
-  {
-    ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-    return BaseContainsKey (propertyName);
-  }
+      return BaseContains (propertyDefinition.PropertyName, propertyDefinition);
+    }
 
-  public PropertyDefinition this [int index]  
-  {
-    get { return (PropertyDefinition) BaseGetObject (index); }
-  }
-
-  public PropertyDefinition this [string propertyName]  
-  {
-    get 
+    public bool Contains (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      return (PropertyDefinition) BaseGetObject (propertyName); 
+      return BaseContainsKey (propertyName);
     }
-  }
 
-  public int Add (PropertyDefinition value)
-  {
-    ArgumentUtility.CheckNotNull ("value", value);
+    public PropertyDefinition this [int index]
+    {
+      get { return (PropertyDefinition) BaseGetObject (index); }
+    }
 
-    int position = BaseAdd (value.PropertyName, value);
-    
-    return position;
+    public PropertyDefinition this [string propertyName]
+    {
+      get
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+        return (PropertyDefinition) BaseGetObject (propertyName);
+      }
+    }
+
+    public int Add (PropertyDefinition value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      int position = BaseAdd (value.PropertyName, value);
+
+      return position;
+    }
+
+    #endregion
   }
-  
-  #endregion
-}
 }

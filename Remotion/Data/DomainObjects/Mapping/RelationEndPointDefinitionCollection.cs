@@ -26,12 +26,13 @@ namespace Remotion.Data.DomainObjects.Mapping
   [Serializable]
   public class RelationEndPointDefinitionCollection : CommonCollection, IEnumerable<IRelationEndPointDefinition>
   {
-    // TODO Review 3556: Change to return a RelationEndPointDefinitionCollection; add a makeCollectionReadOnly parameter
-    public static IEnumerable<IRelationEndPointDefinition> CreateForAllRelationEndPoints (ClassDefinition classDefinition)
+    public static RelationEndPointDefinitionCollection CreateForAllRelationEndPoints (ClassDefinition classDefinition, bool makeCollectionReadOnly)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationEndPointDefinitions);
+      return
+          new RelationEndPointDefinitionCollection (
+              classDefinition.CreateSequence (cd => cd.BaseClass).SelectMany (cd => cd.MyRelationEndPointDefinitions), makeCollectionReadOnly);
     }
 
     public RelationEndPointDefinitionCollection ()
@@ -57,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       // ReSharper disable LoopCanBeConvertedToQuery
       foreach (IRelationEndPointDefinition relationEndPoint in (IEnumerable) this) // use base implementation
-        // ReSharper restore LoopCanBeConvertedToQuery
+          // ReSharper restore LoopCanBeConvertedToQuery
         yield return relationEndPoint;
     }
 
@@ -96,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       if (string.IsNullOrEmpty (value.PropertyName))
         throw new InvalidOperationException ("End points without property name cannot be added to this collection.");
-      
+
       int position = BaseAdd (value.PropertyName, value);
 
       return position;

@@ -237,6 +237,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+      "Relation end point for property 'Test' cannot be added to class 'Person', because base class 'DomainBase' already defines a relation end point "
+      +"with the same property name.")]
+    public void SetRelationEndPointDefinitions_EndPointWithSamePropertyNameWasAlreadyAdded_ThrowsException ()
+    {
+      var baseEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_domainBaseClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+      var derivedEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (_personClass, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
+
+      _domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { baseEndPointDefinition }, true));
+      _personClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { derivedEndPointDefinition }, true));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
       "The relation end point definitions for class 'DomainBase' have already been set.")]
     public void SetRelationEndPointDefinitions_Twice_ThrowsException ()
@@ -838,9 +851,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void MyPropertyDefinitions ()
+    {
+      var clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
+
+      var propertyDefinitions = clientDefinition.MyPropertyDefinitions.ToArray ();
+
+      Assert.That (propertyDefinitions.Length, Is.EqualTo(1));
+      Assert.That (propertyDefinitions[0].PropertyName, Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
+    public void MyPropertyDefinitions_NoPropertiesSet_ThrowsException ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+
+      classDefinition.MyPropertyDefinitions.ToArray ();
+    }
+
+    [Test]
     public void MyRelationEndPointDefinitions ()
     {
-      ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
+      var clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
 
       IRelationEndPointDefinition[] endPointDefinitions = clientDefinition.MyRelationEndPointDefinitions.ToArray();
 
@@ -848,6 +881,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.IsTrue (
           Contains (
               endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation end point definitions have been set for class 'Order'.")]
+    public void MyRelationEndPointDefinitions_NoRelationEndPointDefinitionsSet_ThrowsException ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+
+      classDefinition.MyRelationEndPointDefinitions.ToArray();
     }
 
     [Test]

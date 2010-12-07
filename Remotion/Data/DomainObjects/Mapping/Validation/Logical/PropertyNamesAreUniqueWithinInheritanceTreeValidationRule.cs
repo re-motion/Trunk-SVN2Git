@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       if (classDefinition.BaseClass != null)
       {
-        var basePropertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition.BaseClass);
+        var basePropertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (classDefinition.BaseClass, true);
         foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
         {
           var propertyName = propertyDefinition.PropertyName;

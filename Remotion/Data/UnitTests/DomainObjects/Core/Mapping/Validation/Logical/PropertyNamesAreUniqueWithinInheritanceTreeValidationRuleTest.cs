@@ -65,10 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+      "No property definitions have been set for class 'PropertyNamesAreUniqueWithinInheritanceTreeBaseOfBaseDomainObject'.")]
     public void HasNoBaseClass_And_HasNoPropertyDefintions ()
     {
       _derivedBaseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      Assert.That (_validationRule.Validate (_derivedBaseClassDefinition).ToArray(), Is.Empty);
+      _validationRule.Validate (_derivedBaseClassDefinition).ToArray();
     }
 
     [Test]

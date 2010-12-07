@@ -74,12 +74,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageGroupType = storageGroupType;
 
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
-       // TODO Review 3556: Specify "true" for makeCollectionReadOnly parameter (when added), remove the "new ...Collection" expression
-      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
-            () => new RelationEndPointDefinitionCollection (RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this), true));
+       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
+            () => RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this, true));
       _cachedPropertyDefinitions =
           new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (
-              () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this), true));
+              () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this, true), true));
 
       _baseClass = baseClass;
     }
@@ -372,7 +371,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageGroupType; }
     }
 
-    // TODO Review 3556: Add tests for the error and non-error cases
     public PropertyDefinitionCollection MyPropertyDefinitions
     {
       get
@@ -384,7 +382,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    // TODO Review 3556: Add tests for the error and non-error cases
     public RelationEndPointDefinitionCollection MyRelationEndPointDefinitions
     {
       get 
@@ -487,7 +484,17 @@ namespace Remotion.Data.DomainObjects.Mapping
               endPointDefinition.ClassDefinition.ID);
         }
 
-        //TODO Review 3556: Check if end point already exists in base classes.
+        var baseEndPointDefinition = BaseClass != null ? BaseClass.GetRelationEndPointDefinition (endPointDefinition.PropertyName) : null;
+        if (baseEndPointDefinition != null)
+        {
+          string definingClass = String.Format ("base class '{0}'", baseEndPointDefinition.ClassDefinition.ID);
+
+          throw CreateMappingException (
+              "Relation end point for property '{0}' cannot be added to class '{1}', because {2} already defines a relation end point with the same property name.",
+              endPointDefinition.PropertyName,
+              _id,
+              definingClass);
+        }
       }
     }
 

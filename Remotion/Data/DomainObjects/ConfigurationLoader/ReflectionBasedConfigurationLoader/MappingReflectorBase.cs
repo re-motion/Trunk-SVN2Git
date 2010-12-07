@@ -93,11 +93,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    private IEnumerable<ClassReflector> CreateClassReflectors ()
-    {
-      
-    }
-
     private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
     {
       return from classDefinition in classDefinitions.Cast<ClassDefinition>()

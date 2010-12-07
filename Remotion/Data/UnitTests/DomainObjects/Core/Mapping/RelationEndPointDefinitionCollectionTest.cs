@@ -32,8 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedClassDefinition _classDefinition;
     private RelationEndPointDefinition _endPoint1;
     private RelationEndPointDefinition _endPoint2;
-    private RelationEndPointDefinition _endPoint3;
-    private RelationEndPointDefinition _endPoint4;
     private ReflectionBasedPropertyDefinition _propertyDefinition1;
     private ReflectionBasedPropertyDefinition _propertyDefinition2;
     private ReflectionBasedPropertyDefinition _propertyDefinition3;
@@ -57,13 +55,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PropertyDefinitionCollection (new[] { _propertyDefinition1, _propertyDefinition2, _propertyDefinition3, _propertyDefinition4 }, true));
       _endPoint1 = new RelationEndPointDefinition (_classDefinition, "Property1", false);
       _endPoint2 = new RelationEndPointDefinition (_classDefinition, "Property2", false);
-      _endPoint3 = new RelationEndPointDefinition (_classDefinition, "Property3", false);
-      _endPoint4 = new RelationEndPointDefinition (_classDefinition, "Property4", false);
       _collection = new RelationEndPointDefinitionCollection();
     }
 
-    // TODO Review 3560: Add tests for CreateForAllRelationEndPoints
+    [Test]
+    public void CreateForAllRelationEndPoints_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsFalse ()
+    {
+      _classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { _endPoint1, _endPoint2 }, true));
 
+      var endPoints = RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (_classDefinition, false);
+
+      Assert.That (endPoints.Count, Is.EqualTo (2));
+      Assert.That (endPoints.IsReadOnly, Is.False);
+      Assert.That (endPoints[0], Is.SameAs (_endPoint1));
+      Assert.That (endPoints[1], Is.SameAs (_endPoint2));
+    }
+
+    [Test]
+    public void CreateForAllRelationEndPoints_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsTrue ()
+    {
+      _classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { _endPoint1, _endPoint2 }, false));
+
+      var endPoints = RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (_classDefinition, true);
+
+      Assert.That (endPoints.Count, Is.EqualTo (2));
+      Assert.That (endPoints.IsReadOnly, Is.True);
+      Assert.That (endPoints[0], Is.SameAs (_endPoint1));
+      Assert.That (endPoints[1], Is.SameAs (_endPoint2));
+    }
+
+    [Test]
+    public void CreateForAllRelationEndPoints_ClassDefinitionWithBaseClassDefinition ()
+    {
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
+     var basedPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          baseClassDefinition, "Property1", "Property1", typeof (ObjectID), true, null, StorageClass.Persistent);
+     baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
+      var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
+     var derivedPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          derivedClassDefinition, "Property2", "Property2", typeof(ObjectID),true,null,StorageClass.Persistent);
+      derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
+
+      var endPoint1 = new RelationEndPointDefinition (baseClassDefinition, "Property1", false);
+      var endPoint2 = new RelationEndPointDefinition (derivedClassDefinition, "Property2", false);
+
+      baseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint1 }, true));
+      derivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint2 }, true));
+
+      var endPoints = RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (derivedClassDefinition, true);
+       
+      Assert.That (endPoints.Count, Is.EqualTo (2));
+      Assert.That (endPoints[0], Is.SameAs (endPoint2));
+      Assert.That (endPoints[1], Is.SameAs (endPoint1));
+    }
+    
     [Test]
     public void Add ()
     {

@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition ()
+    public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsFalse ()
     {
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", "Customer", UnitTestDomainStorageProviderDefinition, typeof (Customer), false);
@@ -58,9 +58,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       
-      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray();
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition, false);
 
-      Assert.That (propertyDefinitions.Length, Is.EqualTo (1));
+      Assert.That (propertyDefinitions.Count, Is.EqualTo (1));
+      Assert.That (propertyDefinitions.IsReadOnly, Is.False);
+      Assert.That (propertyDefinitions[0], Is.SameAs (propertyDefinition));
+    }
+
+    [Test]
+    public void CreateForAllPropertyDefinitions_ClassDefinitionWithoutBaseClassDefinition_MakeCollectionReadOnlyIsTrue ()
+    {
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Customer", "Customer", UnitTestDomainStorageProviderDefinition, typeof (Customer), false);
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          _classDefinition, "Test", "Test", StorageClass.Persistent);
+
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, false));
+
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition, true);
+
+      Assert.That (propertyDefinitions.Count, Is.EqualTo (1));
+      Assert.That (propertyDefinitions.IsReadOnly, Is.True);
       Assert.That (propertyDefinitions[0], Is.SameAs (propertyDefinition));
     }
 
@@ -80,9 +98,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInBaseClass }, true));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinitionInDerivedClass }, true));
       
-      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition).ToArray ();
+      var propertyDefinitions = PropertyDefinitionCollection.CreateForAllProperties (_classDefinition, false);
 
-      Assert.That (propertyDefinitions.Length, Is.EqualTo (2));
+      Assert.That (propertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (propertyDefinitions[0], Is.SameAs (propertyDefinitionInDerivedClass));
       Assert.That (propertyDefinitions[1], Is.SameAs (propertyDefinitionInBaseClass));
     }
