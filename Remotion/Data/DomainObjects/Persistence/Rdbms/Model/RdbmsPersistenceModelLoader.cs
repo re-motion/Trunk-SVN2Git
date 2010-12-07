@@ -19,9 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -64,9 +64,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return new PersistenceMappingValidator (
           new OnlyOneTablePerHierarchyValidationRule (),
-          new EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule (),
-          new NonAbstractClassHasEntityNameValidationRule (),
-          new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
+          new TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule (),
+          new ClassAboveTableIsAbstractValidationRule (),
+          new ColumnNamesAreUniqueWithinInheritanceTreeValidationRule (),
           new PropertyTypeIsSupportedByStorageProviderValidationRule ());
     }
 

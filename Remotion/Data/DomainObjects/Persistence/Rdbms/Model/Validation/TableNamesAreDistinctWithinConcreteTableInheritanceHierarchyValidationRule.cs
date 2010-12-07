@@ -15,20 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
 using System.Linq;
 
-// TODO Review 3545: Move all persistence rules to Persistence\Rdbms\Model\Validation namespace
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
-  // TODO Review 3545: Rename to TableNamesAreDistinct...
   /// <summary>
   /// Validates that a specified entity name within concrete table inheritance hierarchy classes in different inheritance brachnes is unique.
   /// </summary>
-  public class EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IPersistenceMappingValidationRule
+  public class TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule : IPersistenceMappingValidationRule
   {
-    public EntityNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule ()
+    public TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule ()
     {
       
     }

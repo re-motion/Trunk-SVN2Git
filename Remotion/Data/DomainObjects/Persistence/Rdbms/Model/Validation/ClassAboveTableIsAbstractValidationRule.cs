@@ -15,18 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
-  // TODO Review 3545: Rename to ClassAboveTableIsAbstractValidationRule
   /// <summary>
   /// Validates that each non-abstract class in the mapping can resolve it's entity-name.
   /// </summary>
-  public class NonAbstractClassHasEntityNameValidationRule : IPersistenceMappingValidationRule
+  public class ClassAboveTableIsAbstractValidationRule : IPersistenceMappingValidationRule
   {
-    public NonAbstractClassHasEntityNameValidationRule ()
+    public ClassAboveTableIsAbstractValidationRule ()
     {
       
     }

@@ -57,22 +57,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return new ReflectionBasedNameResolver(); }
     }
 
-    public ClassDefinitionValidator CreateClassDefinitionValidator ()
+    public IClassDefinitionValidator CreateClassDefinitionValidator ()
     {
       return new ClassDefinitionValidator ();
     }
 
-    public PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    public IPropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
       return new PropertyDefinitionValidator ();
     }
 
-    public RelationDefinitionValidator CreateRelationDefinitionValidator ()
+    public IRelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
       return new RelationDefinitionValidator ();
     }
 
-    public SortExpressionValidator CreateSortExpressionValidator ()
+    public ISortExpressionValidator CreateSortExpressionValidator ()
     {
       return new SortExpressionValidator ();
     }

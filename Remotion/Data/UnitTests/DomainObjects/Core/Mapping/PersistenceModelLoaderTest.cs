@@ -14,19 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Rhino.Mocks;
 
-// TODO Review 3545: Move to Mapping namespace
-namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
   public class PersistenceModelLoaderTest

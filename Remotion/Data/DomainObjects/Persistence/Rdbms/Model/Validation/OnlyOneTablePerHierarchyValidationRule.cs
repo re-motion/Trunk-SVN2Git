@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
   /// <summary>
   /// Validates that the entity-name of a class is the same as the inherited entity-name.

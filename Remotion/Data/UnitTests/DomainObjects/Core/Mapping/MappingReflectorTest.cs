@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -93,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinitionValidator ()
     {
-      var validator = _mappingReflector.CreateClassDefinitionValidator();
+      var validator = (ClassDefinitionValidator) _mappingReflector.CreateClassDefinitionValidator();
 
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (6));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule)));
@@ -107,20 +108,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitionValidator ()
     {
-      var validator = _mappingReflector.CreatePropertyDefinitionValidator();
+      var validator = (PropertyDefinitionValidator) _mappingReflector.CreatePropertyDefinitionValidator();
 
-      Assert.That (validator.ValidationRules.Count, Is.EqualTo (5));
-      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (PropertyNamesAreUniqueWithinInheritanceTreeValidationRule)));
-      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
-      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
-      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
-      Assert.That (validator.ValidationRules[4], Is.TypeOf (typeof (PropertyTypeIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (4));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule)));
+      Assert.That (validator.ValidationRules[1], Is.TypeOf (typeof (MappingAttributesAreSupportedForPropertyTypeValidationRule)));
+      Assert.That (validator.ValidationRules[2], Is.TypeOf (typeof (StorageClassIsSupportedValidationRule)));
+      Assert.That (validator.ValidationRules[3], Is.TypeOf (typeof (PropertyTypeIsSupportedValidationRule)));
     }
 
     [Test]
     public void CreateRelationDefinitionValidator ()
     {
-      var validator = _mappingReflector.CreateRelationDefinitionValidator();
+      var validator = (RelationDefinitionValidator) _mappingReflector.CreateRelationDefinitionValidator();
 
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (10));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (RdbmsRelationEndPointCombinationIsSupportedValidationRule)));
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateSortExpressionValidator ()
     {
-      var validator = _mappingReflector.CreateSortExpressionValidator();
+      var validator = (SortExpressionValidator) _mappingReflector.CreateSortExpressionValidator();
 
       Assert.That (validator.ValidationRules.Count, Is.EqualTo (1));
       Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (SortExpressionIsValidValidationRule)));

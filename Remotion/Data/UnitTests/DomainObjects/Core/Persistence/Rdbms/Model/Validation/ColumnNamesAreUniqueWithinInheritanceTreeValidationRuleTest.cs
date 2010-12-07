@@ -14,20 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
   [TestFixture]
-  public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRuleTest : ValidationRuleTestBase
+  public class ColumnNamesAreUniqueWithinInheritanceTreeValidationRuleTest : ValidationRuleTestBase
   {
-    private StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule _validationRule;
+    private ColumnNamesAreUniqueWithinInheritanceTreeValidationRule _validationRule;
     private ReflectionBasedClassDefinition _derivedBaseClass1;
     private ReflectionBasedClassDefinition _derivedBaseClass2;
     private ReflectionBasedClassDefinition _derivedClass;
@@ -36,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Persiste
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule();
+      _validationRule = new ColumnNamesAreUniqueWithinInheritanceTreeValidationRule();
       _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",
           "StorageSpecificPropertyNamesBaseOfBaseDomainObject",

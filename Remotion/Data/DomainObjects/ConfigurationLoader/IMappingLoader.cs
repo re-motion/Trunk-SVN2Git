@@ -27,11 +27,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
     bool ResolveTypes { get; }
     IMappingNameResolver NameResolver { get; }
 
-    // TODO Review 3545: Use interfaces instead
-
-    ClassDefinitionValidator CreateClassDefinitionValidator ();
-    PropertyDefinitionValidator CreatePropertyDefinitionValidator ();
-    RelationDefinitionValidator CreateRelationDefinitionValidator ();
-    SortExpressionValidator CreateSortExpressionValidator ();
+    IClassDefinitionValidator CreateClassDefinitionValidator ();
+    IPropertyDefinitionValidator CreatePropertyDefinitionValidator ();
+    IRelationDefinitionValidator CreateRelationDefinitionValidator ();
+    ISortExpressionValidator CreateSortExpressionValidator ();
   }
 }

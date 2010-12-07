@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   [TestFixture]
   public class NotSupportedPersistenceMappingIntegrationTests : ValidationIntegrationTestBase
   {
-    //StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule
+    //ColumnNamesAreUniqueWithinInheritanceTreeValidationRule
     [Test]
     [ExpectedException(typeof(MappingException), ExpectedMessage = 
       "Property 'DuplicatedPropertyInTree' of class 'DerivedDerivedClass' must not define storage specific name 'DuplicatedPropertyInTree', "
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedPersistenceMapping.DuplicatedStorageGroupAttributeInInheritanceHierarchy");
     }
 
-    //NonAbstractClassHasEntityNameValidationRule
+    //ClassAboveTableIsAbstractValidationRule
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
       "Neither class 'ClassAboveInheritanceRoot' nor its base classes are mapped to a table. Make class 'ClassAboveInheritanceRoot' abstract or define "

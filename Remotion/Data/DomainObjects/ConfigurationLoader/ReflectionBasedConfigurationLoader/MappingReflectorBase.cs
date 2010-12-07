@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _nameResolver; }
     }
 
-    public ClassDefinitionValidator CreateClassDefinitionValidator ()
+    public IClassDefinitionValidator CreateClassDefinitionValidator ()
     {
       return new ClassDefinitionValidator (
           new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
@@ -125,17 +125,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
     }
 
-    public PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    public IPropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
       return new PropertyDefinitionValidator (
-        new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
         new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
         new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
         new StorageClassIsSupportedValidationRule (),
         new PropertyTypeIsSupportedValidationRule ());
     }
 
-    public RelationDefinitionValidator CreateRelationDefinitionValidator ()
+    public IRelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
       return new RelationDefinitionValidator (
           new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
@@ -150,7 +149,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           new CheckForTypeNotFoundClassDefinitionValidationRule ());
     }
 
-    public SortExpressionValidator CreateSortExpressionValidator ()
+    public ISortExpressionValidator CreateSortExpressionValidator ()
     {
       return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
     }

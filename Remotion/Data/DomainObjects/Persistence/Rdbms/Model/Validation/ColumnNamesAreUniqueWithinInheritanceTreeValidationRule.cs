@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
-  // TODO Review 3545: Rename to ColumnNamesAreUnique...
   /// <summary>
   /// Validates that each defined persistent property storage specific name is not already defined in a class in the same inheritance hierarchy.
   /// </summary>
-  public class StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule : IPersistenceMappingValidationRule
+  public class ColumnNamesAreUniqueWithinInheritanceTreeValidationRule : IPersistenceMappingValidationRule
   {
-    public StorageSpecificPropertyNamesAreUniqueWithinInheritanceTreeValidationRule ()
+    public ColumnNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
     }
 
