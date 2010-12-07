@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrderCollection),
           "OrderNumber desc");
 
-      _orderClassDefinition = ClassDefinitionFactory.CreateOrderDefinition ();
+      _orderClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition ();
     }
 
     [Test]

@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -29,24 +29,25 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   /// </summary>
   public class SortExpressionValidator : ISortExpressionValidator
   {
-    private readonly IRelationDefinitionValidatorRule _validationRule;
+    private readonly ReadOnlyCollection<IRelationDefinitionValidatorRule> _validationRules;
 
-    public SortExpressionValidator (IRelationDefinitionValidatorRule validationRule)
+    public SortExpressionValidator (params IRelationDefinitionValidatorRule[] validationRules)
     {
-      _validationRule = validationRule;
+      _validationRules = Array.AsReadOnly (validationRules);
     }
 
-    public IRelationDefinitionValidatorRule ValidationRule
+    public ReadOnlyCollection<IRelationDefinitionValidatorRule> ValidationRules
     {
-      get { return _validationRule; }
+      get { return _validationRules; }
     }
 
     public IEnumerable<MappingValidationResult> Validate (IEnumerable<RelationDefinition> relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
-      return from relationDefinition in relationDefinitions
-             let result = _validationRule.Validate (relationDefinition)
+      return from rule in _validationRules
+             from relationDefinition in relationDefinitions
+             let result = rule.Validate (relationDefinition)
              where !result.IsValid
              select result;
     }

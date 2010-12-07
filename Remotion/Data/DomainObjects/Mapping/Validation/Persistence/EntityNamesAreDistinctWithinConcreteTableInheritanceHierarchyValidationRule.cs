@@ -19,8 +19,10 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 using System.Linq;
 
+// TODO Review 3545: Move all persistence rules to Persistence\Rdbms\Model\Validation namespace
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
+  // TODO Review 3545: Rename to TableNamesAreDistinct...
   /// <summary>
   /// Validates that a specified entity name within concrete table inheritance hierarchy classes in different inheritance brachnes is unique.
   /// </summary>

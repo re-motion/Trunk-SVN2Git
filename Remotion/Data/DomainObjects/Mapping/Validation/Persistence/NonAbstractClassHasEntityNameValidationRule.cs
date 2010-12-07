@@ -20,6 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
+  // TODO Review 3545: Rename to ClassAboveTableIsAbstractValidationRule
   /// <summary>
   /// Validates that each non-abstract class in the mapping can resolve it's entity-name.
   /// </summary>

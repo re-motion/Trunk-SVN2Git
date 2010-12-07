@@ -89,12 +89,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true, true);
 
-        ValidateClassDefinitions(mappingLoader);
-        ValidatePropertyDefinitions(mappingLoader);
+        ValidateClassDefinitions (mappingLoader);
+        ValidatePropertyDefinitions (mappingLoader);
 
         _relationDefinitions = new RelationDefinitionCollection (mappingLoader.GetRelationDefinitions (_classDefinitions), true);
 
-        ValidateRelationDefinitions(mappingLoader);
+        ValidateRelationDefinitions (mappingLoader);
 
         foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
         {
@@ -237,7 +237,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidatePersistenceMapping (IPersistenceMappingValidator validator, ClassDefinition rootClass)
     {
-      var classDefinitionsToValidate = new[]{rootClass}.Concat(rootClass.GetAllDerivedClasses().Cast<ClassDefinition>());
+      var classDefinitionsToValidate = new[] { rootClass }.Concat (rootClass.GetAllDerivedClasses().Cast<ClassDefinition>());
       AnalyzeMappingValidationResults (validator.Validate (classDefinitionsToValidate));
     }
 

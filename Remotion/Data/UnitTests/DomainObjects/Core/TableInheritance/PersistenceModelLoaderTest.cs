@@ -25,6 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Rhino.Mocks;
 
+// TODO Review 3545: Move to Mapping namespace
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
   [TestFixture]

@@ -143,43 +143,22 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
     private ClassDefinitionValidator CreateClassDefinitionValidator ()
     {
-      return new ClassDefinitionValidator (
-          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
-          new DomainObjectTypeIsNotGenericValidationRule (),
-          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
-          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
-          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
-          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+      return new ClassDefinitionValidator ();
     }
 
     private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
-      return new PropertyDefinitionValidator (
-          new PropertyNamesAreUniqueWithinInheritanceTreeValidationRule (),
-          new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
-          new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
-          new StorageClassIsSupportedValidationRule (),
-          new PropertyTypeIsSupportedValidationRule ());
+      return new PropertyDefinitionValidator ();
     }
 
     private RelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
-      return new RelationDefinitionValidator (
-          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
-          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
-          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
-          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
-          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
-          new RelationEndPointNamesAreConsistentValidationRule (),
-          new RelationEndPointTypesAreConsistentValidationRule (),
-          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
-          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+      return new RelationDefinitionValidator ();
     }
 
     private SortExpressionValidator CreateSortExpressionValidator ()
     {
-      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
+      return new SortExpressionValidator ();
     }
   }
 }

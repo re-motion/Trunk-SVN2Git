@@ -40,16 +40,20 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition);
-      var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder);
+      var persistenceModelLoader = GetProviderSpecificPersistenceModelLoader(classDefinition);
       persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
     }
 
     public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)
     {
-      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition);
-      var persistenceModelLoader = storageProviderDefinition.Factory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder);
+      var persistenceModelLoader = GetProviderSpecificPersistenceModelLoader (classDefinition);
       return persistenceModelLoader.CreatePersistenceMappingValidator (classDefinition);
+    }
+
+    private IPersistenceModelLoader GetProviderSpecificPersistenceModelLoader (ClassDefinition classDefinition)
+    {
+      var storageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition);
+      return storageProviderDefinition.Factory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder);
     }
   }
 }

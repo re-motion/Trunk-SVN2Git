@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("relationDefinitionValidatorRules", relationDefinitionValidatorRules);
+      ArgumentUtility.CheckNotNull ("relationDefinitionValidatorRules", relationDefinitionValidatorRules);
 
       _validationRules = Array.AsReadOnly (relationDefinitionValidatorRules);
     }

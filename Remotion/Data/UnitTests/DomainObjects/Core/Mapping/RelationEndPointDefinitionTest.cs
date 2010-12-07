@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -46,8 +47,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithResolvedPropertyType ()
     {
-      RelationEndPointDefinition endPoint = new RelationEndPointDefinition (
-          ClassDefinitionFactory.CreateOrderDefinitionWithResolvedCustomerProperty (), 
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), null, Type.EmptyTypes);
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          typeof (Order),
+          "Customer",
+          "CustomerID",
+          typeof (ObjectID),
+          false);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
+      var endPoint = new RelationEndPointDefinition (
+          classDefinition, 
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer", 
           true);
 

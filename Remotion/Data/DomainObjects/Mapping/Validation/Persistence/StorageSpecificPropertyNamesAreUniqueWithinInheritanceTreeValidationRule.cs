@@ -21,6 +21,7 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
 {
+  // TODO Review 3545: Rename to ColumnNamesAreUnique...
   /// <summary>
   /// Validates that each defined persistent property storage specific name is not already defined in a class in the same inheritance hierarchy.
   /// </summary>

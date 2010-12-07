@@ -21,6 +21,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 {
+  // TODO Review 3545: Remove this rule
+
   /// <summary>
   /// Validates that each defined property definition in a class is not already defined in a base class.
   /// </summary>

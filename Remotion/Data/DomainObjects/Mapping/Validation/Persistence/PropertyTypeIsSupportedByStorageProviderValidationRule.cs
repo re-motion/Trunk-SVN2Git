@@ -32,10 +32,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Persistence
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions
-             select Validate (propertyDefinition, classDefinition);
+             select Validate (propertyDefinition);
     }
 
-    private MappingValidationResult Validate (PropertyDefinition propertyDefinition, ClassDefinition classDefinition)
+    private MappingValidationResult Validate (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 

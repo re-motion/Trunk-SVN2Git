@@ -117,24 +117,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           type.Name, type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
-    public static ReflectionBasedClassDefinition CreateOrderDefinition ()
+    public static ReflectionBasedClassDefinition CreateFinishedClassDefinition (Type classType, ReflectionBasedClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinition ("Order", "OrderTable", null, typeof (Order), false);
-    }
+      var classDefinition = CreateReflectionBasedClassDefinition (classType, baseClass);
 
-    public static ReflectionBasedClassDefinition CreateOrderDefinitionWithResolvedCustomerProperty ()
-    {
-      ReflectionBasedClassDefinition classDefinition = CreateOrderDefinition();
-      classDefinition.SetPropertyDefinitions (
-          new PropertyDefinitionCollection (
-              new[]
-              {
-                  ReflectionBasedPropertyDefinitionFactory.Create (
-                      classDefinition, typeof (Order), "Customer", "CustomerID", typeof (ObjectID), false)
-              },
-              true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
 
       return classDefinition;
+    }
+
+    public static ReflectionBasedClassDefinition CreateFinishedClassDefinition (Type classType)
+    {
+      return CreateFinishedClassDefinition (classType, null);
+    }
+
+    public static ReflectionBasedClassDefinition CreateFinishedOrderDefinition ()
+    {
+      return CreateFinishedClassDefinition (typeof (Order));
+    }
+
+    public static ReflectionBasedClassDefinition CreateFinishedFileSystemItemDefinitionWithDerivedClasses ()
+    {
+      var fileSystemItemClassDefinition = CreateReflectionBasedClassDefinition (typeof (FileSystemItem), null, Type.EmptyTypes);
+      var fileClassDefinition = CreateFinishedClassDefinition (typeof (File), fileSystemItemClassDefinition);
+      var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);
+
+      fileSystemItemClassDefinition.SetDerivedClasses (new ClassDefinitionCollection { fileClassDefinition, folderClassDefinition });
+      fileSystemItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+
+      return fileSystemItemClassDefinition;
     }
 
     private static void SetStorageEntityName (string entityName, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition classDefinition)

@@ -139,7 +139,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var validator = _mappingReflector.CreateSortExpressionValidator();
 
-      Assert.That (validator.ValidationRule, Is.TypeOf (typeof (SortExpressionIsValidValidationRule)));
+      Assert.That (validator.ValidationRules.Count, Is.EqualTo (1));
+      Assert.That (validator.ValidationRules[0], Is.TypeOf (typeof (SortExpressionIsValidValidationRule)));
     }
 
   }

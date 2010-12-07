@@ -26,6 +26,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
     IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions);
     bool ResolveTypes { get; }
     IMappingNameResolver NameResolver { get; }
+
+    // TODO Review 3545: Use interfaces instead
+
     ClassDefinitionValidator CreateClassDefinitionValidator ();
     PropertyDefinitionValidator CreatePropertyDefinitionValidator ();
     RelationDefinitionValidator CreateRelationDefinitionValidator ();

@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public ClassDefinitionValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);
+      ArgumentUtility.CheckNotNull ("classDefinitionValidationRules", classDefinitionValidationRules);
 
       _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
     }
