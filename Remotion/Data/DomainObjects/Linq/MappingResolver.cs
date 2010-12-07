@@ -99,10 +99,8 @@ namespace Remotion.Data.DomainObjects.Linq
       var tableAlias = tableInfo.TableAlias;
       
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
-      // becomes SqlColumnDefinitionExpression
       var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
-      // becomes SqlColumnDefinitionExpression
       var starColumn = new SqlColumnDefinitionExpression (tableInfo.ItemType, tableAlias, "*", false);
 
       return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
