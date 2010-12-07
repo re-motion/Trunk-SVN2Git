@@ -15,17 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
+using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
+using Remotion.Logging;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  // TODO Review 3560: Join with base class
-  public class MappingReflector : MappingReflectorBase
+  public class MappingReflector : IMappingLoader
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));
+    private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver ();
     private readonly ITypeDiscoveryService _typeDiscoveryService;
 
     //TODO: Test
@@ -41,13 +49,131 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _typeDiscoveryService = typeDiscoveryService;
     }
 
-    protected override IEnumerable<Type> GetDomainObjectTypes ()
+    public IEnumerable<ClassDefinition> GetClassDefinitions ()
+    {
+      s_log.Info ("Reflecting class definitions...");
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
+      {
+        var types = GetDomainObjectTypesSorted ();
+
+        // TODO 3554: Move to collection factory
+        var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (types);
+        var leafTypes = inheritanceHierarchyFilter.GetLeafTypes ();
+
+        var classDefinitions = new ClassDefinitionCollection ();
+        var classReflectors = from domainObjectClass in leafTypes
+                              select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
+
+        foreach (ClassReflector classReflector in classReflectors)
+          classReflector.GetClassDefinition (classDefinitions);
+
+        var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
+                                  where classDefinition.BaseClass != null
+                                  group classDefinition by classDefinition.BaseClass)
+                                  .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<ClassDefinition>) grouping);
+
+        foreach (ClassDefinition classDefinition in classDefinitions)
+        {
+          IEnumerable<ClassDefinition> derivedClasses;
+          if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
+            derivedClasses = Enumerable.Empty<ClassDefinition> ();
+
+          classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
+        }
+        // TODO 3554: ... up to here
+
+        return classDefinitions
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))
+            .Cast<ClassDefinition> ();
+      }
+    }
+
+    public IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      s_log.InfoFormat ("Reflecting relation definitions of {0} class definitions...", classDefinitions.Count);
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {elapsed}."))
+      {
+        var relationDefinitions = new RelationDefinitionCollection ();
+        foreach (var classReflector in CreateClassReflectorsForRelations (classDefinitions))
+          classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
+
+        return relationDefinitions
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count))
+            .Cast<RelationDefinition> ();
+      }
+    }
+
+    protected IEnumerable<Type> GetDomainObjectTypes ()
     {
       return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
               where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)
                 //TODO COMMONS-825: test this
               && !ReflectionUtility.IsDomainObjectBase (type)
               select type).Distinct();
+    }
+
+    private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
+    {
+      return from classDefinition in classDefinitions.Cast<ClassDefinition> ()
+             select ClassReflectorForRelations.CreateClassReflector (classDefinition.ClassType, NameResolver);
+    }
+
+    private Type[] GetDomainObjectTypesSorted ()
+    {
+      return GetDomainObjectTypes ().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray ();
+    }
+
+    bool IMappingLoader.ResolveTypes
+    {
+      get { return true; }
+    }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
+    }
+
+    public IClassDefinitionValidator CreateClassDefinitionValidator ()
+    {
+      return new ClassDefinitionValidator (
+          new DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRule (),
+          new DomainObjectTypeIsNotGenericValidationRule (),
+          new InheritanceHierarchyFollowsClassHierarchyValidationRule (),
+          new StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule (),
+          new ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule (),
+          new StorageGroupTypesAreSameWithinInheritanceTreeRule ());
+    }
+
+    public IPropertyDefinitionValidator CreatePropertyDefinitionValidator ()
+    {
+      return new PropertyDefinitionValidator (
+        new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (),
+        new MappingAttributesAreSupportedForPropertyTypeValidationRule (),
+        new StorageClassIsSupportedValidationRule (),
+        new PropertyTypeIsSupportedValidationRule ());
+    }
+
+    public IRelationDefinitionValidator CreateRelationDefinitionValidator ()
+    {
+      return new RelationDefinitionValidator (
+          new RdbmsRelationEndPointCombinationIsSupportedValidationRule (),
+          new SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRule (),
+          new VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRule (),
+          new VirtualRelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule (),
+          new RelationEndPointPropertyTypeIsSupportedValidationRule (),
+          new RelationEndPointNamesAreConsistentValidationRule (),
+          new RelationEndPointTypesAreConsistentValidationRule (),
+          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
+          new CheckForTypeNotFoundClassDefinitionValidationRule ());
+    }
+
+    public ISortExpressionValidator CreateSortExpressionValidator ()
+    {
+      return new SortExpressionValidator (new SortExpressionIsValidValidationRule ());
     }
   }
 }
