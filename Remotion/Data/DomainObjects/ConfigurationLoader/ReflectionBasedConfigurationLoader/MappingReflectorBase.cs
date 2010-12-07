@@ -42,8 +42,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
-        var classDefinitions = new ClassDefinitionCollection();
-        foreach (ClassReflector classReflector in CreateClassReflectors())
+        var types = GetDomainObjectTypesSorted ();
+
+        // TODO 3554: Move to collection factory
+        var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (types);
+        var leafTypes = inheritanceHierarchyFilter.GetLeafTypes ();
+
+        var classDefinitions = new ClassDefinitionCollection ();
+        var classReflectors = from domainObjectClass in leafTypes
+                              select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
+
+        foreach (ClassReflector classReflector in classReflectors)
           classReflector.GetClassDefinition (classDefinitions);
 
         var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
@@ -59,6 +68,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           
           classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
         }
+        // TODO 3554: ... up to here
         
         return classDefinitions
             .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))
@@ -85,9 +95,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private IEnumerable<ClassReflector> CreateClassReflectors ()
     {
-      var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (GetDomainObjectTypesSorted());
-      return from domainObjectClass in inheritanceHierarchyFilter.GetLeafTypes()
-             select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
+      
     }
 
     private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)

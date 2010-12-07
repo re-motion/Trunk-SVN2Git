@@ -78,6 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
 
+    // TODO 3554: Move this test
     [Test]
     public void GetClassDefinitions_DerivedClassesAreSet ()
     {
