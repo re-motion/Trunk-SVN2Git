@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTableReferenceExpression ()
+    public void ResolveSimpleTableInfo ()
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_orderTable);
 
