@@ -62,6 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _collection = new RelationEndPointDefinitionCollection();
     }
 
+    // TODO Review 3560: Add tests for CreateForAllRelationEndPoints
+
     [Test]
     public void Add ()
     {

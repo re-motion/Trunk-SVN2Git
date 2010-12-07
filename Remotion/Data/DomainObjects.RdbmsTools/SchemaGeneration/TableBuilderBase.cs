@@ -38,15 +38,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      IRelationEndPointDefinition relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition != null)
       {
-        IRelationEndPointDefinition oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition(); 
+        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition(); 
 
         if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
-            &&
-            propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-            == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
+            && propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name 
+                == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
           return true;
       }
       return false;
@@ -54,12 +53,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     // member fields
 
-    private StringBuilder _createTableStringBuilder;
-    private StringBuilder _dropTableStringBuilder;
+    private readonly StringBuilder _createTableStringBuilder;
+    private readonly StringBuilder _dropTableStringBuilder;
 
     // construction and disposing
 
-    public TableBuilderBase ()
+    protected TableBuilderBase ()
     {
       _createTableStringBuilder = new StringBuilder();
       _dropTableStringBuilder = new StringBuilder();
@@ -134,7 +133,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
         currentClassDefinition = currentClassDefinition.BaseClass;
       }
 
-      StringBuilder columnListStringBuilder = new StringBuilder();
+      var columnListStringBuilder = new StringBuilder();
       AppendColumnListOfDerivedClasses (classDefinition, columnListStringBuilder, addedStorageProperties);
       columnList += columnListStringBuilder.ToString();
       return columnList;
@@ -159,7 +158,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
 
-      StringBuilder columnListStringBuilder = new StringBuilder();
+      var columnListStringBuilder = new StringBuilder();
 
       foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent())
       {

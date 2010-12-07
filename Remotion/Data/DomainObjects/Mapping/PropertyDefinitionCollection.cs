@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 [Serializable]
 public class PropertyDefinitionCollection : CommonCollection, IEnumerable<PropertyDefinition>
 {
+  // TODO Review 3556: Change to return a PropertyDefinitionCollection; add a makeCollectionReadOnly parameter
   public static IEnumerable<PropertyDefinition> CreateForAllProperties (ClassDefinition classDefinition)
   {
     ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

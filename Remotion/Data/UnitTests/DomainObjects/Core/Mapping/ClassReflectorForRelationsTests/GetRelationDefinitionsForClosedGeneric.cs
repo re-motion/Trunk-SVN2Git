@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRelationsTests
 {
   [TestFixture]
   public class GetRelationDefinitionsForClosedGeneric : TestBase

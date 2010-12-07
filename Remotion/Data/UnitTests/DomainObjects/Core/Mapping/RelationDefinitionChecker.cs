@@ -81,60 +81,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             expectedEndPointDefinition.ClassDefinition.ID,
             expectedEndPointDefinition.PropertyName);
 
-        CheckEndPointDefinition (expectedEndPointDefinition, actualEndPointDefinition, expectedRelationDefinition);
+        var endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
+        endPointDefinitionChecker.Check (expectedEndPointDefinition, actualEndPointDefinition);
       }
     }
-
-    private void CheckEndPointDefinition (
-      IRelationEndPointDefinition expectedEndPointDefinition, 
-      IRelationEndPointDefinition actualEndPointDefinition, 
-      RelationDefinition relationDefinition)
-    {
-      Assert.AreEqual (expectedEndPointDefinition.GetType (), actualEndPointDefinition.GetType (), 
-        "End point definitions (relation definition: '{0}', property name: '{1}') are not of same type.", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-      Assert.AreEqual (expectedEndPointDefinition.ClassDefinition.ID, actualEndPointDefinition.ClassDefinition.ID, 
-        "ClassDefinition of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-      Assert.AreEqual (expectedEndPointDefinition.RelationDefinition.ID, actualEndPointDefinition.RelationDefinition.ID, 
-        "RelationDefinition of end point definitions (property name: '{0}') does not match.", 
-        expectedEndPointDefinition.PropertyName);
-    
-      Assert.AreEqual (expectedEndPointDefinition.PropertyName, actualEndPointDefinition.PropertyName, 
-        "PropertyName of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-      Assert.AreEqual (expectedEndPointDefinition.PropertyType, actualEndPointDefinition.PropertyType, 
-        "PropertyType of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-      Assert.AreEqual (expectedEndPointDefinition.IsMandatory, actualEndPointDefinition.IsMandatory, 
-        "IsMandatory of end point definitions (relation definition: '{0}', property name: '{1}') does not match. ", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-      Assert.AreEqual (expectedEndPointDefinition.Cardinality, actualEndPointDefinition.Cardinality, 
-        "Cardinality of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
-        relationDefinition.ID,  
-        expectedEndPointDefinition.PropertyName);
-
-
-      if (expectedEndPointDefinition is VirtualRelationEndPointDefinition)
-      {
-        VirtualRelationEndPointDefinition expectedVirtualEndPointDefinition = (VirtualRelationEndPointDefinition) expectedEndPointDefinition;
-        VirtualRelationEndPointDefinition actualVirtualEndPointDefinition = (VirtualRelationEndPointDefinition) actualEndPointDefinition;
-
-        Assert.AreEqual (expectedVirtualEndPointDefinition.SortExpressionText, actualVirtualEndPointDefinition.SortExpressionText, 
-          "SortExpression of end point definitions (relation definition: '{0}', property name: '{1}') does not match.", 
-          relationDefinition.ID,  
-          expectedVirtualEndPointDefinition.PropertyName);
-      }
-    }      
   }
 }

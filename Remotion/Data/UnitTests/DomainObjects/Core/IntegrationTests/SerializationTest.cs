@@ -43,8 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClassDefinition companyClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Company");
       ClassDefinition supplierClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Supplier");
       ClassDefinition partnerClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
-      PropertyDefinition partnerContactPersonPropertyDefinition = partnerClassDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
-      IRelationEndPointDefinition partnerToPersonRelationEndPointDefinition = partnerClassDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
+      PropertyDefinition partnerContactPersonPropertyDefinition =
+          partnerClassDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
+      IRelationEndPointDefinition partnerToPersonRelationEndPointDefinition =
+          partnerClassDefinition.GetMandatoryRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
 
       object[] partnerObjects = new object[] {
         partnerClassDefinition,
@@ -60,36 +62,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       object[] deserializedPartnerObjects = (object[]) SerializeAndDeserialize (partnerObjects);
 
-      Assert.AreEqual (partnerObjects.Length, deserializedPartnerObjects.Length);
-      Assert.AreSame (partnerClassDefinition, deserializedPartnerObjects[0]);
-      Assert.AreSame (companyClassDefinition, deserializedPartnerObjects[1]);
-
-      ClassDefinitionCollection deserializedDerivedClasses = (ClassDefinitionCollection) deserializedPartnerObjects[2];
-      Assert.IsFalse (ReferenceEquals (partnerClassDefinition.DerivedClasses, deserializedDerivedClasses));
-      Assert.AreEqual (partnerClassDefinition.DerivedClasses.Count, deserializedDerivedClasses.Count);
-      for (int i = 0; i < partnerClassDefinition.DerivedClasses.Count; i++)
-        Assert.AreSame (partnerClassDefinition.DerivedClasses[i], deserializedDerivedClasses[i]);
-
-      PropertyDefinitionCollection deserializedPropertyDefinitions = (PropertyDefinitionCollection) deserializedPartnerObjects[3];
-      Assert.IsFalse (ReferenceEquals (partnerClassDefinition.MyPropertyDefinitions, deserializedPropertyDefinitions));
-      Assert.AreEqual (partnerClassDefinition.MyPropertyDefinitions.Count, deserializedPropertyDefinitions.Count);
-      for (int i = 0; i < partnerClassDefinition.MyPropertyDefinitions.Count; i++)
-        Assert.AreSame (partnerClassDefinition.MyPropertyDefinitions[i], deserializedPropertyDefinitions[i]);
-
-      RelationEndPointDefinitionCollection deserializedRelationDefinitions = (RelationEndPointDefinitionCollection) deserializedPartnerObjects[4];
-      Assert.IsFalse (ReferenceEquals (partnerClassDefinition.MyRelationEndPointDefinitions, deserializedRelationDefinitions));
-      Assert.AreEqual (partnerClassDefinition.MyRelationEndPointDefinitions.Count, deserializedRelationDefinitions.Count);
-      for (int i = 0; i < partnerClassDefinition.MyRelationEndPointDefinitions.Count; i++)
-        Assert.AreSame (partnerClassDefinition.MyRelationEndPointDefinitions[i], deserializedRelationDefinitions[i]);
-
-      Assert.AreSame (supplierClassDefinition, deserializedPartnerObjects[5]);
-
-      Assert.AreSame (partnerContactPersonPropertyDefinition, deserializedPartnerObjects[6]);
-
-      Assert.AreSame (partnerToPersonRelationEndPointDefinition, deserializedPartnerObjects[7]);
-
-      var deserializedRelationDefinition = deserializedPartnerObjects[8];
-      Assert.IsTrue (ReferenceEquals (partnerToPersonRelationEndPointDefinition.RelationDefinition, deserializedRelationDefinition));
+      Assert.That (deserializedPartnerObjects.Length, Is.EqualTo (partnerObjects.Length));
+      Assert.That (deserializedPartnerObjects[0], Is.SameAs (partnerObjects[0]));
+      Assert.That (deserializedPartnerObjects[1], Is.SameAs (partnerObjects[1]));
+      Assert.That (deserializedPartnerObjects[2], Is.EqualTo (partnerObjects[2]));
+      Assert.That (deserializedPartnerObjects[3], Is.EqualTo (partnerObjects[3]));
+      Assert.That (deserializedPartnerObjects[4], Is.EqualTo (partnerObjects[4]));
+      Assert.That (deserializedPartnerObjects[5], Is.SameAs (partnerObjects[5]));
+      Assert.That (deserializedPartnerObjects[6], Is.SameAs (partnerObjects[6]));
+      Assert.That (deserializedPartnerObjects[7], Is.SameAs (partnerObjects[7]));
+      Assert.That (deserializedPartnerObjects[8], Is.SameAs (partnerObjects[8]));
     }
 
     [Test]
@@ -102,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       IRelationEndPointDefinition clientToLocationRelationEndPointDefinition = locationClassDefinition.GetRelationEndPointDefinition (
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
 
-      object[] clientObjects = new object[] {
+      var clientObjects = new object[] {
         clientClassDefinition,
         clientClassDefinition.DerivedClasses,
         clientClassDefinition.MyRelationEndPointDefinitions,
@@ -110,26 +92,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         clientToLocationRelationEndPointDefinition,
     };
 
-      object[] deserializedClientObjects = (object[]) SerializeAndDeserialize (clientObjects);
+      var deserializedClientObjects = (object[]) SerializeAndDeserialize (clientObjects);
 
-      Assert.AreEqual (clientObjects.Length, deserializedClientObjects.Length);
-      Assert.AreSame (clientClassDefinition, deserializedClientObjects[0]);
-
-      ClassDefinitionCollection deserializedDerivedClasses = (ClassDefinitionCollection) deserializedClientObjects[1];
-      Assert.IsFalse (ReferenceEquals (clientClassDefinition.DerivedClasses, deserializedDerivedClasses));
-      Assert.AreEqual (0, deserializedDerivedClasses.Count);
-
-      RelationEndPointDefinitionCollection deserializedRelationDefinitions = (RelationEndPointDefinitionCollection) deserializedClientObjects[2];
-      Assert.IsFalse (ReferenceEquals (clientClassDefinition.MyRelationEndPointDefinitions, deserializedRelationDefinitions));
-      Assert.AreEqual (clientClassDefinition.MyRelationEndPointDefinitions.Count, deserializedRelationDefinitions.Count);
-      for (int i = 0; i < clientClassDefinition.MyRelationEndPointDefinitions.Count; i++)
-        Assert.AreSame (clientClassDefinition.MyRelationEndPointDefinitions[i], deserializedRelationDefinitions[i]);
-
-      IRelationEndPointDefinition deserializedParentClientToChildClientFirstEndPoint = (IRelationEndPointDefinition) deserializedClientObjects[3];
-      Assert.AreSame (parentClientToChildClientRelationEndPointDefinition, deserializedParentClientToChildClientFirstEndPoint);
-
-      IRelationEndPointDefinition deserializedClientToLocationFirstEndPoint = (IRelationEndPointDefinition) deserializedClientObjects[4];
-      Assert.AreSame (clientToLocationRelationEndPointDefinition, deserializedClientToLocationFirstEndPoint);
+      Assert.That (deserializedClientObjects.Length, Is.EqualTo (clientObjects.Length));
+      Assert.That (deserializedClientObjects[0], Is.SameAs (clientObjects[0]));
+      Assert.That (deserializedClientObjects[1], Is.EqualTo (clientObjects[1]));
+      Assert.That (deserializedClientObjects[2], Is.EqualTo (clientObjects[2]));
+      Assert.That (deserializedClientObjects[3], Is.SameAs (clientObjects[3]));
+      Assert.That (deserializedClientObjects[4], Is.SameAs (clientObjects[4]));
     }
 
     [Test]

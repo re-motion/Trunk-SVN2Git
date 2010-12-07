@@ -1174,20 +1174,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationsByClass = (from relationDefinition in relationDefinitions.Cast<RelationDefinition> ()
                               from endPoint in relationDefinition.EndPointDefinitions
                               where !endPoint.IsAnonymous
-                              group relationDefinition by endPoint.ClassDefinition)
-                             .ToDictionary (grouping => grouping.Key, grouping => grouping.Distinct ());
+                              group endPoint by endPoint.ClassDefinition)
+                             .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<IRelationEndPointDefinition>) grouping);
 
       foreach (var classDefinition in _classDefinitions.Cast<ClassDefinition>())
       {
         IEnumerable<IRelationEndPointDefinition> relationEndPointsDefinitionsForClass;
-        IEnumerable<RelationDefinition> relationDefinitionsForClass;
-        if (!relationsByClass.TryGetValue (classDefinition, out relationDefinitionsForClass))
+
+        if (!relationsByClass.TryGetValue (classDefinition, out relationEndPointsDefinitionsForClass))
           relationEndPointsDefinitionsForClass = Enumerable.Empty<IRelationEndPointDefinition>();
-        else
-          relationEndPointsDefinitionsForClass = from relationDefinition in relationDefinitionsForClass
-                                  from endPointDefinition in relationDefinition.EndPointDefinitions
-                                  where endPointDefinition.ClassDefinition == classDefinition && !endPointDefinition.IsAnonymous
-                                  select endPointDefinition;
+        
         classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (relationEndPointsDefinitionsForClass, true));
       }
     }

@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
@@ -48,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
 
     [NonSerialized]
-    private readonly DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> _cachedRelationEndPointDefinitions;
+    private readonly DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> _cachedRelationEndPointDefinitions;
 
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
@@ -76,9 +74,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       _storageGroupType = storageGroupType;
 
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
-       // TODO 3556: Use RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints
-      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition>> (
-          FindAllRelationEndPointDefinitions);
+       // TODO Review 3556: Specify "true" for makeCollectionReadOnly parameter (when added), remove the "new ...Collection" expression
+      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
+            () => new RelationEndPointDefinitionCollection (RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this), true));
       _cachedPropertyDefinitions =
           new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (
               () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this), true));
@@ -190,9 +188,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _cachedPropertyDefinitions.Value;
     }
 
-    public ICollection<IRelationEndPointDefinition> GetRelationEndPointDefinitions ()
+    public RelationEndPointDefinitionCollection GetRelationEndPointDefinitions ()
     {
-      return ((IDictionary<string, IRelationEndPointDefinition>) _cachedRelationEndPointDefinitions.Value).Values;
+      return _cachedRelationEndPointDefinitions.Value;
     }
 
     public ClassDefinition GetOppositeClassDefinition (string propertyName)
@@ -222,9 +220,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      IRelationEndPointDefinition value;
-      _cachedRelationEndPointDefinitions.Value.TryGetValue (propertyName, out value);
-      return value;
+      return _cachedRelationEndPointDefinitions.Value[propertyName];
     }
 
     public IRelationEndPointDefinition GetMandatoryRelationEndPointDefinition (string propertyName)
@@ -376,6 +372,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageGroupType; }
     }
 
+    // TODO Review 3556: Add tests for the error and non-error cases
     public PropertyDefinitionCollection MyPropertyDefinitions
     {
       get
@@ -387,6 +384,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    // TODO Review 3556: Add tests for the error and non-error cases
     public RelationEndPointDefinitionCollection MyRelationEndPointDefinitions
     {
       get 
@@ -449,16 +447,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> FindAllRelationEndPointDefinitions ()
-    {
-      IEnumerable<IRelationEndPointDefinition> relationEndPointDefinitions = MyRelationEndPointDefinitions;
-
-      if (BaseClass != null)
-        relationEndPointDefinitions = relationEndPointDefinitions.Concat (BaseClass.GetRelationEndPointDefinitions());
-
-      return new ReadOnlyDictionarySpecific<string, IRelationEndPointDefinition> (relationEndPointDefinitions.ToDictionary (def => def.PropertyName));
-    }
-
     private void CheckPropertyDefinitions (IEnumerable<PropertyDefinition> propertyDefinitions)
     {
       foreach (var propertyDefinition in propertyDefinitions)
@@ -499,7 +487,7 @@ namespace Remotion.Data.DomainObjects.Mapping
               endPointDefinition.ClassDefinition.ID);
         }
 
-        //TODO 3556: check if end point already exists in base classes?
+        //TODO Review 3556: Check if end point already exists in base classes.
       }
     }
 

@@ -257,12 +257,13 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinitionForHierarchyWithoutStorageGroup.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitions.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitions.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitionsForClosedGeneric.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\NameBasedPropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\ClassWithOppositeProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeBaseClass.cs" />

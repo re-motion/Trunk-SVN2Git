@@ -838,7 +838,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMyRelationEndPointDefinitions ()
+    public void MyRelationEndPointDefinitions ()
     {
       ClassDefinition clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
 
@@ -851,7 +851,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMyRelationEndPointDefinitionsCompositeBaseClass ()
+    public void MyRelationEndPointDefinitionsCompositeBaseClass ()
     {
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
@@ -881,7 +881,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMyRelationEndPointDefinitionsCompositeDerivedClass ()
+    public void MyRelationEndPointDefinitionsCompositeDerivedClass ()
     {
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
@@ -1161,11 +1161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           (ReflectionBasedPropertyDefinition) _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
       Assert.AreEqual (property, propertyDefinition.PropertyInfo);
     }
-
-
-
-  
-
+    
     [Test]
     public void CreatorIsFactoryBasedCreator ()
     {

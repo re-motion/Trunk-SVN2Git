@@ -151,11 +151,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
     private void FillAllRelationEndPointDefinitionsWithParticularAndDerivedClass (
         ClassDefinition classDefinition, List<IRelationEndPointDefinition> allRelationEndPointDefinitions)
     {
-      foreach (IRelationEndPointDefinition relationEndPointDefinition in classDefinition.MyRelationEndPointDefinitions)
-      {
-        if (relationEndPointDefinition.ClassDefinition == classDefinition)
-            allRelationEndPointDefinitions.Add (relationEndPointDefinition);
-      }
+      allRelationEndPointDefinitions.AddRange (classDefinition.MyRelationEndPointDefinitions);
 
       foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
         FillAllRelationEndPointDefinitionsWithParticularAndDerivedClass (derivedClass, allRelationEndPointDefinitions);

@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   [Serializable]
   public class RelationEndPointDefinitionCollection : CommonCollection, IEnumerable<IRelationEndPointDefinition>
   {
+    // TODO Review 3556: Change to return a RelationEndPointDefinitionCollection; add a makeCollectionReadOnly parameter
     public static IEnumerable<IRelationEndPointDefinition> CreateForAllRelationEndPoints (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
