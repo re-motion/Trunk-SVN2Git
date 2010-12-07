@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,6 +29,8 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ClassDefinitionCollectionFactory
   {
+    private readonly IMappingNameResolver _nameResolver;
+
     public static ReflectionBasedClassDefinition GetClassDefinition (
         ClassDefinitionCollection classDefinitions, Type classType, IMappingNameResolver mappingNameResolver, ClassReflector classReflector)
     {
@@ -48,6 +53,44 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       var classReflector = new ClassReflector (type.BaseType, nameResolver);
       return GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
+    }
+
+    public ClassDefinitionCollectionFactory (IMappingNameResolver nameResolver)
+    {
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+
+      _nameResolver = nameResolver;
+    }
+
+    public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
+    {
+      ArgumentUtility.CheckNotNull ("types", types);
+
+      var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (types.ToArray());
+      var leafTypes = inheritanceHierarchyFilter.GetLeafTypes ();
+
+      var classDefinitions = new ClassDefinitionCollection ();
+      var classReflectors = from domainObjectClass in leafTypes
+                            select ClassReflector.CreateClassReflector (domainObjectClass, _nameResolver);
+
+      foreach (ClassReflector classReflector in classReflectors)
+        ClassDefinitionCollectionFactory.GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
+
+      var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
+                                where classDefinition.BaseClass != null
+                                group classDefinition by classDefinition.BaseClass)
+                                .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<ClassDefinition>) grouping);
+
+      foreach (ClassDefinition classDefinition in classDefinitions)
+      {
+        IEnumerable<ClassDefinition> derivedClasses;
+        if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
+          derivedClasses = Enumerable.Empty<ClassDefinition> ();
+
+        classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
+      }
+
+      return classDefinitions;
     }
   }
 }

@@ -20,7 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -29,12 +31,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private ClassDefinitionCollection _classDefinitions;
     private ReflectionBasedNameResolver _nameResolver;
+    private ClassDefinitionCollectionFactory _classDefinitionCollectionFactory;
 
     [SetUp]
     public void SetUp ()
     {
       _classDefinitions = new ClassDefinitionCollection ();
       _nameResolver = new ReflectionBasedNameResolver();
+      _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_nameResolver);
+    }
+
+    [Test]
+    public void CreateClassDefinitionCollection ()
+    {
+      var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new[] { typeof (Order) });
+
+      Assert.That (classDefinitions.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void CreateClassDefinitionCollection_DerivedClassAreSet ()
+    {
+      var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new[] { typeof (Order), typeof(Company), typeof(Partner), typeof(Customer) });
+
+      Assert.That (classDefinitions.Count, Is.EqualTo (4));
+      Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
+      Assert.That (classDefinitions["Company"].DerivedClasses.Count, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void CreateClassDefinitionCollection_NoTypes ()
+    {
+      var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new Type[0]);
+
+      Assert.That (classDefinitions.Count, Is.EqualTo (0));
     }
 
     [Test]

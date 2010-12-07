@@ -56,32 +56,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
         var types = GetDomainObjectTypesSorted ();
-
-        // TODO 3554: Move to collection factory
-        var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (types);
-        var leafTypes = inheritanceHierarchyFilter.GetLeafTypes ();
-
-        var classDefinitions = new ClassDefinitionCollection ();
-        var classReflectors = from domainObjectClass in leafTypes
-                              select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
-
-        foreach (ClassReflector classReflector in classReflectors)
-          ClassDefinitionCollectionFactory.GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
-
-        var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
-                                  where classDefinition.BaseClass != null
-                                  group classDefinition by classDefinition.BaseClass)
-                                  .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<ClassDefinition>) grouping);
-
-        foreach (ClassDefinition classDefinition in classDefinitions)
-        {
-          IEnumerable<ClassDefinition> derivedClasses;
-          if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
-            derivedClasses = Enumerable.Empty<ClassDefinition> ();
-
-          classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
-        }
-        // TODO 3554: ... up to here
+        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (NameResolver);
+        var classDefinitions = classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
 
         return classDefinitions
             .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))

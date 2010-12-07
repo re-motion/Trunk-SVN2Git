@@ -79,16 +79,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
 
-    // TODO 3554: Move this test
     [Test]
-    public void GetClassDefinitions_DerivedClassesAreSet ()
+    public void GetClassDefinitions()
     {
       Assembly assembly = GetType ().Assembly;
       var mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
       var classDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
 
-      Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
-      Assert.That (classDefinitions["Company"].DerivedClasses.Count, Is.EqualTo (2));
+      Assert.That (classDefinitions.Count, Is.GreaterThan (0));
     }
 
     [Test]
