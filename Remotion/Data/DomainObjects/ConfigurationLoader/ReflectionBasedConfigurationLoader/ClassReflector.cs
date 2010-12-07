@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -33,6 +32,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public static ClassReflector CreateClassReflector (Type type, IMappingNameResolver nameResolver)
     {
       return new ClassReflector (type, nameResolver);
+    }
+
+    private static ReflectionBasedClassDefinition GetBaseClassDefinition (
+        ClassDefinitionCollection classDefinitions, Type type, IMappingNameResolver nameResolver)
+    {
+      if (ReflectionUtility.IsInheritanceRoot (type))
+        return null;
+
+      var classReflector = new ClassReflector (type.BaseType, nameResolver);
+      return classReflector.GetClassDefinition (classDefinitions);
     }
 
     public ClassReflector (Type type, IMappingNameResolver nameResolver)
@@ -56,21 +65,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (classDefinitions.Contains (Type))
         return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
-      ReflectionBasedClassDefinition classDefinition = CreateClassDefinition (classDefinitions);
+      var classDefinition = CreateClassDefinition (GetBaseClassDefinition (classDefinitions, Type, NameResolver));
       classDefinitions.Add (classDefinition);
 
       return classDefinition;
     }
 
-    public ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)
+    public ReflectionBasedClassDefinition CreateClassDefinition (ReflectionBasedClassDefinition baseClassDefinition)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          GetID(),
-          Type,
-          IsAbstract(),
-          GetBaseClassDefinition (classDefinitions),
-          GetStorageGroupType(),
-          PersistentMixinFinder);
+      var classDefinition = new ReflectionBasedClassDefinition (
+          GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), PersistentMixinFinder);
 
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
 
@@ -106,15 +110,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return !Attribute.IsDefined (Type, typeof (InstantiableAttribute), false);
 
       return false;
-    }
-
-    private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
-    {
-      if (ReflectionUtility.IsInheritanceRoot (Type))
-        return null;
-
-      ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (Type.BaseType, NameResolver);
-      return classReflector.GetClassDefinition (classDefinitions);
     }
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
