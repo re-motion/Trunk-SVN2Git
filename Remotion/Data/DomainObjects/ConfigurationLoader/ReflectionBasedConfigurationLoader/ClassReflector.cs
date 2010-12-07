@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return classDefinition;
     }
 
-    private ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)
+    public ReflectionBasedClassDefinition CreateClassDefinition (ClassDefinitionCollection classDefinitions)
     {
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
           GetID(),

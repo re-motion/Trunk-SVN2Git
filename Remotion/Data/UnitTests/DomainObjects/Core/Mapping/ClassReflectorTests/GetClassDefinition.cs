@@ -44,22 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     }
 
     [Test]
-    public void GetClassDefinition_ForBaseClass ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition();
-      expected.SetDerivedClasses (new ClassDefinitionCollection());
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-      actual.SetDerivedClasses (new ClassDefinitionCollection());
-
-      Assert.IsNotNull (actual);
-      _classDefinitionChecker.Check (expected, actual);
-      Assert.AreEqual (1, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (ClassWithMixedProperties)));
-    }
-
-    [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
       var classReflector= new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
@@ -80,16 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     }
 
     [Test]
-    public void InheritanceRoot_SimpleDomainObject ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-
-      Assert.IsNotNull (actual);
-      Assert.AreSame (actual, actual.GetInheritanceRootClass());
-    }
-
-    [Test]
     public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection ()
     {
       ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
@@ -107,8 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      var classReflector= new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
+      var classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
+      ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition ();
 
       var expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
@@ -121,81 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (DerivedClassWithMixedProperties)));
       Assert.AreSame (expected, actual);
       Assert.AreSame (expectedBaseClass, actual.BaseClass);
-    }
-
-    [Test]
-    public void GetClassDefinition_ForMixedClass ()
-    {
-      var classReflector= new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-      Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD)}));
-    }
-
-    [Test]
-    public void GetClassDefinition_ForDerivedMixedClass ()
-    {
-      var classReflector= new ClassReflector (typeof (TargetClassB), Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-      Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
-    }
-
-    [Test]
-    public void GetClassDefinition_ForClassWithOneSideRelationProperties ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
-      expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      expected.SetDerivedClasses (new ClassDefinitionCollection());
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-      actual.SetDerivedClasses (new ClassDefinitionCollection());
-
-      Assert.IsNotNull (actual);
-      _classDefinitionChecker.Check (expected, actual);
-      Assert.AreEqual (1, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (ClassWithVirtualRelationEndPoints)));
-    }
-
-    [Test]
-    public void GetClassDefinition_ForClassHavingClassIDAttribute ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassHavingClassIDAttribute), Configuration.NameResolver);
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
-    }
-    
-   [Test]
-    public void GetClassDefinition_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute ()
-    {
-      var classReflector= new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
-
-      ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
-
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
-    }
-
-   [Test]
-   public void GetClassDefinition_ForClassWithHasStorageGroupAttributeDefinedItselfAndInBaseClass ()
-   {
-     var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
-
-     var actual = classReflector.GetClassDefinition (_classDefinitions);
-
-     Assert.IsNotNull (actual);
-     Assert.AreEqual ("DerivedClassWithStorageGroupAttribute", actual.ID);
-   }
-
-
-    [Test]
-    public void GetClassDefinition_ForClosedGenericClass ()
-    {
-      var classReflector= new ClassReflector (typeof (ClosedGenericClass), Configuration.NameResolver);
-
-      Assert.IsNotNull (classReflector.GetClassDefinition (_classDefinitions));
     }
 
     [Test]
@@ -221,30 +120,125 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
             + "and 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.OtherClassWithSameClassID' "
             + "both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these classes. "
             + "The assemblies involved are '{0}' and '{1}'.",
-            GetType().Assembly.GetName().FullName,
-            GetType().Assembly.GetName().FullName);
+            GetType ().Assembly.GetName ().FullName,
+            GetType ().Assembly.GetName ().FullName);
 
         Assert.AreEqual (expectedMessage, ex.Message);
       }
     }
 
     [Test]
-    public void GetClassDefinition_ForClassWithoutStorageGroupAttribute ()
+    public void CreateClassDefinition_ForBaseClass ()
+    {
+      var classReflector = new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
+      ReflectionBasedClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition ();
+      expected.SetDerivedClasses (new ClassDefinitionCollection ());
+
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition (_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection ());
+
+      Assert.IsNotNull (actual);
+      _classDefinitionChecker.Check (expected, actual);
+    }
+
+    [Test]
+    public void CreateClassDefinitions_InheritanceRoot_SimpleDomainObject ()
+    {
+      var classReflector= new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition(_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreSame (actual, actual.GetInheritanceRootClass());
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForMixedClass ()
+    {
+      var classReflector= new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition (_classDefinitions);
+      Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD)}));
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForDerivedMixedClass ()
+    {
+      var classReflector= new ClassReflector (typeof (TargetClassB), Configuration.NameResolver);
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition (_classDefinitions);
+      Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForClassWithOneSideRelationProperties ()
+    {
+      var classReflector= new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
+      ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
+      expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      expected.SetDerivedClasses (new ClassDefinitionCollection());
+
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition(_classDefinitions);
+      actual.SetDerivedClasses (new ClassDefinitionCollection());
+
+      Assert.IsNotNull (actual);
+      _classDefinitionChecker.Check (expected, actual);
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForClassHavingClassIDAttribute ()
+    {
+      var classReflector= new ClassReflector (typeof (ClassHavingClassIDAttribute), Configuration.NameResolver);
+
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition (_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
+    }
+    
+   [Test]
+    public void CreateClassDefinition_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute ()
+    {
+      var classReflector= new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
+
+      ReflectionBasedClassDefinition actual = classReflector.CreateClassDefinition (_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForClassWithHasStorageGroupAttributeDefinedItselfAndInBaseClass ()
+    {
+      var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
+      var actual = classReflector.CreateClassDefinition (_classDefinitions);
+
+      Assert.IsNotNull (actual);
+      Assert.AreEqual ("DerivedClassWithStorageGroupAttribute", actual.ID);
+    }
+    
+    [Test]
+    public void CreateClassDefinition_ForClosedGenericClass ()
+    {
+      var classReflector= new ClassReflector (typeof (ClosedGenericClass), Configuration.NameResolver);
+
+      Assert.IsNotNull (classReflector.CreateClassDefinition (_classDefinitions));
+    }
+
+    [Test]
+    public void CreateClassDefinition_ForClassWithoutStorageGroupAttribute ()
     {
       var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
 
-      var actual = classReflector.GetClassDefinition (_classDefinitions);
+      var actual = classReflector.CreateClassDefinition (_classDefinitions);
 
       Assert.IsNotNull (actual);
       Assert.That (actual.StorageGroupType, Is.Null);
     }
 
     [Test]
-    public void GetClassDefinition_ForClassWithStorageGroupAttribute ()
+    public void CreateClassDefinition_ForClassWithStorageGroupAttribute ()
     {
       var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
 
-      var actual = classReflector.GetClassDefinition (_classDefinitions);
+      var actual = classReflector.CreateClassDefinition (_classDefinitions);
 
       Assert.IsNotNull (actual);
       Assert.That(actual.StorageGroupType, Is.SameAs(typeof(DBStorageGroupAttribute)));
