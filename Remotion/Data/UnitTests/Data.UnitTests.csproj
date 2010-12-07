@@ -252,11 +252,11 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\AnonymousRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionChecker.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinitionForHierarchyWithoutStorageGroup.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitions.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitionsForClosedGeneric.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />

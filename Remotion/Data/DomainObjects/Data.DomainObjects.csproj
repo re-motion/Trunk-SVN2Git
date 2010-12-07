@@ -176,6 +176,7 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
+    <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\PersistenceModelLoader.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollection.cs" />
     <Compile Include="Mapping\TypeNotFoundClassDefinition.cs" />

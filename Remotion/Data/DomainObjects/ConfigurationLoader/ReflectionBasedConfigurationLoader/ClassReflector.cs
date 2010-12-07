@@ -34,16 +34,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new ClassReflector (type, nameResolver);
     }
 
-    private static ReflectionBasedClassDefinition GetBaseClassDefinition (
-        ClassDefinitionCollection classDefinitions, Type type, IMappingNameResolver nameResolver)
-    {
-      if (ReflectionUtility.IsInheritanceRoot (type))
-        return null;
-
-      var classReflector = new ClassReflector (type.BaseType, nameResolver);
-      return GetClassDefinition (classDefinitions, classReflector.Type, classReflector.NameResolver, classReflector);
-    }
-
     public ClassReflector (Type type, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
@@ -58,21 +48,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
 
-    public static ReflectionBasedClassDefinition GetClassDefinition (
-        ClassDefinitionCollection classDefinitions, Type classType, IMappingNameResolver mappingNameResolver, ClassReflector classReflector)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-
-      if (classDefinitions.Contains (classType))
-        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
-
-      var classDefinition = classReflector.CreateClassDefinition (GetBaseClassDefinition (classDefinitions, classType, mappingNameResolver));
-      classDefinitions.Add (classDefinition);
-
-      return classDefinition;
-    }
-
-    public ReflectionBasedClassDefinition CreateClassDefinition (ReflectionBasedClassDefinition baseClassDefinition)
+    public ReflectionBasedClassDefinition GetMetadata (ReflectionBasedClassDefinition baseClassDefinition)
     {
       var classDefinition = new ReflectionBasedClassDefinition (
           GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), PersistentMixinFinder);
