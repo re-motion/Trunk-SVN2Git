@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -29,15 +28,13 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ClassDefinitionCollectionFactory
   {
-    private readonly IMappingNameResolver _nameResolver;
-    private readonly ReflectionBasedMappingObjectFactory _mappingObjectFactory;
+    private readonly IMappingObjectFactory _mappingObjectFactory;
 
-    public ClassDefinitionCollectionFactory (IMappingNameResolver nameResolver)
+    public ClassDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory)
     {
-      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
 
-      _nameResolver = nameResolver;
-      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver);
+      _mappingObjectFactory = mappingObjectFactory;
     }
 
     public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)

@@ -21,37 +21,62 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class ClassDefinitionCollectionFactoryTest 
+  public class ClassDefinitionCollectionFactoryTest
   {
     private ClassDefinitionCollection _classDefinitions;
     private ReflectionBasedNameResolver _nameResolver;
     private ClassDefinitionCollectionFactory _classDefinitionCollectionFactory;
+    private IMappingObjectFactory _mappingObjectFactoryMock;
+    private ReflectionBasedClassDefinition _fakeClassDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _classDefinitions = new ClassDefinitionCollection ();
+      _classDefinitions = new ClassDefinitionCollection();
       _nameResolver = new ReflectionBasedNameResolver();
-      _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_nameResolver);
+      _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
+      _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_mappingObjectFactoryMock);
+      _fakeClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
     }
 
     [Test]
     public void CreateClassDefinitionCollection ()
     {
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (Order), null)).Return (_fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
+
       var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new[] { typeof (Order) });
 
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.That (classDefinitions.Count, Is.EqualTo (1));
+      Assert.That (classDefinitions[0], Is.SameAs (_fakeClassDefinition));
     }
 
     [Test]
     public void CreateClassDefinitionCollection_DerivedClassAreSet ()
     {
-      var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new[] { typeof (Order), typeof(Company), typeof(Partner), typeof(Customer) });
+      var fakeClassDefinitionCompany = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
+      var fakeClassDefinitionPartner = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Partner), fakeClassDefinitionCompany);
+      var fakeClassDefinitionCustomer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), fakeClassDefinitionCompany);
 
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (Order), null)).Return (_fakeClassDefinition);
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (Company), null)).Return (fakeClassDefinitionCompany);
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (Partner), fakeClassDefinitionCompany)).Return (
+          fakeClassDefinitionPartner);
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (Customer), fakeClassDefinitionCompany)).Return (
+          fakeClassDefinitionCustomer);
+      _mappingObjectFactoryMock.Replay();
+
+      var classDefinitions =
+          _classDefinitionCollectionFactory.CreateClassDefinitionCollection (
+              new[] { typeof (Order), typeof (Company), typeof (Partner), typeof (Customer) });
+
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.That (classDefinitions.Count, Is.EqualTo (4));
       Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
       Assert.That (classDefinitions["Company"].DerivedClasses.Count, Is.EqualTo (2));
@@ -68,70 +93,93 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForBaseClass ()
     {
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (ClassWithMixedProperties), null)).Return (_fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
+
       var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (ClassWithMixedProperties));
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.ClassType, Is.SameAs(typeof (ClassWithMixedProperties)));
-      Assert.That (result.BaseClass, Is.Null);
+      _mappingObjectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeClassDefinition));
     }
 
     [Test]
     public void GetClassDefinition_ForBaseClass_WithoutStorageGroupAttribute ()
     {
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (ClassWithoutStorageGroupWithMixedProperties), null)).Return (
+          _fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
+
       var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (ClassWithoutStorageGroupWithMixedProperties));
-      
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.ClassType, Is.SameAs (typeof (ClassWithoutStorageGroupWithMixedProperties)));
-      Assert.That (result.BaseClass, Is.Null);
+
+      _mappingObjectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeClassDefinition));
     }
 
     [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
+      var fakeBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (ClassWithMixedProperties), null)).Return (fakeBaseClassDefinition);
+      _mappingObjectFactoryMock.Expect (
+          mock => mock.CreateClassDefinition (typeof (DerivedClassWithMixedProperties), fakeBaseClassDefinition)).Return (_fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
+
       var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.ClassType, Is.SameAs(typeof (DerivedClassWithMixedProperties)));
-      Assert.That (result.BaseClass, Is.Not.Null);
-      Assert.That (result.BaseClass.ClassType, Is.SameAs(typeof (ClassWithMixedProperties)));
+      _mappingObjectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeClassDefinition));
     }
 
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithoutStorageGroupAttribute ()
     {
-      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
-      
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.ClassType, Is.SameAs (typeof (DerivedClassWithoutStorageGroupWithMixedProperties)));
-      Assert.That (result.BaseClass, Is.Not.Null);
-      Assert.That (result.BaseClass.ClassType, Is.SameAs (typeof (ClassWithoutStorageGroupWithMixedProperties)));
+      var fakeBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithoutStorageGroupWithMixedProperties));
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (ClassWithoutStorageGroupWithMixedProperties), null)).Return (
+          fakeBaseClassDefinition);
+      _mappingObjectFactoryMock.Expect (
+          mock => mock.CreateClassDefinition (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), fakeBaseClassDefinition)).Return (
+              _fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
+
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (
+          _classDefinitions, typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
+
+      _mappingObjectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeClassDefinition));
     }
 
     [Test]
     public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection ()
     {
-      ClassDefinition expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition ();
+      var expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition();
       _classDefinitions.Add (expectedBaseClass);
 
-      ClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (DerivedClassWithMixedProperties), expectedBaseClass)).Return (
+          _fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay();
 
+      var actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
+
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (DerivedClassWithMixedProperties)));
-      Assert.AreSame (expectedBaseClass, actual.BaseClass);
+      Assert.AreSame (actual, _fakeClassDefinition);
     }
 
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition ();
+      var expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
 
-      var expectedBaseClass = expected.BaseClass;
+      var expectedBaseClass = (ReflectionBasedClassDefinition) expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 
-      ReflectionBasedClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
+      _mappingObjectFactoryMock.Replay();
 
+      var actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
+
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
       Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (DerivedClassWithMixedProperties)));
@@ -144,6 +192,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
       Type type2 = GetTypeFromDomainWithErrors ("OtherClassWithSameClassID");
+      var classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassID",
+          "Entity1",
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          type1,
+          false,
+          new PersistentMixinFinder (type1));
+      var classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassID",
+          "Entity2",
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          type2,
+          false,
+          new PersistentMixinFinder (type2));
+
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (type1, null)).Return (classDefinition1);
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (type2, null)).Return (classDefinition2);
+      _mappingObjectFactoryMock.Replay();
 
       _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, type1);
       try
@@ -157,18 +223,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         var expectedMessage = string.Format (
             "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithSameClassID' "
             + "and 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.OtherClassWithSameClassID' "
-            + "both have the same class ID 'DefinedID'. Use the ClassIDAttribute to define unique IDs for these classes. "
+            + "both have the same class ID 'ClassID'. Use the ClassIDAttribute to define unique IDs for these classes. "
             + "The assemblies involved are '{0}' and '{1}'.",
-            GetType ().Assembly.GetName ().FullName,
-            GetType ().Assembly.GetName ().FullName);
+            GetType().Assembly.GetName().FullName,
+            GetType().Assembly.GetName().FullName);
 
         Assert.AreEqual (expectedMessage, ex.Message);
       }
     }
-    
+
     private ReflectionBasedClassDefinition CreateClassWithMixedPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassWithMixedProperties",
           "ClassWithMixedProperties",
           new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
           typeof (ClassWithMixedProperties),
@@ -180,20 +247,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ReflectionBasedClassDefinition CreateDerivedClassWithMixedPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithMixedProperties",
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedClassWithMixedProperties",
-          new UnitTestStorageProviderStubDefinition("DefaultStorageProvider", typeof(UnitTestStorageObjectFactoryStub)),
+          "DerivedClassWithMixedProperties",
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
           typeof (DerivedClassWithMixedProperties),
           false,
-          CreateClassWithMixedPropertiesClassDefinition ());
+          CreateClassWithMixedPropertiesClassDefinition());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      
+
       return classDefinition;
     }
 
     private static Type GetTypeFromDomainWithErrors (string typename)
     {
-      var type = Assembly.GetExecutingAssembly ().GetType (
+      var type = Assembly.GetExecutingAssembly().GetType (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors." + typename,
           true,
           false);
@@ -202,6 +270,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       return type;
     }
-
   }
 }

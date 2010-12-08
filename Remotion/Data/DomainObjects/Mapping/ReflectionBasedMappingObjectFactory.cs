@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
-      var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_mappingNameResolver);
+      var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (this);
       return classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
     }
   }
