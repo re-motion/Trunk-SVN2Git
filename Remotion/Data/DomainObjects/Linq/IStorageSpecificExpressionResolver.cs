@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 
@@ -27,5 +28,6 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
     IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias);
+    Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn);
   }
 }

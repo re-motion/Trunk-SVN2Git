@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, false);
+      return _storageSpecificExpressionResolver.ResolveColumn (originatingEntity, propertyDefinition, false);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)

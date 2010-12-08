@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -60,6 +59,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.TableName, Is.EqualTo ("OrderView"));
       Assert.That (result.TableAlias, Is.EqualTo ("o"));
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveColumn_NoPrimaryKeyColumn ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, false);
+
+      Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
+      Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+      Assert.That (result.IsPrimaryKey, Is.False);
+    }
+
+    [Test]
+    public void ResolveColumn_PrimaryKeyColumn ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, StorageClass.Persistent, property);
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      var result = (SqlColumnDefinitionExpression) _storageSpecificExpressionResolver.ResolveColumn (entityExpression, propertyDefinition, true);
+
+      Assert.That (result.ColumnName, Is.EqualTo ("OrderNumber"));
+      Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
+      Assert.That (result.IsPrimaryKey, Is.True);
     }
 
   }

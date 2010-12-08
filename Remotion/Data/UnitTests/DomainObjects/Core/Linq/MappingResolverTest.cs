@@ -30,6 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -43,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlTable _companyTable;
     private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
     private ResolvedSimpleTableInfo _fakeSimpleTableInfo;
+    private SqlColumnDefinitionExpression _fakeColumnDefinitionExpression;
 
     [SetUp]
     public void SetUp ()
@@ -53,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"), JoinSemantics.Inner);
       _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
+      _fakeColumnDefinitionExpression = new SqlColumnDefinitionExpression (typeof (int), "o", "ColumnName", false);
     }
 
     [Test]
@@ -167,9 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
     }
-
     
-
     [Test]
     public void ResolveConstantExpression_ConstantExpression ()
     {
@@ -203,15 +204,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var property = typeof (Order).GetProperty ("OrderNumber");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var propertyDefinition = MappingConfiguration.Current.ClassDefinitions["Order"].ResolveProperty (new PropertyInfoAdapter (property));
+
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition, false)).Return (
+          _fakeColumnDefinitionExpression);
 
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
 
-      Assert.That (sqlColumnExpression, Is.Not.Null);
-      Assert.That (sqlColumnExpression, Is.TypeOf(typeof(SqlColumnDefinitionExpression)));
-      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
-      Assert.That (sqlColumnExpression.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
-      Assert.That (sqlColumnExpression.IsPrimaryKey, Is.False);
+      Assert.That (sqlColumnExpression, Is.SameAs(_fakeColumnDefinitionExpression));
     }
 
     [Test]
@@ -288,16 +288,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var property = typeof (StorageGroupClass).GetProperty ("AboveInheritanceIdentifier");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (StorageGroupClass), "s", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var propertyDefinition = MappingConfiguration.Current.ClassDefinitions["StorageGroupClass"].ResolveProperty (new PropertyInfoAdapter (property));
+
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveColumn (entityExpression, propertyDefinition, false)).Return (
+          _fakeColumnDefinitionExpression);
 
       var result = _resolver.ResolveMemberExpression (entityExpression, property);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
-      Assert.That (((SqlColumnDefinitionExpression) result).OwningTableAlias, Is.EqualTo ("s"));
-      Assert.That (((SqlColumnDefinitionExpression) result).ColumnName, Is.EqualTo ("AboveInheritanceIdentifier"));
-      Assert.That (result.Type, Is.EqualTo (typeof (string)));
+      Assert.That (result, Is.SameAs(_fakeColumnDefinitionExpression));
     }
-
-
+    
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
         ExpectedMessage = "The type 'Remotion.Data.DomainObjects.DomainObject' does not identify a queryable table.")]

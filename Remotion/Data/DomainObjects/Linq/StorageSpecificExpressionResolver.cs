@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
@@ -45,6 +46,14 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
+    }
+
+    public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)
+    {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      return originatingEntity.GetColumn (propertyDefinition.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, isPrimaryKeyColumn);
     }
   }
 }
