@@ -83,16 +83,13 @@ namespace Remotion.Data.DomainObjects.Linq
       var rightEndPointDefinition = leftEndPointDefinition.GetOppositeEndPointDefinition ();
       var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
 
-      var alias = generator.GetUniqueIdentifier ("t");
-      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
-          rightEndPointDefinition.ClassDefinition.ClassType,
-          rightEndPointDefinition.ClassDefinition.StorageEntityDefinition.LegacyViewName,
-          alias);
+      var tableAlias = generator.GetUniqueIdentifier ("t");
+      var resolvedSimpleTableInfo = _storageSpecificExpressionResolver.ResolveTableInfo (rightEndPointDefinition.ClassDefinition, tableAlias);
 
       var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPointDefinition), leftEndPointDefinition.IsVirtual);
       var rightKey = new SqlColumnDefinitionExpression (
           keyType,
-          alias,
+          tableAlias,
           GetJoinColumnName (rightEndPointDefinition),
           rightEndPointDefinition.IsVirtual);
 
