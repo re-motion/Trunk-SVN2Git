@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
@@ -69,9 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForBaseClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithMixedProperties), _nameResolver);
-
-      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (ClassWithMixedProperties));
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs(typeof (ClassWithMixedProperties)));
@@ -81,9 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForBaseClass_WithoutStorageGroupAttribute ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithoutStorageGroupWithMixedProperties), _nameResolver);
-
-      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (ClassWithoutStorageGroupWithMixedProperties));
       
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs (typeof (ClassWithoutStorageGroupWithMixedProperties)));
@@ -93,9 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), _nameResolver);
-
-      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs(typeof (DerivedClassWithMixedProperties)));
@@ -106,9 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithoutStorageGroupAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), _nameResolver);
-
-      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
       
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs (typeof (DerivedClassWithoutStorageGroupWithMixedProperties)));
@@ -119,11 +110,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), _nameResolver);
       ClassDefinition expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition ();
       _classDefinitions.Add (expectedBaseClass);
 
-      ClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      ClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
@@ -134,14 +124,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), _nameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition ();
 
       var expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 
-      ReflectionBasedClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector.Type, classReflector);
+      ReflectionBasedClassDefinition actual = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (DerivedClassWithMixedProperties));
 
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, _classDefinitions.Count);
@@ -156,13 +145,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
       Type type2 = GetTypeFromDomainWithErrors ("OtherClassWithSameClassID");
 
-      var classReflector1 = new ClassReflector (type1, _nameResolver);
-      var classReflector2 = new ClassReflector (type2, _nameResolver);
-
-      _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector1.Type, classReflector1);
+      _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, type1);
       try
       {
-        _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, classReflector2.Type, classReflector2);
+        _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, type2);
 
         Assert.Fail ("exception expected");
       }

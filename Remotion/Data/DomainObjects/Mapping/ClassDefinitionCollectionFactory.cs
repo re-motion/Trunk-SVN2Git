@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -30,12 +30,14 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class ClassDefinitionCollectionFactory
   {
     private readonly IMappingNameResolver _nameResolver;
+    private readonly ReflectionBasedMappingObjectFactory _mappingObjectFactory;
 
     public ClassDefinitionCollectionFactory (IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _nameResolver = nameResolver;
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver);
     }
 
     public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
@@ -43,25 +45,22 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("types", types);
 
       var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (types.ToArray());
-      var leafTypes = inheritanceHierarchyFilter.GetLeafTypes ();
+      var leafTypes = inheritanceHierarchyFilter.GetLeafTypes();
 
-      var classDefinitions = new ClassDefinitionCollection ();
-      var classReflectors = from domainObjectClass in leafTypes
-                            select ClassReflector.CreateClassReflector (domainObjectClass, _nameResolver);
-
-      foreach (ClassReflector classReflector in classReflectors)
-        GetClassDefinition (classDefinitions, classReflector.Type, classReflector);
-
-      var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition> ()
+      var classDefinitions = new ClassDefinitionCollection();
+      foreach (var type in leafTypes)
+        GetClassDefinition (classDefinitions, type);
+      
+      var classesByBaseClass = (from classDefinition in classDefinitions.Cast<ClassDefinition>()
                                 where classDefinition.BaseClass != null
                                 group classDefinition by classDefinition.BaseClass)
-                                .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<ClassDefinition>) grouping);
+          .ToDictionary (grouping => grouping.Key, grouping => (IEnumerable<ClassDefinition>) grouping);
 
       foreach (ClassDefinition classDefinition in classDefinitions)
       {
         IEnumerable<ClassDefinition> derivedClasses;
         if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
-          derivedClasses = Enumerable.Empty<ClassDefinition> ();
+          derivedClasses = Enumerable.Empty<ClassDefinition>();
 
         classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
       }
@@ -70,14 +69,16 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     public ReflectionBasedClassDefinition GetClassDefinition (
-        ClassDefinitionCollection classDefinitions, Type classType, ClassReflector classReflector)
+        ClassDefinitionCollection classDefinitions, Type classType)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       if (classDefinitions.Contains (classType))
         return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
 
-      var classDefinition = classReflector.GetMetadata (GetBaseClassDefinition (classDefinitions, classType));
+      var classDefinition =
+          (ReflectionBasedClassDefinition)
+          _mappingObjectFactory.CreateClassDefinition (classType, GetBaseClassDefinition (classDefinitions, classType));
       classDefinitions.Add (classDefinition);
 
       return classDefinition;
@@ -89,8 +90,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (ReflectionUtility.IsInheritanceRoot (type))
         return null;
 
-      var classReflector = new ClassReflector (type.BaseType, _nameResolver);
-      return GetClassDefinition (classDefinitions, classReflector.Type, classReflector);
+      return GetClassDefinition (classDefinitions, type.BaseType);
     }
   }
 }
