@@ -34,6 +34,15 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class MappingResolver : IMappingResolver
   {
+    private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
+
+    public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver)
+    {
+      ArgumentUtility.CheckNotNull ("storageSpecificExpressionResolver", storageSpecificExpressionResolver);
+
+      _storageSpecificExpressionResolver = storageSpecificExpressionResolver;
+    }
+
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
@@ -96,14 +105,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var tableAlias = tableInfo.TableAlias;
-      
-      var propertyInfo = typeof (DomainObject).GetProperty ("ID");
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
-
-      var starColumn = new SqlColumnDefinitionExpression (tableInfo.ItemType, tableAlias, "*", false);
-
-      return new SqlEntityDefinitionExpression (tableInfo.ItemType, tableAlias, null, primaryKeyColumn, starColumn);
+      return _storageSpecificExpressionResolver.ResolveEntity (GetClassDefinition (tableInfo.ItemType), tableInfo.TableAlias);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)

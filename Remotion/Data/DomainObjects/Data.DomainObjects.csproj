@@ -176,6 +176,8 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
+    <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
+    <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\IMappingObjectFactory.cs" />
     <Compile Include="Mapping\PersistenceModelLoader.cs" />

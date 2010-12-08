@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -29,6 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -39,11 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private UniqueIdentifierGenerator _generator;
     private SqlTable _orderTable;
     private SqlTable _companyTable;
+    private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new MappingResolver();
+      _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver>();
+      _resolver = new MappingResolver(_storageSpecificExpressionResolverStub);
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"), JoinSemantics.Inner);
@@ -52,17 +56,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveSimpleTableInfo ()
     {
-      var tableReferenceExpression = new SqlTableReferenceExpression (_orderTable);
+      var fakeEntityExpression = CreateFakeEntityExpression (typeof (Order));
+
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveEntity (MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "o")).
+          Return (fakeEntityExpression);
 
       var sqlEntityExpression =
-          (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
-
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
-      var starColumn = new SqlColumnDefinitionExpression (typeof (Order), "o", "*", false);
-
-      var expectedExpression = new SqlEntityDefinitionExpression (typeof (Order), "o", null, primaryKeyColumn, starColumn);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (sqlEntityExpression, expectedExpression);
+          (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (_orderTable.GetResolvedTableInfo(), _generator);
+      
+      Assert.That (sqlEntityExpression, Is.SameAs (fakeEntityExpression));
     }
 
     [Test]
@@ -360,9 +362,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_DesiredTypeIsAssignableFromExpressionType ()
     {
-      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
-      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
-
+      var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
+      
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Company));
 
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
@@ -390,10 +391,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_NoQueryableTable ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (AboveInheritanceRootClass), "Table", "t"), JoinSemantics.Inner);
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
-
+      var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (AboveInheritanceRootClass));
+      
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (StorageGroupClass));
 
       var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
@@ -406,9 +405,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_DesiredTypeNotRelatedWithExpressionType ()
     {
-      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
-      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
-
+      var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
+      
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (false));
@@ -417,8 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
     {
-      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
-      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveSimpleTableInfo (tableReferenceExpression.SqlTable.GetResolvedTableInfo(), _generator);
+      var sqlEntityExpression = (SqlEntityExpression) CreateFakeEntityExpression (typeof (Company));
 
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
 
@@ -427,6 +424,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expectedExpression = Expression.Equal (classIDExpression, new SqlLiteralExpression ("Customer"));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    private SqlEntityDefinitionExpression CreateFakeEntityExpression (Type classType)
+    {
+      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
+      var starColumn = new SqlColumnDefinitionExpression (classType, "o", "*", false);
+      return new SqlEntityDefinitionExpression (classType, "o", null, primaryKeyColumn, starColumn);
     }
   }
 }

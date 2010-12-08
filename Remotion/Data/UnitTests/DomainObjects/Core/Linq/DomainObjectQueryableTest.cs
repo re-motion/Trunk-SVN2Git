@@ -30,6 +30,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Rhino.Mocks;
 
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -43,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DefaultSqlGenerationStage _sqlGenerationStage;
     private DomainObjectQueryable<Order> _queryableWithOrder;
     private MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
+    private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
 
     [SetUp]
     public void SetUp ()
@@ -51,7 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator ();
-      var resolver = new MappingResolver ();
+      _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver> ();
+      var resolver = new MappingResolver (_storageSpecificExpressionResolverStub);
 
       _preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, generator);
       _mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
@@ -83,7 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var generator = new UniqueIdentifierGenerator();
       var sqlPreparationStage = new DefaultSqlPreparationStage (
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
-      var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
+      var storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver> ();
+      var mappingResolver = new MappingResolver(storageSpecificExpressionResolverStub);
+      var mappinResolutionStage = new DefaultMappingResolutionStage (mappingResolver, generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       
       var expectedProvider = new DefaultQueryProvider (

@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var generator = new UniqueIdentifierGenerator();
-      var resolver = new MappingResolver();
+      var resolver = new MappingResolver(new StorageSpecificExpressionResolver());
 
       return new DomainObjectQueryable<T> (
           ObjectFactory.Create<DefaultSqlPreparationStage> (

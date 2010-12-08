@@ -250,6 +250,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqCastMethodAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\StorageSpecificExpressionResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\AnonymousRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionFactoryTest.cs" />
