@@ -80,20 +80,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var rightEndPointDefinition = leftEndPointDefinition.GetOppositeEndPointDefinition ();
-      var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
-
-      var tableAlias = generator.GetUniqueIdentifier ("t");
-      var resolvedSimpleTableInfo = _storageSpecificExpressionResolver.ResolveTableInfo (rightEndPointDefinition.ClassDefinition, tableAlias);
-
-      var leftKey = joinInfo.OriginatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPointDefinition), leftEndPointDefinition.IsVirtual);
-      var rightKey = new SqlColumnDefinitionExpression (
-          keyType,
-          tableAlias,
-          GetJoinColumnName (rightEndPointDefinition),
-          rightEndPointDefinition.IsVirtual);
-
-      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
+      return _storageSpecificExpressionResolver.ResolveJoinInfo (joinInfo.OriginatingEntity, leftEndPointDefinition, generator.GetUniqueIdentifier ("t"));
     }
 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -206,10 +193,6 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       return MappingConfiguration.Current.ClassDefinitions[type];
     }
-
-    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
-    {
-      return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StoragePropertyDefinition.Name;
-    }
+    
   }
 }

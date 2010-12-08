@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -45,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
     private ResolvedSimpleTableInfo _fakeSimpleTableInfo;
     private SqlColumnDefinitionExpression _fakeColumnDefinitionExpression;
+    private ResolvedJoinInfo _fakeJoinInfo;
 
     [SetUp]
     public void SetUp ()
@@ -56,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"), JoinSemantics.Inner);
       _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
       _fakeColumnDefinitionExpression = new SqlColumnDefinitionExpression (typeof (int), "o", "ColumnName", false);
+      _fakeJoinInfo = new ResolvedJoinInfo (_fakeSimpleTableInfo, Expression.Constant ("left"), Expression.Constant ("right"));
     }
 
     [Test]
@@ -98,25 +101,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, typeof (Customer).GetProperty ("Orders"), JoinCardinality.Many);
+      var property = typeof (Customer).GetProperty ("Orders");
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
+      var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (Customer)].ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
-      _storageSpecificExpressionResolverStub.Stub (
-          stub => stub.ResolveTableInfo (MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "t0")).Return(_fakeSimpleTableInfo);
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoinInfo (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
 
-      var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+      var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 
-      Assert.That (resolvedJoinInfo, Is.Not.Null);
-      Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (typeof (Order)));
-      Assert.That (resolvedJoinInfo.ForeignTableInfo, Is.SameAs (_fakeSimpleTableInfo));
-      
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).ColumnName, Is.EqualTo ("ID"));
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).OwningTableAlias, Is.EqualTo ("c"));
-      Assert.That (resolvedJoinInfo.LeftKey.Type, Is.EqualTo (typeof (ObjectID)));
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).IsPrimaryKey, Is.True);
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).ColumnName, Is.EqualTo ("CustomerID"));
-      Assert.That (resolvedJoinInfo.RightKey.Type, Is.EqualTo (typeof (ObjectID)));
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).OwningTableAlias, Is.EqualTo ("t0"));
-      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).IsPrimaryKey, Is.False);
+      Assert.That (result, Is.SameAs (_fakeJoinInfo));
     }
 
     [Test]
@@ -126,13 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         typeof (TargetClassForPersistentMixin), "m", null, new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
+      var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)].ResolveRelationEndPoint (new PropertyInfoAdapter (memberInfo));
 
-      _storageSpecificExpressionResolverStub.Stub (
-          stub => stub.ResolveTableInfo (MappingConfiguration.Current.ClassDefinitions[typeof (RelationTargetForPersistentMixin)], "t0")).Return (_fakeSimpleTableInfo);
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoinInfo (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
 
-      var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+      var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 
-      Assert.That (resolvedJoinInfo, Is.Not.Null);
+      Assert.That (result, Is.SameAs(_fakeJoinInfo));
     }
 
     [Test]

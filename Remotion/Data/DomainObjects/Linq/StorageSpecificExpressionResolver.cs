@@ -55,5 +55,33 @@ namespace Remotion.Data.DomainObjects.Linq
 
       return originatingEntity.GetColumn (propertyDefinition.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, isPrimaryKeyColumn);
     }
+
+    public ResolvedJoinInfo ResolveJoinInfo (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias)
+    {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("leftEndPoint", leftEndPoint);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+
+      var rightEndPointDefinition = leftEndPoint.GetOppositeEndPointDefinition();
+      var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
+
+      var resolvedSimpleTableInfo = ResolveTableInfo (rightEndPointDefinition.ClassDefinition, tableAlias);
+
+      var leftKey = originatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
+      var rightKey = new SqlColumnDefinitionExpression (
+          keyType,
+          tableAlias,
+          GetJoinColumnName (rightEndPointDefinition),
+          rightEndPointDefinition.IsVirtual);
+
+      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
+    }
+
+    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
+    {
+      return endPoint.IsVirtual
+                 ? "ID"
+                 : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StoragePropertyDefinition.Name;
+    }
   }
 }

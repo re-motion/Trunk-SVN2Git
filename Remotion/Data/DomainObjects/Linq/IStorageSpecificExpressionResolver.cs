@@ -29,5 +29,6 @@ namespace Remotion.Data.DomainObjects.Linq
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
     IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias);
     Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn);
+    ResolvedJoinInfo ResolveJoinInfo (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias);
   }
 }
