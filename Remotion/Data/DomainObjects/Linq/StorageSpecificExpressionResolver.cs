@@ -37,5 +37,14 @@ namespace Remotion.Data.DomainObjects.Linq
 
       return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, starColumn);
     }
+
+    public IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+
+      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
+      return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
+    }
   }
 }

@@ -26,5 +26,6 @@ namespace Remotion.Data.DomainObjects.Linq
   public interface IStorageSpecificExpressionResolver
   {
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
+    IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias);
   }
 }

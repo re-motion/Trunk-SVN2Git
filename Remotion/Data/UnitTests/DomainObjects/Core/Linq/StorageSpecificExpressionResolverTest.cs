@@ -16,9 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -28,24 +31,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   public class StorageSpecificExpressionResolverTest
   {
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
+    private ReflectionBasedClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver();
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
     }
 
     [Test]
     public void ResolveEntity ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
-
-      var result = _storageSpecificExpressionResolver.ResolveEntity (classDefinition, "o");
+      var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
       var starColumn = new SqlColumnDefinitionExpression (typeof (Order), "o", "*", false);
       var expectedExpression = new SqlEntityDefinitionExpression (typeof (Order), "o", null, primaryKeyColumn, starColumn);
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+    }
+
+    [Test]
+    public void ResolveTableInfo ()
+    {
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTableInfo (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
 
   }

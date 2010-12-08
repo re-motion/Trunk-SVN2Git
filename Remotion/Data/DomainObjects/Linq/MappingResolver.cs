@@ -54,8 +54,7 @@ namespace Remotion.Data.DomainObjects.Linq
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
         throw new UnmappedItemException (message);
       }
-      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
-      return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
+      return _storageSpecificExpressionResolver.ResolveTableInfo (classDefinition, generator.GetUniqueIdentifier ("t"));
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)

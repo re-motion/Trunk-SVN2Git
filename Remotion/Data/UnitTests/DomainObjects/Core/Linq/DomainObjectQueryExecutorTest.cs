@@ -54,7 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
-    private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
 
     public override void SetUp ()
     {
@@ -63,8 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
 
-      _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver> ();
-      var resolver = new MappingResolver(_storageSpecificExpressionResolverStub);
+      var resolver = new MappingResolver(new StorageSpecificExpressionResolver());
       var generator = new UniqueIdentifierGenerator();
       _preparationStage = new DefaultSqlPreparationStage (
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);

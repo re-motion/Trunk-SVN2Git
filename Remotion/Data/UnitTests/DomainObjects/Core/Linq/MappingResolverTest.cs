@@ -42,6 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlTable _orderTable;
     private SqlTable _companyTable;
     private IStorageSpecificExpressionResolver _storageSpecificExpressionResolverStub;
+    private IResolvedTableInfo _fakeSimpleTableInfo;
 
     [SetUp]
     public void SetUp ()
@@ -51,6 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"), JoinSemantics.Inner);
+      _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
     }
 
     [Test]
@@ -71,12 +73,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveTableInfo ()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveTableInfo(MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "t0")).
+          Return (_fakeSimpleTableInfo);
+
       var resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
-      Assert.That (resolvedTableInfo, Is.Not.Null);
-      Assert.That (resolvedTableInfo.TableName, Is.EqualTo ("OrderView"));
-      Assert.That (resolvedTableInfo.TableAlias, Is.EqualTo ("t0"));
-      Assert.That (resolvedTableInfo.ItemType, Is.EqualTo (typeof (Order)));
+      Assert.That (resolvedTableInfo, Is.SameAs(_fakeSimpleTableInfo));
     }
 
     [Test]
