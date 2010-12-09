@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveTableInfo ()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
-      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveTableInfo(MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "t0")).
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveTable(MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "t0")).
           Return (_fakeSimpleTableInfo);
 
       var resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
       var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (Customer)].ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
-      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoinInfo (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
 
       var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
       var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)].ResolveRelationEndPoint (new PropertyInfoAdapter (memberInfo));
 
-      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoinInfo (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, "t0")).Return (_fakeJoinInfo);
 
       var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 

@@ -53,17 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTableInfo ()
-    {
-      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTableInfo (_classDefinition, "o");
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
-      Assert.That (result.TableAlias, Is.EqualTo ("o"));
-      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
-    }
-
-    [Test]
     public void ResolveColumn_NoPrimaryKeyColumn ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
@@ -96,7 +85,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveJoinInfo ()
+    public void ResolveTable ()
+    {
+      var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.TableName, Is.EqualTo ("OrderView"));
+      Assert.That (result.TableAlias, Is.EqualTo ("o"));
+      Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
+    }
+
+    [Test]
+    public void ResolveJoin ()
     {
       var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer", typeof(ObjectID), null, null,StorageClass.Persistent); 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var result = _storageSpecificExpressionResolver.ResolveJoinInfo (entityExpression, leftEndPointDefinition, "o");
+      var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, "o");
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));

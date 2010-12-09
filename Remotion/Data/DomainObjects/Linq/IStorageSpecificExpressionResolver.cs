@@ -22,13 +22,15 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// <see cref="IStorageSpecificExpressionResolver"/> defines the API for all storage specific expression resolver implementations.
+  /// <see cref="IStorageSpecificExpressionResolver"/> defines the API for classes that evaluate the re-store persistence model when resolving
+  /// re-linq expressions.
   /// </summary>
   public interface IStorageSpecificExpressionResolver
   {
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
-    IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias);
     Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn);
-    ResolvedJoinInfo ResolveJoinInfo (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias);
+    
+    IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias);
+    ResolvedJoinInfo ResolveJoin (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias);
   }
 }

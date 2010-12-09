@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Linq
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
         throw new UnmappedItemException (message);
       }
-      return _storageSpecificExpressionResolver.ResolveTableInfo (classDefinition, generator.GetUniqueIdentifier ("t"));
+      return _storageSpecificExpressionResolver.ResolveTable (classDefinition, generator.GetUniqueIdentifier ("t"));
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return _storageSpecificExpressionResolver.ResolveJoinInfo (joinInfo.OriginatingEntity, leftEndPointDefinition, generator.GetUniqueIdentifier ("t"));
+      return _storageSpecificExpressionResolver.ResolveJoin (joinInfo.OriginatingEntity, leftEndPointDefinition, generator.GetUniqueIdentifier ("t"));
     }
 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)

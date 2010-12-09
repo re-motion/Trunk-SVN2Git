@@ -39,15 +39,6 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, starColumn);
     }
 
-    public IResolvedTableInfo ResolveTableInfo (ClassDefinition classDefinition, string tableAlias)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
-
-      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
-      return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
-    }
-
     public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
@@ -56,7 +47,16 @@ namespace Remotion.Data.DomainObjects.Linq
       return originatingEntity.GetColumn (propertyDefinition.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, isPrimaryKeyColumn);
     }
 
-    public ResolvedJoinInfo ResolveJoinInfo (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias)
+    public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+
+      var viewName = classDefinition.StorageEntityDefinition.LegacyViewName;
+      return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
+    }
+
+    public ResolvedJoinInfo ResolveJoin (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("leftEndPoint", leftEndPoint);
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var rightEndPointDefinition = leftEndPoint.GetOppositeEndPointDefinition();
       var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
 
-      var resolvedSimpleTableInfo = ResolveTableInfo (rightEndPointDefinition.ClassDefinition, tableAlias);
+      var resolvedSimpleTableInfo = ResolveTable (rightEndPointDefinition.ClassDefinition, tableAlias);
 
       var leftKey = originatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
       var rightKey = new SqlColumnDefinitionExpression (
