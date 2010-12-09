@@ -21,6 +21,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Model
   /// </summary>
   public interface IStoragePropertyDefinition
   {
+    // TODO: To be removed from this interface
     string Name { get; }
   }
 }
