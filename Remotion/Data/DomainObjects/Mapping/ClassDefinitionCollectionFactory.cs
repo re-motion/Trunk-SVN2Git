@@ -23,8 +23,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
-  /// The <see cref="ClassDefinitionCollectionFactory"/> is used to get a class definition for the specified class type. If the class definition does
-  /// not already exists in the passed <see cref="ClassDefinitionCollection"/>, a new class definition is created and added to the collection.
+  /// The <see cref="ClassDefinitionCollectionFactory"/> is used to get a <see cref="ClassDefinitionCollection"/> for a set of types. It automatically
+  /// sets base classes and derived classes correctly.
   /// </summary>
   public class ClassDefinitionCollectionFactory
   {

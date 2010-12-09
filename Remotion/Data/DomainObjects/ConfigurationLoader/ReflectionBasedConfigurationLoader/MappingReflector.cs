@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
-using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -36,7 +35,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver ();
     private readonly ITypeDiscoveryService _typeDiscoveryService;
 
-    //TODO: Test
+    // This ctor is required when the MappingReflector is instantiated as a configuration element from a config file.
     public MappingReflector ()
     {
       _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
@@ -49,6 +48,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _typeDiscoveryService = typeDiscoveryService;
     }
 
+    public ITypeDiscoveryService TypeDiscoveryService
+    {
+      get { return _typeDiscoveryService; }
+    }
+
     public IEnumerable<ClassDefinition> GetClassDefinitions ()
     {
       s_log.Info ("Reflecting class definitions...");
@@ -56,7 +60,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
         var types = GetDomainObjectTypesSorted ();
-        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (new ReflectionBasedMappingObjectFactory(NameResolver));
+        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (new ReflectionBasedMappingObjectFactory (NameResolver));
         var classDefinitions = classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
 
         return classDefinitions

@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -38,6 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
       _mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
+    }
+
+    [Test]
+    public void Initialization_DefaultTypeDiscoveryService ()
+    {
+      var reflector = new MappingReflector ();
+
+      Assert.That (reflector.TypeDiscoveryService, Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ()));
     }
 
     [Test]

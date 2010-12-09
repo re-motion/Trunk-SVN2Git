@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ClassType, Is.SameAs (typeof (Customer)));
-      Assert.That (result.BaseClass, Is.SameAs(companyClass));
+      Assert.That (result.BaseClass, Is.SameAs (companyClass));
     }
 
     [Test]
