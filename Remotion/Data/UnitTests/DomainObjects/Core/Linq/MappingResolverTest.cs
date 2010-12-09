@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (Customer)].ResolveRelationEndPoint (new PropertyInfoAdapter (property));
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, "t0"))
+          .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
           .Return (_fakeJoinInfo);
 
       var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)].ResolveRelationEndPoint (new PropertyInfoAdapter (memberInfo));
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, "t0"))
+          .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
           .Return (_fakeJoinInfo);
 
       var result = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
@@ -244,12 +244,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var property = typeof (Order).GetProperty ("ID");
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+      var fakeIDColumnExpression = new SqlColumnDefinitionExpression (typeof (ObjectID), "c", "ID", true);
 
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
+      _storageSpecificExpressionResolverStub
+          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.ClassDefinitions[typeof (Order)]))
+          .Return (fakeIDColumnExpression);
 
-      Assert.That (sqlColumnExpression, Is.Not.Null);
-      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("ID"));
-      Assert.That (sqlColumnExpression.IsPrimaryKey, Is.True);
+      var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);
+
+      Assert.That (result, Is.SameAs(fakeIDColumnExpression));
     }
 
     [Test]

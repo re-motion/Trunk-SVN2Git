@@ -80,7 +80,11 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return _storageSpecificExpressionResolver.ResolveJoin (joinInfo.OriginatingEntity, leftEndPointDefinition, generator.GetUniqueIdentifier ("t"));
+      return _storageSpecificExpressionResolver.ResolveJoin (
+          joinInfo.OriginatingEntity,
+          leftEndPointDefinition,
+          leftEndPointDefinition.GetOppositeEndPointDefinition(),
+          generator.GetUniqueIdentifier ("t"));
     }
 
     public SqlEntityDefinitionExpression ResolveSimpleTableInfo (IResolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -115,8 +119,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        // TODO Review 3571: Add a method IStorageSpecificExpressionResolver.ResolveIDColumn (ClassDefinition classDefinition), move code there; use typeof (ObjectID) as the column type
-        return originatingEntity.GetColumn (property.PropertyType, "ID", true);
+        return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
 
       var propertyInfoAdapter = new PropertyInfoAdapter (property);
       var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
@@ -194,6 +197,5 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       return MappingConfiguration.Current.ClassDefinitions[type];
     }
-    
   }
 }

@@ -47,6 +47,14 @@ namespace Remotion.Data.DomainObjects.Linq
       return originatingEntity.GetColumn (propertyDefinition.PropertyType, propertyDefinition.StoragePropertyDefinition.Name, isPrimaryKeyColumn);
     }
 
+    public SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      return originatingEntity.GetColumn (typeof (ObjectID), "ID", true);
+    }
+
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -56,24 +64,23 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
     }
 
-    // TODO Review 3571: Inject rightEndPointDefinition
-    public ResolvedJoinInfo ResolveJoin (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias)
+    public ResolvedJoinInfo ResolveJoin (
+        SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, IRelationEndPointDefinition rightEndPoint, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("leftEndPoint", leftEndPoint);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var rightEndPointDefinition = leftEndPoint.GetOppositeEndPointDefinition();
       var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
 
-      var resolvedSimpleTableInfo = ResolveTable (rightEndPointDefinition.ClassDefinition, tableAlias);
+      var resolvedSimpleTableInfo = ResolveTable (rightEndPoint.ClassDefinition, tableAlias);
 
       var leftKey = originatingEntity.GetColumn (keyType, GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual);
       var rightKey = new SqlColumnDefinitionExpression (
           keyType,
           tableAlias,
-          GetJoinColumnName (rightEndPointDefinition),
-          rightEndPointDefinition.IsVirtual);
+          GetJoinColumnName (rightEndPoint),
+          rightEndPoint.IsVirtual);
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }

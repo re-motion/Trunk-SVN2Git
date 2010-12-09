@@ -85,6 +85,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResoveIDColumn ()
+    {
+      var entityExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      var result = _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
+
+      Assert.That (result.ColumnName, Is.EqualTo ("ID"));
+      Assert.That (result.IsPrimaryKey, Is.True);
+      Assert.That (result.OwningTableAlias, Is.EqualTo("o"));
+      Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
+    }
+
+    [Test]
     public void ResolveTable ()
     {
       var result = (ResolvedSimpleTableInfo) _storageSpecificExpressionResolver.ResolveTable (_classDefinition, "o");
@@ -95,8 +109,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
 
-    // TODO Review 3571: Simplify when right end-point is injected
-    // TODO Review 3571: Add second test where left side is virtual => primary key must be on the left side
     [Test]
     public void ResolveJoin_LeftSideIsReal_RightSideIsVirtual ()
     {
@@ -104,11 +116,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
      
       var leftEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
-      new RelationDefinition ("Test", leftEndPointDefinition, new AnonymousRelationEndPointDefinition (_classDefinition));
+      var rightEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
-      var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, "o");
+      var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
@@ -125,6 +137,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.RightKey.Type, Is.EqualTo (typeof (ObjectID)));
       Assert.That (((SqlColumnExpression) result.RightKey).OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.True);
+    }
+
+    [Test]
+    public void ResolveJoin_LeftSideIsVirtual_RightSideIsReal ()
+    {
+      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
+      _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+
+      var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
+      var rightEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
+
+      var entityExpression = new SqlEntityDefinitionExpression (
+         typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+
+      var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
+
+      Assert.That (((SqlColumnExpression) result.LeftKey).IsPrimaryKey, Is.True);
+      Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.False);
     }
 
     private PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName,
