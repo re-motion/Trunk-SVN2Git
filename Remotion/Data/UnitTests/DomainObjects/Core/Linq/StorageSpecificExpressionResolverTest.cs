@@ -95,8 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
     }
 
+    // TODO Review 3571: Simplify when right end-point is injected
+    // TODO Review 3571: Add second test where left side is virtual => primary key must be on the left side
     [Test]
-    public void ResolveJoin ()
+    public void ResolveJoin_LeftSideIsReal_RightSideIsVirtual ()
     {
       var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer", typeof(ObjectID), null, null,StorageClass.Persistent); 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -110,10 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.ItemType, Is.EqualTo (typeof (Order)));
-      Assert.That (result.ForeignTableInfo, Is.TypeOf(typeof(ResolvedSimpleTableInfo)));
-      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).TableName, Is.EqualTo("OrderView"));
+      Assert.That (result.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSimpleTableInfo)));
+      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).TableName, Is.EqualTo ("OrderView"));
       Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).TableAlias, Is.EqualTo ("o"));
-      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).ItemType, Is.SameAs(typeof(Order)));
+      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).ItemType, Is.SameAs (typeof(Order)));
       
       Assert.That (((SqlColumnExpression) result.LeftKey).ColumnName, Is.EqualTo ("Customer"));
       Assert.That (((SqlColumnExpression) result.LeftKey).OwningTableAlias, Is.EqualTo ("c"));

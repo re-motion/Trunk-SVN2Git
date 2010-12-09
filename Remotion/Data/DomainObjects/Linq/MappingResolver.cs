@@ -106,9 +106,6 @@ namespace Remotion.Data.DomainObjects.Linq
                 memberInfo.Name));
       }
 
-      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return originatingEntity.GetColumn (property.PropertyType, "ID", true);
-
       var classDefinition = GetClassDefinition (originatingEntity.Type);
       if (classDefinition == null)
       {
@@ -116,6 +113,10 @@ namespace Remotion.Data.DomainObjects.Linq
             "The type '{0}' does not identify a queryable table.", originatingEntity.Type);
         throw new UnmappedItemException (message);
       }
+
+      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
+        // TODO Review 3571: Add a method IStorageSpecificExpressionResolver.ResolveIDColumn (ClassDefinition classDefinition), move code there; use typeof (ObjectID) as the column type
+        return originatingEntity.GetColumn (property.PropertyType, "ID", true);
 
       var propertyInfoAdapter = new PropertyInfoAdapter (property);
       var endPointDefinition = classDefinition.ResolveRelationEndPoint (propertyInfoAdapter);

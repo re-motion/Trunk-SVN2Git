@@ -56,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
     }
 
+    // TODO Review 3571: Inject rightEndPointDefinition
     public ResolvedJoinInfo ResolveJoin (SqlEntityExpression originatingEntity, IRelationEndPointDefinition leftEndPoint, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
