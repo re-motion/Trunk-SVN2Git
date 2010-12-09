@@ -116,6 +116,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void GetClassDefinition_ForBaseClass_DerivedFromSimpleDomainObject ()
+    {
+      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (typeof (ClassDerivedFromSimpleDomainObject), null)).Return (
+          _fakeClassDefinition);
+      _mappingObjectFactoryMock.Replay ();
+
+      var result = _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, typeof (ClassDerivedFromSimpleDomainObject));
+
+      _mappingObjectFactoryMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeClassDefinition));
+    }
+
+    [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
       var fakeBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));

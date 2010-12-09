@@ -41,17 +41,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       Type = type;
       NameResolver = nameResolver;
-      PersistentMixinFinder = new PersistentMixinFinder (type, ReflectionUtility.IsInheritanceRoot (Type));
     }
 
-    public PersistentMixinFinder PersistentMixinFinder { get; private set; }
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
 
     public ReflectionBasedClassDefinition GetMetadata (ReflectionBasedClassDefinition baseClassDefinition)
     {
+      var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
+      
       var classDefinition = new ReflectionBasedClassDefinition (
-          GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), PersistentMixinFinder);
+          GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
 
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
 

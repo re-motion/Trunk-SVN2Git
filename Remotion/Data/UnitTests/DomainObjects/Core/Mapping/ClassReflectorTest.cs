@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -24,12 +24,11 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class GetClassDefinition : TestBase
+  public class ClassReflectorTest : MappingReflectionTestBase
   {
     private ClassDefinitionChecker _classDefinitionChecker;
     
@@ -37,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       base.SetUp();
 
-      _classDefinitionChecker = new ClassDefinitionChecker(false);
+      _classDefinitionChecker = new ClassDefinitionChecker();
     }
 
     [Test]
@@ -45,10 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classReflector = new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition ();
-      expected.SetDerivedClasses (new ClassDefinitionCollection ());
 
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
-      actual.SetDerivedClasses (new ClassDefinitionCollection ());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
@@ -59,26 +56,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     {
       var classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition ();
-      expected.SetDerivedClasses (new ClassDefinitionCollection ());
 
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (CreateClassWithMixedPropertiesClassDefinition());
-      actual.SetDerivedClasses (new ClassDefinitionCollection ());
+      var baseClassDefinition = CreateClassWithMixedPropertiesClassDefinition();
+      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (baseClassDefinition);
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
     }
 
-    [Test]
-    public void GetMetadata_InheritanceRoot_SimpleDomainObject ()
-    {
-      var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
-
-      Assert.IsNotNull (actual);
-      Assert.AreSame (actual, actual.GetInheritanceRootClass ());
-    }
-
-    [Test]
+   [Test]
     public void GetMetadata_ForMixedClass ()
     {
       var classReflector = new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
@@ -89,8 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     [Test]
     public void GetMetadata_ForDerivedMixedClass ()
     {
+      var classReflectorForBaseClass = new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
+      ReflectionBasedClassDefinition baseClass = classReflectorForBaseClass.GetMetadata (null);
+
       var classReflector = new ClassReflector (typeof (TargetClassB), Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
+      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
     }
 
@@ -100,10 +89,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
       var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition ();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection ());
-      expected.SetDerivedClasses (new ClassDefinitionCollection ());
 
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
-      actual.SetDerivedClasses (new ClassDefinitionCollection ());
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
@@ -118,27 +105,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
-    }
-
-    [Test]
-    public void GetMetadata_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute ()
-    {
-      var classReflector = new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
-
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
-
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute", actual.ID);
-    }
-
-    [Test]
-    public void GetMetadata_ForClassWithHasStorageGroupAttributeDefinedItselfAndInBaseClass ()
-    {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
-      var actual = classReflector.GetMetadata (null);
-
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("DerivedClassWithStorageGroupAttribute", actual.ID);
     }
 
     [Test]
@@ -172,31 +138,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
     }
 
     [Test]
-    public void PersistentMixinFinder_ForBaseClass ()
+    public void GetMetadata_PersistentMixinFinder_ForBaseClass ()
     {
-      var classReflector= new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
-      Assert.That (classReflector.PersistentMixinFinder.IncludeInherited, Is.True);
+      var classReflector = new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
+
+      var actual = classReflector.GetMetadata (null);
+
+      Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.True);
     }
 
     [Test]
-    public void PersistentMixinFinder_ForDerivedClass ()
+    public void GetMetadata_PersistentMixinFinder_ForDerivedClass ()
     {
-      var classReflector= new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
-      Assert.That (classReflector.PersistentMixinFinder.IncludeInherited, Is.False);
-    }
+      var classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
+      var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition ();
 
-    [Test]
-    public void PersistentMixinFinder_SimpleDomainObject ()
-    {
-      var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
-      Assert.That (classReflector.PersistentMixinFinder.IncludeInherited, Is.True);
-    }
+      var actual = classReflector.GetMetadata (baseClassDefinition);
 
-    [Test]
-    public void PersistentMixinFinder_InheritanceRoot ()
-    {
-      var classReflector = new ClassReflector (typeof (InheritanceRootInheritingPersistentMixin), Configuration.NameResolver);
-      Assert.That (classReflector.PersistentMixinFinder.IncludeInherited, Is.True);
+      Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.False);
     }
 
     private ReflectionBasedClassDefinition CreateClassWithMixedPropertiesClassDefinition ()
@@ -234,6 +193,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorTests
           false);
 
       return classDefinition;
+    }
+
+    private void CreatePropertyDefinitionsForClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
+    {
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseString", "BaseString", typeof (string), null, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne", "BaseUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", "BasePrivateUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedProperties), "Int32", "Int32", typeof (int), null, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithMixedProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
+    }
+
+    private void CreatePropertyDefinitionsForDerivedClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
+    {
+      var properties = new List<PropertyDefinition> ();
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithMixedProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithMixedProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithMixedProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
     
   }

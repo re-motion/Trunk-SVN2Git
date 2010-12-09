@@ -51,8 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                 storageProviderDefinitionFinder).ApplyPersistenceModelToHierarchy(classDefinition);
       }
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (true);
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
+      classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions);
       Assert.That (actualClassDefinitions.Contains (typeof (TestDomainBase)), Is.False);
     }
 

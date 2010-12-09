@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
       var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker (false);
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
 
       var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);

@@ -25,13 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public class ClassDefinitionChecker
   {
-    private readonly bool _includePersistenceModel;
-
-    public ClassDefinitionChecker (bool includePersistenceModel)
-    {
-      _includePersistenceModel = includePersistenceModel;
-    }
-
     public void Check (ClassDefinition expectedDefinition, ClassDefinition actualDefinition)
     {
       ArgumentUtility.CheckNotNull ("expectedDefinition", expectedDefinition);
@@ -57,21 +50,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "IsAbstract of class definition '{0}' does not match.",
           expectedDefinition.ID);
 
-      if (_includePersistenceModel)
-      {
-        Assert.AreEqual (
-          expectedDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-          actualDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-          "StorageProviderID of class definition '{0}' does not match. ",
-          expectedDefinition.ID);
-
-        Assert.AreEqual (
-            StorageModelTestHelper.GetEntityName (expectedDefinition),
-            StorageModelTestHelper.GetEntityName (actualDefinition),
-            "EntityName of class definition '{0}' does not match.",
-            expectedDefinition.ID);
-      }
-
       if (expectedDefinition.BaseClass == null)
       {
         Assert.IsNull (actualDefinition.BaseClass, "actualDefinition.BaseClass of class definition '{0}' is not null.", expectedDefinition.ID);
@@ -87,10 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
             expectedDefinition.ID);
       }
 
-      CheckDerivedClasses (expectedDefinition.DerivedClasses, actualDefinition.DerivedClasses, expectedDefinition);
       CheckPropertyDefinitions (expectedDefinition.MyPropertyDefinitions, actualDefinition.MyPropertyDefinitions, expectedDefinition);
     }
-
 
     public void Check (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
     {
@@ -123,13 +99,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
         Check (expectedDefinition, actualDefinition);
+        CheckDerivedClasses (expectedDefinition, actualDefinition);
+      }
 
-        if (checkRelations)
+      if (checkRelations)
+        CheckRelationEndPoints(expectedDefinitions, actualDefinitions);
+    }
+
+    public void CheckRelationEndPoints (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    {
+      foreach (ClassDefinition expectedDefinition in expectedDefinitions)
+      {
+        ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
+        var endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
+        endPointDefinitionChecker.Check (expectedDefinition.MyRelationEndPointDefinitions, actualDefinition.MyRelationEndPointDefinitions);
+      }
+    }
+
+    public void CheckPersistenceModel (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    {
+      foreach (ClassDefinition expectedDefinition in expectedDefinitions)
+      {
+        ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
+        CheckPersistenceModel (expectedDefinition, actualDefinition);
+      }
+    }
+
+    public void CheckPersistenceModel (ClassDefinition expectedDefinition, ClassDefinition actualDefinition)
+    {
+      Assert.AreEqual (
+          expectedDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+          actualDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+          "StorageProviderID of class definition '{0}' does not match. ",
+          expectedDefinition.ID);
+
+      Assert.AreEqual (
+          StorageModelTestHelper.GetEntityName (expectedDefinition),
+          StorageModelTestHelper.GetEntityName (actualDefinition),
+          "EntityName of class definition '{0}' does not match.",
+          expectedDefinition.ID);
+
+      foreach (PropertyDefinition expectedPropertyDefinition in expectedDefinition.MyPropertyDefinitions)
+      {
+        PropertyDefinition actualPropertyDefinition = actualDefinition.MyPropertyDefinitions[expectedPropertyDefinition.PropertyName];
+        Assert.IsNotNull (
+            actualPropertyDefinition, "Class '{0}' has no property '{1}'.", expectedDefinition.ID, expectedPropertyDefinition.PropertyName);
+
+        if (expectedPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
-          var endPointDefinitionChecker = new RelationEndPointDefinitionChecker();
-          endPointDefinitionChecker.Check (expectedDefinition.MyRelationEndPointDefinitions, actualDefinition.MyRelationEndPointDefinitions);
+          Assert.AreEqual (
+              StorageModelTestHelper.GetColumnName (expectedPropertyDefinition),
+              StorageModelTestHelper.GetColumnName (actualPropertyDefinition),
+              "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
+              expectedPropertyDefinition.PropertyName,
+              actualDefinition.ID);
         }
       }
+    }
+
+    public void CheckDerivedClasses (ClassDefinition expectedDefinition, ClassDefinition actualDefinition)
+    {
+      CheckDerivedClasses (expectedDefinition.DerivedClasses, actualDefinition.DerivedClasses, expectedDefinition);
     }
 
     private void CheckDerivedClasses (
@@ -202,19 +232,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "StorageClass of property definition '{0}' (class definition: '{1}') does not match.",
           expectedDefinition.PropertyName,
           classDefinition.ID);
-
-      if (_includePersistenceModel)
-      {
-        if (expectedDefinition.StorageClass == StorageClass.Persistent)
-        {
-          Assert.AreEqual (
-              StorageModelTestHelper.GetColumnName (expectedDefinition),
-              StorageModelTestHelper.GetColumnName (actualDefinition),
-              "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
-              expectedDefinition.PropertyName,
-              classDefinition.ID);
-        }
-      }
 
       Assert.AreEqual (
           expectedDefinition.MaxLength,

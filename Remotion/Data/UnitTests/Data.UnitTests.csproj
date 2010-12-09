@@ -257,11 +257,10 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitions.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\GetRelationDefinitionsForClosedGeneric.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBase.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassReflectorForRelationsTests\TestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\NameBasedPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedMappingObjectFactoryTest.cs" />
@@ -453,7 +452,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassDerivedFromClassWithInterface.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithBinaryProperties.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
