@@ -30,14 +30,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
 
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (DatabaseTest.c_testDomainProviderID, typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
+          new RdbmsProviderDefinition (
+              DatabaseTest.c_testDomainProviderID,
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (DatabaseTest.DefaultStorageProviderID, typeof (SqlStorageObjectFactory), DatabaseTest.TestDomainConnectionString));
+          new RdbmsProviderDefinition (
+              DatabaseTest.DefaultStorageProviderID,
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new UnitTestStorageProviderStubDefinition (
-              DatabaseTest.c_unitTestStorageProviderStubID, typeof (UnitTestStorageObjectFactoryStub)));
+              DatabaseTest.c_unitTestStorageProviderStubID,
+              typeof (UnitTestStorageObjectFactoryStub)));
+
+      storageProviderDefinitionCollection.Add (
+          new RdbmsProviderDefinition (
+              DatabaseTest.SchemaGenerationFirstStorageProviderID,
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
+      storageProviderDefinitionCollection.Add (
+          new RdbmsProviderDefinition (
+              DatabaseTest.SchemaGenerationSecondStorageProviderID,
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
+      storageProviderDefinitionCollection.Add (
+          new RdbmsProviderDefinition (
+              DatabaseTest.SchemaGenerationInternalStorageProviderID,
+              typeof (SqlStorageObjectFactory),
+              DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (

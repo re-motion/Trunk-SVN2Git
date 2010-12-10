@@ -19,6 +19,7 @@ using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainObjectIDs;
@@ -68,6 +69,21 @@ namespace Remotion.Data.UnitTests.DomainObjects
     protected StorageProviderDefinition UnitTestStorageProviderDefinition
     {
       get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
+    }
+
+    protected RdbmsProviderDefinition SchemaGenerationFirstStorageProviderDefinition
+    {
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationFirstStorageProviderID]; }
+    }
+
+    protected RdbmsProviderDefinition SchemaGenerationSecondStorageProviderDefinition
+    {
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationSecondStorageProviderID]; }
+    }
+
+    protected RdbmsProviderDefinition SchemaGenerationInternalStorageProviderDefinition
+    {
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationInternalStorageProviderID]; }
     }
   }
 }

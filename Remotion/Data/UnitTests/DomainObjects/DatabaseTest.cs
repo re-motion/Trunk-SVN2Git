@@ -33,6 +33,10 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
+    public const string SchemaGenerationFirstStorageProviderID = "SchemaGenerationFirstStorageProvider";
+    public const string SchemaGenerationSecondStorageProviderID = "SchemaGenerationSecondStorageProvider";
+    public const string SchemaGenerationInternalStorageProviderID = "SchemaGenerationInternalStorageProvider";
+
     private readonly DatabaseAgent _databaseAgent;
     private readonly string _createTestDataFileName;
     private bool _isDatabaseModifyable;

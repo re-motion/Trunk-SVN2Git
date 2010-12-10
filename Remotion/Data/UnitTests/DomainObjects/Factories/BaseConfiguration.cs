@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+//using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -60,14 +61,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     protected BaseConfiguration ()
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
+      
       _storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection, storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
-      _storageConfiguration.StorageGroups.Add (new StorageGroupElement (new TestDomainAttribute(), DatabaseTest.c_testDomainProviderID));
+          storageProviderDefinitionCollection, 
+          storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
+      
       _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (new StorageProviderStubAttribute(), DatabaseTest.c_unitTestStorageProviderStubID));
+          new StorageGroupElement (
+              new TestDomainAttribute(), 
+              DatabaseTest.c_testDomainProviderID));
       _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (new TableInheritanceTestDomainAttribute(), TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
-
+          new StorageGroupElement (
+              new StorageProviderStubAttribute(), 
+              DatabaseTest.c_unitTestStorageProviderStubID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new TableInheritanceTestDomainAttribute(), 
+              TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
+      //_storageConfiguration.StorageGroups.Add (
+      //    new StorageGroupElement (
+      //        new FirstStorageGroupAttribute (),
+      //        DatabaseTest.SchemaGenerationFirstStorageProviderID));
+      //_storageConfiguration.StorageGroups.Add (
+      //    new StorageGroupElement (
+      //        new SecondStorageGroupAttribute (), 
+      //        DatabaseTest.SchemaGenerationSecondStorageProviderID));
+      //_storageConfiguration.StorageGroups.Add (
+      //    new StorageGroupElement (
+      //        new InternalStorageGroupAttribute (),
+      //        DatabaseTest.SchemaGenerationInternalStorageProviderID));
+      
       _mappingLoaderConfiguration = new MappingLoaderConfiguration();
       _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");
       DomainObjectsConfiguration.SetCurrent (
