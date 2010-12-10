@@ -271,6 +271,14 @@
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBase.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilderBase.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\ConstraintBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\FileBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\TableBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\ViewBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\TableBuilderBase.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewBuilderBase.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
