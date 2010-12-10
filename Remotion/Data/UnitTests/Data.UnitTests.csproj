@@ -639,7 +639,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ClassDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\FileBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TableBuilderTest.cs" />
