@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer;
 using Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlServer

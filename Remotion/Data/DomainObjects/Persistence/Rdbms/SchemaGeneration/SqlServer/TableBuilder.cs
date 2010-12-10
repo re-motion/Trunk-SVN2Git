@@ -18,13 +18,10 @@ using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer
 {
   public class TableBuilder : TableBuilderBase
   {

@@ -26,8 +26,8 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlServer

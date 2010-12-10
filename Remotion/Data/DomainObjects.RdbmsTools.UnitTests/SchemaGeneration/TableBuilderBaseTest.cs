@@ -17,10 +17,10 @@
 using System;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
 {

@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer;
 using Remotion.Text.CommandLine;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools

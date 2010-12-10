@@ -15,16 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using System.IO;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class FileBuilderBase
   {

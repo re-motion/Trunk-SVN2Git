@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlServer
 {
