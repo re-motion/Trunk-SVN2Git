@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       var generator = new UniqueIdentifierGenerator ();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
-      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver (), generator);
+      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver()), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
       var mappingResolutionContext = new MappingResolutionContext ();
 
