@@ -27,7 +27,7 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-//using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -78,18 +78,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           new StorageGroupElement (
               new TableInheritanceTestDomainAttribute(), 
               TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
-      //_storageConfiguration.StorageGroups.Add (
-      //    new StorageGroupElement (
-      //        new FirstStorageGroupAttribute (),
-      //        DatabaseTest.SchemaGenerationFirstStorageProviderID));
-      //_storageConfiguration.StorageGroups.Add (
-      //    new StorageGroupElement (
-      //        new SecondStorageGroupAttribute (), 
-      //        DatabaseTest.SchemaGenerationSecondStorageProviderID));
-      //_storageConfiguration.StorageGroups.Add (
-      //    new StorageGroupElement (
-      //        new InternalStorageGroupAttribute (),
-      //        DatabaseTest.SchemaGenerationInternalStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new FirstStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationFirstStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new SecondStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationSecondStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new InternalStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationInternalStorageProviderID));
       
       _mappingLoaderConfiguration = new MappingLoaderConfiguration();
       _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");

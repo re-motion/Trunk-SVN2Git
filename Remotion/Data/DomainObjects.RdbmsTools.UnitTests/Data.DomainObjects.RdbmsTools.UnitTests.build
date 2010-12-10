@@ -48,9 +48,6 @@
         <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Core.dll"/>
       </references>
-      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.DomainObjects.RdbmsTools.UnitTests">
-        <include name="SchemaGeneration/SqlServer/TestData/*.sql" />
-      </resources>
     </csc>
 
     <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">

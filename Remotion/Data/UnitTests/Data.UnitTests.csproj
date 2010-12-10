@@ -639,6 +639,42 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ClassDefinitionFactory.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\FileBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TableBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\ViewBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\StorageObjectFactoryStub.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\StorageProviderStubDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableBuilderBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\AbstractWithoutConcreteClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Address.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Ceo.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ClassWithAllDataTypes.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ClassWithoutProperties.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ClassWithRelations.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Color.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ColorExtensions.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Company.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ConcreteClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Customer.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\CustomerType.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\DerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\DerivedOfDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\DevelopmentPartner.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Employee.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\FirstStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\InternalStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Official.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Order.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\OrderItem.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\OrderPriority.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Partner.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\PersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\ProductLicenseMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\SecondDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\SecondStorageGroupAttribute.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\SpecialOfficial.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
@@ -1623,6 +1659,9 @@
     <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_SecondStorageProvider.sql" />
     <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

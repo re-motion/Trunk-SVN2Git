@@ -74,14 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RdbmsToolsRunnerTest.cs" />
-    <Compile Include="SchemaGeneration\ClassDefinitionFactory.cs" />
-    <Compile Include="SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
-    <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />
-    <Compile Include="SchemaGeneration\SqlServer\TableBuilderTest.cs" />
-    <Compile Include="SchemaGeneration\SqlServer\ViewBuilderTest.cs" />
-    <Compile Include="SchemaGeneration\StorageObjectFactoryStub.cs" />
-    <Compile Include="SchemaGeneration\StorageProviderStubDefinition.cs" />
-    <Compile Include="StandardMappingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.UnitTests.build">
       <SubType>Designer</SubType>
@@ -93,37 +85,6 @@
     <None Include="Test.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
-    <Compile Include="SchemaGeneration\TableBuilderBaseTest.cs" />
-    <Compile Include="SetupFixture.cs" />
-    <Compile Include="TestDomain\Address.cs" />
-    <Compile Include="TestDomain\ClassWithoutProperties.cs" />
-    <Compile Include="TestDomain\ClassWithRelations.cs" />
-    <Compile Include="TestDomain\Color.cs" />
-    <Compile Include="TestDomain\ColorExtensions.cs" />
-    <Compile Include="TestDomain\ConcreteClass.cs" />
-    <Compile Include="TestDomain\AbstractWithoutConcreteClass.cs" />
-    <Compile Include="TestDomain\InternalStorageGroupAttribute.cs" />
-    <Compile Include="TestDomain\DerivedClass.cs" />
-    <Compile Include="TestDomain\PersistentMixin.cs" />
-    <Compile Include="TestDomain\ProductLicenseMixin.cs" />
-    <Compile Include="TestDomain\SecondDerivedClass.cs" />
-    <Compile Include="TestDomain\DerivedOfDerivedClass.cs" />
-    <Compile Include="TestDomain\DevelopmentPartner.cs" />
-    <Compile Include="TestDomain\Employee.cs" />
-    <Compile Include="TestDomain\Partner.cs" />
-    <Compile Include="TestDomain\SecondStorageGroupAttribute.cs" />
-    <Compile Include="TestDomain\CustomerType.cs" />
-    <Compile Include="TestDomain\FirstStorageGroupAttribute.cs" />
-    <Compile Include="TestDomain\OrderItem.cs" />
-    <Compile Include="TestDomain\Order.cs" />
-    <Compile Include="TestDomain\Official.cs" />
-    <Compile Include="TestDomain\Customer.cs" />
-    <Compile Include="TestDomain\Company.cs" />
-    <Compile Include="TestDomain\ClassWithAllDataTypes.cs" />
-    <Compile Include="TestDomain\Ceo.cs" />
-    <Compile Include="TestDomain\OrderPriority.cs" />
-    <Compile Include="TestDomain\SpecialOfficial.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
@@ -162,12 +123,6 @@
       <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
       <Name>Data.Linq.SqlBackend</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProvider.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SchemaGeneration\SqlServer\TestData\SetupDB_SecondStorageProvider.sql" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
